@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_community</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: community</H3>
+
+  A collection of routines for interacting populations in an environment with nutrient recycling
+
+<HR>
+<H4><A NAME="mixo">mixo</A></H4>
+
+  A one-species community of mixotrophs: 
+  organisms that can assimilate according to the phototrophic route (light plus inorganic carbon and nutrients), and the heterotrophic route (digestion of organic carbon, in this case dead individuals).
+
+  Demo that runs:
+  <UL>
+    <LI> <A HREF="#shtime_mixo*"><code>shtime_mixo*</code></A>: 
+         ontogeny batch culture of mixotrophs with * reserves </LI>
+    <LI> <A HREF="#shstate*_mixo"><code>shstate*_mixo</code></A>:
+         equilibrium of a batch culture of mixotrophs with * reserves </LI>
+  </UL>
+
+  The theory for the model can be found in: <BR> 
+  Kooijman, S. A. L. M., Dijkstra, H. A. and Kooi, B. W. 2002
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/KooyDijk2002.html">
+  Light-induced mass turnover in a mono-species community of mixotrophs.</A> 
+  J. Theor. Biol. <B>214</B>: 233 - 254.
+
+  <BR>
+  The paper describes how light affect the turnover rates of organic matter and nutrients in a community that is open for energy, but closed for mass. 
+  It also deals with steady states as functions of light, total carbon and total nitrogen, and depth-profiles of systems' components, including the ratio of the auto versus heterotrophic activities.
+
+  <P>
+  Example of use: 
+  <CODE>mixo</CODE>
+
+<HR>
+<H4><A NAME="shtime*_mixo">shtime*_mixo</A></H4>
+
+  Ontogeny of a batch reactor of mixotrops with * reserves, where * = 0, 1, or 3. Initial conditions can be changed by editing the files <code>pars0_mixo.m</code>, <code>pars1_mixo.m</code> or <code>pars3_mixo.m</code>.<BR>
+  The figures show all the state variables against time. 
+
+  <P>
+  Example of use after editing <code>pars*_mixo.m</code> for * = 0, 1 or 3: 
+  <CODE>shtime*_mixo</CODE>. 
+  The command <CODE>shtime1_mixo (4)</CODE> will only plot fig <B>4</B> of the mixotroph community with 1 reserve.
+
+<HR>
+<H4><A NAME="shstate*_mixo">shstate*_mixo</A></H4>
+
+  Equilibrium of a batch reactor of mixotrops with * reserves, where * = 0, 1, or 3 as functions of light, total carbon and total nitrogen. 
+  The maximum values of these three system parameters are set in <code>pars*_mixo.m</code>.
+
+  <P> 
+  The distribution of carbon and nitrogen over the compounts are plotted cumulatively, so they sum to fixed totals.<BR>
+  For carbon from bottom to top: DIC, structure-detritus, reserve-detritus (for * = 1, 3), structure, reserve (for * = 1, 3), carbon-reserve (for * = 3). 
+  The curves between the type of detritus, and between structure and reserves are stippled.<BR>
+  For nitrogen from bottom to top: DIN, structure-detritus, reserve-detritus (for * = 1, 3), structure, reserve (for * = 1, 3), nitrogen-reserve (for * = 3). 
+  The curves between the type of detritus, and between structure and reserves are stippled.
+
+  <P>
+  Two equilibria can exist for the 3-reserve model. 
+  If this happens, both branches are shown; one branch is plotted in magenta.
+
+  <P>
+  Example of use after editing <code>pars*_mixo.m</code> for * = 0, 1 or 3: 
+  <CODE>shstate*_mixo</CODE>. 
+  The command <CODE>shstate1_mixo (2)</CODE> will only plot fig <B>2</B> of the mixotroph community with 1 reserve.
+
+<HR>
+<H4><A NAME="shgrad*_mixo">shgrad*_mixo</A></H4>
+
+  Shows gradients of mixotrops with * reserves, where * = 0, 1, or 3 as function of depth. 
+  The parameters are set in <code>pars*_mixo.m</code>. 
+  The number of layers is set in shgrad*_mixo; the light intensity reduces by a fixed factor between subsequent layers; 
+  this factor is set in <code>pars*</code>. 
+  The upward and downward specific mixing rates can be set per state variable (but make sure that that for structure and reserves are equal).
+
+  <P>
+  The output represent the state variables (in the columns) for the different layers (in the rows; the first row represents the surface layer) at the last time point of integration (set by tmax in shgrad*).
+
+  <P>
+  If a plot number is specified, the gradient ontogeny is shown, starting from a homogeneous distribution. 
+  The stack of layers is closed for mass (no downward transport). 
+  If no plot number is specified, all state variables as plotted as a function of depth for the last time point only.
+
+  <P>
+  Example of use after editing <code>pars*.m</code> for * = 0, 1 or 3: 
+  <CODE>X = shgrad*_mixo;</CODE>. 
+  The command <CODE>X = shgrad1_mixo (2)</CODE> will show a movie for state variable 2 (which is DIN) as a function of depth during time with 1 reserve; it also prints the final gradient.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

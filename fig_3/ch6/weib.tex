@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{a4full}
+\begin{document}
+\section*{Simple Weibull-Gompertz}
+
+\begin{eqnarray}
+  \dot{p}_C &=& [E_m] e L^3 (\dot{v}/ L - \dot{r})
+\\
+  \dot{r} &=&\frac{\dot{v} e/ L - (1 + L_T/ L) \dot{k}_M g} {e + g}
+\\
+  \dot{h} &=& \dot{h}_a m_D/ m_D^{\mbox{\tiny ref}}
+\\
+  \frac{d} {dt} m_Q &=& \eta_{QC} \dot{p}_C/ M_V - \dot{r} m_Q
+\\
+  \frac{d} {dt} m_D &=& 
+   m_Q y_{DQ} \dot{k}_W + m_D \dot{k}_G - \dot{r} m_D
+\\
+  \frac{d} {dt} \dot{h} &=& \ddot{q} -
+    \dot{h} (\dot{r} - \dot{k}_G); \quad 
+  \ddot{q} = m_Q y_{DQ} \dot{k}_W \dot{h}_a/ m_D^{\mbox{\tiny ref}} 
+\\
+  \frac{d} {dt} \ddot{q} &=& \ddot{h}_a e (\dot{v}/ L - \dot{r})
+    - \dot{r} \ddot{q}; \quad 
+  \ddot{h}_a = \dot{h}_a \dot{k}_W y_{DQ} \frac{\eta_{QC}} {m_D^{\mbox{\tiny ref}}}
+  \frac{[E_m]} {[M_V]}
+\end{eqnarray}
+
+\section*{Modified Weibull-Gompertz: $M_D$ acceleration $\propto \dot{p}_C$}
+
+\begin{eqnarray}
+  \frac{d} {dt} m_Q &=& \eta_{QC} \dot{p}_C/ M_V - \dot{r} m_Q
+\\
+  \frac{d} {dt} m_D &=& 
+   m_Q y_{DQ} \dot{k}_W + 
+   m_D \frac{s_G \dot{p}_C} {[E_m] L_m^3} - \dot{r} m_D
+\\
+  \frac{d} {dt} \dot{h} &=& \ddot{q} - \dot{h} (\dot{r} - 
+  s_G \frac{L^3} {L_m^3} e (\dot{v}/ L - \dot{r}))
+\\
+  \frac{d} {dt} \ddot{q} &=& \ddot{h}_a e (\dot{v}/ L - \dot{r})
+    - \dot{r} \ddot{q}
+\end{eqnarray}
+
+
+\section*{Modified Weibull-Gompertz: $M_Q$ acceleration $\propto \dot{p}_C$}
+
+\begin{eqnarray}
+  \frac{d} {dt} m_Q &=& \eta_{QC} \dot{p}_C/ M_V + 
+  m_Q \frac{s_G \dot{p}_C} {[E_m] L_m^3} - \dot{r} m_Q
+\\
+  \frac{d} {dt} m_D &=& m_Q y_{DQ} \dot{k}_W - \dot{r} m_D
+\\
+  \frac{d} {dt} \dot{h} &=& \ddot{q} - \dot{r} \dot{h}; \quad 
+  \ddot{q} = m_Q y_{DQ} \dot{k}_W \dot{h}_a/ m_D^{\mbox{\tiny ref}} 
+\\
+  \frac{d} {dt} \ddot{q} &=& (\ddot{q} \frac{L^3} {L_m^3} s_G + \ddot{h}_a) 
+    e (\dot{v}/ L - \dot{r}) - \dot{r} \ddot{q}
+\end{eqnarray}
+
+For short growth periods, $\dot{r} = 0$, and constant food, $e = f$ 
+\begin{eqnarray}
+ \ddot{q}(t) &=& \ddot{a} (\exp(\dot{b} t) - 1); \quad 
+ \ddot{a} = \frac{\ddot{h}_a L_m^3} {s_G (e L_m - L_T)^3}; \quad
+ \dot{b} = s_G e \dot{v} \frac{(e L_m - L_T)^2} {L_m^3}
+\\
+ \dot{h}(t) &=& \ddot{a} ( \frac{\exp(\dot{b} t) - 1} {\dot{b}} - t)
+\\
+ S(t) &=& \exp \left( - \frac{\ddot{a}} {\dot{b}} \left( 
+ \frac{\exp(\dot{b} t) - 1} {\dot{b}} - t - \dot{b} t^2/ 2
+ \right) \right)
+\end{eqnarray}
+
+for $\dot{h}_G = s_G \dot{v} e (e L_m - L_T)^2 L_m^{-3}$
+\begin{equation}\label{eqn:qhS_gomp}
+ \ddot{q}(t) = 
+ \ddot{q}(0) \exp(t \dot{h}_G); \quad
+ \dot{h}(t) = \ddot{q}(0) \frac{\exp(t \dot{h}_G) - 1} {\dot{h}_G}; \quad
+ \Pr \{\underline{a}_{\dagger} > t \} = 
+ \exp(\frac{\ddot{q}(0)} {\dot{h}_G^2} (\exp(t \dot{h}_G) - 1 - t \dot{h}_G))
+\end{equation}
+
+\end{document}

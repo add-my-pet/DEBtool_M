@@ -1,0 +1,224 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shregr</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="shregr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shregr</h1><!--introduction--><p>Plots observations and model predictions</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">set options if necessary</a></li><li><a href="#8">get dependent variables</a></li><li><a href="#9">gset nokey;</a></li><li><a href="#10">rows and colums of multiplot</a></li><li><a href="#11">multiplot (r,k)</a></li><li><a href="#12">multiplot(0,0)</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shregr.m"><b>shregr</b></a> (func, p, varargin)</p><h2>Description<a name="4"></a></h2><p>Plots observations and model predictions</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;    see <a href="nrregr.html"><b>nrregr</b></a></li><li>p: (r,k) matrix with parameter values in p(:,1)</li><li>xywi: (ni,k) matrix with</li></ul></div><pre>   xywi(:,1) independent variable
+   xywi(:,2) dependent variable (optional)
+   The number of data matrices xyw1, xyw2, ... is optional but &gt;0
+   but must match the definition of 'func'</pre><h2>Remarks<a name="5"></a></h2><p>Plot options can be set with <a href="shregr_options.html"><b>shregr_options</b></a>. Input as in <a href="nrregr.html"><b>nrregr</b></a>. The plot-range can set optionally in a vector of length 2, with the lower and upper boundaries. The columns &gt;1 in the parameter matrix are ignored. If column 2 in the data matrix is not present, model predictions are plotted only. The colums &gt;2 in the data matrices are ignored.</p><h2>Example of use<a name="6"></a></h2><p>Assuming that function_name, pars, and data xy are defined properly: shregr('function_name', pars, xy), or if the user-defined function codes for two data sets,  for instance shregr('function_name', pars, xy1, xy2).</p><h2>set options if necessary<a name="7"></a></h2><h2>get dependent variables<a name="8"></a></h2><h2>gset nokey;<a name="9"></a></h2><h2>rows and colums of multiplot<a name="10"></a></h2><h2>multiplot (r,k)<a name="11"></a></h2><h2>multiplot(0,0)<a name="12"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shregr
+% Plots observations and model predictions
+
+%%
+function shregr (func, p, varargin)
+  %  created: 2001/09/07 by Bas Kooijman
+  
+  %% Syntax
+  % <../shregr.m *shregr*> (func, p, varargin)
+  
+  %% Description
+  % Plots observations and model predictions
+  %
+  % Input
+  %
+  % * func: character string with name of user-defined function;
+  %    see <nrregr.html *nrregr*>
+  % * p: (r,k) matrix with parameter values in p(:,1) 
+  % * xywi: (ni,k) matrix with
+  %
+  %     xywi(:,1) independent variable
+  %     xywi(:,2) dependent variable (optional)
+  %     The number of data matrices xyw1, xyw2, ... is optional but >0
+  %     but must match the definition of 'func'
+  
+  %% Remarks
+  % Plot options can be set with <shregr_options.html *shregr_options*>.
+  % Input as in <nrregr.html *nrregr*>. 
+  % The plot-range can set optionally in a vector of length 2, with the lower and upper boundaries. 
+  % The columns >1 in the parameter matrix are ignored. 
+  % If column 2 in the data matrix is not present, model predictions are plotted only. 
+  % The colums >2 in the data matrices are ignored. 
+  
+  %% Example of use
+  % Assuming that function_name, pars, and data xy are defined properly: 
+  % shregr('function_name', pars, xy), or if the user-defined function codes for two data sets, 
+  %  for instance shregr('function_name', pars, xy1, xy2). 
+
+  i = 1; % initiate data set counter
+  ci = num2str(i); % character string with value of i
+  nxyw = nargin - 2; % number of data sets
+  while (i <= nxyw) % loop across data sets
+    eval(['xyw', ci, ' = varargin{i};']); % assing unnamed arguments to xywi
+    eval(['[n(', ci, ') k] = size(xyw', ci, ');']); % number of data points
+    if i == 1
+      listxyw = ['xyw', ci,',']; % initiate list xyw
+      listX = ['X', ci,',']; % initiate list X
+      listf = ['f', ci,',']; % initiate list f
+      listg = ['g', ci,',']; % initiate list f
+    else     
+      listxyw = [listxyw, ' xyw', ci,',']; % append list xyw
+      listX = [listX, ' X', ci,',']; % append list X
+      listf = [listf, ' f', ci,',']; % append list f
+      listg = [listg, ' g', ci,',']; % append list g
+    end
+    i = i + 1;
+    ci = num2str(i); % character string with value of i
+  end
+  
+  [i, nl] = size(listxyw); listxyw = listxyw(1:(nl-1)); % remove last ','
+  [i, nl] = size(listX); listX = listX(1:(nl-1)); % remove last ','
+  [i, nl] = size(listf); listf = listf(1:(nl-1)); % remove last ','
+  [i, nl] = size(listg); listg = listg(1:(nl-1)); % remove last ','
+  
+  p = p(:,1); % remove other columns from parameter data
+  
+  global dataset Range all_in_one XTXT YTXT; % option settings
+  
+  %% set options if necessary
+  if prod(size(dataset)) == 0 % select data sets to be plotted
+    dataset = 1:nxyw;
+  end
+
+  if prod(size(all_in_one)) == 0 % all graphs in one
+    all_in_one = 0;
+  end
+   
+  if prod(size(Range)) == 0 % set plot ranges
+    Range = zeros (nxyw, 2);
+    for i = 1:nxyw
+      ci = num2str(i);
+      eval(['r0 = 0.9*min(xyw', ci, '(:,1));']);
+      eval(['r1 = 1.1*max(xyw', ci, '(:,1));']);
+      Range(i,:) = [r0, r1];
+    end
+  end
+  
+  [nr, i] = size(Range);
+  if nr ~= nxyw % set plot ranges, because existing ones are invalid
+    Range = zeros (nxyw, 2);
+    for i = 1:nxyw
+      ci = num2str(i);
+      eval(['r0 = 0.9*min(xyw', ci, '(:,1));']);
+      eval(['r1 = 1.1*max(xyw', ci, '(:,1));']);
+      Range(i,:) = [r0, r1];
+    end
+  end
+  
+  for i = 1:nxyw % set plot labels
+    ci = num2str(i);
+    if prod(size(XTXT)) == 0
+      XTXT = cell(nxyw,1);
+    end
+    if prod(size(YTXT)) == 0
+      YTXT = cell(nxyw,1);
+    end    
+  end
+    
+  nS = max(size(dataset)); % set number of data sets to be plotted  
+
+  for i = 1:nxyw  %% set independent variables
+    eval(['X', num2str(i), ' = linspace(', ...
+	  num2str(Range(i,1)), ', ', num2str(Range(i,2)), ', 100)'';']);
+  end
+  
+  %% get dependent variables
+  eval(['[', listf,'] = ', func, '(p,', listX,' );']);
+  eval(['[', listg,'] = ', func, '(p,', listxyw,' );']);
+
+  clf;
+  %% gset nokey;
+  hold on;
+
+  if all_in_one ~= 0 % single plot mode
+    for i = 1:nS % loop across data sets that must be plotted
+      ci = num2str(dataset(i));
+      eval(['plot(X', ci, '(:, 1), f', ci, ', ''r'');']);
+      eval(['[nr nc] = size(xyw', ci, ');']);
+      if nc>1
+        eval(['plot(xyw', ci, '(:,1), xyw', ci, '(:,2), ''b+'');']);
+        for j = 1:n(dataset(i)) % connect data points with curves
+	      eval(['plot([xyw', ci, '(j,[1 1])''],' ...
+	        '[xyw', ci, '(j,2); g', ci, '(j)], ''m'');']);
+        end
+      end
+      if i == 1 % set labels
+	    xlabel (char(XTXT{i}));
+        ylabel (char(YTXT{i}));
+      end  
+    end
+  else % multiplot mode
+    %% rows and colums of multiplot
+    r = max([1, floor(sqrt(nxyw))]); k = ceil(nS/r);
+    %% multiplot (r,k)
+    for i = 1:nS % loop across data sets that must be plotted
+      subplot(r,k,i); hold on;
+      ci = num2str(dataset(i));
+      eval(['plot(X', ci, '(:, 1), f', ci, ', ''r'');']);
+      xlabel(char(XTXT{i}));
+      ylabel(char(YTXT{i}));
+      eval(['[nr nc] = size(xyw', ci, ');']);
+      if nc>1
+        eval(['plot(xyw', ci, '(:,1), xyw', ci, '(:,2), ''b+'');']);
+      end
+    end
+
+    %% multiplot(0,0)
+  end
+  
+##### SOURCE END #####
+--></body></html>

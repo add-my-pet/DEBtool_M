@@ -1,0 +1,192 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>parscomp_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-18"><meta name="DC.source" content="parscomp_st.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>parscomp_st</h1><!--introduction--><p>computes compound parameters from primary parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>cp = <a href="../parscomp_st.m">* parscomp_st*</a> (par, chem)</p><h2>Description<a name="4"></a></h2><p>Computes compound parameters from primary parameters that are frequently just</p><p>Input</p><div><ul><li>par : structure with values of primary parameters</li><li>chem : structure with values of chemical indices</li></ul></div><p>Output</p><div><ul><li>cp : structure with scaled quantities and compound parameters</li></ul></div><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% parscomp_st
+% computes compound parameters from primary parameters
+
+%%
+function cp = parscomp_st(par, chem)
+  % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
+  
+  %% Syntax
+  % cp = <../parscomp_st.m * parscomp_st*> (par, chem)
+  
+  %% Description
+  % Computes compound parameters from primary parameters that are frequently just
+  %
+  % Input
+  %
+  % * par : structure with values of primary parameters
+  % * chem : structure with values of chemical indices
+  %  
+  % Output
+  %
+  % * cp : structure with scaled quantities and compound parameters
+
+v2struct(par); v2struct(chem); % convert structures to variables
+
+if ~exist('p_Am','var')
+  p_Am = z * p_M/ kap;        % J/d.cm^2, {p_Am} spec assimilation flux
+end
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% Molecular weights:
+w_O = n_O' * [12; 1; 16; 14]; % g/mol, mol-weights for (unhydrated)  org. compounds
+w_X = w_O(1);
+w_V = w_O(2);
+w_E = w_O(3);
+w_P = w_O(4);
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% Conversions and compound parameters cp
+
+M_V     = d_V/ w_V;            % mol/cm^3, [M_V], volume-specific mass of structure
+y_V_E   = mu_E * M_V/ E_G;     % mol/mol, yield of structure on reserve
+y_E_V   = 1/ y_V_E;            % mol/mol, yield of reserve on structure
+k_M     = p_M/ E_G;            % 1/d, somatic maintenance rate coefficient
+k       = k_J/ k_M;            % -, maintenance ratio
+E_m     = p_Am/ v;             % J/cm^3, reserve capacity [E_m]
+m_Em    = y_E_V * E_m / E_G;   % mol/mol, reserve capacity
+g       = E_G/ kap/ E_m ;      % -, energy investment ratio
+L_m     = v/ k_M/ g;           % cm, maximum length
+L_T     = p_T/ p_M ;           % cm, heating length (also applies to osmotic work)
+l_T     = L_T/ L_m;            % - , scaled heating length
+w       = m_Em * w_E * d_E/ d_V/ w_V; % -, contribution of ash free dry mass of reserve to total ash free dry biomass
+J_E_Am  = p_Am/ mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
+
+if exist('kap_X','var') == 1
+y_E_X   = kap_X * mu_X/ mu_E;  % mol/mol, yield of reserve on food
+y_X_E   = 1/ y_E_X;            % mol/mol, yield of food on reserve
+p_Xm    = p_Am/ kap_X;         % J/d.cm^2, max spec feeding power
+J_X_Am  = y_X_E * J_E_Am;      % mol/d.cm^2, {J_XAm}, max surface-spec feeding flux
+end
+
+if exist('kap_X_P', 'var') == 1
+y_P_X   = kap_X_P * mu_X/ mu_P;  % mol/mol, yield of faeces on food 
+y_X_P   = 1/ y_P_X;              % mol/mol, yield of food on faeces
+end
+
+if exist('kap_X_P', 'var') == 1 && exist('kap_X', 'var') == 1
+y_P_E   = y_P_X/ y_E_X;          % mol/mol, yield of faeces on reserve
+%  Mass-power couplers
+  eta_XA = y_X_E/ mu_E;          % mol/J, food-assim energy coupler
+  eta_PA = y_P_E/ mu_E;          % mol/J, faeces-assim energy coupler
+  eta_VG = y_V_E/ mu_E;          % mol/J, struct-growth energy coupler
+  eta_O = [  -eta_XA   0         0;         % mol/J, mass-energy coupler
+	               0   0         eta_VG;    % used in: J_O = eta_O * p
+	          1/mu_E   -1/mu_E   -1/mu_E;
+	          eta_PA   0         0]; 
+end
+
+J_E_M   = p_M/ mu_E;          % mol/d.cm^3, [J_EM]
+J_E_T   = p_T/ mu_E;          % mol/d.cm^2, {J_ET}
+j_E_M   = k_M * y_E_V;        % mol/d.mol, spec somatic  maint costs
+j_E_J   = k_J * y_E_V;        % mol/d.mol, spec maturity maint costs
+kap_G   = mu_V * M_V/ E_G;    % -, growth efficiency
+E_V     = d_V * mu_V/ w_V;    % J/cm^3, [E_V] volume-specific energy of structure
+
+if exist('F_m','var') == 1
+K       = J_X_Am/ F_m;        % c-mol X/l, half-saturation coefficient
+end
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% Scaled maturity
+
+par_names = fields(par);
+mat_lev = par_names(strncmp(par_names, 'E_H', 3));
+mat_ind = strrep(mat_lev, 'E_H', '');  % maturity levels' indices
+
+for i = 1:length(mat_ind)
+  stri = mat_ind{i};
+  eval(['M_H', stri, '= E_H', stri, '/ mu_E;']);              % mmol, maturity at level i
+  eval(['U_H', stri, '= E_H', stri, '/ p_Am;']);              % cm^2 d, scaled maturity at level i
+  eval(['V_H', stri, '= U_H', stri, '/ (1 - kap);']);         % cm^2 d, scaled maturity at level i
+  eval(['v_H', stri, '= V_H', stri, '* g^2 * k_M^3/ v^2;']);  % -, scaled maturity density at level i
+  eval(['u_H', stri, '= U_H', stri, '* g^2 * k_M^3/ v^2;']);  % -, scaled maturity density at level i
+end
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% pack output:
+
+cp = v2struct(p_Am, w_X, w_V, w_E, w_P, M_V, y_V_E, y_E_V, ...
+    k_M, k, E_m, m_Em, g, L_m, L_T, l_T, w, ...
+    J_E_Am, J_E_M, J_E_T, j_E_M, j_E_J, kap_G, E_V);
+
+nameOfStruct2Update = 'cp';
+
+for i = 1:length(mat_ind)
+  stri = mat_ind{i};
+  eval(['cp = v2struct(M_H', stri, ', U_H', stri, ', V_H', stri, ', v_H', stri, ', u_H', stri, ', nameOfStruct2Update);']);
+end
+
+if exist('kap_X_P', 'var') == 1
+    cp = v2struct(y_P_X, y_X_P, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
+end
+
+if exist('kap_X', 'var') == 1
+    cp = v2struct(y_E_X, y_X_E, p_Xm, J_X_Am, nameOfStruct2Update);
+end
+
+if exist('F_m', 'var') == 1
+    cp = v2struct(K, nameOfStruct2Update);                          
+end
+
+##### SOURCE END #####
+--></body></html>

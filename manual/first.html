@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>
+    First steps in Octave
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="Octave Matlab" >
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>First steps in Octave</H1>
+
+<P ALIGN="center"> by <A HREF="mailto:bas@bio.vu.nl">Bas Kooijman</A>,
+5 April 2002
+
+
+<H2>Purpose</H2> 
+ 
+These notes are prepared for getting started in the computer language <A HREF="http://www.octave.org/" TARGET="_top">Octave 3</A>,
+which uses <A HREF="http://www.gnuplot.org/" TARGET="_top">Gnuplot</A> for graphics, which ia included in Octave. 
+
+<P>
+This note assumes that Octave 3 is installed, and that you type the codes on Octaves' command line that are shown in magenta (while
+skipping the comments, of course).
+ 
+<H2>General recommendations</H2>
+
+<H4>Script files</H4>
+
+Although Octave allows you to work directly on the command line, with handy history memory (arrow keys), it is best to work in script files
+as soon as you want to fit a model and display the results or do similar more complex things. 
+A script file is a file with a name that has extension <code>.m</code> and does not start with the word <code>function</code>. 
+After saving the script file with some editor (such as Emacs) in plain ascii, type the name of the script file on Octave's command line (without extension <code>.m</code>) and Octave executes the file as if all its contents was typed in on the command line.
+
+<P>
+Label all script-files well with explanatory text, including your name, date and purpose, such that it makes sense when you see it again much later.
+
+<P>
+Add enough explanations in your script files and functions. 
+All text on a line after character <code>%</code> is not executed by Octave. Emacs expects <code>%%</code> if a whole line is explanatory text.
+
+<H4>Help</H4>
+
+Type <code>help function-name</code> to get an explantion how a function works.
+
+<P>
+Type <code>who</code> or <code>whos</code> to get information about the variables and functions that are known at any given moment.
+
+<P>
+Example:<BR>
+<code>
+  who<BR>
+  a = 2;<BR>
+  who
+</code>
+
+</BODY>
+</HTML>
+
+
+
+
+
+

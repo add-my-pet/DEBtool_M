@@ -1,0 +1,281 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>DEBtool exercise</TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="DEBtool, Dynamic Energy Budget theory, Dynamic Energy Budgets, DEB theory, DEB theorie, DEB" >
+  <META 
+    NAME="description" CONTENT="Software package DEBtool">
+  <META NAME="distribution" CONTENT="global">
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>DEBtool exercise</H1>
+
+  <P ALIGN="center"> 
+  by <A HREF="mailto:bas@bio.vu.nl">Bas Kooijman</A>, 1 Nov 2009
+
+
+<H2><A NAME="intro">Introduction</A></H2>
+
+  Open the DEBtool manual <A TARGET="_top" HREF="index.html"><code>index.html</code></A> in the subdirectory <code>manual</code> of DEBtool with some browser (e.g. Explorer, Netscape, Mozilla). 
+  If you can read this page you probably already opened it with such a browser; 
+  open the manual in a new window to see the exercise and the manual simultaneously. 
+  Read the sections on <A TARGET="main" HREF="DEBtool.html#Use"> Use & recommendations</A> and <A TARGET="main" HREF="DEBtool.html#Nomenclature"> Nomenclature</A> of the first page of the DEBtool manual. 
+  Click on <A TARGET="_top" HREF="index_contents.html"> Contents</A> to see the various toolboxes (subdirectories) of DEBtool. 
+  Visit the <A TARGET="_top" HREF="index_first.html"> Octave intro</A> pages briefly, to know that they offer you a fast introduction to the computer language Octave (or Matlab). 
+  It will not be necessary to know anything about Octave in this exercise, but you should be able to change files with an editor that is able to read and
+write plain ascii files (e.g. Notepath or Word under Windows, or Emacs; 
+  it is essential that the editor does not insert hidden non-ascii characters, which e.g. Word easily does without notice;
+  Windows can suppress extensions of file names; 
+  Octave can only handle file names with extension .m). 
+  In the case that you plan to use Emacs as a text editor (and run Octave under Emacs) a brief visit to <A TARGET="_top" HREF="index_first_e.html"> Emacs intro</A> might be useful. 
+  Links to the  manuals of Octave, Gnuplot and Emacs are included in the DEBtool package (these manuals are big).
+
+  <P>
+  Start Octave now. 
+  A window should open. 
+  Test the correct response by Octave by typing <code>1 + 2</code> (followed by the <code>enter</code> key, as allways after a command); 
+  Octave should respond with an answer. 
+  Try the arrow-keys to regenerate your earlier command, change it and repeat your command.
+
+  <P>
+  Check with <code>pwd</code> that Octave has been started in the directory DEBtool. 
+  Octave replies with showing the path. 
+  If Octave is in a different directory, go to the DEBtool directory using <code>cd pathname</code>, where <code>pathname</code> stands for the path to
+DEBtool. 
+  The command <code>ls</code> lists the files and subdirectories of DEBtool; 
+  you should recognize the names that are listed in the contents.
+
+<H2><A NAME="animal">Animal</A></H2>
+
+  Click on <A TARGET="_top" HREF="index_contents.html"> Contents</A> in the DEBtool manual, and go to <A TARGET="_top" HREF="index_animal.html"> animal</A>. 
+  Now go to the animal subdirectory in the Octave window with <code>cd animal</code>. 
+  Now open the file <code>pars_animal.m</code> of the subdirectory animal with some text editor.
+
+  <P>
+  The parameter file <code>pars_animal.m</code> of animal show a large number of parameters with a short description of each. 
+  Any particular function that uses a small number of parameters only. 
+  DEBtool allows you to specify parameter values at a certain temperature, and evaluate properties of energetics at another temperature. 
+  The first set of parameters are used to do this translation; 
+  as long as the value to T equals that of T<sub>1</sub>, the other temperature parameters are not relevant.  
+  The second set of parameters are on the chemical composition of the main variables, which are necessary e.g. for specifying mineral fluxes. 
+  The next set of parameters link volumes, weights and energies to each other. 
+  Notice that <b>structure's molar density</b> [M<sub>V</sub>] = d<sub>V</sub>/ w<sub>V</sub>, while <b>structure's density</b> d<sub>V</sub> is a parameter (weight per volume), and <b>structure's molecular weight</b> w<sub>V</sub> is given by the elemental composition. 
+  The last two sets of parameters have no influence on what the organism is doing, but do affect the behaviour of measurements. 
+  The last set of 14 parameters directly affect the metabolic behaviour of the organism.
+
+  <P>
+  The chosen parametrization for animal's metabolic behaviour avoids to deal with surface areas directly, while food uptake is coupled to the surface area. 
+  The reason is to make the parameters for isomorphs better comparable with those for V1-morphs. 
+  The following relationships might clarify the links between parameters:
+  <ul>
+   <li> <b>max mol-specific food uptake rate</b> 
+        j<sub>XAm</sub> = {J<sub>XAm</sub>}/ ([M<sub>V</sub>] L<sub>d</sub>); 
+        dim(j<sub>XAm</sub>) = mol of food (mol of structure * time)<sup>-1</sup> </li>
+   <li> <b>max mol-specific reserve in moles</b> 
+        m<sub>Em</sub> = [M<sub>Em</sub>]/ [M<sub>V</sub>]; 
+        dim(m<sub>Em</sub>) =  mol of reserve (mol of structure)<sup>-1</sup> </li> 
+   <li> <b>energy conductance</b>
+        v = y<sub>EX</sub> {J<sub>XAm</sub>}/ [M<sub>Em</sub>] = {J<sub>EAm</sub>}/ [M<sub>Em</sub>]; 
+        dim(v) = length of structure * time<sup>-1</sup> </li>
+  </ul>
+  From these parameters, the following compound parameters are obtained in the routine <code>parscomp</code>, which is called from <code>pars_animal</code>.
+  <ul>
+    <li> <b>characteristic length</b>
+         L<sub>d</sub> = v m<sub>Em</sub>/ (y<sub>EX</sub> j<sub>XAm</sub>); 
+         dim(L<sub>d</sub>) = length of structure </li>
+    <li> <b> structural lenght at birth</b>
+         L<sub>b</sub> = 
+         (M<sub>Vb</sub> w<sub>O</sub>(2)/ d<sub>O</sub>(2))<sup>1/3</sup>;
+         dim(L<sub>b</sub>) = length of structure </li>
+    <li> <b> structural length at puberty</b>
+         L<sub>p</sub> = (M<sub>Vp</sub> w<sub>O</sub>(2)/ d<sub>O</sub>(2))<sup>1/3</sup>;
+         dim(L<sub>p</sub>) = length of structure </li>
+    <li> <b> maximum structural length</b>
+         L<sub>m</sub> = v/ (k<sub>M</sub> g); 
+         dim(L<sub>m</sub>) = length of structure </li>
+    <li> <b>max surface area-specific food uptake rate</b>
+         {J<sub>XAm</sub>} = j<sub>XAm</sub> L<sub>d</sub> [M<sub>V</sub>] = [M<sub>V</sub>] v m<sub>Em</sub>/ y<sub>EX</sub>; 
+         dim({J<sub>XAm</sub>})= mol of food * time<sup>-1</sup> * length of structure<sup>-2</sup> </li>
+    <li> <b>max volume-specific reserve in moles</b>
+         [M<sub>Em</sub>] = [M<sub>V</sub>] m<sub>Em</sub>; 
+         dim([M<sub>Em</sub>]) = mol of reserve (volume of structure)<sup>-1</sup> </li> 
+  </ul>
+  The <b>maintenance rate coefficient</b> k<sub>M</sub> = j<sub>EM</sub>/ y<sub>EV</sub> equals the <b>specific maintenance costs</b> j<sub>EM</sub> relative to the <b>growth costs</b> y<sub>EV</sub>; 
+  dim(k<sub>E</sub>) = time<sup>-1</sup>.
+
+  <P>
+  Read what the function <A TARGET="main" HREF="DEBtool_animal.html#animal"><code>animal</code></A> should be doing in the manual and type <code>animal</code>; 
+  given some patience, you will see a window that is opened automatically by Gnuplot, that show you the various aspects of animal energetics. 
+  By typing some character, for instance a space, you go from one set of graphs in the gnuplot window to the next set. 
+  So you can take your time looking at the various graphs. Select the "full screen" option to maximize the size of the windows; 
+  some graphs will still be small.
+
+<H2><A NAME="heating">Effect of heating</A></H2>
+
+<H4> On growth of length</H4>
+
+  Search for <A TARGET="main" HREF="DEBtool_animal.html#shtime2length"><code>shtime2length</code></A> in the DEBtool manual and read the description. 
+  Type <code>pars_animal; shtime2length</code>, and you will see one of the graphs you already saw after typing <code>animal</code> in the introductory
+paragraph of this excersize. Search for parameter <code>L_T</code> in the file <code>pars_animal.m</code> and change the value 0 by 0.1. 
+  Think about what effect this should have on the growth of body length. 
+  Save the file;
+  if saving gives problems, change the properties of the file, it is possibly stored as "read only" (under Windows: click on the file with the right-hand button of the mouse, and go to properties). 
+  Now type <code>pars_animal; shtime2length</code> to see the effects of an increase in the heating costs.
+
+<H4> On growth flux</H4>
+
+  Search for <A TARGET="main" HREF="DEBtool_animal.html#shflux"><code>shflux</code></A> in the DEBtool manual and read the description. 
+  Type <code>pars_animal; shflux</code>, and you will see one of the windows you already saw after typing <code>animal</code> in the introductory paragraph of this exercise. 
+  Type <code>pars_animal; shflux(2)</code> to see the growth flux as a function of the scaled length, and on full screen. 
+  Search for parameter <code>L_T</code> in the file <code>pars_animal.m</code> and change the value 0 by 0.1. 
+  Think about what effect this should have on the growth flux. Save the file. 
+  Now type <code>pars_animal; shflux(2)</code> to see the effects of an increase in the heating costs. 
+  Change the value of <code>L_T</code> back to zero.
+
+<H4> On scaling of respiration with body weight</H4>
+
+  Search for <A TARGET="main" HREF="DEBtool_animal.html#shscale"><code>shscale</code></A> in the DEBtool manual and read the description. 
+  Type <code>pars_animal; shscale</code>, and you will see one of the windows you already saw after typing <code>animal</code> in the introductory paragraph of this excersize. 
+  Type <code>pars_animal; shscale(3)</code> to see the scaling of dioxygen consumption with body weight only, and on full screen. 
+  Search for parameter <code>L_T</code> in the file <code>pars_animal.m</code> and change the value 0 by 0.1. 
+  Think about what effect this should have on the scaling of dioxygen consumption with body weight. 
+  Save the file. 
+  Now type <code>pars_animal; shscale(3)</code> to see the effects of an increase in the heating costs.
+
+  <P>
+  You can change other parameters as well, of course. 
+  Do not forget to run <code>pars_animal</code> after changing a parameter value. 
+  It is easy to use parameter values that have no physiological meaning, and DEBtool does not check the values. 
+  If you want to memorise the old values, duplicate the line you want to change first and change the value in the second line. 
+  Delete double lines when done. 
+  Consider the use of <code>clear</code> regularly to make sure that values of variables are used that escape your notice.
+
+<H2><A NAME="maint">Maintenance rate coefficient from growth curves</A></H2>
+
+  Suppose that for three constant food densities, we found for the body length of an isomorph as function of time the following data
+  <table align ="center" >
+    <tr>
+      <th> time in weeks</th>
+      <th> 0 </th>
+      <th> 1 </th>
+      <th> 2 </th>
+      <th> 3 </th>
+      <th> 4 </th>
+    </tr>
+    <tr> 
+      <th> first series in cm</th> 
+      <td> 1 </td> 
+      <td> 2 </td>
+      <td> 2.5 </td>
+      <td> 2.8 </td>
+      <td> 2.9 </td>
+    </tr>
+    <tr>
+      <th> second series in cm</th>
+      <td> 1 </td>
+      <td> 2.3 </td>
+      <td> 3 </td>
+      <td> 3.5 </td>
+      <td> 3.7 </td>
+    </tr>
+    <tr> 
+      <th> third series in cm</th>
+      <td> 1 </td>
+      <td> 2.5 </td>
+      <td> 3.5 </td>
+      <td> 4.1 </td>
+      <td> 4.4 </td>
+    </tr>
+  </table>
+  We failed to measure the food densities and the types of food differed in the three cases. 
+  Find an estimate for the maintenance rate coefficient, and its standard deviation on the assumption that the scatter is normally distributed with a constant variance. 
+  Compare the result using the assumption that the variance of the scatter is proportional to the squared mean. Check your results graphically.
+  Is the type of food relevant for the problem? 
+  Hints:
+  <ul> 
+    <li> The DEB theory implies that, at constant food density, the length of an isomorph follows a von Bertalanffy growth curve
+         L(t) = L<sub>i</sub> - (L<sub>i</sub> - L<sub>b</sub>) e<sup>-r<sub>B</sub>t</sup>.  
+         The DEB theory states that the von Bertalanffy growth rate equals 
+         r<sub>B</sub> = (3/k<sub>M</sub> + 3d<sub>M</sub>L<sub>i</sub>/ v)<sup>-1</sup>, 
+         where 
+         k<sub>M</sub> is the rate coefficient, 
+         d<sub>M</sub> the shape coefficient, 
+         v the energy conductance, 
+         L<sub>b</sub> the length at birth, 
+         L<sub>i</sub> the ultimate length, 
+         t the time. </li>
+    <li> use function 
+         <A TARGET="main" HREF="DEBtool_lib_regr.html#nrregr"><code>nrregr</code></A> or 
+         <A TARGET="main" HREF="DEBtool_lib_regr.html#nmregr"><code>nmregr</code></A>
+         for standard multi-sample regression, function 
+         <A TARGET="main" HREF="DEBtool_lib_regr.html#pregr"><code>pregr</code></A> for the standard deviation, function 
+         <A TARGET="main" HREF="DEBtool_lib_regr.html#shregr"><code>shregr</code></A> with the all-in-one option for graphical checking, function 
+         <A TARGET="main" HREF="DEBtool_lib_regr.html#nmvcregr"><code>nmvcregr</code></A> for regression with constant variation coefficient. </li>
+    <li> copy and modify file <code>mydata_regr.m</code> in subdirectory <code>lib/regr</code> for a rapid solution of the problem. 
+         This script-file first illustrates how to fit a single model to a single data set, then how to fit two models to two data sets. 
+         We here need three models for three data sets, all three similar to the second model, but the von Bertalanffy growth rates of the three sets are now linked. </li>
+    <li> realize that we have to fit 6 parameters to the three growth curves: 
+         L<sub>b</sub>, L<sub>i,1</sub>, L<sub>i,2</sub>, L<sub>i,3</sub>, k<sub>M</sub>, v/d<sub>M</sub>. 
+         Since v and d<sub>M</sub> only occur in combination, these data do not contain information on the two parameters separately, only on the ratio. 
+         Also realize that we need three data files to run the regression functions. 
+         One way to do this is to create a single data set first, with the name <code>data</code> with time in column 1, and the three series of lengths in columns 2, 3 and 4. 
+         Then use <code>data(:,[1 2]),data(:,[1 3]),data(:,[1 4])</code> in the call to the regression routines.
+    </li>
+  </ul>
+  If these hints are not sufficient, look at file <code>lib/regr/mydata_regr_2.m</code> to see the answer. 
+
+  <p>
+  This example illustrates that DEB theory allows us to extract information from a combination of data sets, which is not contained in any data set separately. 
+  The von Bertalanffy has three parameters. 
+  If the data sets have no relationships with each other, we would need 9 parameters; 
+  if all initial lengths are equal, we would have 7 parameters. 
+  DEB theory implies a link between the data sets, which reduces the number of parameters to 6, with a special meaning. 
+  Notice that lack of knowledge on the feeding levels makes that we are dealing here with a collection of length-time curves rather than a surface. 
+  If the scaled functional response f has been measured, and DEB theory tells us that L<sub>i</sub> = f L<sub>m</sub>, we would have length as a functon of time and scaled functional response with 4 parameters:
+  L<sub>b</sub>, L<sub>m</sub>, k<sub>M</sub>, v/d<sub>M</sub>.
+
+<H2><A NAME="alga">Alga</A></H2>
+
+  Go to the alga subdirectory with <code>cd ../alga</code> and open the file <code>alga/pars_alga.m</code> with some text editor.
+
+  <P>
+  The parameter file <code>pars_alga.m</code> gives a short description of each parameter for a 2 reserve 1 structure alga that lives of ammonia and phosphate in a generalized chemostat. 
+  The first set of parameters are used to do temperature translations, like in <code>animal</code>; 
+  as long as the value to T equals that of T_1, the other temperature parameters are not relevant. 
+  The second set of parameters are on the chemical composition of the main variables, which are necessary e.g. for specifying mineral fluxes. 
+  The third set of parameters directly affect the metabolic behaviour of the organism, while the last set specifies the local environment of the chemostat. 
+  If all specific draining rates are set equal to the specific supply rate, the generalized chemostat is a standard one.
+
+  <P>
+  Read what the function <A TARGET="main" HREF="DEBtool_alga.html#alga"><code>alga</code></A> should be doing in the manual and type <code>alga</code>. 
+  Let us focus on the steady states of a chemostat, where excreted reserves can be re-used. 
+  Read the manual on <A TARGET="main" HREF="DEBtool_alga.html#shchem1"><code>shchem1</code></A> and run <code>shchem1</code>.
+
+  <P>
+  Change now, in the file <code>pars_alga.m</code>, the fractions <code>kap_EN</code> and <code>kap_EP</code> of not-used reserves that are returned to the reserves and set them to zero. 
+  Think about what effect this would have on the reserve densities. 
+  Check your ideas against the actual effects by running <code>pars_alga; shchem1(5)</code>. 
+  Now change the concentrations of ammonia <code>X_Nr</code> and phospate <code>X_Pr</code> in the supply to the chemostat, and try to predict the effect before you re-run <code>pars_alga; shchem1</code>.
+
+<HR>
+<P>
+Go to the <A HREF="/thb/deb/" TARGET="main"> DEB information page</A> or the <A HREF="/thb/deb/deblab/" TARGET="main"> DEB laboratory</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,158 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>predict_my_pet</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-31"><meta name="DC.source" content="predict_my_pet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>predict_my_pet</h1><!--introduction--><p>Obtains predictions, using parameters and data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">unpack par, chem, cpar and data</a></li><li><a href="#7">compute temperature correction factors</a></li><li><a href="#8">zero-variate data</a></li><li><a href="#9">pack to output</a></li><li><a href="#10">uni-variate data</a></li><li><a href="#11">pack to output</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[Prd_data, info] = <a href="../predict_my_pet.m"><b>predict_my_pet</b></a>(par, chem, data)</p><h2>Description<a name="4"></a></h2><p>Obtains predictions, using parameters and data</p><p>Input</p><div><ul><li>par: structure with parameters (see below)</li><li>chem: structure with biochemical parameters</li><li>data: structure with data (not all elements are used)</li></ul></div><p>Output</p><div><ul><li>Prd_data: structure with predicted values for data</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Template for use in add_my_pet</p><h2>unpack par, chem, cpar and data<a name="6"></a></h2><h2>compute temperature correction factors<a name="7"></a></h2><h2>zero-variate data<a name="8"></a></h2><h2>pack to output<a name="9"></a></h2><p>the names of the fields in the structure must be the same as the data names in the mydata file</p><h2>uni-variate data<a name="10"></a></h2><p>time-length</p><h2>pack to output<a name="11"></a></h2><p>the names of the fields in the structure must be the same as the data names in the mydata file</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% predict_my_pet
+% Obtains predictions, using parameters and data
+
+%%
+function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
+  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30
+  
+  %% Syntax
+  % [Prd_data, info] = <../predict_my_pet.m *predict_my_pet*>(par, chem, data)
+  
+  %% Description
+  % Obtains predictions, using parameters and data
+  %
+  % Input
+  %
+  % * par: structure with parameters (see below)
+  % * chem: structure with biochemical parameters
+  % * data: structure with data (not all elements are used)
+  %  
+  % Output
+  %
+  % * Prd_data: structure with predicted values for data
+  
+  %% Remarks
+  % Template for use in add_my_pet
+  
+  %% unpack par, chem, cpar and data
+  cpar = parscomp_st(par, chem);
+  v2struct(par); v2struct(chem); v2struct(cpar);
+  v2struct(data);
+  
+  %% compute temperature correction factors
+  TC_ab = tempcorr(temp.ab, T_ref, T_A);
+  TC_ap = tempcorr(temp.ap, T_ref, T_A);
+  TC_am = tempcorr(temp.am, T_ref, T_A);
+  TC_Ri = tempcorr(temp.Ri, T_ref, T_A);
+  TC_tL = tempcorr(temp.tL, T_ref, T_A);
+
+  %% zero-variate data
+
+  % life cycle
+  pars_tp = [g; k; l_T; v_Hb; v_Hp];               % compose parameter vector
+  [t_p, t_b, l_p, l_b, info] = get_tp(pars_tp, f); % -, scaled times & lengths at f
+  
+  % birth
+  L_b = L_m * l_b;                  % cm, structural length at birth at f
+  Lw_b = L_b/ del_M;                % cm, physical length at birth at f
+  Wd_b = L_b^3 * d_V * (1 + f * w); % g, dry weight at birth at f (remove d_V for wet weight)
+  aT_b = t_b/ k_M/ TC_ab;           % d, age at birth at f and T
+
+  % puberty 
+  L_p = L_m * l_p;                  % cm, structural length at puberty at f
+  Lw_p = L_p/ del_M;                % cm, physical length at puberty at f
+  Wd_p = L_p^3 * d_V * (1 + f * w); % g, dry weight at puberty (remove d_V for wet weight)
+  aT_p = t_p/ k_M/ TC_ap;           % d, age at puberty at f and T
+
+  % ultimate
+  l_i = f - l_T;                    % -, scaled ultimate length at f
+  L_i = L_m * l_i;                  % cm, ultimate structural length at f
+  Lw_i = L_i/ del_M;                % cm, ultimate physical length at f
+  Wd_i = L_i^3 * d_V * (1 + f * w); % g, ultimate dry weight (remove d_V for wet weight)
+ 
+  % reproduction
+  pars_R = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp]; % compose parameter vector at T
+  RT_i = TC_Ri * reprod_rate(L_i, f, pars_R);             % #/d, ultimate reproduction rate at T
+
+  % life span
+  pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+  t_m = get_tm_s(pars_tm, f, l_b);      % -, scaled mean life span at T_ref
+  aT_m = t_m/ k_M/ TC_am;               % d, mean life span at T
+  
+  %% pack to output
+  % the names of the fields in the structure must be the same as the data names in the mydata file
+  Prd_data.ab = aT_b;
+  Prd_data.ap = aT_p;
+  Prd_data.am = aT_m;
+  Prd_data.Lb = Lw_b;
+  Prd_data.Lp = Lw_p;
+  Prd_data.Li = Lw_i;
+  Prd_data.Wdb = Wd_b;
+  Prd_data.Wdp = Wd_p;
+  Prd_data.Wdi = Wd_i;
+  Prd_data.Ri = RT_i;
+  
+  %% uni-variate data
+  % time-length 
+  f = f_tL; pars_lb = [g; k; v_Hb];                          % compose parameters
+  ir_B = 3/ k_M + 3 * f * L_m/ v; r_B = 1/ ir_B;             % d, 1/von Bert growth rate
+  Lw_i = (f * L_m - L_T)/ del_M;                             % cm, ultimate physical length at f
+  Lw_b = get_lb(pars_lb, f) * L_m/ del_M;                    % cm, physical length at birth at f
+  EL = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
+
+  %% pack to output
+  % the names of the fields in the structure must be the same as the data names in the mydata file
+  Prd_data.tL = EL;
+
+##### SOURCE END #####
+--></body></html>

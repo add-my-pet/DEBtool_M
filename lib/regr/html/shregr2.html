@@ -1,0 +1,225 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shregr2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-23"><meta name="DC.source" content="shregr2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shregr2</h1><!--introduction--><p>Plots model predictions and data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">Code</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shregr2.m"><b>shregr2</b></a>(func, p, x, y, Z)</p><h2>Description<a name="4"></a></h2><p>Plots model predictions and data (optionally). It allows you to plot a response surface in 3 dimensions, together with your data, or sets of xz-curves or yz-curves. The data are projected on the surface, and on the curves, to show the difference between the data and model predictions. These projections help to reveal which data-point relates to which curve.</p><p>Input</p><div><ul><li>func: name of user-defined function (see nrregr2)</li><li>p: (r,k)-matrix with parameters in p(1,:)</li><li>x: (n,1)-vector with first independent variable</li><li>y: (m,1)-vector with second independent variable</li><li>Z: (n,m)-matrix with observations (optional)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Options can be set by <a href="shregr2_options.html"><b>shregr2_options</b></a> Inputs as in nrregr2; the data matrix is optional. The ranges of the two independent variables can be set optionally in two 2-vectors with upper and lower values.</p><h2>Example of use<a name="6"></a></h2><pre>assuming that function_name, pars, xvalues, yvalues, and zdata are defined properly:
+shregr2('function_name', pars, xvalues, yvalues, zdata) or shregr2 ('function_name', pars, xvalues, yvalues).</pre><h2>Code<a name="7"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shregr2
+% Plots model predictions and data
+
+%%
+function shregr2 (func, p, x, y, Z)
+  %  created: 2002/02/10 by Bas Kooijman; 2005/01/27; 2007/09/14
+  
+  %% Syntax 
+  % <../shregr2.m *shregr2*>(func, p, x, y, Z)
+  
+  %% Description
+  % Plots model predictions and data (optionally). 
+  % It allows you to plot a response surface in 3 dimensions, together with your data, or sets of xz-curves or yz-curves. 
+  % The data are projected on the surface, and on the curves, to show the difference between the data and model predictions. 
+  % These projections help to reveal which data-point relates to which curve.  
+  %
+  % Input
+  %
+  % * func: name of user-defined function (see nrregr2)
+  % * p: (r,k)-matrix with parameters in p(1,:)
+  % * x: (n,1)-vector with first independent variable
+  % * y: (m,1)-vector with second independent variable
+  % * Z: (n,m)-matrix with observations (optional)
+  
+  %% Remarks
+  % Options can be set by <shregr2_options.html *shregr2_options*>
+  % Inputs as in nrregr2; the data matrix is optional. 
+  % The ranges of the two independent variables can be set optionally in two 2-vectors with upper and lower values. 
+
+  %% Example of use
+  %  assuming that function_name, pars, xvalues, yvalues, and zdata are defined properly: 
+  %  shregr2('function_name', pars, xvalues, yvalues, zdata) or shregr2 ('function_name', pars, xvalues, yvalues). 
+
+  %% Code
+  global xtext ytext ztext plotnr Range all_in_one;
+
+  % set options if necessary
+  if prod(size(plotnr)) == 0     % select plot number
+    plotnr = 3; % plotnr 1 and 2
+  end
+  if prod(size(all_in_one)) == 0 % all graphs in one
+    all_in_one = 0;
+  end
+  if prod(size(Range)) == 0      % set plot ranges
+    Range = [0.9*min(x) 1.1*max(x); 0.9*min(y) 1.1*max(y)];
+  end
+  if prod(size(xtext)) == 0
+    xtext = ' ';
+  end
+  if prod(size(ytext)) == 0
+    ytext = ' ';
+  end
+  if prod(size(ztext)) == 0
+    ztext = ' ';
+  end
+
+  nx = max(size(x)); ny = max(size(y)); n = nx*ny;
+  N = 100; M = 10;
+  xaxis = linspace(Range(1,1), Range(1,2), N)';
+  yaxis = linspace(Range(2,1), Range(2,2), N)';
+  Xaxis = linspace(Range(1,1), Range(1,2), M)';
+  Yaxis = linspace(Range(2,1), Range(2,2), M)';
+  
+  p = p(:,1); 
+  eval(['F = ', func,' (p, x, y);']);
+
+  clf;
+
+  if all_in_one == 1
+    hold on;
+    for i = 1:M
+      eval(['f = ', func, '(p, Xaxis(i), yaxis);']);
+      xyz = [Xaxis(i*ones(N,1)), yaxis, f'];
+      plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'r');
+    end
+    for j = 1:M
+      eval(['f = ', func, '(p, xaxis, Yaxis(j));']);
+      xyz = [xaxis, Yaxis(j*ones(N,1)), f];
+      plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'r');
+    end
+    xlabel(xtext); ylabel(ytext); zlabel(ztext);
+    view(-37.5, 30);
+    grid on
+    axis square
+    rotate3d on;
+  
+    if prod(size(Z)) ~= 0
+      xyz = zeros(n, 3);
+      for i= 1:nx
+        xyz((i-1)*ny + (1:ny), :) = [x(i*ones(ny,1)), y, Z(i,:)'];
+      end
+      plot3(xyz(:,1), xyz(:,2), xyz(:,3),'*b'); % with points;
+      z = ones(2,1);
+      for i = 1:nx
+        for j=1:ny
+	      xyz = [x(i*z), y(j*z), [Z(i,j);F(i,j)]];
+	      plot3 (xyz(:,1), xyz(:,2), xyz(:,3),'m');
+        end
+      end
+    end
+    
+  elseif plotnr == 1
+    hold on;
+    eval(['f = ', func, '(p, xaxis, y);']);
+    for i = 1:ny
+      plot(xaxis, f(:,i), 'r')
+      if prod(size(Z)) ~= 0
+        plot(x, Z(:,i), 'b+');
+        for j = 1:nx
+          plot(x([j j]), [Z(j,i); F(j,i)], 'm');
+        end
+      end
+    end
+    xlabel(xtext);
+    ylabel(ztext);
+
+  elseif plotnr == 2
+    hold on;
+    for i = 1:nx
+      eval(['f = ', func, '(p, x(i), yaxis);']);
+      plot(yaxis, f, 'r');
+      if prod(size(Z)) ~= 0
+        plot(y, Z(i,:)', 'b+');
+        for j = 1:ny
+          plot(y([j j]), [Z(i, j); F(i, j)], 'm');
+        end
+      end
+    end
+    xlabel(ytext);
+    ylabel(ztext);
+  
+  else
+    subplot(1,2,1); hold on;
+    for i = 1:ny
+      eval(['f = ', func, '(p, xaxis, y(i));']);
+      plot(xaxis, f, 'r');
+      if prod(size(Z)) ~= 0
+        plot(x, Z(:,i), 'b+');
+        for j = 1:nx
+          plot(x([j j]), [Z(j,i); F(j,i)], 'm');
+        end
+      end
+    end
+    xlabel(xtext);
+    ylabel(ztext);
+  
+    subplot(1,2,2); hold on;
+    for i = 1:nx
+      eval(['f = ', func, '(p, x(i), yaxis);']);
+      plot(yaxis, f', 'r');
+      if prod(size(Z)) ~= 0
+        plot(y, Z(i,:)', 'b+');
+        for j = 1:ny
+          plot(y([j j]), [Z(i,j); F(i,j)], 'm');
+        end
+      end
+    end
+    xlabel(ytext);
+    ylabel(ztext);
+  
+  end
+
+##### SOURCE END #####
+--></body></html>

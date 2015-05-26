@@ -1,0 +1,185 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plsurv2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-23"><meta name="DC.source" content="plsurv2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>plsurv2</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntgax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntgax<a name="3"></a></h2><p>[proflik, info] = <a href="../plsurv2.m"><b>plsurv2</b></a>(func, p, t, y, Z, range)</p><h2>Description<a name="4"></a></h2><pre>Calculates the profile likelihood function for a parameter that is indicated with code 2 in the second column of the parameter matrix.
+The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter.</pre><p>Input</p><div><ul><li>func: string with name of user-defined function</li></ul></div><pre>   f = func (p, t, y) with p: np-vector; t: nt-vector; y: ny-vector
+   f: (nt,ny)-matrix with model-predictions for surviving numbers</pre><div><ul><li>p: (np,2) matrix with</li></ul></div><pre>   p(:,1) parameter values
+   p(:,2) codes for what to do with the parameters
+     &lt;=0: keep it fixed
+     &gt;0: iterate (so estimate the corresponding parameter)
+     2: construct likelihood profile for this parameter</pre><div><ul><li>t: (nt,1)-vector with first independent variable (time)</li><li>y: (ny,1)-vector with second independent variable</li><li>Z: (nx,ny)-matrix with surviving numbers</li><li>range: 2 or 3 -vector with lower and upper boundaries of     the parameter that is indicated with code 2 in p(:,2)     the value of the selected parameter must be within the range.</li></ul></div><pre class="language-matlab">optional <span class="string">element</span> <span class="string">3</span> <span class="string">of</span> <span class="string">the</span> <span class="string">range</span> <span class="string">vector</span> <span class="string">is</span> <span class="string">the</span> <span class="string">number</span> <span class="string">of</span> <span class="string">parameter</span>
+  evaluations, like <span class="string">in</span> <span class="string">linspace</span>; default: 100.
+</pre><p>Output</p><div><ul><li>proflik: (99,2) matrix with par-values, and deviances</li><li>info: 1 if convergence has been successful; 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Set options with <a href="nmsurv_options.html"><b>nmsurv_options</b></a>. Calls user-defined function 'func' and nmsurv2 See <a href="plsurv.html"><b>plsurv</b></a> for bivariate data.</p><h2>Example of use<a name="6"></a></h2><p>Assuming that function_name, pars (parameter matrix), t (time-vector), y (vector with second dependent variable), tny (matrix with numbers of survivors) and Range (2-vector with lower and upper boundary for target parameter) are defined properly: plsurv('function_name', pars, t, y, tny, Range).</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% plsurv2
+%
+
+%%
+function [proflik, info] = plsurv2(func, p, t, y, Z, range)
+  %  created: 2002/02/08 by Bas Kooijman
+  
+  %% Syntgax
+  % [proflik, info] = <../plsurv2.m *plsurv2*>(func, p, t, y, Z, range)
+  
+  %% Description
+  %  Calculates the profile likelihood function for a parameter that is indicated with code 2 in the second column of the parameter matrix. 
+  %  The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
+  %
+  % Input
+  %
+  % * func: string with name of user-defined function
+  %
+  %     f = func (p, t, y) with p: np-vector; t: nt-vector; y: ny-vector
+  %     f: (nt,ny)-matrix with model-predictions for surviving numbers
+  %
+  % * p: (np,2) matrix with
+  %
+  %     p(:,1) parameter values
+  %     p(:,2) codes for what to do with the parameters
+  %       <=0: keep it fixed
+  %       >0: iterate (so estimate the corresponding parameter)
+  %       2: construct likelihood profile for this parameter 
+  %
+  % * t: (nt,1)-vector with first independent variable (time)
+  % * y: (ny,1)-vector with second independent variable
+  % * Z: (nx,ny)-matrix with surviving numbers
+  % * range: 2 or 3 -vector with lower and upper boundaries of
+  %     the parameter that is indicated with code 2 in p(:,2)
+  %     the value of the selected parameter must be within the range.
+  %
+  %   optional element 3 of the range vector is the number of parameter
+  %     evaluations, like in linspace; default: 100.
+  %
+  % Output
+  %
+  % * proflik: (99,2) matrix with par-values, and deviances
+  % * info: 1 if convergence has been successful; 0 otherwise
+ 
+  %% Remarks
+  % Set options with <nmsurv_options.html *nmsurv_options*>.
+  % Calls user-defined function 'func' and nmsurv2
+  % See <plsurv.html *plsurv*> for bivariate data.
+  
+  %% Example of use
+  % Assuming that function_name, pars (parameter matrix), t (time-vector), y (vector with second dependent variable), 
+  % tny (matrix with numbers of survivors) and Range (2-vector with lower and upper boundary for target parameter) are defined properly: 
+  % plsurv('function_name', pars, t, y, tny, Range). 
+
+  [np k] = size(p); % np is number of parameters
+  index = 1:np; % indices of parameters
+  if k <= 1
+    printf('codes for parameters are missing\n');
+    return
+  else
+    par_nr = index(2 == p(:,2)); % index of parameter for prof likelihood
+  end
+  if 1 != prod(size(par_nr))
+    printf('codes for parameters are invalid\n');
+    return
+  end
+
+  p(par_nr,2) = 0; % fix target parameter
+  par = p; % make copy of par matrix
+  % set numer of parameter evaluations
+  if max(size(range)) > 2
+    npar = range(3);
+  else
+    npar = 100;
+  end
+  
+  % number of par evaluations in branch 1
+  nbr1 = floor(npar * (p(par_nr,1) - range(1))/(range(2)- range(1)));
+
+  if (nbr1<1) | (nbr1>npar) % check range relative to par value
+    printf('selected parameter not within range\n')
+    return
+  end
+  
+  br1 = linspace(p(par_nr,1), range(1), nbr1); % branch 1 par values
+  br2 = linspace(p(par_nr,1), range(2), npar-nbr1); % branch 2 par values
+
+  nmregr_options('report',0); % nmsurv2 must be silent
+  info = 1; % succesful convergence
+  
+  proflik = zeros(npar - 1,2); % initiate prof-lik matrix
+
+  % fill prof-lik matrix at target value
+  eval(['proflik(nbr1,:) = [p(par_nr,1), dev2(''', func, ''', p, t, y, Z)];']);
+
+  % fill prof-lik matrix from par-value to lower boundary: branch 1
+  dp = br1(1) - br1(2); % increment for par-value (positive)
+  for i = 2:nbr1
+    p(par_nr,1) = p(par_nr,1) - dp; % set new par value
+    eval(['[p, infp]= nmsurv2(''', func, ''', p, t, y, Z);']); % get estimates
+    info = info*infp;
+    eval(['d = dev2(''', func, ''', p, t, y, Z);']); % get deviance
+    proflik(nbr1-i+1,:) = [p(par_nr,1), d]; % fill prof-lik matrix
+  end
+
+  % fill prof-lik matrix from par-value to upper boundary: branch 2
+  dp = br2(2) - br2(1); % increment for par-value (positive)
+  p = par; % restore original parameter value for second branch
+  for i = 2:(npar - nbr1)
+    p(par_nr,1) = p(par_nr, 1) + dp;  % set new par value
+    eval(['[p, infp]= nmsurv2(''', func, ''', p, t, y, Z);']); % get estimates
+    info = info*infp;
+    eval(['d = dev2(''', func, ''', p, t, y, Z);']); % get deviance
+    proflik(nbr1+i-1,:) = [p(par_nr,1), d]; % fill prof-lik matrix    
+  end
+##### SOURCE END #####
+--></body></html>

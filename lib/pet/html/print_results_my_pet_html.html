@@ -1,0 +1,267 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>print_results_my_pet_html</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-14"><meta name="DC.source" content="print_results_my_pet_html.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>print_results_my_pet_html</h1><!--introduction--><p>read and write results_my_pet.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">content of results_my_pet</a></li><li><a href="#8">get the predictions vs the data:</a></li><li><a href="#9">Print out all of the graphs:</a></li><li><a href="#10">author and last data of modification</a></li><li><a href="#11">close results_my_pet.html</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../print_results_my_pet_html.m"><b>print_results_my_pet_html</b></a> (metadata, metapar)</p><h2>Description<a name="4"></a></h2><p>Prints an html file which compares model predictions with data</p><p>Input:</p><div><ul><li>metadata: structure</li><li>metapar:  structure</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Keep in mind that this function is specifically designed for created the webpage of add-my-pet - this function is called when local directory is html and when we go one level up it supposes the existance of a subdirectory called results ! see</p><h2>Example of use<a name="6"></a></h2><p>load('results_my_pet.mat'); print_results_my_pet_html(metadata, metapar)</p><h2>content of results_my_pet<a name="7"></a></h2><p>fprintf(oid, '%s\n' , ' <a href="BR">BR</a>');</p><h2>get the predictions vs the data:<a name="8"></a></h2><p>fprintf(oid, '&lt;H3 class="pet"&gt;Overview:&lt;/H3&gt;\n');</p><h2>Print out all of the graphs:<a name="9"></a></h2><p>fprintf(oid, '&lt;H3 class="pet"&gt;Plots of Uni-variate data&lt;/H3&gt;\n');</p><h2>author and last data of modification<a name="10"></a></h2><h2>close results_my_pet.html<a name="11"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% print_results_my_pet_html
+% read and write results_my_pet.html
+
+%%
+function print_results_my_pet_html(metadata, metapar)
+% created 2015/04/11 by Starrlight; modified 2015/04/14 Starrlight & Goncalo
+% Marques
+
+%% Syntax
+% <../print_results_my_pet_html.m *print_results_my_pet_html*> (metadata, metapar) 
+
+%% Description
+% Prints an html file which compares model predictions with data
+%
+% Input:
+%
+% * metadata: structure
+% * metapar:  structure
+
+%% Remarks
+% Keep in mind that this function is specifically designed for created the
+% webpage of add-my-pet - this function is called when local directory is
+% html and when we go one level up it supposes the existance of a
+% subdirectory called results ! see 
+%<http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/art/websitemaintenance.html *maintanance webpage*>
+
+%% Example of use
+% load('results_my_pet.mat');
+% print_results_my_pet_html(metadata, metapar)
+
+
+
+v2struct(metadata); v2struct(metapar); 
+
+n_author = length(author);
+
+switch n_author
+    
+    case 1
+    txt_author = author{1};
+
+    case 2
+    txt_author = [author{1}, ', ', author{2}];
+
+    otherwise    
+    txt_author = [author{1}, ', et al.'];
+
+end
+
+txt_date = [num2str(date_acc(1)), '/', num2str(date_acc(2)), '/', num2str(date_acc(3))]; 
+
+if exist('author_mod_1', 'var') == 1 && exist('date_mod_1', 'var') == 1
+n_author_mod_1 = length(author_mod_1);
+
+    switch n_author_mod_1
+      case 1
+      txt_author_mod_1 = author_mod_1{1};
+      case 2
+      txt_author_mod_1 = [author_mod_1{1}, ', ', author_mod_1{2}];
+      otherwise    
+      txt_author_mod_1 = [author_mod_1{1}, ', et al.'];
+    end
+
+txt_date_mod_1 = [num2str(date_mod_1(1)), '/', num2str(date_mod_1(2)), '/', num2str(date_mod_1(3))]; 
+
+else
+    
+txt_author_mod_1 = '';
+txt_date_mod_1 =  '';
+
+end  
+
+speciesprintnm = strrep(species, '_', ' ');
+
+oid = fopen(['results_', species, '.html'], 'w+'); % % open file for writing, delete existing content
+fprintf(oid, '%s\n' ,'<!DOCTYPE html>');
+fprintf(oid, '%s\n' ,'<HTML>');
+fprintf(oid, '%s\n' ,'  <HEAD>');
+fprintf(oid,['    <TITLE>add-my-pet: results ', speciesprintnm, '</TITLE>\n']);
+fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- calls the javascript function (found in subfolder sys):
+fprintf(oid, '%s\n' ,'<script type="text/javascript" src="../sys/boxmodal.js"></script>');
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH calls the cascading style sheet (found in subfolder css):
+fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collectionstyle.css">'); 
+
+fprintf(oid, '%s\n' , ' </HEAD>');
+fprintf(oid, '%s\n\n','  <BODY>');
+  
+   
+%% content of results_my_pet
+% fprintf(oid, '%s\n' , ' <BR>');
+fprintf(oid, '%s\n' , ...
+    [' <H2>Model: <A target = "_blank" href= "http://www.bio.vu.nl/thb/deb/deblab/debtool/DEBtool_M/manual/DEBtool_animal.html#',model,'">']);
+fprintf(oid, '%s \n' , [model,'</A> </H2>']);
+
+
+%%% get the predictions vs the data: 
+% fprintf(oid, '<H3 class="pet">Overview:</H3>\n');
+
+fprintf(oid,'<p> \n');    
+fprintf(oid,'COMPLETE = %3.1f <BR>\n',COMPLETE);
+fprintf(oid,'MRE = %8.3f \n',MRE);   
+fprintf(oid,'</p> \n');     % close the paragraph
+
+cd ../mydata
+[data, txt_data] = feval(['mydata_',species]); 
+% %%% these next lines of code have been canabalised from printprd_st.m:
+
+cd ../mat
+load(['results_',species,'.mat'])
+
+cd ../predict
+prd_data = feval(['predict_',species], par, chem, T_ref, data);
+
+% appends new field to prd_data with predictions for the pseudo data:
+% (the reason is that the predicted values for the pseudo data are not
+% returned by predict_my_pet and this has to do with compatibility with the
+% multispcecies parameter estimation):
+eval('prd_data = predict_pseudodata(prd_data, par, chem, data);');
+
+% remove fields 'weight' and 'temp' from structure data:
+datapl    = rmfield_wtxt(data, 'weight');
+datapl    = rmfield_wtxt(datapl, 'temp');
+
+% cell array of string with fieldnames of data.weight
+dtsets    = fieldnames(data.weight);
+[nm, nst] = fieldnmnst_st(datapl);
+
+fprintf(oid,'<p> \n');   % open paragraph  
+fprintf(oid,'Data and predictions (relative error): \n');
+fprintf(oid,'<ul> \n');     % open the unordered list
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+  for j = 1:nst
+  eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set
+    if k == 1 % if it is a zero-variate data set
+fprintf(oid,'<li> \n');   
+    eval(['str = [nm{j}, '', '', txt_data', '.units.', nm{j},', '', '', txt_data.label.', nm{j},'];']);
+      str = ['%3.4g %3.4g (%3.4g) ', str, '\n'];
+      eval(['fprintf(oid, str, datapl.', nm{j},', prd_data.', nm{j},', RE(j));']);
+fprintf(oid,'</li> \n');   
+    else
+      fprintf(oid,'<li> \n');  % open up line of the list 
+      eval(['str = [dtsets{j}, '', '', txt_data.label.', nm{j},'{1}, '' vs. '', txt_data.label.', nm{j},'{2}];']);
+      str = ['see figure (%3.4g) ', str, '\n'];
+      eval(['fprintf(oid,str, RE(j));']);
+      fprintf(oid,'</li> \n');   % close line of the list 
+    end
+  end
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+fprintf(oid,'</ul> \n');    % close the unordered list
+fprintf(oid,'</p> \n');     % close paragraph
+
+
+%%% Print out all of the graphs:
+% fprintf(oid, '<H3 class="pet">Plots of Uni-variate data</H3>\n');
+
+
+cd ../figs % go to the subdirectory figs:
+ex = 1;
+counter = 0;
+
+while ex
+  test = counter + 1;
+  if test < 10
+    fullnm = ['results_',species, '_0', num2str(test), '.png'];
+  else
+    fullnm = ['results_',species, '_', num2str(test), '.png'];
+  end
+  
+  if exist(fullnm, 'file')
+    counter = counter +1;
+    fprintf(oid,'<p>\n');
+    fprintf(oid,'<span class="imgleft">\n');
+    fprintf(oid,['<IMG class = "workerpic" SRC="../figs/',fullnm,'" WIDTH=500px></IMG>\n']) ;   
+    fprintf(oid,'</span></p>\n');    
+  else
+    ex = 0;
+  end
+end
+cd ../results % back to subdirectory results
+
+fprintf(oid, '<H3 style="clear:both" class="pet">Bibliography</H3>\n');
+fprintf(oid, '<p>\n');
+fprintf(oid, ['see <A target="_blank" href="../mydata/mydata_',species,'.m">mydata_',metadata.species,'</A>\n']);
+fprintf(oid, '</p>\n' );
+  
+%% author and last data of modification
+
+fprintf(oid, '<HR> \n');
+fprintf(oid,['    <H3 ALIGN="CENTER">', txt_author, ', ', txt_date, ...
+        ' (last modified by ', txt_author_mod_1, '\n', txt_date_mod_1,')','</H3>\n']);
+ 
+%% close results_my_pet.html  
+  
+% these two lines are necessary for the boxes called by java scrip in
+% subfolder sys to work:
+fprintf(oid,'%s\n' , '<div style="position: absolute; z-index: 20000; visibility: hidden; display: none;" id="ext-comp-1001" class="x-tip"><div class="x-tip-tl"><div class="x-tip-tr"><div class="x-tip-tc"><div style="-moz-user-select: none;" id="ext-gen10" class="x-tip-header x-unselectable"><span class="x-tip-header-text"></span></div></div></div></div><div id="ext-gen11" class="x-tip-bwrap"><div class="x-tip-ml"><div class="x-tip-mr"><div class="x-tip-mc"><div style="height: auto;" id="ext-gen12" class="x-tip-body"></div></div></div></div>');
+fprintf(oid,'%s\n' , '<div class="x-tip-bl x-panel-nofooter"><div class="x-tip-br"><div class="x-tip-bc"></div></div></div></div></div><div id="xBoxScreen"></div>');
+
+fprintf(oid, '  </BODY>\n');
+fprintf(oid, '  </HTML>\n');
+fclose(oid);
+
+##### SOURCE END #####
+--></body></html>

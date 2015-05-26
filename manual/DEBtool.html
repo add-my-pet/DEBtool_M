@@ -1,0 +1,179 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>DEBtool</TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="DEBtool, Dynamic Energy Budget theory, Dynamic Energy Budgets, DEB theory, DEB theorie, DEB" >
+  <META 
+    NAME="description" CONTENT="Software package DEBtool">
+  <META NAME="distribution" CONTENT="global">
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>software package DEBtool</H1>
+
+<P ALIGN="center"> by <A HREF="mailto:bas@bio.vu.nl">Bas Kooijman</A>,
+28 June 2010
+
+<H2><A HREF="index_contents.html" TARGET="_top"> Contents</A></H2>
+
+
+<H2><A NAME="Purpose">Purpose</A></H2> 
+ 
+  DEBtool is a software package written in  <A HREF="http://www.che.wisc.edu/octave/" TARGET="_top">Octave 3.2.4</a> (DEBtool_O) and <A HREF="http://www.mathworks.com/" TARGET="_top">Matlab 7.3.0</a> (DEBtool_M) that can be used to illustrate some implications of the <A HREF="http://www.bio.vu.nl/thb/deb/" TARGET="_top">Dynamic Energy Budget theory</A> and to apply this theory in the analysis of eco-physiological data.
+  The manual and the code follow the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010_n.pdf" TARGET="_top">DEB notation</A>.
+  It has script-files for almost all figures of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html" TARGET="_top">
+  DEB book</A>, with many references to the formulae in the book, and explaining remarks.
+  <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet" TARGET="_top">Add_my_pet</a> is an example of applications DEBtool.<BR> 
+  Although DEBtool continues to expand, many implications of the theory will remain beyond the capacities of this package.
+
+  <P>
+   DEBtool is used in the <A HREF="/thb/deb/course/" target="_top"> DEB tele-courses</A> and can freely be downloaded from the <A HREF="http://www.bio.vu.nl/thb/deb/deblab/" TARGET="_top"> DEB laboratory</A> (Octave and Matlab versions)
+
+  <P>
+  This release focuses on
+
+  <UL>
+    <LI> relationships between variables, as modified by parameter values </LI>
+    <LI> extracting parameter values from data and testing model predictions </LI>
+  </UL>
+
+<H2><A NAME="Installation"> Installation & start</A></H2>
+
+  <A HREF="http://www.che.wisc.edu/octave/" TARGET="_top"> Octave</A> can be down-loaded freely;
+  it runs under Linux, Unix and <A HREF="http://octave.sourceforge.net/">Windows 95/98/2000/NT/XP/Vista, see `Windows installer' on the linked page.</A>.
+  Although it is possible to run Octave 3.2.4 directly in the Octave Window, can best be run under 
+  <ul>
+    <li> <code>Emacs 23.1</code>, freely downloadable from <A HREF="http://ftp.gnu.org/gnu/emacs/windows/">http://ftp.gnu.org/gnu/emacs/windows/ (emacs-23.1-bin-i386.zip) </A>. 
+         Install it by adding the emacs-23.1 folder under Program Files under Windows and run the addxpm.exe file in the bin directory of emacs-23.1 to add an emacs-icon in the start menu.
+         Start Octave under Emacs by <code>Alt-x run-octave</code>, after making sure that Emacs and Octave are added to the path of Windows. 
+         The path under Windows can edited by right-clicking on "Computer" under "the start-menu", and select "properties", and then "advanced systems settings". 
+      You will then see an increadibly long path in an increadibly small window that can be edited. </li>
+    <li> <code>Octave GUI in Qt 4.6 - QOcTerm</code>, freely downloadble from <A HREF="http://sourceforge.net/">http://sourceforge.net/</A>, using an interface that is similar to that of Matlab.
+         To find it, type "QOC Term", in the search-window of the sourceforge-entry-page.
+         You just copy the directory with the executable under "C:/Program Files", for instance, make a coupling to your desktop, activate by double clicking and walk in the Term-tab to the place where you want to work; <code>cd(return)</code> brings you on top of your user-directory. </li>
+  </ul>
+
+  <p>
+  Octave uses Gnuplot for graphics. 
+  If the Gnuplot window freezes after sending a plot command, type in the Octave window: 
+  <code>pkg rebuild -noauto oct2mat</code>, press return and restart octave.
+
+  <P>
+  <A HREF="http://www.mathworks.com/" TARGET="_top"> Matlab</A> is commercial and has a large <A HREF="http://bass.gmu.edu/matlab/matlab.html" TARGET="_top"> users group</A>. 
+  Matlab is very expensive, wants to check license numbers frequently on the web and the cheaper student version is close to useless.
+  Matlab versions are available for Unix, Windows and McIntosh. 
+  See also <A HREF="http://www.mathtools.net" TARGET="_top"> Mathtools</A> for additional information. 
+  Some of DEBtool's functions can be computationally intensive; 
+  reduce Matlab's priority by <code>priority('l')</code>. 
+  This routine is included in DEBtool.
+
+  <P>
+  I packed and compressed the Octave package using <BR> <CODE>tar cf DEBtool_O.tar DEBtool_O</CODE><BR> <CODE>gzip -9 DEBtool_O.tar</CODE>
+
+  <P>
+  Decompress and unpack the package with <BR>
+  <CODE>gzip -dc DEBtool_O.tar.gz | tar xf -</CODE> under Unix or with e.g. <A HREF="http://www.rarlab.com/">WinRAR</A> under Windows.
+
+  <P>
+  The packed Matlab package is called DEBtool_M.tar.gz<BR>
+ 
+<H2><A NAME="Maintenance"> Maintenance & updates</A></H2>
+
+  New versions of any function are only indicated by the creation date and/or modification dates in the file headers. 
+  The changes are summized in <a href="DEBtool_new.html" TARGET="main"><code>What is new?</code></a>.
+
+<H2><A NAME="Local_manual"> Local manual</A></H2>
+
+  The manual for DEBtool is included in the package in subdirectory DEBtool/manual and is written in HTML. 
+  To read it, run a browser on file <code>index.html</code>.
+
+<H2><A NAME="Use"> Use and recommendations</A></H2>
+
+<H4>Basic-level use</H4>
+
+  Octave and Matlab have a very similar syntax, but <a href="first_oct_matl.html">small differences do exist</a>.
+  The first steps in Octave are explained in separate <A HREF="index_first.html" TARGET="_top"> notes </A>.
+  A useful short introduction to Matlab is: 
+  Knight, A. 2000 <i>Basics of Matlab and Beyond</i>, Chapman & Hall/CRC, 202 pp.
+  A full manual of Octave is:
+  Eaton, J. W., Batemen, D. and Hauberg, S. 2008 
+  <i>GNU Octave Manual, Version 3</i>, Network Theory Limited, 555 pp.
+  <a href="http://www.gnu.org/software/octave/doc/interpreter/" TARGET="_top">An electronic manual is on the web.</a>
+
+<H4>Don't work in DEBtool, but set a path to it</H4>
+
+  It is best to work in the subdirectory that has your own data and routines, and make a path to DEBtool.
+  If you have this just besides DEBtool you set the path to DEBtool and all its subdirectories by <code>addpath(genpath('../DEBtool_O/'))</code> in Octave or in the menu-bar in Matlab.
+  Use <code>pwd</code> under Octave or Matlab for getting the current prosition in to directory-tree, and <code>ls</code> for the list of files in the current directory.
+  Use <code>cd</code> for changing directories, where <code>..</code> means the parent-directory. 
+  Example if you are in a sister-directory of DEBtool: <code>cd ../DEBtool/animal/</code> will bring you to toolbox animal.
+
+  <P>
+  The routines in each subdirectory can call other routines from that subdirectory, or from the library DEBtool/lib, which has three subdirectories. 
+
+<H4>Rename functions if you modify them</H4>
+
+  Since <a href="DEBtool_new.html" TARGET="_top">DEBtool is updated every now and then</a>, existing routines can be changed. 
+  If you modified a function, and want to install a new version of DEBtool, it can save a lot of work if your modified functions have other names and have been stored outside DEBtool.
+
+<H4>Erase variables</H4>
+
+  Do not forget to type <CODE>clear all</CODE> after switching toolboxes.  
+  No error messages are given if you do it otherwise, but the effect is not what you want it to be. 
+  So if you are in <code>alga</code> and type <CODE>cd ../plant</CODE>, continue with <CODE>clear all; plant</CODE>, for instance.
+
+  <P>
+  The plot ranges of DEBtools' plotting routines are set without notice, when you use the routines for the first time. 
+  Clear them by either use <code>clear</code>, or the 'default' option in the <code>*_option</code> routines. 
+  See under the manual under <code>library</code>.
+
+<H4>Recalculate optimisation results from different start values</H4>
+
+  Always remember that optimization results contain local extremes at best, and that a local extreme might differ from the global extreme. 
+  Try different starting values, and check the results by making plots. 
+  See instructions under <a href="DEBtool_lib_regr.html#nrregr"><code>DEBtool/lib/nrregr</code></a>.
+
+<H4><A NAME="Nomenclature"> Nomenclature </A></H4>
+
+  <UL>
+
+    <LI> <B>mydata_*.m</B> The practical application of many DEBtool functions is illustrated with mydata-files, i.e. script files with the name mydata_filename.m. 
+    This information is supplementary to that in this manual. You can change these files according to your own needs. </LI>
+    <LI> <B>sh*.m</B> Routines that produce and show plots are called shfilename.m files. </LI>
+    <LI> <B>d*.m</B> Routines that specify differential equations are called d*.m; they are frequently subroutines of *. </LI> 
+    <LI> <B>pars_*.m</B> Parameter values that are use in de demo's are specified in pars.m files; 
+         the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010_n.html"> notation</A> follows the DEB-book, and explanations are given in the file. 
+         A demo is a script-file with a name equal to its toolbox (i.e. directory).
+  </UL>
+
+<H2><A NAME="Logo"> Logo</A></H2>
+
+  The logo, designed by Hugo van den Berg, represents a three-dimensional object, such that the projections in three directions give the symbols A, M and G. 
+  These symbols stand for the three basic energy fluxes Assimilation, Maintenance and Growth, which together organize all mass fluxes. 
+  Later in the development of the DEB theory, maintenance was replaced by dissipation to include development and other dissipating fluxes.
+
+<H2><A NAME="Acknowledgements"> Acknowledgements</A></H2>
+
+  This work is the product of intensive collaboration between DEB-enthousiasts, e.g. the AQUAdeb group and  especially the people in the Department of Theoretical Biology of the Vrije Universiteit, Amsterdam.
+
+<HR>
+<P>
+Go to the <A HREF="/thb/deb/" TARGET="_top"> DEB information page</A> or the <A HREF="/thb/deb/deblab/" TARGET="_top"> DEB laboratory</A>
+
+</BODY>
+</HTML>

@@ -1,0 +1,232 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>psurv</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-09"><meta name="DC.source" content="psurv.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Description</a></li><li><a href="#3">Input</a></li><li><a href="#4">Output</a></li><li><a href="#5">Example of use</a></li><li><a href="#6">Code</a></li><li><a href="#7">obtain time intervals and numbers of death</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [cov, cor, sd, dev] = psurv (func, p, <span class="keyword">...</span><span class="comment"> )</span>
+  <span class="comment">%  created: 2002/02/08 by Bas Kooijman</span>
+  <span class="comment">%</span>
+</pre><h2>Description<a name="2"></a></h2><pre>calculates covariance and correlation matrix of parameters standard deviation and sum of squared deviations
+  of model predictions with respect to observations</pre><h2>Input<a name="3"></a></h2><pre>func: string with name of user-defined function
+   f = func (p, tn) with
+     p: k-vector with parameters; tn: (n,c)-matrix; f: n-vector
+   [f1, f2, ...] = func (p, tn1, tn2, ...) with  p: k-vector  and
+    tni: (ni,k)-matrix; fi: ni-vector with model predictions
+   The dependent variable in the output f; For tn see below.</pre><h2>Output<a name="4"></a></h2><pre>p: (k,2) matrix with
+   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)
+tni (read as tn1, tn2, .. ): (ni,2) matrix with
+   tni(:,1) time: must be increasing with rows
+   tni(:,2) number of survivors: must be non-increasing with rows
+   tni(:,3, 4, ... ) data-pont specific information data (optional)
+   The number of data matrices tn1, tn2, ... is optional but &gt;0
+cov: (np,np) matrix with covariances
+cor: (np,np) matrix with correlation coefficients
+sd: (np,1) matrix with standard deviations
+dev: scalar with deviance</pre><h2>Example of use<a name="5"></a></h2><pre>assuming that function_name, pars, and tn1 (and possibly more data matrices) are defined properly:
+[cov, cor, sd, ss] = psurv('function_name', pars, tn1, tn2, ...).</pre><h2>Code<a name="6"></a></h2><pre class="codeinput">  <span class="keyword">global</span> index l n ntn listt listtn listf listg
+
+  i = 1; <span class="comment">% initiate data set counter</span>
+  ci = num2str(i); <span class="comment">% character string with value of i</span>
+  nntn = nargin -1; <span class="comment">% initial 'while' condition (will count down)</span>
+  ntn = nntn -1; <span class="comment">% number of data sets</span>
+  va_start (); <span class="comment">% set pointer to first unnamed argument</span>
+  <span class="keyword">while</span> (--nntn) <span class="comment">% loop across data sets</span>
+    eval([<span class="string">'tn'</span>, ci, <span class="string">' = va_arg();'</span>]); <span class="comment">% assing unnamed arguments to tni</span>
+    eval([<span class="string">'[n('</span>, ci, <span class="string">') k] = size(tn'</span>, ci, <span class="string">');'</span>]); <span class="comment">% number of data points</span>
+    <span class="keyword">if</span> i == 1
+</pre><h2>obtain time intervals and numbers of death<a name="7"></a></h2><pre class="codeinput">      D = tn1(:,2) - [tn1(2:n(i),2);0]; <span class="comment">% initiate death count</span>
+      n0 =  tn1(1,2)*ones(n(1),1); <span class="comment">% initiate start number</span>
+      listtn = [<span class="string">'tn'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list tn</span>
+      listt = [<span class="string">'tn'</span>, ci]; <span class="comment">% initiate list tn for global declaration</span>
+      listf = [<span class="string">'f'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list f</span>
+      listg = [<span class="string">'g'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list g</span>
+</pre><pre class="codeinput">    <span class="keyword">else</span>
+      eval([<span class="string">'D = [D; tn'</span>, ci,<span class="string">'(:,2) - [tn'</span>, ci, <span class="string">'(2:n(i),2);0];'</span>]);
+                                <span class="comment">% append death counts</span>
+      eval([<span class="string">'n0 = [n0; tn'</span>, ci, <span class="string">'(1,2)*ones(n('</span>, ci,<span class="string">'),1)];'</span>]);
+				<span class="comment">% append initial numbers</span>
+      listtn = [listtn, <span class="string">' tn'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list tn</span>
+      listt = [listt, <span class="string">' tn'</span>, ci]; <span class="comment">% append list tn for global declaration</span>
+      listf = [listf, <span class="string">' f'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list f</span>
+      listg = [listg, <span class="string">' g'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list g</span>
+    <span class="keyword">end</span>
+    i++;
+    ci = num2str(i); <span class="comment">% character string with value of i</span>
+  <span class="keyword">end</span>
+
+  [i nl] = size(listtn); listtn = listtn(1:(nl-1)); <span class="comment">% remove last ','</span>
+  [i nl] = size(listf); listf = listf(1:(nl-1)); <span class="comment">% remove last ','</span>
+  [i nl] = size(listg); listg = listg(1:(nl-1)); <span class="comment">% remove last ','</span>
+  eval([<span class="string">'global '</span>, listt,<span class="string">';'</span>]); <span class="comment">% make data sets global</span>
+
+  likmax = D'*log(max(1e-10,D./ n0)); <span class="comment">% max of log lik function</span>
+
+  [np, k] = size(p); <span class="comment">% k: number of parameters</span>
+  index = 1:np;
+  <span class="keyword">if</span> k&gt;1
+    index = index(1 == p(:,2)); <span class="comment">% indices of estimated parameters</span>
+  <span class="keyword">end</span>
+  l = max(size(index));  <span class="comment">% l: number of estimated parameters</span>
+  <span class="keyword">if</span> (l == 0)
+    <span class="keyword">return</span>; <span class="comment">% no parameters to present statistics</span>
+  <span class="keyword">end</span>
+
+  [prob, dprob] = scdsurv(func, p(:,1));
+				<span class="comment">% obtain death prob and derivatives</span>
+
+  dev = 2 * (likmax - D' * log(max(1e-10,prob)));
+				<span class="comment">% deviance: 2* log lik minus its supremum</span>
+  cov(index, index) = inv((n0./prob * ones(1,l).*dprob)'*dprob);
+				<span class="comment">% inv of information matrix</span>
+  sd = sqrt(diag(cov)); <span class="comment">% standard deviations</span>
+  cor = cov./(sd*sd'); <span class="comment">% correlation matrix</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function [cov, cor, sd, dev] = psurv (func, p, ... )
+  %  created: 2002/02/08 by Bas Kooijman
+  %
+  %% Description
+  %  calculates covariance and correlation matrix of parameters standard deviation and sum of squared deviations 
+  %    of model predictions with respect to observations
+  %
+  %% Input
+  %  func: string with name of user-defined function
+  %     f = func (p, tn) with
+  %       p: k-vector with parameters; tn: (n,c)-matrix; f: n-vector
+  %     [f1, f2, ...] = func (p, tn1, tn2, ...) with  p: k-vector  and
+  %      tni: (ni,k)-matrix; fi: ni-vector with model predictions
+  %     The dependent variable in the output f; For tn see below.
+  %
+  %% Output
+  %  p: (k,2) matrix with
+  %     p(:,1) initial guesses for parameter values
+  %     p(:,2) binaries with yes or no iteration (optional)
+  %  tni (read as tn1, tn2, .. ): (ni,2) matrix with
+  %     tni(:,1) time: must be increasing with rows
+  %     tni(:,2) number of survivors: must be non-increasing with rows
+  %     tni(:,3, 4, ... ) data-pont specific information data (optional)
+  %     The number of data matrices tn1, tn2, ... is optional but >0
+  %  cov: (np,np) matrix with covariances
+  %  cor: (np,np) matrix with correlation coefficients
+  %  sd: (np,1) matrix with standard deviations
+  %  dev: scalar with deviance
+  %
+  %% Example of use
+  %  assuming that function_name, pars, and tn1 (and possibly more data matrices) are defined properly: 
+  %  [cov, cor, sd, ss] = psurv('function_name', pars, tn1, tn2, ...). 
+   
+  %% Code
+  global index l n ntn listt listtn listf listg
+
+  i = 1; % initiate data set counter
+  ci = num2str(i); % character string with value of i
+  nntn = nargin -1; % initial 'while' condition (will count down)
+  ntn = nntn -1; % number of data sets
+  va_start (); % set pointer to first unnamed argument
+  while (REPLACE_WITH_DASH_DASHnntn) % loop across data sets
+    eval(['tn', ci, ' = va_arg();']); % assing unnamed arguments to tni
+    eval(['[n(', ci, ') k] = size(tn', ci, ');']); % number of data points
+    if i == 1
+      %% obtain time intervals and numbers of death
+      D = tn1(:,2) - [tn1(2:n(i),2);0]; % initiate death count
+      n0 =  tn1(1,2)*ones(n(1),1); % initiate start number
+      listtn = ['tn', ci,',']; % initiate list tn
+      listt = ['tn', ci]; % initiate list tn for global declaration
+      listf = ['f', ci,',']; % initiate list f
+      listg = ['g', ci,',']; % initiate list g
+    else     
+      eval(['D = [D; tn', ci,'(:,2) - [tn', ci, '(2:n(i),2);0];']);
+                                % append death counts
+      eval(['n0 = [n0; tn', ci, '(1,2)*ones(n(', ci,'),1)];']);
+				% append initial numbers
+      listtn = [listtn, ' tn', ci,',']; % append list tn
+      listt = [listt, ' tn', ci]; % append list tn for global declaration
+      listf = [listf, ' f', ci,',']; % append list f
+      listg = [listg, ' g', ci,',']; % append list g
+    end
+    i++;
+    ci = num2str(i); % character string with value of i
+  end
+
+  [i nl] = size(listtn); listtn = listtn(1:(nl-1)); % remove last ','
+  [i nl] = size(listf); listf = listf(1:(nl-1)); % remove last ','
+  [i nl] = size(listg); listg = listg(1:(nl-1)); % remove last ','
+  eval(['global ', listt,';']); % make data sets global
+
+  likmax = D'*log(max(1e-10,D./ n0)); % max of log lik function
+
+  [np, k] = size(p); % k: number of parameters
+  index = 1:np;
+  if k>1
+    index = index(1 == p(:,2)); % indices of estimated parameters
+  end
+  l = max(size(index));  % l: number of estimated parameters
+  if (l == 0)
+    return; % no parameters to present statistics
+  end
+  
+  [prob, dprob] = scdsurv(func, p(:,1));
+				% obtain death prob and derivatives
+
+  dev = 2 * (likmax - D' * log(max(1e-10,prob)));
+				% deviance: 2* log lik minus its supremum
+  cov(index, index) = inv((n0./prob * ones(1,l).*dprob)'*dprob);
+				% inv of information matrix
+  sd = sqrt(diag(cov)); % standard deviations
+  cor = cov./(sd*sd'); % correlation matrix
+##### SOURCE END #####
+--></body></html>

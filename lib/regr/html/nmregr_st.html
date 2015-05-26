@@ -1,0 +1,384 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>nmregr_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-13"><meta name="DC.source" content="nmregr_st.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>nmregr_st</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[q, info] = <a href="../nmregr_st.m"><b>nmregr_st</b></a>(func, p, st)</p><h2>Description<a name="4"></a></h2><p>Calculates least squares estimates using Nelder Mead's simplex method</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;    see <a href="nrregr_st.html"><b>nrregr_st</b></a> or <a href="nrregr.,html"><b>nrregr</b></a></li><li>p: (np,2) matrix with</li></ul></div><pre>  p(:,1) parameter values
+  p(:,2) binaries with yes or no conditional values
+  all conditional parameters have zero (co)variance</pre><div><ul><li>st: (ni,3) structure with</li></ul></div><pre>  st.nm(:,1) independent variable
+  st.nm(:,2) dependent variable
+  st.nm(:,3) weight coefficients (optional)
+  The number of data matrices in st fields is optional
+  The first data matrix is assumed to be zero-variate,
+    the others uni-variate, which are first reduced to zero-variate data
+    if all weight coefficients in a uni-variate data-set are zero,
+    that relative error gets weight zero</pre><p>Output</p><div><ul><li>q: matrix like p, but with least squares estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Set options with ;nmregr_options.html <b>nmregr_options</b>&gt;. Similar to <a href="nrregr_st.html"><b>nrregr_st</b></a>, but slower and a larger bassin of attraction</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% nmregr_st
+%
+
+%%
+function [q, info] = nmregr_st(func, p, st)
+  % created: 2001/09/07 by Bas Kooijman; modified: 2013/05/02 by Gonçalo Marques
+  
+  %% Syntax
+  % [q, info] = <../nmregr_st.m *nmregr_st*>(func, p, st)
+  
+  %% Description
+  % Calculates least squares estimates using Nelder Mead's simplex method
+  %
+  % Input
+  %
+  % * func: character string with name of user-defined function;
+  %    see <nrregr_st.html *nrregr_st*> or <nrregr.,html *nrregr*>
+  % * p: (np,2) matrix with
+  %
+  %    p(:,1) parameter values
+  %    p(:,2) binaries with yes or no conditional values
+  %    all conditional parameters have zero (co)variance
+  %
+  % * st: (ni,3) structure with
+  %
+  %    st.nm(:,1) independent variable
+  %    st.nm(:,2) dependent variable
+  %    st.nm(:,3) weight coefficients (optional)
+  %    The number of data matrices in st fields is optional
+  %    The first data matrix is assumed to be zero-variate, 
+  %      the others uni-variate, which are first reduced to zero-variate data
+  %      if all weight coefficients in a uni-variate data-set are zero,
+  %      that relative error gets weight zero
+  %  
+  % Output
+  %
+  % * q: matrix like p, but with least squares estimates
+  % * info: 1 if convergence has been successful; 0 otherwise
+  
+  %% Remarks
+  % Set options with ;nmregr_options.html *nmregr_options*>.
+  % Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction
+
+  global report max_step_number max_fun_evals tol_simplex tol_fun
+
+  [nm nst] = fieldnmnst_st(st); % nst: nomber of data sets, 
+  
+  % option settings
+  info = 1; % initiate info setting
+
+  listf = [];
+  for i = 1:nst % loop across data sets
+    listf = [listf, 'f_str.', nm{i}, ',']; % append list f
+  end
+  nl = size(listf,2); listf = listf(1:(nl - 1)); % remove last ','
+
+  i = 1; N = zeros(nst, 1); % initiate data counter
+  while (i <= nst) % loop across data sets
+    % assing unnamed arguments to xyw1, xyw2, etc
+    eval(['[N(', num2str(i), '), k] = size(st.', nm{i}, ');']); % number of data points
+    if i == 1
+      eval(['Y = st.', nm{i}, '(:,2);']); % initiate dependent variables
+      if k > 2
+	    eval(['W = st.', nm{i}, '(:,3);']); % initiate weight coefficients
+      else
+	    W = ones(N(1),1);
+      end
+    else     
+      eval(['Y = [Y;st.', nm{i}, '(:,2)];']); % append dependent variables
+      if k > 2
+	    eval(['W = [W;st.', nm{i}, '(:,3)];']); % append weight coefficients
+      else
+	    W = [W; ones(N(i),1)]; % append weight coefficients
+      end
+    end
+    i = i + 1;
+  end
+
+  q = p; % copy input parameter matrix into output
+  info = 1; % convergence has been successful
+  N = sum(N); % total number of data points in all samples
+  W = W/ sum(W); % sum of weight coefficients set equal to 1
+
+  [np, k] = size(p); % k: number of parameters
+  index = 1:np;
+  if k > 1
+    index = index(1 == p(:,2)); % indices of iterated parameters
+  end
+  n_par = max(size(index));  % number of parameters that must be iterated
+  if (n_par == 0)
+    return; % no parameters to iterate
+  end
+  
+  % set options if necessary
+  if exist('max_step_number','var')==0 
+    nmregr_options('max_step_number', 200 * n_par);
+  end
+  if exist('max_fun_evals','var')==0 
+    nmregr_options('max_fun_evals', 200 * n_par);
+  end
+  if exist('tol_simplex','var')==0 
+    nmregr_options('tol_simplex', 1e-4);
+  end
+  if exist('tol_fun','var')==0
+    nmregr_options('tol_fun', 1e-4);
+  end
+  if exist('report','var')==0
+    nmregr_options('report', 1);
+  end
+  if isempty(max_step_number)
+    nmregr_options('max_step_number', 200 * n_par);
+  end
+  if isempty(max_fun_evals)
+    nmregr_options('max_fun_evals', 200 * n_par);
+  end
+  if isempty(tol_simplex)
+    nmregr_options('tol_simplex', 1e-4);
+  end
+  if isempty(tol_fun)
+    nmregr_options('tol_fun', 1e-4);
+  end
+  if isempty(report)
+    nmregr_options('report', 1);
+  end
+
+  % Initialize parameters
+  rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
+  onesn = ones(1, n_par);
+  two2np1 = 2:n_par + 1;
+  one2n = 1:n_par;
+  np1 = n_par + 1;
+
+  % Set up a simplex near the initial guess.
+  v = zeros(n_par, np1); fv = zeros(1, np1);
+  xin = q(index, 1);    % Place input guess in the simplex
+  v(:,1) = xin;
+  eval(['[f_str] = ', func, '(q(:,1), st);']);
+  if nst == 1
+    eval(['fv(:,1) = W'' * f_str.', nm{1}, ') - Y).^2;']);
+  else
+    eval(['fv(:,1) = W'' * (cat(1, ', listf, ') - Y).^2;']);
+  end
+  % Following improvement suggested by L.Pfeffer at Stanford
+  usual_delta = 0.05;             % 5 percent deltas for non-zero terms
+  zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
+  for j = 1:n_par
+    y = xin;
+    if y(j) ~= 0
+      y(j) = (1 + usual_delta) * y(j);
+    else 
+      y(j) = zero_term_delta;
+    end  
+    v(:,j+1) = y;
+    q(index,1) = y;
+    eval(['[f_str] = ', func, '(q(:,1), st);']);
+    if nst == 1
+      eval(['fv(1, j + 1) = W'' * f_str.', nm{1}, ')-Y).^2;']);
+    else
+      eval(['fv(1, j + 1) = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
+    end
+  end     
+
+  % sort so v(1,:) has the lowest function value 
+  [fv,j] = sort(fv);
+  v = v(:,j);
+
+  how = 'initial';
+  itercount = 1;
+  func_evals = n_par + 1;
+  if report == 1
+    fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), '-', ...
+	    num2str(max(fv)), ' ', how, '\n']);
+  end
+  info = 1;
+
+  % Main algorithm
+  % Iterate until the diameter of the simplex is less than tol_simplex
+  %   AND the function values differ from the min by less than tol_fun,
+  %   or the max function evaluations are exceeded. (Cannot use OR instead of AND.)
+  while func_evals < max_fun_evals & itercount < max_step_number
+    if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex & ...
+       max(abs(fv(1)-fv(two2np1))) <= tol_fun
+    break
+  end
+  how = '';
+   
+  % Compute the reflection point
+   
+  % xbar = average of the n (NOT n+1) best points
+  xbar = sum(v(:,one2n), 2)/ n_par;
+  xr = (1 + rho) * xbar - rho * v(:,np1);
+  q(index,1) = xr;
+  eval(['[f_str] = ', func, '(q(:,1), st);']);
+  if nst == 1
+    eval(['fxr = W'' * f_str.', nm{1}, ')-Y).^2;']);
+  else
+    eval(['fxr = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
+  end
+  func_evals = func_evals + 1;
+   
+   if fxr < fv(:,1)
+      % Calculate the expansion point
+      xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
+      q(index,1) = xe;
+      eval(['[f_str] = ', func, '(q(:,1), st);']);
+      if nst == 1
+        eval(['fxe = W'' * f_str.', nm{1}, ')-Y).^2;']);
+      else
+        eval(['fxe = W'' * (cat(1,', listf, ') - Y) .^2;']);
+      end
+      func_evals = func_evals + 1;
+      if fxe < fxr
+         v(:,np1) = xe;
+         fv(:,np1) = fxe;
+         how = 'expand';
+      else
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      end
+   else % fv(:,1) <= fxr
+      if fxr < fv(:,n_par)
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      else % fxr >= fv(:,n_par) 
+         % Perform contraction
+         if fxr < fv(:,np1)
+            % Perform an outside contraction
+            xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
+            q(index,1) = xc;
+            eval(['[f_str] = ', func, '(q(:,1), st);']);
+            if nst == 1
+              eval(['fxc = W'' * f_str.', nm{1}, ')-Y).^2;']);
+            else
+              eval(['fxc = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
+            end
+            func_evals = func_evals + 1;
+            
+            if fxc <= fxr
+               v(:,np1) = xc; 
+               fv(:,np1) = fxc;
+               how = 'contract outside';
+            else
+               % perform a shrink
+               how = 'shrink'; 
+            end
+         else
+            % Perform an inside contraction
+            xcc = (1 - psi) * xbar + psi * v(:,np1);
+            q(index,1) = xcc;
+            eval(['[f_str] = ', func, '(q(:,1), st);']);
+            if nst == 1
+              eval(['fxcc = W'' * f_str.', nm{1}, ')-Y).^2;']);
+            else
+              eval(['fxcc = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
+            end
+            func_evals = func_evals + 1;
+            
+            if fxcc < fv(:,np1)
+               v(:,np1) = xcc;
+               fv(:,np1) = fxcc;
+               how = 'contract inside';
+            else
+               % perform a shrink
+               how = 'shrink';
+            end
+         end
+         if strcmp(how,'shrink')
+            for j = two2np1
+               v(:,j) = v(:,1) + sigma * (v(:,j) - v(:,1));
+               q(index,1) = v(:,j);
+               eval(['[f_str] = ', func, '(q(:,1), st);']);
+               if nst == 1
+                 eval(['fv(:,j) = W'' * f_str.', nm{1}, ')-Y).^2;']);
+               else
+                 eval(['fv(:,j) = W'' * (cat(1,', listf, ') - Y).^2;']);
+               end
+            end
+            func_evals = func_evals + n_par;
+         end
+      end
+   end
+   [fv,j] = sort(fv);
+   v = v(:,j);
+   itercount = itercount + 1;
+   if report == 1
+     fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
+	     '-', num2str(max(fv)), ' ', how, '\n']);
+   end  
+   end   % while
+
+
+   q(index,1) = v(:,1);
+
+   fval = min(fv); 
+   if func_evals >= max_fun_evals
+     if report > 0
+       fprintf(['No convergences with ', ...
+		num2str(max_fun_evals), ' function evaluations\n']);
+     end
+     info = 0;
+   elseif itercount >= max_step_number 
+     if report > 0
+       fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
+     end
+     info = 0; 
+   else
+     if report > 0
+       fprintf(['Successful convergence \n']);              
+     end
+     info = 1;
+   end
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,360 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shsurv</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-09"><meta name="DC.source" content="shsurv.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> shsurv (func, p, varin)
+  <span class="comment">%  created: 2002/02/10 by Bas Kooijman</span>
+  <span class="comment">%</span>
+<span class="comment">  %% Description</span>
+  <span class="comment">%  plots observed survivors and model predictions</span>
+  <span class="comment">%  func: character string with name of user-defined function</span>
+  <span class="comment">%    see scsurv</span>
+  <span class="comment">%  p: (r,k) matrix with parameter values in p(:,1)</span>
+  <span class="comment">%  tni: (ni,k) matrix with</span>
+  <span class="comment">%    tni(:,1) time points</span>
+  <span class="comment">%    tni(:,2) number of survivors (optional)</span>
+  <span class="comment">%    The number of data matrices nt1, nt2, ... is optional but &gt;0</span>
+  <span class="comment">%    but must match the definition of 'func'.</span>
+  <span class="comment">%</span>
+<span class="comment">  %% Remarks</span>
+  <span class="comment">%  Set options for plotting routine shsurv with shregr_options</span>
+  <span class="comment">%</span>
+<span class="comment">  %% Example of use, assuming that function_name, pars, and data tn are defined properly:</span>
+  <span class="comment">%  shsurv('function_name', pars, tn), or if the user-defined function codes for two data sets,</span>
+  <span class="comment">%  for instance shsurv('function_name', pars, tn1, tn2).</span>
+
+<span class="comment">  %% Code</span>
+  i = 1; <span class="comment">% initiate data set counter</span>
+  ci = num2str(i); <span class="comment">% character string with value of i</span>
+  nntn = nargin -1; <span class="comment">% initial 'while' condition (will count down)</span>
+  ntn = nntn -1; <span class="comment">% number of data sets</span>
+  va_start (); <span class="comment">% set pointer to first unnamed argument</span>
+  <span class="keyword">while</span> (--nntn) <span class="comment">% loop across data sets</span>
+    eval([<span class="string">'tn'</span>, ci, <span class="string">' = va_arg();'</span>]); <span class="comment">% assing unnamed arguments to tni</span>
+    eval([<span class="string">'[n('</span>, ci, <span class="string">') k] = size(tn'</span>, ci, <span class="string">');'</span>]); <span class="comment">% number of data points</span>
+    <span class="keyword">if</span> i == 1
+      listtn = [<span class="string">'tn'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list tn</span>
+      listT = [<span class="string">'T'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list T</span>
+      listf = [<span class="string">'f'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list f</span>
+      listg = [<span class="string">'g'</span>, ci,<span class="string">','</span>]; <span class="comment">% initiate list g</span>
+    <span class="keyword">else</span>
+      listtn = [listtn, <span class="string">' tn'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list tn</span>
+      listT = [listT, <span class="string">' T'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list T</span>
+      listf = [listf, <span class="string">' f'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list f</span>
+      listg = [listg, <span class="string">' g'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list g</span>
+    <span class="keyword">end</span>
+    i = i + 1;
+    ci = num2str(i); <span class="comment">% character string with value of i</span>
+  <span class="keyword">end</span>
+
+  [i, nl] = size(listtn); listtn = listtn(1:(nl-1)); <span class="comment">% remove last ','</span>
+  [i, nl] = size(listT); listT = listT(1:(nl-1)); <span class="comment">% remove last ','</span>
+  [i, nl] = size(listf); listf = listf(1:(nl-1)); <span class="comment">% remove last ','</span>
+  [i, nl] = size(listg); listg = listg(1:(nl-1)); <span class="comment">% remove last ','</span>
+
+  p = p(:,1); <span class="comment">% remove other columns from parameter data</span>
+
+  <span class="keyword">global</span> dataset Range all_in_one; <span class="comment">% option settings</span>
+    <span class="keyword">for</span> i = 1:ntn
+    ci = num2str(i);
+    eval([<span class="string">'global xlabel'</span>, ci, <span class="string">' ylabel'</span>, ci, <span class="string">';'</span>]);
+  <span class="keyword">end</span>
+
+<span class="comment">  %% set options if necessary</span>
+  <span class="keyword">if</span> prod(size(dataset)) == 0 <span class="comment">% select data sets to be plotted</span>
+    dataset = 1:ntn;
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> prod(size(all_in_one)) == 0 <span class="comment">% all graphs in one</span>
+    all_in_one = 0;
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> prod(size(Range)) == 0 <span class="comment">% set plot ranges</span>
+    Range = zeros (ntn, 2);
+    <span class="keyword">for</span> i = 1:ntn
+      ci = num2str(i);
+      eval([<span class="string">'r0 = 0.9*min(tn'</span>, ci, <span class="string">'(:,1));'</span>]);
+      eval([<span class="string">'r1 = 1.1*max(tn'</span>, ci, <span class="string">'(:,1));'</span>]);
+      Range(i,:) = [r0 r1];
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  [nr i] = size(Range);
+  <span class="keyword">if</span> nr ~= ntn <span class="comment">% set plot ranges, because existing ones are invalid</span>
+    Range = zeros (ntn, 2);
+    <span class="keyword">for</span> i = 1:ntn
+      ci = num2str(i);
+      eval([<span class="string">'r0 = 0.9*min(tn'</span>, ci, <span class="string">'(:,1));'</span>]);
+      eval([<span class="string">'r1 = 1.1*max(tn'</span>, ci, <span class="string">'(:,1));'</span>]);
+      Range(i,:) = [r0 r1];
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">for</span> i = 1:ntn <span class="comment">% set plot labels</span>
+    ci = num2str(i);
+    <span class="keyword">if</span> eval([<span class="string">'prod(size([xlabel'</span>, ci,<span class="string">']) == 0'</span>])
+      eval([<span class="string">'xlabel'</span>, ci, <span class="string">' = ''time'';'</span>]);
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> eval([<span class="string">'prod(size([ylabel'</span>, ci,<span class="string">']) ~= 1'</span>])
+      eval([<span class="string">'ylabel'</span>, ci, <span class="string">' = ''number'';'</span>]);
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  nS = max(size(dataset)); <span class="comment">% set number of data sets to be plotted</span>
+
+  <span class="keyword">for</span> i = 1:ntn  <span class="comment">%% set time points</span>
+    eval([<span class="string">'T'</span>, num2str(i), <span class="string">' = linspace('</span>, <span class="keyword">...</span>
+	  num2str(Range(i,1)), <span class="string">', '</span>, num2str(Range(i,2)), <span class="string">', 100)'</span>;<span class="untermstring">']);</span>
+  end
+
+<span class="comment">  %% get survival probabilities</span>
+  eval([<span class="string">'['</span>, listf,<span class="string">'] = '</span>, func, <span class="string">'(p,'</span>, listT,<span class="string">' );'</span>]);
+  eval([<span class="string">'['</span>, listg,<span class="string">'] = '</span>, func, <span class="string">'(p,'</span>, listtn,<span class="string">' );'</span>]);
+  <span class="keyword">for</span> i = 1:nS <span class="comment">%% get number of survivors</span>
+    ci = num2str(dataset(i));
+    eval([<span class="string">'f'</span>, ci, <span class="string">' = f'</span>, ci, <span class="string">'* tn'</span>, ci, <span class="string">'(1,2);'</span>]);
+    eval([<span class="string">'g'</span>, ci, <span class="string">' = g'</span>, ci, <span class="string">'* tn'</span>, ci, <span class="string">'(1,2);'</span>]);
+  <span class="keyword">end</span>
+
+  clf;
+
+  <span class="keyword">if</span> all_in_one ~= 0 <span class="comment">% single plot mode</span>
+    <span class="keyword">for</span> i = 1:nS <span class="comment">% loop across data sets that must be plotted</span>
+      ci = num2str(dataset(i));
+      eval([<span class="string">'plot(T'</span>, ci, <span class="string">'(:, 1), f'</span>, ci, <span class="string">', ''r'');'</span>]);
+      eval([<span class="string">'[nr nc] = size(tn'</span>, ci, <span class="string">');'</span>]);
+      eval([<span class="string">'plot(tn'</span>, ci, <span class="string">'(:,1), tn'</span>, ci, <span class="string">'(:,2), ''b+'');'</span>]);
+      <span class="keyword">for</span> j = 1:n(dataset(i)) <span class="comment">% connect data points with curves</span>
+    	eval([<span class="string">'plot([tn'</span>, ci, <span class="string">'(j,[1 1])'</span>],<span class="untermstring">' ...</span>
+	      <span class="string">'[tn'</span>, ci, <span class="string">'(j,2); g'</span>, ci, <span class="string">'(j)], ''m'');'</span>]);
+      <span class="keyword">end</span>
+      <span class="keyword">if</span> i == 1 <span class="comment">% set labels</span>
+	    eval([<span class="string">'xtext = xlabel'</span>,ci,<span class="string">';'</span>]);
+        eval([<span class="string">'xlabel('''</span>, xtext, <span class="string">''');'</span>]);
+        eval([<span class="string">'ytext = ylabel'</span>,ci,<span class="string">';'</span>]);
+        eval([<span class="string">'ylabel('''</span>, ytext, <span class="string">''');'</span>]);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">else</span> <span class="comment">% multiplot mode</span>
+<span class="comment">    %% rows and colums of multiplot</span>
+    r = max([1, floor(sqrt(ntn))]); k = ceil(nS/r);
+
+    <span class="keyword">for</span> i = 1:nS <span class="comment">% loop across data sets that must be plotted</span>
+      subplot(r,k,i)
+      clf;
+      ci = num2str(dataset(i));
+      eval([<span class="string">'xtext = xlabel'</span>,ci,<span class="string">';'</span>]);
+      eval([<span class="string">'xlabel('''</span>, xtext, <span class="string">''');'</span>]);
+      eval([<span class="string">'ytext = ylabel'</span>,ci,<span class="string">';'</span>]);
+      eval([<span class="string">'ylabel('''</span>, ytext, <span class="string">''');'</span>]);
+      eval([<span class="string">'plot(T'</span>, ci, <span class="string">'(:, 1), f'</span>, ci, <span class="string">', ''r'');'</span>]);
+      eval([<span class="string">'[nr nc] = size(tn'</span>, ci, <span class="string">');'</span>]);
+      eval([<span class="string">'plot(tn'</span>, ci, <span class="string">'(:,1), tn'</span>, ci, <span class="string">'(:,2), ''b+'');'</span>]);
+    <span class="keyword">end</span>
+
+  <span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function shsurv (func, p, varin)
+  %  created: 2002/02/10 by Bas Kooijman
+  %
+  %% Description
+  %  plots observed survivors and model predictions
+  %  func: character string with name of user-defined function
+  %    see scsurv
+  %  p: (r,k) matrix with parameter values in p(:,1) 
+  %  tni: (ni,k) matrix with
+  %    tni(:,1) time points
+  %    tni(:,2) number of survivors (optional)
+  %    The number of data matrices nt1, nt2, ... is optional but >0
+  %    but must match the definition of 'func'.
+  %
+  %% Remarks
+  %  Set options for plotting routine shsurv with shregr_options
+  %
+  %% Example of use, assuming that function_name, pars, and data tn are defined properly: 
+  %  shsurv('function_name', pars, tn), or if the user-defined function codes for two data sets, 
+  %  for instance shsurv('function_name', pars, tn1, tn2). 
+  
+  %% Code
+  i = 1; % initiate data set counter
+  ci = num2str(i); % character string with value of i
+  nntn = nargin -1; % initial 'while' condition (will count down)
+  ntn = nntn -1; % number of data sets
+  va_start (); % set pointer to first unnamed argument
+  while (REPLACE_WITH_DASH_DASHnntn) % loop across data sets
+    eval(['tn', ci, ' = va_arg();']); % assing unnamed arguments to tni
+    eval(['[n(', ci, ') k] = size(tn', ci, ');']); % number of data points
+    if i == 1
+      listtn = ['tn', ci,',']; % initiate list tn
+      listT = ['T', ci,',']; % initiate list T
+      listf = ['f', ci,',']; % initiate list f
+      listg = ['g', ci,',']; % initiate list g
+    else     
+      listtn = [listtn, ' tn', ci,',']; % append list tn
+      listT = [listT, ' T', ci,',']; % append list T
+      listf = [listf, ' f', ci,',']; % append list f
+      listg = [listg, ' g', ci,',']; % append list g
+    end
+    i = i + 1;
+    ci = num2str(i); % character string with value of i
+  end
+
+  [i, nl] = size(listtn); listtn = listtn(1:(nl-1)); % remove last ','
+  [i, nl] = size(listT); listT = listT(1:(nl-1)); % remove last ','
+  [i, nl] = size(listf); listf = listf(1:(nl-1)); % remove last ','
+  [i, nl] = size(listg); listg = listg(1:(nl-1)); % remove last ','
+  
+  p = p(:,1); % remove other columns from parameter data
+
+  global dataset Range all_in_one; % option settings
+    for i = 1:ntn
+    ci = num2str(i);
+    eval(['global xlabel', ci, ' ylabel', ci, ';']);
+  end
+
+  %% set options if necessary
+  if prod(size(dataset)) == 0 % select data sets to be plotted
+    dataset = 1:ntn;
+  end
+  if prod(size(all_in_one)) == 0 % all graphs in one
+    all_in_one = 0;
+  end
+  if prod(size(Range)) == 0 % set plot ranges
+    Range = zeros (ntn, 2);
+    for i = 1:ntn
+      ci = num2str(i);
+      eval(['r0 = 0.9*min(tn', ci, '(:,1));']);
+      eval(['r1 = 1.1*max(tn', ci, '(:,1));']);
+      Range(i,:) = [r0 r1];
+    end
+  end
+  
+  [nr i] = size(Range);
+  if nr ~= ntn % set plot ranges, because existing ones are invalid
+    Range = zeros (ntn, 2);
+    for i = 1:ntn
+      ci = num2str(i);
+      eval(['r0 = 0.9*min(tn', ci, '(:,1));']);
+      eval(['r1 = 1.1*max(tn', ci, '(:,1));']);
+      Range(i,:) = [r0 r1];
+    end
+  end
+  
+  for i = 1:ntn % set plot labels
+    ci = num2str(i);
+    if eval(['prod(size([xlabel', ci,']) == 0'])
+      eval(['xlabel', ci, ' = ''time'';']);
+    end
+    if eval(['prod(size([ylabel', ci,']) ~= 1'])
+      eval(['ylabel', ci, ' = ''number'';']);
+    end    
+  end
+    
+  nS = max(size(dataset)); % set number of data sets to be plotted  
+
+  for i = 1:ntn  %% set time points
+    eval(['T', num2str(i), ' = linspace(', ...
+	  num2str(Range(i,1)), ', ', num2str(Range(i,2)), ', 100)';']);
+  end
+  
+  %% get survival probabilities
+  eval(['[', listf,'] = ', func, '(p,', listT,' );']);
+  eval(['[', listg,'] = ', func, '(p,', listtn,' );']);
+  for i = 1:nS %% get number of survivors
+    ci = num2str(dataset(i));
+    eval(['f', ci, ' = f', ci, '* tn', ci, '(1,2);']);
+    eval(['g', ci, ' = g', ci, '* tn', ci, '(1,2);']);
+  end
+  
+  clf;
+
+  if all_in_one ~= 0 % single plot mode
+    for i = 1:nS % loop across data sets that must be plotted
+      ci = num2str(dataset(i));
+      eval(['plot(T', ci, '(:, 1), f', ci, ', ''r'');']);
+      eval(['[nr nc] = size(tn', ci, ');']);
+      eval(['plot(tn', ci, '(:,1), tn', ci, '(:,2), ''b+'');']);
+      for j = 1:n(dataset(i)) % connect data points with curves
+    	eval(['plot([tn', ci, '(j,[1 1])'],' ...
+	      '[tn', ci, '(j,2); g', ci, '(j)], ''m'');']);
+      end
+      if i == 1 % set labels
+	    eval(['xtext = xlabel',ci,';']);
+        eval(['xlabel(''', xtext, ''');']);
+        eval(['ytext = ylabel',ci,';']);
+        eval(['ylabel(''', ytext, ''');']);
+      end  
+    end
+  else % multiplot mode
+    %% rows and colums of multiplot
+    r = max([1, floor(sqrt(ntn))]); k = ceil(nS/r);
+    
+    for i = 1:nS % loop across data sets that must be plotted
+      subplot(r,k,i)  
+      clf;
+      ci = num2str(dataset(i));
+      eval(['xtext = xlabel',ci,';']);
+      eval(['xlabel(''', xtext, ''');']);
+      eval(['ytext = ylabel',ci,';']);
+      eval(['ylabel(''', ytext, ''');']);
+      eval(['plot(T', ci, '(:, 1), f', ci, ', ''r'');']);
+      eval(['[nr nc] = size(tn', ci, ');']);
+      eval(['plot(tn', ci, '(:,1), tn', ci, '(:,2), ''b+'');']);
+    end
+
+  end
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  -->
+  </STYLE>
+
+  <TITLE>
+    DEBtool
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="DEBtool, Dynamic Energy Budget
+    theory, Dynamic Energy Budgets, DEB theory, DEB" >
+  <META 
+    NAME="description" CONTENT="Software package DEBtool">
+  <META NAME="distribution" CONTENT="global">
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>Octave versus Matlab</H1>
+
+Some small differences between Octave 3.2.2 and Matlab 7.3.0 exist. 
+The following list is not meant to be exhaustive, but aims the solve practical
+problems in conversions
+
+<table>
+<TR>
+ <TH ALIGN=left>Octave</TH>
+q <TH ALIGN=left>Matlab</TH>
+ <TH ALIGN=left>remarks</TH>
+</TR>
+ 
+<TR>
+  <TD>yes</TD>
+  <TD>no </TD>
+  <TD>function definition allowed in script file</TD>
+</TR>
+   
+<TR>
+  <TD><CODE>exist("in")==0</CODE></TD>
+  <TD><CODE>in==[]</CODE></TD>
+  <TD>check existence of input in: function <CODE>f = fnname(in)</CODE></TD>
+</TR>
+   
+<TR>
+  <TD><CODE>x</CODE></TD>
+  <TD><CODE>[t x]</CODE></TD>
+  <TD>result of ODE-solver: <CODE>x = lsode("nm",x0,t)</CODE>
+      versus <CODE>[t,x] = ode45("nm",t,x0)</CODE></TD>
+</TR>
+   
+<TR>
+  <TD><CODE>(x,t)</CODE></TD>
+  <TD><CODE>(t,x)</CODE></TD>
+  <TD>arguments for user defined functions for ODE-solver.
+      Matlab's output <CODE>t</CODE> and <CODE>x</CODE> are large 
+      if the input <CODE>t</CODE> has 2 elements.</TD>
+</TR>
+         
+<TR>
+  <TD>no</TD>
+  <TD>yes</TD>
+  <TD>plot of emtpy vectors</TD>
+</TR>
+   
+</table>
+
+<HR>
+<P>
+Go to the <A HREF="/thb/deb/" TARGET="_top"> DEB information page</A>
+or the <A HREF="/thb/deb/deblab/" TARGET="_top"> DEB laboratory</A>
+
+</BODY>
+</HTML>

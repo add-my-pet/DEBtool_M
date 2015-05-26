@@ -1,0 +1,218 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_lib_prob</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: lib/prob</H3>
+
+  Routines that relate directly or indirectly to probability calculus. 
+
+<HR>
+<H4><A NAME="frac">frac</A></H4>
+
+  Calculates the empirical survivor probabilities from a number of random trials.
+
+  <P>
+  Input:
+  <ul>
+    <li> n-vector with random trials </li>
+    <li> m-vector of armument values </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> m-vector of fractions of random trials that exceed argument values </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code> p = frac(randn(100,1), [-1; -0.5; 0; 0.5; 1])</code> 
+
+<HR>
+<H4><A NAME="surv">surv</A></H4>
+
+  Calculates the empirical survivor function from a number of random trials.
+
+  <P>
+  Input:
+  <ul>
+    <li> n-vector with random trials </li>
+    <li> optional scalar with minimum value of random variable </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> (2n,2) or (1+2n,2)-matrix with coordinates </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>xy = surv([3 8 2],);</code> or 
+  <code>xy = surv(randn(10));</code> or 
+  <code> xy = surv(rand(5));</code>.
+  Graph it with 
+  <code>plot(xy(:,1),xy(:,2),'g')</code>.
+
+<HR>
+<H4><A NAME="surv_chi"> surv_chi</A></H4>
+
+  Calculates the survivor probability of the Chi-square distribution, cf <A HREF="#survi_chi"><code>survi_chi</code></A>.
+
+
+  <P>
+  Input:
+  <ul>
+    <li> scalar with parameter (degrees of freedom) </li>
+    <li> vector with argument values </li>
+  </ul>
+
+  <P>
+  Ouput:
+  <ul>
+    <li> vector with survivor probabilities </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code> surv_chi(2,[3 4 6.5])</code>
+
+<HR>
+<H4><A NAME="survi_chi">survi_chi</A></H4>
+
+  Calculates the inverse survivor probability of the Chi-square distribution, cf <A HREF="#surv_chi"><code>surv_chi</code></A>.
+
+  <P>
+  Input:
+  <ul>
+    <li> scalar with parameter (degrees of freedom) </li>
+    <li> vector with survivor probabilities </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> vector with argument values for which the survivor function equals given probabilities </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>survi_chi(2, [.6 .8 .9])</code> or 
+  <code>survi_chi(2,surv_chi(2, [3 4 6.5]))</code>
+
+<HR>
+<H4><A NAME="lik2surv">lik2surv</A></H4>
+
+  Calculates the survivor function from the -2 log lik ratio function. 
+  These ratio's must monotoneously decrease to zero, and then monotoneously increase.
+
+  <P>
+  Input:
+  <ul>
+    <li> n-vector with -2 log lik ratio's </li>
+    <li> scalar with parameter (degrees of freedom) </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> n-vector with survivor probabilities </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>lik2surv([3 2 1 0 .3 .6 1 2]',1)</code>
+
+<HR>
+<H4><A NAME="surv_count">surv_count</A></H4>
+
+  Obtains Monte Carlo counts for the number of surviving subjects, from specified numbers of subjects (for each of nc conditions) and survivor probabilities (for each condition and nt time points).
+
+  <P>
+  Input: 
+  <ul>
+    <li> (1,nc)-matrix initial number of subjects; if a scalar is specified, this number applied to each of the nc conditions </li>
+    <li> (nt,nc)-matrix of survivor probabilities; 
+         the probabilities in each column should be non-increasing </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> (nt,nc)-matrix with number of surviving subjects </li>
+  </ul>
+ 
+  <P>
+  An example of application  using function <code>fomort</code> of <code>tox</code>: 
+  <code>surv_count(10, fomort([1e-6 .1 1 .1], [0:7]',[0:2:10]'))</code>
+
+<HR>
+<H4><A NAME="haz2surv">haz2surv</A></H4>
+
+  Obtains the survival probability from the hazard rate.
+
+  <P>
+  Input: 
+  <ul>
+    <li> string with the name of the function that specifies the hazard rate<br>
+         The function must be of the form <code> h  = haz(x,t)</code>, where <code>x</code> is a dummy variable, and <code>t</code> the time</li>
+    <li> (nt,1)-matrix with time points </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> (nt,1)-matrix with number of surviving subjects </li>
+  </ul>
+ 
+  <P>
+  An example of application see: <code>mydata_haz2surv</code>
+
+<HR>
+<H4><A NAME="fnchd">fnchd</A></H4>
+
+  Obtains the expected value of Fisher's non-central hypergeometric distribution, its appoximation, and the correponding mean of the binomial distribution for small smaples sizes.
+
+  <P>
+  Input: 
+  <ul>
+    <li> number of objects of type 0 </li>
+    <li> number of objects of type 1 </li>
+    <li> number of objects in the sample </li>
+    <li> odds ratio for objects of type 0, relative to that of type 1 </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> mean of Fisher's non-central hypergeometric distribution </li>
+    <li> approximation of the mean based on the modus </li>
+    <li> mean of the corresponding binomial distr for small sample sizes </li>
+  </ul>
+ 
+  <P>
+  An example of application: 
+  <code>fnchd(12, 5, 3, 1.8)</code>
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>
+    First steps
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="Octave Matlab" >
+  
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>Plotting</H1>
+
+<b>Plots</b> are produced as follows:</br>
+<code><br>
+x = linspace(0,10,40); % create vector of values of independent variable<br>
+y = x + 0.1*x.^2; % obtain vector with corresponding dependent variable<br>
+plot(x,y,'g'); # plot y against x, connecting points in green<br>
+xlabel('independent variable'); % set text along x-axis<br>
+ylabel('dependent variable'); % set text along y-axis<br>
+</code>
+
+<P>
+Set x-range to (0,10) and y-range to (1,2) with <code>axis([0 10], [1 2])</code>. 
+Reset range specifications with <code>axis</code>.
+<b>Close</b> plots with <code>clf</code> or
+<code>close</code>. 
+
+Create <b>multiple plots</b> like:</br>
+<code><br>
+z = 1./y; % create second dependent variable<br>
+clf % clear previous plot<br>
+subplot(1,2,1); % first subplot in 1 row, 2 colums<br>
+xlabel('independent variable'); % set text along x-axis<br>
+ylabel('dependent variable 1'); % set text along y-axis<br>
+plot(x,y,'g'); % plot in green<br><br>
+subplot(1,2,2); % second  subplot in 1 row, 2 colums<br>
+xlabel('independent variable'); % set text along x-axis<br>
+ylabel('dependent variable 2'); % set text along y-axis<br>
+plot(x,z,'r'); % plot in red<br><br>
+</code>
+
+<P> 
+<b>Combine</b> both curves in a single plot with<br>
+<code><br>
+clf % clear previous plot; suppress legends<br>
+xlabel('independent variable');<br>
+ylabel('dependent variables');<br>
+plot(x,y,'g',x,z,'r'); % plot y against x in green and z gainst x in red<br>
+</code>
+
+<P>
+Alternatively, add more to an existing plot with <code> hold on;</code>.<br>
+<code><br>
+clf; hold on; plot(x,y,'g'); plot(x,y,'.r'); # curve in green, dots in red
+</code>
+
+<P>
+<b>Write</b> plot to encapsulated postscript file <code>nm.eps</code> with<br>
+<code><br>
+  print -deps nm.eps<br>
+</code><br>
+
+</BODY>
+</HTML>

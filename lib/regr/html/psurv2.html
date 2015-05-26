@@ -1,0 +1,182 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>psurv2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-09"><meta name="DC.source" content="psurv2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Description</a></li><li><a href="#4">Input</a></li><li><a href="#5">Output</a></li><li><a href="#6">Remarks</a></li><li><a href="#7">Example of use</a></li><li><a href="#8">set independent variables to column vectors,</a></li><li><a href="#9">t = reshape(t, max(size(t)), 1);</a></li><li><a href="#10">y = reshape(y, max(size(y)), 1);</a></li><li><a href="#11">eval([ 'f = ', func, '(p(:,1), t, y);']);</a></li><li><a href="#12">prob = reshape(f - [f(2:nt,:);zeros(1,ny)], nty, 1);</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span>  [cov, cor, sd, dev] = psurv2(func, p, t, y, N)
+</pre><pre class="codeinput">  <span class="comment">%  created: 2002/02/08 by Bas Kooijman; corrected 2005/01/27</span>
+  <span class="comment">%</span>
+</pre><h2>Description<a name="3"></a></h2><pre>Calculates covariance matrix and standard deviations of parameters in survivor models, like psurv, but for 2 independent variables.</pre><h2>Input<a name="4"></a></h2><pre>func: string with name of user-defined function
+   f = func (p, t, y) with p: np-vector; t: nt-vector; y: ny-vector
+   f: (nt,ny)-matrix with model-predictions for surviving numbers
+p: (np,2) matrix with
+   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)
+t: (nt,1)-vector with first independent variable (time)
+y: (ny,1)-vector with second independent variable
+N: (nt,ny)-matrix with surviving numbers</pre><h2>Output<a name="5"></a></h2><pre>cov: (np,np) matrix with covariances
+cor: (np,np) matrix with correlation coefficients
+sd: (np,1) matrix with standard deviations
+dev: scalar with deviance</pre><h2>Remarks<a name="6"></a></h2><pre>calls scdsurv2, and user-defined function 'func'</pre><h2>Example of use<a name="7"></a></h2><pre>assuming that function_name, pars, tvalues, yvalues, numbers are defined properly:
+[cov, cor, sd, ss] = pregr2('function_name', pars, tvalues, yvalues, numbers).</pre><h2>set independent variables to column vectors,<a name="8"></a></h2><h2>t = reshape(t, max(size(t)), 1);<a name="9"></a></h2><h2>y = reshape(y, max(size(y)), 1);<a name="10"></a></h2><pre class="codeinput">  <span class="keyword">global</span> nt ny l index;
+
+  [np, k] = size(p); <span class="comment">% np: number of parameters</span>
+  cov = zeros(np,np);
+  cor = zeros(np,np);
+
+  index = 1:np;
+  <span class="keyword">if</span> k&gt;1
+    index = index(1 == p(:,2)); <span class="comment">% indices of estimated parameters</span>
+  <span class="keyword">end</span>
+  l = max(size(index));  <span class="comment">% l: number of estimated parameters</span>
+  <span class="keyword">if</span> (l == 0)
+    <span class="keyword">return</span>; <span class="comment">% no parameters to present statistics</span>
+  <span class="keyword">end</span>
+
+  [nt ny] = size(N); <span class="comment">% nt,ny is number of values of surviving individuals</span>
+  nty = nt*ny;
+  D = N - [N(2:nt,:); zeros(1,ny)]; D = reshape(D, nty, 1);
+  n0 = ones(nt,1) * N(1,:); n0 = reshape(n0, nty, 1);
+  likmax = D' * log(max(1e-10, D./ n0)); <span class="comment">% max of log lik function</span>
+</pre><h2>eval([ 'f = ', func, '(p(:,1), t, y);']);<a name="11"></a></h2><pre class="codeinput">				<span class="comment">% obtain survival probabilities</span>
+</pre><h2>prob = reshape(f - [f(2:nt,:);zeros(1,ny)], nty, 1);<a name="12"></a></h2><pre class="codeinput">  [prob, Dprob] = scdsurv2(func, p(:,1), t, y);
+				<span class="comment">% obtain death prob and derivatives</span>
+  dprob = zeros(nty,np);
+  dprob(:,index) = Dprob;
+
+
+  dev = 2 * (likmax - D' * log(max(1e-10,prob)));
+				<span class="comment">% deviance: 2* log lik minus its supremum</span>
+  cov(index, index) = inv((n0./prob * ones(1,l).*Dprob)'*Dprob);
+				<span class="comment">% inv of information matrix</span>
+  sd = sqrt(diag(cov)); <span class="comment">% standard deviations</span>
+  cor = cov./(1e-10 + sd*sd'); <span class="comment">% correlation matrix</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function  [cov, cor, sd, dev] = psurv2(func, p, t, y, N)
+  %  created: 2002/02/08 by Bas Kooijman; corrected 2005/01/27
+  %
+  %% Description
+  %  Calculates covariance matrix and standard deviations of parameters in survivor models, like psurv, but for 2 independent variables. 
+  %
+  %% Input
+  %  func: string with name of user-defined function
+  %     f = func (p, t, y) with p: np-vector; t: nt-vector; y: ny-vector
+  %     f: (nt,ny)-matrix with model-predictions for surviving numbers
+  %  p: (np,2) matrix with
+  %     p(:,1) initial guesses for parameter values
+  %     p(:,2) binaries with yes or no iteration (optional)
+  %  t: (nt,1)-vector with first independent variable (time)
+  %  y: (ny,1)-vector with second independent variable
+  %  N: (nt,ny)-matrix with surviving numbers
+  %
+  %% Output
+  %  cov: (np,np) matrix with covariances
+  %  cor: (np,np) matrix with correlation coefficients
+  %  sd: (np,1) matrix with standard deviations
+  %  dev: scalar with deviance
+  %
+  %% Remarks
+  %  calls scdsurv2, and user-defined function 'func'
+  %
+  %% Example of use
+  %  assuming that function_name, pars, tvalues, yvalues, numbers are defined properly: 
+  %  [cov, cor, sd, ss] = pregr2('function_name', pars, tvalues, yvalues, numbers). 
+
+
+  %% set independent variables to column vectors, 
+  %% t = reshape(t, max(size(t)), 1);
+  %% y = reshape(y, max(size(y)), 1);
+
+  global nt ny l index;
+  
+  [np, k] = size(p); % np: number of parameters
+  cov = zeros(np,np);
+  cor = zeros(np,np);
+
+  index = 1:np;
+  if k>1
+    index = index(1 == p(:,2)); % indices of estimated parameters
+  end
+  l = max(size(index));  % l: number of estimated parameters
+  if (l == 0)
+    return; % no parameters to present statistics
+  end
+
+  [nt ny] = size(N); % nt,ny is number of values of surviving individuals
+  nty = nt*ny;
+  D = N - [N(2:nt,:); zeros(1,ny)]; D = reshape(D, nty, 1);
+  n0 = ones(nt,1) * N(1,:); n0 = reshape(n0, nty, 1);
+  likmax = D' * log(max(1e-10, D./ n0)); % max of log lik function
+
+  %% eval([ 'f = ', func, '(p(:,1), t, y);']);
+				% obtain survival probabilities
+  %% prob = reshape(f - [f(2:nt,:);zeros(1,ny)], nty, 1);
+ 
+  [prob, Dprob] = scdsurv2(func, p(:,1), t, y);
+				% obtain death prob and derivatives
+  dprob = zeros(nty,np);
+  dprob(:,index) = Dprob;
+ 
+
+  dev = 2 * (likmax - D' * log(max(1e-10,prob)));
+				% deviance: 2* log lik minus its supremum
+  cov(index, index) = inv((n0./prob * ones(1,l).*Dprob)'*Dprob);
+				% inv of information matrix
+  sd = sqrt(diag(cov)); % standard deviations
+  cor = cov./(1e-10 + sd*sd'); % correlation matrix
+##### SOURCE END #####
+--></body></html>

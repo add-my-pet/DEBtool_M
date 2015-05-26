@@ -1,0 +1,478 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>
+    First steps in Emacs
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="Emacs" >
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>First steps in Emacs</H1>
+
+<P ALIGN="center"> by <A HREF="mailto:bas@bio.vu.nl">Bas Kooijman</A>,
+5 April 2002
+
+
+<h2>Purpose</h2> 
+ 
+This note is meant to give a quick introduction to <a
+HREF="http://www.gnu.org/manual/emacs/" TARGET="_top"> Emacs</a>
+(Editor MACroS), which is an extensible, customizable editor and
+computing environment. It offers true Lisp--smoothly integrated into
+the editor--for writing extensions and provides an interface to the X
+Window System. At its core is an interpreter for Emacs Lisp
+(``elisp'', for short), a dialect of the Lisp programming language
+with extensions to support text editing.
+
+<p>
+Emacs runs under a.o. Windows and Unix; it recognizes and preserves
+both ways of breaking lines (carriage return + line feed in Windows,
+line feed only in Unix).
+
+<p>
+The sources <a
+href="http://www.columbia.edu/acis/tutor/tutor/editors/emacs/basic-use.html">
+basic use</a> and <a href=
+"http://fd-doc.sourceforge.net/mini/en/emacs/quickie.txt">
+quickie</a> are used for this note. 
+
+<h2>Notation</h2>
+
+<table>
+<tr>
+  <td><code>enter</code></td>       
+  <td>carriage return, including the spaces around the word; so <code>4 
+      enter</code> means press "4" then "enter" (skip space)</td>
+</tr><tr>
+  <td><code>C-</code></td>       
+  <td>A control character.  <code>C-f</code> means "control then f" 
+      (pressed simultaneously).  
+      <code>C-_</code> means "control then underscore" (which is undo!)</td>
+</tr><tr>
+  <td><code>M-</code></td>
+  <td>A two-character command sequence where the first character is
+      Altmode (which is entered by ESCAPE).  
+      <code>M-f</code> means "ESCAPE then f" (pressed simultaneously)</td>
+</tr><tr>
+  <td><code>F1</code></td>
+  <td>Press function-key "F1"</td>
+</tr><tr>
+  <td>kill</td>
+  <td>means delete and paste to clipboard (cut)</td>
+</tr><tr>
+  <td>yank</td>
+  <td>means copy from clipboard (paste)</td>
+</tr>
+
+</table>
+
+<h2>Basic use of Emacs</h2>
+ 
+To start editing a new buffer (i.e. temporary file) with Emacs type:<br>
+  >> $ <code>emacs</code><br>
+at the UNIX prompt, or click on the Emacs-icon in Windows.
+
+<p>
+Once you are inside the Emacs window just begin to type your
+text. Don't press <code>enter</code> at the end of each line, but
+<code>M-q</code> at the end of a paragraph for wrapping text (undo
+wrapping with <code>C-_</code>). Anytime you enter an editing command
+it will appear on the bottom left of your screen under the Emacs mode
+bar.
+
+<p>
+Many functions can be assessed via the menu-bar, where key short cuts
+are given.
+
+<p>
+To edit an existing file simply enter Emacs by typing
+<br> 
+  >> $<code> emacs</code>
+<br>
+and then type <code>C-x C-f</code> (find file). Emacs will then prompt
+you for the name of the file to find and load it into the current
+buffer (use the space bar for automatic completion of the file name).
+ 
+<p>
+You may also type
+<br>
+  >> $ <code>emacs foo.m</code>
+<br>
+and the Octave-file <code>foo.m</code> will automatically be copied
+into Emacs' buffer when it starts up. Emacs can hold many buffers, to
+wich you can switch and copy text from. Emacs can show its buffers
+simultaneously in several windows (see Emacs' menu bar).
+
+<p>
+Emacs recognizes extentions and loads editing-support functions
+automatically. The menu-bar depends on the extension. Here are some
+examples:<br>
+
+<table>
+<tr>
+  <td><code>test.m</code></td>          
+  <td>a Octave source code file</td>
+  <td><code>example.c</code></td>
+  <td>a C source code file</td>
+</tr>
+<tr>
+  <td><code>try.p</code></td>
+  <td>a Pascal source code file</td>
+  <td><code>hello.f</code></td>
+  <td>a Fortran source code file</td>
+</tr>
+<tr>
+  <td><code>letter.txt</code></td>
+  <td>a simple text file</td>
+  <td><code>paper.tex</code></td>
+  <td>a Latex text file</td>
+</tr>
+<tr>
+  <td><code>list.bib</code></td>
+  <td>a Bibtex source file</td>
+</tr>
+</table>
+
+<p>
+File name extensions (<code>.txt</code>) are not required. Emacs
+behaviour is coded in the <code>.emacs</code> or <code>_emacs</code>
+file (Unix or Windows repectively), such as the cursor behaviour when
+pressing "END". Octave and Latex support in Emacs require some special
+lines in the <code>.emacs</code> file.
+
+<p> 
+<b>Warning:</b> Emacs looses all buffers upon exiting. You must
+save buffers into files before exiting. Type <code>C-x C-s</code> to
+save the file with the current file name or <code>C-x C-w</code> to
+write the file with a new name.
+
+<p>
+If the file you just saved already existed, Emacs will not only save your
+current file but also make a backup of the old file by giving it the same
+name followed by a tilde (~) e.g. foo.m~
+
+<p>
+After you are done with Emacs you may type <code>C-x C-c</code> to
+Exit Emacs.
+
+<p> For more help go into Emacs and type <code>C-h t</code> for the
+online tutorial. This opens a new buffer; come back to your old buffer
+with <code>C-x b enter</code>.
+
+  
+<h2>Some Emacs commands</h2>
+
+<h4>Getting out</h4>
+
+<table>
+<tr>
+ <td><code>C-x C-s</code></td>
+ <td>Write the current buffer into a new version of the current file name</td>
+</tr><tr>
+  <td><code>C-x C-w</code></td>
+  <td>Write the current buffer into a file with a different name</td>
+<tr></tr>
+  <td><code>C-x C-c</code></td>
+  <td>Finish by exiting to the exec</td>
+</tr>
+</table>
+
+<h4>Buffer operations</h4>
+
+<table>
+<tr>
+  <td><code>C-x C-f</code></td>
+  <td>Get a file into a buffer for editing</td>
+</tr><tr>
+  <td><code>C-x i</code></td>
+  <td>Insert a file at cursor</td>
+</tr><tr>
+  <td><code>C-x b</code></td>
+  <td>Select a different buffer (prompts; default is the last one)</td>
+</tr><tr>
+  <td><code>C-x C-b</code></td>
+  <td>Display the list of available buffers</td>
+</tr><tr>
+  <td><code>C-x k</code></td>
+  <td>Kill a buffer (prompts for which one; default is current one)</td>
+</tr><tr>
+  <td><code>M-<</code></td>
+  <td>Move to the top of the current buffer</td>
+</tr><tr>
+  <td><code>M-></code></td>
+  <td>Move to the end of the current buffer</td>
+</tr>
+</table>
+
+<h4>Help and helper functions</h4>
+
+<table>
+<tr>
+  <td><code>C-g</code></td>
+  <td>Abort anything at any time (it beeps, sometimes you need 2)</td>
+</tr><tr>
+  <td><code>C-_</code></td>
+  <td>undo last change</td>
+</tr><tr>
+   <td><code>F1 A string</code></td> 
+   <td>Show every command containing string (try <code>F1 A Paragr
+       </code>)</td>
+</tr><tr>
+   <td><code>F1 c key</code></td>   
+   <td>What does this key do? (try <code>F1 c C-k</code> as an example)</td>
+</tr><tr>
+   <td><code>F1 d string</code></td>
+   <td>Describe a command (try <code>F1 d Query Rep</code>)</td>
+</tr><tr>
+   <td><code>C-x d</code></td>    
+   <td>Directory editing subsystem; use "?" or "SPACE" to show possible 
+       completions</td>
+</tr><tr>
+  <td><code>M-x string</code></td>
+  <td>A command designated "by hand". <code>M-x undo</code> means
+      "undo previous change". Use space bar for automized word completion 
+      (alternatives are shown).</td>
+</tr><tr>
+   <td><code>C-d</code></td>      
+   <td>Yank back the last thing killed </td>
+</tr><tr>
+   <td><code>M-n</code></td>
+   <td>Provide a numeric argument of <code>n</code> for the command that 
+       follows (<code>M-4 5</code> gives "5555"; <code>M-6 C-x e</code>
+       executes pre-defined keyboard macro 6 times)</td>
+</tr>
+</table><table>
+<tr>
+  <td><code>C-x ( key-sequence C-x )</code></td>
+  <td> Define key bindings (key-board macro) given in 
+     <code>key-sequence</code>, 
+     execute macro at cursor with <code>C-x e</code></td>
+</table>
+
+<h4>Character operations</h4>
+
+<table>
+<tr>
+  <td><code>C-b</code></td>      
+  <td>Move left (Back)</td>
+</tr><tr>
+  <td><code>C-f</code></td>      
+  <td>Move right (Forward)</td>
+</tr><tr>
+  <td><code>C-p</code></td>      
+  <td>Move up (Previous)</td>
+</tr><tr>
+  <td><code>C-n</code></td>
+  <td>Move down (Next)</td>
+</tr><tr>
+  <td><code>BACKSPACE</code></td> 
+  <td>Delete left</td>
+</tr><tr>
+  <td><code>C-d</code></td>      
+  <td>Delete right</td>
+</tr><tr>
+  <td><code>C-t</code></td>      
+  <td>Transpose previous 2 characters (ht -> th)</td>
+</tr><tr>
+   <td><code>C-q</code></td>      
+   <td>Inserts a control character in the buffer,
+       e.g. <code>C-q C-l</code> inserts character ^L, 
+       <code>C-q n enter</code> inserts acsii character number 
+       <code>n</code> (<A HREF="char.html">octal</A>); see 
+       <A HREF="/thb/links/html40/">HTML-4.0</A></td>
+</tr>
+</table>
+
+<h4>Word operations</h4>
+
+<table>
+<tr>
+  <td><code>M-b</code></td>      
+  <td>Move left (Back)</td>
+</tr><tr>
+  <td><code>M-f</code></td>      
+  <td>Move right (Forward)</td>
+</tr><tr>
+  <td><code>M-BACKSPACE</code></td>
+  <td>Kill left (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+  <td><code>M-d</code></td>      
+  <td>Kill right (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+  <td><code>M-t</code></td>
+  <td>Transpose 2 words around cursor (if only -> only if)</td>
+</tr><tr>
+  <td><code>M-c</code></td>      
+  <td>Capitalize word</td>
+</tr><tr>
+  <td><code>M-u<code></td>      
+  <td>Uppercase word</td>
+</tr><tr>
+  <td><code>M-l<code></td>      
+  <td>Lowercase word</td>
+</tr>
+</table>
+
+<h4>Line operations</h4>
+
+<table>
+</tr>
+   <td><code>C-a</code></td>      
+   <td>Move to the beginning</td>
+</tr><tr>
+   <td><code>C-e</code></td>      
+   <td>Move to the end</td>
+</tr><tr>
+   <td><code>C-o</code></td>      
+   <td>Open up a line for typing</td>
+</tr><tr>
+   <td><code>C-x C-o</code></td>  
+   <td>Close up any blank lines around cursor</td>
+</tr><tr>
+   <td><code>M-0 C-k</code></td>  
+   <td>Kill from beginning to cursor 
+       (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+   <td><code>C-k</code></td>      
+   <td>Kill from cursor to end (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+   <td><code>M-g</code></td>
+   <td>Goto line number <code>n</code>, where the number is asked for</td>
+</tr>
+</table>
+
+<h4>Paragraph operations</h4>
+
+<table>
+<tr>
+   <td><code>C-x BACKSPACE</code></td> 
+   <td>Kill from beginning to cursor (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+   <td><code>M-k</code></td>      
+   <td>Kill from cursor to end (<code>C-y</code> yanks it back at cursor)</td>
+</tr><tr>
+  <td><code>M-{</code></td>      
+  <td>Move back to previous paragraph beginning</td>
+</tr><tr>
+  <td><code>M-}</code></td>      
+  <td>Move to next paragraph end</td>
+</tr><tr>
+   <td><code>M-q</code></td>
+   <td>Fill the current paragraph (undo with <code>C-_</code>)</td>
+</tr><tr>
+   <td><code>M-n C-x f</code></td>     
+   <td>Set the fill column to n (e.g. <code>M-60 C-x f</code>; 
+       default is 70)</td>
+</tr>
+</table>
+
+<h4>Screen operations</h4>
+
+<table>
+<tr>
+  <td><code>C-v</code></td>      
+  <td>Show next screen</td>
+</tr><tr>
+  <td><code>M-v</code></td>      
+  <td>Show previous screen</td>
+</tr><tr>
+  <td><code>C-l</code></td>      
+  <td>Redisplay screen</td>
+</tr><tr>
+  <td><code>M-0 C-l</code></td>  
+  <td>Move the line where cursor is to line 0 (top) of the screen</td>
+</tr>
+</table>
+
+<h4>Search and replace</h4>
+
+<table>
+<tr>
+  <td><code>C-s</code></td>      
+  <td>"Incremental" search searches while you enter string 
+       (<code>C-s str enter</code>); case insensitive</td>
+</tr><tr>
+  <td><code>C-r</code></td>      
+  <td>"Incremental" backward search (<code>C-r str enter</code>)</td>
+</tr>
+</table><table>
+<tr>
+  <td><code>M-x replace-string</code></td> 
+  <td>Replace one string with another (<code>M-x repl enter one
+      string enter another</code>)</td>
+</tr><tr>
+  <td><code>M-x query-replace</code></td> 
+  <td>Replace one string with another, wants "y" meaning "do it" or "n" 
+      to skip (<code>M-x Qu enter one string enter another</code>)</td>
+</tr>
+</table>
+
+<h4>Region operations</h4>
+
+Region is area of buffer between cursor and mark (or mark and
+cursor). Some commands set the mark, so check it before using.  You can
+also select a region with the mouse and then type <code>C-w</code> kill
+or <code>C-$</code> (copy).
+
+<table>
+<tr>
+  <td><code>C-@</code></td>      
+  <td>Set the mark (for use with REGION commands)</td>
+</tr><tr>
+  <td><code>C-x r k</code></td>      
+  <td>Kill rectangle between mark and cursor</td>
+</tr><tr>
+  <td><code>C-x r y</code></td>      
+  <td>Yank the last killed rectangle with upper left corner at cursor</td>
+</tr><tr>
+  <td><code>C-x C-x</code></td>  
+  <td>Interchange cursor and mark (i.e. go to the other end of the
+      current region)</td>
+</tr><tr>
+  <td><code>C-w</code></td>      
+  <td>Kill region; <code>C-y</code> yank it back at cursor</td>
+</tr><tr>
+  <td><code>C-$</code></td>      
+  <td>Copy region; <code>C-y</code> yank it at cursor</td>
+</tr> 
+</table>
+
+<h4>Window operations</h4>
+
+<table>
+<tr>
+  <td><code>C-x 3</code></td>    
+  <td>Split vertically screen in two windows 
+      (same buffer shown in each)</td>
+</tr><tr>
+  <td><code>C-x 2</code></td>    
+  <td>Split horizontally screen in two windows 
+      (same buffer shown in each)</td>
+</tr><tr>
+  <td><code>C-x 1</code></td>    
+  <td>Resume single window (using buffer from top window)</td>
+</tr><tr>
+  <td><code>C-x o</code></td>    
+  <td>Move cursor to other window (all the usual commands apply)</td>
+</tr><tr>
+  <td><code>M-x-v</code></td>    
+  <td>Display the next screen in the other window</td>
+</tr>
+</table>

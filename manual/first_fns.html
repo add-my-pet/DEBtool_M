@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>
+    First steps
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="Octave Matlab" >
+  
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>Functions</H1>
+
+A function is a file with extension <code>.m</code> and starts with the word <code>function</code> and has the name of the file in the first line. 
+This line also defines the inputs and outputs, which are treated as <B>local variables</B>; local variables are variables whose value is only known during the execution of the function. 
+All other variables that are used in the function are local by default, but can be made global.
+
+<P>
+Example: create a file with name "add.m" and write in it:<BR>
+<code>
+  function c = add (a,b)<BR>
+  c = a + b; % calculate output<BR>
+</code>
+The values of the local variables <code>a</code>, <code>b</code> and <code>c</code> are only known during the execution of function
+<code>add</code>. 
+Variables with these names can have other values outside the function.
+
+<P>
+Save the file <code>add.m</code> and type in the command line:<BR>
+<code>
+ a = add (3,6) % this is how function add is used<BR>
+</code>
+The answer <code>a = 9</code> is returned. 
+Notice that variable local <code>a</code> had value 3 during the execution of the function, but now it has value 9.
+The function <code>add</code> has two inputs and one output.
+
+<P>
+We now create a function with two outputs, and pass a third variable <code>x</code> to the function:<BR>
+<code>
+  function [c,d] = test (a,b)<BR>
+  global x    % d<BR>
+  c = x*a;    % calculate first output<BR>
+  d = x*(a-b);% calculate second output<BR>
+</code>
+
+<P>
+To pass the value of the <B>global variable</B> <code>x</code> to the function <code>test</code>, it must be global:<BR>
+<code>
+  global x<BR>
+  x = 2; 
+  [a,b] = test(2,4)
+</code><BR>
+The result <code>a = 12</code> and <code>b = -4</code> is returned. 
+Also try<BR>
+<code>
+  a = test(1,5) # the second output went lost now<BR>
+</code><br>
+
+Global declarations make sense only if done within a function and outside any function, or within at least two functions.
+
+<p>
+Loop support is implemented in <code>for, while</code>, decision forks in <code>if, else, elseif, switch</code>; 
+they are all closed by <code>end</code>. 
+The symbols like <code>==</code> (is-equal-to), <code><=</code> (larger than or equal to), <code>||</code> (or), <code>&&</code> (and) make these programming tools powerful. 
+See Octave's manual.
+
+<p>
+Octave (but not Matlab) allows you to define functions in a script file; 
+the end of the function definition is indicated by <code>endfunction</code>.
+
+<H4>Recommendation</H4>
+
+Minimize the use of global variables and loops across indices. 
+Avoid long functions, work in short modules. 
+Label all functions with name of author, date, and descriptions of inputs and outputs. 
+The copy-paste-modify method is usually very efficient.
+
+</BODY>
+</HTML>

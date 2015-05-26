@@ -1,0 +1,357 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>garegr2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-13"><meta name="DC.source" content="garegr2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>garegr2</h1><!--introduction--><p>Calculates least squares estimates using Nelder Mead's simplex method for bivariate data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[q,info,endPop,bPop,traceInfo] = <a href="../garegr2.m"><b>garegr2</b></a>(func, p, x, y, Z, W)</p><h2>Description<a name="4"></a></h2><p>Calculates least squares estimates using Nelder Mead's simplex method for bivariate data</p><p>Input</p><div><ul><li>func: string with name of user-defined function</li></ul></div><pre>   f = func (p, x, y) with p: np-vector; x: nx-vector; y: ny-vector
+   f: (nx,ny)-matrix with model-predictions for dependent variable</pre><div><ul><li>p: (np,2) matrix with</li></ul></div><pre>   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)</pre><div><ul><li>x: (nx,1)-vector with first independent variable</li><li>y: (ny,1)-vector with second independent variable</li><li>Z: (nx,ny)-matrix with dependent variable</li><li>W: (nx,ny)-matrix with weight coefficients (optional)</li></ul></div><p>Output</p><div><ul><li>q: matrix like p, but with least squares estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>endPop: the final population: individual in each row; last column is minus weighted sum of squares</li><li>bPop: a trace of the best population</li><li>traceInfo: a matrix of best and means of the ga for each generation</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Set options with <a href="garegr_options.html"><b>garegr_options</b></a>. Similar to <a href="nrregr2.html"><b>nrregr2</b></a>, but slower and a larger bassin of attraction. garegr2 calls for:    User-defined function: 'func'</p><p>Crossover Operators:      simplexover heuristicxover arithxover Mutation Operators:      boundarymutation multinonunifmutation nonunifmutation unifmutation Selection Functions:      normgeomselect roulette tournselect Option setting:      garegr_options</p><p>Modified from gaot package version 1996/02/02:    C.R. Houck, J.Joines, and M.Kay. A genetic algorithm for function optimization:    A Matlab implementation. ACM Transactions on Mathmatical Software, Submitted 1996;    binary and order options removed</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_regr2.m"><b>mydata_regr2</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% garegr2
+% Calculates least squares estimates using Nelder Mead's simplex method for bivariate data
+
+%%
+function [q,info,endPop,bPop,traceInfo] = garegr2(func, p, x, y, Z, W)
+  %  created: 2006/05/25 by Bas Kooijman
+  
+  %% Syntax
+  % [q,info,endPop,bPop,traceInfo] = <../garegr2.m *garegr2*>(func, p, x, y, Z, W)
+  
+  %% Description
+  % Calculates least squares estimates using Nelder Mead's simplex method for bivariate data
+  %
+  % Input
+  %
+  % * func: string with name of user-defined function
+  %
+  %     f = func (p, x, y) with p: np-vector; x: nx-vector; y: ny-vector
+  %     f: (nx,ny)-matrix with model-predictions for dependent variable
+  %
+  % * p: (np,2) matrix with
+  %
+  %     p(:,1) initial guesses for parameter values
+  %     p(:,2) binaries with yes or no iteration (optional)
+  %
+  % * x: (nx,1)-vector with first independent variable
+  % * y: (ny,1)-vector with second independent variable
+  % * Z: (nx,ny)-matrix with dependent variable
+  % * W: (nx,ny)-matrix with weight coefficients (optional)
+  %
+  % Output
+  %
+  % * q: matrix like p, but with least squares estimates
+  % * info: 1 if convergence has been successful; 0 otherwise
+  % * endPop: the final population: individual in each row; last column is minus weighted sum of squares  
+  % * bPop: a trace of the best population
+  % * traceInfo: a matrix of best and means of the ga for each generation
+  
+  %% Remarks
+  % Set options with <garegr_options.html *garegr_options*>.
+  % Similar to <nrregr2.html *nrregr2*>, but slower and a larger bassin of attraction.
+  % garegr2 calls for: 
+  %    User-defined function: 'func'
+  %
+  % Crossover Operators:
+  %      simplexover heuristicxover arithxover 
+  % Mutation Operators:
+  %      boundarymutation multinonunifmutation nonunifmutation unifmutation
+  % Selection Functions:
+  %      normgeomselect roulette tournselect
+  % Option setting:
+  %      garegr_options
+  %
+  % Modified from gaot package version 1996/02/02:
+  %    C.R. Houck, J.Joines, and M.Kay. A genetic algorithm for function optimization: 
+  %    A Matlab implementation. ACM Transactions on Mathmatical Software, Submitted 1996; 
+  %    binary and order options removed
+  
+  %% Example of use
+  % See <../mydata_regr2.m *mydata_regr2*>
+
+  
+  global popSize startPop tol_fun report max_step_number max_evol
+
+  q = p; % copy input into output
+  info = 1; % convergence has been successful
+  
+  [np k] = size(p); % np is number of parameters
+  index = 1:np;
+  if k>1
+    index = index(1 == p(:,2)); % indices of iterated parameters
+  end
+  n = max(size(index)); % n is number of parameters that must be iterated
+  if (n == 0)
+    return; % no parameters to iterate
+  end
+
+  [nx ny] = size(Z); % nx,ny is number of values of dependent variables
+  nxy = nx * ny; % total number of data points
+  if exist('W') ~= 1
+    W = ones(nx, ny);
+  end
+
+  size_x = size(x); size_y = size(y);
+  if 2 ~= sum([nx ny]==size(W)) | nx ~= size_x(1) | ny ~= size_y(1)
+    printf('sizes of arguments do not match \n');
+    return;
+  end
+
+  W = W/sum(sum(W)); % scale weight coefficients
+
+  [np k] = size(p); % np: number of parameters
+  index = 1:np;
+  if k > 1
+    index = index(1 == p(:,2)); % indices of iterated parameters
+  end
+  numVar = size(index,2);  % number of parameters that must be iterated
+  if (numVar == 0)
+    return; % no parameters to iterate
+  end
+  bounds = q(index,[3 4]); % lower and upper boundaries of iterated parameters
+  xZomeLength  = 1 + numVar; % Length of the xzome = numVar + fittness
+
+  % set options if necessary
+
+  if numel(popSize) == 0
+    garegr_options('popSize', 80)
+  end
+  if numel(tol_fun) == 0
+    garegr_options('tol_fun', 1e-6)
+  end
+  if numel(report) == 0 
+    garegr_options('report', 1)
+  end
+  if numel(max_step_number) == 0
+    garegr_options('max_step_number', 500)
+  end
+  if numel(max_evol) == 0
+    garegr_options('max_evol', 50)
+  end
+
+  % minus weighted sum of squares because ga maximizes
+  estr = ['F = ', func, '(indiv, x, y);'];
+  estr = [estr, 'indiv_val = - sum(sum(W .* (F - Z).^2));'];
+
+  %   selectFN   - name of the .m selection function (['normGeomSelect'])
+  %   selectOpts - options string to be passed to select after
+  %                select(pop,%,opts) ([0.08])
+  selectFN = ['normGeomSelect'];
+  selectOpts = 0.08;
+
+  %   xOverFNs   - a string containing blank seperated names of Xover.m
+  %                files (['arithXover heuristicXover simpleXover']) 
+  %   xOverOpts  - A matrix of options to pass to Xover.m files with the
+  %                first column being the number of that xOver to perform
+  %                similiarly for mutation ([2 0;2 3;2 0])
+  xOverFNs = char('arithXover', 'heuristicXover', 'simpleXover');
+  xOverOpts = [2 0; 2 3; 2 0];
+
+  %   mutFNs     - a string containing blank seperated names of mutation.m 
+  %                files (['boundaryMutation multiNonUnifMutation ...
+  %                         nonUnifMutation unifMutation'])
+  %   mutOpts    - A matrix of options to pass to Xover.m files with the
+  %                first column being the number of that xOver to perform
+  %                similiarly for mutation ([4 0 0;6 100 3;4 100 3;4 0 0])
+  mutFNs = char('boundarymutation', 'multinonunifmutation', ...
+	    'nonunifmutation', 'unifmutation');
+  mutOpts = [4 0 0; 6 max_evol 3; 4 max_evol 3; 4 0 0];
+
+  endPop       = zeros(popSize,xZomeLength); % A secondary population matrix
+  c1           = zeros(1,xZomeLength); 	% An individual
+  c2           = zeros(1,xZomeLength); 	% An individual
+  numXOvers    = size(xOverFNs,1); 	% Number of Crossover operators
+  numMuts      = size(mutFNs,1); 	% Number of Mutation operators
+  bFoundIn     = 1; 			% Number of times best has changed
+  done         = 0;                     % Done with simulated evolution
+  gen          = 1; 			% Current Generation Number
+  gen_bval     = 0;                     % Gen Number since last new best
+  collectTrace = (nargout > 4); 	% Should we collect info every gen
+  bPop         = zeros(0,xZomeLength+1);% inserted because of error in ga
+
+  % Generate start population if necessary
+  if isempty(startPop) | ~sum(size(startPop,2) == [numVar xZomeLength])
+    startPop = zeros(popSize,xZomeLength);
+    range = bounds(:,2) - bounds(:,1);
+    for i = 1:popSize
+      startPop(i,1:numVar) = (bounds(:,1) + range .* rand(numVar,1))';
+      indiv = p(:,1); indiv(index) = startPop(i,1:numVar)';
+      eval(estr); startPop(i,xZomeLength) = indiv_val;
+    end
+  elseif numVar == size(startPop,2) % supplement startPop with fitness values
+    popSize = size(startPop,1);
+    startPop = [startPop, zeros(popSize,1)];
+    for i = 1:popSize
+      indiv = p(:,1); indiv(index) = startPop(i,1:numVar)';
+      eval(estr); startPop(i,xZomeLength) = indiv_val;
+    end
+  else % make sure that popSize represents number of individuals
+    popSize = size(startPop,1);    
+  end 
+
+  oval = max(startPop(:,xZomeLength)); % Best value in start pop
+
+  while(~done)
+    % Elitist Model
+    [bval,bindx] = max(startPop(:,xZomeLength));       % Best of current pop
+    best =  startPop(bindx,:);
+
+    if collectTrace
+      traceInfo(gen,1) = gen; 		               % current generation
+      traceInfo(gen,2) = startPop(bindx,xZomeLength);  % Best fittness
+      traceInfo(gen,3) = mean(startPop(:,xZomeLength));% Avg fittness
+      traceInfo(gen,4) = std(startPop(:,xZomeLength)); 
+    end
+
+    if ((abs(bval - oval) > tol_fun) | (gen == 1)) % If we have a new best sol
+      if report == 1
+        fprintf(1,'\n%d %f\n',gen,-bval);          % Update the report
+      end 
+      bPop(bFoundIn,:) = [gen startPop(bindx,:)];  % Update bPop Matrix
+      bFoundIn = bFoundIn + 1;                % Update number of changes
+      oval = bval;                            % Update the best val
+      gen_bval = 0;
+    else 
+      if report == 1
+        fprintf(1,'%d ',gen);	              % Otherwise just update num gen
+      end
+      gen_bval = gen_bval + 1;
+    end 
+
+    endPop = feval(selectFN,startPop,[gen selectOpts]); % Select
+
+    for i = 1:numXOvers
+      for j = 1:xOverOpts(i,1)
+	a = 1 + round(rand * (popSize - 1)); 	% Pick a parent
+	b = 1 + round(rand * (popSize - 1)); 	% Pick another parent
+	xN = deblank(xOverFNs(i,:)); 	% Get the name of crossover function
+        [c1 c2] = feval(xN,endPop(a,:),endPop(b,:),bounds,[gen xOverOpts(i,:)]);
+	
+	if c1(1:numVar) == endPop(a,(1:numVar)) % Make sure we created a new 
+	  c1(xZomeLength) = endPop(a,xZomeLength); % solution before evaluating
+	elseif c1(1:numVar) == endPop(b,(1:numVar))
+	  c1(xZomeLength) = endPop(b,xZomeLength);
+	else 
+	  indiv = p(:,1); indiv(index) = c1(1:numVar)';
+	  eval(estr); c1(xZomeLength) = indiv_val;
+	end 
+	if c2(1:numVar) == endPop(a,(1:numVar))
+	  c2(xZomeLength) = endPop(a,xZomeLength);
+	elseif c2(1:numVar) == endPop(b,(1:numVar))
+	  c2(xZomeLength) = endPop(b,xZomeLength);
+	else 
+	  indiv = p(:,1); indiv(index) = c2(1:numVar)';
+	  eval(estr); c2(xZomeLength) = indiv_val;
+	end      
+	
+	endPop(a,:) = c1;
+	endPop(b,:) = c2;
+      end
+    end 
+
+    for i = 1:numMuts
+      for j = 1:mutOpts(i,1)
+	a = 1 + round(rand * (popSize - 1));
+	c1 = feval(deblank(mutFNs(i,:)),endPop(a,:),bounds,[gen mutOpts(i,:)]);
+	if c1(1:numVar) == endPop(a,(1:numVar)) 
+	  c1(xZomeLength) = endPop(a,xZomeLength);
+	else
+	  indiv = p(:,1); indiv(index) = c1(1:numVar)';
+	  eval(estr); c1(xZomeLength) = indiv_val;
+	end
+	endPop(a,:) = c1;
+      end
+    end  
+      
+    gen = gen + 1;
+
+    if gen >= max_step_number % stop because number of generation exceeds maximum
+      done = 1;
+      info = 0;
+      fprintf(['\n no convergence within ', num2str(max_step_number), ...
+	      ' generations \n']);
+    elseif gen_bval >= max_evol % stop because of lack of improvement
+      done = 1;
+      info = 1;
+      if report > 0
+        fprintf(['\n no improvement within ', num2str(max_evol), ...
+		' generations \n']);
+      end
+    end
+
+    startPop = endPop; 			    % Swap the populations
+  
+    [bval,bindx] = min(startPop(:,xZomeLength)); % Keep the best solution
+    startPop(bindx,:) = best; 		% replace it with the worst
+  end 
+
+  [bval,bindx] = max(startPop(:,xZomeLength));
+  if report 
+    fprintf(1,'\n%d %f\n',gen,-bval);	  
+  end
+
+  x = startPop(bindx,:);
+  bPop(bFoundIn,:) = [gen startPop(bindx,:)];
+
+  if collectTrace
+    traceInfo(gen,1) = gen; % current generation
+    traceInfo(gen,2) = startPop(bindx,xZomeLength);   % Best fittness
+    traceInfo(gen,3) = mean(startPop(:,xZomeLength)); % Avg fittness
+  end
+
+  q(index, 1) = x(1:numVar)'; % copy best solution to output
+
+##### SOURCE END #####
+--></body></html>

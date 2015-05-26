@@ -1,0 +1,152 @@
+<HTML>
+<HEAD>
+
+  <TITLE>
+    DEBtool_enzyme
+  </TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: enzyme</H3>
+
+Compares enzyme performance in reactions between two
+complementary compounds
+ 
+<HR>
+<H4><A NAME="enzyme">enzyme</A></H4>
+
+<P>
+Demo that runs:
+<UL>
+  <LI><A HREF="#pars_enzyme"><code>pars_enzyme</code></A>: parameter setting</LI>
+  <LI><A HREF="#shcontsu"><code>shcontsu</code></A>: countours for rates</LI>
+  <LI><A HREF="#shbatch"><code>shbatch</code></A>: compouds in batch reactors</LI>
+</UL>
+
+ The models account for the enzyme-mediated transformation 
+   <I>1A + 1B -> 1C</I>, using<BR>
+   1 standard enzyme kinetics: reversible binding of substrates to enzyme<BR>
+   2 special case: Synthezing Unit (irreversible binding)<BR>
+   3 special case: Rejection Unit (association as well as dissociation rates
+     very large)
+
+<P>
+ The enzyme can bind two substrates in a reversible way, without
+ producing a product, but if both substrates are bound, it can produce
+ a product. We assume that the product concentration does not affect
+ the transformation rate.
+
+<P>
+ For the more general transformation <I>n<FONT
+ SIZE=-1><SUB>A</SUB></FONT> A + n<FONT SIZE=-1><SUB>B</SUB></FONT> B
+ -> n<FONT SIZE=-1><SUB>C</SUB></FONT> C</I>, the number of parameters
+ of the transformation becomes excessive; there is a need for
+ simplification.
+
+<P>
+ A popular symplification is to let the assocation and dissociation
+ rates between substrates and enzyme go to infinity, such that their
+ ratios remain bounded. This results in a product of two hyperbolic
+ terms for the production rate: the Rejection Unit (RU). This
+ representation suffers from several theoretical problems.
+
+<P>
+ An attractive alternative is to let the dissociation rates between
+ substrates and enzyme go to zero: the Synthesizing Unit (SU). It
+ allows a reformulation of the process in terms of fluxes, that can be
+ applied in spatially structured environments (such as the living
+ cell), where the concept `concentration' becomes problematic. It also
+ allows a fully stochastic approach for describing the
+ transformation. The DEB theory uses the SU as a module at several
+ places.
+
+<P>
+ The theory behind SU kinetics is given in:<BR>
+ Kooijman, S. A. L. M. 1998.
+ <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy98.html">
+ The Synthesizing Unit as model for the stoichiometric fusion and 
+ branching of metabolic fluxes.</A>
+ <I>Biophys. Chem.</I> <B>73</B>: 179 - 188 
+
+
+<HR>
+<H4><A NAME="pars_enzyme">pars_enzyme</A></H4>
+
+Set the parameters by editing file <code>pars_enzyme.m</code> in toolbox enzyme.
+
+<HR>
+<H4><A NAME="shcontsu">shcontsu</A></H4>
+
+Contours are shown for the production rate of compound C as function
+of the substrate concentrations A and B, given that these are constant.
+See page 42 ff of the DEB-book.
+
+<P>Fig <B>1</B>
+Synthesizing Unit
+
+<P>Fig <B>2</B>
+Classical enzyme kinetics
+
+<P>Fig <B>3</B> 
+Rejection Unit
+
+<P>Example of use after editing file <code>pars_enzyme.m</code> in domain enzyme:
+<CODE>clear all; pars_enzyme; shcontsu</CODE>.
+The command <CODE>clear; pars_enzyme; shcontsu (2)</CODE> gives figure 2 only.
+
+<HR>
+<H4><A NAME="shbatch">shbatch</A></H4>
+
+Concentration profiles are shown for product C and substrates A and
+B in a batch reactor. The initial conditions, and the observation
+period can be changed by editing file <code>shbatch.m</code>.
+
+<P>Fig <B>1</B>
+Synthesizing Unit
+
+<P>Fig <B>2</B>
+Classical enzyme kinetics
+
+<P>Fig <B>3</B> 
+Rejection Unit
+
+<P>Example of use after editing file <code>pars_enzyme.m</code> in toolbox enzyme:
+<CODE>clear all; pars_enzyme; shbatch</CODE>. 
+The command <CODE>clear; pars_enzyme; shbatch(2)</CODE> gives figure 2 only.
+
+<HR>
+<H4><A NAME="su11">su11, ru11, enz11</A></H4>
+
+The command <CODE>[J_C, fractions] = su11(2.5, 3.1)</CODE> assigns the
+flux of product to <CODE>J_C</CODE> and the fractions of bounded
+enzyme (.., A., .B, AB; the dot standing for free) to
+<CODE>fractions</CODE>, for concentration of substrate A = 2.5, and
+that of B = 3.1. This is the SU-case, ru11 and enz11 work in a similar
+way for the RU and the reversible enzyme case.
+
+<HR>
+<H4><A NAME="su">su</A></H4>
+
+The command <CODE>J_C = su(2.5, 3.1, 2, 3)</CODE> assigns the flux of
+product to <CODE>J_C</CODE>, for concentration of substrate A = 2.5,
+and that of B = 3.1, given the reaction <I>2 A + 3 B -> C</I>.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

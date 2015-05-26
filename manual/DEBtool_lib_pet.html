@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_lib_pet</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3><A NAME="toolbox_lib_pet">Toolbox: lib/pet</A></H3>
+
+Routines for the add_my_pet collection. 
+The aim is to 
+<ul>
+  <li>estimate DEB parameters from a collection of data sets</li>
+  <li>present goodness of fit and accuracy
+  <li>evaluate implied properties
+</ul>   
+
+<H4><A NAME="Todo">Todo</H4>
+
+Load the following files from this subdirectory in the editor, while <code>pwd</code> is in the location where you want to work.
+<ul>
+   <li><a href="../lib/pet/html/mydata_my_pet.html"><code>mydata_my_pet</code></a> for setting data and references</li>
+   <li><a href="../lib/pet/html/predict_my_pet.html"><code>predict_my_pet</code></a> for specifying model predictions</li>
+   <li><a href="../lib/pet/html/pars_init_my_pet.html"><code>pars_init_my_pet</code></a> for initiating parameter values and fix/free them</li>
+   <li><a href="../lib/pet/html/results_my_pet.html"><code>results_my_pet</code></a> for customizing the presentation of results (optional)</li>
+   <li><a href="../lib/pet/html/run_my_pet.html"><code>run_my_pet</code></a> for setting estimation options and run estimation</li>
+</ul>
+You subsequently edit these files, replacing <code>my_pet</code> by the latin name of your species(genus and species name connected by an underscore), store them in your workspace and type <code>run_my_pet</code> in the active window.
+Make sure that the path to DEBtool_M and its subdirectories has been set.
+
+<p>
+Depending on option settings, results will be printed to screen and/or a .mat file and/or .html file.
+This .mat file can be read with 
+<a href="../lib/pet/html/printmat.html"><code>printmat('my_pet')</code></a>.
+You can start parameter estimation from an automized setting, the initial setting as specified in <code>pars_init_my_pet</code>, or from the <code>results_my_pet.mat</code> file, which was written after a previous run. 
+You can reduce or enhance the effect of particular data sets/points by changing weight coefficients in <code>mydata_my_pet</code>.
+The function 
+<a href="../lib/pet/html/parscomp_st.html"><code>parscomp_st</code></a> 
+is used in <code>predict</code> files to compute compound parameter from primary parameters;
+most DEBtool/animal functions work with scaled parameters.
+
+<p>
+A detailed account of the method is presented in <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET = "_top">the add_my_pet manual</a>
+
+<H4><A NAME="curators">For curators only</H4>
+
+The core code <a href="../lib/pet/html/estim_pars.html"><code>estim_pars</code></a> is a macro around regression function 
+<a href="../lib/regr/html/petregr_f.html"><code>petregr_f</code></a> 
+(with filters or  <a href="../lib/regr/html/petregr.html"><code>petregr</code></a> without; model-specific filters prevent the estimation process to sample outside the allowed parameter space); 
+options can be set with <a href="../lib/pet/html/estim_options.html"><code>estim_options</code></a>.
+Fix or release settings of parameters and chemical parameters are always taken from <code>pars_init_my_pet</code>;
+the parameters values might be set by 
+<a href="../lib/pet/html/get_pars.html"><code>get_pars</code></a> 
+if <code>estim_options('pars_init_method', 0)</code> (and parameters are free, not fixed) or are set by <code>results_my_pet.mat</code> if <code>estim_options('pars_init_method', 1)</code>.
+
+<h5><a NAME="filters">filters</a></h5>
+This regression function uses filters for the various
+<a href="../manual/DEBtool_animal.html">models</a>,
+<a href="../lib/pet/html/filter_abj.html"><code>filter_abj</code></a> and 
+<a href="../lib/pet/html/filter_std.html"><code>filter_std</code></a>, while warnings are specified by 
+<a href="../lib/pet/html/warning_abj.html"><code>warning_abj</code></a> and
+<a href="../lib/pet/html/warning_std.html"><code>warning_std</code></a>.
+Filter holds are reported by 
+<a href="../lib/pet/html/print_filterflag.html"><code>print_filterflag</code></a> in <code>estim_pars</code>.
+
+<h5><a NAME="weights">weights/errors</a></h5>
+Weight coefficients are set by  <a href="../lib/pet/html/setweights.html"><code>setweights</code></a>. 
+Relative errors are computed by <a href="../lib/pet/html/mre_st.html"><code>mre_st</code></a>;
+These means are about the absolute values of the relative errrors.
+
+
+<h5><a NAME="pseudodata">pseudodata</a></h5>
+Pseudodata are data that are (simple functions of) parameter values, while data and their predictions still might differ.
+They are used to avoid unrealistic values for poorly determined parameters.
+Pseudodata is added with 
+<a href="../lib/pet/html/addpseudodata.html"><code>addpseudodata</code></a>, removed by 
+<a href="../lib/pet/html/rmpseudodata.html"><code>rmpseudodata</code></a> and predicted by
+<a href="../lib/pet/html/predict_pseudodata.html"><code>predict_pseudodata</code></a>.
+
+<h5><a NAME="automized">automized initial estimates</a></h5>
+Automized initial parameters estimates are generated with 
+<a href="../lib/pet/html/get_pars.html"><code>get_pars</code></a>, which is a macro around
+<a href="../manual/DEBtool_animal.html#pars-data"><code>get_pars_2 till 9</code></a>.
+Specific density of biomass is set by
+<a href="../lib/pet/html/get_d_V.html"><code>get_d_V</code></a>
+on the basis of taxonomic relationship.
+
+<h5><a NAME="several">several species</a></h5>
+The code allows for parameter estimation of several species simultaneously. 
+The function 
+<a href="../lib/pet/html/mydata_pets.html"><code>mydata_pets</code></a> catenates <code>mydata</code> files,
+<a href="../lib/pet/html/predict_pets.html"><code>predict_pets</code></a> catenates <code>predict</code> files, and 
+<a href="../lib/pet/html/results_pets.html"><code>result_pets</code></a> does the same with <code>results</code> files.
+
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

@@ -1,0 +1,2952 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_animal</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: animal</H3>
+
+Animal physiology: 1 reserve, 1 structure, isomorph, 1 type of food
+
+<HR>
+<H4><A NAME="animal">animal</A></H4>
+
+  Demo that runs:
+  <UL>
+    <li> <A HREF="#pars_animal"><code>pars_animal</code></A>: parameter setting </li>
+    <li> <A HREF="#statistics"><code>statistics</code></A>: reports some statistics </li>
+    <li> <A HREF="#shbirth_pie"><code>shbirth_pie</code></A>: 
+         pie diagrams for the cumulative energy investment at birth</li>     
+    <li> <A HREF="#shmics"><code>shmics</code></A>: 
+         temp correction, embryo weights, reproduction, reserve residence times </li>
+    <li> <A HREF="#shtime_animal"><code>shtime_animal</code></A>:
+         length, reprod, weight, survival </li>
+    <li> <A HREF="#shphase"><code>shphase</code></A>:
+         phase diagram </li>
+    <li> <A HREF="#shflux"><code>shflux</code></A>:
+         fluxes of compounds </li>
+    <li> <A HREF="#shflux_struc"><code>shflux_struc</code></A>:
+         structure-specific fluxes </li>
+    <li> <A HREF="#shflux_weight"><code>shflux_weight</code></A>:
+         weight-specific fluxes </li>
+    <li> <A HREF="#shratio"><code>shratio</code></A>:
+         Repiration, Watering, Urination Quotients </li>
+    <li> <A HREF="#shpower"><code>shpower</code></A>:
+         powers and specific powers </li>
+    <li> <A HREF="#shscale"><code>shscale</code></A>:
+         variables versus species' max body weight </li>
+    <li> <A HREF="#shssd_iso"><code>shssd_iso</code></A>:
+         population characterisitcs versus functional response </li>
+  </UL>
+
+   The model accounts for:<BR>
+   effects of food availability (X) and temperature (T).<BR>
+   These environmental parameters are taken to be constant in the present implementation, but it is not difficult to let them vary in time.
+ 
+   <p>
+   The animal (or other organism) is decomposed in:<BR>
+   structure (V) and reserve (E)<BR>
+   Organic compounds:<BR>
+   X = food, V = structure, E = reserve, P = faeces<BR>
+   Mineral compounds:<BR>
+   C = carbon dioxide, H = water, O = dioxygen, N = nitrogen waste
+
+   <p>
+   The animal develops through an embryonic, juvenile and adult phase.<BR>
+   Assimilation is switched on at birth<BR>
+   Allocation to maturation is redirected to reproduction at puberty
+
+   <p>
+   Uptake is proportional to surface area, which is taken to be proportional to the structural volume^(2/3): 
+   isomorph
+
+   <p>
+   The heating length (this is the volumetric length reduction due to the energy drain that goes into heating or osmotic work) is set to a fixed length in this implementation. 
+   The DEB theory has a module on the water balance, with implications for the costs of heating. 
+   These implications make the heating length a function of other variables.
+
+   <p>
+   All lengths refer to volumetric lengths. Lengths should be divided by a shape coefficients to arrive at shape-specific lengths.
+
+   <p>
+   Example of use after (optionally) editing file <code>pars_animal.m</code>: 
+   <CODE>animal</CODE>
+
+<HR>
+<H4><A NAME="pars_animal">pars_animal</A></H4>
+
+  Set the parameters by editing file <code>pars_animal.m</code> in toolbox animal. 
+  This can best be done by first copying it to <code>pars_mydata.m</code>.
+  Script-file <code>parscomp</code> computes quantities that do not depend on food density;
+  Script-file <code>statistics</code> computes quantities that do depend on food density, while <code>report_animal</code> reports the results to the screen.
+  Parameter values for particular species can be found in 
+  <A HREF="//www.bio.vu.nl/thb/deb/deblab/add_my_pet/Species.xls">
+  <code>Species.xls</code></A> and on the   <A HREF="//www.bio.vu.nl/thb/deb/deblab/add_my_pet/Species.html">
+  add_my_pet site</A> in the DEB laboratory.
+  The script <A HREF="//www.bio.vu.nl/thb/deb/deblab/add_my_pet/mydata/mydata_my_pet.m"><code>mydata_my_pet.m</code></A> 
+  shows how the results can be written to xls and html formats.
+
+  <p>
+  The script works similar to<A HREF="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/"> <code>pars_my_pet</code> </A>, which is the template that is used for namy animal species, but makes no graphs.
+  A number of functions support the analysis of patterns in parameter values among species and the maintenance of the collection.
+  The functions <code>shprimary_parameters</code> and <code>shparameters</code> produce many graphs of primary parameters and function of these parameters.
+  The colour coding is set in <code>read_Species</code>.
+  De function <code>add_my_pet</code> can be used to add a species to the collection, and <code>refresh_my_pet</code> to update a species.
+  These functons use a number of report functions writing code in html and xls.
+  The collection is summarised in <A HREF="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/Species.html"> <code>Species.html</code></A> and <A HREF="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/Species.xls"> <code>Species.xls</code> </A>, which are described in the <A HREF="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/add_my_pet.pdf">add_my_pet manual</A>.
+  These functions are only availeble in the Matlab version of DEBtool, not in the Octave version. 
+  This is partly due to Excel being commercial and Octave is not.
+
+  <p>
+  Example of use: 
+  <CODE>clear; pars_animal</CODE>
+
+<HR>
+<H4><A NAME="statistics">statistics</A></H4>
+
+  Script-file that computes quantities that depend on food density.
+ 
+  <p>
+  Example of use after editing file <code>pars_animal.m</code> and/or <code>f</code> in <code>statistics</code>: 
+  <CODE>clear; pars_animal</CODE>
+
+<HR>
+<H4><A NAME="shbirth_pie">shbirth_pie</A></H4>
+
+  Demo that runs <A HREF="#birth_pie"><code>birth_pie and birth_pie_foetus</code></A>
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shbirth_pie</CODE>
+
+<HR>
+<H4><A NAME="shmics">shmics</A></H4>
+
+  Demo that runs 
+  <UL>
+    <li> <A HREF="#shtemp2corr"><code>shtemp2corr</code></A>:
+         temperature correction </li>
+    <li> <A HREF="#shtime2eweight"><code>shtime2eweight</code></A>:
+         embryo weight </li>
+    <li> <A HREF="#shlength2reprod"><code>shlength2reprod</code></A>:
+         reproduction </li>
+    <li> <A HREF="#shlength2res_time"><code>shlength2res_time</code></A>:
+         residence time of molecules in reserve </li>
+  </UL>
+
+<HR>
+<H4><A NAME="shtemp2corr">shtemp2corr</A></H4>
+
+  The routine plots the temperature correction factor logarithmically as a function of inverse absolute temperature. 
+
+  <p>
+  The green section shows the temperature range for "standard" physiological adaptation; 
+  the red section corresponds with the high-temperature inactivation, the blue section with low-temperature inactivation.
+
+  <p>
+  The temperature range that is plotted corresponds with correction factors larger than 0.01.
+
+  <p>
+  All rate parameters are multiplied with this temperature correction factor. 
+  If the actual temperature equals the reference temperature, this factor is one, irrespective of the values of the temperature parameters.
+
+  <p>
+  Since the routine is located in the library <code>lib</code>, is can be run from all toolboxes except <code>lib</code> itself (because it needs parameter values set by <code>pars_animal</code> in one of the other toolboxes).
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shtemp2corr</CODE>
+  
+<HR>
+<H4><A NAME="shtime2eweight">shtime2eweight</A></H4>
+  
+  The routine plots the development of embryo's structural weight (green) and total weight (red) at scaled reserve density e<sub>b</sub> = 1, 0.8, 0.6, .... 
+  See pages 64 ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The curves correspond with <B>shtime2weight</B>, but the sections that correspond with embryo's are so close to zero, that the weights are hardly visible.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shtime2eweight</CODE>
+  
+<HR>
+<H4><A NAME="shlength2reprod">shlength2reprod</A></H4>
+
+  The routine plots the reproduction rate at scaled functional responses f = 1, 0.8, 0.6, .. as functions of the volumetric lengths. 
+  The lowest value of f still has an ultimate length larger than l_p, which depends on other parameter values. 
+  See pages 69 ff of the  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shlength2reprod</CODE>
+
+<HR>
+<H4><A NAME="shlength2res_time">shlength2res_time</A></H4>
+
+  The routine plots the mean residence times of molecules in the reserve  at scaled functional responses f = 1, 0.8, 0.6, .. as functions of scaled lengths: 
+  E/p<sub>C</sub>, where p<sub>C</sub> is the mobilisation power.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shlength2res_time</CODE>
+
+<HR>
+<H4><A NAME="res_time">res_time</A></H4>
+
+  The routine obtains the mean residence times of molecules in the reserve at scaled functional responses f = 1, 0.8, 0.6, .. as functions of scaled lengths: 
+  E/p<sub>C</sub>, where p<sub>C</sub> is the mobilisation power.
+
+  <p>
+  Input:
+  <ul>
+    <li> n-vector with scaled lengths </li>
+    <li> scalar with scaled functional response </li>
+    <li> 3-vector with parameters: 
+      <ol>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy investment ratio g </li>
+        <li> scaled heating length l<sub>T</sub>
+      </ol>
+  </ul>
+  
+  Output:
+  <ul>
+    <li> n-vector with residence times </li>
+  </ul>
+  
+  <p>
+  Example of use: 
+  <CODE>res_time(1,1,[.01; 1; 0])</CODE>
+
+<HR>
+<H4><A NAME="shtime_animal">shtime_animal</A></H4>
+
+  Demo that runs 
+  <UL>
+    <li> <A HREF="#shtime2length"><code>shtime2length</code></A>:
+         length </li>
+    <li> <A HREF="#shtime2reprod"><code>shtime2reprod</code></A>:
+         reproduction </li>
+    <li> <A HREF="#shtime2weight"><code>shtime2weight</code></A>:
+         weight </li>
+    <li> <A HREF="#shtime2survival"><code>shtime2survival</code></A>:
+         survival </li>
+  </UL>
+  The time intervals that are shown correspond with lengths upto 0.99 times the ultimate length.
+ 
+<HR>
+<H4><A NAME="shtime2length">shtime2length</A></H4>
+
+  The routine plots the development of structural volumetric length at scaled functional responses f = 1, 0.8, 0.6, .. 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  Structural volumetric length is not identical to physical volumetric length, because of the contribution of reserves in the latter; 
+  in many cases, it will be close, however. 
+  See page 51 of the  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The development is through embryo (red), juvenile (blue) and adult (green) if food density is large enough.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal;shtime2length</CODE> 
+  
+<HR>
+<H4><A NAME="shtime2reprod">shtime2reprod</A></H4>
+
+  The routine plots the development of the reproduction rate at scaled functional responses f = 1, 0.8, 0.6, .. 
+  The lowest value of f still has an ultimate length larger than l_p, which depends on other parameter values. 
+  See page 69 of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+  
+  <p>
+  All curves are green, because only adults reproduce.
+ 
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal;shtime2reprod</CODE>
+
+<HR>
+<H4><A NAME="shtime2weight">shtime2weight</A></H4>
+
+  The routine plots the development of body weight at scaled functional responses f = 1, 0.8, 0.6, .. 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  See pages 51ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The development is through embryo (red), juvenile (blue) and adult (green) if food density is large enough. 
+  See <B>shtime2eweight</B> for more detail for embryos.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear; pars_animal; shtime2weight</CODE> 
+  
+<HR>
+<H4><A NAME="shtime2survival">shtime2survival</A></H4>
+
+  The routine plots the survival probability with respect to aging at scaled functional responses f = 1, 0.8, 0.6, .. 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  See page 214 of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The development is through embryo (red), juvenile (blue) and adult (green) if food density is large enough.
+
+  <p>
+  Example of use after editing file <code>pars_animal.m</code>: 
+  <CODE>clear all; pars_animal; shtime2survival</CODE>.
+
+<HR>
+<H4><A NAME="shphase">shphase</A></H4>
+
+  Demo that runs 
+<UL>
+  <li> <A HREF="#shphase_memv"><code>shphase_memv</code></A>:
+       phase diagram for reserve and structural mass </li>
+  <li> <A HREF="#shphase_el"><code>shphase_el</code></A>:
+       phase diagram for scaled reserve density and scaled length </li>
+</UL>
+
+<HR>
+<H4><A NAME="shphase_memv">shphase_memv</A></H4>
+  
+  The routine plots the phase diagram of reserve mass M<sub>E</sub> and structural mass M<sub>V</sub> (in C-moles). 
+  The direction field is given with arrows, the null-isoclines in red curves. 
+  The green curves represent stage transitions: 
+  embryo to juvenile (where feeding is switched on), and where the catabolic flux equals the somatic maintenance costs. 
+  If the organism could shrink, it would die at this border. 
+  The magenta box gives the border of possible values.
+
+  <p>
+  The routine has two optional inputs: the scaled function response (a number between 0 and 1), and the length multiplier for the arrows of the direction field.
+
+  <p>
+  Example of use: 
+  <code>clear all; pars_animal; shphase_memv(.6,1)</code>. 
+  Edit <code>pars_animal.m</code> to change parameters.
+
+<HR>
+<H4><A NAME="shphase_el">shphase_el</A></H4>
+  
+  The routine plots the phase diagram of scaled reserve density e and scaled length l. 
+  Embryos start at infinitely large scaled reserve density, but after birth, it is confined on the interval from 0 till 1. 
+  Scaled length is always between 0 and 1. 
+  The direction field is given with arrows, the null-isoclines in red curves. 
+  The green curves represent stage transitions: embryo to juvenile (where feeding is switched on), and where the catabolic flux equals the somatic maintenance costs.  
+  If the organism could shrink, it would die at this border. 
+  The magenta box gives the border of possible values for juveniles and adults. 
+  Notice that the principle of weak homeostasis can be clearly seen from this direction field: 
+  any trajectory first bends to the null-isocline for e, than continue into the direction of the null-isocline for l, following the null-isocline for e.
+
+  <p>
+  The scaled reserve density e and the scaled length l relate to the reserve mass and the structural mass as e = M_E * M_Vm/ (M_V * M_Em) and l = (M_V/ M_Vm)^(1/3).
+
+  <p>
+  The routine has two optional inputs: the scaled function response (a number between 0 and 1), and the length multiplier for the arrows of the direction field.
+
+  <p>
+  Example of use: 
+  <code>clear; pars_animal; shphase_el(.6,1)</code>. 
+  Edit <code>pars_animal.m</code> to change parameters.
+
+<HR>
+<H4><A NAME="shflux">shflux</A></H4>
+
+  Routine that produces eight plots that show fluxes of compounds as functions of the scaled length, for scaled functional responses f = 1, 0.8, 0.6, ... 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  The range of the scaled lengths is from 0 to f. See pages 138 ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The animal develops through the embryo (red), juvenile (blue) and adult (green) stages. 
+  The combination of the eight fluxes fully specify the interaction of the animal with its environment. 
+  All fluxes are expressed in mol per time. 
+
+  <p>
+  The discontinuities between the different stages relate to the switches of assimilation and reproduction.
+
+  <p>
+  fig <B>1</B><BR>
+  Food; 
+  negative, because it disappears.
+
+  <p>
+  fig <B>2</B><BR> 
+  Structural mass; 
+  note that the fluxes are zero when the animal is fully grown; 
+  this occurs at structural length l = f.
+
+  <p>
+  fig <B>3</B><BR> 
+  Reserve mass; 
+  the flux is negative during the embryonal stage. 
+  During the adult state, the flux adds the production of the reserve of the individual, and that of the offspring. 
+  The first contribution is zero for scaled length l = f, because no new reserves are produced in a fully grown individual (because of weak homeostasis).
+
+  <p>
+  fig <B>4</B><BR>
+  Faeces; 
+  proportional to food, but positive, because it appears.
+
+  <p>
+  fig <B>5</B><BR> 
+  Carbon dioxide; 
+  usually positive, but can become negative, depending on parameter values.
+
+  <p>fig <B>6</B><BR>
+  Water; 
+  usually positive.
+
+  <p>fig <B>7</B><BR>
+  Dioxygen; 
+  usually negative
+
+  <p>fig <B>8</B><BR>
+  Nitrogen waste (frequently ammonia for animals that live in water);
+  usually positive
+
+  <p>
+  Example of use after editing <code>pars_animal.m</code>: 
+  <CODE>clear all; pars_animal; shflux</CODE>.<BR> 
+  The command <CODE>clear; pars_animal; shflux(2)</CODE> will only plot fig <B>2</B>.
+
+
+<HR>
+<H4><A NAME="shflux_struc">shflux_struc</A></H4>
+
+  Similar to <B>shflux</B>, but the fluxes are divided by the structural mass.  
+  The units are, therefore, mol/mol.d. 
+  The embryonic lengths are plotted in the range 0.8-1.0 times l_b.
+
+<HR>
+<H4><A NAME="shflux_weight">shflux_weight</A></H4>
+
+  Similar to <B>shflux</B>, but the fluxes are divided by the weight.
+  The units are, therefore, mol/g.d.
+
+<HR>
+<H4><A NAME="shratio">shratio</A></H4>
+
+  Routine that produces three plots that show ratio of mineral fluxes as functions of the scaled length, for scaled functional responses f = 1, 0.8, 0.6, ... 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  The range of the scaled lengths is from 0.8*l_b to f. 
+  The fluxes exclude contributions from assimilation; so only contributions from dissipation and growth are included. 
+  All fluxes are in terms of mol per time; the ratio's are dimensionless. 
+  See pages 138 ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The animal develops through the embryo (red), juvenile (blue) and adult (green) stages. 
+
+  <p>
+  fig <B>1</B><BR>
+  Respiration Quotient: 
+  ratio of carbon dioxide and (negative) dioxygen fluxes
+
+  <p>
+  fig <B>2</B><BR> 
+  Watering Quotient: 
+  ratio of water and (negative) dioxygen fluxes
+
+  <p>
+  fig <B>3</B><BR> 
+  Urination Quotient: 
+  ratio of nitrogen waste and (negative) dioxygen fluxes
+  
+  <p>
+  Example of use after editing <code>pars_animal.m</code>: 
+  <CODE>clear all; pars_animal; shratio</CODE>.<BR> 
+  The command <CODE>clear; pars_animal; shratio (2)</CODE> will only plot fig <B>2</B>.
+
+<HR>
+<H4><A NAME="shpower">shpower</A></H4>
+
+  Routine that produces eight plots that show powers and specific powers as functions of the scaled length, for scaled functional responses f = 1, 0.8, 0.6, ... 
+  The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  The range of the scaled lengths is from 0.8*l_b to f. 
+  The powers are in terms of kJ/d, and the specific powers in kJ/mol.d, where the power has been devided by the structural mass. 
+  See pages 78 ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  The animal develops through the embryo (red), juvenile (blue) and adult (green) stages. 
+
+  <p>
+  fig <B>1</B><BR>
+  Heat, which dissipates into the enironment
+
+  <p>
+  fig <B>2</B><BR> 
+  Assimilation power (power input into reserves, extracted from food)
+
+  <p>
+  fig <B>3</B><BR> 
+  Catabolic power
+
+  <p>
+  fig <B>4</B><BR>
+  Somatic maintenance plus heating plus growth power
+  
+  <p>
+  fig <B>5</B><BR>
+  Specific heat, which dissipates into the environment
+
+  <p>
+  fig <B>6</B><BR> 
+  Specific assimilation power (power input into reserves, extracted from food)
+
+  <p>
+  fig <B>7</B><BR> 
+  Specific catabolic power
+
+  <p>
+  fig <B>8</B><BR>
+  Specific somatic maintenance plus heating plus growth power
+  
+  <p>
+  Example of use after editing </code>pars_animal.m</code>: 
+  <CODE>clear all; pars_animal; shpower</CODE>.<BR> 
+  The command <CODE>clear; pars_animal; shpower(2)</CODE> will only plot fig <B>2</B>.
+
+<HR>
+<H4><A NAME="birth_pie">birth_pie, birth_pie_foetus</A></H4>
+
+  Plots pie diagrams for the cumulative energy investment at birth for egg or foetal development.
+  See section 4.3.3 of the  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on the DEB-book</A>.
+  The pie pieces are also given numerically as fractions in the output, which sum to 1.
+  Investments that are fully dissipated are drawn exploded.
+  If the growth efficiency is specified, cumulative allocation to growth is splitted into that to growth overhead and structure.
+
+  <p>
+  Input:
+  <ul>
+    <li> (4 or 5)-vector with parameters</li>
+      <ol>
+        <li> g, -, energy investment ratio </li>
+        <li> k, -, maintenance ratio </li>
+        <li> v<sub>H</sub><sup>b</sup>, -, scaled maturity at birth </li>
+        <li> kap,  -, fraction of mobilised reserve allocated to soma </li>
+        <li> optional: kap<sub>G</sub>, -, growth efficiency </li>
+      </ol>
+    <li> optional n-vector with scalar scaled reserve density at birth. Default: 1 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth reserve left at birth, cumulatively allocated to 
+      <ol>
+        <li> somatic maintenance </li>
+        <li> maturity maintenance</li>
+        <li> maturation </li>
+        <li> growth </li>
+        <li> if the first input has 5 elements, growth is splitted in dissipated and fixed in structure</li>
+      </ol>
+    </li>
+    <li> n-vector with failure (0) of success (1) for uE0 and tau_b-computations<li> 
+  </ul>
+
+  <p>
+  Example of use: 
+  <code>birth_pie([3 .3 .0005 .8 .8], [1 0.6])</code> or  
+  <code>birth_pie_foetus([3 .3 .0005 .8 .8], [1 0.6])</code>
+
+<HR>
+<H4><A NAME="scaled_power">scaled_power, scaled_power_metam</A></H4>
+
+  Scaled powers are calculated on the assumption for maturity that food density is constant.
+  The powers can become negative for shrinking of structure or maturity. 
+  The scaled powers are dimensionless by dividing the powers by {p<sub>Am</sub>} L<sub>m</sub><sup>2</sup>.
+  The function <code>scaled_power_metam</code> is similar for metabolic acceleration between birth and metamorphosis.
+  It requires 10 parameters as 3-rd input argument, with Hb, Hj and Hp as last 3 elements and input argument 4,5 and 6 are the scaled lengths at birth, metamorphosis and puberty.
+
+  <p>
+  Input:
+  <ul>
+    <li> n-vector with lengths </li>
+    <li> scalar with scaled functional response </li>
+    <li> 9-vector with parameter values
+      <ol>
+        <li> kap,  -, fraction of mobilised reserve allocated to soma </li>
+        <li> kapR, -, reproduction efficiency </li>
+        <li> g, -, energy investment ratio </li>
+        <li> kJ, 1/d, maturity maint rate coeff </li>
+        <li> kM, 1/d, somatic maint rate coeff </li>
+        <li> LT, cm, heating length  </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> Hb, d cm^2, scaled maturity at birth </li>
+        <li> Hp, d cm^2, scaled maturity at puberty </li>
+      </ol>
+    <li> scalar with scaled length at birth for F; if not exsistent: NaN </li>
+    <li> scalar with scaled length at puberty for F; if not exsistent: NaN </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (n,7)-matrix with scaled powers = powers/ {p<sub>Am</sub>} L<sub>m</sub><sup>2</sup>
+      <ol>
+        <li> assimilation </li>
+        <li> mobilisation </li>
+        <li> somatic maintenance </li>
+        <li> maturity maintenance </li>
+        <li> growth </li>
+        <li> maturation/reproduction </li>
+        <li> dissipation </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p>
+  Example of use, see <code>statistics</code>.
+
+<HR>
+<H4><A NAME="shscale">shscale</A></H4>
+
+  Plots variables against the maximum body weight of a species in a double logarithmic way. 
+  Extensive primary parameter values covary among species, such that ratios of extensive primary parameters are intensive, and do not covary among species. (They do scatter though, so they vary, but not covary.) 
+  Variables that can be expressed as functions of primary parameters depend on one particular function of primary parameters, namely maximum body weight, in a predictable way, which this routine illustrates for some examples. 
+  See page 209 ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+  <p>
+  To facilitate the judgement of the morphology of the curves, allometric functions with slopes equal to multiples of 1/3 have also been plotted in red. 
+  Note that the result can look weird because the absolute size of the x and y units on the axes depends on the size of the plot window, which is controlled by the user, while they should be equal. 
+  A blue line indicates the maximum body weight as specified by the parameters.
+
+  <p>
+  fig <B>1</B><BR>
+  Structural body volume
+
+  <p>
+  fig <B>2</B><BR>
+  Egg weight
+
+  <p>
+  fig <B>3</B><BR>
+  Dioxygen consumption
+
+  <p>
+  fig <B>4</B><BR>
+  N-waste production
+
+  <p>
+  fig <B>5</B><BR>
+  Min food density
+
+  <p>
+  fig <B>6</B><BR>
+  Max ingestion rate
+
+  <p>
+  fig <B>7</B><BR>
+  Max growth rate
+
+  <p>
+  fig <B>8</B><BR>
+  Von Bertalanffy growth rate
+
+  <p>
+  fig <B>9</B><BR>
+  Min incubation time
+
+  <p>
+  fig <B>10</B><BR>
+  Min juvenile period
+
+  <p>
+  fig <B>11</B><BR>
+  Max starvation period
+
+  <p>
+  fig <B>12</B><BR>
+  Max reproduction rate
+
+  <p>
+  Example of use after editing <code>pars_animal.m</code>: 
+  <CODE>clear all; pars_animal; shscale</CODE>.<BR> 
+  The command <CODE>clear; pars_animal; shscale(2)</CODE> will only plot fig <B>2</B>.
+
+<HR>
+<H4><A NAME="shssd_iso">shssd_iso</A></H4>
+
+  Plots population characteristics against the (constant) scaled functional response. 
+  The specific population growth rate is obtained from the characteristic equation; age zero is the start of development. 
+  The mean age, length, squared and cubed length only applies to juveniles and adults, excluding embryos. 
+  The routines call 
+  <A HREF="#ssd_iso"><code>ssd_iso</code></A>,
+  <A HREF="#sgr_iso"><code>sgr_iso</code> </A> and
+  <A HREF="#f_ris0"><code>f_ris0</code></A>.
+  For input parameters see <A HREF="#sgr_iso"><code>sgr_iso</code></A>.
+
+  <p>
+  fig <B>1</B><BR>
+  Specific growth rate
+
+  <p>
+  fig <B>2</B><BR>
+  Mean age
+
+  <p>
+  fig <B>3</B><BR>
+  Mean length
+
+  <p>
+  fig <B>4</B><BR>
+  Mean squared length
+
+  <p>
+  fig <B>5</B><BR>
+  Mean cubed length
+
+  <p>
+  Example of use: 
+  <CODE>shssd_iso([.8 .95 .1 .002 .003 0 .02 1e-3 1 1e-10 1e-3])</CODE>.
+
+<HR>
+<H4><A NAME="traject">traject, traject_M</A></H4>
+
+  The script runs a simulation of all state variables of the standard DEB model, including the ageing module, for the case food searching is a time-inhomogeneous Poisson process. 
+  All variables and parameters are scaled down to dimensionless quantities. 
+  Due to the stochastic nature of the searching process, death by shrinking and rejuvenation can occur, even at constant food density. 
+  The stochastic nature becomes more important for low food density, large food particle size, small maximum body size (zoom factor). 
+  The computation time depends on the parameter values and can be substantial for small food particle sizes. 
+  The routine taject_M first runs traject and then computs and presents also the four mineral fluxes in 4 sub-plots in a second window.
+  The theory is explained the <a href="/thb/research/bib/Kooy2010_c.pdf">comments for section 2.9 and 4.3.1</a>.
+
+  <p>
+  The script results in six sub-plots: 
+    the reserve density, 
+    the survival probability and length, 
+    the maturity, the acceleration, 
+    the hazards due to ageing and rejuvenation, 
+    the cumulative number of eaten food particles and of eggs.<br>
+  The trajectories are shown in red after death by shrinking. 
+  The (default) time period for the simulaton is from birth till two times the expected life span.
+
+  <p>
+  Example of use: 
+  <CODE>traject</CODE>;
+  the parameters can be set by editing the file <CODE>traject.m</CODE>
+ 
+<HR>
+<H4><A NAME="egg">egg</A></H4>
+
+  The routine calculates age, reserve energy and structural volume at birth for an arbitrary specific maturity maintenance costs [p<sub>J</sub>]. 
+  The optional constraint [E<sub>b</sub>] = f [E<sub>m</sub>] applies, in which case the routine also calculates the reserve energy at age zero. 
+  Obsolate function, see 
+  <a href="#get_lb"><code>get_lb</code></a>
+  <a href="#get_tb"><code>get_tb</code></a>
+  <a href="#get_ue0"><code>get_ue0</code></a>.
+
+  <p>
+  Input:
+  <ul> 
+    <li> 8-vector of parameters with interpretation
+      <ol>
+        <li>
+          <ul> 
+            <li> E<sub>0</sub>,  reserve at a = 0 or </li>
+            <li> f, scaled functional response and with [E<sub>b</sub>] = f [E<sub>m</sub>] </li>
+          </ul>
+        </li>
+        <li> E<sub>J</sub><sup>b</sup>, threshold for birth </li>
+        <li> [E<sub>G</sub>], spec costs for structure </li>
+        <li> [E<sub>m</sub>], max spec reserve density </li>
+        <li> [p<sub>M</sub>], spec somatic maintenance costs </li>
+        <li> [p<sub>J</sub>], spec maturity maintenance costs </li>
+        <li> {p<sub>Am</sub>}, spec max assim power </li>
+        <li> kap, fraction of p<sub>C</sub> allocated soma </li>
+      </ol> 
+    </li>
+    <li> vector of length 1 or 2 with initial estimates for a<sub>b</sub> and E<sub>0</sub>. 
+         If the length equals 2, the first parameter has the interpretation of the scaled functional response 
+          with the extra constraint that [E<sub>b</sub>] = f [E<sub>m</sub>], 
+          if not it is treated as the initial reserve </li>
+  </ul>
+
+  <p>
+  Output: 
+  <ul>
+   <li> 3-vector with age at birth a<sub>b</sub>, reserve energy at birth, E<sub>b</sub>, structural volume at birth, V<sub>b</sub>. </li>
+   <li> intitial reserve E<sub>0</sub>. </li>
+  </ul>
+  If a second input is not supplied, this value is idential to the first parameter.
+
+  <p>
+  See comments for page 111 for further explanation. 
+  The routine warns for no convergences problems, and then delivers empty outputs.
+
+  <p>
+  Example of use: 
+  <CODE>egg([2, .1, .1, 1, .01, .01, 2 , .3], 1.2)</CODE> or 
+  <CODE>[aEV E0] = egg([1, .1, .1, .85, .01, .01, 2 , .3], [1; .5])</CODE>.
+
+<HR>
+<H4><A NAME="egg_j">egg_j</A></H4>
+
+  The purpose of <code>egg_j</code> is similar to <code>egg</code>, but the choice of primary parameters is different. 
+  The function <a href="#get_ael"><code>get_ael</code></a> can be used to get info for the conditions at age 0.
+  Obsolate function, see 
+    <a href="#get_lb"><code>get_lb</code></a>
+    <a href="#get_tb"><code>get_tb</code></a>
+    <a href="#get_ue0"><code>get_ue0</code></a>.
+
+  <p>
+  Input:
+  <ul> 
+    <li> 8-vector with parameters
+      <ol> 
+        <li> {J<sub>EAm</sub>}: surface-specific assimilation flux </li>
+        <li> kap: fraction of mobilised reserve allocated to soma </li>
+        <li> v: energy conductance </li>
+        <li> [J<sub>EM</sub>]: specific somatic maintenance costs </li>
+        <li> k<sub>J</sub>: specific maturity maintenance costs </li>
+        <li> y<sub>VE</sub>: yield of structure on reserve </li>
+        <li> M<sub>H</sub><sup>b</sup>: maturity (in moles of reserve) </li>
+        <li> [M<sub>V</sub>]: volume-specific mass for structure </li>
+      </ol>
+    </li>
+    <li> 3-vector with (M<sub>H</sub>, M<sub>E</sub>, L) at age 0 </li>
+    <li> n-vector with ages </li>
+  </ul>
+  
+  <p>
+  Output:
+  <ul>
+    <li> (n,4)-matrix with (a, M<sub>H</sub>, M<sub>E</sub>, L) </li>
+  </ul>
+  
+  <p> 
+  An example of use is given in <code>mydata_egg_j</code>. 
+
+<HR>
+<H4><A NAME="milk">milk</A></H4>
+
+  Computes the cumulative amount of assimilation energy from birth till weaning (of baby mammals).
+
+  <p>
+  Input:
+  <ul> 
+    <li> scalar with scaled functional response</li>
+    <li> 5-vector with parameters
+      <ol>
+        <li> L<sub>b</sub>: structural length at birth </li>
+        <li> L<sub>x</sub>: structural length at weaning </li>
+        <li> L<sub>i</sub>: ultimate structural length </li>
+        <li> t<sub>x</sub>: time since birth at weaning </li>
+        <li> kap<sub>L</sub>: conversion efficiency from milk to (baby) reserve </li>
+      </ol>
+    </li>
+  </ul>
+  
+  <p>
+  Output:
+  <ul>
+    <li>scalar U<sub>L</sub> with scaled amount of milk per baby, from birth till weaning<br>
+    U_L = E_L/ {p_Am}: U_L = f int_0^(a_x - a_b) L^2(t) dt</li>
+ </li>
+  </ul>
+  
+  <p> 
+  An example of use: <code>milk(1, [1; 2; 10; 3; .9])</code>. 
+
+<HR>
+<H4><A NAME="initial_scaled_reserve">initial_scaled_reserve</A></H4>
+
+  The routine calculates the initial scaled reserve mass U<sub>E</sub><sup>0</sup> = M<sub>E</sub><sup>0</sup>/ {J<sub>EAm</sub>}. 
+  The constraint [U<sub>E</sub><sup>b</sup>] = f [U<sub>Em</sub>] applies.
+
+  <p>
+  Input: 
+  <ul>
+    <li> n-vector with scaled functional response </li>
+    <li> 5-vector with parameters
+      <ol>
+        <li> V<sub>H</sub><sup>b</sup>, d.cm^2, scaled maturity at birth: 
+             M_H^b/ ((1 - kap) {J_EAm}) 
+             with kap: fraction of mobilised reserve allocated to soma </li>
+        <li> g, -, energy investment ratio </li>
+        <li> k<sub>J</sub>, 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>, 1/d, somatic maintenance rate coefficient </li>
+        <li> v, cm/d, energy conductance </li>
+      </ol>
+    </li>
+    <li> optional scalar or n-vector with initial estimates for L<sub>b</sub> </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with initial scaled reserve: M_E^0/ {J_EAm} </li>
+    <li> n-vector with length at birth L<sub>b</sub> </li>
+    <li> n-vector with indicators for success (1) or failure (0) </li>
+  </ul> 
+
+  <p>
+  Example of use (for <i>Daphnia magna</i> at 20 C): 
+  <code>p_Dm = [.8 .42 1.7 1.7 3.24 .012]; initial_scaled_reserve(1,p_Dm)</code>.
+
+<HR>
+<H4><A NAME="maturity">maturity</A></H4>
+
+  The routine calculates the scaled maturity U<sub>H</sub> = M<sub>H</sub>/ {J<sub>EAm</sub>} at constant food density.
+
+  <p>
+  Input: 
+  <ul>
+    <li> n-vector with lengths between L<sub>b</sub> and L<sub>i</sub> </li>
+    <li> scalar with (constant) scaled functional response </li>
+    <li> 9-vector with parameters
+      <ol>
+        <li> kap, -, fraction of mobilised reserve allocated to soma </li>
+        <li> kapR, -, reproduction efficiency </li>
+        <li> g, -, energy investment ratio </li>
+        <li> k<sub>J</sub>, 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>, 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>, cm, heating length </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> U<sub>H</sub><sup>b</sup>, d.cm^2, scaled maturity at birth: 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> U<sub>H</sub><sup>p</sup>, d.cm^2, scaled maturity at puberty:
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+      The second parameter, kapR, is not used, but is here for consistency with <A href="#iget_pars_r"><code>iget_pars_r</code></A> and <A href="#reprod_rate"><code>reprod_rate</code></A>.
+    </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with scaled maturities: 
+         U<sub>H</sub> = M<sub>H</sub>/ {J<sub>EAm</sub>} </li>
+  </ul> 
+
+  <p>
+  Example of use (for <i>Daphnia magna</i> at 20 C): 
+  <code>p_Dm = [.8 .95 .42 1.7 1.7 3.24 .012 .366]; maturity([1 1.5 2 2.5 3], p_Dm, .8)</code>.
+
+<HR>
+<H4><A NAME="reprod_rate">reprod_rate, reprod_rate_foetus, reprod_rate_metam, reprod_rate_settle</A></H4>
+
+  The routine calculates the reproduction rate in number of eggs per time for and individual of length L and scaled reserve density e.
+  Variant <code>reprod_rate_foetus</code> does the same for foetal development.
+
+  <p>
+  Input: 
+  <ul>
+    <li> n-vector with lengths </li>
+    <li> scalar with scaled reserve density e </li>
+    <li> 9-vector with parameters
+      <ol>
+        <li> kap, -, fraction of mobilised reserve allocated to soma </li>
+        <li> kapR, -, reproduction efficiency </li>
+        <li> g, -, energy investment ratio </li>
+        <li> k<sub>J</sub>, 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>, 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>, cm, heating length </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> U<sub>H</sub><sup>b</sup>, d.cm^2, 
+             scaled maturity at birth: 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> U<sub>H</sub><sup>p</sup>, d.cm^2, 
+             scaled maturity at puberty:
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for length at birth;
+      Default value: 1<br>
+      or optional 2-vector with length L and scaled maturity U at time 0 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with reproduction rates </li>
+    <li> scalar scaled initial reserve </li>
+    <li> scalar with length at birth </li>
+    <li> scalar with length at puberty </li>
+    <li> scalar indicator for failure (0) or success (1) </li>
+  </ul> 
+
+  <p>
+  <code>reprod_rate_metam</code> and <code>reprod_rate_settle</code> do the same as <code>reprod_rate</code>, but for metabolic acceleration between birth and metamorphosis and settlement and metamorphosis, respectively.
+  The metam-version requires that L<sub>b</sub>, L<sub>j</sub> and L<sub>j</sub> are appended in the parameter list;
+  the settle-version requires L<sub>b</sub>,  L<sub>s</sub>, L<sub>j</sub> and L<sub>j</sub>.
+  Both versions give the reproduction rates, the scaled initial reserve and the success-indicator as outputs.
+
+  <p>
+  Example of use: 
+  <code>p_Dm = [.8 .95 .42 1.7 1.7 0 3.24 .012 .366]; reprod_rate(3, 1, p_Dm)</code>.
+
+<HR>
+<H4><A NAME="cum_reprod">cum_reprod, cum_reprod_metam</A></H4>
+
+  The routine calculates the cumulative reproduction in number of eggs for and individual of age a and scaled reserve density e.
+
+  <p>
+  Input: 
+  <ul>
+    <li> n-vector with times since birth </li>
+    <li> scalar with scaled reserve density e </li>
+    <li> 9-vector with parameters
+      <ol>
+        <li> kap, -, fraction of mobilised reserve allocated to soma </li>
+        <li> kapR, -, reproduction efficiency </li>
+        <li> g, -, energy investment ratio </li>
+        <li> k<sub>J</sub>, 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>, 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>, cm, heating length </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> U<sub>H</sub><sup>b</sup>, d.cm^2, scaled maturity at birth: 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> U<sub>H</sub><sup>p</sup>, d.cm^2, scaled maturity at puberty:
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for length at birth;
+         Default value: 1<br>
+         or optional 2-vector with length L and scaled maturity U at time 0 </li>
+  </ul>
+
+  The function <code>cum_reprod_metab</code> does the same as <code>cum_reprod</code>, but for an V1-morphic early-juvenile stage.
+  The input 10-vector with parameters has elements kappa; kappa_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp.
+  The outputs are: n-vector with number of eggs; initial scaled reserve; length at birth; length at puberty; age at birth; time at puberty since birth; indicator for failure (0) or success (1) 
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with number of eggs </li>
+    <li> scalar with initial scaled reserve </li>
+    <li> scalar with length at birth </li>
+    <li> scalar with length at puberty </li>
+    <li> scalar with age at birth </li>
+    <li> scalar with time at puberty since birth or since time 0 (if input 4 is 2-vector) </li>
+    <li> scalar indicator for failure (0) or success (1) </li>
+  </ul> 
+
+  <p>
+  Example of use: 
+  <code>p_Dm = [.8 .95 .42 1.7 1.7 0 3.24 .012 .366]; cum_reprod([.5 1 10 30]', 1, p_Dm)</code>.
+
+<HR>
+<H4><A NAME="get_ael">get_ael, get_ael_f</A></H4>
+
+  Obtains state variables at age zero and at birth from parameters and scaled reserve density at birth. 
+  <code>get_ael</code> does so for eggs, and <code>get_ael_f</code> for foetuses, which differ from eggs by not being limited by reserve availability. 
+
+  <p> 
+  Comparable and more efficient functions:
+    <a href="#get_lb"><code>get_lb</code></a>, 
+    <a href="#get_lb_foetus"><code>get_lb_foetus</code></a>, 
+    <a href="#get_tb"><code>get_tb</code></a>, 
+    <a href="#get_tb_foetus"><code>get_tb_foetus</code></a>.
+    <a href="#get_ue0"><code>get_ue0, get_ue0_foetus</code></a>, 
+    <a href="#get_tul"><code>get_tul</code></a>,
+
+  <p>
+  Input:
+  <ul> 
+    <li> 8-vector with parameters
+      <ol> 
+        <li> {J<sub>EAm</sub>}: surface-specific assimilation flux </li>
+        <li> kap: fraction of mobilised reserve allocated to soma </li>
+        <li> v: energy conductance </li>
+        <li> [J<sub>EM</sub>]: specific somatic maintenance costs </li>
+        <li> k<sub>J</sub>: specific maturity maintenance costs </li>
+        <li> y<sub>VE</sub>: yield of structure on reserve </li>
+        <li> M<sub>H</sub><sup>b</sup>: maturity (in moles of reserve) </li>
+        <li> [M<sub>V</sub>]: volume-specific mass for structure </li>
+      </ol>
+    </li>
+    <li> n-vector with scaled functional responses </li>
+  </ul>
+  
+  <p>
+  Output:
+  <ul>
+     <li> (n,3)-matrix with age, reserve and length at birth: 
+          a<sub>b</sub>, M<sub>E</sub><sup>b</sup>, L<sub>b</sub> </li>
+     <li> n-vector with initial reserve M<sub>E</sub><sup>0</sup> </li>
+     <li> n-vector with scaled length at birth: 
+          l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+  </ul>
+
+  <p> 
+  The output values are numerically obtained, starting from the values for a foetus; 
+  the age at birth of this foetus must again be obtained numerically, which is done starting from the assumption k<sub>J</sub>/ k<sub>M</sub> = (1 - kap)/ kap, which gives a constant maturity density m<sub>H</sub> = y<sub>EV</sub> (1 - kap)/ kap.  
+
+  <p> 
+  An example of use of <code>get_ael</code> is given in <code>mydata_get_ael</code>
+
+<HR>
+<H4><A NAME="get_lb">get_lb</A></H4>
+
+  The theory behind <code>get_lb</code>, <code>get_tb</code> and <code>get_ue0</code> is discussed in <a href="http=//www/bio.vu.nl/thb/research/bib/Kooy2009b.html">Kooy2009b</a>. 
+  Obtains scaled length at birth, given the scaled reserve density at birth. 
+  A Newton Raphson scheme is used with Euler integration, starting from an optional initial value. 
+  The default initial value is the exact one for maintenance ratio 1. 
+  Consider the application of <a href="#get_lb_foetus"><code>get_lb_foetus</code></a> for an alternative initial value.
+
+  <p> 
+  Comparable functions: <code>get_lb1</code> uses a Newton Raphson scheme with advanced integration (but is rather slow), and <code>get_lb2</code> uses a shooting method (in one variable; 
+  and is faster than <code>get_lb1</code>).
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 3-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) 
+        </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled reserve density at birth (default 1) </li>
+    <li> optional scalar with initial value for scaled length at birth </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+     <li> scalar with scaled length at birth: 
+          l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+     <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0</code>
+
+
+<HR>
+<H4><A NAME="get_eb_min">get_eb_min</A></H4>
+
+  Obtains the scaled reserve at birth for growth or maturation ceases at birth.
+  It can be seen as the lower viable scaled reserve density for embryo development.
+  Cf <A href="#get_ep_min"><code>get_ep_min</code></A>.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 3-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) 
+        </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for scaled length at birth </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> 2-vector with scaled reserve at birth at which growth, maturation ceases: e<sub>b</sub>
+    <li> 2-vector with scaled length at birth at wich growth, maturation ceases: l<sun>b</sub> </li>
+    <li> 2-vector with scaled initial reserve at which growth, maturation ceases> u<sub>E</sub><sup>0</sup> </li>    
+    <li> 2-vector with indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use: 
+  <code>get_eb_min([.1 .3 .01])</code>
+
+
+<HR>
+<H4><A NAME="get_lj">get_lj, get_lj_foetus</A></H4>
+
+  Many fish have an early-juvenile stage during which they behave like a V1-morph, while the embryo, late juvenile and adult stages behave like isomorphs.
+  The end of the V1-morphic stage is marked by a metamorphosis, an event called j. This routine obtaines scaled length at metamorphosis l<sub>j</sub> given scaled muturity at metamorphosis v<sub>H</sub><sup>j</sup>.
+  The theory behind <code>get_lj</code>, is discussed in the comments to DEB3. 
+  If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate);
+  if it is specified. however, is it just copied to the (third) output.
+  The code assumes v<sub>H</sub><sup>b</sup> < v<sub>H</sub><sup>j</sup> < v<sub>H</sub><sup>p</sup> (see first input).
+  <code>get_lj_foetus</code> does the same as <code>get_lj</code>, but then for foetal development.
+
+  <p> 
+  Input:  
+  <ul> 
+    <li> 6-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>] L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li> 
+        <li> v<sub>H</sub><sup>j</sup>: scaled maturity at metamorphosis
+             U<sub>H</sub><sup>j</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled food density (default 1) </li>
+    <li> optional scalar with scaled length at birth </li>
+  </ul>
+  
+  <p> 
+  Output: 
+  <ul>
+    <li> scalar with scaled length at metamorphosis: 
+         l<sub>j</sub> = L<sub>j</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>    
+
+  <p> 
+  An example of use:
+  <code>get_lj([.5, .1, .1, .01, .2, .3])</code>
+
+<HR>
+<H4><A NAME="get_ls">get_ls</A></H4>
+
+  Many bivalves have an mid-juvenile stage during which they behave like a V1-morph, while the embryo, early juvenile, late juvenile and adult stages behave like isomorphs.
+  The start of the V1-morphic stage is marked by an event called s,  and the end by an event called j. 
+  This routine obtaines scaled length at s, l<sub>s</sub>, and j, l<sub>j</sub> given scaled muturity at s, c<sub>H</sub><sup>s</sup>, and j, v<sub>H</sub><sup>j</sup>.
+  The theory behind <code>get_ls</code>, is discussed in the comments to DEB3. 
+  If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate);
+  if it is specified. however, is it just copied to the (third) output.
+  The code assumes v<sub>H</sub><sup>b</sup> < v<sub>H</sub><sup>s</sup> <v<sub>H</sub><sup>j</sup> < v<sub>H</sub><sup>p</sup> (see first input).
+
+  <p> 
+  Input:  
+  <ul> 
+    <li> 7-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>] L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li> 
+        <li> v<sub>H</sub><sup>s</sup>: scaled maturity at start of V1-stage
+             U<sub>H</sub><sup>s</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li> 
+        <li> v<sub>H</sub><sup>j</sup>: scaled maturity at end of V1-stage
+             U<sub>H</sub><sup>j</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled food density (default 1) </li>
+    <li> optional scalar with scaled length at birth </li>
+  </ul>
+  
+  <p> 
+  Output: 
+  <ul>
+    <li> scalar with scaled length at start of V1-stage: 
+         l<sub>s</sub> = L<sub>s</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at end of V1-stage: 
+         l<sub>j</sub> = L<sub>j</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>    
+
+  <p> 
+  An example of use:
+  <code>get_ls([.5, .1, .1, .01, .2, .25, .3])</code>
+
+<HR>
+<H4><A NAME="get_lp">get_lp, get_lp_foetus</A></H4>
+
+  The theory behind <code>get_lp</code>, is discussed in <a href="/thb/research/bib/Kooy2009b.html">Kooy2009b</a>. 
+  Obtains scaled length at puberty at constant food density.
+  If scaled length at birth (second input) is not specified, it is computed (using automatic initial estimate);
+  if it is specified. however, is it just copied to the (second) output.
+  <code>get_lp_foetus</code> does the same as <code>get_lp</code>, but then for foetal development.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 5-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio  </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>] L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li> 
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled food density (default 1) </li>
+    <li> optional scalar with initial estimate for lb (scaled length at birth)<br>
+         or 2-vector with scaled length and scaled maturity of a juvenile v<sub>H</sub>.<br>
+         In the latter case output l<sub>b</sub> equals NaN </li>
+  </ul>
+  
+  <p> 
+  Output: 
+  <ul>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>    
+
+  <p> 
+  An example of use:
+  <code>get_lp([.5, .1, .1, .01, .2])</code>
+
+<HR>
+<H4><A NAME="get_ep_min">get_ep_min</A></H4>
+
+  Obtains the scaled reserve at birth for growth and maturation ceases at puberty. 
+  It can be seen as the lower viable scaled reserve density for reproduction.
+  Cf <A href="#get_eb_min"><code>get_eb_min</code></A>.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 5-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length L<sub>T</sub>/ L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for scaled length at birth </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled reserve at puberty: e<sub>p</sub> </li>
+    <li> scalar with indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use: 
+  <code>get_ep_min([.1 1 0 .001 .1])</code>
+
+<HR>
+<H4><A NAME="get_tb">get_tb</A></H4>
+
+  Obtains scaled age at birth, given the scaled reserve density at birth. 
+  Divide the result by the somatic maintenance rate coefficient to arrive at age at birth.
+
+  <p>
+  Input:
+  <ul> 
+    <li> 1 (if third input is specified) or 3 -vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled reserve density at birth (default 1) </li> 
+    <li> optional scalar with scaled length at birth. 
+         Default calls <a href="#get_lb"><code>get_lb</code></a> but then the first input should have 3 rather than 1 elements. </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub> </li>
+    <li> scalar with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> scalar with indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use: 
+  <code>get_tb([.1;.5;.03])</code>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0</code>
+
+
+<HR>
+<H4><A NAME="get_tj">get_tj</A></H4>
+
+  Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages.
+  Metabolic acceleration occurs between birth and metamorphosis, see also <A HREF="#get_ts"><code>get_ts</code></A>.
+  Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages.
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 6-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>j</sup>: scaled maturity at metamorphosis
+             U<sub>H</sub><sup>j</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>)
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+    <li> optional scalar with initial estimate for lb (scaled length at birth)</li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled age at metamorphosis: 
+         tau<sub>j</sub> = a<sub>j</sub> k<sub>M</sub><br></li>
+    <li> scalar with scaled age at puberty: 
+         tau<sub>p</sub> = a<sub>p</sub> k<sub>M</sub><br></li>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub><br></li>
+    <li> scalar with scaled length at metamorphosis: 
+         l<sub>j</sub> = L<sub>j</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled ultimate length: 
+         l<sub>i</sub> = L<sub>i</sub>/ L<sub>m</sub> </li>
+    <li> scaler exponential growth rate between b and j</li>
+    <li> scaler von Bertalanffy growth rate between j and i</li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use:
+  <code>get_tj([.5, .1, 0, .01, .05, .2])</code>.
+  See also <code>mydata_get_ts</code>
+
+<HR>
+<H4><A NAME="get_ts">get_ts</A></H4>
+
+  Obtains scaled ages at settlement, metamorphosis, puberty, birth and the scaled lengths at these ages.
+  Metabolic acceleration occurs between settlement and metamorphosis, see also <A HREF="#get_tj"><code>get_tj</code></A>.
+  Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages.
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 7-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>s</sup>: scaled maturity at settlement
+             U<sub>H</sub><sup>s</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>)
+        <li> v<sub>H</sub><sup>j</sup>: scaled maturity at metamorphosis
+             U<sub>H</sub><sup>j</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>)
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+    <li> optional scalar with initial estimate for lb (scaled length at birth)</li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled age at settlement: 
+         tau<sub>s</sub> = a<sub>s</sub> k<sub>M</sub><br> </li>
+    <li> scalar with scaled age at metamorphosis: 
+         tau<sub>j</sub> = a<sub>j</sub> k<sub>M</sub><br> </li>
+    <li> scalar with scaled age at puberty: 
+         tau<sub>p</sub> = a<sub>p</sub> k<sub>M</sub><br> </li>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub><br> </li>
+    <li> scalar with scaled length at settlement: 
+         l<sub>s</sub> = L<sub>s</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at metamorphosis: 
+         l<sub>j</sub> = L<sub>j</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled ultimate length: 
+         l<sub>i</sub> = L<sub>i</sub>/ L<sub>m</sub> </li>
+    <li> scaler exponential growth rate between s and j </li>
+    <li> scaler von Bertalanffy growth rate between b and s and between j and i </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use: <code>mydata_get_ts</code>
+
+<HR>
+<H4><A NAME="get_tp">get_tp, get_tp_foetus</A></H4>
+
+  Obtains scaled age at puberty; 
+  the function <code>get_tp_foetus</code> does the same for foetal development.
+  The result depends on embryonal development. 
+  Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty.
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 5-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+    <li> optional scalar with initial estimate for lb (scaled length at birth)<br>
+         or 2-vector with scaled length and scaled maturity of a juvenile v<sub>H</sub>.<br>
+         In the latter case outputs tau<sub>b</sub> and l<sub>b</sub> equal NaN </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled age at puberty: 
+         tau<sub>p</sub> = a<sub>p</sub> k<sub>M</sub><br>
+         If length(input 3)==2: scaled time till puberty </li>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub><br>
+         If length(input 3)==2: NaN </li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use:
+  <code>get_tp([.5, .1, .1, .01, .2])</code>
+
+<HR>
+<H4><A NAME="get_tx">get_tx</A></H4>
+
+  Obtains scaled age and length at puberty, weaning, birth for foetal development.
+  An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). 
+  Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birt.
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 5-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>x</sup>: scaled maturity at weaning
+             U<sub>H</sub><sup>x</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> 
+             k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> sF: stress factor for foetal development;
+             1e8 = fast (default), 1 = slow
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+  </ul>
+
+  
+  <p> 
+  Output:
+  <ul>
+
+    <li> scalar with scaled age at puberty: 
+         tau<sub>p</sub> = a<sub>p</sub> k<sub>M</sub></li>
+    <li> scalar with scaled age at weaning: 
+         tau<sub>x</sub> = a<sub>x</sub> k<sub>M</sub></li>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub></li>
+    <li> scalar with scaled length at puberty: 
+         l<sub>p</sub> = L<sub>p</sub>/ L<sub>m</sub> </li>
+    <li> scalar with scaled length at weaning:
+         l<sub>x</sub> = L<sub>x</sub>/ L<sub>m</sub> </li>
+    <li> scaler with scaled length at birth: 
+         l<sub>b</sub> = L<sub>b</sub>/ L<sub>m</sub> </li>
+   </ul>
+  
+<HR>
+<H4><A NAME="get_tm">get_tm_foetus, get_tm_s</A></H4>
+
+  Obtains scaled mean age at death. 
+  Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death. 
+  The variant <code>get_tm_foetus</code> does the same in case of foetal development, <code>get_tm_s</code> assumes a short growth period relative to the life span. 
+  If the input parameter vector has only 4 elements (for [g, l<sub>T</sub>, h<sub>a</sub>/ k<sub>M</sub><sup>2</sup>, s<sub>G</sub>]), it skips the calulation of the survival probability at birth and puberty.
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 7-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> v<sub>H</sub><sup>p</sup>: scaled maturity at puberty
+             U<sub>H</sub><sup>p</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+        <li> h<sub>a</sub>/ k<sub>M</sub><sup>2</sup>: scaled Weibull aging acceleration </li>
+        <li> s<sub>G</sub>: scaled Gompertz stress coefficient </li>        
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+    <li> optional scalar with scaled length at birth </li> 
+    <li> optional scalar with scaled length at puberty </li> 
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled mean age: 
+         tau<sub>m</sub> = a<sub>m</sub> k<sub>M</sub> </li>
+    <li> scalar with survival probability at birth </li>
+    <li> scalar with purvival probability at puberty </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use:
+  <code>get_tm_s([.5, .1, .1, .01, .2, .1, .01])</code>
+
+<HR>
+<H4><A NAME="get_t50_s">get_t50_s</A></H4>
+
+  Obtains scaled median age at death. 
+  Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death. 
+  <code>get_t50_s</code> assumes a short growth period relative to the life span. 
+  
+  <p> 
+  Input:
+  <ul> 
+    <li> 4-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> l<sub>T</sub>: scaled heating length 
+             {p<sub>T</sub>}/[p<sub>M</sub>]  L<sub>m</sub> </li>
+        <li> h<sub>a</sub>/ k<sub>M</sub><sup>2</sup>: scaled Weibull aging acceleration </li>
+        <li> s<sub>G</sub>: scaled Gompertz stress coefficient </li>        
+      </ol>
+    </li>
+    <li> optional scalar with scaled functional response (default 1) </li> 
+    <li> optional scalar with initial value for scaled median age at death </li> 
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled median age: 
+         tau<sub>50</sub> = a<sub>50</sub> k<sub>M</sub> </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use:
+  <code>get_t50_s([.5, .1, .1, .01])</code>
+
+<HR>
+<H4><A NAME="get_ue0">get_ue0, get_ue0_foetus</A></H4>
+
+  Obtains the initial scaled reserve given the scaled reserve density at birth. 
+  Function <code>get_ue0</code> does so for eggs, <code>get_ue0_foetus</code> for foetuses.
+  Specification of length at birth as third input by-passes its computation,
+  so if you want to specify an initial value for this quantity, you should use <code>get_lb</code> directly.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 1 (if third input is specified) or 3 -vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled reserve density at birth (default 1) </li> 
+    <li> optional scalar with scaled length at birth. 
+         Default calls <a href="#get_lb"><code>get_lb</code></a>
+         but then the first input parameter should have 3 rather than 1 elements. </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+     <li> scalar with initial scaled reserve: 
+          u<sub>E</sub><sup>0</sup> = U<sub>E</sub><sup>0</sup> 
+          g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ v<sup>2</sup> </li>
+     <li> scalar with scaled length at birth </li>
+     <li> scalar with scaled age at birth in <code>get_ue0_foetus</code> only </li>
+     <li> indicator for failure (0) or success (1) of convergence </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0</code> and <code>mydata_ue0_foetus</code>
+
+<HR>
+<H4><A NAME="get_lb_foetus">get_lb_foetus</A></H4>
+
+  Obtains the scaled length at birth of a foetus, which is not
+  restricted by reserve availability.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 1 or 3-vector with energy investment ratio g, 
+         see <a href="#get_tb_foetus"><code>get_tb_foetus</code></a> </li>
+    <li> optional scalar with scaled age at birth. 
+         Default calls <a href="#get_tb_foetus"><code>get_tb_foetus</code></a>
+         but then the input parameter should have 3 elements. </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+     <li> scalar with scaled length at birth: 
+          l<sub>b</sub> = L<sub>b</sub>/L<sub>m</sub> </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0_foetus</code>
+
+<HR>
+<H4><A NAME="get_tb_foetus">get_tb_foetus</A></H4>
+
+  Obtains the scaled length at birth of a foetus, which is not
+  restricted by reserve availability.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 3-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for scaled age at birth. 
+         Default exact value for maintenance ratio 1. </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> scalar with scaled age at birth: 
+         tau<sub>b</sub> = a<sub>b</sub> k<sub>M</sub>. </li>
+    <li> indicator for succes (1) or failure (0). </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0_foetus</code>
+
+<HR>
+<H4><A NAME="get_tul">get_tul, get_tul_i</A></H4>
+
+  Obtains the scaled age, reserve and length at birth, given scaled reserve density at birth equals. 
+  Function <code>get_tul_i</code> is like <code>get_tul</code>, but the second input represent the initial values for scaled maturity, reserve, length.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> 3-vector with parameters
+      <ol> 
+        <li> g: energy investment ratio </li>
+        <li> k: maintenance ratio k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> v<sub>H</sub><sup>b</sup>: scaled maturity at birth
+             U<sub>H</sub><sup>b</sup> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ ((1 - kap) v<sup>2</sup>) </li>
+      </ol>
+    </li>
+    <li> optional scalar with scaled reserve density at birth (default 1) </li>
+    <li> optional scalar with initial value for scaled length at birth.
+         Default: exact value for maintenance ratio 1. </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> 3-vector with
+      <ol> 
+        <li> scaled age at birth: 
+             tau<sub>b</sub> = k<sub>M</sub> a<sub>b</sub> </li>
+        <li> scaled reserve at birth: 
+             u<sub>E</sub><sup>b</sup> = (g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ v<sup>2</sup>) 
+             M<sub>E</sub><sup>b</sup>/ {J<sub>EAm</sub>} </li>
+        <li> scaled length at birth: 
+             l<sub>b</sub> = L<sub>b</sub>/L<sub>m</sub> g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ v<sup>2</sup> </li>
+      </ol>
+    </li>
+    <li> initial scaled reserve: 
+         u<sub>E</sub><sup>0</sup> = (g<sup>2</sup> k<sub>M</sub><sup>3</sup>/ v<sup>2</sup>) 
+         M<sub>E</sub><sup>0</sup>/ {J<sub>EAm</sub>}
+    </li>
+    <li> indicator for success (1) or failure (0) </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_ue0</code>
+
+<HR>
+<H4><A NAME="get_evh">get_evh</A></H4>
+
+  Obtains mass of reserve and structure and maturity (quantified as cumulated investedment into maturation in the form of reserve), given constant food density,for different ages.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> na-vector with ages </li>
+    <li> 12 or 13-vector with parameters of standard DEB model
+      <ol>
+        <li> max spec assimilation rate {J<sub>EAm</sub>}, </li>
+        <li> spec searching rate {b}, </li>
+        <li> yield of reserve on food y<sub>EX</sub>, </li>
+        <li> yield of structure on  y<sub>VE</sub>, </li>
+        <li> energy conductance v, </li>
+        <li> volume-spec somatic maintenance costs [J<sub>EM</sub>], </li>
+        <li> surface-spec somatic maintenance costs {J<sub>ET</sub>}, </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub>, </li>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> reproduction efficieny kap<sub>R</sub>, </li>
+        <li> maturity at birth M<sub>H</sub><sup>b</sup>, </li>
+        <li> maturity at puberty M<sub>H</sub><sup>p</sup>, </li>
+        <li> mass-volume converter for structure [M<sub>V</sub>].
+      </ol>
+      Parameter 7 might be omitted, in which case it gets value 0.
+    </li>
+    <li> scalar with food density </li>
+  </ul>
+  
+  <p>
+  Output:
+  <ul>
+    <li> (na,3)-matrix with masses of reserve M<sub>E</sub>, of structure M<sub>V</sub> and maturity M<sub>H</sub> </li>
+  </ul>
+
+  <p> 
+  An example of use of <code>get_evh</code> is given in <code>mydata_flux</code>
+
+
+<HR>
+<H4><A NAME="get_pars">get_pars_*, iget_pars_*, elas_pars_* for * = g,h,i,r,s,t,u</A></H4>
+
+  Functions <code>get_pars_*</code> obtain compound DEB parameters from easy-to-observe quantities and the functions <code>iget_pars_*</code> do the reverse, which can be used for checking. 
+  The theory is discussed in <a href="/thb/research/bib/KooySous2008.html">KooySous2008</a>. 
+  The heating length L<sub>T</sub> is assumed to be zero in all <code>get_pars_*</code> functions. 
+  An example of use is given in <code>mydata_get_pars</code>.
+  The routines are organized as follows:
+
+  <table border rules=groups>
+    <colgroup span = 1 align = left>
+    <colgroup span = 3 align = center>
+    <colgroup span = 3 align = center>
+    <tr>
+       <th></th>
+       <th colspan = 3> get_pars</th>
+       <th colspan = 3> iget_pars</th>
+    </tr>
+    <tr>
+       <th> food level</th>
+       <th colspan = 1> one</th>
+       <th colspan = 2> several</th>
+       <th colspan = 1> one</th>
+       <th colspan = 2> several</th>
+    </tr>
+    <tr>
+      <th>constraint</th>
+      <th> k<sub>J</sub> = k<sub>M</sub> </th> 
+      <th> k<sub>J</sub> != k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub> </th> 
+      <th> k<sub>J</sub> != k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub></th>
+    </tr>
+    <tr> 
+      <th> growth </th> 
+      <td> <a HREF="#get_pars_g"><code>get_pars_g</code></a> </td>
+      <td> <a HREF="#get_pars_h"><code>get_pars_h</code></a> </td> 
+      <td> <a HREF="#get_pars_i"><code>get_pars_i</code></a> </td>
+      <td> <a HREF="#iget_pars_g"><code>iget_pars_g</code></a> </td>
+      <td> <a HREF="#iget_pars_h"><code>iget_pars_h<code></a> </td> 
+      <td> <a HREF="#get_pars_i"><code>iget_pars_i</code></a> </td>
+    </tr>
+    <tr> 
+      <th> growth & reprod</th> 
+      <td> <a HREF="#get_pars_r"><code>get_pars_r</code></a> </td>
+      <td> <a HREF="#get_pars_s"><code>get_pars_s</code></a> </td> 
+      <td> <a HREF="#get_pars_t"><code>get_pars_t</code></a> </td>
+      <td> <a HREF="#iget_pars_r"><code>iget_pars_r</code></a> </td>
+      <td> <a HREF="#iget_pars_s"><code>iget_pars_s</code></a> </td> 
+      <td> <a HREF="#iget_pars_s"><code>iget_pars_s</code></a> </td>
+    </tr>
+  </table>
+
+  Functions for several food levels do not use age at birth data. 
+  If one food level is available, we have to make use of the assumption of stage transitions at fixed amounts of structure (k_M = k_J). 
+  If several food levels are available, we no longer need to make this assumption, but it does simplify matters considerably. 
+  Functions <a HREF="#elas_pars_g"><code>elas_pars_g</code></a> and <a HREF="#elas_pars_r"><code>elas_pars_r</code></a> give elasticity coefficients. 
+  Function <a HREF="#get_pars_u"><code>get_pars_u</code></a> converts compound parameters into unscaled primary parameters at abundant food.
+  Function <a HREF="#get_pars_9"><code>get_pars_9</code></a> converts data into unscaled primary parameters at abundant food.
+
+  <p>
+  <b><a NAME="get_pars_g">get_pars_g</a></b>
+
+  <p> 
+  Input for <code>get_pars_g</code>:
+  <ul>   
+    <li>  
+      5-vector with
+      <ol>
+        <li> scaled functional response f, </li>
+        <li> length at birth L<sub>b</sub>, </li> 
+        <li> ultimate length L<sub>i</sub>, </li>
+        <li> age at birth a<sub>b</sub>, </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_g</code>:
+  <ul>   
+    <li> 4-vector with
+       <ol>
+         <li> scaled maturity at birth V<sub>H</sub><sup>b</sup> </li>
+         <li> energy investment ratio g </li>
+         <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+         <li> energy conductance v </li>
+       </ol>
+    </li>
+    <li> 2-vector with scaled reserve: initial and at birth.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+ 
+<hr>
+<p>
+<b><a NAME="iget_pars_g">iget_pars_g</a></b>
+
+  <p> 
+  Input for <code>iget_pars_g</code>:
+  <ul>   
+    <li> 4-vector with
+      <ol>
+        <li> scaled maturity at birth V<sub>H</sub><sup>b</sup> </li>
+        <li> energy investment ratio g </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>iget_pars_g</code>:
+  <ul>   
+    <li> 5-vector with
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> age at birth a<sub>b</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+    <li> 2-vector with scaled reserve: initial and at birth.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+ 
+<hr>
+<p>
+<b><a NAME="get_pars_h">get_pars_h</a></b>
+
+  <p> 
+  Input for <code>get_pars_h</code>:
+  <ul>   
+    <li>  
+      (n,4)-matrix with columns:
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+    <li>
+      (n,3)-matrix with weight coefficients (optional; default is ones)
+    </li>
+    <li>
+      (5,1 or 2)-matrix with initial estimate for first output. 
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_h</code>:
+  <ul>   
+    <li> (5,1 or 2)-matrix with in the first column
+      <ol>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/((1 - kap) {J<sub>EAm</sub>}) </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+      </ol>
+      The optional second column has zeros (fix) or ones (iterate)
+    </li>
+    <li> (n,2)-matrix with scaled reserve: initial and at birth<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>} and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="iget_pars_h">iget_pars_h</a></b>
+
+  <p> 
+  Input for <code>iget_pars_h</code>:
+  <ul>   
+    <li> 5-vector with
+      <ol>
+        <li> scaled maturity at birth
+             M<sub>H</sub><sup>b</sup>/ ((1 - kap) {J<sub>EAm</sub>}) </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+      </ol>
+    </li>
+    <li> n-vector with scaled functional responses </li>
+  </ul>
+
+  <p> 
+  Output of <code>iget_pars_h</code>:
+  <ul>   
+    <li>  
+      (n,4)-matrix with columns
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+    <li> (n,2)-matrix with scaled reserve: initial and at birth.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>.
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="get_pars_i">get_pars_i</a></b>
+
+  <p> 
+  Input for <code>get_pars_i</code>:
+  <ul>   
+    <li>  
+      (n,4)-matrix with columns:
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+    <li>
+      (n,3)-matrix with weight coefficients (optional; default is ones)
+    </li>
+    <li>
+      (4,1 or 2)-matrix with initial estimate for first output. 
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_i</code>:
+  <ul>   
+    <li> (4,1 or 2)-matrix with in the first column
+      <ol>
+        <li> scaled maturity at birth M<sub>H</sub><sup>b</sup>/((1 - kap) {J<sub>EAm</sub>}) </li>
+        <li> energy investment ratio g </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+      </ol>
+      The optional second column has zeros (fix) or ones (iterate)
+    </li>
+    <li> (n,2)-matrix with scaled reserve: initial and at birth<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub> and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="iget_pars_i">iget_pars_i</a></b>
+
+  <p> 
+  Input for <code>iget_pars_i</code>:
+  <ul>   
+    <li> 4-vector with
+      <ol>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/ ((1 - kap) {J<sub>EAm</sub>}) </li>
+        <li> energy investment ratio g </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+      </ol>
+    </li>
+    <li> n-vector with scaled functional responses </li>
+  </ul>
+
+  <p> 
+  Output of <code>iget_pars_i</code>:
+  <ul>   
+    <li>  
+      (n,4)-matrix with columns
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+      </ol>
+    </li>
+    <li> (n,2)-matrix with scaled reserve: initial and at birth.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>.
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="get_pars_r">get_pars_r</a></b>
+
+  <p> 
+  Input for <code>get_pars_r</code>:
+  <ul>   
+    <li>  
+      7 or 8 -vector with
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> length at puberty L<sub>p</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> age at birth a<sub>b</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+        <li> ultimate reproduction rate R<sub>i</sub> </li>
+        <li> reproduction efficieny kap<sub>R</sub> <br>
+             (optional, default 0.95). </li>
+       </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_r</code>:
+  <ul>   
+    <li> 8-vector with
+      <ol>
+        <li> fraction of mibilised reserve allocated to soma kap </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> scaled maturity at puberty 
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+    </li>
+    <li> 3-vector with scaled reserve: initial and at birth and at puberty.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="iget_pars_r">iget_pars_r</a></b>
+
+  <p> 
+  Input for <code>iget_pars_r</code>:
+  <ul>   
+    <li> 8-vector with
+      <ol>
+        <li> fraction of mobilised reserve allocated to soma kap </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> scaled maturity at puberty 
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>iget_pars_r</code>:
+  <ul>   
+    <li>  
+      7 or 8 -vector with
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> length at puberty L<sub>p</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> age at birth a<sub>b</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+        <li> ultimate reproduction rate R<sub>i</sub> </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+      </ol>
+    </li>
+    <li> 3-vector with scaled reserve: initial and at birth and at puberty.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>.
+    </li>
+  </ul>
+
+<hr>
+<p><b><a NAME="get_pars_s">get_pars_s</a></b>
+
+  <p> 
+  Input for <code>get_pars_s</code>:
+  <ul>   
+    <li>  
+      (n,6)-matrix with columns:
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> length at puberty L<sub>p</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+        <li> ultimate reproduction rate R<sub>i</sub> </li>
+      </ol>
+    </li>
+    <li>
+      (n,6)-matrix with weight coefficients (optional; default is ones)
+    </li>
+    <li>
+      (8,1 or 2)-matrix with initial estimate for first output. <br>
+      The default value for kap<sub>R</sub> (0.95) can be overwritten by specifying this input.
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_s</code>:
+  <ul>   
+    <li> (8,1 or 2)-matrix with in the first column
+      <ol>
+        <li> fraction of mobilised reserve allocated to soma kap </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> scaled maturity at puberty 
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+      The optional second column has zeros (fix) or ones (iterate)
+    </li>
+    <li> (n,3)-matrix with scaled reserve: initial and at birth and at puberty<br>
+       Scaled reserve is reserve divided by {J<sub>EAm</sub>} and has dimension time.length<sup>2</sup>
+    </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="iget_pars_s">iget_pars_s</a></b>
+
+  <p> 
+  Input for <code>iget_pars_s</code>:
+  <ul>   
+    <li> 8-vector with
+      <ol>
+        <li> fraction of mobilised reserve allocated to soma kap </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+        <li> energy investment ratio g </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub> </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub> </li>
+        <li> energy conductance v </li>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>} </li>
+        <li> scaled maturity at puberty 
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>} </li>
+      </ol>
+    </li>
+    <li> n-vector with scaled functional responses </li>
+  </ul>
+
+  <p> 
+  Output of <code>iget_pars_s</code>:
+  <ul>   
+    <li>  
+      (n,7)-matrix with columns
+      <ol>
+        <li> scaled functional response f </li>
+        <li> length at birth L<sub>b</sub> </li>
+        <li> length at puberty L<sub>p</sub> </li>
+        <li> ultimate length L<sub>i</sub> </li>
+        <li> von Bertalanffy growth rate r<sub>B</sub> </li>
+        <li> ultimate reproduction rate R<sub>i</sub> </li>
+        <li> reproduction efficieny kap<sub>R</sub> </li>
+      </ol>
+    </li>
+    <li> (n,3)-matrix with scaled reserve: initial and at birth and at puberty.<br>
+         Scaled reserve is reserve divided by {J<sub>EAm</sub>}, and has dimension time.length<sup>2</sup>.
+    </li>
+  </ul>
+   
+<hr>
+<p>
+<b><a NAME="get_pars_t">get_pars_t</a></b>
+
+  <p> 
+  Like <code>get_pars_s</code>, but it uses stage-transitions at fixed amounts of structure; 
+  i.e. k<sub>J</sub> = k<sub>M</sub>. 
+  <code>iget_pars_s</code> is also inverse to <code>get_pars_t</code> 
+
+<hr>
+<p>
+<b><a NAME="elas_pars">elas_pars_g, elas_pars_r</a></b>
+
+  <p> 
+  Input for <code>elas_pars_g</code>:
+  <ul>
+    <li> 5-vector with quantities q, see <code>get_pars_g</code> </li>
+  </ul>
+
+  <p> 
+  Output of <code>elas_pars_g</code>: 
+  <ul>
+    <li> 4-vector with compound DEB parameters p, see <code>get_pars_g</code> </li>
+    <li> (5,4)-matrix with elasticity coefficients (dimensionless):
+         element (i,j) = (dp<sub>i</sub>/ dq<sub>j</sub>) * (q<sub>j</sub>/ p<sub>i</sub>) </li>
+    <li> (5,4)-matrix with Jacobian:
+         element (i,j) = dp<sub>i</sub>/ dq<sub>j</sub> </li>
+  </ul>
+
+  <p> 
+  Input for <code>elas_pars_r</code>: 
+  <ul>
+    </li> 7 or 8 -vector with quantities q, see <code>get_pars_r</code> </li>
+  </ul>
+
+  <p> 
+  Output of <code>elas_pars_r</code>: 
+  <ul>
+    <li> 8-vector with compound DEB parameters p, see <code>get_pars_r</code> </li>
+    <li> (8,8)-matrix with elasticity coefficients (dimensionless):
+         element (i,j) = (dp<sub>i</sub>/ dq<sub>j</sub>) * (q<sub>j</sub>/ p<sub>i</sub>) </li>
+    <li> (8,8)-matrix with Jacobian:
+         element (i,j) = dp<sub>i</sub>/ dq<sub>j</sub> </li>
+  </ul>
+
+<hr>
+<p>
+<b><a NAME="get_pars_u">get_pars_u</a></b>
+
+  <p> 
+  Input for <code>get_pars_u</code>:
+  <ul>   
+    <li>  
+      (4)-vector with:
+      <ol>
+        <li> max spec food uptake rate {J<sub>XAm</sub>}, </li>
+        <li> half saturation coefficient K, </li>
+        <li> mass at time 0, M<sub>E</sub><sup>0</sup>, </li>
+        <li> mass at birth, M<sub>W</sub><sup>b</sup> </li>
+      </ol>
+    </li>
+    <li> 8-vector with
+      <ol>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> reproduction efficieny kap<sub>R</sub>, </li>
+        <li> energy investment ratio g, </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub>, </li>
+        <li> somatic maintenance rate coefficient k<sub>M</sub>, </li>
+        <li> energy conductance v, </li>
+        <li> scaled maturity at birth 
+             M<sub>H</sub><sup>b</sup>/{J<sub>EAm</sub>}, </li>
+        <li> scaled maturity at puberty 
+             M<sub>H</sub><sup>p</sup>/{J<sub>EAm</sub>}. </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_u</code>:
+  <ul>   
+    <li> 12-vector with
+      <ol>
+        <li> max spec assimilation rate {J<sub>EAm</sub>}, </li>
+        <li> spec searching rate {b}, </li>
+        <li> yield of reserve on food y<sub>EX</sub>, </li>
+        <li> yield of structure on  y<sub>VE</sub>, </li>
+        <li> energy conductance v, </li>
+        <li> spec somatic maintenance costs [J<sub>EM</sub>], </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub>, </li>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> reproduction efficieny kap<sub>R</sub>, </li>
+        <li> maturity at birth M<sub>H</sub><sup>b</sup>, </li>
+        <li> maturity at puberty M<sub>H</sub><sup>p</sup>, </li>
+        <li> mass-volume converter for structure [M<sub>V</sub>].
+      </ol>
+    </li>
+    <li> (4,4)-matrix with<br>
+         age, length, mass of reserve and structure in the columns,<br>
+         at initiation, birth, puberty and infinity in the rows
+    </li>
+  </ul>
+
+ 
+  <p> 
+  An example of use of <code>get_pars_*</code> is given in <code>mydata_get_pars</code>
+
+<hr>
+<p>
+<b><a NAME="get_pars_9">get_pars_9, iget_pars_9</a></b>
+ 
+  <p>
+  Functions <code>get_pars_9</code> and <code>iget_pars_9</code> assume abundant food and maturity maintenance rate coefficient k<sub>J</sub> = 0.002 d<sup>-1</sup>, reproduction efficiency kappa<sub>R</sub> = 0.95, growth efficiency kappa<sub>T</sub> = 0.8, Gompertz stress coefficient  s<sub>G</sub> = 1e-4, molecular weight of dry reserve and structure of 23.9 g/cm<sup>3</sup>, chemical potential of reserve mu<sub>E</sub> = 5.5E5 J/C-mol and structure mu<sub>V</sub> = 5E5 J/C-mol and allow for metabolic acceleration. 
+
+  <p> 
+  Input for <code>get_pars_9</code>:
+  <ul>   
+    <li>  
+      (9)-vector with:
+      <ol>
+        <li> specific density of structure, d<sub>V</sub> </li>
+        <li> age at birth, a<sub>b</sub></li>
+        <li> age at puberty, a<sub>p</sub></li>
+        <li> age at death, a<sub>m</sub></li>
+        <li> wet weight at birth, W<sub>b</sub></li>
+        <li> wet weight at metamorphosis, W<sub>j</sub></li>
+        <li> wet weight at puberty, W<sub>p</sub></li>
+        <li> maximum wet weight, W<sub>m</sub></li>
+        <li> maximum reproducton rate, R<sub>m</sub></li>
+      </ol>
+    </li>
+  </ul>
+
+  <p> 
+  Output of <code>get_pars_9</code>:
+  <ul>   
+    <li> 9-vector with
+      <ol>
+        <li> maximum specific assimilation {p<sub>Am</sub>}, </li>
+        <li> energy conductance v, </li>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> energy investment ratio g, </li>
+        <li> specific somatic maintenance  [p<sub>M</sub>], </li>
+        <li> specific cost for structure [E<sub>G</sub>], </li>
+        <li> maturity at birth E<sub>H</sub><sup>b</sup>, </li>
+        <li> maturity at metamorphosis E<sub>H</sub><sup>j</sup>, </li>
+        <li> maturity at puberty E<sub>H</sub><sup>p</sup>, </li>
+        <li> ageing acceleration h<sub>a</sub>
+      </ol>
+    </li>
+  </ul>
+ 
+  <p>
+  <code>iget_pars_9</code> works the same as  <code>get_pars_9</code>, but input and output are interchanged.
+
+  <p> 
+  An example of use of <code>get_pars_9</code> and <code>iget_pars_9</code> is given in <code>mydata_get_pars_9</code>
+
+<HR>
+<H4><A NAME="flux">flux</A></H4>
+  
+  The routine computes the mineral and organic fluxes of compounds, given the food density, the mass of reserve and structure (and optionally the maturity), the chemical indices and the parameters of the standard DEB model. 
+  If somatic and maturity maintenance rates coefficients are equal, k<sub>J</sub> = k<sub>M</sub>, the maturity can be omitted. 
+  Maturity is quantified as the cumulated investmentment of reserve.
+
+  <p>
+  Input:
+  <ul>
+    <li> (nX,3)- or (nX,4)-matrix with
+      <ol>
+        <li> food density X </li>
+        <li> masses of reserve M_E </li>
+        <li> structure M_V </li>
+        <li> maturity M_H (optional) </li>
+      </ol>
+    </li>
+    <li> (4,8)-matrix with chemical indices
+       <ul>
+         <li> rows: chemical elements C, H, O, N </li>
+         <li> cols: CO2, H2O, O2, N-waste, food, structure, reserve, faeces </li>
+       </ul>
+    </li>
+    <li> 12 or 13 -vector with parameters of standard DEB model
+      <ol>
+        <li> max spec assimilation rate {J<sub>EAm</sub>}, </li>
+        <li> spec searching rate {b}, </li>
+        <li> yield of reserve on food y<sub>EX</sub>, </li>
+        <li> yield of structure on  y<sub>VE</sub>, </li>
+        <li> energy conductance v, </li>
+        <li> volume-spec somatic maintenance costs [J<sub>EM</sub>], </li>
+        <li> surface-spec somatic maintenance costs {J<sub>ET</sub>}, </li>
+        <li> maturity maintenance rate coefficient k<sub>J</sub>, </li>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> reproduction efficieny kap<sub>R</sub>, </li>
+        <li> maturity at birth M<sub>H</sub><sup>b</sup>, </li>
+        <li> maturity at puberty M<sub>H</sub><sup>p</sup>, </li>
+        <li> mass-volume converter for structure [M<sub>V</sub>].
+      </ol>
+      Parameter 7 might be omitted, in which case it gets value 0.
+    </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (nf,8)-matrix with fluxes of compounds. 
+         In the columns: carbon dioxide, water, dioxygen, N-waste, food, structure, reserve, faeces 
+    </li>
+  </ul> 
+
+  <p>
+  Example of use is given in <code>mydata_flux</code>.
+
+<HR>
+<H4><A NAME="l2f1">l2f1</A></H4>
+
+  Calculates the (constant) scaled functional response, f, that gives
+  scaled length at scaled age.
+
+  <p>
+  Input:
+  <ul>
+    <li> 4-vector with
+      <ol>
+        <li> energy investmetn ratio g </li>
+        <li> maintenance ratio k = k<sub>J</sub>/ k<sub>M</sub> </li>
+        <li> scaled heating length l<sub>T</sub> </li>
+        <li> scaled maturity at birth v<sub>Hb</sub> </li>
+      </ol>
+    </li>
+    <li> 2-vector with
+      <ol>
+        <li> scaled age tau = a * k<sub>M</sub> </li>
+        <li> scaled length l =  L/ L<sub>m</sub> </li>
+      </ol>     
+    </li>
+    <li>
+       optional scalar with initial estimate for scaled functional response
+    </li>
+   </ul>
+
+   <p>
+   Output:
+   <ul>
+     <li> scaled functional respose f </li>
+     <li> info for success (1) or failure (0)  </li>
+   </ul> 
+
+   <p>
+   Example of use: 
+   <code>l2f1([1;1;0;1e-3])</code>.
+
+
+<HR>
+<H4><A NAME="o2f">o2f, f2o</A></H4>
+  
+  The routine <code>o2f</code> reconstructs time-trajectories of scaled function response, scaled reserve density, body length, otolith length, opacity from otolith length-opacity data, given DEB parameters and temperature correction factors over time. 
+  The reconstructed body length at otolith collection can be compared to the observed body length as an independent check on the reliability of the reconstruction. 
+  Routine <code>o2f_init</code> is similar to <code>o2f</code>; the reconstruction is faster, more robust, but much less accurate (especially the time points). 
+  It assumes e = f and constant f for parts of the reconstruction and requires body length at otolith collection as fourth input. 
+  It is only of use if <code>o2f</code> fails. 
+  Routine <code>f2o</code> is reverse to <code>o2f</code> and can be used for checking. 
+  The assumption k<sub>J</sub> = k<sub>M</sub> is made to ensure stage transitions at fixed length. 
+  Opacity is zero for contribution of dissipation and one of growth. 
+  Opacity, therefore, is always on the interval (0,1). 
+  Measured opacity might need some rescaling to fit these requirements. 
+  Otolith and body length are treated as volumetric length; measured lengths might need rescaling. 
+  The theory behind <code>o2f</code> and <code>f2o</code> is discussed in <a href="/thb/research/bib/PecqKooy2008.html">PecqKooy2008</a>
+
+  <p>
+  Input of <code>o2f</code>:
+  <ul>
+    <li> (n,2)-matrix with
+      <ol>
+        <li> otolith length LO </li>
+        <li> opacity O </li>
+      </ol>
+    </li>
+    <li> (r,2)-matrix with
+      <ul>
+        <li> ascending times starting with 0 for time of birth, 
+             ending with time of last otolith data point </li>
+        <li> temperature correction factors; rates will be multiplied by
+             these factors to correct for changes in temperature </li>
+      </ul>
+    </li>
+    <li> 10-vector with DEB parameters
+       <ol>
+         <li> length at birth L<sub>b</sub>, </li>
+         <li> length at puberty L<sub>p</sub>, </li>
+         <li> energy conductance v, </li>
+         <li> otolith growth coupled to dissipation v<sub>OD</sub>, </li>
+         <li> otolith growth coupled to body growth v<sub>OG</sub>, </li>
+         <li> maintenance rate coefficient k<sub>M</sub>, </li>
+         <li> energy investment ratio g, </li>
+         <li> fraction of mobilised reserve allocated to soma kap, </li>
+         <li> reproduction efficieny kap<sub>R</sub>, </li>
+         <li> shape coefficient for otosac del<sub>S</sub>.
+       </ol>
+    </li>
+  </ul>
+
+  <p>
+  Output of <code>o2f</code>:
+  <ul>
+    <li> (n,7)-matrix with
+      <ol>
+        <li> time </li>
+        <li> temperature correction factor </li>
+        <li> scaled functional response </li>
+        <li> scaled reserve density </li>
+        <li> body length </li>
+        <li> otolith length </li>
+        <li> opacity </li>
+      </ol>
+    </li>
+  </ul> 
+
+  <p>
+  Input of <code>f2o</code>:
+  <ul>
+    <li> (n,3)-matrix with
+      <ol>
+        <li> time </li>
+        <li> temperature correction factor </li>
+        <li> scaled functional response </li>
+      </ol>
+    </li>
+    <li> scalar with scaled reserve density at birth </li>
+    <li> scalar with (volumetric) otolith length at birth </li>
+    <li> 10 -vector with DEB parameters
+      <ol>
+        <li> length at birth L<sub>b</sub>, </li>
+        <li> length at puberty L<sub>p</sub>, </li>
+        <li> energy conductance v, </li>
+        <li> otolith growth coupled to dissipation v<sub>OD</sub>, </li>
+        <li> otolith growth coupled to body growth v<sub>OG</sub>, </li>
+        <li> maintenance rate coefficient k<sub>M</sub>, </li>
+        <li> energy investment ratio g, </li>
+        <li> fraction of mobilised reserve allocated to soma kap, </li>
+        <li> reproduction efficieny kap<sub>R</sub>, </li>
+        <li> shape coefficient for otosac del<sub>D</sub>.
+      </ol>
+    </li>
+  </ul>
+
+  <p>
+  Output of <code>f2o</code>:
+  <ul>
+    <li> (n,2)-matrix with
+      <ol>
+        <li> (volumetric) otolith length </li>
+        <li> opacity </li>
+      </ol>
+    </li>
+    <li> (n,5)-matrix with
+      <ol>
+        <li> time </li>
+        <li> scaled reserve density </li>
+        <li> body length </li>
+        <li> otolith length </li>
+        <li> opacity </li>
+      </ol>
+    </li>
+  </ul> 
+
+  <p>
+  Example of use is given in <code>mydata_of</code>.
+
+<HR>
+<H4><A NAME="isotope">isotope</A></H4>
+
+  Obtains the isotope frequencies of the chemical elements C, H, O and N in reserve and structure as function of time, given the trajectories of temperature and food density with the isotope frequencies in food.
+
+  <p> 
+  Input:
+  <ul> 
+    <li> (n,8)-matrix with columns 
+         time t, temperature T, food density X, 
+         isotope fractions in food del<sub>*X</sub>
+         (* = chemical elements C,H,O,N),  
+         isotope fraction in dioxygen del<sub>OO</sub>
+    </li>
+    <li> 13-vector with values for time t = 0
+      <ol>
+        <li> reserve M<sub>E</sub>(0) </li>
+        <li> structure M<sub>V</sub>(0) </li>
+        <li> otolith M<sub>O</sub><sup>D</sup> </li>
+        <li> otolith M<sub>O</sub><sup>G</sup> </li>
+        <li> maturity M<sub>H</sub>(0) </li> 
+        <li> del<sub>*E</sub>(0) </li>
+        <li> del<sub>*V</sub>(0) </li>
+      </ol> 
+    </li>
+    <li> 20-vector with DEB-parameters
+      <ol>
+        <li> {J<sub>EAm</sub>}, mol/d/cm<sup>2</sup>, specific max assimilation rate </li>
+        <li> {b},  dm<sup>3</sup>/d/cm<sup>2</sup>, specific searching rate </li>
+        <li> y<sub>EX</sub>, mol/mol, yield of reserve on food </li>
+        <li> y<sub>VE</sub>, mol/mol, yield of structure on reserve </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> [J<sub>EM</sub>], mol/cm<sup>3</sup>, vol-specific somatic maintenance cost </li>
+        <li> {J<sub>ET</sub>}, mol/cm<sup>2</sup>, surface area-specific maintenance cost </li>
+        <li> k<sub>J</sub>, 1/d, maturity maintenance rate coefficient </li>
+        <li> kap, -, fraction of mobilised reserve allocated to soma </li>
+        <li> kap<sub>R</sub>, -, reproduction efficiency </li>
+        <li> M<sub>H</sub><sup>b</sup>, mol, maturity at birth </li>
+        <li> M<sub>H</sub><sup>p</sup>, mol, maturity at puberty </li>
+        <li> [M<sub>V</sub>], mol/cm<sup>3</sup>, vol-specific structural mass </li>
+        <li> y<sub>PX</sub>, mol/mol, yield of feaces on food </li>
+        <li> y<sub>VE</sub><sup>D</sup>, mol/mol, yield of structure on reserve in somatic maintenance </li>
+        <li> kap<sub>D</sub>, -, fraction of reserve-flux for structure-turnover in dissipation </li> 
+        <li> T<sub>A</sub>, K, Arrhenius temperature </li>
+        <li> y<sub>OE</sub><sup>D</sup>, mol/mol, yield of otolith on reserve in dissip </li>
+        <li> y<sub>OE</sub><sup>G</sup>, mol/mol, yield of otolith on reserve in growth </li>
+        <li> del<sub>S</sub>, -, 1/fraction of otosac of structural vol </li>
+      </ol>
+    </li>
+    <li> (4,8)-matrix with 
+      <ul> 
+        <li> rows: elements </li>
+        <li> columns: compounds:<br>
+         CO<sub>2</sub>, H<sub>2</sub>O, O<sub>2</sub>, N-waste, food, structure, reserve, faeces </li>
+      </ul>
+    </li>
+    <li> (5,8)-matrix with reshuffle coefficients for assimilation
+      <ul>
+        <li> rows: products E P C H N </li>
+        <li> columns: substrate (X,O) for elements *
+      </ul>
+      Optional, default: complete reshuffling
+    </li>
+    <li> (4,12)-matrix with reshuffle coefficients for dissipation
+      <ul>
+        <li> rows: products V C H N </li>
+        <li> columns: substrates (E,V,O) for elements * </li>
+      </ul>
+      Optional, default: complete reshuffling
+    </li>
+    <li> (4,8)-matrix with reshuffle coefficients for growth
+      <ul>
+        <li> rows products V C H N </li>
+        <li> columns: substr (E,O) for elements * </li>
+      </ul>
+      Optional, default: complete reshuffling
+    </li>
+    <li> (4,5)-matrix with odds ratios
+      <ul>
+        <li> rows: elements * </li>
+        <li> columns:<br> 
+               X in assimilation A<sub>a</sub>, 
+               E,V in dissipation D<sub>a</sub>, 
+               E in growth G<sub>a</sub>, 
+               O in allimilation, dissipation and growth </li>
+       </ul>
+       Row 3 of column 5 is the only row used of that column;<br>
+       Optional, default: ones
+    </li>
+  </ul>
+  
+  <p> 
+  Output:
+  <ul>
+    <li> (n,14)-matrix with columns:
+      <ul>
+        <li> time t </li>
+        <li> reserve M<sub>E</sub> </li>
+        <li> structure M<sub>V</sub> </li>
+        <li> otolith M<sub>O</sub><sup>D</sup> </li>
+        <li> otolith M<sub>O</sub><sup>G</sup> </li>
+        <li> maturity M<sub>H</sub> </li>
+        <li> otolith del<sub>*E</sub>, del<sub>*V</sub> </li>
+      </ul>
+    </li>
+  </ul>
+
+  <p> 
+  An example of use is given in <code>mydata_isotope</code>, which also uses routine <code>otolith</code> to get <sup>13</sup>C in otoliths under all 9 choices of selection from total, anabolic or catabolic fluxes of dissipation and growth.
+
+<HR>
+<H4><A NAME="sgr_iso">sgr_iso, sgr_iso_foetus, sgr_iso_metam</A></H4>
+
+  Obtains the specific population growth rate for the standard DEB model, by solving the characteristic equation. 
+  Aging is the only cause of death.
+  The routines sgr_iso_foetus and sgr_iso_metam have a similar structure, but assume foetal development and metamorphosis, respectively.
+
+  
+  <p>
+  Input:
+  <ul>
+    <li> 11-vector with parameters: 
+      <ol>
+        <li> kap: -, fraction of mobilised reserve allocated to soma </li>
+        <li> kap<sub>R</sub>: -, reproduction efficiency </li>
+        <li> g: -, energy investment ratio </li>
+        <li> k<sub>J</sub>: 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>: 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>: cm, heating length </li>
+        <li> v: cm/d, energy conductance </li> 
+        <li> U<sub>H</sub><sup>b</sup>: d.cm^2, scaled maturity at birth </li>
+        <li> U<sub>H</sub><sup>p</sup>: d.cm^2, scaled maturity at puberty </li>
+        <li> h<sub>a</sub>: 1/d^2, aging acceleration </li>
+        <li> s<sub>G</sub>: -, Gompertz stress coefficient </li>
+      </lo>
+    </li>
+    <li> optional scalar with scaled function response (default 1) </li>
+    <li> optional scalar with initial value for specific population growth rate </li>
+  </ul>
+ 
+  <p>
+  Output:
+  <ul>
+    <li> scalar with specific population growth rate </li>
+    <li> scalar with indicator for failure (0) or success (0) </li>
+    <li> scalar with scaled age at birth ab/kM </li>
+    <li> scalar with scaled age at puberty ap/kM </li>
+    <li> scalar with scaled length at birth lb </li>
+    <li> scalar with scaled length at puberty lp </li>
+    <li> scalar with scaled initial reserve  </li>
+  </ul>
+
+  <p>
+  Example of use:
+  <CODE>[r info tb tp lb lp uE0] = sgr_iso([[.8 .95 .1 .002 .02 0 .02 1 5 1e-7 1e-8]])</CODE>
+
+<HR>
+<H4><A NAME="ssd_iso">ssd_iso, ssd_iso_foetus, ssd_iso_metam</A></H4>
+
+  Obtains the specific population growth rate for the standard DEB model, by solving the characteristic equation (via  <A HREF="#sgr_iso"><code>sgr_iso</code></A>) and the mean age, length, squared and cubed length. 
+  Aging is the only cause of death.
+  The routines ssd_iso_foetus and ssd_iso_metam have a similar structure, but assume foetal development and metamorphosis, respectively.
+  
+  <p>
+  Input:
+  <ul>
+    <li> 11-vector with parameters: 
+      <ol>
+        <li> kap: -, fraction of mobilised reserve allocated to soma </li>
+        <li> kap<sub>R</sub>: -, reproduction efficiency </li>
+        <li> g: -, energy investment ratio </li>
+        <li> k<sub>J</sub>: 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>: 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>: cm, heating length </li>
+        <li> v: cm/d, energy conductance </li> 
+        <li> U<sub>H</sub><sup>b</sup>: d.cm^2, scaled maturity at birth </li>
+        <li> U<sub>H</sub><sup>p</sup>: d.cm^2, scaled maturity at puberty </li>
+        <li> h<sub>a</sub>: 1/d^2, aging acceleration </li>
+        <li> s<sub>G</sub>: -, Gompertz stress coefficient </li>
+      </lo>
+    </li>
+    <li> optional scalar with scaled function response (default 1) </li>
+    <li> optional scalar with specific population growth rate;
+         if specified, this rate is not computed again </li>
+  </ul>
+ 
+  <p>
+  Output:
+  <ul>
+    <li> scalar with specific population growth rate </li>
+    <li> scalar with mean age </li>
+    <li> scalar with mean length </li>
+    <li> scalar with mean squared length </li>
+    <li> scalar with mean cubed length </li>
+    <li> scalar with indicator for failure (0) or success (0) </li>
+  </ul>
+
+  <p>
+  Example of use:
+  <CODE>[r Ea EL EL2 EL3 info] = ssd_iso([.8 .95 .1 .002 .02 0 .02 1 5 1e-7 1e-8])</CODE>
+
+<HR>
+<H4><A NAME="f_ris0">f_ris0</A></H4>
+
+  Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero, by solving the characteristic equation. 
+  Aging is the only cause of death.
+  
+  <p>
+  Input:
+  <ul>
+    <li> 11-vector with parameters: 
+      <ol>
+        <li> kap: -, fraction of mobilised reserve allocated to soma </li>
+        <li> kap<sub>R</sub>: -, reproduction efficiency </li>
+        <li> g: -, energy investment ratio </li>
+        <li> k<sub>J</sub>: 1/d, maturity maintenance rate coefficient </li>
+        <li> k<sub>M</sub>: 1/d, somatic maintenance rate coefficient </li>
+        <li> L<sub>T</sub>: cm, heating length </li>
+        <li> v: cm/d, energy conductance </li> 
+        <li> U<sub>H</sub><sup>b</sup>: d.cm^2, scaled maturity at birth </li>
+        <li> U<sub>H</sub><sup>p</sup>: d.cm^2, scaled maturity at puberty </li>
+        <li> h<sub>a</sub>: 1/d^2, aging acceleration </li>
+        <li> s<sub>G</sub>: -, Gompertz stress coefficient </li>
+      </ol>
+    </li>
+    <li> optional scalar with initial value for the scaled function response </li>
+  </ul>
+ 
+  <p>
+  Output:
+  <ul>
+    <li> scalar with scaled sunction response at r = 0 </li>
+    <li> scalar with indicator for failure (0) or success (0) </li>
+  </ul>
+
+  <p>
+  Example of use:
+  <CODE>f_ris0([])</CODE>
+
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

@@ -1,0 +1,182 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_surv2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-20"><meta name="DC.source" content="mydata_surv2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">set initial parameter estimates</a></li><li><a href="#3">example of function definition: expony</a></li><li><a href="#4">show a plot of the function:</a></li><li><a href="#5">estimate the parameter values:</a></li><li><a href="#6">show goodness of fit:</a></li><li><a href="#7">get deviance:</a></li><li><a href="#8">obtain parameter statistics:</a></li></ul></div><pre class="codeinput"><span class="comment">% created: 2001/09/13 by Bas Kooijman; modified 2006/05/26</span>
+<span class="comment">% sample data for surv2 routines</span>
+</pre><h2>set initial parameter estimates<a name="2"></a></h2><pre>(do this first to make this file a script file)</pre><pre class="codeinput">par = [0.3 1]';
+</pre><h2>example of function definition: expony<a name="3"></a></h2><h2>show a plot of the function:<a name="4"></a></h2><pre class="language-matlab">shsurv(<span class="string">'expony'</span>, par, [0 3]', [0 5]')
+</pre><pre class="codeinput">t = [0 1 2 3 4]';
+y = [0.5 1 2]';
+surv = [10 10 9 8 8; 10 7 5 4 3; 10 4 1 0 0;]';
+</pre><h2>estimate the parameter values:<a name="5"></a></h2><pre class="codeinput">par = scsurv2(<span class="string">'expony'</span>, par, t, y, surv) <span class="comment">%% using scores</span>
+<span class="comment">% or alternatively for a genetic algorithm:</span>
+<span class="comment">% first adjust parameter values</span>
+<span class="comment">% value (not used), iteration (yes), range: (1e-6,1) &amp; (1e-6,5)</span>
+par = [.3 1 1e-6 1; 1 1 1e-6 5];
+gasurv2(<span class="string">'expony'</span>, par, t, y, surv) <span class="comment">%% using a genetic algorithm</span>
+<span class="comment">% or alternatively:</span>
+par = nmsurv2(<span class="string">'expony'</span>, par, t, y, surv) <span class="comment">%% using Nelder-Mead</span>
+</pre><pre class="codeoutput">step 1 norm 44.5621 dev 9.77
+step 2 norm 6.6516 dev 4.4837
+step 3 norm 0.00017984 dev 4.304
+step 4 norm 1.0911e-05 dev 4.3039
+step 5 norm 9.4843e-09 dev 4.3039
+
+par =
+
+    0.2770
+    2.0511
+
+
+1 4.303932
+2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 
+ no convergence within 50 generations 
+
+50 4.303932
+
+ans =
+
+    0.2770    1.0000    0.0000    1.0000
+    2.0511    1.0000    0.0000    5.0000
+
+step 1 dev 9.2496-9.77 initial
+step 2 dev 8.9203-9.6946 expand
+step 3 dev 7.9271-9.2496 expand
+step 4 dev 7.1165-8.9203 expand
+step 5 dev 5.3954-7.9271 expand
+step 6 dev 5.3954-7.1165 reflect
+step 7 dev 4.8735-5.457 reflect
+step 8 dev 4.4012-5.3954 expand
+step 9 dev 4.4012-4.8735 contract outside
+step 10 dev 4.3757-4.4801 contract outside
+step 11 dev 4.3114-4.4012 contract inside
+step 12 dev 4.3114-4.3757 contract inside
+step 13 dev 4.3114-4.335 contract outside
+step 14 dev 4.3084-4.3147 contract inside
+step 15 dev 4.3075-4.3114 reflect
+step 16 dev 4.3047-4.3084 contract inside
+step 17 dev 4.3045-4.3075 contract inside
+step 18 dev 4.3045-4.3047 contract outside
+step 19 dev 4.3041-4.3047 contract inside
+step 20 dev 4.304-4.3045 contract inside
+step 21 dev 4.304-4.3041 contract inside
+step 22 dev 4.304-4.304 reflect
+step 23 dev 4.3039-4.304 contract inside
+step 24 dev 4.3039-4.304 contract inside
+step 25 dev 4.3039-4.3039 contract outside
+step 26 dev 4.3039-4.3039 contract inside
+step 27 dev 4.3039-4.3039 contract inside
+step 28 dev 4.3039-4.3039 contract inside
+step 29 dev 4.3039-4.3039 reflect
+step 30 dev 4.3039-4.3039 contract inside
+step 31 dev 4.3039-4.3039 contract inside
+step 32 dev 4.3039-4.3039 contract inside
+step 33 dev 4.3039-4.3039 contract inside
+step 34 dev 4.3039-4.3039 contract outside
+step 35 dev 4.3039-4.3039 contract inside
+step 36 dev 4.3039-4.3039 contract inside
+step 37 dev 4.3039-4.3039 contract outside
+Successful convergence 
+
+par =
+
+    0.2770    1.0000    0.0000    1.0000
+    2.0511    1.0000    0.0000    5.0000
+
+</pre><h2>show goodness of fit:<a name="6"></a></h2><pre class="language-matlab">shsurv2(<span class="string">'expony'</span>, par, t, y, surv)
+</pre><h2>get deviance:<a name="7"></a></h2><pre class="language-matlab">dev2(<span class="string">'expony'</span>, par, t, y, surv)
+</pre><h2>obtain parameter statistics:<a name="8"></a></h2><pre class="language-matlab">[cov, cor, sd, d] = psurv2(<span class="string">'expony'</span>, par, t, y, surv)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% created: 2001/09/13 by Bas Kooijman; modified 2006/05/26
+% sample data for surv2 routines
+
+%% set initial parameter estimates
+%  (do this first to make this file a script file)
+par = [0.3 1]';
+
+%% example of function definition: expony
+
+%% show a plot of the function:
+%   shsurv('expony', par, [0 3]', [0 5]')
+
+t = [0 1 2 3 4]';
+y = [0.5 1 2]';
+surv = [10 10 9 8 8; 10 7 5 4 3; 10 4 1 0 0;]';
+
+%% estimate the parameter values:
+par = scsurv2('expony', par, t, y, surv) %% using scores
+% or alternatively for a genetic algorithm:
+% first adjust parameter values
+% value (not used), iteration (yes), range: (1e-6,1) & (1e-6,5)
+par = [.3 1 1e-6 1; 1 1 1e-6 5];
+gasurv2('expony', par, t, y, surv) %% using a genetic algorithm
+% or alternatively:
+par = nmsurv2('expony', par, t, y, surv) %% using Nelder-Mead
+
+%% show goodness of fit:
+%   shsurv2('expony', par, t, y, surv)
+
+%% get deviance:
+%   dev2('expony', par, t, y, surv)
+
+%% obtain parameter statistics:
+%   [cov, cor, sd, d] = psurv2('expony', par, t, y, surv)
+
+##### SOURCE END #####
+--></body></html>

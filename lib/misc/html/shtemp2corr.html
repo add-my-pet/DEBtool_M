@@ -1,0 +1,123 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shtemp2corr</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="shtemp2corr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shtemp2corr</h1><!--introduction--><p>Plots correction factor as a function of temperature.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shtemp2corr.m"><b>shtemp2corr</b></a> (T_1, Tpars)</p><h2>Description<a name="4"></a></h2><p>Plots correction factor logarithmically as a function of inverse absolute temperature. The green section shows the temperature range for "standard" physiological adaptation; the red section corresponds with the high-temperature inactivation, the blue section with low-temperature inactivation.</p><p>The temperature range that is plotted corresponds with correction factors larger than 0.01.</p><p>All rate parameters are multiplied with this temperature correction factor. If the actual temperature equals the reference temperature, this factor is one, irrespective of the values of the temperature parameters.</p><h2>Example of use<a name="5"></a></h2><p>clear all; pars_animal; shtemp2corr</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shtemp2corr
+% Plots correction factor as a function of temperature.
+
+%%
+function shtemp2corr (T_1, Tpars)
+  %  created at 2002/04/10 by Bas Kooijman
+  
+  %% Syntax
+  % <../shtemp2corr.m *shtemp2corr*> (T_1, Tpars)
+  
+  %% Description
+  % Plots correction factor logarithmically as a function of inverse absolute temperature.
+  % The green section shows the temperature range for "standard" physiological adaptation; 
+  % the red section corresponds with the high-temperature inactivation, the blue section with low-temperature inactivation.
+  %
+  % The temperature range that is plotted corresponds with correction factors larger than 0.01.
+  %
+  % All rate parameters are multiplied with this temperature correction factor. 
+  % If the actual temperature equals the reference temperature, this factor is one, irrespective of the values of the temperature parameters.
+
+  %% Example of use
+  % clear all; pars_animal; shtemp2corr
+  
+
+  global t_1 tpars;
+  t_1 = T_1; tpars = Tpars;
+
+  T_A = Tpars(1); % Arrhenius temperature
+  T_L = Tpars(2); % Lower temp boundary
+  T_H = Tpars(3); % Upper temp boundary
+  %T_AL = Tpars(4); % Arrh. temp for lower boundary
+  %T_AH = Tpars(5); % Arrh. temp for upper boundary
+
+  hold on;
+  title ('temperature dependence of rates');
+  xlabel('10^4/temp, K'); ylabel('log_{10} corr factor');
+  
+  T_LL = fzero('findt', T_L);
+  T_HH = fzero('findt', T_H + 10);
+  iT_L = linspace(1/T_LL, 1/T_L, 20);
+  TC_L = tempcorr (1./iT_L, T_1, Tpars);
+  iT   = linspace(1/T_L, 1/T_H, 60);
+  TC   = tempcorr (1./iT, T_1, Tpars);
+  iT_H = linspace(1/T_H, 1/T_HH, 20);
+  TC_H = tempcorr (1./iT_H, T_1, Tpars);
+
+  % semilogy(10^4*iT_H, TC_H, 'r', 10^4*iT, TC, 'g', 10^4*iT_L, TC_L, 'b');
+  % does not work;
+  plot(10^4*iT_H, log10(TC_H), 'r', ...
+       10^4*iT, log10(TC), 'g', 10^4*iT_L, log10(TC_L), 'b');
+  
+  
+  TC_L = exp(T_A/T_1 - T_A/T_L); TC_H = exp(T_A/T_1 - T_A/T_H);
+  % semilogy([10^4/T_L, 10^4/T_L], [0.01, TC_L], 'b', ...
+	%   [10^4/T_L, 10^4/T_H], [TC_L, TC_H], 'g', ...
+	%   [10^4/T_H, 10^4/T_H], [0.01, TC_H], 'r');
+  plot([10^4/T_L, 10^4/T_L], log10([0.01, TC_L]), 'b', ...
+	   [10^4/T_L, 10^4/T_H], log10([TC_L, TC_H]), 'g', ...
+	   [10^4/T_H, 10^4/T_H], log10([0.01, TC_H]), 'r');
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,227 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>results_pets</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-14"><meta name="DC.source" content="results_pets.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>results_pets</h1><!--introduction--><p>Computes model predictions and handles them</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../results_pets.m"><b>results_pets</b></a>(txt_par, par_pets, chem, txt_data, data,  metadata)</p><h2>Description<a name="4"></a></h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>txt_par: information on the parameters</li><li>par_pets: structure with parameters of species</li><li>chem: structure with chemical parameters for species</li><li>txt_data: structure with information on the data</li><li>data: structure with data for species</li><li>metadata: structure with information on the entry</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Depending on <a href="estim_options.html"><b>estim_options</b></a> settings: writes to results_my_pet.mat an/or results_my_pet.html, plots to screen</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% results_pets
+% Computes model predictions and handles them
+
+%%
+function results_pets(txt_par, par_pets, metapar, chem, txt_data, data,  metadata) 
+% created 2015/01/17 by Goncalo Marques; 2015/03/21 by Bas Kooijman
+% modified 2015/03/30 by Goncalo Marques; 2015/04/01 by Bas Kooijman; 2015/04/14 by Goncalo Marques
+
+%% Syntax
+% <../results_pets.m *results_pets*>(txt_par, par_pets, chem, txt_data, data,  metadata) 
+
+%% Description
+% Computes model predictions and handles them (by plotting, saving or publishing)
+%
+% Input
+% 
+% * txt_par: information on the parameters
+% * par_pets: structure with parameters of species
+% * chem: structure with chemical parameters for species
+% * txt_data: structure with information on the data
+% * data: structure with data for species
+% * metadata: structure with information on the entry
+
+%% Remarks
+% Depending on <estim_options.html *estim_options*> settings:
+% writes to results_my_pet.mat an/or results_my_pet.html, 
+% plots to screen
+
+global pets results_output pseudodata_pets 
+
+close all
+
+% get (mean) relative errors
+data_mre = data;  % define a data structure with weight 1 for every data point and 0 for the pseudodata 
+nmweight = fieldnm_wtxt(data_mre, 'weight');
+nmwst = strrep(nmweight, '.weight', '');
+for i = 1:length(nmweight)
+  eval(['dtsets = fieldnames(data_mre.', nmweight{i},');']);
+  for j = 1:length(dtsets)
+    if strcmp(dtsets{j}, 'psd')
+      eval(['psdsets = fieldnames(data_mre.', nmweight{i},'.psd);']);
+      for j = 1:length(psdsets)
+        eval(['data_mre.', nmweight{i}, '.psd.', psdsets{j}, ' = zeros(length(data_mre.', nmweight{i}, '.psd.', psdsets{j}, '), 1);']);
+      end
+    else
+      eval(['data_mre.', nmweight{i}, '.', dtsets{j}, ' = ones(length(data_mre.', nmweight{i}, '.', dtsets{j}, '), 1);']);
+    end
+  end
+end
+
+[MRE, RE] = mre_st('predict_pets', par_pets, chem, metapar.T_ref, data_mre); % WLS-method
+metapar.MRE = MRE;
+metapar.RE = RE;
+
+datapl = rmfield_wtxt(data, 'weight');
+
+for i = 1:length(pets)
+  ci = num2str(i);
+  eval(['[nm nst] = fieldnmnst_st(data.pet', ci,');']);  % nst: number of data sets for pet i
+  for j = 1:nst  % replace univariate data by plot data 
+    eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
+    if k == 2
+      eval(['datavec = data.pet', ci, '.', nm{j}, '(:,1);']);
+      xaxis = linspace(min(datavec), max(datavec), 100)';
+      eval(['datapl.pet', ci, '.', nm{j}, ' = xaxis;']);
+    end
+  end
+end
+
+Prd_data = predict_pets(par_pets, chem, metapar.T_ref, datapl);
+
+RE_pointer = 1; %auxiliary pointer for the printing of the relative errors
+
+if results_output == 0 || results_output == 1
+
+  for i = 1:length(pets)
+    % produce par for species
+    par = par_pets;   % for the case with no zoom factor transformation
+    
+    % unpack par
+    v2struct(par);
+  
+    ci = num2str(i);
+    fprintf([pets{i}, ' \n']); % print the species name
+    eval(['fprintf(''COMPLETE = %3.1f \n'', metadata.pet', ci, '.COMPLETE);']);
+    fprintf('MRE = %8.3f \n\n', MRE)
+    
+    fprintf('\n');
+    eval(['printprd_st(txt_data.pet', ci, ', data.pet', ci, ', Prd_data.pet', ci, ', RE);']);  
+    printpar_st(txt_par, par);
+
+    if exist(['results_', pets{i}, '.m'], 'file')
+      par = par_pets;   % for the case with no zoom factor transformation
+      eval(['results_', pets{i}, '(txt_par, par, chem, metapar, txt_data.pet', ci, ', data.pet', ci, ');']);
+    else
+    
+      eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
+      for j = 1:nst
+        eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
+        if k == 2
+          figure;
+          eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
+          eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
+          eval(['xpred = datapl.pet', ci, '.', nm{j}, ';']);
+          eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
+          plot(xdata, ydata, '.r', xpred, ypred, 'g')
+          eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
+          xlabel(lblx);
+          eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
+          ylabel(lbly);
+        end
+      end
+    end
+    fprintf('\n')
+  end
+end
+
+if results_output == 1 || results_output == 2
+  par = par_pets;
+  filenm = ['results_', pets{1}, '.mat'];
+  metadata = metadata.pet1;
+  save(filenm, 'txt_par', 'par', 'metapar', 'chem', 'metadata');
+end
+
+if results_output == 2
+
+  for i = 1:length(pets)
+    % produce par for species
+    par = par_pets;   % for the case with no zoom factor transformation
+    
+    % unpack par
+    v2struct(par);
+  
+    ci = num2str(i);
+    graphnm = ['results_', pets{i}, '_'];
+    
+    if ~exist(['results_', pets{i}, '.m'], 'file')
+      eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
+      counter = 1;
+      for j = 1:nst
+        eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
+        if k == 2
+          figure;
+          eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
+          eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
+          eval(['xpred = datapl.pet', ci, '.', nm{j}, ';']);
+          eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
+          plot(xdata, ydata, '.r', xpred, ypred, 'g')
+          eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
+          xlabel(lblx);
+          eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
+          ylabel(lbly);
+          if counter < 10
+            eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
+          else
+            eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+          end
+          counter = counter + 1;
+        end
+      end
+    end
+    fprintf('\n')
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

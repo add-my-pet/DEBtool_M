@@ -1,0 +1,205 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>nmregr_options</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="nmregr_options.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>nmregr_options</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../nmregr_options">.m <b>nmregr_options</b></a> (key, val)</p><h2>Description<a name="4"></a></h2><pre>sets options for function 'nmregr' one by one</pre><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default' sets options at default values
+  other keys (see below) to print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'report': 1 - to report steps to screen; 0 - not to;
+  'max_step_number': maximum number of steps
+  'max_fun_evals': maximum number of function evaluations
+  'tol_simplex': tolerance for how close the simplex points must be
+     together to call them the same
+  'tol_tun': tolerance for how close the loss-function values must be
+     together to call them the same</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values printed to screen</li></ul></div><h2>Example of use<a name="5"></a></h2><p>nmregr_options('default'); nmregr_options('report', 0)</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% nmregr_options
+%
+
+%%
+function nmregr_options (key, val)
+  %  created at 2002/02/10 by Bas Kooijman; modified 2015/01/16 Gonçalo Marques
+  
+  %% Syntax
+  % <../nmregr_options .m *nmregr_options*> (key, val)
+  
+  %% Description
+  %  sets options for function 'nmregr' one by one
+  %
+  % Input
+  %
+  % * no input: print values to screen
+  % * one input: 
+  %
+  %    'default' sets options at default values
+  %    other keys (see below) to print value to screen
+  %
+  % * two inputs
+  %
+  %    'report': 1 - to report steps to screen; 0 - not to;
+  %    'max_step_number': maximum number of steps 
+  %    'max_fun_evals': maximum number of function evaluations
+  %    'tol_simplex': tolerance for how close the simplex points must be
+  %       together to call them the same
+  %    'tol_tun': tolerance for how close the loss-function values must be
+  %       together to call them the same
+  %
+  % Output
+  %
+  % * no output, but globals are set to values or values printed to screen
+  
+  %% Example of use
+  % nmregr_options('default'); nmregr_options('report', 0)
+
+    global report max_step_number max_fun_evals tol_simplex tol_fun
+ 
+    if ~exist('key','var')
+      key = 'unknown';
+    end
+ 
+    switch key
+	
+      case 'default'
+	    report = 1;
+	    max_step_number = 500;
+	    max_fun_evals = 2000;
+	    tol_simplex = 1e-4;
+	    tol_fun = 1e-4;
+
+      case 'report'
+	    if exist('val','var') == 0
+	      if numel(report) ~= 0
+	        fprintf(['report = ', num2str(report),' \n']);  
+	      else
+            fprintf('report = unknown \n');
+	      end	      
+	    else
+	      report = val;
+	    end
+
+      case 'max_step_number'
+	    if ~exist('val','var')
+	      if numel(max_step_number) ~= 0
+	        fprintf(['max_step_number = ', num2str(max_step_number),' \n']);  
+	      else
+            fprintf('max_step_number = unknown \n');
+	      end	      
+	    else
+	      max_step_number = val;
+	    end
+
+      case 'max_fun_evals'
+	    if ~exist('val','var')
+	      if numel(max_fun_evals) ~= 0
+	        fprintf(['max_fun_evals = ', num2str(max_fun_evals),' \n']);
+	      else
+	        fprintf('max_fun_evals = unkown \n');
+	      end
+	    else
+	      max_fun_evals = val;
+	    end
+
+      case 'tol_simplex'
+	    if ~exist('val','var')
+	      if numel(tol_simplex) ~= 0
+	        fprintf(['tol_simplex = ', num2str(tol_simplex),' \n']);
+	      else
+	        fprintf('tol_simplex = unknown \n');
+	      end
+	    else
+	      tol_simplex = val;
+	    end
+	    
+      case 'tol_fun'
+	    if ~exist('val','var') 
+	      if numel(tol_fun) ~= 0
+	        fprintf(['tol_fun = ', num2str(tol_fun),' \n']);
+	      else
+	        fprintf('tol_fun = unknown \n');
+	      end
+	    else
+	      tol_fun = val;
+	    end
+	    
+      otherwise 
+        fprintf(['key ', key, ' is unkown \n\n']);
+	    if numel(report) ~= 0
+          fprintf(['report = ', num2str(report),' \n']);
+	    else
+	      fprintf('report = unknown \n');
+	    end	      
+	    if numel(max_step_number) ~= 0
+	      fprintf(['max_step_number = ', num2str(max_step_number),' \n']);
+	    else
+	      fprintf('max_step_number = unkown \n');
+	    end
+	    if numel(max_fun_evals) ~= 0
+	      fprintf(['max_fun_evals = ', num2str(max_fun_evals),' \n']);
+	    else
+	      fprintf('max_fun_evals = unkown \n');
+	    end
+	    if numel(tol_simplex) ~= 0
+	      fprintf(['tol_simplex = ', num2str(tol_simplex),' \n']);
+	    else
+	      fprintf('tol_simplex = unknown \n');
+	    end
+	    if numel(tol_fun) ~= 0
+	      fprintf(['tol_fun = ', num2str(tol_fun),' \n']);
+	    else
+	      fprintf('tol_fun = unknown \n');
+	    end
+     end
+##### SOURCE END #####
+--></body></html>

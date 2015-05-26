@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+  <TITLE>
+    DEBtool
+  </TITLE>
+
+  <META 
+    NAME ="keywords" CONTENT="DEBtool, debtool, Dynamic Energy Budget
+    theory, Dynamic Energy Budgets, DEB theory, DEB theorie, DEB, deb,
+    deb theorie" >
+  <META 
+    NAME="description" CONTENT="Software package DEBtool, debtool">
+  <META NAME="distribution" CONTENT="global">
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H1>Octave versus Matlab</H1>
+
+Some small differences exist between Octave and Matlab.
+
+The following list is not meant to be exhaustive, but aims the solve practical problems in conversions
+
+<UL>
+<LI>
+  Octave uses a single ODE-solver for <code>x(t)</code>: <CODE>x = lsode("nm",x0,t)</CODE>; 
+  its various algorithms can be set with options.
+  Matlab has several ODE-solvers, e.g. <CODE>[t,x] = ode45("nm",t,x0)</CODE></TD>.
+  Notice that the sequence of indepent and dependent variables in the input is different;
+  this difference should match that of the user-defined function that specifies the ODE.
+  Matlab has the independent variable also as output; 
+  this is because if it is a 2-vector in the input, the output has all evaluated in-between-points.
+  If the input vector has 3 or more elements, the first output is identical to the used input.
+</LI>
+   
+   
+<LI>
+  The output of Octave's root finder <code>fsolve("name",x0)</code> has an indicator success or failure as second argument, while that of Matlab (with the same name) has this as third output, the second one being the value of the function at the root.
+  Matlab's root finder (of the optimisation toolbox) has an extremely narrow domain of attraction, compared to that of Octave.
+</LI>
+   
+ <LI>
+   Unused variables in Octave functions, that are declared global, can have numerical values. 
+   In Matlab they exist, but are empty (0 x 0); 
+   <code>clear</code> does not affect the values of global variables inside functions
+</LI>
+</UL>
+
+</BODY>
+</HTML>

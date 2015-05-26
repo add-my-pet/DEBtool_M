@@ -1,0 +1,1025 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_lib_misc</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: lib/misc</H3>
+
+Miscellaneous routines for the library. 
+Some of these routines might move to other subdirectories in the future.
+
+<H3>Interpolation, integration, differentiation</H3>
+
+  The following table summarizes the supporting functions.
+
+  <table>
+    <tr>
+      <th></th>
+      <th colspan = 2> general data</th>
+      <th> periodic data</th>
+    </tr>
+    <tr>
+      <th></th> <th> first order </th> <th> cubic </th> <th> Fourier</th>
+    </tr>
+    <tr>
+      <th> task </th> <th> spline </th> <th> spline </th> <th> series </th>
+    </tr>
+    <tr> 
+      <th> parametrisation</th> 
+      <th> - </th>
+      <th> <a HREF="#knot"><code>knot</code></a>, <a HREF="#knot_p"><code>knot_p</code></a> </th>
+      <th> <a HREF="#get_fourier"><code>get_fourier</code></a> </th> 
+    </tr>
+    <tr> 
+      <th> interpolation </th> 
+      <th> <a HREF="#spline1"><code>spline1</code></a> </th>
+      <th> <a HREF="#spline"><code>spline</code></a>, <a HREF="#spline_p"><code>spline_p</code></a> </th> 
+      <th> <a HREF="#fnfourier"><code>fnfourier</code></a></th>
+    </tr>
+    <tr>
+      <th> differentiation </th> 
+      <th> <a HREF="#spline1"><code>spline1</code></a> </th> 
+      <th> <a HREF="#spline"><code>spline</code></a>, <a HREF="#spline_c"><code>spline_p</code></a> </th>
+      <th> <a HREF="#dfnfourier"><code>dfnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> 2nd differentiation </th> 
+      <th> zero </th> 
+      <th> <a HREF="#spline"><code>spline</code></a>, <a HREF="#spline_c"><code>spline_p</code></a> </th>
+      <th> <a HREF="#ddfnfourier"><code>ddfnfourier</code></a> </th> 
+    </tr>   
+    <tr> 
+      <th> integration </th> 
+      <th> <a HREF="#ispline1"><code>ispline1</code></a> </th> 
+      <th> <a HREF="#ispline"><code>ispline</code></a> </th>
+      <th> <a HREF="#ifnfourier"><code>ifnfourier</code></a> </th> 
+    </tr>
+    <tr>
+      <th> roots </th> 
+      <th> <a HREF="#rspline1"><code>rspline1</code></a> </th> 
+      <th> <a HREF="#rspliine"><code>rspline</code></a> </th>
+      <th> <a HREF="#rfnfourier"><code>rfnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> extremes </th> 
+      <th> <a HREF="#espline1"><code>espline1</code></a> </th> 
+      <th> <a HREF="#espliine"><code>espline</code></a> </th>
+      <th> <a HREF="#efnfourier"><code>efnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> example script</th> 
+      <th> <code>mydata_smooth</code> </th> 
+      <th> <code>mydata_smooth</code> </th>
+      <th> <code>mydata_smooth</code> </th> 
+    </tr>   
+    <tr>
+      <th></th> 
+      <th></th> 
+      <th> <code>mydata_spline</code> </th>
+      <th></th> 
+    </tr>   
+  </table>
+
+<HR>
+<H4><A NAME="spline1"> spline1</A></H4>
+
+  First order splines connect knots by straight lines, and is linear outside the knots.
+
+  <P>
+  Function <b>spline1</b> calculates the ordinates and the first derivatives of a first order spline, given abcissa and knot coordinates. 
+  The spline is interpolating. 
+  See 
+  <a href="#ispline1"><code>ispline1</code></a> for integration, 
+  <a href="#rspline1"><code>rspline1</code></a> for roots, 
+  <a href="#espline1"><code>espline1</code></a> for local extremes.
+
+  <P>
+  Input: 
+  <ul>
+    <li> n-vector with abcissa </li>
+    <li> (r,2)-matrix with knot coordinates;
+         The knot abcissa must be ascending </li>
+    <li> Optional scalar with the value of the first derivative at the first knot; default is zero </li>
+    <li> Optional scalar with the value of the first derivative at the last knot; default is zero </li>
+  </ul>
+
+  <P>
+  Output: 
+  <ul>
+    <li> n-vector with ordinates </li>
+    <li> n-vector with first derivatives </li>
+    <li> n-vector with indices of the largest knot-abcissa that are smaller than the abcissa given in the first input. 
+         Index 0 means that the first knot-abcissa is larger. </li>
+  </ul>
+
+
+  <P>
+  Example of use:
+  <code>x = (1:10)'; y = 3*(x+.1*rand(10,1)).^2; [Y, dY] = spline1([x,y],k); iY = ispline1(x,k); rspline1(k,5)</code>
+
+  See <code>mydata_smooth</code> for further illustration.
+
+<HR>
+<H4><A NAME="ispline1"> ispline1</A></H4>
+
+  The function <b>ispline1</b> works similar to spline1 but gives a single n-vector with integrated values of the cubic spline. 
+  The first element is zero by definition.
+
+  <p>
+  Input:
+  <ul>
+    <li> n-vector with abcissa values (ascending)</li>
+    <li> (r,2)-matrix with knot coordinates (strictly ascending)</li>
+    <li> optional scalar with first derivative at first knot;
+         zero by default</li> 
+    <li> optional scalar with first derivative at last knot;
+         zero by default</li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with integrated values; first element = 0 </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="rspline1"> rspline1</A></H4>
+
+  The function <b>rspline1</b> finds all x values of the equation f(x) = y, where f(x) is a first order spline.
+
+  <p>
+  Input:
+  <ul>
+    <li> (r,2)-matrix with knot coordinates (strictly ascending) </li>
+    <li> optional scalar with first derivative at first knot;
+         zero by default </li> 
+    <li> optional scalar with first derivative at last knot;
+         zero by default </li>
+    <li> optional scalar with y-value: 
+         zero by default </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> vector with roots </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="espline1"> espline1</A></H4>
+
+  The function <b>espline1</b> finds all local extremes of a first order spline.
+
+  <p>
+  Input:
+  <ul>
+    <li> (r,2)-matrix with knot coordinates (strictly ascending)</li>
+    <li> optional scalar with first derivative at first knot;
+         zero by default </li> 
+    <li> optional scalar with first derivative at last knot;
+         zero by default </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (n,2)-matrix with (x,y)-values of local minima </li>
+    <li> (m,2)-matrix with (x,y)-values of local maxima </li>
+    <li> (n,1)-vector with indices of local minima </li>
+    <li> (m,1)-vector with indices of local maxima </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+
+<HR>
+<H4><A NAME="spline">spline</A></H4>
+
+  Cubic splines are piece-wise cubic polynomials between knots, and linear outside the knots, such that the spline is differentiable
+everywhere. 
+  Natural cubic splines have a second derivative equal to zero at the first and last knot; 
+  the first derivative is differentable everywhere, the second derivative is continuous, and the third derivative is piecewise constant and not continuous. 
+  Left and/or right clamped cubic splines have a prescribed first derivative at the first and/or last knot; the second derivative at these knots is (generally) not equal to zero, while it is outside the knot-range.
+
+  <P>
+  Function <b>spline</b> calculates the ordinates and the first three derivatives of a cubic spline, given abcissa and knot coordinates. 
+  The spline is interpolating, see <a href="#knot"><code>knot</code></a> for obtaining knot coordinates of a smoothing spline. 
+  The natural cubic spline is selected by default, but it can optionally be clamped left and/or right. 
+  See 
+  <a href="#ispline"><code>ispline</code></a> for integration, 
+  <a href="#rspline"><code>rspline</code></a> for roots, 
+  <a href="#espline"><code>espline</code></a> for local extremes.
+
+  <P>
+  Input: 
+  <ul>
+    <li> n-vector with abcissa</li>
+    <li> (r,2)-matrix with knot coordinates; r > 3. 
+         The knot abcissa must be strictly ascending </li>
+    <li> Optional scalar with the value of the first derivative at the first knot; empty means not specified </li>
+    <li> Optional scalar with the value of the first derivative at the last knot; empty means not specified </li>
+  </ul>
+
+  <P>
+  Output: 
+  <ul>
+    <li> n-vector with ordinates </li>
+    <li> n-vector with first derivatives </li>
+    <li> n-vector with second derivatives </li>
+    <li> n-vector with third derivatives </li>
+  </ul>
+
+  <P>
+  Example of use 
+  <code>x = (1:10)'; y = 3*(x+.1*rand(10,1)).^2;</code>: 
+  <code>k = knot(0.5+[0 2 5 7]',[x,y]); [Y, dY, ddY, dddY] = spline(x,k); iY = ispline(x,k); rspline(k,5)</code>
+
+  <P>
+  Example of the use of clamps: 
+  <code>Y = spline(x,k,0)</code> (left clamp); 
+  <code>Y = spline(x,k,[],0)</code> (right clamp); 
+  <code>Y = spline(x,k,0,0)</code> (left and right clamp); 
+  See <code>mydata_spline</code> and <code>mydata_smooth</code> for further illustrations.
+
+<HR>
+<H4><A NAME="spline_p"> spline_p</A></H4>
+
+  Like <a href="#spline"><code>spline</code></a>, but outside first and last knot-abcissa, the spline is periodic, rather than linear. 
+  The first and last knot-ordinates are identical, as well as the derivatives at these points. 
+
+  <P>
+  Input: 
+  <ul>
+    <li> n-vector with abcissa </li>
+    <li> (r,2)-matrix with knot coordinates; r > 3. 
+         The knot abcissa must be strictly ascending.
+         The period is from the first to the last knot abcissa.
+         Element (1,2) is the derivative at the first abcissa.
+         The first knot ordinate equals the last knot ordinate </li>
+  </ul>
+
+  <P>
+  Output: 
+  <ul>
+    <li> n-vector with ordinates </li>
+    <li> n-vector with first derivatives </li>
+    <li> n-vector with second derivatives </li>
+    <li> n-vector with third derivatives </li>
+  </ul>
+
+
+  <P>
+  Example of use: see <code>mydata_spline_p</code>.
+
+<HR>
+<H4><A NAME="knot"> knot</A></H4>
+
+  The function <b>knot</b> obtains the knot coordinates that minimizes the weighted sum of squared deviations of data points and the cubic <a href="#spline"><code>spline</code></a>, given knot-abcissa.  
+  See <a href="#knot_p"><code>knot_p</code></a> for the periodic <a href="#spline"><code>spline</code></a>.
+
+  <p>
+  Input: 
+  <ul>
+    <li> r-vector with knot-abcissa (n>3, strictly ascending) </li>
+    <li> (n,2)-matrix with data points.  A third column can be appended with weight coefficients (weights equal to 1 are used as default) </li>
+    <li> optional scalar with first derivative at first knot;
+         empty means not specified </li> 
+    <li>optional scalar with first derivative at last knot;
+         empty means not specified </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (r,2)-matrix with knot-coordinates; the first column equals the first input vector </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+<HR>
+<H4><A NAME="knot_p"> knot_p</A></H4>
+
+  The function <b>knot_p</b> obtains the knot coordinates that minimizes the weighted sum of squared deviations of data points and the periodic <a href="#spline_p"><code>spline_p</code></a>, given knot-abcissa. 
+  See <a href="#knot"><code>knot</code></a> for the cubic <a href="#spline"><code>spline</code></a>.
+
+  <p>
+  Input: 
+  <ul>
+    <li> r-vector with knot-abcissa (n>3, strictly ascending).
+         The period is from the first to the last knot-abcissa </li>
+    <li> (n,2)-matrix with data points. 
+         A third column can be appended with weight coefficients (weights equal to 1 are used as default) </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (r,2)-matrix with knot-coordinates; the first column equals the first input vector.
+         Element(1,2) is the derivative at the first abcissa.
+         The first ordinate equals the last one </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+<HR>
+<H4><A NAME="ispline"> ispline</A></H4>
+
+  The function <b>ispline</b> works similar to spline but gives a single n-vector with integrated values of the cubic spline. 
+  The first element is zero by definition.
+
+  <p>
+  Input:
+  <ul>
+   <li> n-vector with abcissa values (ascending) </li>
+   <li> (r,2)-matrix with knot coordinates (r>3, strictly ascending) </li>
+   <li> optional scalar with first derivative at first knot;
+        empty means not specified </li> 
+   <li> optional scalar with first derivative at last knot;
+        empty means not specified </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with integrated values; first element = 0 </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="rspline"> rspline</A></H4>
+
+  The function <b>rspline</b> finds all x values of the equation f(x) = y, where f(x) is a cubic spline. 
+  It does so by getting prior estimates using <a href = "rspline1"><code>rspline1</code></a>, followed by a Newton Raphson procedure.
+
+  <p>
+  Input:
+  <ul>
+    <li> (r,2)-matrix with knot coordinates (r>3, strictly ascending) </li>
+    <li> optional scalar with first derivative at first knot;
+         empty means not specified </li> 
+    <li> optional scalar with first derivative at last knot;
+         empty means not specified </li>
+    <li> optional scalar with y-value: y=0 is used as default </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> vector with roots </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="espline"> espline</A></H4>
+
+  The function <b>espline</b> finds all local extremes of a cubic spline. 
+  It does so by getting prior estimates using <a href = "rspline1"><code>rspline1</code></a> applied to the derivatives of the spline, followed by a Newton Raphson procedure.
+
+  <p>
+  Input:
+  <ul>
+    <li> (r,2)-matrix with knot coordinates (r>3, strictly ascending)</li>
+    <li> optional scalar with first derivative at first knot;
+         empty means not specified </li> 
+    <li> optional scalar with first derivative at last knot;
+         empty means not specified </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (n,2)-matrix with (x,y)-values of local minima </li>
+    <li> (m,2)-matrix with (x,y)-values of local maxima </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="fnfourier">fnfourier</A></H4>
+
+  Fourier series are defined as weighted sum of cosinus and sinus functions plus an additive coefficient (= mean function value). 
+  They are periodic, so the function value and the derivatives at the start and the end of a period are equal.
+
+  <P>
+  Function <b>fnfourier</b> calculates the ordinates, 
+  <b><a NAME="dfnfourier"><code>dfnfourier</code></a></b> the derivatives and
+  <b><a NAME="ddfnfourier"><code>ddfnfourier</code></a></b> the second derivatives. 
+  These functions all have the same input/output structure.
+  See 
+  <a href="#ifnfourier"><code>ifnfourier</code></a> for integration, 
+  <a href="#rfnfourier"><code>rfnfourier</code></a> for roots, 
+  <a href="#efnfourier"><code>efnfourier</code></a> for local extremes.
+
+  <P>
+  Input: 
+  <ul>
+    <li> n-vector with abcissa </li>
+    <li> (k+1,2)-matrix with 2k Fourier coefficients and the period, additive term in the first row </li>
+  </ul>
+
+  <P>
+  Output: 
+  <ul>
+    <li> n-vector with ordinates </li>
+  </ul>
+
+
+  <P>
+  Example of use see <code>mydata_smooth</code>.
+
+<HR>
+<H4><A NAME="get_fourier">get_fourier</A></H4>
+
+  The function <b>get_fourier</b> obtains the parameters of the fourier series that minimizes the weighted sum of squared deviations of data points, given a period and the number of fourier terms. 
+  (The number of parameters equals one + two times the number of Fourier terms.) 
+  It does so by first obtaining the coefficient using Euler's formulas with <b><a href="#ispline"><code>ispline</code></a></b>, followed by a Newton Raphson procedure.
+
+  <p>
+  Input: 
+  <ul>
+    <li> scalar with period </li>
+    <li> scalar with number of Fourier terms k </li>
+    <li> (n,2)-matrix with data points. 
+         A third column can be appended with weight coefficients (weights equal to 1 are used as default) </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (k+1,2)-matrix with Fourier coefficients. 
+         The first row represents the period and the additive coefficient (= mean function value) </li>
+  </ul>
+
+<HR>
+<H4><A NAME="ifnfourier"> ifnfourier</A></H4>
+
+  The function <b>ifnfourier</b> works similar to fnfourier but gives a single n-vector with integrated values of the Fourier series. 
+  The first element is zero by definition.
+
+  <p>
+  Input:
+  <ul>
+    <li> n-vector with abcissa values</li>
+    <li> (k+1,2)-matrix with Fourier coefficients</li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with integrated values; first element = 0 </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="rfnfourier"> rfnfourier</A></H4>
+
+  The function <b>rfnfourier</b> finds all x values of the equation f(x) = y within one period, where f(x) is a Fourier series. 
+  It does so by getting prior estimates using <a href = "rspline1"><code>rspline1</code></a>, followed by a Newton Raphson procedure.
+
+  <p>
+  Input:
+  <ul>
+    <li> (k+1,2)-matrix with Fourier coefficients </li>
+    <li> optional scalar with y-value: y=0 is used as default </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> vector with roots </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations </li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<H4><A NAME="efnfourier">efnfourier</A></H4>
+
+  The function <b>efnfourier</b> finds all local extremes of a Fourier series within one period. 
+  It does so by getting prior estimates using <a href = "rspline1"><code>rspline1</code></a> applied to the derivatives of the Fourier series, followed by a Newton Raphson procedure.
+
+  <p>
+  Input:
+  <ul>
+    <li> (k+1,2)-matrix with Fourier coefficients </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (n,2)-matrix with (x,y)-values of local minima </li>
+    <li> (m,2)-matrix with (x,y)-values of local maxima </li>
+    <li> scalar with indicator for successful (1), or unsuccessful (0) numerical computations</li>
+  </ul>
+
+  <p>
+  Example of application, see <code>mydata_smooth</code>
+
+<HR>
+<HR>
+<h3> Miscellaneous functions</h3>
+
+<H4><A NAME="wrap"> wrap</A></H4>
+
+  <P>
+  Unravel a matrix and wrap it into a (nr,nc)-matrix, repeating elements or not-using elements depending on the number of elements required relative to the number of elements offered; 
+  in routine reshape the number of elements must match.
+
+  <P>
+  Input:
+  <ul>
+    <li> data-matrix </li>
+    <li> number of rows </li> 
+    <li> number of colums </li>
+  </ul>
+
+  <P>
+  Ouput:
+  <ul>
+    <li>matrix with specified numbers of rows and colums</li>
+  </ul>
+
+  <P>
+  Example of use:
+  <code> wrap(1:3,4,5)</code> or 
+  <code> wrap(1:10,2,2)</code>.
+
+<HR>
+<H4><A NAME="cat"> cat</A></H4>
+
+  Catenate matrices across rows or colums.
+
+  <P>
+  Input:
+  <ul>
+    <li> scaler with dimension<br>
+        (1 for catenation across rows, 2 across columns) </li>
+    <li> variable number of matrices to be catenated 
+         (numbers of rows or columns must match) </li>
+  </ul>
+
+  <P>
+  Ouput:
+  <ul>
+    <li> Catenated matrix </li>
+  </ul>
+
+  <P>
+  Example of use: 
+ <code>a = [2 3;1 6]; b=cat(1,a,a); c=cat(2,a,a,a);</code>
+
+<HR>
+<H4><A NAME="trian"> trian & itrian</A></H4>
+
+  Wraps a vector into an upper triangular matrix. 
+  Function <code>itrian</code> is inverse to function <code>trian</code>.
+
+  <P>
+  Input:
+  <ul>
+    <li> Vector with the proper number of elements </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> Upper triangular matrix </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code> trian([2 4 7])</code> and  
+  <code> itrian(trian([2 4 7]))</code>
+
+<HR>
+<H4><A NAME="rkutta"> rkutta</A></H4>
+
+  Integrates user-defined system of ODE according to the Runge Kutta 5 integration method with fixed or dynamic step size. 
+  (Method is described in: 
+  Press et al 1992 Numerical Recipes in C, Cambridge UP, p 716)
+ 
+  <P>
+  Input:
+  <ul>
+    <li> Name of the user-defined function of the type <code>dx = fn (x,t)</code></li>
+    <li> Vector with initial state values </li>
+    <li> Scalar with upper time boundary, starting from t=0 </li>
+    <li> Step size (optional; if not specified step size control is applied) </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> Matrix with times in column 1 and state values in the other columns </li>
+  </ul>
+
+  <P>
+  Example of an user definition of function:<br>
+  <code>
+  function dx = monod(x, t)<br>
+  dx = - 0.5 * x/ (0.1 + x);<br>
+  </code> 
+  Example of use:
+  <code>rkutta("monod",1,10)</code> or 
+  <code>rkutta("monod",1,10,.01)</code>.
+
+<HR>
+<H4><A NAME="nmmin"> nmmin</A></H4>
+
+  Finds arguments for which a set of functions has a minimum using the downhill simplex method of Nelder and Mead.
+
+  <P>
+  Input:
+  <ul>
+    <li> string with user-defined function name. 
+         The user-defined function must take a single vector-argument with parameter values and one or more data matrices as inputs, and a scalar with the function that has to be minimized for each data matrix as output. 
+         Examples: 
+         <code>f = func(p, x)</code> or 
+         <code> [f1, f2] = func(p, x1, x2)</code> or 
+         <code>[f1, f2, f3] = func(p, x1, x2, x3)</code>. 
+         The number of data matrices is arbitrary (in principle) </li>
+    <li> The initial parameter estimates, which must be organized in a (k, 2) matrix, with parameter values in column 1, and booleans in column 2, where 0 stands for "keeping the corresponding parameter fixed", and 1 for "iterate the corresponding parameter values". 
+         If the second column is omitted, values one are assumed (i.e. all parameters are iterated) </li>
+    <li> One or more data matrices, which are treated as fixed parameters </li>
+  </ul>
+
+  <P>
+  Output:
+  <ul>
+    <li> a parameter matrix similar to the parameter input matrix, but the initial estimates are replaced by the values that minimize the functions. 
+         The second output is information, which equals 0 for unsuccessful termination, and 1 for successful termination. 
+         If the option report is set to 1 (default), unsuccessful termination is reported </li>
+  </ul>
+ 
+  <P>
+  Options in the numerical procedure can be set by <A HREF="DEBtool_lib_regr.html#nmregr_options">nmregr_options</A>.
+
+<HR>
+<H4><A NAME="tempcorr"> tempcorr & shtemp2corr</A></H4>
+
+  Calculates the factor with which physiological rates should be multiplied to go from a reference temperature to a given temperature. 
+  <code>shtempcorr</code> shows a graph of this correction factor as function of the temperature.
+
+  <P>
+  Input:
+  <ul>
+    <li> vector with (new) temperature </li>
+    <li> scaler with reference (old) temperature </li>
+    <li> 1-, 3-, 5-vector with temperature-parameters in Kelvin:
+      <oL>
+        <LI> T<sub>A</sub>: Arrhenius temperature </LI>
+        <LI> T<sub>L</sub>: Lower temperature boundary </LI>
+        <LI> T<sub>H</sub>: Upper temperature boundary </LI>
+        <LI> T<sub>AL</sub>: Arrhenius for lower temperature boundary </LI>
+        <LI> T<sub>AH</sub>: Arrhenius for upper temperature boundary </LI>
+      </oL>
+    The 3 options are: (T<sub>A</sub>), 
+    (T<sub>A</sub>,T<sub>L</sub>,T<sub>AL</sub>), or all 5 parameters </li>
+  </ul>
+
+  <P>
+  Ouput:
+  <ul>
+    <li>Vector with correction factors</li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>tempcorr([330 331 332], 320, [12000 277 318 20000 190000])</code> and 
+  <code>shtemp2corr(320, [12000 277 318 20000 190000])</code>.
+
+<HR>
+<H4><A NAME="shapecorr"> shapecorr</A></H4>
+
+  Calculates the shape correction factor with which quantities with dimension `per surface area' should be multiplied to account for change in shape.
+
+  <P>
+  Input:
+  <ul>
+    <li>vector with lengths</li>
+    <li>L<sub>ref</sub>: scaler with reference length for which the correction factor equals 1</li>
+    <li>1-or-2-vector with correction-parameters:
+      <oL>
+        <LI>L<sub>j</sub>: Length at metamorphosis</LI>
+        <LI>x</sub>: optional morph parameter for power of (L/L<sub>ref</sub>), default 1</LI>
+      </oL>
+    </li>
+  </ul>
+
+  <P>
+  Ouput:
+  <ul>
+    <li>Vector with correction factors</li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>shapecorr([.9; 1; 1.5], .8, [2.5; 1.5])</code>.
+
+<HR>
+<H4><A NAME="shstar"> shstar & shloglogstar</A></H4>
+
+  Plot star with slopes in multiples of 1/3. <code>shloglogstar</code> uses log-transformed x and y axes.
+
+  <P>
+  Input:
+  <UL>
+    <LI> 2-vector with coordinates of star centre </LI>
+    <LI> (2,2)-matrix with x-range (column 1) and y-range (column 2); centre must be within the ranges </LI>
+    <LI> colour </LI>
+  </UL>
+
+  <P>
+  Example of use: 
+  <code>shstar([2 6],[0 0; 10 10],"m")</code>
+
+<HR>
+<H4><A NAME="re"> re & im</A></H4>
+
+  Calculates the real (re) and imaginary (im) parts of complex numbers.
+
+  <P>
+  Input: 
+  <ul>
+    <li> matrix with complex numbers; output: matrix with real or imaginary parts </li>
+  </ul>
+
+  <P>
+  Example of use after e.g. 
+  <code>x = rand(2,3) + i*rand(2,3)</code>:
+  <code>re(x) + i*im(x) - x</code>. 
+  This should give a (2,3)-matrix of zeros.
+
+<HR>
+<H4><A NAME="roots3"> roots3 & rooth</A></H4>
+
+  <code>roots3</code> calculates the (possibly) complex roots of a cubic polynomial, and <code>rooth</code> gives the hermite interpolation on an interval, given function values and their derivatives at the borders of the interval.
+
+  <p>
+  Input for <code>roots3</code>
+  <ul>
+     <li> 4-vector with coefficients <code>a</code> in equation 
+          y(x) = a(1) x<sup>3</sup> + a(2) x<sup>2</sup> + a(3) x + a(4) </li>
+     <li> optional: scalar for selecting roots: 
+          0 (default) for all 3 roots, -1 for complex-valued roots only, 1 for different real roots only </li>
+  </ul>
+  Output of <code>roots3</code>: 
+  <ul>
+    <li> vector with roots of cubic polynomial </li>
+  </ul>
+
+  <p>
+  Input for <code>rooth</code>:
+  <ul>
+    <li> scalar with length of interval </li> 
+    <li> scalar with target function value </li> 
+    <li> scalar with function value at start interval </li> 
+    <li> scalar with derivative of function at start interval </li> 
+    <li> scalar with function value at end interval </li> 
+    <li> scalar with derivative of function at end interval </li> 
+  </ul>
+
+  <p>
+  Output of <code>rooth</code>: 
+  <ul>
+    <li> scaler with argument value for which the cubic polynomial that satisfies function conditions equals the target function value <li>
+    <li> scalar, which equals 1 if their is one such an argument value, and zero if no value was found, and 2 if more than one value is found (but one is reported, nonetheless) </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>roots3([2 6 1 3])</code> or 
+  <code>roots3([2 6 1 3],1)</code>; 
+  <code>rooth(1,2,1.5,1,2.5,1)</code>.
+
+<HR>
+<H4><A NAME="printpar"> printpar</A></H4>
+
+  Print parameter names, values and standard deviations. 
+  The names of the parameters should be collected in a (r,c)-matrix, while the values and the (optional) standard deviations are r-vectors. 
+  Text for a header is also optional.
+
+  <P>
+  Example of use 
+  <code>nm = ["initial length "; "growth rate"]; p = [1; .5]; sd = [.5; 1.5]; printpar(nm, p, sd);</code> or 
+  <code>printpar(nm, p);</code> or 
+  <code>printpar(nm, p, [], "myheader");</code>
+
+<HR>
+<H4><A NAME="print_txt_var"> print_txt_var</A></H4>
+
+  Print text, and values of a matrix. 
+  The text should be collected in a (r,c)-matrix, where r is the number of rows in the matrix. 
+  In matlab, the text should becollected in cells.
+
+  <P>
+  Example of use:
+  <code>nm = ["txt1 "; "txt2"]; x = ones(2,3); print_txt_var(nm, x);</code> or (in Matlab) 
+  <code>nm = [{[txt1'}; {'txt2'}]; x = ones(2,3); print_txt_var(nm, x);</code>
+
+<HR>
+<H4><A NAME="find_r">find_r</A></H4>
+
+  The function obtains the specific growth rate for a V1-morph with 2 reserves and 1 structure.
+  This function is obsolate and will be removed in the future; see <a href="DEBtool_alga.html#sgr"><code>DEBtool/alga/sgr</code></a>. 
+
+  <P>
+  Input:
+  <UL> 
+    <li> 2-vector with reserve densities </li>
+    <li> 2-vector with reserve turnover rates </li>
+    <li> 2-vector with specific maintenance fluxes </li>
+    <li> 2-vector with yield coefficients of reserve on structure </li>
+  </UL>
+
+  <P>
+  Output: 
+  <ul>
+    <li>scalar with specific growth rate</li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>find_r([1 .3],[.8 .01], [.02 .03], [1.4 1.3])</code>.
+
+<HR>
+<H4><A NAME="dirfield">dirfield</A></H4>
+
+  The direction field for a used-defined set of ode's for 2 variables.
+
+  <P>
+  Inputs:
+  <UL> 
+    <li> character string with name of user-defined function </li>
+    <li> vector with values of first variable x </li>
+    <li> vector with values of second variable y </li>
+    <li> multiplier for the changes in variables x and y </li>
+  </UL>
+
+  <P>
+  Output: 
+  <ul>
+    <li> matrix with 4 colums; colums 1 and 2 give the coordinates of
+         the x and y, colums 3 and 4 the changes in x and y times the multiplier </li>
+  </ul>
+
+  <P>
+  Example of use: see fig_9_2 in domain fig.
+
+
+<HR>
+<H4><A NAME="dist_stat">dist_stat</A></H4>
+
+  Relative distances in an multivariate statistic between all pairs of individuals in a population; see  <a href="#dist_taxon">dist_taxon</a>. 
+  The values of each statistic are first stripped from their units by division by the mean value of that statistic in the whole population.
+  Then the euclidian distince is computed.
+
+  <P>
+  Inputs:
+  <UL> 
+    <li> (n,k)-matrix with n values of k-variate statistics</li>
+  </UL>
+
+  <P>
+  Output: 
+  <ul>
+    <li> (n,n)-matrix with euclidian distances.
+         The matix is symmetric with zeros on the diagonal.</li>
+  </ul>
+
+  <P>
+  Example of use: <code>x = rand(3,1); d = dist_stat(x);</code>.
+
+<HR>
+<H4><A NAME="dist_taxon">dist_taxon</A></H4>
+
+  Taxonomic distances between all pairs of species in a population, cf see  <a href="#dist_stat">dist_stat</a>. 
+  The distances assume values between 0 and 7; 
+  two species have distance 7 if they belong to different superphyla.
+  Two species have distance 1 if they are different, but belong to the same genus.
+
+  <P>
+  Inputs:
+  <UL> 
+    <li> n-cells with species, genus, family, order, class, phylum, superphylum. Each cell contains a string with the name of the taxon.</li>
+  </UL>
+
+  <P>
+  Output: 
+  <ul>
+    <li> (n,n)-matrix with distances between the taxa.
+         The matix is symmetric with zeros on the diagonal.</li>
+  </ul>
+
+  <P>
+  Example of use: <code>
+  species = {{'magna'}; {'pulex'}};
+  genus = {{'Daphnia'}; {'Daphnia'});
+  family = {{'Daphniidae'}; {'Daphniidae'});
+  order = {{'Cladocera'}; {'Cladocera'});
+  class = {{'Branchiopoda'}; {'Branchiopoda'});
+  phylum = {{'Arthropoda'}; {'Arthropoda'});
+  superphylum = {{'Ecdysozoa'}; {'Ecdysozoa'});
+  d = dist_taxon(species, genus, family, order, class, phylum, superphylum);</code>.
+
+<HR>
+<H4><A NAME="ricatti">ricatti</A></H4>
+
+  Given square matrices A and B, the function solves matrix S from 0 = A + S B' + B S
+
+  <P>Input:
+  <UL> 
+     <li> (n,n)-matrix with cov of d/dt X (symmetric) </li>
+     <li> (n,n)-matrix with jacobian of d/dt X </li>
+  </UL>
+  If d/dt X = f, and f(X^*) = 0, the jacobian is defined as d/dX f'(X^*).
+
+  <P>
+  Output: 
+  <ul>
+    <li> (n,n)-matrix with cov of approximation Ornstein-Ulenbeck process </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>A = [2 1; 1 4]; B = [.1 .6; .5 .8]; ricatti(a,b)</code>.
+
+<HR>
+<H4><A NAME="matrix2file">matrix2file</A></H4>
+
+  Appends matrix of numbers to an octave-file.
+
+  <P>
+  Input:
+  <UL> 
+     <li> character string with file name (without extension <code>.m</code>) </li>
+     <li> character string with name of matrix </li>
+     <li> (r,c)-matrix with numbers </li>
+  </UL>
+  By running the file as a script file under Octave/Matlab, the matrix is assigned as a variable.
+
+  <P>
+  Output: 
+  <ul>
+    <li> ascii-file with extension <code>.m</code> with code for assigning a variable. 
+         If the file already exists, the code is appended.  
+         If the file does not exist, it is created </li>
+  </ul>
+
+  <P>
+  Example of use: 
+  <code>matrix2file("file_nm", "X", rand(4))</code>.
+
+<HR>
+<H4><A NAME="clear_file">clear_file</A></H4>
+
+  Clears an code-file
+
+  <P>
+  Input:
+  <UL> 
+    <li> file name (without extension <code>.m</code>) </li>
+  </UL>
+  If the file does not exist, an empty file is created.
+
+  <P>
+  Example of use: 
+  <code>clear_file(`file_nm')</code>.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

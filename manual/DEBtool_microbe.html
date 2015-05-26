@@ -1,0 +1,417 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_microbe</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: microbe</H3>
+
+Micro-organisms in reactors: 1 reserve, 1 structure, V1-morph
+
+<HR>
+<H4><A NAME="microbe">microbe</A></H4>
+
+  <P>
+  Demo that runs:
+  <UL>
+    <LI> <A HREF="#pars_microbe"><code>pars_microbe</code></A>: parameter setting </LI>
+    <LI> <A HREF="#shbatch"><code>shbatch</code></A>: batch culture </LI>
+    <LI> <A HREF="#shchemostat"><code>shchemostat</code></A>: chemostat in equilibrium </LI>
+    <LI> <A HREF="#shflux_microbe"><code>shflux_microbe</code></A>: fluxes to/from a chemostat </LI>
+    <LI> <A HREF="#shratio_microbe"><ccde>shratio_microbe</code></A>: Respiration, Watering, Urination Quotients </LI>
+  </UL>
+
+  The microbe is decomposed in:<BR>
+  structure (V) and general reserves (E)
+
+  <P>
+   Organic compounds:<BR>
+     X = substrate, V = structure, E = reserve, P = product(s)<BR>
+   Mineral compounds:<BR>
+     C = carbon dioxide, H = water, O = dioxygen, N = ammonia
+
+  <P>
+   Uptake is proportional to surface area, which is taken to be proportional to the structural volume: V1-morph. 
+   This removes the distinction between the individual and the population level.
+
+  <P>
+  The simplification k_J = k_M*(1 - kap)/kap is implemented, which makes this energy-structured model also size-structured.
+  The microbe divides when the structural mass exceeds a threshold value
+
+  <P>
+  In a generalized reactor, the specific supply and draining rates can be set independently for all compounds. 
+  If they are chosen to be equal, we have a chemostat. 
+  If the specific draining rates are set to zero, we have a fed-batch reactor; 
+  if the specific supply rate set to zero as well, we have a batch-reactor.
+
+  <P>
+  Example of use after (optionally) editing file <code>pars_microbe.m</code>: 
+  <CODE>microbe</CODE>
+
+<HR>
+<H4><A NAME="pars_microbe">pars_microbe</A></H4>
+
+  Set the parameters by editing file <code>pars_microbe.m</code> in toolbox <code>microbe</code>.
+
+<HR>
+<H4><A NAME="shbatch">shbatch</A></H4>
+
+  Batch reactor; Initial conditions can be changed by editing file <code>shbatch.m</code>.  
+  See pages 315 ff of the 
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.<BR>
+  Four figures are shown of variables against time
+
+  <P>
+  fig <B>1</B><BR>
+  Living (green, drawn) and and dead (green, stippled) structure;
+  living (red, drawn) and dead (red, stippled) reserve. All in Molar.
+
+  <P>
+  fig <B>2</B><BR> 
+  Living (brown, drawn) and dead (brown, stippled) biomass (so structure plus reserve) in gram per litre.
+
+  <P>
+  fig <B>3</B><BR>
+  Substrate (green, drawn) in Molar
+
+  <P>
+  fig <B>4</B><BR>
+  Product (red, drawn) in Molar. 
+  Think, for instance of penicillin, or acetate.  
+  It is not difficult to extend the routine to include more types of product.
+
+  <P>
+  Example of use after editing <code>pars_microbe.m</code>: 
+  <CODE>clear all; pars_microbe; shbatch</CODE>.<BR> 
+  The command <CODE>clear; pars_microbe; shbatch (4)</CODE> will only plot fig <B>4</B>.
+
+
+<HR>
+<H4><A NAME="shchemostat">shchemostat</A></H4>
+
+  Chemostat reactor in equilibrium. 
+  See pages 147, 312 ff of the
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">
+  DEB-book</A>.<BR> 
+  Six figures are shown of variables against throughput rate
+
+  <P>
+  fig <B>1</B><BR>
+  Living (green, drawn) and dead (green, stippled) structure;
+  living (red, drawn) and dead (red, stippled) reserve, all in Molar
+
+  <P>
+  fig <B>2</B><BR> Living (brown, drawn) and dead (brown, stippled) biomass (so structure plus reserve) (red, drawn) in gram per litre.
+
+  <P>
+  fig <B>3</B><BR> 
+  Fraction of dead structure (brown) in M/M.
+
+  <P>
+  fig <B>4</B><BR>
+  Substrate (green) in the medium in Molar.
+
+  <P>
+  fig <B>5</B><BR>
+  Product (brown) in the medium in Molar.
+
+  <P>
+  fig <B>6</B><BR>
+  Heat production (red) in kJ/d by the biomass in the reactor. 
+
+  <P>
+  Example of use after editing <code>pars_microbe.m</code>: 
+  <CODE>clear all; pars; shchemostat</CODE>.<BR> 
+  The command <CODE>clear; pars; shchemostat(5)</CODE> will only plot fig <B>5</B>.
+
+<HR>
+<H4><A NAME="shflux_microbe">shflux_microbe</A></H4>
+ 
+  This routine is similar to shchemostat, but presents scaled fluxes, rather than states: the ratio of the fluxes and the flux of substrate, or the flux of structure, or the total weight (living plus dead biomass).
+
+  <p>
+  fig <B>1</B><BR>
+  Scaled flux of structure (green), reserve (red), product (black)
+
+  <p>
+  fig <B>2</B><BR>
+  Scaled flux of carbon dioxide (black) and water (blue)
+
+  <p>
+  fig <B>3</B><BR>
+  Scaled flux of dioxygen (black) and ammonia (blue)
+
+  <p>
+  fig <B>4</B><BR>
+  Scaled flux of dissipating heat (red)
+
+  <p>
+  fig <B>5-8</B><BR>
+  Similar to figs 1-4, but the fluxes are divided by the flux of (living) structure, rather than that of substrate. 
+  Fig 5 shows the scaled flux of substrate rather than the scaled flux of structure (cf fig 1), for obvious reasons.
+
+  <p>
+  fig <B>9-12</B><BR>
+  Similar to figs 1-4, but the fluxes are divided by the weight of biomass  (living plus dead), rather than the scaled flux of substrate.
+
+  <P>
+  Example of use after editing <code>pars_microbe.m</code>: 
+  <CODE>clear all; pars_microbe; shflux_microbe</CODE>.<BR> 
+  The command <CODE>clear; pars_microbe; shflux_microbe (2)</CODE> will only plot fig <B>2</B>.
+
+<HR>
+<H4><A NAME="chemostat">chemostat</A></H4>
+ 
+  Calculates states, powers, organic and mineral fluxes. 
+  (Used by <code>shchemostat</code> and <code>shflux_microbe</code>)
+
+  <P>
+  Input:
+  <ul>
+    <li> vector with throughput rates </li>
+    <li> scalar with substrate concentration in the feed </li>
+  </ul>
+  
+  <p>
+  Output:
+  4 matrices (throughput rates in rows). 
+  In columns:
+  <ul>  
+    <li> states (6xM, 2xg/l): X, X_V, X_E, X_P, X_DV, X_DE, X_W, X_DW <BR>
+         (1)substrate, (2)structure, (3)reserve, (4)product, <BR>
+         (5)dead structure, (6)dead reserve, (7) living weight, (8) dead weight </li>
+    <li> powers (kJ/d): p_T, p_A, p_D, p_G <BR>
+         (1)heat, (2)assimilation, (3)dissipation, (4)growth </li>
+    <li> organic fluxes (mol/d): J_X, J_V, J_E, J_P <BR>
+         (1)substrate, (2)structure, (3)reserve, (4)product </li>
+    <li> mineral fluxes (mol/d): J_C, J_H, J_O, J_N <BR>
+         (1)carbon dioxide, (2)water, (3)dioxygen, (4)ammonia </li>
+  </ul>
+
+  <P>
+  Example of use:<BR>
+  <CODE>clear; pars; [Xh, ph, JOh, JMh] = chemostat ([.1 .2], 1);</CODE>
+
+<HR>
+<H4><A NAME="shratio_microbe">shratio_microbe</A></H4>
+
+  Routine that produces three plots that show ratios of mineral fluxes as functions of the specific growth rate. 
+  All fluxes are in terms of mol per time; the ratio's are dimensionless. 
+  See pages 143 and 167 of the 
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>. 
+  Contrary to the similar routine in toobox <code>animal</code>, the contribution of assimilation is here taken into account, and no changes in signs are made. 
+  (The signs depend on the composition of substrate and biomass, but the substrate can here be chosen from a wide range.)
+
+  <P>
+  fig <B>1</B><BR>
+  Respiration Quotient: 
+  ratio of carbon dioxide and dioxygen fluxes
+
+  <P>
+  fig <B>2</B><BR> 
+  Watering Quotient: 
+  ratio of water and dioxygen fluxes
+
+  <P>
+  fig <B>3</B><BR> 
+  Urination Quotient: 
+  ratio of nitrogen waste and  dioxygen fluxes
+  
+  <P>
+  Example of use after editing <code>pars_microbe.m</code>: 
+  <CODE>clear all; pars; shratio_microbe</CODE>.<BR> 
+  The command <CODE>clear; pars; shratio_microbe (2)</CODE> will only plot fig <B>2</B>.
+
+<HR>
+<H4><A NAME="batch">batch</A></H4>
+
+  Subroutine that specifies nutrient limited growth in a batch culture.
+  The special case of no-maintenance and a very small saturation constant has been coded, which results in expo-logistic growth (see
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB book</A> page 355).
+
+  <P>
+  The script file <code>mydata_batch</code> illustrates the application of this subroutine in parameter estimation and plotting routines.
+
+  <P>
+  Input:
+  <UL>
+    <LI> p: 5-vector with parameter values
+      <OL>
+        <LI> mM, initial nutrient conc </LI>
+        <LI> OD, initial biomass </LI>
+        <LI> mM/(h.OD) max spec uptake rate </LI>
+        <LI> -, investment ratio </LI>
+        <LI> 1/h, reserve turnover </LI>
+      </OL></LI>  
+    <LI> tN: (ntN,3)-matrix with times in tN(:,1) for nutrient conc </LI>
+    <LI> tX: (ntX,3)-matrix with times in tX(:,1) for biomass density </LI>
+  </UL>
+
+  <P>
+  Ouput:
+  <UL>
+    <LI> Nt: (ntN,1)-matrix with nutrient concentrations </LI>
+    <LI> Xt: (ntX,1)-matrix with biomass densities </LI>
+  </UL>
+
+  <P>
+  Running mydata_batch shows 2 plots of the potassium concentration and of the biomass of <I>Escherichia coli</I> against time. 
+  Notice the continuation of growth in absence of potassium, which reflects the presence of intracellular storage of potassium.
+
+<HR>
+<H4><A NAME="adapt">adapt</A></H4>
+
+  Subroutine that specifies slow adaptation to substrate availability and mutual inhibition of the uptake of two substrates in a batch culture. 
+  The special case of 2 substrates and 4 batch cultures has been coded. 
+  The theory is given in<BR>   
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/BranKelp2004.html">
+  Brandt, B. W., Kelpin, F. D. L., Leeuwen, I. M. M. van, Kooijman, S. A. L. M. 2004.
+  Modelling microbial adaptation to changing availability of substrates.
+  <i>Water Res.</i> <b>38</b>: 1003--1013</A>
+
+  <P>
+  The script file <code>mydata_adapt</code> illustrates the application of this subroutine in parameter estimation and plotting routines.
+
+  <P>
+  Input:
+  <UL>
+    <LI> a 35-vector with parameter values
+      <OL>
+        <LI> mM, saturation constant for substr A </LI>
+        <LI> mM, inhibition constant for substr A on B </LI>
+        <LI> mM, saturation constant for substr B </LI>
+        <LI> mM, inhibition constant for substr B on A </LI>
+        <LI> mM/(mol.h), max spec uptake rate for substr A </LI>
+        <LI> mM/(mol.h), max spec uptake rate for substr B </LI>
+        <LI> -, rel background expression for substr A </LI>
+        <LI> -, rel background expression for substr B </LI>
+        <LI> -, preference parameter for substr A; pB = 1 - pA </LI>
+        <LI> 1/h, carrier turnover rate </LI>
+        <LI> mol/mol yield of substr A on reserves </LI>
+        <LI> mol/mol yield of substr B on reserves </LI>
+        <LI> mol/mol yield of reserve on structure </LI>
+        <LI> 1/h, reserve turnover rate </LI>
+        <LI> 1/h, maintenance rate coefficient </LI>
+        <LI> mM, substr A in cult 1 at time 0 </LI>
+        <LI> mM, substr B in cult 1 at time 0 </LI>
+        <LI> mM, biomass in cult 1 at time 0 </LI>
+        <LI> mol/mol, res density in cult 1 at time 0 </LI>
+        <LI> -, rel expresion for substr A </LI>
+        <LI> mM, substr A in cult 2 at time 0 </LI>
+        <LI> mM, substr B in cult 2 at time 0 </LI>
+        <LI> -, biomass in cult 2 at time 0 </LI>
+        <LI> -, res density in cult 2 at time 0 </LI>
+        <LI> -, rel expresion for substr A </LI>
+        <LI> mM, substr A in cult 3 at time 0 </LI>
+        <LI> mM, substr B in cult 3 at time 0 </LI>
+        <LI> -, biomass in cult 3 at time 0 </LI>
+        <LI> -, res density in cult 3 at time 0 </LI>
+        <LI> -, rel expresion for substr A </LI>
+        <LI> mM, substr A in cult 4 at time 0 </LI>
+        <LI> mM, substr B in cult 4 at time 0 </LI>
+        <LI> -, biomass in cult 4 at time 0 </LI>
+        <LI> -, res density in cult 4 at time 0 </LI>
+        <LI> -, rel expresion for substr A </LI>
+      </OL> 
+    </LI>
+    <LI> 4 data matrices with times and biomass measurements </LI>
+  </UL>
+
+  <P>
+  The output is 4 vectors with predictions of biomasses. 
+  The number of cultures can easily be adapted.
+  
+  <P>
+  Running mydata_adapt shows 4 plots of biomass of <I>Klebsiella oxytoca</I> against time 
+  in 4 batch cultures with different initial concentrations of glucose and xylose; in g/l: 
+  (1) 5.8, 0 (2) 0, 4.7 (3) 0.5, 2.5 (4) 0.33, 2.0. 
+  The bacteria were precultured on glucose. Data and model predictions are shown. 
+  Diauxic growth is clearly visible (in the last two cultures).
+
+<HR>
+<H4><A NAME="yield">yield</A></H4>
+
+  Calculates the yield coefficients for mineral and organic compounds, given the chemical indices of the organic compounds.
+
+  <p>
+  Input: 
+  (4,4)-matrix with 
+  chemical indices for energy and carbon substrate, reserve, structure in the columns, and 
+  chemical element C, H, O, N in the rows.
+
+  <p>
+  Output: 
+  (8,5)-matrix with yield coefficients with 
+  mineral and organic compounds in the rows (CO<sub>2</sub>, H<sub>2</sub>O, O<sub>2</sub>, NH<sub>3</sub>, 
+  energy and carbon substrate, reserve, structure) and processes in the columns 
+  (catabolic and anabolic aspects of assimilation, maintenance, catabolic and anabolic aspects of growth).
+
+  <p>
+  Example of use: see mydata_reaction_eq
+
+<HR>
+<H4><A NAME="flux_5">flux_5</A></H4>
+
+  Calculates the specific fluxes for catabolic and anabolic aspects of assimilation, maintenance, catabolic and anabolic aspects of growth.
+
+  <p>
+  Input:
+  <ul>
+    <li> n-vector with specific growth rates </li>
+    <li> 5-vector with parameter values: 
+       <ol>
+         <li> yield of reserve on substrate (mol/mol) </li>
+         <li> yield of structure on reserve (mol/mol) </li>
+         <li> max spec assimilation flux (mol/mol.h) </li>
+         <li> reserve turnover rate (1/h) </li>
+         <li> maintenance rate coefficient (1/h) </li>
+       </ol>
+    </li>
+  </ul>
+
+  <p>
+  Output: 
+  (n,5)-matrix with fluxes in the columns 
+  (catabolic and anabolic aspects of assimilation, maintenance, catabolic and anabolic aspects of growth).
+
+  <p>
+  Example of use: 
+  see mydata_reaction_eq
+
+<HR>
+<H4><A NAME="entropy">entropy</A></H4>
+
+  Calculates the entropy of a CHON compound under aerobic conditions in J/mol.K, on the basis of the entropies 
+  214.70 J/mol.K for CO<sub>2</sub>, 
+  72.331 J/mol.K for H<sub>2</sub>O, 
+  205.80 J/mol.K for O<sub>2</sub> and 
+  112.34] J/mol.K for NH<sub>3</sub>.
+
+  <p>
+  Input: 
+  4-vector with chemical indices for elements C, H, O, N.
+
+  <p>
+  Output: 
+  scalar with entropy of CHON-compound in J/mol.K
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML> 

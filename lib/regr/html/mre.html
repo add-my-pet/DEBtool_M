@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mre</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="mre.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>mre</h1><!--introduction--><p>Calculates the mean absolute relative error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[merr rerr] = mre(func, p, varargin)</p><h2>Description<a name="4"></a></h2><p>Calculates the mean absolute relative error, used in add_my_pet</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;    see <a href="nrregr.html"><b>nrregr</b></a></li><li>p: (np,nc) matrix with p(:,1) parameter values</li><li>xywi: (ni,3) matrix with</li></ul></div><pre>   xywi(:,1) independent variable
+   xywi(:,2) dependent variable
+   xywi(:,3) weight coefficients (optional)
+   The number of data matrices xyw1, xyw2, ... is optional
+   The first data matrix is assumed to be zero-variate,
+     the others uni-variate, which are first reduced to zero-variate data
+     if all weight coefficients in a uni-variate data-set are zero,
+     that relative error gets weight zero</pre><p>Output</p><div><ul><li>merr: scalar with mean absolute relative error</li><li>rerr: vector with absolute relative errors</li></ul></div><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% mre
+% Calculates the mean absolute relative error
+
+%%
+function [merr rerr] = mre(func, p, varargin)
+  %  created: 2010/05/08 by Bas Kooijman, modified 2011/05/02
+  
+  %% Syntax
+  % [merr rerr] = mre(func, p, varargin)
+  
+  %% Description
+  % Calculates the mean absolute relative error, used in add_my_pet
+  %
+  % Input
+  %
+  % * func: character string with name of user-defined function;
+  %    see <nrregr.html *nrregr*>
+  % * p: (np,nc) matrix with p(:,1) parameter values
+  % * xywi: (ni,3) matrix with
+  %
+  %     xywi(:,1) independent variable
+  %     xywi(:,2) dependent variable
+  %     xywi(:,3) weight coefficients (optional)
+  %     The number of data matrices xyw1, xyw2, ... is optional
+  %     The first data matrix is assumed to be zero-variate, 
+  %       the others uni-variate, which are first reduced to zero-variate data
+  %       if all weight coefficients in a uni-variate data-set are zero,
+  %       that relative error gets weight zero
+  %
+  % Output
+  %
+  % * merr: scalar with mean absolute relative error
+  % * rerr: vector with absolute relative errors
+
+  i = 1; 
+  nxyw = nargin - 2; % number of data sets
+  while (i <= nxyw) % loop across data sets
+    ci = num2str(i); % character string with value of i
+    eval(['xyw', ci, ' = varargin{i};']); % assing unnamed arguments to xywi
+    if size(eval(['xyw', ci]),2) < 3 % append weights if absent
+        eval(['xyw', ci,' = [xyw', ci, ', ones(size(xyw', ci, ',1),1)];'])
+    end
+    if i == 1
+      listxyw = ['xyw', ci,',']; % initiate list xyw
+      listf = ['f', ci,',']; % initiate list f
+    else     
+      listxyw = [listxyw, ' xyw', ci,',']; % append list xyw
+      listf = [listf, ' f', ci,',']; % append list f
+    end
+    i = i + 1;
+  end
+  listxyw(end) = []; listf(end) = []; % remove last ','
+
+  % get function values
+  eval(['[', listf,'] = ', func, '(p(:,1),', listxyw,');']);
+  % abs relative error for zero-variate data
+  rerr = [abs(f1 - xyw1(:,2)) ./ max(1e-3, xyw1(:,2)), xyw1(:,3)]; 
+  if nxyw > 1 % append uni-variate data
+    for i = 2:nxyw
+      ci = num2str(i); % character string with value of i
+      % rerr = [rerr; sum(abs(fi - xywi(:,2)) .* xywi(:,3) ./ max(1e-3, xywi(:,2)), 1)/ sum(xywi(:,3)) 1];
+      eval(['rerr = [rerr; sum(abs(f', ci, ' - xyw', ci, ...
+          '(:,2)) .* xyw', ci, '(:,3) ./ max(1e-3, abs(xyw', ci, ...
+          '(:,2))), 1)/ sum(max(1e-6, xyw', ci, '(:,3))) 1];']);
+      eval(['rerr(end,2) = sum(xyw', ci, '(:,3)) ~= 0;']) % weight 0 if all 0 == xywi(:,3)
+    end
+  end	    
+  merr = sum(prod(rerr,2))/ sum(rerr(:,2));
+##### SOURCE END #####
+--></body></html>

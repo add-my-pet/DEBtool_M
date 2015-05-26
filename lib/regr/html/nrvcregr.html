@@ -1,0 +1,238 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>nrvcregr</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="nrvcregr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>nrvcregr</h1><!--introduction--><p>Calculates ml parameter estimates using Newton Raphson method for bivariate data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">set options if necessary</a></li></ul></div><h2>syntax<a name="3"></a></h2><p>[q, info] = <a href="../nrvcregr.m"><b>nrvcregr</b></a>(func, p, varargin)</p><h2>Description<a name="4"></a></h2><p>Calculates ml parameter estimates using Newton Raphson method     for normally distr random vars with constant variation coefficients</p><p>Input</p><div><ul><li>func: string with name of user-defined function</li></ul></div><pre>   f = func (p, xyw) with
+     p: k-vector with parameters; xyw: (n,c)-matrix; f: n-vector
+   [f1, f2, ...] = func (p, xyw1, xyw2, ...) with  p: k-vector  and
+    xywi: (ni,k)-matrix; fi: ni-vector with model predictions
+   The dependent variable in the output f; For xyw see below.</pre><div><ul><li>p: (k,2) matrix with</li></ul></div><pre>   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)</pre><div><ul><li>xywi (read as xyw1, xyw2, .. ): (ni,3) matrix with</li></ul></div><pre>   xywi(:,1) independent variable i
+   xywi(:,2) dependent variable i
+   xywi(:,3) weight coefficients i (optional)
+   xywi(:,&gt;3) data-pont specific information data (optional)
+   The number of data matrices xyw1, xyw2, ... is optional but &gt;0</pre><p>Output</p><div><ul><li>q: matrix like p, but with ml estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Calls nrdregr, and user-defined function 'func'. Set options with <a href="nrregr_options.html"><b>nrregr_options</b></a>.</p><h2>set options if necessary<a name="6"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% nrvcregr
+% Calculates ml parameter estimates using Newton Raphson method for bivariate data
+
+%%
+function [q, info] = nrvcregr(func, p, varargin)
+  %  created: 2002/05/017 by Bas Kooijman, modified 2010/10/31
+  
+  %% syntax
+  % [q, info] = <../nrvcregr.m *nrvcregr*>(func, p, varargin)
+  
+  %% Description
+  % Calculates ml parameter estimates using Newton Raphson method
+  %     for normally distr random vars with constant variation coefficients
+  %
+  % Input
+  %
+  % * func: string with name of user-defined function
+  %
+  %     f = func (p, xyw) with
+  %       p: k-vector with parameters; xyw: (n,c)-matrix; f: n-vector
+  %     [f1, f2, ...] = func (p, xyw1, xyw2, ...) with  p: k-vector  and
+  %      xywi: (ni,k)-matrix; fi: ni-vector with model predictions
+  %     The dependent variable in the output f; For xyw see below.
+  %
+  % * p: (k,2) matrix with
+  %
+  %     p(:,1) initial guesses for parameter values
+  %     p(:,2) binaries with yes or no iteration (optional)
+  %
+  % * xywi (read as xyw1, xyw2, .. ): (ni,3) matrix with
+  %
+  %     xywi(:,1) independent variable i
+  %     xywi(:,2) dependent variable i
+  %     xywi(:,3) weight coefficients i (optional)
+  %     xywi(:,>3) data-pont specific information data (optional)
+  %     The number of data matrices xyw1, xyw2, ... is optional but >0
+  %
+  % Output
+  %
+  % * q: matrix like p, but with ml estimates
+  % * info: 1 if convergence has been successful; 0 otherwise
+  
+  %% Remarks
+  % Calls nrdregr, and user-defined function 'func'.
+  % Set options with <nrregr_options.html *nrregr_options*>.
+
+  global index l n nxyw listx listxyw listf listg global_txt
+  global max_step_number max_step_size max_norm report % option settings
+
+  %% set options if necessary
+  if ~exist('max_step_number', 'var')
+    nrregr_options('max_step_number', 10);
+  end
+  if ~exist('max_step_size', 'var')
+    nrregr_options('max_step_size', 1e20);
+  end
+  if ~exist('max_norm', 'var')
+    nrregr_options('max_norm', 1e-8);
+  end
+  if ~exist('report', 'var')
+    nrregr_options('report', 1);
+  end
+  if isempty(max_step_number)
+    nrregr_options('max_step_number', 10);
+  end
+  if isempty(max_step_size)
+    nrregr_options('max_step_size', 1e20);
+  end
+  if isempty(max_norm)
+    nrregr_options('max_norm', 1e-8);
+  end
+  if isempty(report)
+    nrregr_options('report', 1);
+  end
+
+  nxyw = nargin - 2; % number of data sets
+  for i = 1:nxyw % loop across data sets
+    ci = num2str(i); % character string with value of i
+    if i == 1
+      listxyw = ['xyw', ci, ',']; % initiate list xyw
+      listf = ['f', ci, ',']; % initiate list f
+      listg = ['g', ci, ',']; % initiate list g
+    else     
+      listxyw = [listxyw, ' xyw', ci, ',']; % append list xyw
+      listf = [listf, ' f', ci, ',']; % append list f
+      listg = [listg, ' g', ci, ',']; % append list g
+    end
+  end
+ 
+  nl = size(listxyw,2); listxyw = listxyw(1:(nl - 1)); % remove last ','
+  nl = size(listf,2); listf = listf(1:(nl - 1)); % remove last ','
+  nl = size(listg,2); listg = listg(1:(nl - 1)); % remove last ','
+
+  global_txt = strrep(['global ', listxyw], ',', ' ');
+  eval(global_txt); % make data sets global
+
+  n = zeros(nxyw, 1); % initiate data counter
+  for i = 1:nxyw % loop across data sets
+    ci = num2str(i); % character string with value of i
+    % assing unnamed arguments to xyw1, xyw2 etc
+    eval(['xyw', ci, ' = varargin{',ci,'};']); 
+    eval(['[n(', ci, '), k] = size(xyw', ci, ');']); % number of data points
+    if i == 1
+      eval(['Y = xyw',ci,'(:,2);']); % initiate dependent variables
+      if k > 2
+	    eval(['W = xyw',ci,'(:,3);']); % initiate weight coefficients
+      else
+	    W = ones(n(1),1);
+      end
+    else     
+      eval(['Y = [Y;xyw', ci, '(:,2)];']); % append dependent variables
+      if k > 2
+	    eval(['W = [W;xyw', ci, '(:,3)];']); % append weight coefficients
+      else
+	    W = [W; ones(n(i),1)]; % append weight coefficients
+      end
+    end
+  end
+
+  q = p;         % copy input parameter matrix into output
+  info = 1;      % convergence has been successful
+  n = sum(n);    % total number of data points in all samples
+  W = W/ sum(W); % sum of weight coefficients set equal to 1
+
+  [np k] = size(p); % k: number of parameters
+  index = 1:np;
+  if k>1
+    index = index(1 == p(:,2)); % indices of iterated parameters
+  end
+  l = max(size(index));  % l: number of parameters that must be iterated
+  if (l == 0)
+    return; % no parameters to iterate
+  end
+  
+  norm = 1 + max_norm; % make sure that we start with iteration
+  step_number = 0;     % initiate number of iterations
+  
+  % start of numerical minimization
+  while (norm > max_norm) && (step_number < max_step_number)
+    step_number = step_number + 1; % increment step number
+    [fn, dfn] = nrdregr(func, q(:,1)); 
+	% obtain function values and derivatives of ln function values
+    fn = fn + 1e-8 * (fn == 0); dfn = dfn ./ fn(:,ones(1,l));
+    Yfn = Y ./ fn; Yfn1 = Yfn - 1; % intermediary variables
+    vc2 = W' * Yfn1 .^ 2;          % squared variation coefficient
+    f = dfn' * (W .* (Yfn .* Yfn1 - vc2)); % weighted derivatives
+    norm = f' * f; % sum of squared derivatives
+    step = (dfn' * (dfn .* W(:, ones(1,l))))\f;
+    if report ~= 0 % monitor progress
+      fprintf(['step ', num2str(step_number), ' norm ', num2str(norm), ...
+	      ' var coef ', num2str(sqrt(vc2)), '\n']); 
+    end
+    step_size = step' * step;
+    step = step * min(max_step_size, step_size)/ step_size;
+				% reduce step if necessary
+    q(index,1) = q(index,1) + step; % make step
+  end
+
+  % trouble report
+  if step_number == max_step_number
+    if report ~= 0 % print warning
+      fprintf(['no convergence within ', num2str(max_step_number), ...
+	      ' steps \n']);
+    end    
+    info = 0; % convergence has not been successful
+  end
+
+##### SOURCE END #####
+--></body></html>

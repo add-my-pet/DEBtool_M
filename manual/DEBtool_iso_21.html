@@ -1,0 +1,195 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_iso_21</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: iso_21</H3>
+
+Life cycle of an isomorph with 2 reserves, 1 structure and several food types.
+In the present version, reserve 1 is a protein reserve and reserve 2 a non-protein reserve (carbohydrates, lipids etc).
+Somatic maintenance is preferably from non-protein reserve; 
+growth has a fixed stoichemetry for protein and non-protein.
+Each type of food contributes to both protein and non-protein reserve, but in a type-specific way.
+Feeding (including selection) follows the rules of SU-dynamics with interaction, where binding probabilities are linked to the difference between maximum and actual reserves.
+Model-details and algorithms are discussed in the Comments for Section 5.2.7.
+
+<HR>
+<H4><A NAME="iso_21">iso_21</A></H4>
+
+Obtains length and age at birth and the initial amounts of reserves, given the reserve densities at birth and parameters.
+
+<p>
+Inputs:
+<ul>
+ <li>m<sub>E1</sub><sup>b</sup>: scalar with reserve density 1 at birth (mol/mol)</li>
+ <li>m<sub>E2</sub><sup>b</sup>: scalar with reserve density 2 at birth (mol/mol)</li>
+ <li>14-vector with parameters
+  <ol>
+    <li>v, cm/d, energy conductance</li>
+    <li>kap, -, allocation fraction to soma</li>
+    <li>mu<sub>E1</sub>, J/mol, chemical potential of reserve 1</li>
+    <li>mu<sub>E2<sub>, J/mol, chemical potential of reserve 2</li>
+    <li>mu<sub>V</sub>, J/mol, chemical potenial of structure</li>
+    <li>j<sub>E1M</sub>, mol/d.mol, specific som maint costs</li>
+    <li>[M<sub>V</sub>], mol/cm^3, density of structure</li>
+    <li>rho<sub>1</sub>, -, preference for reserve 1 (protein) to be used for somatic maintenance</li>
+    <li>y<sub>VE1</sub>, mol/mol, yield of structure on reserve 1</li>
+    <li>y<sub>VE2</sub>, mol/mol, yield of structure on reserve 2</li>
+    <li>E<sub>H</sub><sup>b</sup>, J, maturity at birth</li>
+   </ol>
+ </li>
+</ul>
+
+<p>
+Ouputs:
+<ul>
+  <li> L<sub>b</sub>, cm, scalar with length at birth</li>
+  <li> a<sub>b</sub>, d, scalar with age at birth</li>
+  <li> M<sub>E1</sub><sup>0</sup>, mol, scalar with initial reserve 1</li>
+  <li> M<sub>E2</sub><sup>0</sup>, mol, scalar with initial reserve 2</li>
+  <li> info: indicator for failure (0) or success (1)</li>
+</ul>
+
+<p>
+<code>iso_21</code> is used in <A HREF="#iso_221"><code>iso_221</code></A>
+
+<HR>
+<H4><A NAME="iso_221">iso_221</A></H4>
+
+Obtains a number of variables as functions of time, given profiles of 2 types of food densities and temperature and parameters.
+
+<p>
+Inputs:
+<ul>
+  <li> tXT: (n,4)-matrix of time since birth, food densities, temperature
+      tXT(1; [2 3]) serves to specify the maternal effect, otherwise food before birth is ignored</li>
+  <li>34-vector of parameters (listed in pairs of frequently related parameters):
+    <ol>
+      <li>M<sub>X1</sub>, M<sub>X2</sub>, mol, size of food particle of type i</li>
+      <li>{F<sub>X1m</sub>}, {F<sub>X2m</sub>}, dm^2/d.cm^2, spec searching rates</li>
+      <li>y<sub>P1X1</sub>, y<sub>P2X2</sub>, mol/mol, yield of feaces i on food i</li>
+      <li>y<sub>E1X1</sub>, y<sub>E2X1</sub>, mol/mol, yield of reserve Ei on food X1</li>
+      <li>y<sub>E1X2</sub>, y<sub>E2X2</sub>, mol/mol, yield of reserve Ei on food X2</li>
+      <li>{J<sub>X1Am</sub>}, {J<sub>X2Am</sub>}, mol/d.cm^2, max specific ingestion rate for food Xi</li>
+      <li>v, kappa, cm/d, energy conductance,  -, allocation fraction to soma</li>
+      <li>mu<sub>E1</sub>, mu<sub>E2</sub>, J/mol, chemical potential of reserve i</li>
+      <li>mu<sub>V</sub>, j<sub>E1M</sub>, J/mol, chemical potenial of structure, mol/d.mol, specific som maint costs</li>
+      <li>{J<sub>E1T</sub>}, [M<sub>V</sub>], mol/d.cm^2, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M, mol/cm^3, density of structure</li>
+      <li>k<sub>J</sub>, k<sub>J</sub><sup>1</sup>, 1/d, mat maint rate coeff, spec rejuvenation rate</li>
+      <li>rho<sub>1</sub>, del<sub>V</sub>, -, preference for reserve 1 to be used for som maint, -, threshold for death by shrinking</li>
+      <li>y<sub>VE1</sub>, y<sub>VE2</sub>, mol/mol, yield of structure on reserve i</li>
+      <li>kappa<sub>E1</sub>, kappa<sub>E2</sub>, -, fraction of rejected mobilised flux that is returned to reserve</li>
+      <li>kappa<sub>R1</sub>, kappa<sub>R2</sub>, -, reproduction efficiency for reserve i</li>
+      <li>E<sub>H</sub><sup>b</sup>, E<sub>H</sub><sup>p</sup>, J, maturity thresholds at birth, puberty</li>
+      <li>T<sub>A</sub>, h<sub>H</sub>, K, Arrhenius temperature, 1/d, hazerd due to rejuvenation</li>
+   </ol>
+  <li>n<sub>O</sub>: (4,7)-matrix with chemical indices for organics X1, X2, V, E1, E2, P1, P2</li>
+  <li>n<sub>M</sub>: (4,4)-matrix with chemical indices for minerals C, H, O, N</li>
+</ul>
+
+<p>
+Outputs:
+<ul>
+  <li>(n,9)-matrix with state variables:
+      cum food eaten (2), reserves (2), (max)structure, (max)maturity , cumulative allocation to reprod (2), hazard</li>
+  <li>(n,6)-matrix with other variables:
+      scaled functional responses (2), stress coefficients (2), competition coefficients(2)</li>
+  <li>a_b, d, scalar with age at birth</li>
+  <li>M_E10, M_E20: scalars with intitial reserves</li>
+</ul>
+
+<p>
+Example of use: see <code>mydata_iso_221</code>
+
+<HR>
+<H4><A NAME="sgr_iso_21">sgr_iso_21</A></H4>
+
+Obtains the specific growth rate d/dt ln V with 2 reserves as function of the reserve densities (protein and non-protein) and parameters, allowing for shrinking.
+It uses a Newton Raphson method with continuation.
+Notice that the reserve turnover rate k<sub>E</sub> (input number 8) and the specific somatic maintenance j<sub>EiS</sub> generally change in time (i.e. the surface-linked part of somatic maintenance).
+See <A HREF="#gr_iso_21"><code>gr_iso_21</code></A> for growth rate d/dt L (for embryo case)
+
+<p>
+Inputs: 10 or 11 scalars, the first 6 are listed in pairs of related quantities
+<ul>
+ <li>m<sub>E1</sub>, m<sub>E2</sub>:   mol/mol, scalars with reserve density</li>
+ <li>j<sub>E1S</sub>, j<sub>E2S</sub>: mol/d.mol, scalars with spec maintenance flux if from reserve</li>
+ <li>y<sub>VE1</sub>, y<sub>VE2</sub>: mol/mol, scalars with yield of structure on reserve</li>
+ <li>mu<sub>E1</sub>/ mu<sub>V</sub>: -, scalar with ratio of chemical potentials (mu<sub>E1</sub> j<sub>E1S</sub> = mu<sub>E2</sub> j<sub>E2S</sub>)</li>
+ <li>k<sub>E</sub>:  1/d, scalar with reserve turnover rate v/ L</li>
+ <li>kappa: -, scalar with allowcation fraction to soma</li>
+ <li>rho<sub>1/sub>: -, scalar with preference for reserve 1 (protein) to be used from somatic maintenance (default 0)</li>
+ <li>r<sub>0</sub>: 1/d, optional scalar with initial estimate for r<br>
+     if empty or undefined: 0; else previous result is used</li>
+</ul>
+
+<p>
+Outputs:
+<ul>
+  <li>r: 1/d, scalar with spec growth rate</li>
+  <li>j<sub>E1</sub><sup>S</sup>, j<sub>E2</sub><sup>S</sup>: 
+      mol/d.mol, scalars with  spec som maintenance flux</li>
+  <li>j<sub>E1C</sub>, j<sub>E2C</sub>: \
+      mol/d.mol, scalars with rejected flux of reserve fro growth SUs</li>
+  <li>info: -, scalar with numerical failure (0) or success (1)</li>
+</ul>
+
+<p>
+Example of use: 
+<code>[r, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = sgr_iso_21 (.4, .6, .02, .04, .8, .8, 1, .1, .8, .1)</code>
+
+<HR>
+<H4><A NAME="gr_iso_21">gr_iso_21</A></H4>
+
+Obtains the growth rate d/dt L with 2 reserves as function of the reserve densities (protein and non-protein) and parameters, not allowing for shrinking.
+It uses a Newton Raphson method with continuation.
+See <A HREF="#sgr_iso_21"><code>sgr_iso_21</code></A> for specific growth rate d/dt ln V (for juveniles and adults); <code>gr_21</code> is meant for embryos.
+
+<p>
+Inputs: 10 or 11 scalars; after the first one, 3 are listed in pairs of related quantities
+<ul>
+  <li>L: cm, scalar with structural length</li>
+  <li>m<sub>E1</sub>, m<sub>E2</sub>:   mol/mol,   scalars with reserve density</li>
+  <li>j<sub>E1M</sub>, j<sub>E2M</sub>: mol/d.mol, scalars with spec maintenance flux if from that reserve</li>
+  <li>y<sub>VE1</sub>, y<sub>VE2</sub>: mol/mol, scalars with yield of structure on reserve</li>
+  <li>v: cm/d, scalar with energy conductance</li>
+  <li>kappa: -, scalar with allowcation fraction to soma</li>
+  <li>rho<sub>1</sub>: -, scalar with preference for reserve 1 (protein) to be used for somatic maintenance (default 0)</li>
+  <li>v<sub>B</sub><sup>0</sup>: cm/d, optional scalar with initial estimate for v<sub>B</sub><br>
+      if empty or undefined v/3, else previous result is used</li>
+</ul>
+
+<p>
+Outputs:
+<ul>
+  <li>v<sub>B</sub>: cm/d, scalar with growth rate d/dt L</li>
+  <li>j_<sub>E1</sub><sup>M</sup>, j<sub>E2</sub><sup>M</sup>: mol/d.mol, scalars with spec som maintenance flux</li>
+  <li>j<sub>E1C</sub>, j<sub>E2C</sub>: mol/d.mol, scalars with rejected flux of reserve fro growth SUs</li>
+  <li>info: -, scalar with numerical failure (0) or success (1)</li>
+</ul>
+
+<p>
+Example of use: 
+<code>[v_B, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = gr_iso_21 (.1, .4, .6, .02, .04, .8, .8, 1, .02, .8, .1)</code>
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

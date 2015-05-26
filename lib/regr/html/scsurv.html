@@ -1,0 +1,348 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>scsurv</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-09"><meta name="DC.source" content="scsurv.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Description</a></li><li><a href="#4">Input</a></li><li><a href="#5">Output</a></li><li><a href="#6">Remarks</a></li><li><a href="#7">Example of use</a></li><li><a href="#8">Code</a></li><li><a href="#9">set options if necessary</a></li><li><a href="#10">obtain time intervals and numbers of death</a></li><li><a href="#12">start of numerical minimization</a></li><li><a href="#13">trouble report</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [q, info] = scsurv(func, p, varargin)
+</pre><pre class="codeinput">  <span class="comment">%  created: 2001/09/11 by Bas Kooijman; modified 2008/09/18</span>
+  <span class="comment">%</span>
+</pre><h2>Description<a name="3"></a></h2><pre>Finds maximum likelihood estimates from survival data using the method of scores,
+  with numerically obtained values for the jacobian.
+It can deal with an arbitrary number of samples, which might share one or more parameters.
+The convergence is usually fast, but the domain of attraction can be small, depending on data and model.
+See nmsurv for simplex method, and scsurv2 and nmsurv2 for 2 independent variables.</pre><h2>Input<a name="4"></a></h2><pre>func: string with name of user-defined function
+   f = func (p, tn) with
+     p: k-vector with parameters; tn: (n,c)-matrix; f: n-vector
+   [f1, f2, ...] = func (p, tn1, tn2, ...) with  p: k-vector  and
+    tni: (ni,k)-matrix; fi: ni-vector with model predictions
+   The dependent variable in the output f; For tn see below.
+p: (k,2) matrix with
+   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)
+tni (read as tn1, tn2, .. ): (ni,2) matrix with
+   tni(:,1) time: must be increasing with rows
+   tni(:,2) number of survivors: must be non-increasing with rows
+   tni(:,3, 4, ... ) data-pont specific information data (optional)
+   The number of data matrices tn1, tn2, ... is optional but &gt;0</pre><h2>Output<a name="5"></a></h2><pre>q: matrix like p, but with ml-estimates
+info: 1 if convergence has been successful; 0 otherwise</pre><h2>Remarks<a name="6"></a></h2><pre>calls scdsurv, and user-defined function 'func'
+set options with 'scsurv_options'
+The iteration is terminated if the norm, i.e.
+  the sum of squared derivetives of the deviance with respect to the iterated parameters,
+  is less than the maximum norm or if the number of iterations exceeds a maximum values (see scsurv_options).
+If progression seems hopeful, but the number of iterations not large enough,
+  you can continue with pars = scsurv('function_name', pars, data).
+Alternatively you can increase the maximum number of iterations with scsurv_options.</pre><h2>Example of use<a name="7"></a></h2><pre>assuming that data and function function_name and initial paramer estimates ipars are properly defined:
+pars = scsurv('function_name', ipars, data) or
+pars = scsurv('function_name', ipars, data1, data2)
+(or more data sets, depending on the definition of the model functions.).
+See script file mydata_surv.m for an example of specification.</pre><h2>Code<a name="8"></a></h2><pre class="codeinput">  <span class="keyword">global</span> index l N ntn listtn listf listg global_txt
+  <span class="keyword">global</span> max_step_number max_step_size max_norm report; <span class="comment">% option settings</span>
+</pre><h2>set options if necessary<a name="9"></a></h2><pre class="codeinput">  <span class="keyword">if</span> prod(size(max_step_number)) == 0
+    scsurv_options(<span class="string">'max_step_number'</span>, 20);
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> prod(size(max_step_size)) == 0
+    scsurv_options(<span class="string">'max_step_size'</span>, 1e20);
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> prod(size(max_norm)) == 0
+    scsurv_options(<span class="string">'max_norm'</span>, 1e-8);
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> prod(size(report)) == 0
+    scsurv_options(<span class="string">'report'</span>, 1);
+  <span class="keyword">end</span>
+
+  ntn = nargin - 2; <span class="comment">% number of data sets</span>
+  <span class="keyword">for</span> i = 1:ntn <span class="comment">% loop across data sets</span>
+    ci = num2str(i); <span class="comment">% character string with value of i</span>
+    <span class="keyword">if</span> i == 1
+      listtn = [<span class="string">'tn'</span>, ci, <span class="string">','</span>]; <span class="comment">% initiate list tn</span>
+      listf = [<span class="string">'f'</span>, ci, <span class="string">','</span>];   <span class="comment">% initiate list f</span>
+      listg = [<span class="string">'g'</span>, ci, <span class="string">','</span>];   <span class="comment">% initiate list g</span>
+    <span class="keyword">else</span>
+      listtn = [listtn, <span class="string">' tn'</span>, ci, <span class="string">','</span>]; <span class="comment">% append list tn</span>
+      listf = [listf, <span class="string">' f'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list f</span>
+      listg = [listg, <span class="string">' g'</span>, ci,<span class="string">','</span>]; <span class="comment">% append list g</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  nl = size(listtn,2); listtn = listtn(1:(nl - 1)); <span class="comment">% remove last ','</span>
+  nl = size(listf,2); listf = listf(1:(nl - 1)); <span class="comment">% remove last ','</span>
+  nl = size(listg,2); listg = listg(1:(nl - 1)); <span class="comment">% remove last ','</span>
+
+  global_txt = strrep([<span class="string">'global '</span>, listtn], <span class="string">','</span>, <span class="string">' '</span>);
+  eval(global_txt); <span class="comment">% make data sets global</span>
+
+  global_txt = strrep([<span class="string">'global '</span>, listtn], <span class="string">','</span>, <span class="string">' '</span>);
+  eval(global_txt); <span class="comment">% make data sets global</span>
+
+  N = zeros(ntn, 1); <span class="comment">% initiate data counter</span>
+  <span class="keyword">for</span> i = 1:ntn <span class="comment">% loop across data sets</span>
+    ci = num2str(i); <span class="comment">% character string with value of i</span>
+    eval([<span class="string">'tn'</span>, ci, <span class="string">' = varargin{'</span>, ci,<span class="string">'};'</span>]); <span class="comment">% assing unnamed arguments to xywi</span>
+    eval([<span class="string">'[N('</span>, ci, <span class="string">'), k] = size(tn'</span>, ci, <span class="string">');'</span>]); <span class="comment">% number of data points</span>
+    <span class="keyword">if</span> i == 1
+</pre><h2>obtain time intervals and numbers of death<a name="10"></a></h2><pre class="codeinput">      D = tn1(:,2) - [tn1(2:N(i),2);0]; <span class="comment">% initiate death count</span>
+      n0 =  tn1(1,2) * ones(N(1),1); <span class="comment">% initiate start number</span>
+</pre><pre class="codeinput">    <span class="keyword">else</span>
+      eval([<span class="string">'D = [D; tn'</span>, ci,<span class="string">'(:,2) - [tn'</span>, ci, <span class="string">'(2:N(i),2);0]];'</span>]);
+                                <span class="comment">% append death counts</span>
+      eval([<span class="string">'n0 = [n0; tn'</span>, ci, <span class="string">'(1,2) * ones(N('</span>, ci,<span class="string">'),1)];'</span>]);
+				<span class="comment">% append initial numbers</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  q = p; <span class="comment">% copy input parameter matrix into output</span>
+  info = 1; <span class="comment">% convergence has been successful</span>
+  likmax = D' * log(max(1e-10, D ./ n0)); <span class="comment">% max of log lik function</span>
+
+  [np, k] = size(p); <span class="comment">% k: number of parameters</span>
+  index = 1:np;
+  <span class="keyword">if</span> k&gt;1
+    index = index(0 &lt; p(:,2)); <span class="comment">% indices of iterated parameters</span>
+  <span class="keyword">end</span>
+  l = max(size(index));  <span class="comment">% l: number of parameters that must be iterated</span>
+  <span class="keyword">if</span> (l == 0)
+    <span class="keyword">return</span>; <span class="comment">% no parameters to iterate</span>
+  <span class="keyword">end</span>
+
+  norm = 1 + max_norm; <span class="comment">% make sure that we start with iteration</span>
+  step_number = 0; <span class="comment">% initiate number of iterations</span>
+</pre><h2>start of numerical minimization<a name="12"></a></h2><pre class="codeinput">  <span class="keyword">while</span> (norm &gt; max_norm) &amp; (step_number &lt; max_step_number)
+    step_number = step_number + 1; <span class="comment">% increment step number</span>
+    [prob, dprob] = scdsurv(func, q(:,1));
+				<span class="comment">% obtain death prob and derivatives</span>
+    dlik = dprob'*(D./prob); <span class="comment">% deriv of log lik to pars</span>
+    norm = dlik'*dlik; <span class="comment">% sum of squared derivatives</span>
+
+    <span class="keyword">if</span> report ~= 0 <span class="comment">% monitor progress</span>
+      dev = 2 * (likmax - D'*log(prob));
+				<span class="comment">% deviance: 2* log lik minus its supremum</span>
+      fprintf([<span class="string">'step '</span>, num2str(step_number), <span class="string">' norm '</span>, num2str(norm), <span class="keyword">...</span>
+	      <span class="string">' dev '</span>, num2str(dev), <span class="string">'\n'</span>]);
+    <span class="keyword">end</span>
+
+    step = ((n0./prob * ones(1,l).*dprob)'*dprob)\dlik; <span class="comment">% planned step</span>
+    step_size = step'*step;
+    step = step*min(max_step_size, step_size)/step_size;
+				<span class="comment">% reduce step if necessary</span>
+    q(index,1) = q(index,1) + step; <span class="comment">% make step</span>
+
+  <span class="keyword">end</span>
+</pre><h2>trouble report<a name="13"></a></h2><pre class="codeinput">  <span class="keyword">if</span> step_number == max_step_number
+    <span class="keyword">if</span> report ~= 0 <span class="comment">% print warning</span>
+      fprintf([<span class="string">'no convergence within '</span>, num2str(max_step_number), <span class="keyword">...</span>
+	      <span class="string">' steps \n'</span>]);
+    <span class="keyword">end</span>
+    info = 0; <span class="comment">% convergence has not been successful</span>
+  <span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function [q, info] = scsurv(func, p, varargin)
+  %  created: 2001/09/11 by Bas Kooijman; modified 2008/09/18
+  %
+  %% Description
+  %  Finds maximum likelihood estimates from survival data using the method of scores, 
+  %    with numerically obtained values for the jacobian. 
+  %  It can deal with an arbitrary number of samples, which might share one or more parameters. 
+  %  The convergence is usually fast, but the domain of attraction can be small, depending on data and model. 
+  %  See nmsurv for simplex method, and scsurv2 and nmsurv2 for 2 independent variables. 
+  %
+  %% Input
+  %  func: string with name of user-defined function
+  %     f = func (p, tn) with
+  %       p: k-vector with parameters; tn: (n,c)-matrix; f: n-vector
+  %     [f1, f2, ...] = func (p, tn1, tn2, ...) with  p: k-vector  and
+  %      tni: (ni,k)-matrix; fi: ni-vector with model predictions
+  %     The dependent variable in the output f; For tn see below.
+  %  p: (k,2) matrix with
+  %     p(:,1) initial guesses for parameter values
+  %     p(:,2) binaries with yes or no iteration (optional)
+  %  tni (read as tn1, tn2, .. ): (ni,2) matrix with
+  %     tni(:,1) time: must be increasing with rows
+  %     tni(:,2) number of survivors: must be non-increasing with rows
+  %     tni(:,3, 4, ... ) data-pont specific information data (optional)
+  %     The number of data matrices tn1, tn2, ... is optional but >0
+  %
+  %% Output
+  %  q: matrix like p, but with ml-estimates
+  %  info: 1 if convergence has been successful; 0 otherwise
+  %
+  %% Remarks
+  %  calls scdsurv, and user-defined function 'func'
+  %  set options with 'scsurv_options'
+  %  The iteration is terminated if the norm, i.e. 
+  %    the sum of squared derivetives of the deviance with respect to the iterated parameters, 
+  %    is less than the maximum norm or if the number of iterations exceeds a maximum values (see scsurv_options).
+  %  If progression seems hopeful, but the number of iterations not large enough, 
+  %    you can continue with pars = scsurv('function_name', pars, data). 
+  %  Alternatively you can increase the maximum number of iterations with scsurv_options. 
+  %
+  %% Example of use
+  %  assuming that data and function function_name and initial paramer estimates ipars are properly defined: 
+  %  pars = scsurv('function_name', ipars, data) or 
+  %  pars = scsurv('function_name', ipars, data1, data2) 
+  %  (or more data sets, depending on the definition of the model functions.). 
+  %  See script file mydata_surv.m for an example of specification. 
+
+  %% Code
+  global index l N ntn listtn listf listg global_txt
+  global max_step_number max_step_size max_norm report; % option settings
+
+  %% set options if necessary
+  if prod(size(max_step_number)) == 0 
+    scsurv_options('max_step_number', 20);
+  end
+  if prod(size(max_step_size)) == 0 
+    scsurv_options('max_step_size', 1e20);
+  end
+  if prod(size(max_norm)) == 0
+    scsurv_options('max_norm', 1e-8);
+  end
+  if prod(size(report)) == 0
+    scsurv_options('report', 1);
+  end
+
+  ntn = nargin - 2; % number of data sets
+  for i = 1:ntn % loop across data sets
+    ci = num2str(i); % character string with value of i
+    if i == 1
+      listtn = ['tn', ci, ',']; % initiate list tn
+      listf = ['f', ci, ','];   % initiate list f
+      listg = ['g', ci, ','];   % initiate list g
+    else     
+      listtn = [listtn, ' tn', ci, ',']; % append list tn
+      listf = [listf, ' f', ci,',']; % append list f
+      listg = [listg, ' g', ci,',']; % append list g
+    end
+  end
+
+  nl = size(listtn,2); listtn = listtn(1:(nl - 1)); % remove last ','
+  nl = size(listf,2); listf = listf(1:(nl - 1)); % remove last ','
+  nl = size(listg,2); listg = listg(1:(nl - 1)); % remove last ','
+
+  global_txt = strrep(['global ', listtn], ',', ' ');
+  eval(global_txt); % make data sets global
+
+  global_txt = strrep(['global ', listtn], ',', ' ');
+  eval(global_txt); % make data sets global
+
+  N = zeros(ntn, 1); % initiate data counter
+  for i = 1:ntn % loop across data sets
+    ci = num2str(i); % character string with value of i
+    eval(['tn', ci, ' = varargin{', ci,'};']); % assing unnamed arguments to xywi
+    eval(['[N(', ci, '), k] = size(tn', ci, ');']); % number of data points
+    if i == 1
+      %% obtain time intervals and numbers of death
+      D = tn1(:,2) - [tn1(2:N(i),2);0]; % initiate death count
+      n0 =  tn1(1,2) * ones(N(1),1); % initiate start number
+    else     
+      eval(['D = [D; tn', ci,'(:,2) - [tn', ci, '(2:N(i),2);0]];']);
+                                % append death counts
+      eval(['n0 = [n0; tn', ci, '(1,2) * ones(N(', ci,'),1)];']);
+				% append initial numbers
+    end
+  end
+
+  q = p; % copy input parameter matrix into output
+  info = 1; % convergence has been successful
+  likmax = D' * log(max(1e-10, D ./ n0)); % max of log lik function
+
+  [np, k] = size(p); % k: number of parameters
+  index = 1:np;
+  if k>1
+    index = index(0 < p(:,2)); % indices of iterated parameters
+  end
+  l = max(size(index));  % l: number of parameters that must be iterated
+  if (l == 0)
+    return; % no parameters to iterate
+  end
+  
+  norm = 1 + max_norm; % make sure that we start with iteration
+  step_number = 0; % initiate number of iterations
+
+  %% start of numerical minimization
+  while (norm > max_norm) & (step_number < max_step_number)
+    step_number = step_number + 1; % increment step number
+    [prob, dprob] = scdsurv(func, q(:,1));
+				% obtain death prob and derivatives
+    dlik = dprob'*(D./prob); % deriv of log lik to pars
+    norm = dlik'*dlik; % sum of squared derivatives
+
+    if report ~= 0 % monitor progress
+      dev = 2 * (likmax - D'*log(prob));
+				% deviance: 2* log lik minus its supremum
+      fprintf(['step ', num2str(step_number), ' norm ', num2str(norm), ...
+	      ' dev ', num2str(dev), '\n']); 
+    end
+
+    step = ((n0./prob * ones(1,l).*dprob)'*dprob)\dlik; % planned step
+    step_size = step'*step;
+    step = step*min(max_step_size, step_size)/step_size;
+				% reduce step if necessary
+    q(index,1) = q(index,1) + step; % make step
+
+  end
+
+  %% trouble report
+  if step_number == max_step_number
+    if report ~= 0 % print warning
+      fprintf(['no convergence within ', num2str(max_step_number), ...
+	      ' steps \n']);
+    end    
+    info = 0; % convergence has not been successful
+  end
+
+##### SOURCE END #####
+--></body></html>
