@@ -1,15 +1,15 @@
 %% check_my_pet
-% Checks my_data file for field inconsistencies
+% Checks my_data, pars_init and predict files for field inconsistencies
 
 %%
 function check_my_pet(speciesnm)
-  % created 2015/05/05 by Goncalo Marques
+  % created 2015/05/05 by Goncalo Marques; modified 2015/05/12 by Goncalo Marques
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
 
   %% Description
-  % Checks my_data and pars_init files for field inconsistencies
+  % Checks my_data, pars_init and predict files for field inconsistencies
   % Checking points for my_data:
   %   - existence of standard metadata fields
   %   - existence of temp
@@ -25,17 +25,26 @@ function check_my_pet(speciesnm)
   %   - existence of free 
   %   - existence of units 
   %   - existence of labels 
+  % Checking points for predict:
+  %   - existence of the same fields as in data
+  %   - length of prediction results matches the length of data
   %
   % Input
   %
   % * speciesnm: string with species name
   %  
 
-
   %% Example of use
   % check_files('my_pet') 
 
 info = 0;
+
+if ~isempty(strfind(speciesnm, ' '))
+  fprintf(['The species name in input should not have spaces.\n']);
+  fprintf(['The standard species name follow the form ''Genus_species''.\n']);
+  return;
+end
+  
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -43,6 +52,11 @@ info = 0;
 %%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%
   
+if exist(['mydata_', speciesnm])~=2
+  fprintf(['There is no mydata_', speciesnm,' file.\n']);
+  return;
+end
+
 [data, txt_data, metadata] = feval(['mydata_', speciesnm]);
 
 datafields = fields(data);
@@ -55,6 +69,11 @@ for i = 1:length(mtdtfields)
   if ~isfield(metadata, mtdtfields{i})
     fprintf(['The field ', mtdtfields{i}, ' is missing in metadata. \n']);
   end
+end
+
+%% checking if metadata.species matches speciesnm
+if ~strcmp(speciesnm, metadata.species)
+  fprintf(['The species name in metadata.species does not match the species name in the mydata file name.\n']);
 end
 
 %% checking the existence of temp in the data structure
@@ -276,6 +295,11 @@ end
 %%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if exist(['pars_init_', speciesnm])~=2
+  fprintf(['There is no pars_init_', speciesnm,' file.\n']);
+  return;
+end
+
 [par, metapar, txt_par, chem] = feval(['pars_init_', speciesnm], metadata);
 
 parfields = fields(par);
@@ -383,7 +407,7 @@ else
 end
 
 
-%% checking the existence of par fields
+%% checking the realism of the par set
 filternm = ['filter_', metapar.model];
 [pass, flag]  = feval(filternm, par, chem);
 if ~pass 
@@ -404,5 +428,44 @@ end
 %%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if exist(['predict_', speciesnm])~=2
+  fprintf(['There is no predict_', speciesnm,' file.\n']);
+  return;
+end
+
+[Prd_data, info_prd] = feval(['predict_', speciesnm], par, chem, metapar.T_ref, data);
+
+if info_prd == 0 
+  fprintf('The seed parameter set is not realistic (from use of info in the predict file). \n');
+  return;
+end
+
+Prd_datafields = fields(Prd_data);
+
+if length(Prd_datafields) > length(datafields)
+  for i = 1:length(Prd_datafields)
+    if sum(strcmp(datafields, Prd_datafields(i))) == 0
+      fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' but there is no corresponding data. \n']);
+    else 
+      eval(['[ldt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
+      eval(['[lprdt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
+      if ldt ~= lprdt
+        fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+      end
+    end
+  end
+else
+  for i = 1:length(datafields)
+    if sum(strcmp(datafields(i), Prd_datafields)) == 0
+      fprintf(['There are no predictions defined for data point/set ', datafields{i}, '. \n']);
+    else 
+      eval(['[ldt, k] = size(data.', datafields{i}, ');']);  % number of data points per set
+      eval(['[lprdt, k] = size(Prd_data.', datafields{i}, ');']);  % number of data points per set
+      if ldt ~= lprdt
+        fprintf(['The prediction defined for ', datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+      end
+    end
+  end
+end
 
 
