@@ -1,0 +1,317 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>traject</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="traject.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">simulation of standard DEB model with stochastic searching</a></li><li><a href="#2">plotting</a></li></ul></div><h2>simulation of standard DEB model with stochastic searching<a name="1"></a></h2><pre>using scaling to dimensionless quantities
+handling and searching intervals only evaluate length at start interval
+for theory, see comments to DEB3 for 2.9
+created by Bas kooijman at 2010/04/01, modified 2011/03/07</pre><pre class="codeinput"><span class="keyword">global</span> vH_max
+
+<span class="comment">% control parameters</span>
+x = .75; <span class="comment">% food density; for x = 1 mean food intake is 0.5 * max</span>
+z = 5; <span class="comment">% zoom factor: Lm = 1 cm for z = 1</span>
+MX = 5e-4 * z^3; <span class="comment">% mmol, mass of food particle</span>
+
+<span class="comment">% physiological parameters</span>
+vHb = .0004; <span class="comment">% maturity at birth</span>
+vHp = .25;   <span class="comment">% maturity at puberty</span>
+rhoh = 8 * z/ MX; <span class="comment">% spec handling rate, MX in mmol: {h_XAm} L_m^2/ k_M</span>
+  <span class="comment">% {h_XAm} max spec feeding rate in particles/ time/ surface</span>
+g = 3/z;     <span class="comment">% energy investment ratio: [E_G]/ (kap [E_m])</span>
+kapR1 = .2;  <span class="comment">% reproduction efficiency: kap_R (1 - kap)</span>
+kapG = .8;   <span class="comment">% growth efficiency: mu_V [M_V]/ [E_G]</span>
+lT = 0;      <span class="comment">% heating length: L_T/ L_m</span>
+k = .3;      <span class="comment">% maintenance ratio: k_J/ k_M</span>
+k1 = .2;     <span class="comment">% maturity decay: k_J^prime/ k_M</span>
+
+<span class="comment">% survival parameters</span>
+delX = .8; <span class="comment">% hard survival condition on shrinking</span>
+  <span class="comment">% death occurs if l &lt; delX * max l (in the past)</span>
+sH = 2;    <span class="comment">% soft survival condition on rejuvenation</span>
+  <span class="comment">% h_H = sH (max vH - vH)</span>
+ha = z * 3e-5; <span class="comment">% Weibull aging acelleration</span>
+sG = .001;  <span class="comment">% Gompertz stress coeff</span>
+
+<span class="comment">% conditions at birth</span>
+t = 0; <span class="comment">% time</span>
+eb = x/(1 + x); <span class="comment">% reserve density</span>
+[uE0 lb] = get_ue0 ([g; k; vHb], eb); <span class="comment">% initial reserve, length at birth</span>
+qb = 0; <span class="comment">% acceletation; not correct but ...</span>
+hb = 0; <span class="comment">% hazard; not correct but ...</span>
+Sb = 1; <span class="comment">% survival prob; not correct but ...</span>
+Nb = 0; <span class="comment">% cumulative reproduction</span>
+vH_max = vHb; <span class="comment">% passed to dtraject to detect rejuvenation</span>
+tf = []; <span class="comment">% initiate times of feeding</span>
+<span class="comment">% determine handling or searching at birth</span>
+th = 1/(rhoh * lb^2); ts = th/ x; <span class="comment">% handling &amp; searching periods at birth</span>
+f = rand(1) &lt; ts/ (ts + th); <span class="comment">% f = 0 (if searching) or 1 (if handling);</span>
+vars = [eb, lb, vHb, qb, hb, Sb, Nb]; <span class="comment">% pack initial vars</span>
+
+Vars = [t, f, vars]; <span class="comment">% initiate extended vars</span>
+nV = length(Vars);
+
+tmax = 2 * get_tm_s([g; lT; ha; sG], eb); <span class="comment">% simulation interval</span>
+
+<span class="comment">% actual simulation</span>
+<span class="keyword">while</span> Vars(end,1) &lt; tmax <span class="comment">% continue simulation till tmax</span>
+  l = Vars(end,4); <span class="comment">% current length</span>
+  dt = 1/ (rhoh * l^2); <span class="comment">% handling interval</span>
+  <span class="keyword">if</span> f == 0
+    dt = - dt * log(rand(1))/ x; <span class="comment">% searching interval</span>
+    tf = [tf; Vars(end,1) + dt]; <span class="comment">% append to times of feeding</span>
+  <span class="keyword">end</span>
+  t0 = Vars(end,1) + [0;dt]; <span class="comment">% new time interval</span>
+  vars0 = Vars(end,3:nV)';   <span class="comment">% new vars values</span>
+  [t_int vars_int] = ode23(@dtraject, t0, vars0, [], <span class="keyword">...</span>
+      vHb, vHp, g, kapR1, kapG, lT, k, k1, ha, sG, sH, uE0, f);
+  t_int(1,:) = []; vars_int(1,:) = []; <span class="comment">% remove first time and vars</span>
+  Vars = [Vars; t_int, [f * ones(length(t_int),1), vars_int]]; <span class="comment">% append to existing trajectory</span>
+  f = ~f; <span class="comment">% alternate f</span>
+<span class="keyword">end</span>
+
+<span class="comment">% unpack vars</span>
+t = Vars(:,1);
+f = Vars(:,2); e = Vars(:,3); l = Vars(:,4); vH = Vars(:,5);
+q = Vars(:,6); h = Vars(:,7); S = Vars(:,8);  N = Vars(:,9);
+
+<span class="comment">% survival by shrinking, rejuvenation</span>
+death = find(l &lt; delX * cummax(l),1,<span class="string">'first'</span>); <span class="comment">% length &gt; delX * max length</span>
+<span class="keyword">if</span> isempty(death)
+  alive = t&gt;-1; <span class="comment">% must be booleans</span>
+<span class="keyword">else</span>
+  alive = 1:length(l) &lt; death; <span class="comment">% once dead is dead forever</span>
+<span class="keyword">end</span>
+h_vH = sH * (cummax(vH) - vH); <span class="comment">% hazard due to rejuvenation</span>
+</pre><h2>plotting<a name="2"></a></h2><p>shtraject; return</p><pre class="codeinput">close <span class="string">all</span>
+
+<span class="comment">%figure</span>
+subplot(2,3,1)
+plot(t(alive), e(alive), <span class="string">'g'</span>, t(~alive), e(~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'reserve density'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,3,2)
+hold <span class="string">on</span>
+plot(t(alive), l(alive), <span class="string">'g'</span>, t(~alive), l(~alive), <span class="string">'r'</span>)
+plot(t(alive), S(alive), <span class="string">'-'</span>, <span class="string">'Color'</span>, [0 .75 0])
+plot(t(~alive), S(~alive), <span class="string">'-'</span>, <span class="string">'Color'</span>, [.75 0 0])
+ylabel(<span class="string">'length, survival'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,3,3)
+plot(t(alive), vH(alive), <span class="string">'g'</span>, t(~alive), vH(~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'maturity'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,3,4)
+plot(t(alive), q(alive), <span class="string">'g'</span>, t(~alive), q(~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'acceleration'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,3,5)
+hold <span class="string">on</span>
+plot(t(alive), h(alive), <span class="string">'g'</span>, t(~alive), h(~alive), <span class="string">'r'</span>)
+plot(t(alive), h_vH(alive), <span class="string">'-'</span>, <span class="string">'Color'</span>, [0 .75 0])
+plot(t(~alive), h_vH(~alive), <span class="string">'-'</span>, <span class="string">'Color'</span>, [.75 0 0])
+ylabel(<span class="string">'hazard by ageing, rejuv'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,3,6)
+plot(t(alive), 10 * N(alive), <span class="string">'g'</span>, t(~alive), N(~alive), <span class="string">'r'</span>, <span class="keyword">...</span>
+     tf, 1:length(tf), <span class="string">'k'</span>)
+ylabel(<span class="string">'cum feeding, 10 x cum reprod, '</span>)
+xlabel(<span class="string">'time since birth'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% simulation of standard DEB model with stochastic searching
+%  using scaling to dimensionless quantities
+%  handling and searching intervals only evaluate length at start interval
+%  for theory, see comments to DEB3 for 2.9
+%  created by Bas kooijman at 2010/04/01, modified 2011/03/07
+
+global vH_max
+
+% control parameters
+x = .75; % food density; for x = 1 mean food intake is 0.5 * max
+z = 5; % zoom factor: Lm = 1 cm for z = 1
+MX = 5e-4 * z^3; % mmol, mass of food particle
+
+% physiological parameters
+vHb = .0004; % maturity at birth
+vHp = .25;   % maturity at puberty
+rhoh = 8 * z/ MX; % spec handling rate, MX in mmol: {h_XAm} L_m^2/ k_M
+  % {h_XAm} max spec feeding rate in particles/ time/ surface
+g = 3/z;     % energy investment ratio: [E_G]/ (kap [E_m])
+kapR1 = .2;  % reproduction efficiency: kap_R (1 - kap)
+kapG = .8;   % growth efficiency: mu_V [M_V]/ [E_G]
+lT = 0;      % heating length: L_T/ L_m
+k = .3;      % maintenance ratio: k_J/ k_M
+k1 = .2;     % maturity decay: k_J^prime/ k_M
+
+% survival parameters
+delX = .8; % hard survival condition on shrinking
+  % death occurs if l < delX * max l (in the past)
+sH = 2;    % soft survival condition on rejuvenation
+  % h_H = sH (max vH - vH)
+ha = z * 3e-5; % Weibull aging acelleration
+sG = .001;  % Gompertz stress coeff
+
+% conditions at birth
+t = 0; % time
+eb = x/(1 + x); % reserve density
+[uE0 lb] = get_ue0 ([g; k; vHb], eb); % initial reserve, length at birth
+qb = 0; % acceletation; not correct but ...
+hb = 0; % hazard; not correct but ...
+Sb = 1; % survival prob; not correct but ...
+Nb = 0; % cumulative reproduction
+vH_max = vHb; % passed to dtraject to detect rejuvenation
+tf = []; % initiate times of feeding
+% determine handling or searching at birth
+th = 1/(rhoh * lb^2); ts = th/ x; % handling & searching periods at birth
+f = rand(1) < ts/ (ts + th); % f = 0 (if searching) or 1 (if handling);
+vars = [eb, lb, vHb, qb, hb, Sb, Nb]; % pack initial vars
+
+Vars = [t, f, vars]; % initiate extended vars 
+nV = length(Vars);
+
+tmax = 2 * get_tm_s([g; lT; ha; sG], eb); % simulation interval
+
+% actual simulation
+while Vars(end,1) < tmax % continue simulation till tmax
+  l = Vars(end,4); % current length
+  dt = 1/ (rhoh * l^2); % handling interval
+  if f == 0
+    dt = - dt * log(rand(1))/ x; % searching interval
+    tf = [tf; Vars(end,1) + dt]; % append to times of feeding
+  end
+  t0 = Vars(end,1) + [0;dt]; % new time interval
+  vars0 = Vars(end,3:nV)';   % new vars values
+  [t_int vars_int] = ode23(@dtraject, t0, vars0, [], ...
+      vHb, vHp, g, kapR1, kapG, lT, k, k1, ha, sG, sH, uE0, f);
+  t_int(1,:) = []; vars_int(1,:) = []; % remove first time and vars
+  Vars = [Vars; t_int, [f * ones(length(t_int),1), vars_int]]; % append to existing trajectory
+  f = ~f; % alternate f
+end
+
+% unpack vars
+t = Vars(:,1);
+f = Vars(:,2); e = Vars(:,3); l = Vars(:,4); vH = Vars(:,5); 
+q = Vars(:,6); h = Vars(:,7); S = Vars(:,8);  N = Vars(:,9);
+
+% survival by shrinking, rejuvenation
+death = find(l < delX * cummax(l),1,'first'); % length > delX * max length
+if isempty(death)
+  alive = t>-1; % must be booleans
+else
+  alive = 1:length(l) < death; % once dead is dead forever
+end
+h_vH = sH * (cummax(vH) - vH); % hazard due to rejuvenation
+
+%% plotting
+% shtraject; return 
+
+close all
+
+%figure
+subplot(2,3,1)
+plot(t(alive), e(alive), 'g', t(~alive), e(~alive), 'r')
+ylabel('reserve density')
+xlabel('time since birth')
+
+%figure
+subplot(2,3,2)
+hold on
+plot(t(alive), l(alive), 'g', t(~alive), l(~alive), 'r')
+plot(t(alive), S(alive), '-', 'Color', [0 .75 0])
+plot(t(~alive), S(~alive), '-', 'Color', [.75 0 0])
+ylabel('length, survival')
+xlabel('time since birth')
+
+%figure
+subplot(2,3,3)
+plot(t(alive), vH(alive), 'g', t(~alive), vH(~alive), 'r')
+ylabel('maturity')
+xlabel('time since birth')
+
+%figure
+subplot(2,3,4)
+plot(t(alive), q(alive), 'g', t(~alive), q(~alive), 'r')
+ylabel('acceleration')
+xlabel('time since birth')
+
+%figure
+subplot(2,3,5)
+hold on
+plot(t(alive), h(alive), 'g', t(~alive), h(~alive), 'r')
+plot(t(alive), h_vH(alive), '-', 'Color', [0 .75 0])
+plot(t(~alive), h_vH(~alive), '-', 'Color', [.75 0 0])
+ylabel('hazard by ageing, rejuv')
+xlabel('time since birth')
+
+%figure
+subplot(2,3,6)
+plot(t(alive), 10 * N(alive), 'g', t(~alive), N(~alive), 'r', ...
+     tf, 1:length(tf), 'k')
+ylabel('cum feeding, 10 x cum reprod, ')
+xlabel('time since birth')
+##### SOURCE END #####
+--></body></html>

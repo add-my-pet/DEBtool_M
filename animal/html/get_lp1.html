@@ -1,0 +1,164 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_lp1</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-27"><meta name="DC.source" content="get_lp1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_lp1</h1><!--introduction--><p>Gest scaled length at puberty</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[lp, lb, info] = <a href="../get_lp1.m"><b>get_lp1</b></a> (p, f, l0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled length at puberty at constant food density. If initial scaled length (third input) is not specified, it is computed (using automatic initial estimate); If it is specified, however, is it just copied to the (second) output. Food density is assumed to be constant.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^0, v_H^p      or 6-vector with parameters: g, k, l_T, v_H^0, v_H^p, sM</li><li>f: optional scalar with scaled functional responses (default 1)</li><li>l0: optional scalar with scaled initial length (birth, metamosphosis or other)</li></ul></div><pre>    or optional 2-vector with scaled length, l, and scaled maturity, vH
+    for a juvenile that is now exposed to f, but previously at another f
+    l0 should be specified for foetal development</pre><p>Output</p><div><ul><li>lp: scalar with scaled length at puberty</li><li>lb: scalar with scaled length at the begining</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Similar to <a href="get_lp.html"><b>get_lp</b></a>, which uses integration, rather than root finding Function <a href="get_lp1_foetus.html"><b>get_lp1_foetus</b></a> does the same, but then for foetal development.</p><h2>Example of use<a name="6"></a></h2><p>get_lp1([.5, .1, .1, .01, .2])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_lp1
+% Gest scaled length at puberty
+
+%%
+function [lp, lb, info] = get_lp1 (p, f, l0)
+  % created at 2008/06/04 by Bas Kooijman, 
+  % modified 2014/03/03 Starrlight Augustine, 2015/02/17 Bas Kooijman & Goncalo Marques, 2015/02/26 Goncalo Marques
+  
+  %% Syntax
+  % [lp, lb, info] = <../get_lp1.m *get_lp1*> (p, f, l0)
+  
+  %% Description
+  % Obtains scaled length at puberty at constant food density. 
+  % If initial scaled length (third input) is not specified, it is computed (using automatic initial estimate); 
+  % If it is specified, however, is it just copied to the (second) output. 
+  % Food density is assumed to be constant.
+  %
+  % Input
+  %
+  % * p: 5-vector with parameters: g, k, l_T, v_H^0, v_H^p 
+  %      or 6-vector with parameters: g, k, l_T, v_H^0, v_H^p, sM
+  % * f: optional scalar with scaled functional responses (default 1)
+  % * l0: optional scalar with scaled initial length (birth, metamosphosis or other)
+  %
+  %      or optional 2-vector with scaled length, l, and scaled maturity, vH
+  %      for a juvenile that is now exposed to f, but previously at another f
+  %      l0 should be specified for foetal development
+  %  
+  % Output
+  %
+  % * lp: scalar with scaled length at puberty
+  % * lb: scalar with scaled length at the begining 
+  % * info: indicator equals 1 if successful, 0 otherwise
+  
+  %% Remarks
+  % Similar to <get_lp.html *get_lp*>, which uses integration, rather than root finding
+  % Function <get_lp1_foetus.html *get_lp1_foetus*> does the same, but then for foetal development. 
+
+  %% Example of use
+  % get_lp1([.5, .1, .1, .01, .2])
+
+  if exist('fzero', 'file') ~= 2    % if there is no fzero use dynamic equations to determine lp
+    [lp, lb, info] = get_lp(p, f, l0);
+    return;
+  end
+  
+  % unpack pars
+  g   = p(1); % -, energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % scaled heating length {p_T}/[p_M]
+  vH0 = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}
+  vHp = p(5); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = M_H^p/ {J_EAm} = E_H^p/ {p_Am}
+  if length(p) == 6
+    sM = p(6);
+  else
+    sM = 1;
+  end
+  
+  if ~exist('f', 'var')  || isempty(f)
+    f = 1; 
+  end
+
+  if ~exist('l0', 'var') || isempty(l0)  % if l0 does not exist assume l at birth for an egg
+      l0 = [];
+      [lb, info] = get_lb([g; k; vH0], f);
+  elseif length(l0) < 2
+      info = 1;
+      lb = l0;
+  else % for a juvenile of length l and maturity vH
+      l = l0(1); vH = l0(2); % juvenile now exposed to f
+      [lb, info] = get_lb([g; k; vH0], f);
+  end
+  
+  rB = g / 3 / (f + g); % -, scaled von Bertalanffy growth rate
+  li = sM * (f - lT);   % -, scaled ultimate length
+  ld = li - lb;         % -, scaled length
+  % d/d tau vH = b2 l^2 + b3 l^3 - k vH
+  b3 = 1 / (1 + g / f); 
+  b2 = f * sM - b3 * li;
+  % vH(t) = - a0 - a1 exp(- rB t) - a2 exp(- 2 rB t) - a3 exp(- 3 rB t) +
+  %         + (vHb + a0 + a1 + a2 + a3) exp(-kt)
+  a0 = - (b2 + b3 * li) * li^2/ k;
+  a1 = - li * ld * (2 * b2 + 3 * b3 * li)/ (rB - k);
+  a2 = ld^2 * (b2 + 3 * b3 * li)/ (2 * rB - k);
+  a3 = - b3 * ld^3 / (3 * rB - k);
+
+  if vHp > -a0      % vH can only reach -a0
+    lp = [];
+    info = 0;
+    fprintf('Warning in get_lp: maturity at puberty can not be reached \n');
+  elseif vH0 > vHp  % intial maturity is already higher than maturity at puberty
+    lp = l;
+    info = 0;
+    fprintf('Warning in get_lp: initial maturity exceeds puberty threshold \n')
+  elseif k == 1
+    lp = vHp^(1/3);
+  else
+    lp = fzero(@fnget_lp, [lb, li], [], a0, a1, a2, a3, lb, li, k, rB, vH0, vHp);
+  end
+  
+##### SOURCE END #####
+--></body></html>

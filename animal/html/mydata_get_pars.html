@@ -1,0 +1,281 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_get_pars</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_get_pars.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Demonstrates the use of get_pars_*, iget_pars_* and  elas_pars_*</a></li><li><a href="#2">only info on growth is available, not on reproduction</a></li><li><a href="#3">check that get_pars_g and iget_pars_g are inverses</a></li><li><a href="#4">first obtain easy-to-measure quantities from parameters</a></li><li><a href="#5">now obtain parameters from quantities</a></li><li><a href="#6">compare the parameter values</a></li><li><a href="#7">obtain quantities from parameters again for extra security</a></li><li><a href="#8">compare the quantity values</a></li><li><a href="#9">compare scaled reserve: initial and at birth</a></li><li><a href="#11">although the relationship between quantities and parameters are exact,</a></li><li><a href="#12">a small error in the quantities might produce</a></li><li><a href="#13">large errors in the parameters</a></li><li><a href="#14">sensitivity analysis based on elasticity coefficients</a></li><li><a href="#16">only info on growth is available, not on reproduction</a></li><li><a href="#17">check that get_pars_i and iget_pars_i are inverses</a></li><li><a href="#18">first obtain easy-to-measure quantities from parameters</a></li><li><a href="#19">now obtain parameters from quantities</a></li><li><a href="#20">q = [f Lb Li rB]; pn = [g kM v Lb];</a></li><li><a href="#21">compare the parameter values</a></li><li><a href="#22">obtain quantities from parameters again for extra security</a></li><li><a href="#23">compare the quantity values</a></li><li><a href="#24">compare reserve (initial, at birth)</a></li><li><a href="#26">only info on growth is available, not on reproduction</a></li><li><a href="#27">check that get_pars_h and iget_pars_h are inverses</a></li><li><a href="#28">first obtain easy-to-measure quantities from parameters</a></li><li><a href="#29">now obtain parameters from quantities</a></li><li><a href="#30">q = [f Lb Li rB]; pn = [VHb g kJ kM v];</a></li><li><a href="#31">compare the parameter values</a></li><li><a href="#32">obtain quantities from parameters again for extra security</a></li><li><a href="#33">compare the quantity values</a></li><li><a href="#34">compare reserve (initial, at birth)</a></li><li><a href="#36">info on growth and reproduction is available at one food density</a></li><li><a href="#37">makes use of the assumption of stage transition at fixed structure</a></li><li><a href="#38">check that get_pars_r and iget_pars_r are inverses</a></li><li><a href="#39">first obtain easy-to-measure quantities from parameters</a></li><li><a href="#40">now obtain parameters from quantities</a></li><li><a href="#41">compare the parameter values</a></li><li><a href="#42">obtain quantities from parameters again for extra security</a></li><li><a href="#43">compare the quantity values</a></li><li><a href="#44">compare scaled reserve: initial, at birth and at puberty</a></li><li><a href="#46">although the relationship between quantities and parameters are exact,</a></li><li><a href="#47">a small error in the quantities might produce</a></li><li><a href="#48">large errors in the parameters</a></li><li><a href="#49">sensitivity analysis based on elasticity coefficients</a></li><li><a href="#51">no stage transitions at fixed structure</a></li><li><a href="#52">first obtain easy-to-measure quantities from parameters</a></li><li><a href="#53">at 3 food levels</a></li><li><a href="#54">q(:,)= [f, Lb, Lp, Li, rB, Ri, kapR]</a></li><li><a href="#55">now obtain parameters from quantities</a></li><li><a href="#56">compare parameter values</a></li><li><a href="#57">check quantities</a></li><li><a href="#59">compose vector of compound parameters</a></li><li><a href="#60">this could be the output of get_pars_s</a></li><li><a href="#61">compose vector of supplementary data (from measurements)</a></li><li><a href="#62">prepare explanatory text for parameters</a></li></ul></div><h2>Demonstrates the use of get_pars_*, iget_pars_* and  elas_pars_*<a name="1"></a></h2><pre>modified 2008/06/04</pre><pre class="codeinput"><span class="keyword">switch</span> 8 <span class="comment">% change this to other numbers to run the different cases</span>
+  <span class="keyword">case</span> 1
+</pre><h2>only info on growth is available, not on reproduction<a name="2"></a></h2><h2>check that get_pars_g and iget_pars_g are inverses<a name="3"></a></h2><h2>first obtain easy-to-measure quantities from parameters<a name="4"></a></h2><pre class="codeinput">    p = [.2 2.5 .02 1.8]';     <span class="comment">% p = [VHb g kM v]</span>
+    f = .6; <span class="comment">% scaled functional response</span>
+    [q, U] = iget_pars_g(p, f); <span class="comment">% p = [g kM v Lb]; q = [f Lb Li ab rB]</span>
+</pre><h2>now obtain parameters from quantities<a name="5"></a></h2><pre class="codeinput">    [pn, Un] = get_pars_g(q);   <span class="comment">% q = [f Lb Li  ab rB]; pn = [g kM v Lb];</span>
+</pre><h2>compare the parameter values<a name="6"></a></h2><pre class="codeinput">    [p, pn] <span class="comment">% must be the same</span>
+</pre><h2>obtain quantities from parameters again for extra security<a name="7"></a></h2><pre class="codeinput">    [qn, U] = iget_pars_g(pn, f);
+</pre><h2>compare the quantity values<a name="8"></a></h2><pre class="codeinput">    [q, qn] <span class="comment">% must be the same</span>
+</pre><h2>compare scaled reserve: initial and at birth<a name="9"></a></h2><pre class="codeinput">    [U, Un] <span class="comment">% must be the same</span>
+</pre><pre class="codeinput">  <span class="keyword">case</span> 2 <span class="comment">% single food level, growth data only</span>
+</pre><h2>although the relationship between quantities and parameters are exact,<a name="11"></a></h2><h2>a small error in the quantities might produce<a name="12"></a></h2><h2>large errors in the parameters<a name="13"></a></h2><h2>sensitivity analysis based on elasticity coefficients<a name="14"></a></h2><pre class="codeinput">    q = [1 .8 5 1.5 .09]';  <span class="comment">% [Lb Li ab rB]</span>
+    [p, elas] = elas_pars_g(q); <span class="comment">% p = [VHb g kM v]</span>
+    [p, elas] <span class="comment">% pars &amp; elasticity coefficients</span>
+</pre><pre class="codeinput">  <span class="keyword">case</span> 3 <span class="comment">% several food levels kJ = kM</span>
+</pre><h2>only info on growth is available, not on reproduction<a name="16"></a></h2><h2>check that get_pars_i and iget_pars_i are inverses<a name="17"></a></h2><h2>first obtain easy-to-measure quantities from parameters<a name="18"></a></h2><pre class="codeinput">    p = [2.5 .02 1.8 .8]';     <span class="comment">% p = [VHb g kM v]</span>
+    f = [1 .8 .6]'; <span class="comment">% scaled functional response</span>
+    [q, U] = iget_pars_i(p, f); <span class="comment">% p = [VHb g kM v]; q = [f Lb Li rB]</span>
+</pre><h2>now obtain parameters from quantities<a name="19"></a></h2><pre class="codeinput">    [pn Un] = get_pars_i(q,[],[2; .1; 1.5; .4]);
+</pre><h2>q = [f Lb Li rB]; pn = [g kM v Lb];<a name="20"></a></h2><h2>compare the parameter values<a name="21"></a></h2><pre class="codeinput">    [p pn] <span class="comment">% must be the same</span>
+</pre><h2>obtain quantities from parameters again for extra security<a name="22"></a></h2><pre class="codeinput">    qn = iget_pars_i(pn, f);
+</pre><h2>compare the quantity values<a name="23"></a></h2><pre class="codeinput">    [q qn] <span class="comment">% must be the same</span>
+</pre><h2>compare reserve (initial, at birth)<a name="24"></a></h2><pre class="codeinput">    [U Un]
+</pre><pre class="codeinput">  <span class="keyword">case</span> 4 <span class="comment">% several food levels</span>
+</pre><h2>only info on growth is available, not on reproduction<a name="26"></a></h2><h2>check that get_pars_h and iget_pars_h are inverses<a name="27"></a></h2><h2>first obtain easy-to-measure quantities from parameters<a name="28"></a></h2><pre class="codeinput">    p = [.2 1.5 .001 .02 1.8]'; <span class="comment">% p = [VHb g kJ kM v]</span>
+    f = [1 .8 .6]'; <span class="comment">% scaled functional response</span>
+    [q, U] = iget_pars_h(p, f); <span class="comment">% p = [VHb g kJ kM v]; q = [f Lb Li rB]</span>
+</pre><h2>now obtain parameters from quantities<a name="29"></a></h2><pre class="codeinput">    [pn Un] = get_pars_h(q);
+</pre><h2>q = [f Lb Li rB]; pn = [VHb g kJ kM v];<a name="30"></a></h2><h2>compare the parameter values<a name="31"></a></h2><pre class="codeinput">    [p pn] <span class="comment">% must be the same</span>
+</pre><h2>obtain quantities from parameters again for extra security<a name="32"></a></h2><pre class="codeinput">    qn = iget_pars_h(pn, f);
+</pre><h2>compare the quantity values<a name="33"></a></h2><pre class="codeinput">    [q qn] <span class="comment">% must be the same</span>
+</pre><h2>compare reserve (initial, at birth)<a name="34"></a></h2><pre class="codeinput">    [U Un]
+</pre><pre class="codeinput">  <span class="keyword">case</span> 5
+</pre><h2>info on growth and reproduction is available at one food density<a name="36"></a></h2><h2>makes use of the assumption of stage transition at fixed structure<a name="37"></a></h2><h2>check that get_pars_r and iget_pars_r are inverses<a name="38"></a></h2><h2>first obtain easy-to-measure quantities from parameters<a name="39"></a></h2><pre class="codeinput">    p = [.6; .95; 2; .1; .1; 2.5; 1; 2.5]; <span class="comment">% p: [kap kapR g kJ kM v Hb Hp]</span>
+    f = 1; <span class="comment">% scaled functional response</span>
+    [q, U] = iget_pars_r(p, f);  <span class="comment">% q: [f, Lb, Lp, Li, ab, rB, Ri, kapR]</span>
+</pre><h2>now obtain parameters from quantities<a name="40"></a></h2><pre class="codeinput">    [pn, Un] = get_pars_r(q);
+</pre><h2>compare the parameter values<a name="41"></a></h2><pre class="codeinput">    [p, pn] <span class="comment">% must be the same</span>
+</pre><h2>obtain quantities from parameters again for extra security<a name="42"></a></h2><pre class="codeinput">    qn = iget_pars_r(pn, f);
+</pre><h2>compare the quantity values<a name="43"></a></h2><pre class="codeinput">    [q, qn] <span class="comment">% must be the same</span>
+</pre><h2>compare scaled reserve: initial, at birth and at puberty<a name="44"></a></h2><pre class="codeinput">    [U, Un] <span class="comment">% must be the same</span>
+</pre><pre class="codeinput">  <span class="keyword">case</span> 6 <span class="comment">% growth and reprod data; this takes some time to compute!</span>
+</pre><h2>although the relationship between quantities and parameters are exact,<a name="46"></a></h2><h2>a small error in the quantities might produce<a name="47"></a></h2><h2>large errors in the parameters<a name="48"></a></h2><h2>sensitivity analysis based on elasticity coefficients<a name="49"></a></h2><pre class="codeinput">    q = [.8 .8 2.5 4.1 2 .07 10]';  <span class="comment">% q: [f, Lb, Lp, Li, ab, rB, Ri, kapR]</span>
+    [p, elas] = elas_pars_r(q); <span class="comment">% p: [kap kapR g kJ kM v Hb Hp]</span>
+    [p, elas] <span class="comment">% pars &amp; elasticity coefficients</span>
+</pre><pre class="codeinput">  <span class="keyword">case</span> 7 <span class="comment">% two food levels, no age at birth 'data'</span>
+</pre><h2>no stage transitions at fixed structure<a name="51"></a></h2><h2>first obtain easy-to-measure quantities from parameters<a name="52"></a></h2><h2>at 3 food levels<a name="53"></a></h2><pre class="codeinput">    p = [.7; .95; 2; .01; .1; 2.5; .1; 1.5]; <span class="comment">% p: [kap kapR g kJ kM v Hb Hp]</span>
+</pre><h2>q(:,)= [f, Lb, Lp, Li, rB, Ri, kapR]<a name="54"></a></h2><pre class="codeinput">    [q, U] = iget_pars_s(p, [1; .8; .6; .4]);
+</pre><h2>now obtain parameters from quantities<a name="55"></a></h2><pre class="codeinput">    [pn, Un, qn] = get_pars_s(q);
+</pre><h2>compare parameter values<a name="56"></a></h2><pre class="codeinput">    [p, pn] <span class="comment">% must be the same</span>
+</pre><h2>check quantities<a name="57"></a></h2><pre class="codeinput">    [q', qn']
+</pre><pre class="codeinput">    <span class="keyword">case</span> 8 <span class="comment">% the final step from compound to primary parameters</span>
+</pre><h2>compose vector of compound parameters<a name="59"></a></h2><h2>this could be the output of get_pars_s<a name="60"></a></h2><pre class="codeinput">    p = [.7; .95; 2; .1; .1; 2.5; .1; 0.95]; <span class="comment">% p: [kap kapR g kJ kM v Hb Hp]</span>
+</pre><h2>compose vector of supplementary data (from measurements)<a name="61"></a></h2><pre class="codeinput">    q = [2; 10; 2.5; 1.8]; <span class="comment">% q: [JXAm K ME0 MWb]</span>
+
+    [par, aLM] = get_pars_u(q,p); <span class="comment">% get results</span>
+</pre><h2>prepare explanatory text for parameters<a name="62"></a></h2><pre class="codeinput">    txt = [{<span class="string">'{J_EAm}'</span>}; {<span class="string">'b'</span>}; {<span class="string">'y_EX'</span>}; {<span class="string">'y_VE'</span>}; {<span class="string">'v'</span>}; {<span class="string">'[J_EM]'</span>}; {<span class="string">'k_J'</span>}; <span class="keyword">...</span>
+	   {<span class="string">'kappa'</span>}; {<span class="string">'kappa_R'</span>}; {<span class="string">'M_H^b'</span>}; {<span class="string">'M_H^p'</span>}; {<span class="string">'[M_V]'</span>}];
+    printpar(txt,par) <span class="comment">% show results</span>
+    fprintf(<span class="string">'                age,    length, reserve mass, structural mass\n'</span>);
+    age = [<span class="string">'start   '</span>; <span class="string">'birth   '</span>; <span class="string">'puberty '</span>; <span class="string">'ultimate'</span>];
+    [age, num2str(aLM)]
+</pre><pre class="codeoutput">Parameter values 
+{J_EAm}    4.869 
+b      0.2 
+y_EX    2.435 
+y_VE     0.87 
+v      2.5 
+[J_EM]   0.2727 
+k_J      0.1 
+kappa      0.7 
+kappa_R     0.95 
+M_H^b   0.4869 
+M_H^p    4.626 
+[M_V]    2.372 
+                age,    length, reserve mass, structural mass
+
+ans =
+
+start                   0                      0                    2.5                      0
+birth   1.168428074369319     0.7469007910928608     0.8115349163413752     0.9884650836586248
+puberty 4.484575040459697      1.581869771282515      7.709560632108159      9.390414346141274
+ultimate              Inf                   12.5      3804.061122007118      4633.430079649804
+
+</pre><pre class="codeinput">  <span class="keyword">otherwise</span>
+    <span class="keyword">return</span>;
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Demonstrates the use of get_pars_*, iget_pars_* and  elas_pars_*
+%  modified 2008/06/04
+
+switch 8 % change this to other numbers to run the different cases
+  case 1
+    %% only info on growth is available, not on reproduction
+    %% check that get_pars_g and iget_pars_g are inverses
+    %% first obtain easy-to-measure quantities from parameters
+    p = [.2 2.5 .02 1.8]';     % p = [VHb g kM v]
+    f = .6; % scaled functional response
+    [q, U] = iget_pars_g(p, f); % p = [g kM v Lb]; q = [f Lb Li ab rB]
+    %% now obtain parameters from quantities
+    [pn, Un] = get_pars_g(q);   % q = [f Lb Li  ab rB]; pn = [g kM v Lb];
+    %% compare the parameter values
+    [p, pn] % must be the same
+    %% obtain quantities from parameters again for extra security
+    [qn, U] = iget_pars_g(pn, f);
+    %% compare the quantity values
+    [q, qn] % must be the same
+    %% compare scaled reserve: initial and at birth
+    [U, Un] % must be the same
+
+  case 2 % single food level, growth data only
+    %% although the relationship between quantities and parameters are exact, 
+    %%  a small error in the quantities might produce
+    %%  large errors in the parameters
+    %% sensitivity analysis based on elasticity coefficients
+    q = [1 .8 5 1.5 .09]';  % [Lb Li ab rB]
+    [p, elas] = elas_pars_g(q); % p = [VHb g kM v]
+    [p, elas] % pars & elasticity coefficients
+
+  case 3 % several food levels kJ = kM
+    %% only info on growth is available, not on reproduction
+    %% check that get_pars_i and iget_pars_i are inverses
+    %% first obtain easy-to-measure quantities from parameters
+    p = [2.5 .02 1.8 .8]';     % p = [VHb g kM v]
+    f = [1 .8 .6]'; % scaled functional response
+    [q, U] = iget_pars_i(p, f); % p = [VHb g kM v]; q = [f Lb Li rB]
+    %% now obtain parameters from quantities
+    [pn Un] = get_pars_i(q,[],[2; .1; 1.5; .4]);
+    %%  q = [f Lb Li rB]; pn = [g kM v Lb];
+    %% compare the parameter values
+    [p pn] % must be the same
+    %% obtain quantities from parameters again for extra security
+    qn = iget_pars_i(pn, f);
+    %% compare the quantity values
+    [q qn] % must be the same
+    %% compare reserve (initial, at birth)
+    [U Un]
+
+  case 4 % several food levels
+    %% only info on growth is available, not on reproduction
+    %% check that get_pars_h and iget_pars_h are inverses
+    %% first obtain easy-to-measure quantities from parameters
+    p = [.2 1.5 .001 .02 1.8]'; % p = [VHb g kJ kM v]
+    f = [1 .8 .6]'; % scaled functional response
+    [q, U] = iget_pars_h(p, f); % p = [VHb g kJ kM v]; q = [f Lb Li rB]
+    %% now obtain parameters from quantities
+    [pn Un] = get_pars_h(q);
+    %% q = [f Lb Li rB]; pn = [VHb g kJ kM v];
+    %% compare the parameter values
+    [p pn] % must be the same
+    %% obtain quantities from parameters again for extra security
+    qn = iget_pars_h(pn, f);
+    %% compare the quantity values
+    [q qn] % must be the same
+    %% compare reserve (initial, at birth)
+    [U Un]
+
+  case 5 
+    %% info on growth and reproduction is available at one food density
+    %% makes use of the assumption of stage transition at fixed structure
+    %% check that get_pars_r and iget_pars_r are inverses
+    %% first obtain easy-to-measure quantities from parameters
+    p = [.6; .95; 2; .1; .1; 2.5; 1; 2.5]; % p: [kap kapR g kJ kM v Hb Hp]
+    f = 1; % scaled functional response
+    [q, U] = iget_pars_r(p, f);  % q: [f, Lb, Lp, Li, ab, rB, Ri, kapR]
+    %% now obtain parameters from quantities
+    [pn, Un] = get_pars_r(q);
+    %% compare the parameter values
+    [p, pn] % must be the same
+    %% obtain quantities from parameters again for extra security
+    qn = iget_pars_r(pn, f);
+    %% compare the quantity values
+    [q, qn] % must be the same
+    %% compare scaled reserve: initial, at birth and at puberty
+    [U, Un] % must be the same
+
+  case 6 % growth and reprod data; this takes some time to compute!
+    %% although the relationship between quantities and parameters are exact, 
+    %%  a small error in the quantities might produce
+    %%  large errors in the parameters
+    %% sensitivity analysis based on elasticity coefficients
+    q = [.8 .8 2.5 4.1 2 .07 10]';  % q: [f, Lb, Lp, Li, ab, rB, Ri, kapR]
+    [p, elas] = elas_pars_r(q); % p: [kap kapR g kJ kM v Hb Hp]
+    [p, elas] % pars & elasticity coefficients
+
+  case 7 % two food levels, no age at birth 'data'
+    %%   no stage transitions at fixed structure
+    %% first obtain easy-to-measure quantities from parameters
+    %%   at 3 food levels
+    p = [.7; .95; 2; .01; .1; 2.5; .1; 1.5]; % p: [kap kapR g kJ kM v Hb Hp]
+    %% q(:,)= [f, Lb, Lp, Li, rB, Ri, kapR]
+    [q, U] = iget_pars_s(p, [1; .8; .6; .4]); 
+    %% now obtain parameters from quantities
+    [pn, Un, qn] = get_pars_s(q);
+    %% compare parameter values
+    [p, pn] % must be the same
+    %% check quantities
+    [q', qn']
+
+    case 8 % the final step from compound to primary parameters
+    %% compose vector of compound parameters
+    %% this could be the output of get_pars_s
+    p = [.7; .95; 2; .1; .1; 2.5; .1; 0.95]; % p: [kap kapR g kJ kM v Hb Hp]
+    %% compose vector of supplementary data (from measurements)
+    q = [2; 10; 2.5; 1.8]; % q: [JXAm K ME0 MWb]
+
+    [par, aLM] = get_pars_u(q,p); % get results
+    %% prepare explanatory text for parameters
+    txt = [{'{J_EAm}'}; {'b'}; {'y_EX'}; {'y_VE'}; {'v'}; {'[J_EM]'}; {'k_J'}; ...
+	   {'kappa'}; {'kappa_R'}; {'M_H^b'}; {'M_H^p'}; {'[M_V]'}];
+    printpar(txt,par) % show results
+    fprintf('                age,    length, reserve mass, structural mass\n');
+    age = ['start   '; 'birth   '; 'puberty '; 'ultimate'];
+    [age, num2str(aLM)]
+
+  otherwise
+    return;
+end
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,181 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_pars_2a</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_pars_2a.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_pars_2a</h1><!--introduction--><p>Obtains 2 DEB parameters from 2 data points at abundant food</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>par = <a href="../get_pars_2a.m"><b>get_pars_2a</b></a>(data, fixed_par, chem_par)</p><h2>Description<a name="4"></a></h2><p>Obtains 2 DEB parameter2 from 2 data points at abundant food</p><p>Input</p><div><ul><li>data: 2-vector with zero-variate data</li></ul></div><pre>  d_V: g/cm^3, specific density of structure
+  W_m: g, maximum wet weight</pre><div><ul><li>fixed_pars: optional 7 vector with v, kap, p_M, E_G, k_J, E_Hb, E_Hj, kap_G</li><li>chem: optional 4 vector with w_V, w_E, mu_V, mu_E</li></ul></div><p>Output</p><div><ul><li>par: 2-vector with DEB parameters</li></ul></div><pre>  p_Am: J/d.cm^2, {p_Am}, max specific assimilation rate
+  E_G: J/cm^3, [E_G] specific cost for structure</pre><h2>Remarks<a name="5"></a></h2><p>Assumes absence of acceleration The theory behind this mapping is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html">LikaAugu2014</a>. See also  <a href="get_pars_2a.html"><b>get_pars_2a</b></a>,  <a href="get_pars_3.html"><b>get_pars_3</b></a>,  <a href="get_pars_4.html"><b>get_pars_4</b></a>,  <a href="get_pars_5.html"><b>get_pars_5</b></a>,  <a href="get_pars_6.html"><b>get_pars_6</b></a>,  <a href="get_pars_6a.html"><b>get_pars_6a</b></a>,  <a href="get_pars_7.html"><b>get_pars_7</b></a>,  <a href="get_pars_8.html"><b>get_pars_8</b></a>,  <a href="get_pars_9.html"><b>get_pars_9</b></a>.</p><h2>Example of use<a name="6"></a></h2><pre>See &lt;../mydata_get_par_2_9.m *mydata_get_par_2_9*&gt;</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_pars_2a
+% Obtains 2 DEB parameters from 2 data points at abundant food
+
+%%
+function par = get_pars_2a(data, fixed_par, chem_par)
+  % created 2015/01/16 by Bas Kooijman
+  
+  %% Syntax
+  % par = <../get_pars_2a.m *get_pars_2a*>(data, fixed_par, chem_par)
+  
+  %% Description
+  % Obtains 2 DEB parameter2 from 2 data points at abundant food
+  %
+  % Input
+  %
+  % * data: 2-vector with zero-variate data
+  %
+  %    d_V: g/cm^3, specific density of structure
+  %    W_m: g, maximum wet weight
+  %
+  % * fixed_pars: optional 7 vector with v, kap, p_M, E_G, k_J, E_Hb, E_Hj, kap_G
+  % * chem: optional 4 vector with w_V, w_E, mu_V, mu_E
+  %  
+  % Output
+  %
+  % * par: 2-vector with DEB parameters
+  %
+  %    p_Am: J/d.cm^2, {p_Am}, max specific assimilation rate
+  %    E_G: J/cm^3, [E_G] specific cost for structure
+  %  
+  %% Remarks
+  % Assumes absence of acceleration
+  % The theory behind this mapping is discussed in 
+  %    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html LikaAugu2014>.
+  % See also 
+  %  <get_pars_2a.html *get_pars_2a*>,
+  %  <get_pars_3.html *get_pars_3*>,
+  %  <get_pars_4.html *get_pars_4*>,
+  %  <get_pars_5.html *get_pars_5*>,
+  %  <get_pars_6.html *get_pars_6*>,
+  %  <get_pars_6a.html *get_pars_6a*>,
+  %  <get_pars_7.html *get_pars_7*>,
+  %  <get_pars_8.html *get_pars_8*>,
+  %  <get_pars_9.html *get_pars_9*>.
+
+  %% Example of use
+  %  See <../mydata_get_par_2_9.m *mydata_get_par_2_9*>
+
+  %  assumptions:
+  %  abundant food (f=1)
+  %  absence of acceleration
+  %  {p_T} = 0     % J/d.cm^2, surf-spec som maint
+  if ~exist('fixed_par', 'var')
+     v = 0.02;             % cm/d, energy conductance
+     kap = 0.8;            % -, allocation fraction to soma = growth + somatic maintenance
+     p_M = 18;             % J/d.cm^3, [p_M], vol-specific somatic maintenance
+     k_J = 0.002;          % 1/d, mat maint rate coeff
+     E_Hb = .275;          % J, maturity at birth
+     E_Hj = E_Hb;          % J, maturity at metamorphosis
+     kap_G = 0.80;         % -, growth efficiency
+  else % v; kap; p_M; E_G; k_J
+     v    = fixed_par(1); % cm/d, energy conductance
+     kap  = fixed_par(2); % -, allocation fraction to soma = growth + somatic maintenance
+     p_M  = fixed_par(3); % J/d.cm^3, [p_M], vol-specific somatic maintenance
+     k_J  = fixed_par(4); % 1/d, mat maint rate coeff     
+     E_Hb = fixed_par(5); % J, maturity at birth
+     E_Hj = fixed_par(6); % J, maturity at metamorphosis
+     kap_G= fixed_par(7); % -, growth efficiency
+  end
+  
+  if exist('chem_par', 'var') == 0
+  %  C:H:O:N = 1:1.8:0.5:0.15
+     w_V = 23.9;   % g/C-mol, molecular weight of structure
+     w_E = 23.9;   % g/C-mol, molecular weight of reserve
+     mu_V = 5E5;   % J/C-mol, chemical potential of structure
+     mu_E = 5.5E5; % J/C-mol, chemical potential of reserve
+  else
+     w_V = chem_par(1); w_E = chem_par(2); mu_V = chem_par(3); mu_E = chem_par(4);
+  end
+
+  % unpack data 
+  d_V = data(1); % g/cm^3, specific density of structure
+  W_m = data(2); % g, maximum wet weight
+  
+  E_G = d_V * mu_V/ kap_G/ w_V; % J/cm^3, [E_G] costs for structure
+  p_Am0 = W_m^(1/3) * p_M/ kap; % J/d.cm^2, starting value for p_Am
+  p_Am = fzero(@get_pAm, p_Am0, [], W_m, v, kap, p_M, E_G, k_J, E_Hb, E_Hj, d_V, w_E, mu_E);
+  par = [p_Am; E_G]; % pack output 
+end
+
+% subfunctions
+
+function f = get_pAm (p_Am, W_m, v, kap, p_M, E_G, k_J, E_Hb, E_Hj, d_V, w_E, mu_E)
+  % f = 0 for {p_Am} such that max wet weight = W_m
+
+  % compound pars
+  k_M = p_M/ E_G; % 1/d, som maint rate coeff
+  k = k_J/ k_M;    % -, maintenance ratio  
+  g = E_G * v/ p_Am; 
+  % maturity at birth
+  U_Hb = E_Hb/ p_Am;               % cm^2 d, scaled maturity at birth
+  V_Hb = U_Hb/ (1 - kap);          % cm^2 d, scaled maturity at birth
+  v_Hb = V_Hb * g^2 * k_M^3/ v^2;  % -, scaled maturity at birth
+  % maturity at metamorphosis
+  U_Hj = E_Hj/ p_Am;               % cm^2 d, scaled maturity at metamorphosis
+  V_Hj = U_Hj/ (1 - kap);          % cm^2 d, scaled maturity at metamorphosis
+  v_Hj = V_Hj * g^2 * k_M^3/ v^2;  % -, scaled maturity at metamorphosis
+
+  % get acceleration factor (s_M = 1 if E_Hj = E_Hb)
+  pars_lj = [g; k; 0; v_Hb; v_Hj]; % compose pars for get_lj
+  [l_j, l_p, l_b, info] = get_lj(pars_lj, 1);
+  s_M = l_j/ l_b;                  % -, acceleration factor
+
+  w = p_Am * w_E/ v/ d_V/ mu_E;    % -, contribution of reserve to weight
+  L_i = kap * s_M * p_Am/ p_M;     % cm, max structural length
+  f = W_m - (1 + w) * L_i^3;       % find root
+end
+##### SOURCE END #####
+--></body></html>

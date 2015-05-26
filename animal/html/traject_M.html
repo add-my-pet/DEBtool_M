@@ -1,0 +1,231 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>traject_M</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="traject_M.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">chemical indices (relative elemental frequencies)</a></li><li><a href="#3">3 extra parameters</a></li><li><a href="#4">organic &amp; mineral fluxes</a></li></ul></div><pre class="codeinput"><span class="comment">% mineral trajectories in the standard DEB model, stochastic version</span>
+<span class="comment">%   in scaled mineral fluxes j_M = J_M/ k_M.M_Vm with M_Vm = [M_V] L_m^3</span>
+<span class="comment">%   in scaled time with 1/k_M as time unit</span>
+<span class="comment">% traject gives tau, f(tau), e(tau), l(tau), N(tau), uE0, g</span>
+<span class="comment">% the time intervals are short relative to d/dt e,l,N</span>
+<span class="comment">% this means that d/dt e,l,cN can be obtained from the output table [t e l cN]</span>
+<span class="comment">%  created by Bas kooijman 2011/03/07</span>
+
+traject <span class="comment">% set parameters, get t e l N</span>
+</pre><h2>chemical indices (relative elemental frequencies)<a name="2"></a></h2><p>organic compounds   columns: food, structure, reserve, faeces      X     V     E     P</p><pre class="codeinput">n_O = [1.00, 1.00, 1.00, 1.00;  <span class="comment">% C/C, equals 1 by definition</span>
+       1.80, 1.80, 1.80, 1.80;  <span class="comment">% H/C</span>
+       0.50, 0.50, 0.50, 0.50;  <span class="comment">% O/C</span>
+       0.15, 0.15, 0.15, 0.15]; <span class="comment">% N/C</span>
+<span class="comment">% minerals</span>
+<span class="comment">%   rows: elements carbon, hydrogen, oxygen, nitrogen</span>
+<span class="comment">%   columns: carbon dioxide (C), water (H), dioxygen (O), ammonia (N)</span>
+<span class="comment">%     CO2 H2O O2 NH3</span>
+n_M = [1,  0, 0,  0;  <span class="comment">% C</span>
+       0,  2, 0,  3;  <span class="comment">% H</span>
+       2,  1, 2,  0;  <span class="comment">% O</span>
+       0,  0, 0,  1]; <span class="comment">% N</span>
+</pre><h2>3 extra parameters<a name="3"></a></h2><pre>  L_m = z L_m^ref with L_m^ref = 1 cm
+  v/ k_M = g z</pre><pre class="codeinput">  kap = 0.8;                       <span class="comment">% -, kappa</span>
+  y_EX = 0.8;                      <span class="comment">% mol/mol</span>
+  y_VE = 0.8;                      <span class="comment">% mol/mol</span>
+  y_VX = y_VE * y_EX;              <span class="comment">% mol/mol</span>
+  y_PX = 0.1;                      <span class="comment">% mol/mol</span>
+</pre><h2>organic &amp; mineral fluxes<a name="4"></a></h2><p>obtain organic fluxes j_O = (j_X, j_V, j_E+j_ER, j_P)  j_* = J_*/ M_Vm.k_M selected copy-paste from dtraject to get de dl j_ER</p><pre class="codeinput">l2 = l .* l; l3 = l .* l2;
+
+j_X = - f .* l2/ (kap * y_VX); <span class="comment">% negative because food disappears</span>
+
+<span class="keyword">if</span> e &gt; l + lT <span class="comment">% (positive) growth</span>
+  r = g * (e ./ l - 1 - lT ./ l) ./ (e + g); <span class="comment">% spec growth rate</span>
+<span class="keyword">else</span> <span class="comment">% shrinking (negative growth)</span>
+  r = g * (e ./ l - 1 - lT ./ l) ./ (e + kapG * g); <span class="comment">% spec growth rate</span>
+<span class="keyword">end</span>
+dl = l .* r/ 3; <span class="comment">% growth in length</span>
+j_V = 3 * l2 .* dl;
+
+de = g * (f - e) ./ l; <span class="comment">% change in reserve density</span>
+j_E = (l3 .* de +  e  .* j_V)/ (g * kap * y_VE);
+j_ER = (vH &gt;= vHp) .* ((g + lT + l) .* e .* l .^2 ./ (e + g) - k * vHp) * kapR1;
+j_E = j_E + j_ER/ (kap * y_VE);
+
+j_P = - y_PX * j_X; <span class="comment">% sign opposite for that for food</span>
+
+j_O = [j_X, j_V, j_E, j_P]';
+
+<span class="comment">% obtain mineral fluxes</span>
+<span class="comment">% J_M = (J_C, J_H, J_O, J_N)</span>
+<span class="comment">% J_M = - n_M^-1 n_O J_O</span>
+<span class="comment">% notice: J_M is given in scaled time</span>
+j_M = - n_M\n_O * j_O;
+
+figure
+subplot(2,2,1)
+plot(t(alive), j_M(1,alive), <span class="string">'g'</span>, t(~alive), j_M(1,~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'scaled CO_2 production'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,2,2)
+plot(t(alive), j_M(2,alive), <span class="string">'g'</span>, t(~alive), j_M(2,~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'scaled H_2O production'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,2,3)
+plot(t(alive), -j_M(3,alive), <span class="string">'g'</span>, t(~alive), -j_M(3,~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'scaled O_2 use'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+
+<span class="comment">%figure</span>
+subplot(2,2,4)
+plot(t(alive), j_M(4,alive), <span class="string">'g'</span>, t(~alive), j_M(4,~alive), <span class="string">'r'</span>)
+ylabel(<span class="string">'scaled NH_3 production'</span>)
+xlabel(<span class="string">'time since birth'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% mineral trajectories in the standard DEB model, stochastic version
+%   in scaled mineral fluxes j_M = J_M/ k_M.M_Vm with M_Vm = [M_V] L_m^3
+%   in scaled time with 1/k_M as time unit
+% traject gives tau, f(tau), e(tau), l(tau), N(tau), uE0, g
+% the time intervals are short relative to d/dt e,l,N
+% this means that d/dt e,l,cN can be obtained from the output table [t e l cN]
+%  created by Bas kooijman 2011/03/07
+
+traject % set parameters, get t e l N
+
+%% chemical indices (relative elemental frequencies)
+% organic compounds
+%   columns: food, structure, reserve, faeces
+%      X     V     E     P
+n_O = [1.00, 1.00, 1.00, 1.00;  % C/C, equals 1 by definition
+       1.80, 1.80, 1.80, 1.80;  % H/C
+       0.50, 0.50, 0.50, 0.50;  % O/C
+       0.15, 0.15, 0.15, 0.15]; % N/C
+% minerals
+%   rows: elements carbon, hydrogen, oxygen, nitrogen
+%   columns: carbon dioxide (C), water (H), dioxygen (O), ammonia (N)
+%     CO2 H2O O2 NH3
+n_M = [1,  0, 0,  0;  % C
+       0,  2, 0,  3;  % H
+       2,  1, 2,  0;  % O
+       0,  0, 0,  1]; % N
+
+%% 3 extra parameters 
+%    L_m = z L_m^ref with L_m^ref = 1 cm
+%    v/ k_M = g z
+
+  kap = 0.8;                       % -, kappa
+  y_EX = 0.8;                      % mol/mol
+  y_VE = 0.8;                      % mol/mol
+  y_VX = y_VE * y_EX;              % mol/mol
+  y_PX = 0.1;                      % mol/mol
+ 
+%% organic & mineral fluxes
+% obtain organic fluxes
+% j_O = (j_X, j_V, j_E+j_ER, j_P)  j_* = J_*/ M_Vm.k_M
+% selected copy-paste from dtraject to get de dl j_ER
+
+l2 = l .* l; l3 = l .* l2;
+
+j_X = - f .* l2/ (kap * y_VX); % negative because food disappears
+
+if e > l + lT % (positive) growth
+  r = g * (e ./ l - 1 - lT ./ l) ./ (e + g); % spec growth rate
+else % shrinking (negative growth)
+  r = g * (e ./ l - 1 - lT ./ l) ./ (e + kapG * g); % spec growth rate
+end
+dl = l .* r/ 3; % growth in length
+j_V = 3 * l2 .* dl;
+
+de = g * (f - e) ./ l; % change in reserve density
+j_E = (l3 .* de +  e  .* j_V)/ (g * kap * y_VE);
+j_ER = (vH >= vHp) .* ((g + lT + l) .* e .* l .^2 ./ (e + g) - k * vHp) * kapR1; 
+j_E = j_E + j_ER/ (kap * y_VE);
+
+j_P = - y_PX * j_X; % sign opposite for that for food
+
+j_O = [j_X, j_V, j_E, j_P]';
+
+% obtain mineral fluxes
+% J_M = (J_C, J_H, J_O, J_N)
+% J_M = - n_M^-1 n_O J_O
+% notice: J_M is given in scaled time
+j_M = - n_M\n_O * j_O;
+
+figure
+subplot(2,2,1)
+plot(t(alive), j_M(1,alive), 'g', t(~alive), j_M(1,~alive), 'r')
+ylabel('scaled CO_2 production')
+xlabel('time since birth')
+
+%figure
+subplot(2,2,2)
+plot(t(alive), j_M(2,alive), 'g', t(~alive), j_M(2,~alive), 'r')
+ylabel('scaled H_2O production')
+xlabel('time since birth')
+
+%figure
+subplot(2,2,3)
+plot(t(alive), -j_M(3,alive), 'g', t(~alive), -j_M(3,~alive), 'r')
+ylabel('scaled O_2 use')
+xlabel('time since birth')
+
+%figure
+subplot(2,2,4)
+plot(t(alive), j_M(4,alive), 'g', t(~alive), j_M(4,~alive), 'r')
+ylabel('scaled NH_3 production')
+xlabel('time since birth')
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,181 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_ael</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="get_ael.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_ael</h1><!--introduction--><p>Gets age, reserve and length at birth</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[aEL E0 lb] = <a href="../get_ael.m"><b>get_ael</b></a> (par, F)</p><h2>Description<a name="4"></a></h2><pre>Obtains state variables at age zero and at birth from parameters and scaled reserve density at birth.</pre><p>Input</p><div><ul><li>par: 8-vector with parameters:</li></ul></div><pre>  1 {J_EAm},  mol/d.cm^2, max spec assimilation rate
+  2 kap, -, allocation fraction to soma
+  3 v, cm/d, energy conductance
+  4 [J_EM], mol/d.cm^3 spec somatic maintenance
+  5 k_J, 1/d, maturity maintenance rate coefficient
+  6 y_VE, mol/mol, yiles of structure on reserve
+  7 M_H^b, d.cm^2, scaled maturity at birth
+  8 [M_V], mol/cm^3, vol-spec mass of structure</pre><div><ul><li>F: n-vector with scaled functional responses</li></ul></div><p>Output</p><div><ul><li>aEL: (n,3)-matrix with a_b, M_E^b, L_b</li><li>E0: n-vector with M_E^0</li><li>lb: n-vector with L_b/ L_m</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The output values are numerically obtained, starting from the values for a foetus;  the age at birth of this foetus must again be obtained numerically,  which is done starting from the assumption kJ/ kM = (1 - kap)/ kap, which gives a constant maturity density mH = yEV (1 - kap)/ kap. See <a href="get_ael_f.html"><b>get_ael_f</b></a> for foetuses, which differ from eggs by not being limited by reserve availability.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_ael.m"><b>mydata_get_ael</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_ael
+% Gets age, reserve and length at birth
+
+%%
+function [aEL E0 lb] = get_ael(par, F)
+  % created by Bas Kooijman at 2006/08/28, modified 2009/02/13
+  
+  %% Syntax
+  % [aEL E0 lb] = <../get_ael.m *get_ael*> (par, F)
+  
+  %% Description
+  %  Obtains state variables at age zero and at birth from parameters and scaled reserve density at birth. 
+  %
+  % Input
+  %
+  % * par: 8-vector with parameters: 
+  %
+  %    1 {J_EAm},  mol/d.cm^2, max spec assimilation rate
+  %    2 kap, -, allocation fraction to soma
+  %    3 v, cm/d, energy conductance
+  %    4 [J_EM], mol/d.cm^3 spec somatic maintenance
+  %    5 k_J, 1/d, maturity maintenance rate coefficient
+  %    6 y_VE, mol/mol, yiles of structure on reserve
+  %    7 M_H^b, d.cm^2, scaled maturity at birth
+  %    8 [M_V], mol/cm^3, vol-spec mass of structure
+  %
+  % * F: n-vector with scaled functional responses  
+  %  
+  % Output
+  %
+  % * aEL: (n,3)-matrix with a_b, M_E^b, L_b
+  % * E0: n-vector with M_E^0
+  % * lb: n-vector with L_b/ L_m
+  
+  %% Remarks
+  % The output values are numerically obtained, starting from the values for a foetus; 
+  %  the age at birth of this foetus must again be obtained numerically, 
+  %  which is done starting from the assumption kJ/ kM = (1 - kap)/ kap, which gives a constant maturity density mH = yEV (1 - kap)/ kap.
+  % See <get_ael_f.html *get_ael_f*> for foetuses, which differ from eggs by not being limited by reserve availability.
+  
+  %% Example of use
+  % See <../mydata_get_ael.m *mydata_get_ael*>
+  
+  % unpack par
+  JEAm = par(1); % {J_EAm}
+  kap  = par(2); % \kappa
+  v    = par(3); % v
+  JEM  = par(4); % [J_EM]
+  kJ   = par(5); % k_J
+  yVE  = par(6); % y_VE
+  MHb  = par(7); % M_H^b
+  MV   = par(8); % [M_V]
+
+  g = v * MV/ (kap * JEAm * yVE); % energy investment ratio
+  Lm = kap * JEAm/ JEM;           % maximum length L_m
+
+  nf = size(F,1); aEL = zeros(nf,3); E0 = zeros(nf,1); lb = zeros(nf,1);
+  options = optimset('display','off');
+  
+  for i = 1:nf % loop over different scaled functional responses
+    f = F(i);  % current scaled functional response
+    [x, E00] = get_ael_f(par, f);          % first get M_E^0 for foetus 
+    [E0(i), x, info] = fsolve(@get_e0, E00, options, JEAm, kap, v, kJ, g, Lm, f, MHb); % get M_E^0 for egg, copy to output
+    if info ~= 1
+      fprintf('no convergence for E0\n');
+    end
+
+    aEL0 = [0; E0(i); 1e-10]; % set initial (a, M_E, L)
+    H = [0; MHb];             % set (M_H^0, M_H^b)
+    [H A] = ode45(@dget_ael, H, aEL0, [], JEAm, kap, v, kJ, g, Lm);
+    aEL(i,:) = A(end,:);      % copy (a_b, M_E^b, L_b) to output
+    lb(i) = A(end,3)/ Lm;	  % copy l_b to output
+  end
+end
+
+% subfunctions
+
+function dx = dget_ael(H, aEL, JEAm, kap, v, kJ, g, Lm)
+  % H: scalar with M_H (cum investment in maturation, mol reserve)
+  % aEL: 3-vector with (a, M_E, L) of embryo
+  % dx: 3-vector with (da/dM_H, dM_E/dM_H, dL/dM_H)
+  % called by get_ael, get_e0
+  
+  % a = aEL(1); % age
+  E = aEL(2); % reserve M_E
+  L = max(0,aEL(3)); % length L
+  % H maturity M_H
+
+  eL3 = E * v/ (kap * JEAm); % eL3 = L^3 * m_E/ m_Em
+  gL3 = g * L^3;
+  JEC = JEAm * L^2 * (1 + L/ (g * Lm)) * g * eL3/ (gL3 + eL3); % J_EC
+  
+  % first generate dH/dt, dE/dt, dL/dt
+  dH = (1 - kap) * JEC - kJ * H;
+  dE = - JEC;
+  dL = v * (eL3 - L^4/ Lm)/ (3 * (eL3 + gL3));
+  
+  % then obtain dt/dH, dE/dH, dL/dH, 
+  dx = [1/dH; dE/dH; dL/dH];
+end
+
+function F = get_e0(E0, JEAm, kap, v, kJ, g, Lm, f, MHb)
+  %  Finds M_E^0 such that m_E(a_b) = f m_Em
+  %  E0: scalar with M_E^0
+  %  F: scalar that is set to zero
+  %  called by get_ael
+
+  aEL0 = [0; E0; 1e-10]; H = [0; MHb];
+  [H, A] = ode45(@dget_ael, H, aEL0, [], JEAm, kap, v, kJ, g, Lm);
+  MEb = A(end,2); Lb = A(end,3);
+  F = MEb - f * Lb^3 * JEAm/ v;
+end
+##### SOURCE END #####
+--></body></html>

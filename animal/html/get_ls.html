@@ -1,0 +1,147 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_ls</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="get_ls.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_ls</h1><!--introduction--><p>Obtains scaled length at start and end of acceleration at constant food density.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[ls, lj, lp, lb, info] = <a href="../get_ls"><b>get_ls</b></a>(p, f, lb0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled length at start and end of acceleration at constant food density. Isomorph, but V1-morph between vHs and vHj, with vHb&gt; vHs&gt; vHj &gt; vHp. If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate); if it is specified. however, is it just copied to the (third) output.</p><p>Input</p><div><ul><li>p: 7-vector with parameters: g, k, l_T, v_H^b, v_H^s, v_H^j, v_H^p</li><li>f: optional scalar with scaled functional responses (default 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><p>Output</p><div><ul><li>ls: scalar with scaled length at start of V1-stage</li><li>lj: scalar with scaled length at end of V1-stage</li><li>lp: scalar with scaled length at puberty (start reprod of iso-stage)</li><li>lb: scalar with scaled length at birth (start feeding of iso-stage)</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The start of the V1-morphic stage is marked by an event called s, and the end by an event called j. This routine obtaines scaled length at s, ls, and j, lj given scaled muturity at s, cHs, and j, vHj. The theory behind get_ls, is discussed in the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments to DEB3</a>. Scaled length l = L/ L_m with L_m = kap {p_Am}/ [p_M] where {p_Am} is of embryo {p_Am} and v increase between maturities v_H^s and v_H^j till {p_Am} sM and v sM with sM = l_j/ l_s after metamorphosis after metamorphosis l increases from l_j till l_i = f l_j/ l_s - l_T l can thus be larger than 1.</p><h2>Example of use<a name="6"></a></h2><p>get_ls([.5, .1, .1, .01, .2, .25, .3])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_ls
+% Obtains scaled length at start and end of acceleration at constant food density. 
+
+%%
+function [ls, lj, lp, lb, info] = get_ls(p, f, lb0)
+  % created at 2011/07/21 by Bas Kooijman, 
+  % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  
+  %% Syntax
+  % [ls, lj, lp, lb, info] = <../get_ls *get_ls*>(p, f, lb0)
+  
+  %% Description
+  % Obtains scaled length at start and end of acceleration at constant food density. 
+  % Isomorph, but V1-morph between vHs and vHj, with vHb> vHs> vHj > vHp.
+  % If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate); 
+  % if it is specified. however, is it just copied to the (third) output.
+  %
+  % Input
+  %
+  % * p: 7-vector with parameters: g, k, l_T, v_H^b, v_H^s, v_H^j, v_H^p
+  % * f: optional scalar with scaled functional responses (default 1)
+  % * lb0: optional scalar with scaled length at birth
+  %  
+  % Output
+  %
+  % * ls: scalar with scaled length at start of V1-stage
+  % * lj: scalar with scaled length at end of V1-stage
+  % * lp: scalar with scaled length at puberty (start reprod of iso-stage)
+  % * lb: scalar with scaled length at birth (start feeding of iso-stage)
+  % * info: indicator equals 1 if successful, 0 otherwise
+  
+  %% Remarks
+  % The start of the V1-morphic stage is marked by an event called s, and the end by an event called j. 
+  % This routine obtaines scaled length at s, ls, and j, lj given scaled muturity at s, cHs, and j, vHj. 
+  % The theory behind get_ls, is discussed in the <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf comments to DEB3>. 
+  % Scaled length l = L/ L_m with L_m = kap {p_Am}/ [p_M] where {p_Am} is of embryo
+  % {p_Am} and v increase between maturities v_H^s and v_H^j till
+  % {p_Am} sM and v sM with sM = l_j/ l_s after metamorphosis after metamorphosis l increases from l_j till l_i = f l_j/ l_s - l_T
+  % l can thus be larger than 1.
+  
+  %% Example of use
+  % get_ls([.5, .1, .1, .01, .2, .25, .3])
+  
+  % unpack pars
+  g   = p(1); % g = [E_G] * v/ kap/ {p_Am}, energy investment ratio
+  k   = p(2); % k = k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % lT = {p_T}/[p_M], scaled heating length 
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}, scaled maturity at birth
+  vHs = p(5); % v_H^s = U_H^s g^2 kM^3/ (1 - kap) v^2; U_H^s = M_H^s/ {J_EAm} = E_H^s/ {p_Am}, scaled maturity at start acceleration
+  vHj = p(6); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm} = E_H^j/ {p_Am}, scaled maturity at end acceleration
+  vHp = p(7); % v_H^p = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm} = E_H^p/ {p_Am}, scaled maturity at puberty
+
+  if ~exist('f','var')
+    f = 1; 
+  elseif  isempty(f)
+    f = 1; 
+  end
+  
+  % get lb
+  if ~exist('lb0', 'var')
+    lb0 = [];
+    [lb info] = get_lb([g; k; vHb], f, lb0);
+  else
+    info = 1;
+    lb = lb0;
+  end
+
+  if lT > f - lb
+    ls = []; lj = [];  lp = [];
+    info = 0;
+    return
+  end
+
+  % get ls
+  [vH ls] = ode45(@dget_l_ISO, [vHb; vHs], lb, [], k, lT, g, f, 1); 
+  ls = ls(end); 
+
+  % get lj
+  [vH lj] = ode45(@dget_l_V1, [vHs; vHj], ls, [], k, lT, g, f, ls); 
+  lj = lj(end); sM = lj/ ls;
+  
+  % get lp
+  [vH lp] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); 
+  lp = lp(end);
+
+##### SOURCE END #####
+--></body></html>

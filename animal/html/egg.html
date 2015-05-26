@@ -1,0 +1,135 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>egg: gets age, reserve energy and structural volume at birth</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-08"><meta name="DC.source" content="egg.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>egg: gets age, reserve energy and structural volume at birth</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[aEV e0] = <a href="../egg.m"><b>egg</b></a> (par, abE0)</p><h2>Description<a name="4"></a></h2><p>The routine calculates age, reserve energy and structural volume at birth for an arbitrary specific maturity maintenance costs [pJ]. The optional constraint [Eb] = f [Em] applies, in which case the routine also calculates the reserve energy at age zero. Obsolate function, see <a href="get_lb.html"><b>get_lb</b></a>, <a href="get_tb.html"><b>get_tb</b></a>, <a href="get_ue0.html"><b>get_ue0</b></a>.</p><p>Input</p><div><ul><li>par: 8-vector with parameters</li></ul></div><div><ul><li>abE0: 1 or 2-vector with initial estimates for a_b, E_0</li></ul></div><pre>   if length == 1, the first parameter means E_0
+   if length == 2, the first parameter means f and E_b = f [E_m] V_b</pre><p>Output</p><div><ul><li>aEV : 3-vector with age, reserve, structure at birth: a_b, E_b, V_b</li></ul></div><div><ul><li>e0: scaler with E_0 (== par(1) if length second input == 1)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>If a second input is not supplied, this value is idential to the first parameter. See comments for page 111 for further explanation. The function warns for no convergences problems, and then delivers empty outputs.</p><h2>Example of use<a name="6"></a></h2><p>egg([2, .1, .1, 1, .01, .01, 2 , .3], 1.2) or [aEV E0] = egg([1, .1, .1, .85, .01, .01, 2 , .3], [1; .5]).</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% egg: gets age, reserve energy and structural volume at birth
+
+%%
+function [aEV e0] = egg(par, abE0)
+  % created 2005/09/20 by Bas Kooijman
+  
+  %% Syntax
+  % [aEV e0] = <../egg.m *egg*> (par, abE0)
+  
+  %% Description
+  % The routine calculates age, reserve energy and structural volume at birth for an arbitrary specific maturity maintenance costs [pJ]. 
+  % The optional constraint [Eb] = f [Em] applies, in which case the routine also calculates the reserve energy at age zero. 
+  % Obsolate function, see <get_lb.html *get_lb*>, <get_tb.html *get_tb*>, <get_ue0.html *get_ue0*>. 
+  %
+  % Input
+  %
+  % * par: 8-vector with parameters
+  %
+  % * abE0: 1 or 2-vector with initial estimates for a_b, E_0
+  %
+  %     if length == 1, the first parameter means E_0
+  %     if length == 2, the first parameter means f and E_b = f [E_m] V_b
+  %
+  % Output
+  %
+  % * aEV : 3-vector with age, reserve, structure at birth: a_b, E_b, V_b
+  %
+  % * e0: scaler with E_0 (== par(1) if length second input == 1)
+  
+  %% Remarks
+  % If a second input is not supplied, this value is idential to the first parameter.
+  % See comments for page 111 for further explanation. 
+  % The function warns for no convergences problems, and then delivers empty outputs.
+  
+  %% Example of use
+  % egg([2, .1, .1, 1, .01, .01, 2 , .3], 1.2) or [aEV E0] = egg([1, .1, .1, .85, .01, .01, 2 , .3], [1; .5]). 
+
+  global f E0 EJb EG Em pM pJ pAm kap
+
+  %  unpack parameters
+  %  meaning of first parameter depend on length abE0
+  E0  = par(1); % e, E_0, reserve at a = 0
+  f   = par(1); % -, scaled functional response and with [E_b] = f [E_m]
+  EJb = par(2); % e, E_{Jb}, threshold for birth
+  EG  = par(3); % e/L^3, [E_G], spec costs for structure
+  Em  = par(4); % e/L^3, [E_m], max spec res density
+  pM  = par(5); % e/t.L^3, [p_M] spec som maint costs
+  pJ  = par(6); % e/t.L^3, [p_J] spec mat maint costs
+  pAm = par(7); % e/t.L^2, {p_{Am}} spec max assim power
+  kap = par(8); % -, \kappa, fraction of p_C allocated som maint + growth
+  
+  if length(abE0) == 1 % par(1) has interpretation E0
+    [ab, fn, info] = fsolve('fnegg', abE0);
+    [a, EV] = ode45('degg', [0; ab], [E0; 1e-8; 0]);
+    aEV = [ab; EV(end,1:2)'];
+    e0 = E0;
+  elseif length(abE0) == 2 % par(1) has interpretation f, with [E_b] = f [E_m]
+    [abE0, fn, info] = fsolve('fnegg1', abE0, optimset('Display','off'));
+    ab = abE0(1); E0 = abE0(2);
+    [a, EV] = ode45('degg', [0; ab], [E0; 1e-8; 0]);
+    aEV = [ab; EV(end,1:2)'];
+    e0 = E0;
+  else
+    fprintf('length of initial estimate is not 1 or 2 \n');
+    aEV = []; e0 = [];
+    return
+  end
+  
+  if info ~= 1
+    fprintf('Warning: no convergence; check parameter values \n');
+    aEV = []; e0 = [];
+  end
+##### SOURCE END #####
+--></body></html>

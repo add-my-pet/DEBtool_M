@@ -1,0 +1,4095 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_get_pars_m</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_get_pars_m.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Demonstrates the use og get_pars_m</a></li><li><a href="#2">conversion coefficients (selected copy-paste from pars_animal)</a></li><li><a href="#3">tune parameters</a></li></ul></div><h2>Demonstrates the use og get_pars_m<a name="1"></a></h2><p>get parameters for Balaenoptera musculus get_pars_m is adapted for placentalia data (foetal development)</p><pre class="codeinput"><span class="keyword">global</span> dwm <span class="comment">% pass d_O, w_O, mu_O directly to get_pars_m</span>
+
+<span class="comment">% first initial estimators of the parameter values</span>
+<span class="comment">% copy-paste from pars_animal</span>
+
+
+T    =   273 + 37; <span class="comment">% K, actual body temperature ADAPT THIS FOR B.musculus</span>
+T_ref  = 293;      <span class="comment">% K, temp for which rate pars are given</span>
+T_A  =  1.6*8000;  <span class="comment">% K, Arrhenius temp ADAT THIS FOR B.musculus</span>
+f = 1.0;           <span class="comment">% scaled functional response</span>
+z = 128;           <span class="comment">% zoom factor ADAPT THIS FOR B.musculus</span>
+del_M =.16/ 4;     <span class="comment">% -, shape coefficient ADAPT THIS FOR B.musculus</span>
+F_m = 6.5;         <span class="comment">% l/d.cm^2, {F_m} max spec searching rate</span>
+kap_X = 0.8;       <span class="comment">% -, digestion efficiency of food to reserve</span>
+v = 0.02;          <span class="comment">% cm/d, energy conductance</span>
+kap = 0.8;         <span class="comment">% -, alloaction fraction to soma = growth + somatic maintenance</span>
+kap_R = 0.95;      <span class="comment">% -, reproduction efficiency</span>
+p_M = 18;          <span class="comment">% J/d.cm^3, [p_M] vol-specific somatic maintenance</span>
+p_T =  0;          <span class="comment">% J/d.cm^2, {p_T} surface-specific som maintenance</span>
+k_J = 0.002;       <span class="comment">% 1/d, &lt; k_M = p_M/E_G, maturity maint rate coefficient</span>
+E_G = 2800;        <span class="comment">% J/cm^3, [E_G], spec cost for structure</span>
+E_Hb = 20 * 1e-3 * 275 * z^3; <span class="comment">% J, E_H^b ADAPT THIS FOR B.musculus</span>
+E_Hp = 3 * 50 * z^3;  <span class="comment">% J, E_H^p ADAPT THIS FOR B.musculus</span>
+h_a = z * 1e-9;    <span class="comment">% 1/d^2, Weibull aging acceleration</span>
+s_G = 0.5;         <span class="comment">% -, Gompertz stress coefficient ADAPT THIS FOR B.musculus</span>
+
+<span class="comment">% pack 18 parameters and fix T, T_ref, f, F_m, kap_X, kap_R, p_T, h_a, s_G</span>
+pars_Bm = [T 0; T_ref 0; T_A 1; f 0; z 1; del_M 1;
+    F_m 0; kap_X 0; v 1; kap 1; kap_R 0; p_M 1; p_T 0; k_J 1; E_G 1; E_Hb 1; E_Hp 1; h_a 1; s_G 0];
+
+<span class="comment">% 10 data for B.musculus</span>
+ab = 336;       <span class="comment">%   1 ab    % d, age at birth</span>
+ap = 2555;      <span class="comment">%   2 ap    % d, age at puberty</span>
+Lb = 700;       <span class="comment">%   3 Lb    % cm, length at birth</span>
+Lp = 2050;      <span class="comment">%   4 Lp    % cm, length at puberty</span>
+Li = 2700;      <span class="comment">%   5 Li    % cm, ultimate length</span>
+Wb = 275000;    <span class="comment">%   6 Wb    % g, weight at birth</span>
+Wp = 6900000;   <span class="comment">%   7 Wp    % g, weight at puberty</span>
+Wi = 16000000;  <span class="comment">%   8 Wi    % g, ultimate weight</span>
+rB = 5.9178e-4; <span class="comment">%   9 rB    % 1/d, von Bertalanffy growth rate</span>
+Ri = .0011;     <span class="comment">%  10 Ri    % #/d, maximum reproduction rate</span>
+tm = 29200;     <span class="comment">%  11 tm    % d, life span</span>
+
+<span class="comment">% pack data for B.musculus</span>
+<span class="comment">%  append parameters for generalised animal as data</span>
+<span class="comment">%   to make sure that those of B.musculus are near, except for z</span>
+data_Bm = [ab; ap; Lb; Lp; Li; Wb; Wp; Wi; rB; Ri; tm; pars_Bm(:,1)];
+<span class="comment">% nmregr wants to have 3 columns: indpendent var, dependent var, weight coeff</span>
+<span class="comment">%   prepend independent variable (not used) and append weight coefficients</span>
+<span class="comment">%   weight coeff inverse to squared data</span>
+Data_Bm = [zeros(30,1), data_Bm, 1 ./ max(1e-6, data_Bm) .^ 2];
+Data_Bm(1:11,3) = 10 * Data_Bm(1:11,3); <span class="comment">% give Bm data more weight</span>
+Data_Bm(11,3) = 0; <span class="comment">% no weight to a_m; small value gives numerical problems</span>
+<span class="comment">% we should turn to years, rather than days as unit of time to solve this problem</span>
+Data_Bm(26,3) = 20 * Data_Bm(26,3); <span class="comment">% more weight to E_G</span>
+Data_Bm([14 20],3) = 10 * Data_Bm([14 20],3); <span class="comment">% more weight to v, T_A</span>
+Data_Bm([12 13 16 27 28],3) = 0; <span class="comment">% set weight for T, T_ref, z, E_Hb, E_Hp to zero</span>
+</pre><h2>conversion coefficients (selected copy-paste from pars_animal)<a name="2"></a></h2><pre class="codeinput">n_O = [1.00, 1.00, 1.00, 1.00;  <span class="comment">% C/C, equals 1 by definition</span>
+       1.80, 1.80, 2.00, 1.80;  <span class="comment">% H/C</span>
+       0.50, 0.50, 0.75, 0.50;  <span class="comment">% O/C</span>
+       0.20, 0.15, 0.20, 0.15]; <span class="comment">% N/C</span>
+
+d_O = [.1; .1; .1; .1];     <span class="comment">% g/cm^3, specific densities for organics</span>
+mu_X = 525000;                    <span class="comment">% J/mol, chemical potential of food</span>
+mu_V = 500000;                    <span class="comment">% J/mol, chemical potential of structure</span>
+mu_E = 550000;                    <span class="comment">% J/mol, chemical potential of reserve</span>
+mu_P = 480000;                    <span class="comment">% J/mol, chemical potential of faeces</span>
+mu_O = [mu_X; mu_V; mu_E; mu_P];  <span class="comment">% J/mol, chemical potentials of organics</span>
+w_O = n_O' * [12; 1; 16; 14];     <span class="comment">% g/mol, mol-weights for org. compounds</span>
+dwm = [d_O, w_O, mu_O]; <span class="comment">% g/cm^3, g/mol, kJ/mol spec density, mol weight, chem pot</span>
+</pre><h2>tune parameters<a name="3"></a></h2><pre class="codeinput">nmregr_options(<span class="string">'max_step_number'</span>,2e4)
+nmregr_options(<span class="string">'max_fun_evals'</span>,2e4)
+pars_Bm = nmregr(<span class="string">'get_pars_m'</span>, pars_Bm, Data_Bm);
+Edata_Bm = get_pars_m(pars_Bm(:,1), Data_Bm);
+format <span class="string">short</span> <span class="string">eng</span>
+
+txt_Bm = {<span class="keyword">...</span>
+    <span class="string">'1 ab, d, age at birth '</span>;
+    <span class="string">'2 ap, d, age at puberty '</span>;
+    <span class="string">'3 Lb, cm, length at birth '</span>;
+    <span class="string">'4 Lp, cm, length at puberty '</span>;
+    <span class="string">'5 Li, cm, ultimate length '</span>;
+    <span class="string">'6 Wb, g, weight at birth '</span>;
+    <span class="string">'7 Wp, g, weight at puberty '</span>;
+    <span class="string">'8 Wi, g, ultimate weight '</span>;
+    <span class="string">'9 rB, 1/d, von Bert growth rate '</span>;
+   <span class="string">'10 Ri, #/d, maximum reprod rate '</span>;
+   <span class="string">'11 am, d, life span '</span>;
+   <span class="string">'12 T,  K, actual body temp '</span>;
+   <span class="string">'13 T_ref, K, reference temp '</span>;
+   <span class="string">'14 T_A,   K, Arrhenius temp '</span>;
+   <span class="string">'15 f, scaled functional response '</span>;
+   <span class="string">'16 z, zoom factor '</span>;
+   <span class="string">'17 del_M,  -, shape coefficient '</span>;
+   <span class="string">'18 F_m, l/d.cm^2, {F_m} max spec search r '</span>;
+   <span class="string">'19 kap_X, -, digestion efficiency '</span>;
+   <span class="string">'20 v, cm/d, energy conductance '</span>;
+   <span class="string">'21 kap, -, allocation fraction to soma '</span>;
+   <span class="string">'22 kap_R, -, reproduction efficiency '</span>;
+   <span class="string">'23 [p_M], J/d.cm^3, vol-spec som maint '</span>;
+   <span class="string">'24 {p_T}, J/d.cm^2, sur-spec som maint '</span>;
+   <span class="string">'25 k_J, 1/d, maturity maint rate coefficient '</span>;
+   <span class="string">'26 [E_G], J/cm^3, spec cost for structure'</span>;
+   <span class="string">'27 E_H^b, J, maturity investm at birth '</span>;
+   <span class="string">'28 E_H^p, J, maturity investm at puberty '</span>;
+   <span class="string">'29 h_a, 1/d^2, Weibull aging acceleration '</span>;
+   <span class="string">'30 s_G, -, Gompertz stress coefficient'</span>};
+
+printpar(txt_Bm, data_Bm, Edata_Bm)
+</pre><pre class="codeoutput">step 1 ssq 19832.7208-70530.1385 initial
+step 2 ssq 19832.7208-69531.1671 reflect
+step 3 ssq 19832.7208-60585.1098 reflect
+step 4 ssq 19832.7208-59693.2873 reflect
+step 5 ssq 19832.7208-56052.6409 reflect
+step 6 ssq 19832.7208-55388.4219 reflect
+step 7 ssq 19832.7208-55388.1524 reflect
+step 8 ssq 19832.7208-55388.1523 reflect
+step 9 ssq 19832.7208-54994.9174 reflect
+step 10 ssq 10868.8355-51760.6819 expand
+step 11 ssq 10868.8355-50386.9108 reflect
+step 12 ssq 10868.8355-38346.788 reflect
+step 13 ssq 10868.8355-35780.1831 reflect
+step 14 ssq 10868.8355-34195.1696 reflect
+step 15 ssq 4906.7927-33075.7304 expand
+step 16 ssq 4906.7927-32101.3853 reflect
+step 17 ssq 4906.7927-29323.3307 reflect
+step 18 ssq 1619.7017-26007.7739 expand
+step 19 ssq 1619.7017-22527.9281 reflect
+step 20 ssq 1619.7017-19832.7208 reflect
+step 21 ssq 1619.7017-15224.695 reflect
+step 22 ssq 1619.7017-13198.9318 reflect
+step 23 ssq 1619.7017-12279.2741 reflect
+step 24 ssq 960.7437-11964.2349 expand
+step 25 ssq 960.7437-10868.8355 reflect
+step 26 ssq 960.7437-7325.8237 reflect
+step 27 ssq 960.7437-5717.6755 reflect
+step 28 ssq 960.7437-4906.7927 reflect
+step 29 ssq 960.7437-3030.9849 reflect
+step 30 ssq 960.7437-2385.7102 contract outside
+step 31 ssq 960.7437-2280.7987 contract inside
+step 32 ssq 960.7437-1935.7249 contract inside
+step 33 ssq 960.7437-1786.9552 contract inside
+step 34 ssq 960.7437-1728.7953 contract inside
+step 35 ssq 960.7437-1619.7017 reflect
+step 36 ssq 960.7437-1532.9554 contract inside
+step 37 ssq 960.7437-1507.5445 reflect
+step 38 ssq 960.7437-1488.0132 contract inside
+step 39 ssq 960.7437-1324.2698 reflect
+step 40 ssq 960.7437-1310.7462 reflect
+step 41 ssq 960.7437-1273.6657 reflect
+step 42 ssq 960.7437-1270.8454 reflect
+step 43 ssq 960.7437-1265.6653 reflect
+step 44 ssq 960.7437-1195.7749 contract inside
+step 45 ssq 960.7437-1160.9141 reflect
+step 46 ssq 754.8374-1156.7588 expand
+step 47 ssq 735.1606-1154.9123 reflect
+step 48 ssq 735.1606-1145.354 reflect
+step 49 ssq 735.1606-1104.0152 reflect
+step 50 ssq 735.1606-1100.534 reflect
+step 51 ssq 735.1606-1079.6675 reflect
+step 52 ssq 735.1606-1063.2657 reflect
+step 53 ssq 544.7663-1019.0665 expand
+step 54 ssq 544.7663-992.4342 reflect
+step 55 ssq 429.8465-990.8702 expand
+step 56 ssq 429.8465-970.752 reflect
+step 57 ssq 429.8465-967.2636 reflect
+step 58 ssq 429.8465-966.0104 reflect
+step 59 ssq 429.8465-960.7437 contract inside
+step 60 ssq 307.8245-833.3238 expand
+step 61 ssq 307.8245-790.2657 reflect
+step 62 ssq 307.8245-775.2503 reflect
+step 63 ssq 307.8245-768.6301 reflect
+step 64 ssq 307.8245-754.8374 contract inside
+step 65 ssq 307.8245-735.1606 reflect
+step 66 ssq 220.8724-680.9665 expand
+step 67 ssq 220.8724-663.6318 reflect
+step 68 ssq 81.4874-634.7515 expand
+step 69 ssq 81.4874-610.6317 reflect
+step 70 ssq 81.4874-544.7663 reflect
+step 71 ssq 81.4874-509.617 reflect
+step 72 ssq 81.4874-493.3338 reflect
+step 73 ssq 81.4874-429.8465 reflect
+step 74 ssq 81.4874-424.8822 reflect
+step 75 ssq 81.4874-399.9102 reflect
+step 76 ssq 61.6187-351.4604 reflect
+step 77 ssq 61.6187-344.4447 reflect
+step 78 ssq 61.6187-341.9056 reflect
+step 79 ssq 61.6187-307.8245 reflect
+step 80 ssq 53.8558-230.3616 reflect
+step 81 ssq 49.9573-220.8724 reflect
+step 82 ssq 49.9573-187.8379 reflect
+step 83 ssq 49.9573-153.0229 contract inside
+step 84 ssq 49.9573-152.9383 contract inside
+step 85 ssq 49.9573-144.091 reflect
+step 86 ssq 37.0823-102.8826 reflect
+step 87 ssq 37.0823-99.5666 reflect
+step 88 ssq 37.0823-98.7194 reflect
+step 89 ssq 37.0823-97.4034 reflect
+step 90 ssq 37.0823-81.8278 reflect
+step 91 ssq 33.1624-81.4874 reflect
+step 92 ssq 33.1624-76.949 reflect
+step 93 ssq 33.1624-75.8488 contract inside
+step 94 ssq 33.1624-71.4989 reflect
+step 95 ssq 33.1624-67.4521 reflect
+step 96 ssq 33.1624-62.5812 reflect
+step 97 ssq 33.1624-61.6187 reflect
+step 98 ssq 33.1624-60.9345 contract inside
+step 99 ssq 33.1624-53.9562 contract inside
+step 100 ssq 33.1624-53.8558 contract inside
+step 101 ssq 33.1624-49.9573 contract inside
+step 102 ssq 33.1624-48.1005 reflect
+step 103 ssq 33.1624-44.0305 contract inside
+step 104 ssq 33.1624-43.6519 contract inside
+step 105 ssq 33.1624-42.9924 reflect
+step 106 ssq 30.5073-42.2412 reflect
+step 107 ssq 30.5073-41.2477 contract inside
+step 108 ssq 30.5073-37.5458 contract inside
+step 109 ssq 30.5073-37.4584 reflect
+step 110 ssq 30.5073-37.1411 reflect
+step 111 ssq 30.5073-37.0823 reflect
+step 112 ssq 30.5073-36.8365 contract inside
+step 113 ssq 30.5073-36.5355 contract inside
+step 114 ssq 28.7656-35.4128 reflect
+step 115 ssq 28.7656-34.9575 reflect
+step 116 ssq 28.7656-34.0349 reflect
+step 117 ssq 28.7656-33.5607 contract inside
+step 118 ssq 28.7656-33.4582 contract inside
+step 119 ssq 28.7656-33.173 reflect
+step 120 ssq 28.7656-33.1624 contract inside
+step 121 ssq 28.7656-32.5508 reflect
+step 122 ssq 28.3857-32.2057 reflect
+step 123 ssq 28.3857-31.8171 contract inside
+step 124 ssq 28.3857-31.0645 reflect
+step 125 ssq 28.3857-30.806 reflect
+step 126 ssq 28.3857-30.5073 reflect
+step 127 ssq 27.2411-30.4526 reflect
+step 128 ssq 27.2411-30.4006 contract inside
+step 129 ssq 27.2411-30.1994 contract inside
+step 130 ssq 27.2411-29.9016 reflect
+step 131 ssq 27.2411-29.89 contract inside
+step 132 ssq 27.2411-29.5584 reflect
+step 133 ssq 27.2411-29.5051 reflect
+step 134 ssq 26.6253-29.1019 reflect
+step 135 ssq 26.3112-29.0866 reflect
+step 136 ssq 25.9547-28.9688 reflect
+step 137 ssq 25.9547-28.7656 reflect
+step 138 ssq 25.9547-28.649 reflect
+step 139 ssq 25.9547-28.3857 reflect
+step 140 ssq 25.9547-28.2354 reflect
+step 141 ssq 25.9547-28.1642 contract inside
+step 142 ssq 25.9547-28.1572 contract inside
+step 143 ssq 25.7892-28.0675 reflect
+step 144 ssq 25.3763-27.9417 reflect
+step 145 ssq 25.3763-27.8445 reflect
+step 146 ssq 25.3763-27.6356 reflect
+step 147 ssq 25.3763-27.2889 contract inside
+step 148 ssq 25.3763-27.2411 reflect
+step 149 ssq 24.6492-26.9611 expand
+step 150 ssq 24.6492-26.9528 contract inside
+step 151 ssq 24.5756-26.7046 reflect
+step 152 ssq 24.3159-26.6253 reflect
+step 153 ssq 23.8741-26.3112 expand
+step 154 ssq 23.8741-26.2152 reflect
+step 155 ssq 23.8741-26.1175 reflect
+step 156 ssq 22.5964-25.9547 expand
+step 157 ssq 22.5964-25.8435 reflect
+step 158 ssq 22.5964-25.7892 reflect
+step 159 ssq 22.5368-25.6425 reflect
+step 160 ssq 22.4219-25.3763 reflect
+step 161 ssq 21.9817-25.0996 reflect
+step 162 ssq 21.725-24.6492 reflect
+step 163 ssq 21.725-24.5756 reflect
+step 164 ssq 21.725-24.5272 reflect
+step 165 ssq 20.4908-24.3159 expand
+step 166 ssq 18.639-23.8741 expand
+step 167 ssq 18.639-23.7741 reflect
+step 168 ssq 18.639-23.4238 reflect
+step 169 ssq 18.639-22.9831 contract outside
+step 170 ssq 18.639-22.6869 reflect
+step 171 ssq 18.639-22.5964 contract outside
+step 172 ssq 18.639-22.5368 reflect
+step 173 ssq 18.639-22.4219 reflect
+step 174 ssq 18.639-21.9817 reflect
+step 175 ssq 18.639-21.725 reflect
+step 176 ssq 18.639-21.2114 reflect
+step 177 ssq 18.4332-20.8813 reflect
+step 178 ssq 18.4332-20.8105 reflect
+step 179 ssq 18.205-20.4908 reflect
+step 180 ssq 18.205-20.4252 reflect
+step 181 ssq 18.205-20.3672 contract inside
+step 182 ssq 18.205-20.2557 contract outside
+step 183 ssq 18.205-20.1958 contract inside
+step 184 ssq 18.205-20.0551 reflect
+step 185 ssq 18.205-19.7197 reflect
+step 186 ssq 18.1139-19.5196 reflect
+step 187 ssq 18.1139-19.2617 reflect
+step 188 ssq 18.1139-19.19 reflect
+step 189 ssq 18.1139-19.1631 reflect
+step 190 ssq 18.1139-19.1359 reflect
+step 191 ssq 18.1139-19.0345 reflect
+step 192 ssq 18.1139-19.0004 reflect
+step 193 ssq 18.1139-18.9553 reflect
+step 194 ssq 18.1139-18.8852 contract inside
+step 195 ssq 18.1139-18.7216 reflect
+step 196 ssq 18.1139-18.6432 contract inside
+step 197 ssq 18.1139-18.639 contract inside
+step 198 ssq 18.1139-18.5546 reflect
+step 199 ssq 18.1139-18.5458 reflect
+step 200 ssq 18.1139-18.5073 contract inside
+step 201 ssq 18.1139-18.4349 reflect
+step 202 ssq 17.9415-18.4332 reflect
+step 203 ssq 17.9415-18.4327 reflect
+step 204 ssq 17.9415-18.3487 reflect
+step 205 ssq 17.9415-18.33 reflect
+step 206 ssq 17.9415-18.2336 contract outside
+step 207 ssq 17.9415-18.2323 reflect
+step 208 ssq 17.9415-18.2186 reflect
+step 209 ssq 17.9415-18.2127 contract inside
+step 210 ssq 17.9415-18.205 contract inside
+step 211 ssq 17.9415-18.2044 reflect
+step 212 ssq 17.8571-18.1819 reflect
+step 213 ssq 17.8571-18.1651 contract inside
+step 214 ssq 17.7882-18.1358 reflect
+step 215 ssq 17.7882-18.1139 contract inside
+step 216 ssq 17.7882-18.1138 reflect
+step 217 ssq 17.7882-18.0592 contract inside
+step 218 ssq 17.7882-18.046 contract outside
+step 219 ssq 17.7882-18.0427 reflect
+step 220 ssq 17.7882-18.014 contract inside
+step 221 ssq 17.7034-17.997 expand
+step 222 ssq 17.7034-17.9734 reflect
+step 223 ssq 17.6614-17.9465 expand
+step 224 ssq 17.4555-17.9415 expand
+step 225 ssq 17.4555-17.9249 reflect
+step 226 ssq 17.4555-17.9065 reflect
+step 227 ssq 17.4555-17.9011 reflect
+step 228 ssq 17.4555-17.8836 reflect
+step 229 ssq 17.3867-17.8571 expand
+step 230 ssq 17.3757-17.8195 reflect
+step 231 ssq 17.3757-17.7982 reflect
+step 232 ssq 17.3757-17.7882 reflect
+step 233 ssq 16.8964-17.7034 expand
+step 234 ssq 16.8964-17.6919 reflect
+step 235 ssq 16.8964-17.6614 reflect
+step 236 ssq 16.8964-17.5333 reflect
+step 237 ssq 16.8964-17.4915 reflect
+step 238 ssq 16.8964-17.4871 reflect
+step 239 ssq 16.8964-17.4769 reflect
+step 240 ssq 16.8964-17.4555 reflect
+step 241 ssq 16.8964-17.4119 reflect
+step 242 ssq 16.8964-17.3867 reflect
+step 243 ssq 16.53-17.3757 expand
+step 244 ssq 16.53-17.1665 reflect
+step 245 ssq 16.53-17.1358 reflect
+step 246 ssq 16.53-17.0717 reflect
+step 247 ssq 16.1347-16.9778 expand
+step 248 ssq 16.1347-16.9594 reflect
+step 249 ssq 16.1347-16.9431 reflect
+step 250 ssq 16.1347-16.917 reflect
+step 251 ssq 16.1347-16.9141 reflect
+step 252 ssq 16.0403-16.9084 expand
+step 253 ssq 15.9991-16.8964 reflect
+step 254 ssq 15.3609-16.6437 expand
+step 255 ssq 15.3609-16.6398 reflect
+step 256 ssq 15.3609-16.5679 reflect
+step 257 ssq 15.3609-16.533 reflect
+step 258 ssq 15.3609-16.53 reflect
+step 259 ssq 15.1166-16.435 expand
+step 260 ssq 15.1166-16.2347 reflect
+step 261 ssq 15.1166-16.1494 reflect
+step 262 ssq 15.1166-16.1369 reflect
+step 263 ssq 15.1166-16.1347 reflect
+step 264 ssq 15.1166-16.0403 reflect
+step 265 ssq 15.1166-15.9991 reflect
+step 266 ssq 15.1166-15.9394 reflect
+step 267 ssq 14.9321-15.8417 reflect
+step 268 ssq 14.9321-15.7986 reflect
+step 269 ssq 14.9321-15.6498 reflect
+step 270 ssq 14.8704-15.5098 reflect
+step 271 ssq 14.8704-15.4037 reflect
+step 272 ssq 14.8704-15.3913 reflect
+step 273 ssq 14.7121-15.3779 reflect
+step 274 ssq 14.7121-15.3725 contract inside
+step 275 ssq 14.7121-15.3609 contract inside
+step 276 ssq 14.7121-15.2688 reflect
+step 277 ssq 14.639-15.2089 reflect
+step 278 ssq 14.639-15.1967 reflect
+step 279 ssq 14.639-15.1166 contract inside
+step 280 ssq 14.639-15.0058 reflect
+step 281 ssq 14.639-14.9794 reflect
+step 282 ssq 14.639-14.9793 reflect
+step 283 ssq 14.639-14.9499 reflect
+step 284 ssq 14.639-14.9321 reflect
+step 285 ssq 14.639-14.9167 reflect
+step 286 ssq 14.639-14.8704 reflect
+step 287 ssq 14.639-14.8697 reflect
+step 288 ssq 14.639-14.849 reflect
+step 289 ssq 14.5543-14.7974 reflect
+step 290 ssq 14.5543-14.7841 reflect
+step 291 ssq 14.5543-14.7596 contract outside
+step 292 ssq 14.5543-14.7489 contract inside
+step 293 ssq 14.5543-14.7439 reflect
+step 294 ssq 14.5543-14.7429 reflect
+step 295 ssq 14.5543-14.7252 contract outside
+step 296 ssq 14.5543-14.7183 reflect
+step 297 ssq 14.5543-14.7121 reflect
+step 298 ssq 14.5543-14.709 reflect
+step 299 ssq 14.5543-14.6844 contract inside
+step 300 ssq 14.5543-14.666 contract inside
+step 301 ssq 14.5445-14.642 reflect
+step 302 ssq 14.5445-14.639 reflect
+step 303 ssq 14.5223-14.6242 reflect
+step 304 ssq 14.5223-14.6069 contract inside
+step 305 ssq 14.5217-14.5919 reflect
+step 306 ssq 14.5076-14.5823 contract inside
+step 307 ssq 14.5002-14.5821 contract inside
+step 308 ssq 14.5002-14.5808 reflect
+step 309 ssq 14.5002-14.5801 contract inside
+step 310 ssq 14.5002-14.5615 reflect
+step 311 ssq 14.4632-14.558 reflect
+step 312 ssq 14.4632-14.5543 reflect
+step 313 ssq 14.4632-14.5445 contract outside
+step 314 ssq 14.4632-14.5345 contract outside
+step 315 ssq 14.4632-14.5334 reflect
+step 316 ssq 14.4632-14.5283 reflect
+step 317 ssq 14.4632-14.5268 reflect
+step 318 ssq 14.4632-14.5223 contract inside
+step 319 ssq 14.4609-14.5217 reflect
+step 320 ssq 14.4609-14.518 contract inside
+step 321 ssq 14.4609-14.5076 contract inside
+step 322 ssq 14.4601-14.505 reflect
+step 323 ssq 14.438-14.5038 reflect
+step 324 ssq 14.438-14.5002 contract inside
+step 325 ssq 14.438-14.4903 reflect
+step 326 ssq 14.438-14.4878 reflect
+step 327 ssq 14.4323-14.4787 reflect
+step 328 ssq 14.4012-14.4745 expand
+step 329 ssq 14.4012-14.4703 reflect
+step 330 ssq 14.4012-14.4677 reflect
+step 331 ssq 14.4012-14.4667 reflect
+step 332 ssq 14.4012-14.4654 reflect
+step 333 ssq 14.4012-14.4632 reflect
+step 334 ssq 14.3943-14.4609 reflect
+step 335 ssq 14.3943-14.4601 reflect
+step 336 ssq 14.3656-14.4537 expand
+step 337 ssq 14.3656-14.4531 reflect
+step 338 ssq 14.3656-14.4514 reflect
+step 339 ssq 14.3656-14.4393 reflect
+step 340 ssq 14.3656-14.438 reflect
+step 341 ssq 14.3137-14.4348 expand
+step 342 ssq 14.3137-14.4336 reflect
+step 343 ssq 14.3137-14.4323 reflect
+step 344 ssq 14.2712-14.4161 expand
+step 345 ssq 14.2712-14.4138 reflect
+step 346 ssq 14.2712-14.4115 reflect
+step 347 ssq 14.2712-14.4012 reflect
+step 348 ssq 14.2569-14.3972 expand
+step 349 ssq 14.2569-14.3943 reflect
+step 350 ssq 14.1456-14.3691 expand
+step 351 ssq 14.1456-14.3666 reflect
+step 352 ssq 14.1456-14.3656 reflect
+step 353 ssq 14.1456-14.3622 reflect
+step 354 ssq 14.1456-14.33 reflect
+step 355 ssq 14.1456-14.3285 reflect
+step 356 ssq 14.1456-14.3207 reflect
+step 357 ssq 14.0767-14.3137 expand
+step 358 ssq 14.0767-14.2877 reflect
+step 359 ssq 14.0767-14.2712 reflect
+step 360 ssq 14.0632-14.2569 expand
+step 361 ssq 14.0632-14.2546 reflect
+step 362 ssq 14.0264-14.2286 reflect
+step 363 ssq 14.0264-14.2191 reflect
+step 364 ssq 13.9962-14.2053 expand
+step 365 ssq 13.9467-14.2021 expand
+step 366 ssq 13.9467-14.1934 reflect
+step 367 ssq 13.8029-14.1489 expand
+step 368 ssq 13.8029-14.1456 reflect
+step 369 ssq 13.8029-14.1159 reflect
+step 370 ssq 13.8029-14.1001 reflect
+step 371 ssq 13.8029-14.0792 contract outside
+step 372 ssq 13.8029-14.0778 reflect
+step 373 ssq 13.8029-14.0767 reflect
+step 374 ssq 13.8029-14.0632 reflect
+step 375 ssq 13.8029-14.0264 reflect
+step 376 ssq 13.8029-14.0121 contract inside
+step 377 ssq 13.8029-13.9962 reflect
+step 378 ssq 13.8029-13.9717 reflect
+step 379 ssq 13.7777-13.9605 reflect
+step 380 ssq 13.7777-13.9552 reflect
+step 381 ssq 13.7342-13.9471 expand
+step 382 ssq 13.7059-13.9467 reflect
+step 383 ssq 13.6227-13.905 expand
+step 384 ssq 13.6227-13.9049 reflect
+step 385 ssq 13.6227-13.8828 reflect
+step 386 ssq 13.6227-13.8348 reflect
+step 387 ssq 13.6227-13.8248 reflect
+step 388 ssq 13.58-13.817 expand
+step 389 ssq 13.58-13.8167 reflect
+step 390 ssq 13.58-13.8088 reflect
+step 391 ssq 13.58-13.8029 reflect
+step 392 ssq 13.5513-13.7777 reflect
+step 393 ssq 13.5368-13.7416 reflect
+step 394 ssq 13.5368-13.7342 reflect
+step 395 ssq 13.5368-13.7231 reflect
+step 396 ssq 13.5368-13.7059 reflect
+step 397 ssq 13.5368-13.6944 reflect
+step 398 ssq 13.5368-13.6937 reflect
+step 399 ssq 13.5368-13.6687 reflect
+step 400 ssq 13.5368-13.6389 reflect
+step 401 ssq 13.5368-13.631 reflect
+step 402 ssq 13.5368-13.6298 contract inside
+step 403 ssq 13.5368-13.6227 reflect
+step 404 ssq 13.5264-13.6225 reflect
+step 405 ssq 13.5264-13.6193 reflect
+step 406 ssq 13.5264-13.614 reflect
+step 407 ssq 13.524-13.5884 contract outside
+step 408 ssq 13.5194-13.5863 contract inside
+step 409 ssq 13.5187-13.58 contract inside
+step 410 ssq 13.5187-13.5797 contract inside
+step 411 ssq 13.5187-13.5708 contract inside
+step 412 ssq 13.5125-13.5532 contract inside
+step 413 ssq 13.5087-13.5513 contract inside
+step 414 ssq 13.4747-13.5513 reflect
+step 415 ssq 13.4747-13.5399 contract inside
+step 416 ssq 13.4747-13.5368 reflect
+step 417 ssq 13.4747-13.5335 contract inside
+step 418 ssq 13.4747-13.5264 contract inside
+step 419 ssq 13.4747-13.524 contract inside
+step 420 ssq 13.4747-13.5194 reflect
+step 421 ssq 13.4747-13.5191 reflect
+step 422 ssq 13.4747-13.5188 reflect
+step 423 ssq 13.4747-13.5187 reflect
+step 424 ssq 13.4747-13.5157 reflect
+step 425 ssq 13.4747-13.5125 reflect
+step 426 ssq 13.4747-13.5119 reflect
+step 427 ssq 13.4747-13.5112 contract inside
+step 428 ssq 13.4747-13.5087 contract inside
+step 429 ssq 13.4747-13.5069 reflect
+step 430 ssq 13.4747-13.5063 contract inside
+step 431 ssq 13.472-13.5042 expand
+step 432 ssq 13.472-13.5026 reflect
+step 433 ssq 13.472-13.502 reflect
+step 434 ssq 13.472-13.5018 reflect
+step 435 ssq 13.472-13.5013 reflect
+step 436 ssq 13.472-13.5 reflect
+step 437 ssq 13.472-13.4933 reflect
+step 438 ssq 13.4515-13.4929 expand
+step 439 ssq 13.4501-13.4929 expand
+step 440 ssq 13.4444-13.4927 reflect
+step 441 ssq 13.4444-13.4907 reflect
+step 442 ssq 13.4352-13.4825 reflect
+step 443 ssq 13.4329-13.4797 reflect
+step 444 ssq 13.4329-13.4773 reflect
+step 445 ssq 13.4329-13.4765 reflect
+step 446 ssq 13.43-13.4747 reflect
+step 447 ssq 13.4277-13.4742 reflect
+step 448 ssq 13.3981-13.472 expand
+step 449 ssq 13.3981-13.4658 reflect
+step 450 ssq 13.3981-13.4515 reflect
+step 451 ssq 13.3981-13.4501 reflect
+step 452 ssq 13.3879-13.4461 expand
+step 453 ssq 13.3879-13.4455 reflect
+step 454 ssq 13.3879-13.4444 reflect
+step 455 ssq 13.3338-13.4412 expand
+step 456 ssq 13.3338-13.4352 reflect
+step 457 ssq 13.3338-13.4329 reflect
+step 458 ssq 13.3338-13.43 reflect
+step 459 ssq 13.3338-13.4277 reflect
+step 460 ssq 13.3047-13.424 expand
+step 461 ssq 13.3047-13.415 reflect
+step 462 ssq 13.3047-13.4066 reflect
+step 463 ssq 13.3047-13.3983 reflect
+step 464 ssq 13.3047-13.3981 reflect
+step 465 ssq 13.2553-13.3884 expand
+step 466 ssq 13.2024-13.3879 expand
+step 467 ssq 13.2024-13.3523 reflect
+step 468 ssq 13.2024-13.3446 reflect
+step 469 ssq 13.2024-13.3403 reflect
+step 470 ssq 13.2024-13.3338 reflect
+step 471 ssq 13.2024-13.3281 reflect
+step 472 ssq 13.1859-13.3222 expand
+step 473 ssq 13.1092-13.3217 expand
+step 474 ssq 13.1092-13.306 reflect
+step 475 ssq 13.1092-13.3047 reflect
+step 476 ssq 13.018-13.2808 expand
+step 477 ssq 13.018-13.2699 reflect
+step 478 ssq 13.018-13.2557 reflect
+step 479 ssq 13.018-13.2553 reflect
+step 480 ssq 13.018-13.2506 reflect
+step 481 ssq 12.9597-13.2482 expand
+step 482 ssq 12.9597-13.2202 reflect
+step 483 ssq 12.9597-13.2133 reflect
+step 484 ssq 12.9597-13.2024 reflect
+step 485 ssq 12.9597-13.1986 reflect
+step 486 ssq 12.9597-13.1859 reflect
+step 487 ssq 12.9597-13.1729 reflect
+step 488 ssq 12.9086-13.1386 reflect
+step 489 ssq 12.9086-13.1337 reflect
+step 490 ssq 12.9086-13.1125 reflect
+step 491 ssq 12.9056-13.1092 reflect
+step 492 ssq 12.8878-13.0693 reflect
+step 493 ssq 12.8878-13.0525 reflect
+step 494 ssq 12.8878-13.018 reflect
+step 495 ssq 12.8604-13.0055 reflect
+step 496 ssq 12.8604-12.9968 reflect
+step 497 ssq 12.8604-12.9873 contract inside
+step 498 ssq 12.8604-12.9832 reflect
+step 499 ssq 12.8604-12.9623 reflect
+step 500 ssq 12.8604-12.9617 reflect
+step 501 ssq 12.8252-12.9597 reflect
+step 502 ssq 12.8252-12.9354 reflect
+step 503 ssq 12.8252-12.9237 reflect
+step 504 ssq 12.8252-12.9132 reflect
+step 505 ssq 12.8252-12.912 reflect
+step 506 ssq 12.8226-12.9086 reflect
+step 507 ssq 12.7862-12.9056 reflect
+step 508 ssq 12.7862-12.9023 reflect
+step 509 ssq 12.7862-12.8919 contract inside
+step 510 ssq 12.7862-12.8878 contract inside
+step 511 ssq 12.7862-12.8728 reflect
+step 512 ssq 12.7862-12.868 contract inside
+step 513 ssq 12.7862-12.8644 contract inside
+step 514 ssq 12.7862-12.8617 reflect
+step 515 ssq 12.7862-12.8614 contract outside
+step 516 ssq 12.7862-12.8604 reflect
+step 517 ssq 12.7862-12.8599 contract inside
+step 518 ssq 12.7862-12.8293 contract outside
+step 519 ssq 12.7862-12.8256 reflect
+step 520 ssq 12.7862-12.8252 reflect
+step 521 ssq 12.7862-12.8245 reflect
+step 522 ssq 12.7862-12.8239 reflect
+step 523 ssq 12.7862-12.8226 contract inside
+step 524 ssq 12.7862-12.8216 reflect
+step 525 ssq 12.7862-12.8201 reflect
+step 526 ssq 12.7862-12.8169 reflect
+step 527 ssq 12.7862-12.8164 reflect
+step 528 ssq 12.7862-12.8163 reflect
+step 529 ssq 12.7862-12.8155 reflect
+step 530 ssq 12.7862-12.8143 reflect
+step 531 ssq 12.7862-12.81 reflect
+step 532 ssq 12.7862-12.8074 reflect
+step 533 ssq 12.7862-12.8052 contract inside
+step 534 ssq 12.7862-12.8045 reflect
+step 535 ssq 12.7862-12.8043 reflect
+step 536 ssq 12.7862-12.8023 reflect
+step 537 ssq 12.7862-12.8019 reflect
+step 538 ssq 12.7862-12.8009 contract inside
+step 539 ssq 12.7862-12.8005 contract inside
+step 540 ssq 12.7862-12.8005 reflect
+step 541 ssq 12.7862-12.7998 contract inside
+step 542 ssq 12.7862-12.7993 reflect
+step 543 ssq 12.7835-12.7988 contract inside
+step 544 ssq 12.7835-12.7966 reflect
+step 545 ssq 12.7835-12.7964 contract inside
+step 546 ssq 12.7835-12.7957 reflect
+step 547 ssq 12.7835-12.7944 contract inside
+step 548 ssq 12.7835-12.7936 contract inside
+step 549 ssq 12.7835-12.7909 contract inside
+step 550 ssq 12.7835-12.7902 contract inside
+step 551 ssq 12.7793-12.7881 reflect
+step 552 ssq 12.7793-12.7879 reflect
+step 553 ssq 12.7793-12.7873 reflect
+step 554 ssq 12.7772-12.7862 reflect
+step 555 ssq 12.7772-12.7858 contract inside
+step 556 ssq 12.7772-12.7855 contract inside
+step 557 ssq 12.7772-12.7855 reflect
+step 558 ssq 12.7772-12.7854 contract inside
+step 559 ssq 12.7772-12.7853 reflect
+step 560 ssq 12.7759-12.7851 reflect
+step 561 ssq 12.7759-12.7849 reflect
+step 562 ssq 12.7759-12.7835 reflect
+step 563 ssq 12.7759-12.7826 reflect
+step 564 ssq 12.7759-12.7814 reflect
+step 565 ssq 12.7738-12.7813 reflect
+step 566 ssq 12.7725-12.7811 expand
+step 567 ssq 12.766-12.7805 expand
+step 568 ssq 12.766-12.7803 contract inside
+step 569 ssq 12.766-12.7802 reflect
+step 570 ssq 12.766-12.7793 reflect
+step 571 ssq 12.766-12.7778 reflect
+step 572 ssq 12.766-12.7772 reflect
+step 573 ssq 12.7625-12.7772 expand
+step 574 ssq 12.7625-12.7769 reflect
+step 575 ssq 12.7597-12.7766 expand
+step 576 ssq 12.7597-12.7759 reflect
+step 577 ssq 12.7597-12.7752 reflect
+step 578 ssq 12.7562-12.7738 expand
+step 579 ssq 12.7399-12.7725 expand
+step 580 ssq 12.7399-12.772 reflect
+step 581 ssq 12.7399-12.7698 reflect
+step 582 ssq 12.7399-12.7675 reflect
+step 583 ssq 12.7294-12.7672 expand
+step 584 ssq 12.7294-12.7663 reflect
+step 585 ssq 12.7294-12.766 reflect
+step 586 ssq 12.7096-12.7625 expand
+step 587 ssq 12.7096-12.76 reflect
+step 588 ssq 12.7096-12.7597 reflect
+step 589 ssq 12.7096-12.7562 reflect
+step 590 ssq 12.7096-12.7526 reflect
+step 591 ssq 12.7096-12.748 reflect
+step 592 ssq 12.7096-12.7458 reflect
+step 593 ssq 12.6915-12.7439 expand
+step 594 ssq 12.6915-12.7399 reflect
+step 595 ssq 12.6714-12.7385 expand
+step 596 ssq 12.6714-12.7302 reflect
+step 597 ssq 12.6714-12.7294 reflect
+step 598 ssq 12.6322-12.7253 expand
+step 599 ssq 12.6322-12.723 reflect
+step 600 ssq 12.6322-12.7151 reflect
+step 601 ssq 12.6322-12.7136 reflect
+step 602 ssq 12.6322-12.7101 reflect
+step 603 ssq 12.6322-12.7096 reflect
+step 604 ssq 12.5981-12.6962 expand
+step 605 ssq 12.5496-12.6915 expand
+step 606 ssq 12.5496-12.6854 reflect
+step 607 ssq 12.5496-12.6729 reflect
+step 608 ssq 12.5496-12.6714 reflect
+step 609 ssq 12.5496-12.6675 reflect
+step 610 ssq 12.4683-12.6597 expand
+step 611 ssq 12.4683-12.6464 reflect
+step 612 ssq 12.4683-12.6441 reflect
+step 613 ssq 12.4683-12.6329 reflect
+step 614 ssq 12.4683-12.6322 reflect
+step 615 ssq 12.4683-12.6067 reflect
+step 616 ssq 12.4683-12.6067 reflect
+step 617 ssq 12.4683-12.5981 reflect
+step 618 ssq 12.3773-12.5866 expand
+step 619 ssq 12.3773-12.5607 reflect
+step 620 ssq 12.3773-12.5496 reflect
+step 621 ssq 12.3773-12.5454 reflect
+step 622 ssq 12.2706-12.5207 expand
+step 623 ssq 12.2706-12.5026 reflect
+step 624 ssq 12.2706-12.5019 reflect
+step 625 ssq 12.2706-12.4789 reflect
+step 626 ssq 12.2021-12.4763 expand
+step 627 ssq 12.2021-12.4689 reflect
+step 628 ssq 12.0938-12.4683 expand
+step 629 ssq 12.0938-12.3906 reflect
+step 630 ssq 12.0938-12.3851 reflect
+step 631 ssq 12.0938-12.3827 reflect
+step 632 ssq 11.9597-12.3773 expand
+step 633 ssq 11.9597-12.3145 reflect
+step 634 ssq 11.9597-12.312 reflect
+step 635 ssq 11.9597-12.2962 reflect
+step 636 ssq 11.9312-12.2706 expand
+step 637 ssq 11.761-12.22 expand
+step 638 ssq 11.761-12.2021 reflect
+step 639 ssq 11.5134-12.1471 expand
+step 640 ssq 11.5134-12.1387 reflect
+step 641 ssq 11.5134-12.1148 reflect
+step 642 ssq 11.5134-12.0938 reflect
+step 643 ssq 11.5134-12.006 reflect
+step 644 ssq 11.5134-11.999 reflect
+step 645 ssq 11.5134-11.9724 reflect
+step 646 ssq 11.5134-11.9597 reflect
+step 647 ssq 11.5134-11.9581 reflect
+step 648 ssq 11.5134-11.9312 reflect
+step 649 ssq 11.1542-11.9203 expand
+step 650 ssq 11.1542-11.8496 reflect
+step 651 ssq 11.1542-11.812 reflect
+step 652 ssq 11.1542-11.7763 reflect
+step 653 ssq 11.1542-11.761 reflect
+step 654 ssq 11.1542-11.7274 reflect
+step 655 ssq 11.1542-11.6862 reflect
+step 656 ssq 11.1542-11.6826 reflect
+step 657 ssq 11.1542-11.6682 contract inside
+step 658 ssq 11.1542-11.6646 reflect
+step 659 ssq 11.1542-11.6551 reflect
+step 660 ssq 10.8827-11.6115 expand
+step 661 ssq 10.8827-11.5369 reflect
+step 662 ssq 10.8827-11.5347 reflect
+step 663 ssq 10.8827-11.5134 contract inside
+step 664 ssq 10.8827-11.4064 contract inside
+step 665 ssq 10.8827-11.4009 reflect
+step 666 ssq 10.8827-11.3836 contract inside
+step 667 ssq 10.8827-11.3597 reflect
+step 668 ssq 10.8827-11.3055 reflect
+step 669 ssq 10.8827-11.2986 reflect
+step 670 ssq 10.656-11.2911 expand
+step 671 ssq 10.656-11.2343 reflect
+step 672 ssq 10.5408-11.1893 expand
+step 673 ssq 10.5408-11.1542 reflect
+step 674 ssq 10.3955-11.1517 expand
+step 675 ssq 10.3955-11.1363 reflect
+step 676 ssq 10.3955-10.9481 contract inside
+step 677 ssq 10.3955-10.937 reflect
+step 678 ssq 10.3955-10.9237 contract inside
+step 679 ssq 10.3955-10.8941 contract inside
+step 680 ssq 10.3955-10.8827 contract inside
+step 681 ssq 10.3955-10.8408 reflect
+step 682 ssq 10.3955-10.7754 contract inside
+step 683 ssq 10.3955-10.7392 reflect
+step 684 ssq 10.327-10.725 expand
+step 685 ssq 10.3209-10.7043 reflect
+step 686 ssq 10.3209-10.6783 reflect
+step 687 ssq 10.3209-10.6747 reflect
+step 688 ssq 10.3209-10.6716 contract inside
+step 689 ssq 10.3209-10.662 contract inside
+step 690 ssq 10.3209-10.656 contract inside
+step 691 ssq 10.3209-10.5524 contract outside
+step 692 ssq 10.3209-10.542 contract inside
+step 693 ssq 10.2755-10.5408 reflect
+step 694 ssq 10.2755-10.498 reflect
+step 695 ssq 10.2755-10.4866 contract inside
+step 696 ssq 10.2755-10.4615 contract inside
+step 697 ssq 10.2755-10.4513 contract inside
+step 698 ssq 10.2755-10.4464 reflect
+step 699 ssq 10.2755-10.4288 contract inside
+step 700 ssq 10.2755-10.413 contract inside
+step 701 ssq 10.2755-10.3975 contract inside
+step 702 ssq 10.2729-10.3955 reflect
+step 703 ssq 10.2729-10.3895 reflect
+step 704 ssq 10.2729-10.3688 contract inside
+step 705 ssq 10.2729-10.3679 contract inside
+step 706 ssq 10.2729-10.3557 contract inside
+step 707 ssq 10.2729-10.3538 reflect
+step 708 ssq 10.2729-10.3493 contract inside
+step 709 ssq 10.2729-10.3476 contract inside
+step 710 ssq 10.2329-10.3342 expand
+step 711 ssq 10.2329-10.334 reflect
+step 712 ssq 10.2329-10.327 contract inside
+step 713 ssq 10.2329-10.3249 reflect
+step 714 ssq 10.2318-10.3209 reflect
+step 715 ssq 10.2318-10.3146 reflect
+step 716 ssq 10.2298-10.3121 reflect
+step 717 ssq 10.2298-10.3078 reflect
+step 718 ssq 10.2298-10.3046 contract inside
+step 719 ssq 10.2298-10.2987 reflect
+step 720 ssq 10.2218-10.2787 reflect
+step 721 ssq 10.2218-10.2755 reflect
+step 722 ssq 10.2171-10.2737 reflect
+step 723 ssq 10.2171-10.2729 reflect
+step 724 ssq 10.2171-10.2677 contract inside
+step 725 ssq 10.2171-10.2672 reflect
+step 726 ssq 10.174-10.2505 reflect
+step 727 ssq 10.174-10.2475 reflect
+step 728 ssq 10.174-10.2329 reflect
+step 729 ssq 10.174-10.2319 contract inside
+step 730 ssq 10.174-10.2318 reflect
+step 731 ssq 10.174-10.2298 reflect
+step 732 ssq 10.1516-10.2282 expand
+step 733 ssq 10.1516-10.2257 reflect
+step 734 ssq 10.1516-10.2242 reflect
+step 735 ssq 10.1516-10.2218 reflect
+step 736 ssq 10.1501-10.2171 expand
+step 737 ssq 10.1262-10.2123 expand
+step 738 ssq 10.1262-10.2106 reflect
+step 739 ssq 10.0533-10.1984 expand
+step 740 ssq 10.0533-10.1875 reflect
+step 741 ssq 10.0533-10.1852 reflect
+step 742 ssq 10.0533-10.1841 reflect
+step 743 ssq 10.0533-10.1822 reflect
+step 744 ssq 10.0533-10.1813 reflect
+step 745 ssq 10.0075-10.174 expand
+step 746 ssq 10.0075-10.1516 reflect
+step 747 ssq 10.0075-10.1501 reflect
+step 748 ssq 10.0075-10.1405 reflect
+step 749 ssq 10.0075-10.1375 reflect
+step 750 ssq 9.9907-10.1349 reflect
+step 751 ssq 9.972-10.1262 reflect
+step 752 ssq 9.9658-10.0978 reflect
+step 753 ssq 9.9658-10.091 reflect
+step 754 ssq 9.8707-10.0563 expand
+step 755 ssq 9.8707-10.0533 reflect
+step 756 ssq 9.8707-10.0414 reflect
+step 757 ssq 9.8707-10.031 reflect
+step 758 ssq 9.8183-10.0178 expand
+step 759 ssq 9.8183-10.0174 reflect
+step 760 ssq 9.8183-10.0075 reflect
+step 761 ssq 9.777-9.9907 expand
+step 762 ssq 9.777-9.972 reflect
+step 763 ssq 9.777-9.9696 reflect
+step 764 ssq 9.777-9.9669 reflect
+step 765 ssq 9.7407-9.9658 reflect
+step 766 ssq 9.7407-9.9065 reflect
+step 767 ssq 9.7204-9.8954 reflect
+step 768 ssq 9.7204-9.8707 reflect
+step 769 ssq 9.7204-9.8641 reflect
+step 770 ssq 9.7204-9.8545 reflect
+step 771 ssq 9.6849-9.8278 reflect
+step 772 ssq 9.6849-9.8224 reflect
+step 773 ssq 9.6849-9.8183 reflect
+step 774 ssq 9.6849-9.7959 reflect
+step 775 ssq 9.6849-9.7835 reflect
+step 776 ssq 9.6849-9.777 reflect
+step 777 ssq 9.6849-9.7627 reflect
+step 778 ssq 9.6849-9.7581 contract inside
+step 779 ssq 9.6849-9.7422 contract inside
+step 780 ssq 9.6849-9.7407 reflect
+step 781 ssq 9.6849-9.7401 reflect
+step 782 ssq 9.6849-9.7376 contract inside
+step 783 ssq 9.6849-9.7334 reflect
+step 784 ssq 9.6847-9.7212 reflect
+step 785 ssq 9.6788-9.7204 reflect
+step 786 ssq 9.6788-9.714 reflect
+step 787 ssq 9.6788-9.7074 contract inside
+step 788 ssq 9.6788-9.7062 reflect
+step 789 ssq 9.6788-9.7054 reflect
+step 790 ssq 9.6758-9.7051 reflect
+step 791 ssq 9.6758-9.7022 contract inside
+step 792 ssq 9.6726-9.6989 reflect
+step 793 ssq 9.6683-9.6948 reflect
+step 794 ssq 9.6683-9.694 reflect
+step 795 ssq 9.6589-9.6913 reflect
+step 796 ssq 9.6589-9.6878 reflect
+step 797 ssq 9.6589-9.6849 contract inside
+step 798 ssq 9.6561-9.6847 reflect
+step 799 ssq 9.6561-9.6823 reflect
+step 800 ssq 9.6466-9.6812 reflect
+step 801 ssq 9.6466-9.6794 reflect
+step 802 ssq 9.6466-9.6788 reflect
+step 803 ssq 9.6466-9.6774 contract inside
+step 804 ssq 9.6367-9.6758 reflect
+step 805 ssq 9.6367-9.6726 contract inside
+step 806 ssq 9.6367-9.6683 reflect
+step 807 ssq 9.6367-9.667 reflect
+step 808 ssq 9.6367-9.6665 reflect
+step 809 ssq 9.6367-9.6651 contract inside
+step 810 ssq 9.6367-9.6634 reflect
+step 811 ssq 9.6367-9.6589 contract outside
+step 812 ssq 9.6367-9.6589 contract inside
+step 813 ssq 9.6367-9.6561 reflect
+step 814 ssq 9.6367-9.6556 reflect
+step 815 ssq 9.6277-9.6524 reflect
+step 816 ssq 9.6277-9.6521 reflect
+step 817 ssq 9.6277-9.6508 reflect
+step 818 ssq 9.6277-9.6477 reflect
+step 819 ssq 9.6273-9.647 reflect
+step 820 ssq 9.6273-9.6466 contract inside
+step 821 ssq 9.6273-9.6461 reflect
+step 822 ssq 9.6273-9.6456 contract inside
+step 823 ssq 9.6273-9.6447 reflect
+step 824 ssq 9.6273-9.6444 reflect
+step 825 ssq 9.6273-9.643 reflect
+step 826 ssq 9.6206-9.6407 reflect
+step 827 ssq 9.6206-9.6367 reflect
+step 828 ssq 9.6161-9.6347 reflect
+step 829 ssq 9.6088-9.6335 expand
+step 830 ssq 9.5978-9.6332 expand
+step 831 ssq 9.5978-9.6329 reflect
+step 832 ssq 9.5978-9.6305 contract outside
+step 833 ssq 9.5978-9.6303 reflect
+step 834 ssq 9.5978-9.629 reflect
+step 835 ssq 9.5978-9.6284 reflect
+step 836 ssq 9.5978-9.6277 reflect
+step 837 ssq 9.5978-9.6277 reflect
+step 838 ssq 9.5978-9.6273 reflect
+step 839 ssq 9.5803-9.6272 expand
+step 840 ssq 9.5803-9.6244 reflect
+step 841 ssq 9.5803-9.6221 reflect
+step 842 ssq 9.5803-9.6206 reflect
+step 843 ssq 9.5803-9.6183 reflect
+step 844 ssq 9.5803-9.6167 reflect
+step 845 ssq 9.5803-9.6161 reflect
+step 846 ssq 9.5422-9.6126 expand
+step 847 ssq 9.5422-9.6101 reflect
+step 848 ssq 9.5422-9.6088 reflect
+step 849 ssq 9.5422-9.5993 reflect
+step 850 ssq 9.5422-9.5978 reflect
+step 851 ssq 9.5422-9.5966 reflect
+step 852 ssq 9.5422-9.5948 reflect
+step 853 ssq 9.5422-9.5925 reflect
+step 854 ssq 9.5306-9.5899 expand
+step 855 ssq 9.5108-9.5849 expand
+step 856 ssq 9.5108-9.5829 reflect
+step 857 ssq 9.496-9.5803 expand
+step 858 ssq 9.496-9.5689 reflect
+step 859 ssq 9.496-9.5613 reflect
+step 860 ssq 9.4516-9.5595 expand
+step 861 ssq 9.4516-9.5588 reflect
+step 862 ssq 9.4516-9.5587 reflect
+step 863 ssq 9.4516-9.5559 reflect
+step 864 ssq 9.451-9.5422 reflect
+step 865 ssq 9.4206-9.5306 expand
+step 866 ssq 9.3983-9.5281 expand
+step 867 ssq 9.3983-9.5108 reflect
+step 868 ssq 9.3983-9.5011 reflect
+step 869 ssq 9.346-9.5002 expand
+step 870 ssq 9.346-9.496 reflect
+step 871 ssq 9.346-9.4761 reflect
+step 872 ssq 9.3333-9.4603 expand
+step 873 ssq 9.2816-9.4519 expand
+step 874 ssq 9.2816-9.4516 reflect
+step 875 ssq 9.2583-9.451 expand
+step 876 ssq 9.2583-9.4206 reflect
+step 877 ssq 9.2583-9.4135 reflect
+step 878 ssq 9.2583-9.4026 reflect
+step 879 ssq 9.2583-9.3983 reflect
+step 880 ssq 9.2583-9.3806 reflect
+step 881 ssq 9.2395-9.3572 reflect
+step 882 ssq 9.2395-9.3466 reflect
+step 883 ssq 9.238-9.346 reflect
+step 884 ssq 9.238-9.3375 reflect
+step 885 ssq 9.238-9.3333 contract outside
+step 886 ssq 9.238-9.32 reflect
+step 887 ssq 9.238-9.3127 reflect
+step 888 ssq 9.2313-9.2988 reflect
+step 889 ssq 9.2313-9.2844 contract inside
+step 890 ssq 9.2313-9.2816 contract inside
+step 891 ssq 9.2313-9.2811 reflect
+step 892 ssq 9.2313-9.2803 reflect
+step 893 ssq 9.2241-9.2738 reflect
+step 894 ssq 9.2241-9.2733 reflect
+step 895 ssq 9.2241-9.2621 contract outside
+step 896 ssq 9.2241-9.2592 contract inside
+step 897 ssq 9.2241-9.2583 contract inside
+step 898 ssq 9.2241-9.2574 reflect
+step 899 ssq 9.2241-9.2532 reflect
+step 900 ssq 9.2241-9.2527 contract inside
+step 901 ssq 9.2241-9.2472 reflect
+step 902 ssq 9.2241-9.2455 reflect
+step 903 ssq 9.2174-9.2438 reflect
+step 904 ssq 9.2174-9.2395 contract inside
+step 905 ssq 9.2174-9.238 reflect
+step 906 ssq 9.2174-9.2379 reflect
+step 907 ssq 9.2174-9.2353 reflect
+step 908 ssq 9.2174-9.2342 contract inside
+step 909 ssq 9.2174-9.233 reflect
+step 910 ssq 9.2174-9.2316 reflect
+step 911 ssq 9.2174-9.2313 reflect
+step 912 ssq 9.2174-9.2297 reflect
+step 913 ssq 9.2174-9.2296 reflect
+step 914 ssq 9.2174-9.2291 contract inside
+step 915 ssq 9.2174-9.2291 reflect
+step 916 ssq 9.2174-9.2282 contract outside
+step 917 ssq 9.2164-9.2265 contract inside
+step 918 ssq 9.2164-9.2264 reflect
+step 919 ssq 9.2164-9.2255 contract inside
+step 920 ssq 9.2164-9.2241 contract inside
+step 921 ssq 9.2162-9.2219 contract outside
+step 922 ssq 9.2158-9.2217 contract inside
+step 923 ssq 9.2158-9.2217 reflect
+step 924 ssq 9.2155-9.2207 contract inside
+step 925 ssq 9.215-9.2205 contract inside
+step 926 ssq 9.215-9.2185 contract inside
+step 927 ssq 9.215-9.2178 reflect
+step 928 ssq 9.2145-9.2174 contract outside
+step 929 ssq 9.2145-9.2171 reflect
+step 930 ssq 9.2143-9.2171 contract inside
+step 931 ssq 9.2141-9.2171 contract inside
+step 932 ssq 9.2141-9.2168 contract inside
+step 933 ssq 9.214-9.2166 contract inside
+step 934 ssq 9.214-9.2164 contract inside
+step 935 ssq 9.214-9.2162 contract inside
+step 936 ssq 9.214-9.2158 reflect
+step 937 ssq 9.214-9.2155 contract inside
+step 938 ssq 9.214-9.2153 reflect
+step 939 ssq 9.2138-9.2152 contract inside
+step 940 ssq 9.2138-9.215 contract inside
+step 941 ssq 9.2138-9.2145 reflect
+step 942 ssq 9.2136-9.2143 contract inside
+step 943 ssq 9.2135-9.2143 contract inside
+step 944 ssq 9.2135-9.2142 reflect
+step 945 ssq 9.2135-9.2142 contract inside
+step 946 ssq 9.2135-9.2141 contract inside
+step 947 ssq 9.2135-9.2141 contract inside
+step 948 ssq 9.2135-9.2141 reflect
+step 949 ssq 9.2135-9.214 reflect
+step 950 ssq 9.2135-9.214 contract inside
+step 951 ssq 9.2135-9.214 reflect
+step 952 ssq 9.2135-9.214 reflect
+step 953 ssq 9.2135-9.214 reflect
+step 954 ssq 9.2135-9.2139 reflect
+step 955 ssq 9.2134-9.2139 contract inside
+step 956 ssq 9.2134-9.2138 contract inside
+step 957 ssq 9.2134-9.2138 contract inside
+step 958 ssq 9.2134-9.2138 reflect
+step 959 ssq 9.2134-9.2137 contract inside
+step 960 ssq 9.2133-9.2136 contract inside
+step 961 ssq 9.2133-9.2135 contract inside
+step 962 ssq 9.2133-9.2135 contract inside
+step 963 ssq 9.2133-9.2135 reflect
+step 964 ssq 9.2131-9.2135 reflect
+step 965 ssq 9.2131-9.2135 reflect
+step 966 ssq 9.2131-9.2135 reflect
+step 967 ssq 9.2131-9.2134 contract inside
+step 968 ssq 9.2131-9.2134 contract inside
+step 969 ssq 9.2131-9.2134 reflect
+step 970 ssq 9.2131-9.2134 contract inside
+step 971 ssq 9.2131-9.2134 reflect
+step 972 ssq 9.2131-9.2134 contract inside
+step 973 ssq 9.2131-9.2133 reflect
+step 974 ssq 9.2131-9.2133 contract inside
+step 975 ssq 9.213-9.2133 expand
+step 976 ssq 9.213-9.2133 reflect
+step 977 ssq 9.213-9.2132 contract outside
+step 978 ssq 9.213-9.2132 reflect
+step 979 ssq 9.213-9.2132 reflect
+step 980 ssq 9.213-9.2132 reflect
+step 981 ssq 9.213-9.2132 reflect
+step 982 ssq 9.213-9.2132 reflect
+step 983 ssq 9.213-9.2132 reflect
+step 984 ssq 9.2129-9.2132 expand
+step 985 ssq 9.2129-9.2131 reflect
+step 986 ssq 9.2129-9.2131 reflect
+step 987 ssq 9.2129-9.2131 reflect
+step 988 ssq 9.2128-9.2131 expand
+step 989 ssq 9.2128-9.2131 reflect
+step 990 ssq 9.2128-9.2131 reflect
+step 991 ssq 9.2128-9.2131 reflect
+step 992 ssq 9.2127-9.2131 reflect
+step 993 ssq 9.2126-9.213 expand
+step 994 ssq 9.2126-9.213 reflect
+step 995 ssq 9.2126-9.213 reflect
+step 996 ssq 9.2126-9.213 reflect
+step 997 ssq 9.2126-9.213 reflect
+step 998 ssq 9.2126-9.2129 reflect
+step 999 ssq 9.2126-9.2129 reflect
+step 1000 ssq 9.2126-9.2129 reflect
+step 1001 ssq 9.2125-9.2129 expand
+step 1002 ssq 9.2125-9.2129 reflect
+step 1003 ssq 9.2125-9.2129 contract inside
+step 1004 ssq 9.2125-9.2128 reflect
+step 1005 ssq 9.2125-9.2128 reflect
+step 1006 ssq 9.2125-9.2128 reflect
+step 1007 ssq 9.2125-9.2128 contract outside
+step 1008 ssq 9.2125-9.2128 reflect
+step 1009 ssq 9.2125-9.2128 reflect
+step 1010 ssq 9.2125-9.2128 reflect
+step 1011 ssq 9.2125-9.2128 reflect
+step 1012 ssq 9.2125-9.2127 reflect
+step 1013 ssq 9.2121-9.2127 expand
+step 1014 ssq 9.2121-9.2126 reflect
+step 1015 ssq 9.2121-9.2126 reflect
+step 1016 ssq 9.2121-9.2126 reflect
+step 1017 ssq 9.2121-9.2126 reflect
+step 1018 ssq 9.2121-9.2126 reflect
+step 1019 ssq 9.2121-9.2126 reflect
+step 1020 ssq 9.2121-9.2125 reflect
+step 1021 ssq 9.2121-9.2125 reflect
+step 1022 ssq 9.2121-9.2125 reflect
+step 1023 ssq 9.2119-9.2125 expand
+step 1024 ssq 9.2119-9.2125 reflect
+step 1025 ssq 9.2119-9.2124 reflect
+step 1026 ssq 9.2119-9.2124 reflect
+step 1027 ssq 9.2119-9.2123 reflect
+step 1028 ssq 9.2117-9.2123 expand
+step 1029 ssq 9.2117-9.2123 reflect
+step 1030 ssq 9.2117-9.2123 reflect
+step 1031 ssq 9.2117-9.2122 reflect
+step 1032 ssq 9.2117-9.2122 reflect
+step 1033 ssq 9.2117-9.2122 reflect
+step 1034 ssq 9.2115-9.2121 expand
+step 1035 ssq 9.2115-9.2121 reflect
+step 1036 ssq 9.2114-9.2121 expand
+step 1037 ssq 9.2114-9.2121 reflect
+step 1038 ssq 9.2114-9.2119 reflect
+step 1039 ssq 9.2114-9.2119 reflect
+step 1040 ssq 9.2112-9.2118 expand
+step 1041 ssq 9.2112-9.2118 reflect
+step 1042 ssq 9.2112-9.2118 reflect
+step 1043 ssq 9.2111-9.2118 reflect
+step 1044 ssq 9.2111-9.2117 reflect
+step 1045 ssq 9.2111-9.2117 reflect
+step 1046 ssq 9.2111-9.2115 reflect
+step 1047 ssq 9.2111-9.2115 reflect
+step 1048 ssq 9.2111-9.2115 reflect
+step 1049 ssq 9.211-9.2114 reflect
+step 1050 ssq 9.211-9.2114 reflect
+step 1051 ssq 9.211-9.2114 reflect
+step 1052 ssq 9.2109-9.2114 reflect
+step 1053 ssq 9.2109-9.2113 reflect
+step 1054 ssq 9.2109-9.2113 contract outside
+step 1055 ssq 9.2109-9.2112 reflect
+step 1056 ssq 9.2109-9.2112 reflect
+step 1057 ssq 9.2109-9.2112 reflect
+step 1058 ssq 9.2109-9.2112 reflect
+step 1059 ssq 9.2109-9.2112 contract inside
+step 1060 ssq 9.2109-9.2111 contract inside
+step 1061 ssq 9.2109-9.2111 contract inside
+step 1062 ssq 9.2109-9.2111 reflect
+step 1063 ssq 9.2109-9.2111 contract inside
+step 1064 ssq 9.2109-9.2111 reflect
+step 1065 ssq 9.2109-9.211 reflect
+step 1066 ssq 9.2109-9.211 reflect
+step 1067 ssq 9.2109-9.211 contract inside
+step 1068 ssq 9.2109-9.211 reflect
+step 1069 ssq 9.2109-9.211 reflect
+step 1070 ssq 9.2109-9.211 reflect
+step 1071 ssq 9.2109-9.211 contract inside
+step 1072 ssq 9.2109-9.211 reflect
+step 1073 ssq 9.2109-9.211 contract inside
+step 1074 ssq 9.2109-9.211 reflect
+step 1075 ssq 9.2109-9.211 reflect
+step 1076 ssq 9.2109-9.2109 reflect
+step 1077 ssq 9.2109-9.2109 reflect
+step 1078 ssq 9.2109-9.2109 reflect
+step 1079 ssq 9.2109-9.2109 contract inside
+step 1080 ssq 9.2109-9.2109 contract inside
+step 1081 ssq 9.2109-9.2109 contract inside
+step 1082 ssq 9.2109-9.2109 contract inside
+step 1083 ssq 9.2109-9.2109 contract inside
+step 1084 ssq 9.2108-9.2109 reflect
+step 1085 ssq 9.2108-9.2109 contract inside
+step 1086 ssq 9.2108-9.2109 reflect
+step 1087 ssq 9.2108-9.2109 contract outside
+step 1088 ssq 9.2108-9.2109 reflect
+step 1089 ssq 9.2108-9.2109 contract inside
+step 1090 ssq 9.2108-9.2109 reflect
+step 1091 ssq 9.2108-9.2109 reflect
+step 1092 ssq 9.2108-9.2109 reflect
+step 1093 ssq 9.2108-9.2109 reflect
+step 1094 ssq 9.2108-9.2109 reflect
+step 1095 ssq 9.2108-9.2109 reflect
+step 1096 ssq 9.2108-9.2109 reflect
+step 1097 ssq 9.2108-9.2109 reflect
+step 1098 ssq 9.2108-9.2108 reflect
+step 1099 ssq 9.2108-9.2108 reflect
+step 1100 ssq 9.2108-9.2108 reflect
+step 1101 ssq 9.2108-9.2108 reflect
+step 1102 ssq 9.2108-9.2108 contract inside
+step 1103 ssq 9.2108-9.2108 reflect
+step 1104 ssq 9.2108-9.2108 reflect
+step 1105 ssq 9.2108-9.2108 reflect
+step 1106 ssq 9.2108-9.2108 reflect
+step 1107 ssq 9.2108-9.2108 reflect
+step 1108 ssq 9.2108-9.2108 reflect
+step 1109 ssq 9.2108-9.2108 reflect
+step 1110 ssq 9.2108-9.2108 contract outside
+step 1111 ssq 9.2108-9.2108 reflect
+step 1112 ssq 9.2108-9.2108 reflect
+step 1113 ssq 9.2108-9.2108 contract inside
+step 1114 ssq 9.2108-9.2108 reflect
+step 1115 ssq 9.2108-9.2108 reflect
+step 1116 ssq 9.2108-9.2108 reflect
+step 1117 ssq 9.2108-9.2108 reflect
+step 1118 ssq 9.2108-9.2108 contract outside
+step 1119 ssq 9.2108-9.2108 reflect
+step 1120 ssq 9.2108-9.2108 reflect
+step 1121 ssq 9.2108-9.2108 reflect
+step 1122 ssq 9.2107-9.2108 expand
+step 1123 ssq 9.2107-9.2108 reflect
+step 1124 ssq 9.2107-9.2108 reflect
+step 1125 ssq 9.2107-9.2108 reflect
+step 1126 ssq 9.2107-9.2108 reflect
+step 1127 ssq 9.2107-9.2108 contract inside
+step 1128 ssq 9.2107-9.2108 reflect
+step 1129 ssq 9.2107-9.2108 reflect
+step 1130 ssq 9.2107-9.2108 reflect
+step 1131 ssq 9.2107-9.2108 reflect
+step 1132 ssq 9.2107-9.2108 reflect
+step 1133 ssq 9.2107-9.2108 reflect
+step 1134 ssq 9.2107-9.2108 reflect
+step 1135 ssq 9.2107-9.2108 reflect
+step 1136 ssq 9.2107-9.2108 reflect
+step 1137 ssq 9.2107-9.2108 reflect
+step 1138 ssq 9.2107-9.2108 reflect
+step 1139 ssq 9.2107-9.2108 reflect
+step 1140 ssq 9.2107-9.2107 reflect
+step 1141 ssq 9.2107-9.2107 reflect
+step 1142 ssq 9.2107-9.2107 expand
+step 1143 ssq 9.2107-9.2107 reflect
+step 1144 ssq 9.2107-9.2107 reflect
+step 1145 ssq 9.2107-9.2107 reflect
+step 1146 ssq 9.2107-9.2107 reflect
+step 1147 ssq 9.2107-9.2107 expand
+step 1148 ssq 9.2107-9.2107 reflect
+step 1149 ssq 9.2107-9.2107 reflect
+step 1150 ssq 9.2107-9.2107 reflect
+step 1151 ssq 9.2107-9.2107 reflect
+step 1152 ssq 9.2107-9.2107 reflect
+step 1153 ssq 9.2106-9.2107 expand
+step 1154 ssq 9.2106-9.2107 reflect
+step 1155 ssq 9.2106-9.2107 reflect
+step 1156 ssq 9.2106-9.2107 expand
+step 1157 ssq 9.2106-9.2107 reflect
+step 1158 ssq 9.2106-9.2107 reflect
+step 1159 ssq 9.2106-9.2107 reflect
+step 1160 ssq 9.2106-9.2107 reflect
+step 1161 ssq 9.2105-9.2107 expand
+step 1162 ssq 9.2105-9.2107 reflect
+step 1163 ssq 9.2105-9.2107 reflect
+step 1164 ssq 9.2105-9.2107 reflect
+step 1165 ssq 9.2105-9.2106 reflect
+step 1166 ssq 9.2105-9.2106 reflect
+step 1167 ssq 9.2105-9.2106 expand
+step 1168 ssq 9.2105-9.2106 reflect
+step 1169 ssq 9.2105-9.2106 reflect
+step 1170 ssq 9.2104-9.2106 expand
+step 1171 ssq 9.2104-9.2106 reflect
+step 1172 ssq 9.2104-9.2105 expand
+step 1173 ssq 9.2104-9.2105 reflect
+step 1174 ssq 9.2104-9.2105 reflect
+step 1175 ssq 9.2104-9.2105 reflect
+step 1176 ssq 9.2102-9.2105 expand
+step 1177 ssq 9.2102-9.2105 reflect
+step 1178 ssq 9.2101-9.2105 expand
+step 1179 ssq 9.2101-9.2105 reflect
+step 1180 ssq 9.2101-9.2105 reflect
+step 1181 ssq 9.2101-9.2104 reflect
+step 1182 ssq 9.2101-9.2104 reflect
+step 1183 ssq 9.2101-9.2104 reflect
+step 1184 ssq 9.2101-9.2104 reflect
+step 1185 ssq 9.2101-9.2104 reflect
+step 1186 ssq 9.2101-9.2104 reflect
+step 1187 ssq 9.21-9.2103 expand
+step 1188 ssq 9.21-9.2103 reflect
+step 1189 ssq 9.2098-9.2102 expand
+step 1190 ssq 9.2098-9.2102 reflect
+step 1191 ssq 9.2098-9.2102 reflect
+step 1192 ssq 9.2098-9.2102 reflect
+step 1193 ssq 9.2098-9.2102 reflect
+step 1194 ssq 9.2098-9.2102 reflect
+step 1195 ssq 9.2098-9.2102 reflect
+step 1196 ssq 9.2097-9.2101 expand
+step 1197 ssq 9.2097-9.2101 reflect
+step 1198 ssq 9.2097-9.2101 reflect
+step 1199 ssq 9.2097-9.2101 reflect
+step 1200 ssq 9.2094-9.21 expand
+step 1201 ssq 9.2094-9.21 reflect
+step 1202 ssq 9.2094-9.21 reflect
+step 1203 ssq 9.2094-9.21 reflect
+step 1204 ssq 9.2092-9.2099 expand
+step 1205 ssq 9.2092-9.2099 reflect
+step 1206 ssq 9.2092-9.2099 reflect
+step 1207 ssq 9.2092-9.2098 reflect
+step 1208 ssq 9.2092-9.2098 reflect
+step 1209 ssq 9.2088-9.2097 expand
+step 1210 ssq 9.2088-9.2097 reflect
+step 1211 ssq 9.2088-9.2096 reflect
+step 1212 ssq 9.2088-9.2095 reflect
+step 1213 ssq 9.2085-9.2095 expand
+step 1214 ssq 9.2085-9.2094 reflect
+step 1215 ssq 9.2085-9.2094 reflect
+step 1216 ssq 9.2085-9.2094 reflect
+step 1217 ssq 9.2082-9.2093 expand
+step 1218 ssq 9.2076-9.2093 expand
+step 1219 ssq 9.2076-9.2092 reflect
+step 1220 ssq 9.2076-9.2089 reflect
+step 1221 ssq 9.2076-9.2089 reflect
+step 1222 ssq 9.2076-9.2088 reflect
+step 1223 ssq 9.2072-9.2088 expand
+step 1224 ssq 9.2072-9.2087 reflect
+step 1225 ssq 9.2072-9.2087 reflect
+step 1226 ssq 9.2068-9.2086 expand
+step 1227 ssq 9.2055-9.2085 expand
+step 1228 ssq 9.2055-9.2082 reflect
+step 1229 ssq 9.2055-9.2078 reflect
+step 1230 ssq 9.2055-9.2078 reflect
+step 1231 ssq 9.2055-9.2078 reflect
+step 1232 ssq 9.2055-9.2076 reflect
+step 1233 ssq 9.2047-9.2076 expand
+step 1234 ssq 9.2047-9.2076 reflect
+step 1235 ssq 9.2047-9.2073 reflect
+step 1236 ssq 9.2047-9.2072 reflect
+step 1237 ssq 9.2045-9.2068 expand
+step 1238 ssq 9.2044-9.2064 reflect
+step 1239 ssq 9.2044-9.2062 reflect
+step 1240 ssq 9.2038-9.2062 expand
+step 1241 ssq 9.2038-9.2061 reflect
+step 1242 ssq 9.202-9.2061 expand
+step 1243 ssq 9.202-9.2055 reflect
+step 1244 ssq 9.202-9.205 reflect
+step 1245 ssq 9.202-9.205 reflect
+step 1246 ssq 9.202-9.2048 reflect
+step 1247 ssq 9.202-9.2047 reflect
+step 1248 ssq 9.202-9.2046 reflect
+step 1249 ssq 9.202-9.2045 reflect
+step 1250 ssq 9.202-9.2044 reflect
+step 1251 ssq 9.202-9.2039 contract inside
+step 1252 ssq 9.202-9.2038 reflect
+step 1253 ssq 9.2013-9.2038 expand
+step 1254 ssq 9.1993-9.2033 expand
+step 1255 ssq 9.1993-9.2031 reflect
+step 1256 ssq 9.1993-9.2029 reflect
+step 1257 ssq 9.1993-9.2027 reflect
+step 1258 ssq 9.1993-9.2026 reflect
+step 1259 ssq 9.1993-9.2025 reflect
+step 1260 ssq 9.1993-9.2022 reflect
+step 1261 ssq 9.1985-9.2021 expand
+step 1262 ssq 9.1985-9.202 reflect
+step 1263 ssq 9.1985-9.202 reflect
+step 1264 ssq 9.1984-9.2018 reflect
+step 1265 ssq 9.1978-9.2013 reflect
+step 1266 ssq 9.1978-9.201 reflect
+step 1267 ssq 9.1948-9.2001 expand
+step 1268 ssq 9.1948-9.1998 reflect
+step 1269 ssq 9.1948-9.1997 reflect
+step 1270 ssq 9.1948-9.1996 reflect
+step 1271 ssq 9.1948-9.1994 reflect
+step 1272 ssq 9.1948-9.1993 reflect
+step 1273 ssq 9.1948-9.1986 reflect
+step 1274 ssq 9.1948-9.1985 reflect
+step 1275 ssq 9.1933-9.1984 expand
+step 1276 ssq 9.1933-9.1981 reflect
+step 1277 ssq 9.1933-9.198 reflect
+step 1278 ssq 9.1933-9.1978 reflect
+step 1279 ssq 9.1933-9.1974 reflect
+step 1280 ssq 9.1926-9.197 expand
+step 1281 ssq 9.1914-9.1966 expand
+step 1282 ssq 9.1889-9.1961 expand
+step 1283 ssq 9.1889-9.1957 reflect
+step 1284 ssq 9.1889-9.1952 reflect
+step 1285 ssq 9.1866-9.1952 expand
+step 1286 ssq 9.1866-9.1948 reflect
+step 1287 ssq 9.1866-9.1942 reflect
+step 1288 ssq 9.1866-9.194 reflect
+step 1289 ssq 9.1839-9.1933 expand
+step 1290 ssq 9.1839-9.1933 reflect
+step 1291 ssq 9.1799-9.1926 expand
+step 1292 ssq 9.1799-9.1914 reflect
+step 1293 ssq 9.1799-9.1906 reflect
+step 1294 ssq 9.1799-9.1904 reflect
+step 1295 ssq 9.1799-9.189 reflect
+step 1296 ssq 9.1799-9.1889 reflect
+step 1297 ssq 9.1799-9.1871 reflect
+step 1298 ssq 9.1799-9.1867 reflect
+step 1299 ssq 9.1799-9.1867 reflect
+step 1300 ssq 9.1795-9.1866 reflect
+step 1301 ssq 9.1788-9.1863 reflect
+step 1302 ssq 9.178-9.1848 reflect
+step 1303 ssq 9.1762-9.1845 expand
+step 1304 ssq 9.1762-9.1839 reflect
+step 1305 ssq 9.176-9.1814 reflect
+step 1306 ssq 9.176-9.1812 contract inside
+step 1307 ssq 9.1717-9.1806 expand
+step 1308 ssq 9.1717-9.1803 reflect
+step 1309 ssq 9.1717-9.1802 reflect
+step 1310 ssq 9.1717-9.1801 reflect
+step 1311 ssq 9.1688-9.1799 expand
+step 1312 ssq 9.1688-9.1795 reflect
+step 1313 ssq 9.1688-9.1788 reflect
+step 1314 ssq 9.162-9.1783 expand
+step 1315 ssq 9.162-9.178 reflect
+step 1316 ssq 9.162-9.1762 reflect
+step 1317 ssq 9.162-9.176 reflect
+step 1318 ssq 9.162-9.1751 reflect
+step 1319 ssq 9.162-9.175 reflect
+step 1320 ssq 9.1542-9.1738 expand
+step 1321 ssq 9.1542-9.1731 reflect
+step 1322 ssq 9.1542-9.1717 reflect
+step 1323 ssq 9.1542-9.17 reflect
+step 1324 ssq 9.1542-9.1694 reflect
+step 1325 ssq 9.1542-9.169 reflect
+step 1326 ssq 9.1542-9.1688 contract inside
+step 1327 ssq 9.1448-9.1674 expand
+step 1328 ssq 9.1448-9.1661 reflect
+step 1329 ssq 9.1448-9.1632 reflect
+step 1330 ssq 9.1448-9.1628 reflect
+step 1331 ssq 9.1448-9.162 contract inside
+step 1332 ssq 9.1448-9.1611 reflect
+step 1333 ssq 9.1448-9.1606 reflect
+step 1334 ssq 9.1444-9.1576 reflect
+step 1335 ssq 9.1414-9.1576 expand
+step 1336 ssq 9.1414-9.1574 reflect
+step 1337 ssq 9.1349-9.1546 reflect
+step 1338 ssq 9.1349-9.1542 reflect
+step 1339 ssq 9.1349-9.153 reflect
+step 1340 ssq 9.1294-9.1481 expand
+step 1341 ssq 9.1294-9.148 contract inside
+step 1342 ssq 9.1294-9.1473 reflect
+step 1343 ssq 9.1294-9.1457 reflect
+step 1344 ssq 9.1294-9.1448 reflect
+step 1345 ssq 9.1294-9.1444 reflect
+step 1346 ssq 9.1294-9.144 contract inside
+step 1347 ssq 9.1294-9.1429 reflect
+step 1348 ssq 9.1293-9.1414 reflect
+step 1349 ssq 9.1293-9.1405 reflect
+step 1350 ssq 9.1282-9.1387 reflect
+step 1351 ssq 9.1268-9.138 reflect
+step 1352 ssq 9.1266-9.1377 reflect
+step 1353 ssq 9.1266-9.1363 reflect
+step 1354 ssq 9.1247-9.1357 reflect
+step 1355 ssq 9.1211-9.1349 reflect
+step 1356 ssq 9.1211-9.1344 reflect
+step 1357 ssq 9.1211-9.1337 reflect
+step 1358 ssq 9.1211-9.1327 reflect
+step 1359 ssq 9.1211-9.1313 reflect
+step 1360 ssq 9.1211-9.1294 reflect
+step 1361 ssq 9.1211-9.1294 contract inside
+step 1362 ssq 9.1211-9.1293 contract inside
+step 1363 ssq 9.117-9.1282 expand
+step 1364 ssq 9.1162-9.1278 reflect
+step 1365 ssq 9.1162-9.1268 reflect
+step 1366 ssq 9.1162-9.1266 reflect
+step 1367 ssq 9.1162-9.1264 reflect
+step 1368 ssq 9.1162-9.1261 reflect
+step 1369 ssq 9.113-9.126 reflect
+step 1370 ssq 9.113-9.1255 reflect
+step 1371 ssq 9.113-9.1255 reflect
+step 1372 ssq 9.1103-9.1247 reflect
+step 1373 ssq 9.1103-9.1237 reflect
+step 1374 ssq 9.1103-9.1211 reflect
+step 1375 ssq 9.1103-9.1201 reflect
+step 1376 ssq 9.1103-9.1194 reflect
+step 1377 ssq 9.1098-9.1187 reflect
+step 1378 ssq 9.1098-9.1179 reflect
+step 1379 ssq 9.1098-9.1178 reflect
+step 1380 ssq 9.1098-9.117 contract inside
+step 1381 ssq 9.1098-9.1162 contract inside
+step 1382 ssq 9.1074-9.115 reflect
+step 1383 ssq 9.1074-9.1139 contract inside
+step 1384 ssq 9.1074-9.1133 reflect
+step 1385 ssq 9.1074-9.1132 reflect
+step 1386 ssq 9.106-9.1131 expand
+step 1387 ssq 9.1006-9.113 expand
+step 1388 ssq 9.1006-9.1112 reflect
+step 1389 ssq 9.1006-9.1107 contract inside
+step 1390 ssq 9.1006-9.1107 contract inside
+step 1391 ssq 9.1006-9.1106 reflect
+step 1392 ssq 9.1006-9.1103 reflect
+step 1393 ssq 9.1006-9.1101 reflect
+step 1394 ssq 9.1006-9.11 reflect
+step 1395 ssq 9.1006-9.1098 reflect
+step 1396 ssq 9.1006-9.1079 reflect
+step 1397 ssq 9.0976-9.1074 reflect
+step 1398 ssq 9.0976-9.1074 contract inside
+step 1399 ssq 9.0976-9.1074 contract inside
+step 1400 ssq 9.0976-9.1065 reflect
+step 1401 ssq 9.0976-9.106 reflect
+step 1402 ssq 9.0976-9.1048 reflect
+step 1403 ssq 9.0976-9.104 reflect
+step 1404 ssq 9.0918-9.1039 expand
+step 1405 ssq 9.0918-9.1037 reflect
+step 1406 ssq 9.0918-9.1034 reflect
+step 1407 ssq 9.0918-9.1033 reflect
+step 1408 ssq 9.0918-9.1027 reflect
+step 1409 ssq 9.0918-9.1019 reflect
+step 1410 ssq 9.0918-9.1015 reflect
+step 1411 ssq 9.0918-9.1009 reflect
+step 1412 ssq 9.0918-9.1006 reflect
+step 1413 ssq 9.0918-9.1 reflect
+step 1414 ssq 9.0918-9.0995 reflect
+step 1415 ssq 9.0918-9.0985 reflect
+step 1416 ssq 9.0862-9.0983 expand
+step 1417 ssq 9.0862-9.0978 contract inside
+step 1418 ssq 9.0862-9.0976 contract inside
+step 1419 ssq 9.0862-9.0965 reflect
+step 1420 ssq 9.0862-9.0949 reflect
+step 1421 ssq 9.0862-9.0944 reflect
+step 1422 ssq 9.0862-9.0944 reflect
+step 1423 ssq 9.0862-9.0942 reflect
+step 1424 ssq 9.0862-9.094 contract inside
+step 1425 ssq 9.0843-9.0937 expand
+step 1426 ssq 9.0843-9.0935 contract inside
+step 1427 ssq 9.0843-9.0926 reflect
+step 1428 ssq 9.0822-9.0924 expand
+step 1429 ssq 9.0822-9.0924 reflect
+step 1430 ssq 9.0822-9.092 reflect
+step 1431 ssq 9.0822-9.0918 reflect
+step 1432 ssq 9.0783-9.0906 expand
+step 1433 ssq 9.0783-9.0902 reflect
+step 1434 ssq 9.0783-9.0886 reflect
+step 1435 ssq 9.0783-9.0879 contract inside
+step 1436 ssq 9.0783-9.0878 reflect
+step 1437 ssq 9.0783-9.0872 reflect
+step 1438 ssq 9.0765-9.0862 expand
+step 1439 ssq 9.0765-9.0845 reflect
+step 1440 ssq 9.0765-9.0845 contract inside
+step 1441 ssq 9.0765-9.0844 reflect
+step 1442 ssq 9.0751-9.0843 reflect
+step 1443 ssq 9.0748-9.0822 reflect
+step 1444 ssq 9.0744-9.0817 reflect
+step 1445 ssq 9.0744-9.0808 reflect
+step 1446 ssq 9.0744-9.0803 reflect
+step 1447 ssq 9.0695-9.0797 expand
+step 1448 ssq 9.0695-9.0791 reflect
+step 1449 ssq 9.0695-9.0788 reflect
+step 1450 ssq 9.0695-9.0788 reflect
+step 1451 ssq 9.0695-9.0783 reflect
+step 1452 ssq 9.0693-9.0773 reflect
+step 1453 ssq 9.0693-9.0765 contract inside
+step 1454 ssq 9.0693-9.0764 reflect
+step 1455 ssq 9.0693-9.0753 reflect
+step 1456 ssq 9.0693-9.0751 contract inside
+step 1457 ssq 9.0693-9.0748 reflect
+step 1458 ssq 9.068-9.0745 reflect
+step 1459 ssq 9.0678-9.0744 reflect
+step 1460 ssq 9.0654-9.0728 reflect
+step 1461 ssq 9.0654-9.072 reflect
+step 1462 ssq 9.0654-9.0719 reflect
+step 1463 ssq 9.0646-9.0714 reflect
+step 1464 ssq 9.0646-9.0712 contract inside
+step 1465 ssq 9.0646-9.0709 reflect
+step 1466 ssq 9.0646-9.0703 contract inside
+step 1467 ssq 9.0646-9.0695 contract inside
+step 1468 ssq 9.0646-9.0693 reflect
+step 1469 ssq 9.0646-9.0693 contract inside
+step 1470 ssq 9.0646-9.0692 reflect
+step 1471 ssq 9.0646-9.0688 contract inside
+step 1472 ssq 9.0623-9.0684 expand
+step 1473 ssq 9.0623-9.0683 reflect
+step 1474 ssq 9.0623-9.0683 reflect
+step 1475 ssq 9.0623-9.0682 reflect
+step 1476 ssq 9.0623-9.068 contract inside
+step 1477 ssq 9.0623-9.0679 reflect
+step 1478 ssq 9.0623-9.0678 reflect
+step 1479 ssq 9.0623-9.0674 contract inside
+step 1480 ssq 9.0623-9.0672 reflect
+step 1481 ssq 9.0623-9.0667 reflect
+step 1482 ssq 9.0623-9.0666 reflect
+step 1483 ssq 9.0623-9.0663 contract inside
+step 1484 ssq 9.0623-9.0662 reflect
+step 1485 ssq 9.0623-9.0662 contract inside
+step 1486 ssq 9.0623-9.0658 contract inside
+step 1487 ssq 9.0623-9.0656 reflect
+step 1488 ssq 9.0623-9.0654 reflect
+step 1489 ssq 9.0623-9.0654 contract inside
+step 1490 ssq 9.0623-9.0649 reflect
+step 1491 ssq 9.0623-9.0649 reflect
+step 1492 ssq 9.0619-9.0649 expand
+step 1493 ssq 9.06-9.0648 expand
+step 1494 ssq 9.06-9.0647 reflect
+step 1495 ssq 9.06-9.0646 reflect
+step 1496 ssq 9.06-9.0641 reflect
+step 1497 ssq 9.06-9.064 contract inside
+step 1498 ssq 9.0595-9.0633 reflect
+step 1499 ssq 9.0595-9.0631 contract inside
+step 1500 ssq 9.0595-9.0629 contract inside
+step 1501 ssq 9.0595-9.0625 reflect
+step 1502 ssq 9.0595-9.0625 contract inside
+step 1503 ssq 9.0595-9.0623 reflect
+step 1504 ssq 9.0595-9.0621 reflect
+step 1505 ssq 9.0595-9.0619 contract inside
+step 1506 ssq 9.0595-9.0619 reflect
+step 1507 ssq 9.0579-9.0616 expand
+step 1508 ssq 9.0579-9.0614 reflect
+step 1509 ssq 9.0579-9.0612 reflect
+step 1510 ssq 9.0579-9.0612 reflect
+step 1511 ssq 9.0575-9.061 reflect
+step 1512 ssq 9.0575-9.0608 reflect
+step 1513 ssq 9.0573-9.0603 expand
+step 1514 ssq 9.0573-9.0601 contract inside
+step 1515 ssq 9.0573-9.06 contract inside
+step 1516 ssq 9.0573-9.0598 reflect
+step 1517 ssq 9.0573-9.0598 reflect
+step 1518 ssq 9.0572-9.0595 reflect
+step 1519 ssq 9.0559-9.0591 expand
+step 1520 ssq 9.0558-9.0591 reflect
+step 1521 ssq 9.0552-9.059 reflect
+step 1522 ssq 9.0542-9.0583 reflect
+step 1523 ssq 9.0542-9.0582 reflect
+step 1524 ssq 9.0542-9.0579 reflect
+step 1525 ssq 9.0534-9.0579 expand
+step 1526 ssq 9.0534-9.0575 reflect
+step 1527 ssq 9.0534-9.0575 reflect
+step 1528 ssq 9.0529-9.0573 expand
+step 1529 ssq 9.0529-9.0572 reflect
+step 1530 ssq 9.0486-9.0559 expand
+step 1531 ssq 9.0486-9.0558 reflect
+step 1532 ssq 9.0486-9.0553 reflect
+step 1533 ssq 9.0486-9.0552 reflect
+step 1534 ssq 9.0486-9.0551 reflect
+step 1535 ssq 9.0486-9.0543 reflect
+step 1536 ssq 9.0486-9.0542 reflect
+step 1537 ssq 9.0486-9.0537 reflect
+step 1538 ssq 9.0471-9.0534 reflect
+step 1539 ssq 9.0471-9.0534 contract inside
+step 1540 ssq 9.0471-9.053 reflect
+step 1541 ssq 9.0471-9.0529 reflect
+step 1542 ssq 9.0471-9.0515 reflect
+step 1543 ssq 9.0471-9.0514 contract inside
+step 1544 ssq 9.0451-9.0511 expand
+step 1545 ssq 9.0451-9.0498 reflect
+step 1546 ssq 9.0451-9.0497 reflect
+step 1547 ssq 9.0451-9.0497 reflect
+step 1548 ssq 9.0442-9.0493 expand
+step 1549 ssq 9.0442-9.0492 reflect
+step 1550 ssq 9.0442-9.0487 reflect
+step 1551 ssq 9.0442-9.0486 reflect
+step 1552 ssq 9.0433-9.0486 reflect
+step 1553 ssq 9.0433-9.0484 reflect
+step 1554 ssq 9.0433-9.0484 reflect
+step 1555 ssq 9.0433-9.0471 reflect
+step 1556 ssq 9.0424-9.0467 reflect
+step 1557 ssq 9.0424-9.0461 reflect
+step 1558 ssq 9.0424-9.0459 reflect
+step 1559 ssq 9.0412-9.0453 reflect
+step 1560 ssq 9.0412-9.0451 reflect
+step 1561 ssq 9.0412-9.0444 reflect
+step 1562 ssq 9.0412-9.0444 reflect
+step 1563 ssq 9.0412-9.0443 reflect
+step 1564 ssq 9.0412-9.0442 contract inside
+step 1565 ssq 9.0412-9.0442 reflect
+step 1566 ssq 9.0412-9.044 reflect
+step 1567 ssq 9.0412-9.0438 contract inside
+step 1568 ssq 9.0412-9.0433 contract inside
+step 1569 ssq 9.0412-9.0433 contract inside
+step 1570 ssq 9.0412-9.0433 reflect
+step 1571 ssq 9.0412-9.043 contract outside
+step 1572 ssq 9.0407-9.0429 expand
+step 1573 ssq 9.0407-9.0427 reflect
+step 1574 ssq 9.0407-9.0426 reflect
+step 1575 ssq 9.0407-9.0425 reflect
+step 1576 ssq 9.0407-9.0424 reflect
+step 1577 ssq 9.0407-9.0424 reflect
+step 1578 ssq 9.0407-9.0422 contract inside
+step 1579 ssq 9.0403-9.0421 reflect
+step 1580 ssq 9.0395-9.042 expand
+step 1581 ssq 9.0395-9.042 reflect
+step 1582 ssq 9.039-9.0416 reflect
+step 1583 ssq 9.039-9.0414 contract inside
+step 1584 ssq 9.039-9.0412 reflect
+step 1585 ssq 9.0383-9.0412 expand
+step 1586 ssq 9.0383-9.0412 reflect
+step 1587 ssq 9.0383-9.041 reflect
+step 1588 ssq 9.0383-9.041 reflect
+step 1589 ssq 9.0383-9.0409 reflect
+step 1590 ssq 9.0383-9.0407 reflect
+step 1591 ssq 9.0383-9.0406 reflect
+step 1592 ssq 9.0383-9.0404 reflect
+step 1593 ssq 9.0382-9.0403 reflect
+step 1594 ssq 9.0382-9.0399 reflect
+step 1595 ssq 9.0382-9.0397 reflect
+step 1596 ssq 9.0378-9.0395 reflect
+step 1597 ssq 9.0378-9.0391 contract inside
+step 1598 ssq 9.0378-9.0391 reflect
+step 1599 ssq 9.0378-9.039 reflect
+step 1600 ssq 9.0378-9.039 reflect
+step 1601 ssq 9.0378-9.0388 contract inside
+step 1602 ssq 9.0378-9.0387 contract inside
+step 1603 ssq 9.0371-9.0385 expand
+step 1604 ssq 9.0371-9.0385 reflect
+step 1605 ssq 9.0371-9.0384 reflect
+step 1606 ssq 9.0371-9.0384 reflect
+step 1607 ssq 9.0371-9.0383 contract inside
+step 1608 ssq 9.037-9.0383 expand
+step 1609 ssq 9.037-9.0382 reflect
+step 1610 ssq 9.037-9.0381 reflect
+step 1611 ssq 9.037-9.038 reflect
+step 1612 ssq 9.037-9.038 reflect
+step 1613 ssq 9.0367-9.0379 reflect
+step 1614 ssq 9.0367-9.0379 reflect
+step 1615 ssq 9.0367-9.0378 reflect
+step 1616 ssq 9.0367-9.0378 reflect
+step 1617 ssq 9.0367-9.0377 reflect
+step 1618 ssq 9.0365-9.0377 reflect
+step 1619 ssq 9.0365-9.0377 reflect
+step 1620 ssq 9.0365-9.0375 reflect
+step 1621 ssq 9.0365-9.0374 reflect
+step 1622 ssq 9.0365-9.0373 contract inside
+step 1623 ssq 9.0365-9.0372 reflect
+step 1624 ssq 9.0362-9.0371 reflect
+step 1625 ssq 9.0362-9.0371 contract inside
+step 1626 ssq 9.0362-9.0371 contract inside
+step 1627 ssq 9.036-9.037 reflect
+step 1628 ssq 9.036-9.037 reflect
+step 1629 ssq 9.036-9.0368 reflect
+step 1630 ssq 9.036-9.0367 reflect
+step 1631 ssq 9.036-9.0367 reflect
+step 1632 ssq 9.036-9.0367 contract inside
+step 1633 ssq 9.0357-9.0366 reflect
+step 1634 ssq 9.0357-9.0366 reflect
+step 1635 ssq 9.0357-9.0366 reflect
+step 1636 ssq 9.0357-9.0365 reflect
+step 1637 ssq 9.0357-9.0365 reflect
+step 1638 ssq 9.0357-9.0365 contract inside
+step 1639 ssq 9.0356-9.0365 reflect
+step 1640 ssq 9.0354-9.0365 reflect
+step 1641 ssq 9.0354-9.0364 reflect
+step 1642 ssq 9.0354-9.0363 reflect
+step 1643 ssq 9.0354-9.0363 reflect
+step 1644 ssq 9.0354-9.0362 contract inside
+step 1645 ssq 9.0354-9.0362 reflect
+step 1646 ssq 9.0354-9.0361 reflect
+step 1647 ssq 9.0354-9.0361 reflect
+step 1648 ssq 9.0354-9.0361 reflect
+step 1649 ssq 9.0354-9.036 reflect
+step 1650 ssq 9.0354-9.036 reflect
+step 1651 ssq 9.0353-9.036 reflect
+step 1652 ssq 9.0353-9.0359 reflect
+step 1653 ssq 9.0348-9.0359 reflect
+step 1654 ssq 9.0348-9.0357 contract inside
+step 1655 ssq 9.0348-9.0357 contract inside
+step 1656 ssq 9.0348-9.0357 contract inside
+step 1657 ssq 9.0348-9.0356 reflect
+step 1658 ssq 9.0348-9.0356 reflect
+step 1659 ssq 9.0348-9.0355 reflect
+step 1660 ssq 9.0348-9.0355 reflect
+step 1661 ssq 9.0348-9.0355 reflect
+step 1662 ssq 9.0348-9.0354 contract inside
+step 1663 ssq 9.0348-9.0354 reflect
+step 1664 ssq 9.0348-9.0354 reflect
+step 1665 ssq 9.0348-9.0354 reflect
+step 1666 ssq 9.0348-9.0354 contract inside
+step 1667 ssq 9.0348-9.0354 reflect
+step 1668 ssq 9.0348-9.0354 reflect
+step 1669 ssq 9.0348-9.0353 reflect
+step 1670 ssq 9.0348-9.0353 contract inside
+step 1671 ssq 9.0348-9.0353 reflect
+step 1672 ssq 9.0348-9.0353 reflect
+step 1673 ssq 9.0345-9.0352 reflect
+step 1674 ssq 9.0345-9.0351 reflect
+step 1675 ssq 9.0345-9.0351 contract inside
+step 1676 ssq 9.0345-9.0351 contract inside
+step 1677 ssq 9.0345-9.0351 contract inside
+step 1678 ssq 9.0345-9.0351 reflect
+step 1679 ssq 9.0345-9.035 reflect
+step 1680 ssq 9.0345-9.035 contract outside
+step 1681 ssq 9.0345-9.035 reflect
+step 1682 ssq 9.0345-9.035 reflect
+step 1683 ssq 9.0345-9.0349 contract inside
+step 1684 ssq 9.0345-9.0349 reflect
+step 1685 ssq 9.0345-9.0349 reflect
+step 1686 ssq 9.0345-9.0348 reflect
+step 1687 ssq 9.0345-9.0348 contract inside
+step 1688 ssq 9.0345-9.0348 reflect
+step 1689 ssq 9.0345-9.0348 contract inside
+step 1690 ssq 9.0343-9.0348 expand
+step 1691 ssq 9.0343-9.0347 contract inside
+step 1692 ssq 9.0342-9.0347 expand
+step 1693 ssq 9.0342-9.0347 reflect
+step 1694 ssq 9.0342-9.0346 reflect
+step 1695 ssq 9.0342-9.0346 reflect
+step 1696 ssq 9.0341-9.0346 reflect
+step 1697 ssq 9.0341-9.0346 reflect
+step 1698 ssq 9.0341-9.0345 reflect
+step 1699 ssq 9.0341-9.0345 reflect
+step 1700 ssq 9.0341-9.0345 reflect
+step 1701 ssq 9.0341-9.0345 reflect
+step 1702 ssq 9.0337-9.0345 expand
+step 1703 ssq 9.0337-9.0344 reflect
+step 1704 ssq 9.0337-9.0343 reflect
+step 1705 ssq 9.0337-9.0342 contract inside
+step 1706 ssq 9.0337-9.0342 reflect
+step 1707 ssq 9.0337-9.0342 reflect
+step 1708 ssq 9.0337-9.0342 reflect
+step 1709 ssq 9.0337-9.0342 reflect
+step 1710 ssq 9.0337-9.0341 reflect
+step 1711 ssq 9.0337-9.0341 contract inside
+step 1712 ssq 9.0335-9.0341 expand
+step 1713 ssq 9.0335-9.0341 reflect
+step 1714 ssq 9.0335-9.034 reflect
+step 1715 ssq 9.0332-9.0339 expand
+step 1716 ssq 9.0332-9.0339 reflect
+step 1717 ssq 9.0332-9.0339 reflect
+step 1718 ssq 9.0332-9.0339 reflect
+step 1719 ssq 9.0332-9.0339 reflect
+step 1720 ssq 9.0332-9.0338 reflect
+step 1721 ssq 9.0331-9.0337 expand
+step 1722 ssq 9.0331-9.0337 reflect
+step 1723 ssq 9.0331-9.0337 reflect
+step 1724 ssq 9.0327-9.0337 expand
+step 1725 ssq 9.0327-9.0335 reflect
+step 1726 ssq 9.0327-9.0335 reflect
+step 1727 ssq 9.0327-9.0335 reflect
+step 1728 ssq 9.0327-9.0335 reflect
+step 1729 ssq 9.0326-9.0335 expand
+step 1730 ssq 9.0323-9.0333 expand
+step 1731 ssq 9.0323-9.0333 reflect
+step 1732 ssq 9.0319-9.0332 expand
+step 1733 ssq 9.0319-9.0332 reflect
+step 1734 ssq 9.0319-9.0331 reflect
+step 1735 ssq 9.0319-9.033 reflect
+step 1736 ssq 9.0319-9.033 reflect
+step 1737 ssq 9.0319-9.0329 reflect
+step 1738 ssq 9.0319-9.0329 contract inside
+step 1739 ssq 9.0318-9.0328 reflect
+step 1740 ssq 9.0318-9.0327 contract inside
+step 1741 ssq 9.0318-9.0326 reflect
+step 1742 ssq 9.0317-9.0325 reflect
+step 1743 ssq 9.0317-9.0323 contract inside
+step 1744 ssq 9.0316-9.0323 reflect
+step 1745 ssq 9.0316-9.0323 reflect
+step 1746 ssq 9.0314-9.0322 expand
+step 1747 ssq 9.0314-9.0322 reflect
+step 1748 ssq 9.0314-9.0322 contract inside
+step 1749 ssq 9.0314-9.0321 contract inside
+step 1750 ssq 9.0314-9.0321 reflect
+step 1751 ssq 9.0314-9.032 contract outside
+step 1752 ssq 9.0314-9.0319 reflect
+step 1753 ssq 9.0314-9.0319 reflect
+step 1754 ssq 9.0312-9.0319 reflect
+step 1755 ssq 9.0312-9.0319 contract inside
+step 1756 ssq 9.0312-9.0319 reflect
+step 1757 ssq 9.0312-9.0318 reflect
+step 1758 ssq 9.0312-9.0317 reflect
+step 1759 ssq 9.0312-9.0317 reflect
+step 1760 ssq 9.0312-9.0317 reflect
+step 1761 ssq 9.0309-9.0316 reflect
+step 1762 ssq 9.0309-9.0316 reflect
+step 1763 ssq 9.0309-9.0314 reflect
+step 1764 ssq 9.0309-9.0314 reflect
+step 1765 ssq 9.0309-9.0314 contract inside
+step 1766 ssq 9.0309-9.0314 reflect
+step 1767 ssq 9.0309-9.0314 contract inside
+step 1768 ssq 9.0308-9.0312 reflect
+step 1769 ssq 9.0308-9.0312 reflect
+step 1770 ssq 9.0308-9.0312 reflect
+step 1771 ssq 9.0308-9.0312 reflect
+step 1772 ssq 9.0306-9.0312 expand
+step 1773 ssq 9.0304-9.0311 expand
+step 1774 ssq 9.0304-9.0311 reflect
+step 1775 ssq 9.0304-9.0311 contract inside
+step 1776 ssq 9.0304-9.031 reflect
+step 1777 ssq 9.0304-9.0309 reflect
+step 1778 ssq 9.0304-9.0309 reflect
+step 1779 ssq 9.0303-9.0309 expand
+step 1780 ssq 9.0303-9.0309 expand
+step 1781 ssq 9.03-9.0308 expand
+step 1782 ssq 9.03-9.0308 reflect
+step 1783 ssq 9.0299-9.0308 expand
+step 1784 ssq 9.0299-9.0307 reflect
+step 1785 ssq 9.0299-9.0306 reflect
+step 1786 ssq 9.0299-9.0306 reflect
+step 1787 ssq 9.0299-9.0305 reflect
+step 1788 ssq 9.0299-9.0305 reflect
+step 1789 ssq 9.0299-9.0304 reflect
+step 1790 ssq 9.0299-9.0303 reflect
+step 1791 ssq 9.0298-9.0303 reflect
+step 1792 ssq 9.0296-9.0303 expand
+step 1793 ssq 9.0296-9.0302 reflect
+step 1794 ssq 9.0296-9.0302 reflect
+step 1795 ssq 9.0296-9.0301 reflect
+step 1796 ssq 9.0295-9.03 reflect
+step 1797 ssq 9.0295-9.03 reflect
+step 1798 ssq 9.0295-9.03 contract inside
+step 1799 ssq 9.0295-9.03 reflect
+step 1800 ssq 9.0295-9.0299 reflect
+step 1801 ssq 9.0289-9.0299 expand
+step 1802 ssq 9.0289-9.0298 reflect
+step 1803 ssq 9.0289-9.0297 reflect
+step 1804 ssq 9.0289-9.0297 reflect
+step 1805 ssq 9.0289-9.0297 reflect
+step 1806 ssq 9.0289-9.0297 reflect
+step 1807 ssq 9.0289-9.0296 contract outside
+step 1808 ssq 9.0289-9.0296 reflect
+step 1809 ssq 9.0289-9.0296 reflect
+step 1810 ssq 9.0285-9.0295 expand
+step 1811 ssq 9.0285-9.0295 reflect
+step 1812 ssq 9.0285-9.0295 reflect
+step 1813 ssq 9.0284-9.0294 expand
+step 1814 ssq 9.0284-9.0294 reflect
+step 1815 ssq 9.0284-9.0293 reflect
+step 1816 ssq 9.0284-9.0293 reflect
+step 1817 ssq 9.0279-9.0291 expand
+step 1818 ssq 9.0279-9.029 reflect
+step 1819 ssq 9.0279-9.029 reflect
+step 1820 ssq 9.0278-9.029 expand
+step 1821 ssq 9.0278-9.0289 reflect
+step 1822 ssq 9.0276-9.0289 reflect
+step 1823 ssq 9.0276-9.0286 reflect
+step 1824 ssq 9.0276-9.0285 reflect
+step 1825 ssq 9.0276-9.0285 reflect
+step 1826 ssq 9.0276-9.0285 reflect
+step 1827 ssq 9.0275-9.0284 reflect
+step 1828 ssq 9.0275-9.0284 reflect
+step 1829 ssq 9.0274-9.0282 reflect
+step 1830 ssq 9.0274-9.0282 reflect
+step 1831 ssq 9.0274-9.0281 reflect
+step 1832 ssq 9.0271-9.028 reflect
+step 1833 ssq 9.0271-9.0279 reflect
+step 1834 ssq 9.027-9.0279 reflect
+step 1835 ssq 9.027-9.0278 reflect
+step 1836 ssq 9.027-9.0277 reflect
+step 1837 ssq 9.027-9.0277 reflect
+step 1838 ssq 9.027-9.0276 reflect
+step 1839 ssq 9.027-9.0276 reflect
+step 1840 ssq 9.027-9.0275 reflect
+step 1841 ssq 9.027-9.0275 reflect
+step 1842 ssq 9.0267-9.0274 reflect
+step 1843 ssq 9.0265-9.0273 reflect
+step 1844 ssq 9.0265-9.0273 reflect
+step 1845 ssq 9.0265-9.0272 contract inside
+step 1846 ssq 9.0265-9.0271 reflect
+step 1847 ssq 9.0265-9.0271 reflect
+step 1848 ssq 9.0265-9.027 contract outside
+step 1849 ssq 9.0265-9.027 contract inside
+step 1850 ssq 9.0263-9.027 reflect
+step 1851 ssq 9.0263-9.027 reflect
+step 1852 ssq 9.0263-9.027 reflect
+step 1853 ssq 9.0263-9.0268 reflect
+step 1854 ssq 9.0263-9.0268 reflect
+step 1855 ssq 9.0259-9.0268 expand
+step 1856 ssq 9.0259-9.0268 reflect
+step 1857 ssq 9.0259-9.0267 reflect
+step 1858 ssq 9.0259-9.0267 contract inside
+step 1859 ssq 9.0259-9.0267 contract inside
+step 1860 ssq 9.0259-9.0267 reflect
+step 1861 ssq 9.0258-9.0267 expand
+step 1862 ssq 9.0258-9.0266 reflect
+step 1863 ssq 9.0258-9.0265 reflect
+step 1864 ssq 9.0258-9.0265 reflect
+step 1865 ssq 9.0258-9.0265 reflect
+step 1866 ssq 9.0257-9.0264 reflect
+step 1867 ssq 9.0256-9.0264 expand
+step 1868 ssq 9.0251-9.0263 expand
+step 1869 ssq 9.0251-9.0263 reflect
+step 1870 ssq 9.0251-9.0263 reflect
+step 1871 ssq 9.0251-9.0262 reflect
+step 1872 ssq 9.0251-9.0261 reflect
+step 1873 ssq 9.0249-9.026 reflect
+step 1874 ssq 9.0249-9.0259 reflect
+step 1875 ssq 9.0249-9.0259 reflect
+step 1876 ssq 9.0249-9.0258 reflect
+step 1877 ssq 9.0247-9.0257 reflect
+step 1878 ssq 9.0245-9.0256 reflect
+step 1879 ssq 9.0245-9.0254 reflect
+step 1880 ssq 9.0245-9.0252 reflect
+step 1881 ssq 9.0245-9.0252 reflect
+step 1882 ssq 9.0245-9.0251 reflect
+step 1883 ssq 9.0245-9.0251 reflect
+step 1884 ssq 9.0245-9.0251 reflect
+step 1885 ssq 9.0243-9.025 reflect
+step 1886 ssq 9.0243-9.025 reflect
+step 1887 ssq 9.0242-9.0249 reflect
+step 1888 ssq 9.0242-9.0249 reflect
+step 1889 ssq 9.0242-9.0248 reflect
+step 1890 ssq 9.0242-9.0248 reflect
+step 1891 ssq 9.0242-9.0248 contract inside
+step 1892 ssq 9.0242-9.0247 reflect
+step 1893 ssq 9.0242-9.0247 reflect
+step 1894 ssq 9.0242-9.0247 reflect
+step 1895 ssq 9.0241-9.0246 reflect
+step 1896 ssq 9.0241-9.0246 contract inside
+step 1897 ssq 9.0241-9.0246 reflect
+step 1898 ssq 9.0241-9.0245 reflect
+step 1899 ssq 9.0241-9.0245 contract inside
+step 1900 ssq 9.0241-9.0245 contract inside
+step 1901 ssq 9.0241-9.0245 reflect
+step 1902 ssq 9.0241-9.0245 contract inside
+step 1903 ssq 9.0241-9.0244 reflect
+step 1904 ssq 9.024-9.0244 reflect
+step 1905 ssq 9.024-9.0243 contract outside
+step 1906 ssq 9.024-9.0243 reflect
+step 1907 ssq 9.024-9.0243 reflect
+step 1908 ssq 9.024-9.0243 reflect
+step 1909 ssq 9.024-9.0243 reflect
+step 1910 ssq 9.024-9.0243 reflect
+step 1911 ssq 9.024-9.0242 contract inside
+step 1912 ssq 9.0239-9.0242 reflect
+step 1913 ssq 9.0239-9.0242 reflect
+step 1914 ssq 9.0239-9.0242 reflect
+step 1915 ssq 9.0239-9.0242 reflect
+step 1916 ssq 9.0239-9.0241 reflect
+step 1917 ssq 9.0239-9.0241 contract inside
+step 1918 ssq 9.0239-9.0241 reflect
+step 1919 ssq 9.0239-9.0241 contract inside
+step 1920 ssq 9.0239-9.0241 reflect
+step 1921 ssq 9.0239-9.024 reflect
+step 1922 ssq 9.0238-9.024 reflect
+step 1923 ssq 9.0238-9.024 reflect
+step 1924 ssq 9.0238-9.024 reflect
+step 1925 ssq 9.0238-9.024 reflect
+step 1926 ssq 9.0238-9.0239 reflect
+step 1927 ssq 9.0236-9.0239 expand
+step 1928 ssq 9.0236-9.0239 reflect
+step 1929 ssq 9.0236-9.0239 reflect
+step 1930 ssq 9.0236-9.0239 reflect
+step 1931 ssq 9.0236-9.0239 reflect
+step 1932 ssq 9.0236-9.0239 reflect
+step 1933 ssq 9.0236-9.0239 reflect
+step 1934 ssq 9.0236-9.0239 reflect
+step 1935 ssq 9.0236-9.0238 reflect
+step 1936 ssq 9.0236-9.0238 reflect
+step 1937 ssq 9.0236-9.0238 reflect
+step 1938 ssq 9.0236-9.0238 reflect
+step 1939 ssq 9.0236-9.0238 reflect
+step 1940 ssq 9.0235-9.0238 expand
+step 1941 ssq 9.0235-9.0238 reflect
+step 1942 ssq 9.0235-9.0237 reflect
+step 1943 ssq 9.0235-9.0237 reflect
+step 1944 ssq 9.0235-9.0237 contract outside
+step 1945 ssq 9.0235-9.0237 reflect
+step 1946 ssq 9.0235-9.0237 reflect
+step 1947 ssq 9.0235-9.0237 reflect
+step 1948 ssq 9.0235-9.0237 reflect
+step 1949 ssq 9.0234-9.0236 reflect
+step 1950 ssq 9.0234-9.0236 reflect
+step 1951 ssq 9.0234-9.0236 reflect
+step 1952 ssq 9.0234-9.0236 reflect
+step 1953 ssq 9.0234-9.0236 reflect
+step 1954 ssq 9.0234-9.0236 reflect
+step 1955 ssq 9.0234-9.0236 reflect
+step 1956 ssq 9.0234-9.0235 reflect
+step 1957 ssq 9.0234-9.0235 reflect
+step 1958 ssq 9.0234-9.0235 reflect
+step 1959 ssq 9.0234-9.0235 reflect
+step 1960 ssq 9.0234-9.0235 reflect
+step 1961 ssq 9.0234-9.0235 contract inside
+step 1962 ssq 9.0234-9.0235 reflect
+step 1963 ssq 9.0234-9.0235 reflect
+step 1964 ssq 9.0234-9.0235 contract inside
+step 1965 ssq 9.0234-9.0235 reflect
+step 1966 ssq 9.0234-9.0235 contract inside
+step 1967 ssq 9.0234-9.0235 contract inside
+step 1968 ssq 9.0234-9.0235 contract inside
+step 1969 ssq 9.0234-9.0235 reflect
+step 1970 ssq 9.0234-9.0234 contract inside
+step 1971 ssq 9.0234-9.0234 contract inside
+step 1972 ssq 9.0234-9.0234 reflect
+step 1973 ssq 9.0234-9.0234 contract inside
+step 1974 ssq 9.0234-9.0234 reflect
+step 1975 ssq 9.0234-9.0234 reflect
+step 1976 ssq 9.0234-9.0234 reflect
+step 1977 ssq 9.0234-9.0234 reflect
+step 1978 ssq 9.0233-9.0234 reflect
+step 1979 ssq 9.0233-9.0234 contract inside
+step 1980 ssq 9.0233-9.0234 reflect
+step 1981 ssq 9.0233-9.0234 reflect
+step 1982 ssq 9.0233-9.0234 reflect
+step 1983 ssq 9.0233-9.0234 reflect
+step 1984 ssq 9.0233-9.0234 reflect
+step 1985 ssq 9.0233-9.0234 reflect
+step 1986 ssq 9.0233-9.0234 reflect
+step 1987 ssq 9.0233-9.0234 contract inside
+step 1988 ssq 9.0233-9.0234 contract inside
+step 1989 ssq 9.0233-9.0234 contract outside
+step 1990 ssq 9.0233-9.0234 reflect
+step 1991 ssq 9.0233-9.0234 reflect
+step 1992 ssq 9.0233-9.0234 reflect
+step 1993 ssq 9.0233-9.0233 reflect
+step 1994 ssq 9.0233-9.0233 expand
+step 1995 ssq 9.0233-9.0233 reflect
+step 1996 ssq 9.0233-9.0233 reflect
+step 1997 ssq 9.0233-9.0233 expand
+step 1998 ssq 9.0233-9.0233 reflect
+step 1999 ssq 9.0233-9.0233 reflect
+step 2000 ssq 9.0232-9.0233 expand
+step 2001 ssq 9.0232-9.0233 reflect
+step 2002 ssq 9.0232-9.0233 reflect
+step 2003 ssq 9.0232-9.0233 reflect
+step 2004 ssq 9.0232-9.0233 reflect
+step 2005 ssq 9.0232-9.0233 reflect
+step 2006 ssq 9.0232-9.0233 reflect
+step 2007 ssq 9.0232-9.0233 reflect
+step 2008 ssq 9.0232-9.0233 reflect
+step 2009 ssq 9.0232-9.0233 expand
+step 2010 ssq 9.0232-9.0233 reflect
+step 2011 ssq 9.0232-9.0233 reflect
+step 2012 ssq 9.0232-9.0233 reflect
+step 2013 ssq 9.0232-9.0233 reflect
+step 2014 ssq 9.0232-9.0233 reflect
+step 2015 ssq 9.0232-9.0233 reflect
+step 2016 ssq 9.0232-9.0233 reflect
+step 2017 ssq 9.0232-9.0232 reflect
+step 2018 ssq 9.0232-9.0232 reflect
+step 2019 ssq 9.0232-9.0232 reflect
+step 2020 ssq 9.0231-9.0232 reflect
+step 2021 ssq 9.0231-9.0232 expand
+step 2022 ssq 9.0231-9.0232 reflect
+step 2023 ssq 9.0231-9.0232 reflect
+step 2024 ssq 9.0231-9.0232 reflect
+step 2025 ssq 9.0231-9.0232 expand
+step 2026 ssq 9.0231-9.0232 reflect
+step 2027 ssq 9.0231-9.0232 reflect
+step 2028 ssq 9.0231-9.0232 reflect
+step 2029 ssq 9.023-9.0232 expand
+step 2030 ssq 9.023-9.0232 reflect
+step 2031 ssq 9.023-9.0232 reflect
+step 2032 ssq 9.023-9.0231 reflect
+step 2033 ssq 9.023-9.0231 reflect
+step 2034 ssq 9.023-9.0231 reflect
+step 2035 ssq 9.023-9.0231 reflect
+step 2036 ssq 9.023-9.0231 reflect
+step 2037 ssq 9.023-9.0231 reflect
+step 2038 ssq 9.023-9.0231 reflect
+step 2039 ssq 9.0229-9.0231 expand
+step 2040 ssq 9.0229-9.0231 reflect
+step 2041 ssq 9.0229-9.023 reflect
+step 2042 ssq 9.0229-9.023 reflect
+step 2043 ssq 9.0229-9.023 reflect
+step 2044 ssq 9.0229-9.023 reflect
+step 2045 ssq 9.0229-9.023 expand
+step 2046 ssq 9.0229-9.023 reflect
+step 2047 ssq 9.0228-9.023 reflect
+step 2048 ssq 9.0228-9.023 contract inside
+step 2049 ssq 9.0228-9.023 contract inside
+step 2050 ssq 9.0228-9.023 contract inside
+step 2051 ssq 9.0228-9.023 reflect
+step 2052 ssq 9.0228-9.023 reflect
+step 2053 ssq 9.0228-9.0229 reflect
+step 2054 ssq 9.0228-9.0229 contract inside
+step 2055 ssq 9.0228-9.0229 reflect
+step 2056 ssq 9.0228-9.0229 reflect
+step 2057 ssq 9.0228-9.0229 reflect
+step 2058 ssq 9.0228-9.0229 contract inside
+step 2059 ssq 9.0228-9.0229 reflect
+step 2060 ssq 9.0228-9.0229 contract outside
+step 2061 ssq 9.0228-9.0229 reflect
+step 2062 ssq 9.0228-9.0229 contract inside
+step 2063 ssq 9.0228-9.0229 expand
+step 2064 ssq 9.0228-9.0229 reflect
+step 2065 ssq 9.0228-9.0229 contract inside
+step 2066 ssq 9.0228-9.0229 contract inside
+step 2067 ssq 9.0228-9.0229 contract inside
+step 2068 ssq 9.0228-9.0229 contract inside
+step 2069 ssq 9.0228-9.0229 contract inside
+step 2070 ssq 9.0228-9.0229 reflect
+step 2071 ssq 9.0228-9.0229 contract inside
+step 2072 ssq 9.0228-9.0229 reflect
+step 2073 ssq 9.0228-9.0229 reflect
+step 2074 ssq 9.0228-9.0229 contract inside
+step 2075 ssq 9.0228-9.0229 contract inside
+step 2076 ssq 9.0228-9.0229 reflect
+step 2077 ssq 9.0228-9.0228 reflect
+step 2078 ssq 9.0228-9.0228 contract inside
+step 2079 ssq 9.0228-9.0228 reflect
+step 2080 ssq 9.0228-9.0228 reflect
+step 2081 ssq 9.0228-9.0228 reflect
+step 2082 ssq 9.0228-9.0228 contract inside
+step 2083 ssq 9.0228-9.0228 reflect
+step 2084 ssq 9.0228-9.0228 reflect
+step 2085 ssq 9.0228-9.0228 reflect
+step 2086 ssq 9.0228-9.0228 reflect
+step 2087 ssq 9.0228-9.0228 reflect
+step 2088 ssq 9.0228-9.0228 reflect
+step 2089 ssq 9.0228-9.0228 contract inside
+step 2090 ssq 9.0228-9.0228 reflect
+step 2091 ssq 9.0228-9.0228 contract inside
+step 2092 ssq 9.0228-9.0228 reflect
+step 2093 ssq 9.0227-9.0228 reflect
+step 2094 ssq 9.0227-9.0228 reflect
+step 2095 ssq 9.0227-9.0228 reflect
+step 2096 ssq 9.0227-9.0228 reflect
+step 2097 ssq 9.0227-9.0228 contract inside
+step 2098 ssq 9.0227-9.0228 reflect
+step 2099 ssq 9.0227-9.0228 reflect
+step 2100 ssq 9.0227-9.0228 contract inside
+step 2101 ssq 9.0227-9.0228 expand
+step 2102 ssq 9.0227-9.0228 contract inside
+step 2103 ssq 9.0227-9.0228 contract inside
+step 2104 ssq 9.0227-9.0228 reflect
+step 2105 ssq 9.0227-9.0228 reflect
+step 2106 ssq 9.0227-9.0228 reflect
+step 2107 ssq 9.0227-9.0228 reflect
+step 2108 ssq 9.0227-9.0227 reflect
+step 2109 ssq 9.0227-9.0227 reflect
+step 2110 ssq 9.0227-9.0227 reflect
+step 2111 ssq 9.0227-9.0227 reflect
+step 2112 ssq 9.0227-9.0227 reflect
+step 2113 ssq 9.0227-9.0227 contract inside
+step 2114 ssq 9.0227-9.0227 contract inside
+step 2115 ssq 9.0227-9.0227 reflect
+step 2116 ssq 9.0227-9.0227 reflect
+step 2117 ssq 9.0227-9.0227 reflect
+step 2118 ssq 9.0227-9.0227 contract inside
+step 2119 ssq 9.0227-9.0227 expand
+step 2120 ssq 9.0227-9.0227 contract inside
+step 2121 ssq 9.0227-9.0227 reflect
+step 2122 ssq 9.0227-9.0227 reflect
+step 2123 ssq 9.0227-9.0227 contract inside
+step 2124 ssq 9.0227-9.0227 contract inside
+step 2125 ssq 9.0227-9.0227 reflect
+step 2126 ssq 9.0227-9.0227 reflect
+step 2127 ssq 9.0227-9.0227 contract inside
+step 2128 ssq 9.0227-9.0227 reflect
+step 2129 ssq 9.0227-9.0227 reflect
+step 2130 ssq 9.0227-9.0227 reflect
+step 2131 ssq 9.0227-9.0227 contract inside
+step 2132 ssq 9.0227-9.0227 reflect
+step 2133 ssq 9.0227-9.0227 contract inside
+step 2134 ssq 9.0227-9.0227 contract inside
+step 2135 ssq 9.0227-9.0227 reflect
+step 2136 ssq 9.0227-9.0227 reflect
+step 2137 ssq 9.0227-9.0227 reflect
+step 2138 ssq 9.0227-9.0227 reflect
+step 2139 ssq 9.0227-9.0227 contract inside
+step 2140 ssq 9.0227-9.0227 contract inside
+step 2141 ssq 9.0227-9.0227 reflect
+step 2142 ssq 9.0227-9.0227 reflect
+step 2143 ssq 9.0227-9.0227 contract inside
+step 2144 ssq 9.0227-9.0227 reflect
+step 2145 ssq 9.0227-9.0227 reflect
+step 2146 ssq 9.0227-9.0227 contract inside
+step 2147 ssq 9.0227-9.0227 reflect
+step 2148 ssq 9.0227-9.0227 contract inside
+step 2149 ssq 9.0227-9.0227 contract outside
+step 2150 ssq 9.0227-9.0227 contract inside
+step 2151 ssq 9.0227-9.0227 contract inside
+step 2152 ssq 9.0227-9.0227 reflect
+step 2153 ssq 9.0227-9.0227 reflect
+step 2154 ssq 9.0227-9.0227 reflect
+step 2155 ssq 9.0227-9.0227 reflect
+step 2156 ssq 9.0227-9.0227 reflect
+step 2157 ssq 9.0227-9.0227 contract inside
+step 2158 ssq 9.0227-9.0227 reflect
+step 2159 ssq 9.0227-9.0227 contract inside
+step 2160 ssq 9.0227-9.0227 contract inside
+step 2161 ssq 9.0227-9.0227 expand
+step 2162 ssq 9.0227-9.0227 contract inside
+step 2163 ssq 9.0227-9.0227 reflect
+step 2164 ssq 9.0227-9.0227 reflect
+step 2165 ssq 9.0227-9.0227 contract inside
+step 2166 ssq 9.0227-9.0227 contract inside
+step 2167 ssq 9.0227-9.0227 reflect
+step 2168 ssq 9.0227-9.0227 reflect
+step 2169 ssq 9.0227-9.0227 reflect
+step 2170 ssq 9.0227-9.0227 reflect
+step 2171 ssq 9.0227-9.0227 reflect
+step 2172 ssq 9.0227-9.0227 contract inside
+step 2173 ssq 9.0227-9.0227 reflect
+step 2174 ssq 9.0227-9.0227 reflect
+step 2175 ssq 9.0227-9.0227 reflect
+step 2176 ssq 9.0227-9.0227 reflect
+step 2177 ssq 9.0227-9.0227 reflect
+step 2178 ssq 9.0227-9.0227 expand
+step 2179 ssq 9.0227-9.0227 reflect
+step 2180 ssq 9.0227-9.0227 expand
+step 2181 ssq 9.0227-9.0227 reflect
+step 2182 ssq 9.0227-9.0227 reflect
+step 2183 ssq 9.0227-9.0227 contract inside
+step 2184 ssq 9.0227-9.0227 contract inside
+step 2185 ssq 9.0227-9.0227 reflect
+step 2186 ssq 9.0227-9.0227 reflect
+step 2187 ssq 9.0227-9.0227 reflect
+step 2188 ssq 9.0226-9.0227 expand
+step 2189 ssq 9.0226-9.0227 expand
+step 2190 ssq 9.0226-9.0227 reflect
+step 2191 ssq 9.0226-9.0227 reflect
+step 2192 ssq 9.0226-9.0227 reflect
+step 2193 ssq 9.0226-9.0227 expand
+step 2194 ssq 9.0226-9.0227 reflect
+step 2195 ssq 9.0226-9.0227 contract inside
+step 2196 ssq 9.0226-9.0227 reflect
+step 2197 ssq 9.0226-9.0227 reflect
+step 2198 ssq 9.0226-9.0227 reflect
+step 2199 ssq 9.0226-9.0227 reflect
+step 2200 ssq 9.0226-9.0226 reflect
+step 2201 ssq 9.0226-9.0226 reflect
+step 2202 ssq 9.0226-9.0226 reflect
+step 2203 ssq 9.0226-9.0226 contract inside
+step 2204 ssq 9.0226-9.0226 reflect
+step 2205 ssq 9.0226-9.0226 reflect
+step 2206 ssq 9.0226-9.0226 reflect
+step 2207 ssq 9.0226-9.0226 contract inside
+step 2208 ssq 9.0226-9.0226 contract outside
+step 2209 ssq 9.0226-9.0226 expand
+step 2210 ssq 9.0226-9.0226 reflect
+step 2211 ssq 9.0226-9.0226 reflect
+step 2212 ssq 9.0226-9.0226 reflect
+step 2213 ssq 9.0226-9.0226 contract inside
+step 2214 ssq 9.0226-9.0226 reflect
+step 2215 ssq 9.0226-9.0226 reflect
+step 2216 ssq 9.0226-9.0226 expand
+step 2217 ssq 9.0226-9.0226 reflect
+step 2218 ssq 9.0226-9.0226 reflect
+step 2219 ssq 9.0226-9.0226 expand
+step 2220 ssq 9.0226-9.0226 reflect
+step 2221 ssq 9.0226-9.0226 reflect
+step 2222 ssq 9.0226-9.0226 reflect
+step 2223 ssq 9.0226-9.0226 reflect
+step 2224 ssq 9.0226-9.0226 expand
+step 2225 ssq 9.0226-9.0226 reflect
+step 2226 ssq 9.0226-9.0226 reflect
+step 2227 ssq 9.0226-9.0226 reflect
+step 2228 ssq 9.0226-9.0226 reflect
+step 2229 ssq 9.0226-9.0226 reflect
+step 2230 ssq 9.0226-9.0226 reflect
+step 2231 ssq 9.0226-9.0226 reflect
+step 2232 ssq 9.0226-9.0226 contract inside
+step 2233 ssq 9.0226-9.0226 reflect
+step 2234 ssq 9.0226-9.0226 reflect
+step 2235 ssq 9.0226-9.0226 reflect
+step 2236 ssq 9.0226-9.0226 reflect
+step 2237 ssq 9.0226-9.0226 reflect
+step 2238 ssq 9.0226-9.0226 reflect
+step 2239 ssq 9.0226-9.0226 reflect
+step 2240 ssq 9.0226-9.0226 reflect
+step 2241 ssq 9.0226-9.0226 expand
+step 2242 ssq 9.0226-9.0226 contract inside
+step 2243 ssq 9.0226-9.0226 reflect
+step 2244 ssq 9.0226-9.0226 contract inside
+step 2245 ssq 9.0226-9.0226 reflect
+step 2246 ssq 9.0226-9.0226 reflect
+step 2247 ssq 9.0226-9.0226 reflect
+step 2248 ssq 9.0226-9.0226 reflect
+step 2249 ssq 9.0226-9.0226 reflect
+step 2250 ssq 9.0226-9.0226 reflect
+step 2251 ssq 9.0226-9.0226 contract inside
+step 2252 ssq 9.0226-9.0226 reflect
+step 2253 ssq 9.0226-9.0226 reflect
+step 2254 ssq 9.0226-9.0226 contract inside
+step 2255 ssq 9.0226-9.0226 reflect
+step 2256 ssq 9.0226-9.0226 reflect
+step 2257 ssq 9.0226-9.0226 reflect
+step 2258 ssq 9.0226-9.0226 reflect
+step 2259 ssq 9.0226-9.0226 contract inside
+step 2260 ssq 9.0226-9.0226 reflect
+step 2261 ssq 9.0226-9.0226 contract inside
+step 2262 ssq 9.0226-9.0226 reflect
+step 2263 ssq 9.0226-9.0226 reflect
+step 2264 ssq 9.0226-9.0226 reflect
+step 2265 ssq 9.0226-9.0226 expand
+step 2266 ssq 9.0226-9.0226 reflect
+step 2267 ssq 9.0226-9.0226 reflect
+step 2268 ssq 9.0226-9.0226 expand
+step 2269 ssq 9.0226-9.0226 reflect
+step 2270 ssq 9.0226-9.0226 reflect
+step 2271 ssq 9.0226-9.0226 reflect
+step 2272 ssq 9.0226-9.0226 reflect
+step 2273 ssq 9.0226-9.0226 reflect
+step 2274 ssq 9.0226-9.0226 contract inside
+step 2275 ssq 9.0226-9.0226 reflect
+step 2276 ssq 9.0226-9.0226 contract inside
+step 2277 ssq 9.0226-9.0226 reflect
+step 2278 ssq 9.0226-9.0226 reflect
+step 2279 ssq 9.0226-9.0226 contract inside
+step 2280 ssq 9.0226-9.0226 reflect
+step 2281 ssq 9.0226-9.0226 expand
+step 2282 ssq 9.0226-9.0226 expand
+step 2283 ssq 9.0226-9.0226 reflect
+step 2284 ssq 9.0226-9.0226 reflect
+step 2285 ssq 9.0226-9.0226 reflect
+step 2286 ssq 9.0226-9.0226 reflect
+step 2287 ssq 9.0226-9.0226 reflect
+step 2288 ssq 9.0226-9.0226 contract inside
+step 2289 ssq 9.0226-9.0226 reflect
+step 2290 ssq 9.0226-9.0226 contract inside
+step 2291 ssq 9.0226-9.0226 reflect
+step 2292 ssq 9.0226-9.0226 contract inside
+step 2293 ssq 9.0226-9.0226 reflect
+step 2294 ssq 9.0226-9.0226 reflect
+step 2295 ssq 9.0226-9.0226 contract inside
+step 2296 ssq 9.0226-9.0226 contract inside
+step 2297 ssq 9.0226-9.0226 reflect
+step 2298 ssq 9.0226-9.0226 contract inside
+step 2299 ssq 9.0226-9.0226 reflect
+step 2300 ssq 9.0226-9.0226 contract outside
+step 2301 ssq 9.0226-9.0226 reflect
+step 2302 ssq 9.0226-9.0226 contract inside
+step 2303 ssq 9.0226-9.0226 reflect
+step 2304 ssq 9.0226-9.0226 contract inside
+step 2305 ssq 9.0226-9.0226 reflect
+step 2306 ssq 9.0226-9.0226 reflect
+step 2307 ssq 9.0226-9.0226 contract inside
+step 2308 ssq 9.0226-9.0226 reflect
+step 2309 ssq 9.0226-9.0226 reflect
+step 2310 ssq 9.0226-9.0226 contract inside
+step 2311 ssq 9.0226-9.0226 contract inside
+step 2312 ssq 9.0226-9.0226 reflect
+step 2313 ssq 9.0226-9.0226 contract outside
+step 2314 ssq 9.0226-9.0226 reflect
+step 2315 ssq 9.0226-9.0226 reflect
+step 2316 ssq 9.0226-9.0226 contract inside
+step 2317 ssq 9.0226-9.0226 reflect
+step 2318 ssq 9.0226-9.0226 contract inside
+step 2319 ssq 9.0226-9.0226 contract inside
+step 2320 ssq 9.0226-9.0226 contract inside
+step 2321 ssq 9.0226-9.0226 contract inside
+step 2322 ssq 9.0226-9.0226 reflect
+step 2323 ssq 9.0226-9.0226 reflect
+step 2324 ssq 9.0226-9.0226 contract inside
+step 2325 ssq 9.0226-9.0226 reflect
+step 2326 ssq 9.0226-9.0226 reflect
+step 2327 ssq 9.0226-9.0226 reflect
+step 2328 ssq 9.0226-9.0226 reflect
+step 2329 ssq 9.0226-9.0226 contract inside
+step 2330 ssq 9.0226-9.0226 reflect
+step 2331 ssq 9.0226-9.0226 contract inside
+step 2332 ssq 9.0226-9.0226 reflect
+step 2333 ssq 9.0226-9.0226 contract inside
+step 2334 ssq 9.0226-9.0226 reflect
+step 2335 ssq 9.0226-9.0226 contract inside
+step 2336 ssq 9.0226-9.0226 contract inside
+step 2337 ssq 9.0226-9.0226 contract inside
+step 2338 ssq 9.0226-9.0226 reflect
+step 2339 ssq 9.0226-9.0226 reflect
+step 2340 ssq 9.0226-9.0226 contract inside
+step 2341 ssq 9.0226-9.0226 reflect
+step 2342 ssq 9.0226-9.0226 reflect
+step 2343 ssq 9.0226-9.0226 reflect
+step 2344 ssq 9.0226-9.0226 reflect
+step 2345 ssq 9.0226-9.0226 reflect
+step 2346 ssq 9.0226-9.0226 contract inside
+step 2347 ssq 9.0226-9.0226 reflect
+step 2348 ssq 9.0226-9.0226 reflect
+step 2349 ssq 9.0226-9.0226 reflect
+step 2350 ssq 9.0226-9.0226 contract inside
+step 2351 ssq 9.0226-9.0226 contract inside
+step 2352 ssq 9.0226-9.0226 reflect
+step 2353 ssq 9.0226-9.0226 reflect
+step 2354 ssq 9.0226-9.0226 contract inside
+step 2355 ssq 9.0226-9.0226 reflect
+step 2356 ssq 9.0226-9.0226 reflect
+step 2357 ssq 9.0226-9.0226 reflect
+step 2358 ssq 9.0226-9.0226 reflect
+step 2359 ssq 9.0226-9.0226 reflect
+step 2360 ssq 9.0226-9.0226 reflect
+step 2361 ssq 9.0226-9.0226 reflect
+step 2362 ssq 9.0226-9.0226 contract inside
+step 2363 ssq 9.0226-9.0226 reflect
+step 2364 ssq 9.0226-9.0226 reflect
+step 2365 ssq 9.0226-9.0226 reflect
+step 2366 ssq 9.0226-9.0226 contract outside
+step 2367 ssq 9.0226-9.0226 reflect
+step 2368 ssq 9.0226-9.0226 reflect
+step 2369 ssq 9.0226-9.0226 reflect
+step 2370 ssq 9.0226-9.0226 reflect
+step 2371 ssq 9.0226-9.0226 reflect
+step 2372 ssq 9.0226-9.0226 contract inside
+step 2373 ssq 9.0226-9.0226 reflect
+step 2374 ssq 9.0226-9.0226 reflect
+step 2375 ssq 9.0226-9.0226 contract inside
+step 2376 ssq 9.0226-9.0226 expand
+step 2377 ssq 9.0226-9.0226 reflect
+step 2378 ssq 9.0226-9.0226 reflect
+step 2379 ssq 9.0226-9.0226 contract inside
+step 2380 ssq 9.0226-9.0226 reflect
+step 2381 ssq 9.0226-9.0226 reflect
+step 2382 ssq 9.0226-9.0226 expand
+step 2383 ssq 9.0226-9.0226 reflect
+step 2384 ssq 9.0226-9.0226 reflect
+step 2385 ssq 9.0226-9.0226 expand
+step 2386 ssq 9.0226-9.0226 reflect
+step 2387 ssq 9.0226-9.0226 reflect
+step 2388 ssq 9.0226-9.0226 reflect
+step 2389 ssq 9.0226-9.0226 reflect
+step 2390 ssq 9.0226-9.0226 reflect
+step 2391 ssq 9.0226-9.0226 reflect
+step 2392 ssq 9.0226-9.0226 expand
+step 2393 ssq 9.0226-9.0226 reflect
+step 2394 ssq 9.0226-9.0226 reflect
+step 2395 ssq 9.0226-9.0226 reflect
+step 2396 ssq 9.0226-9.0226 reflect
+step 2397 ssq 9.0226-9.0226 expand
+step 2398 ssq 9.0226-9.0226 contract inside
+step 2399 ssq 9.0226-9.0226 reflect
+step 2400 ssq 9.0226-9.0226 reflect
+step 2401 ssq 9.0226-9.0226 reflect
+step 2402 ssq 9.0226-9.0226 reflect
+step 2403 ssq 9.0226-9.0226 reflect
+step 2404 ssq 9.0226-9.0226 expand
+step 2405 ssq 9.0226-9.0226 contract inside
+step 2406 ssq 9.0226-9.0226 reflect
+step 2407 ssq 9.0226-9.0226 reflect
+step 2408 ssq 9.0226-9.0226 reflect
+step 2409 ssq 9.0226-9.0226 reflect
+step 2410 ssq 9.0226-9.0226 reflect
+step 2411 ssq 9.0226-9.0226 reflect
+step 2412 ssq 9.0226-9.0226 expand
+step 2413 ssq 9.0226-9.0226 contract inside
+step 2414 ssq 9.0226-9.0226 reflect
+step 2415 ssq 9.0226-9.0226 reflect
+step 2416 ssq 9.0226-9.0226 reflect
+step 2417 ssq 9.0226-9.0226 reflect
+step 2418 ssq 9.0226-9.0226 reflect
+step 2419 ssq 9.0226-9.0226 reflect
+step 2420 ssq 9.0226-9.0226 reflect
+step 2421 ssq 9.0226-9.0226 reflect
+step 2422 ssq 9.0226-9.0226 reflect
+step 2423 ssq 9.0226-9.0226 reflect
+step 2424 ssq 9.0226-9.0226 reflect
+step 2425 ssq 9.0226-9.0226 reflect
+step 2426 ssq 9.0226-9.0226 reflect
+step 2427 ssq 9.0226-9.0226 reflect
+step 2428 ssq 9.0226-9.0226 reflect
+step 2429 ssq 9.0226-9.0226 expand
+step 2430 ssq 9.0226-9.0226 contract inside
+step 2431 ssq 9.0226-9.0226 reflect
+step 2432 ssq 9.0226-9.0226 reflect
+step 2433 ssq 9.0226-9.0226 reflect
+step 2434 ssq 9.0226-9.0226 contract outside
+step 2435 ssq 9.0226-9.0226 reflect
+step 2436 ssq 9.0226-9.0226 contract inside
+step 2437 ssq 9.0226-9.0226 contract inside
+step 2438 ssq 9.0226-9.0226 reflect
+step 2439 ssq 9.0226-9.0226 reflect
+step 2440 ssq 9.0226-9.0226 reflect
+step 2441 ssq 9.0226-9.0226 contract inside
+step 2442 ssq 9.0226-9.0226 reflect
+step 2443 ssq 9.0226-9.0226 expand
+step 2444 ssq 9.0226-9.0226 contract inside
+step 2445 ssq 9.0226-9.0226 reflect
+step 2446 ssq 9.0226-9.0226 reflect
+step 2447 ssq 9.0226-9.0226 reflect
+step 2448 ssq 9.0226-9.0226 reflect
+step 2449 ssq 9.0226-9.0226 reflect
+step 2450 ssq 9.0226-9.0226 reflect
+step 2451 ssq 9.0226-9.0226 expand
+step 2452 ssq 9.0226-9.0226 reflect
+step 2453 ssq 9.0226-9.0226 reflect
+step 2454 ssq 9.0226-9.0226 reflect
+step 2455 ssq 9.0226-9.0226 contract inside
+step 2456 ssq 9.0226-9.0226 contract inside
+step 2457 ssq 9.0226-9.0226 reflect
+step 2458 ssq 9.0226-9.0226 reflect
+step 2459 ssq 9.0226-9.0226 reflect
+step 2460 ssq 9.0226-9.0226 reflect
+step 2461 ssq 9.0226-9.0226 reflect
+step 2462 ssq 9.0226-9.0226 contract inside
+step 2463 ssq 9.0226-9.0226 reflect
+step 2464 ssq 9.0226-9.0226 contract inside
+step 2465 ssq 9.0226-9.0226 contract outside
+step 2466 ssq 9.0226-9.0226 expand
+step 2467 ssq 9.0226-9.0226 contract inside
+step 2468 ssq 9.0226-9.0226 contract inside
+step 2469 ssq 9.0226-9.0226 contract inside
+step 2470 ssq 9.0226-9.0226 reflect
+step 2471 ssq 9.0226-9.0226 reflect
+step 2472 ssq 9.0226-9.0226 reflect
+step 2473 ssq 9.0226-9.0226 reflect
+step 2474 ssq 9.0226-9.0226 contract inside
+step 2475 ssq 9.0226-9.0226 reflect
+step 2476 ssq 9.0226-9.0226 contract inside
+step 2477 ssq 9.0226-9.0226 expand
+step 2478 ssq 9.0226-9.0226 reflect
+step 2479 ssq 9.0226-9.0226 reflect
+step 2480 ssq 9.0226-9.0226 reflect
+step 2481 ssq 9.0226-9.0226 reflect
+step 2482 ssq 9.0226-9.0226 contract inside
+step 2483 ssq 9.0226-9.0226 expand
+step 2484 ssq 9.0226-9.0226 reflect
+step 2485 ssq 9.0226-9.0226 reflect
+step 2486 ssq 9.0226-9.0226 reflect
+step 2487 ssq 9.0226-9.0226 reflect
+step 2488 ssq 9.0226-9.0226 reflect
+step 2489 ssq 9.0226-9.0226 reflect
+step 2490 ssq 9.0226-9.0226 contract inside
+step 2491 ssq 9.0226-9.0226 reflect
+step 2492 ssq 9.0226-9.0226 contract inside
+step 2493 ssq 9.0226-9.0226 expand
+step 2494 ssq 9.0226-9.0226 reflect
+step 2495 ssq 9.0226-9.0226 expand
+step 2496 ssq 9.0226-9.0226 reflect
+step 2497 ssq 9.0226-9.0226 reflect
+step 2498 ssq 9.0226-9.0226 expand
+step 2499 ssq 9.0226-9.0226 reflect
+step 2500 ssq 9.0226-9.0226 reflect
+step 2501 ssq 9.0226-9.0226 reflect
+step 2502 ssq 9.0226-9.0226 reflect
+step 2503 ssq 9.0226-9.0226 expand
+step 2504 ssq 9.0226-9.0226 reflect
+step 2505 ssq 9.0226-9.0226 reflect
+step 2506 ssq 9.0226-9.0226 contract inside
+step 2507 ssq 9.0226-9.0226 reflect
+step 2508 ssq 9.0226-9.0226 reflect
+step 2509 ssq 9.0226-9.0226 reflect
+step 2510 ssq 9.0226-9.0226 reflect
+step 2511 ssq 9.0226-9.0226 expand
+step 2512 ssq 9.0226-9.0226 reflect
+step 2513 ssq 9.0226-9.0226 reflect
+step 2514 ssq 9.0226-9.0226 expand
+step 2515 ssq 9.0226-9.0226 reflect
+step 2516 ssq 9.0226-9.0226 reflect
+step 2517 ssq 9.0226-9.0226 contract inside
+step 2518 ssq 9.0226-9.0226 reflect
+step 2519 ssq 9.0226-9.0226 reflect
+step 2520 ssq 9.0226-9.0226 reflect
+step 2521 ssq 9.0226-9.0226 reflect
+step 2522 ssq 9.0226-9.0226 reflect
+step 2523 ssq 9.0226-9.0226 reflect
+step 2524 ssq 9.0226-9.0226 reflect
+step 2525 ssq 9.0226-9.0226 reflect
+step 2526 ssq 9.0226-9.0226 reflect
+step 2527 ssq 9.0226-9.0226 reflect
+step 2528 ssq 9.0226-9.0226 reflect
+step 2529 ssq 9.0226-9.0226 contract inside
+step 2530 ssq 9.0226-9.0226 reflect
+step 2531 ssq 9.0226-9.0226 reflect
+step 2532 ssq 9.0226-9.0226 reflect
+step 2533 ssq 9.0226-9.0226 contract inside
+step 2534 ssq 9.0226-9.0226 expand
+step 2535 ssq 9.0226-9.0226 reflect
+step 2536 ssq 9.0226-9.0226 reflect
+step 2537 ssq 9.0226-9.0226 reflect
+step 2538 ssq 9.0226-9.0226 reflect
+step 2539 ssq 9.0226-9.0226 reflect
+step 2540 ssq 9.0226-9.0226 expand
+step 2541 ssq 9.0226-9.0226 reflect
+step 2542 ssq 9.0226-9.0226 contract inside
+step 2543 ssq 9.0226-9.0226 reflect
+step 2544 ssq 9.0226-9.0226 reflect
+step 2545 ssq 9.0226-9.0226 reflect
+step 2546 ssq 9.0226-9.0226 reflect
+step 2547 ssq 9.0226-9.0226 reflect
+step 2548 ssq 9.0226-9.0226 expand
+step 2549 ssq 9.0226-9.0226 reflect
+step 2550 ssq 9.0226-9.0226 reflect
+step 2551 ssq 9.0226-9.0226 reflect
+step 2552 ssq 9.0226-9.0226 expand
+step 2553 ssq 9.0226-9.0226 reflect
+step 2554 ssq 9.0226-9.0226 expand
+step 2555 ssq 9.0226-9.0226 expand
+step 2556 ssq 9.0226-9.0226 reflect
+step 2557 ssq 9.0226-9.0226 reflect
+step 2558 ssq 9.0226-9.0226 reflect
+step 2559 ssq 9.0226-9.0226 reflect
+step 2560 ssq 9.0226-9.0226 expand
+step 2561 ssq 9.0226-9.0226 reflect
+step 2562 ssq 9.0226-9.0226 reflect
+step 2563 ssq 9.0226-9.0226 expand
+step 2564 ssq 9.0226-9.0226 reflect
+step 2565 ssq 9.0226-9.0226 reflect
+step 2566 ssq 9.0226-9.0226 reflect
+step 2567 ssq 9.0226-9.0226 reflect
+step 2568 ssq 9.0226-9.0226 expand
+step 2569 ssq 9.0226-9.0226 expand
+step 2570 ssq 9.0226-9.0226 reflect
+step 2571 ssq 9.0226-9.0226 reflect
+step 2572 ssq 9.0226-9.0226 reflect
+step 2573 ssq 9.0226-9.0226 expand
+step 2574 ssq 9.0226-9.0226 expand
+step 2575 ssq 9.0226-9.0226 reflect
+step 2576 ssq 9.0226-9.0226 reflect
+step 2577 ssq 9.0226-9.0226 reflect
+step 2578 ssq 9.0226-9.0226 reflect
+step 2579 ssq 9.0226-9.0226 reflect
+step 2580 ssq 9.0226-9.0226 reflect
+step 2581 ssq 9.0226-9.0226 reflect
+step 2582 ssq 9.0226-9.0226 reflect
+step 2583 ssq 9.0226-9.0226 contract inside
+step 2584 ssq 9.0226-9.0226 reflect
+step 2585 ssq 9.0226-9.0226 reflect
+step 2586 ssq 9.0226-9.0226 reflect
+step 2587 ssq 9.0226-9.0226 reflect
+step 2588 ssq 9.0226-9.0226 reflect
+step 2589 ssq 9.0226-9.0226 contract inside
+step 2590 ssq 9.0226-9.0226 reflect
+step 2591 ssq 9.0226-9.0226 reflect
+step 2592 ssq 9.0226-9.0226 reflect
+step 2593 ssq 9.0226-9.0226 reflect
+step 2594 ssq 9.0226-9.0226 reflect
+step 2595 ssq 9.0226-9.0226 contract inside
+step 2596 ssq 9.0226-9.0226 reflect
+step 2597 ssq 9.0226-9.0226 contract inside
+step 2598 ssq 9.0226-9.0226 reflect
+step 2599 ssq 9.0226-9.0226 contract inside
+step 2600 ssq 9.0226-9.0226 contract inside
+step 2601 ssq 9.0226-9.0226 reflect
+step 2602 ssq 9.0226-9.0226 reflect
+step 2603 ssq 9.0226-9.0226 contract inside
+step 2604 ssq 9.0226-9.0226 reflect
+step 2605 ssq 9.0226-9.0226 contract inside
+step 2606 ssq 9.0226-9.0226 reflect
+step 2607 ssq 9.0226-9.0226 expand
+step 2608 ssq 9.0226-9.0226 reflect
+step 2609 ssq 9.0226-9.0226 contract inside
+step 2610 ssq 9.0226-9.0226 reflect
+step 2611 ssq 9.0226-9.0226 reflect
+step 2612 ssq 9.0226-9.0226 reflect
+step 2613 ssq 9.0226-9.0226 reflect
+step 2614 ssq 9.0226-9.0226 reflect
+step 2615 ssq 9.0226-9.0226 reflect
+step 2616 ssq 9.0226-9.0226 reflect
+step 2617 ssq 9.0226-9.0226 expand
+step 2618 ssq 9.0226-9.0226 reflect
+step 2619 ssq 9.0226-9.0226 reflect
+step 2620 ssq 9.0226-9.0226 reflect
+step 2621 ssq 9.0226-9.0226 expand
+step 2622 ssq 9.0226-9.0226 reflect
+step 2623 ssq 9.0226-9.0226 reflect
+step 2624 ssq 9.0226-9.0226 reflect
+step 2625 ssq 9.0226-9.0226 contract inside
+step 2626 ssq 9.0226-9.0226 contract inside
+step 2627 ssq 9.0226-9.0226 contract outside
+step 2628 ssq 9.0226-9.0226 reflect
+step 2629 ssq 9.0226-9.0226 contract inside
+step 2630 ssq 9.0226-9.0226 expand
+step 2631 ssq 9.0226-9.0226 reflect
+step 2632 ssq 9.0226-9.0226 reflect
+step 2633 ssq 9.0226-9.0226 reflect
+step 2634 ssq 9.0226-9.0226 reflect
+step 2635 ssq 9.0226-9.0226 reflect
+step 2636 ssq 9.0226-9.0226 reflect
+step 2637 ssq 9.0226-9.0226 reflect
+step 2638 ssq 9.0226-9.0226 expand
+step 2639 ssq 9.0226-9.0226 reflect
+step 2640 ssq 9.0226-9.0226 reflect
+step 2641 ssq 9.0226-9.0226 reflect
+step 2642 ssq 9.0226-9.0226 reflect
+step 2643 ssq 9.0226-9.0226 reflect
+step 2644 ssq 9.0226-9.0226 expand
+step 2645 ssq 9.0226-9.0226 contract inside
+step 2646 ssq 9.0226-9.0226 expand
+step 2647 ssq 9.0226-9.0226 reflect
+step 2648 ssq 9.0226-9.0226 reflect
+step 2649 ssq 9.0226-9.0226 reflect
+step 2650 ssq 9.0226-9.0226 expand
+step 2651 ssq 9.0226-9.0226 reflect
+step 2652 ssq 9.0226-9.0226 reflect
+step 2653 ssq 9.0226-9.0226 reflect
+step 2654 ssq 9.0226-9.0226 reflect
+step 2655 ssq 9.0226-9.0226 expand
+step 2656 ssq 9.0226-9.0226 reflect
+step 2657 ssq 9.0226-9.0226 reflect
+step 2658 ssq 9.0226-9.0226 expand
+step 2659 ssq 9.0226-9.0226 reflect
+step 2660 ssq 9.0226-9.0226 reflect
+step 2661 ssq 9.0226-9.0226 expand
+step 2662 ssq 9.0226-9.0226 reflect
+step 2663 ssq 9.0226-9.0226 reflect
+step 2664 ssq 9.0226-9.0226 reflect
+step 2665 ssq 9.0226-9.0226 reflect
+step 2666 ssq 9.0226-9.0226 reflect
+step 2667 ssq 9.0226-9.0226 expand
+step 2668 ssq 9.0226-9.0226 reflect
+step 2669 ssq 9.0226-9.0226 reflect
+step 2670 ssq 9.0226-9.0226 reflect
+step 2671 ssq 9.0226-9.0226 reflect
+step 2672 ssq 9.0226-9.0226 expand
+step 2673 ssq 9.0226-9.0226 reflect
+step 2674 ssq 9.0226-9.0226 reflect
+step 2675 ssq 9.0226-9.0226 reflect
+step 2676 ssq 9.0226-9.0226 reflect
+step 2677 ssq 9.0226-9.0226 contract outside
+step 2678 ssq 9.0226-9.0226 reflect
+step 2679 ssq 9.0226-9.0226 reflect
+step 2680 ssq 9.0226-9.0226 expand
+step 2681 ssq 9.0226-9.0226 reflect
+step 2682 ssq 9.0226-9.0226 reflect
+step 2683 ssq 9.0226-9.0226 reflect
+step 2684 ssq 9.0226-9.0226 reflect
+step 2685 ssq 9.0226-9.0226 expand
+step 2686 ssq 9.0226-9.0226 reflect
+step 2687 ssq 9.0226-9.0226 reflect
+step 2688 ssq 9.0226-9.0226 reflect
+step 2689 ssq 9.0226-9.0226 reflect
+step 2690 ssq 9.0226-9.0226 contract inside
+step 2691 ssq 9.0226-9.0226 reflect
+step 2692 ssq 9.0226-9.0226 reflect
+step 2693 ssq 9.0226-9.0226 reflect
+step 2694 ssq 9.0226-9.0226 expand
+step 2695 ssq 9.0226-9.0226 reflect
+step 2696 ssq 9.0226-9.0226 reflect
+step 2697 ssq 9.0226-9.0226 expand
+step 2698 ssq 9.0226-9.0226 reflect
+step 2699 ssq 9.0226-9.0226 reflect
+step 2700 ssq 9.0226-9.0226 reflect
+step 2701 ssq 9.0226-9.0226 expand
+step 2702 ssq 9.0226-9.0226 reflect
+step 2703 ssq 9.0226-9.0226 reflect
+step 2704 ssq 9.0226-9.0226 reflect
+step 2705 ssq 9.0226-9.0226 reflect
+step 2706 ssq 9.0226-9.0226 reflect
+step 2707 ssq 9.0226-9.0226 reflect
+step 2708 ssq 9.0226-9.0226 reflect
+step 2709 ssq 9.0226-9.0226 reflect
+step 2710 ssq 9.0226-9.0226 reflect
+step 2711 ssq 9.0226-9.0226 reflect
+step 2712 ssq 9.0226-9.0226 reflect
+step 2713 ssq 9.0226-9.0226 reflect
+step 2714 ssq 9.0226-9.0226 reflect
+step 2715 ssq 9.0226-9.0226 expand
+step 2716 ssq 9.0226-9.0226 reflect
+step 2717 ssq 9.0226-9.0226 reflect
+step 2718 ssq 9.0226-9.0226 reflect
+step 2719 ssq 9.0226-9.0226 expand
+step 2720 ssq 9.0226-9.0226 reflect
+step 2721 ssq 9.0226-9.0226 reflect
+step 2722 ssq 9.0226-9.0226 reflect
+step 2723 ssq 9.0226-9.0226 reflect
+step 2724 ssq 9.0226-9.0226 reflect
+step 2725 ssq 9.0226-9.0226 reflect
+step 2726 ssq 9.0226-9.0226 reflect
+step 2727 ssq 9.0226-9.0226 reflect
+step 2728 ssq 9.0226-9.0226 reflect
+step 2729 ssq 9.0226-9.0226 reflect
+step 2730 ssq 9.0226-9.0226 reflect
+step 2731 ssq 9.0226-9.0226 reflect
+step 2732 ssq 9.0226-9.0226 reflect
+step 2733 ssq 9.0226-9.0226 reflect
+step 2734 ssq 9.0226-9.0226 reflect
+step 2735 ssq 9.0226-9.0226 reflect
+step 2736 ssq 9.0226-9.0226 reflect
+step 2737 ssq 9.0226-9.0226 reflect
+step 2738 ssq 9.0226-9.0226 reflect
+step 2739 ssq 9.0226-9.0226 reflect
+step 2740 ssq 9.0226-9.0226 reflect
+step 2741 ssq 9.0226-9.0226 reflect
+step 2742 ssq 9.0226-9.0226 reflect
+step 2743 ssq 9.0226-9.0226 reflect
+step 2744 ssq 9.0226-9.0226 reflect
+step 2745 ssq 9.0226-9.0226 contract inside
+step 2746 ssq 9.0226-9.0226 contract inside
+step 2747 ssq 9.0226-9.0226 expand
+step 2748 ssq 9.0226-9.0226 reflect
+step 2749 ssq 9.0226-9.0226 reflect
+step 2750 ssq 9.0226-9.0226 reflect
+step 2751 ssq 9.0226-9.0226 reflect
+step 2752 ssq 9.0226-9.0226 reflect
+step 2753 ssq 9.0226-9.0226 contract inside
+step 2754 ssq 9.0226-9.0226 reflect
+step 2755 ssq 9.0226-9.0226 contract outside
+step 2756 ssq 9.0226-9.0226 reflect
+step 2757 ssq 9.0226-9.0226 reflect
+step 2758 ssq 9.0226-9.0226 reflect
+step 2759 ssq 9.0226-9.0226 reflect
+step 2760 ssq 9.0226-9.0226 contract inside
+step 2761 ssq 9.0226-9.0226 contract inside
+step 2762 ssq 9.0226-9.0226 reflect
+step 2763 ssq 9.0226-9.0226 reflect
+step 2764 ssq 9.0226-9.0226 reflect
+step 2765 ssq 9.0226-9.0226 reflect
+step 2766 ssq 9.0226-9.0226 reflect
+step 2767 ssq 9.0226-9.0226 contract inside
+step 2768 ssq 9.0226-9.0226 contract inside
+step 2769 ssq 9.0226-9.0226 contract inside
+step 2770 ssq 9.0226-9.0226 reflect
+step 2771 ssq 9.0226-9.0226 contract inside
+step 2772 ssq 9.0226-9.0226 reflect
+step 2773 ssq 9.0226-9.0226 contract inside
+step 2774 ssq 9.0226-9.0226 contract inside
+step 2775 ssq 9.0226-9.0226 reflect
+step 2776 ssq 9.0226-9.0226 reflect
+step 2777 ssq 9.0226-9.0226 reflect
+step 2778 ssq 9.0226-9.0226 reflect
+step 2779 ssq 9.0226-9.0226 reflect
+step 2780 ssq 9.0226-9.0226 reflect
+step 2781 ssq 9.0226-9.0226 contract inside
+step 2782 ssq 9.0226-9.0226 reflect
+step 2783 ssq 9.0226-9.0226 contract inside
+step 2784 ssq 9.0226-9.0226 reflect
+step 2785 ssq 9.0226-9.0226 reflect
+step 2786 ssq 9.0226-9.0226 reflect
+step 2787 ssq 9.0226-9.0226 reflect
+step 2788 ssq 9.0226-9.0226 contract inside
+step 2789 ssq 9.0226-9.0226 reflect
+step 2790 ssq 9.0226-9.0226 contract inside
+step 2791 ssq 9.0226-9.0226 reflect
+step 2792 ssq 9.0226-9.0226 reflect
+step 2793 ssq 9.0226-9.0226 reflect
+step 2794 ssq 9.0226-9.0226 contract inside
+step 2795 ssq 9.0226-9.0226 reflect
+step 2796 ssq 9.0226-9.0226 reflect
+step 2797 ssq 9.0226-9.0226 reflect
+step 2798 ssq 9.0226-9.0226 reflect
+step 2799 ssq 9.0226-9.0226 contract inside
+step 2800 ssq 9.0226-9.0226 reflect
+step 2801 ssq 9.0226-9.0226 reflect
+step 2802 ssq 9.0226-9.0226 contract inside
+step 2803 ssq 9.0226-9.0226 reflect
+step 2804 ssq 9.0226-9.0226 reflect
+step 2805 ssq 9.0226-9.0226 contract inside
+step 2806 ssq 9.0226-9.0226 contract inside
+step 2807 ssq 9.0226-9.0226 contract inside
+step 2808 ssq 9.0226-9.0226 contract inside
+step 2809 ssq 9.0226-9.0226 contract inside
+step 2810 ssq 9.0226-9.0226 reflect
+step 2811 ssq 9.0226-9.0226 reflect
+step 2812 ssq 9.0226-9.0226 contract inside
+step 2813 ssq 9.0226-9.0226 reflect
+step 2814 ssq 9.0226-9.0226 reflect
+step 2815 ssq 9.0226-9.0226 contract inside
+step 2816 ssq 9.0226-9.0226 contract inside
+step 2817 ssq 9.0226-9.0226 contract inside
+step 2818 ssq 9.0226-9.0226 reflect
+step 2819 ssq 9.0226-9.0226 reflect
+step 2820 ssq 9.0226-9.0226 reflect
+step 2821 ssq 9.0226-9.0226 contract inside
+step 2822 ssq 9.0226-9.0226 contract inside
+step 2823 ssq 9.0226-9.0226 contract inside
+step 2824 ssq 9.0226-9.0226 contract inside
+step 2825 ssq 9.0226-9.0226 reflect
+step 2826 ssq 9.0226-9.0226 contract inside
+step 2827 ssq 9.0226-9.0226 contract inside
+step 2828 ssq 9.0226-9.0226 contract inside
+step 2829 ssq 9.0226-9.0226 contract inside
+step 2830 ssq 9.0226-9.0226 contract inside
+step 2831 ssq 9.0226-9.0226 reflect
+step 2832 ssq 9.0226-9.0226 contract outside
+step 2833 ssq 9.0226-9.0226 contract inside
+step 2834 ssq 9.0226-9.0226 reflect
+step 2835 ssq 9.0226-9.0226 reflect
+step 2836 ssq 9.0226-9.0226 reflect
+step 2837 ssq 9.0226-9.0226 reflect
+step 2838 ssq 9.0226-9.0226 reflect
+step 2839 ssq 9.0226-9.0226 reflect
+step 2840 ssq 9.0226-9.0226 reflect
+step 2841 ssq 9.0226-9.0226 reflect
+step 2842 ssq 9.0226-9.0226 reflect
+step 2843 ssq 9.0226-9.0226 reflect
+step 2844 ssq 9.0226-9.0226 expand
+step 2845 ssq 9.0226-9.0226 reflect
+step 2846 ssq 9.0226-9.0226 reflect
+step 2847 ssq 9.0226-9.0226 expand
+step 2848 ssq 9.0226-9.0226 reflect
+step 2849 ssq 9.0226-9.0226 reflect
+step 2850 ssq 9.0226-9.0226 reflect
+step 2851 ssq 9.0226-9.0226 reflect
+step 2852 ssq 9.0226-9.0226 reflect
+step 2853 ssq 9.0226-9.0226 reflect
+step 2854 ssq 9.0226-9.0226 reflect
+step 2855 ssq 9.0226-9.0226 reflect
+step 2856 ssq 9.0226-9.0226 contract inside
+step 2857 ssq 9.0226-9.0226 reflect
+step 2858 ssq 9.0226-9.0226 reflect
+step 2859 ssq 9.0226-9.0226 reflect
+step 2860 ssq 9.0226-9.0226 reflect
+step 2861 ssq 9.0226-9.0226 reflect
+step 2862 ssq 9.0226-9.0226 expand
+step 2863 ssq 9.0226-9.0226 expand
+step 2864 ssq 9.0226-9.0226 reflect
+step 2865 ssq 9.0226-9.0226 reflect
+step 2866 ssq 9.0226-9.0226 reflect
+step 2867 ssq 9.0226-9.0226 reflect
+step 2868 ssq 9.0226-9.0226 reflect
+step 2869 ssq 9.0226-9.0226 reflect
+step 2870 ssq 9.0226-9.0226 expand
+step 2871 ssq 9.0226-9.0226 expand
+step 2872 ssq 9.0226-9.0226 reflect
+step 2873 ssq 9.0226-9.0226 reflect
+step 2874 ssq 9.0226-9.0226 reflect
+step 2875 ssq 9.0226-9.0226 reflect
+step 2876 ssq 9.0226-9.0226 reflect
+step 2877 ssq 9.0226-9.0226 expand
+step 2878 ssq 9.0226-9.0226 reflect
+step 2879 ssq 9.0226-9.0226 reflect
+step 2880 ssq 9.0226-9.0226 reflect
+step 2881 ssq 9.0226-9.0226 expand
+step 2882 ssq 9.0226-9.0226 expand
+step 2883 ssq 9.0226-9.0226 reflect
+step 2884 ssq 9.0226-9.0226 reflect
+step 2885 ssq 9.0226-9.0226 reflect
+step 2886 ssq 9.0226-9.0226 reflect
+step 2887 ssq 9.0226-9.0226 reflect
+step 2888 ssq 9.0226-9.0226 expand
+step 2889 ssq 9.0226-9.0226 reflect
+step 2890 ssq 9.0226-9.0226 expand
+step 2891 ssq 9.0226-9.0226 reflect
+step 2892 ssq 9.0226-9.0226 reflect
+step 2893 ssq 9.0226-9.0226 reflect
+step 2894 ssq 9.0226-9.0226 reflect
+step 2895 ssq 9.0226-9.0226 reflect
+step 2896 ssq 9.0226-9.0226 expand
+step 2897 ssq 9.0226-9.0226 reflect
+step 2898 ssq 9.0226-9.0226 reflect
+step 2899 ssq 9.0226-9.0226 expand
+step 2900 ssq 9.0226-9.0226 reflect
+step 2901 ssq 9.0226-9.0226 reflect
+step 2902 ssq 9.0226-9.0226 reflect
+step 2903 ssq 9.0226-9.0226 expand
+step 2904 ssq 9.0226-9.0226 reflect
+step 2905 ssq 9.0226-9.0226 reflect
+step 2906 ssq 9.0226-9.0226 expand
+step 2907 ssq 9.0226-9.0226 reflect
+step 2908 ssq 9.0226-9.0226 expand
+step 2909 ssq 9.0226-9.0226 expand
+step 2910 ssq 9.0226-9.0226 reflect
+step 2911 ssq 9.0226-9.0226 reflect
+step 2912 ssq 9.0226-9.0226 reflect
+step 2913 ssq 9.0226-9.0226 expand
+step 2914 ssq 9.0226-9.0226 reflect
+step 2915 ssq 9.0226-9.0226 reflect
+step 2916 ssq 9.0226-9.0226 reflect
+step 2917 ssq 9.0226-9.0226 reflect
+step 2918 ssq 9.0226-9.0226 reflect
+step 2919 ssq 9.0226-9.0226 reflect
+step 2920 ssq 9.0226-9.0226 reflect
+step 2921 ssq 9.0226-9.0226 reflect
+step 2922 ssq 9.0226-9.0226 reflect
+step 2923 ssq 9.0226-9.0226 reflect
+step 2924 ssq 9.0226-9.0226 contract inside
+step 2925 ssq 9.0226-9.0226 contract inside
+step 2926 ssq 9.0226-9.0226 reflect
+step 2927 ssq 9.0226-9.0226 reflect
+step 2928 ssq 9.0226-9.0226 expand
+step 2929 ssq 9.0226-9.0226 reflect
+step 2930 ssq 9.0226-9.0226 reflect
+step 2931 ssq 9.0226-9.0226 expand
+step 2932 ssq 9.0226-9.0226 reflect
+step 2933 ssq 9.0226-9.0226 reflect
+step 2934 ssq 9.0226-9.0226 reflect
+step 2935 ssq 9.0226-9.0226 expand
+step 2936 ssq 9.0226-9.0226 reflect
+step 2937 ssq 9.0226-9.0226 reflect
+step 2938 ssq 9.0226-9.0226 reflect
+step 2939 ssq 9.0226-9.0226 reflect
+step 2940 ssq 9.0226-9.0226 reflect
+step 2941 ssq 9.0226-9.0226 reflect
+step 2942 ssq 9.0226-9.0226 reflect
+step 2943 ssq 9.0226-9.0226 reflect
+step 2944 ssq 9.0226-9.0226 reflect
+step 2945 ssq 9.0226-9.0226 reflect
+step 2946 ssq 9.0226-9.0226 expand
+step 2947 ssq 9.0226-9.0226 expand
+step 2948 ssq 9.0226-9.0226 reflect
+step 2949 ssq 9.0226-9.0226 reflect
+step 2950 ssq 9.0226-9.0226 reflect
+step 2951 ssq 9.0226-9.0226 expand
+step 2952 ssq 9.0226-9.0226 reflect
+step 2953 ssq 9.0226-9.0226 expand
+step 2954 ssq 9.0226-9.0226 reflect
+step 2955 ssq 9.0226-9.0226 reflect
+step 2956 ssq 9.0226-9.0226 contract inside
+step 2957 ssq 9.0226-9.0226 reflect
+step 2958 ssq 9.0226-9.0226 reflect
+step 2959 ssq 9.0226-9.0226 reflect
+step 2960 ssq 9.0226-9.0226 contract inside
+step 2961 ssq 9.0226-9.0226 reflect
+step 2962 ssq 9.0226-9.0226 reflect
+step 2963 ssq 9.0226-9.0226 contract inside
+step 2964 ssq 9.0226-9.0226 reflect
+step 2965 ssq 9.0226-9.0226 reflect
+step 2966 ssq 9.0226-9.0226 expand
+step 2967 ssq 9.0226-9.0226 reflect
+step 2968 ssq 9.0226-9.0226 reflect
+step 2969 ssq 9.0226-9.0226 reflect
+step 2970 ssq 9.0226-9.0226 reflect
+step 2971 ssq 9.0226-9.0226 reflect
+step 2972 ssq 9.0226-9.0226 expand
+step 2973 ssq 9.0226-9.0226 reflect
+step 2974 ssq 9.0226-9.0226 contract inside
+step 2975 ssq 9.0226-9.0226 contract inside
+step 2976 ssq 9.0226-9.0226 reflect
+step 2977 ssq 9.0226-9.0226 reflect
+step 2978 ssq 9.0226-9.0226 reflect
+step 2979 ssq 9.0226-9.0226 reflect
+step 2980 ssq 9.0226-9.0226 reflect
+step 2981 ssq 9.0226-9.0226 reflect
+step 2982 ssq 9.0226-9.0226 reflect
+step 2983 ssq 9.0226-9.0226 expand
+step 2984 ssq 9.0226-9.0226 reflect
+step 2985 ssq 9.0226-9.0226 reflect
+step 2986 ssq 9.0226-9.0226 reflect
+step 2987 ssq 9.0226-9.0226 reflect
+step 2988 ssq 9.0226-9.0226 reflect
+step 2989 ssq 9.0226-9.0226 reflect
+step 2990 ssq 9.0226-9.0226 reflect
+step 2991 ssq 9.0226-9.0226 contract inside
+step 2992 ssq 9.0226-9.0226 reflect
+step 2993 ssq 9.0226-9.0226 reflect
+step 2994 ssq 9.0226-9.0226 reflect
+step 2995 ssq 9.0226-9.0226 expand
+step 2996 ssq 9.0226-9.0226 reflect
+step 2997 ssq 9.0226-9.0226 reflect
+step 2998 ssq 9.0226-9.0226 reflect
+step 2999 ssq 9.0226-9.0226 contract inside
+step 3000 ssq 9.0226-9.0226 reflect
+step 3001 ssq 9.0226-9.0226 reflect
+step 3002 ssq 9.0226-9.0226 reflect
+step 3003 ssq 9.0226-9.0226 reflect
+step 3004 ssq 9.0226-9.0226 reflect
+step 3005 ssq 9.0226-9.0226 reflect
+step 3006 ssq 9.0226-9.0226 reflect
+step 3007 ssq 9.0226-9.0226 reflect
+step 3008 ssq 9.0226-9.0226 reflect
+step 3009 ssq 9.0226-9.0226 reflect
+step 3010 ssq 9.0226-9.0226 reflect
+step 3011 ssq 9.0226-9.0226 reflect
+step 3012 ssq 9.0226-9.0226 reflect
+step 3013 ssq 9.0226-9.0226 reflect
+step 3014 ssq 9.0226-9.0226 contract inside
+step 3015 ssq 9.0226-9.0226 reflect
+step 3016 ssq 9.0226-9.0226 reflect
+step 3017 ssq 9.0226-9.0226 contract inside
+step 3018 ssq 9.0226-9.0226 contract inside
+step 3019 ssq 9.0226-9.0226 reflect
+step 3020 ssq 9.0226-9.0226 reflect
+step 3021 ssq 9.0226-9.0226 contract inside
+step 3022 ssq 9.0226-9.0226 contract inside
+step 3023 ssq 9.0226-9.0226 contract inside
+step 3024 ssq 9.0226-9.0226 contract inside
+step 3025 ssq 9.0226-9.0226 reflect
+step 3026 ssq 9.0226-9.0226 reflect
+step 3027 ssq 9.0226-9.0226 contract inside
+step 3028 ssq 9.0226-9.0226 reflect
+step 3029 ssq 9.0226-9.0226 contract inside
+step 3030 ssq 9.0226-9.0226 reflect
+step 3031 ssq 9.0226-9.0226 reflect
+step 3032 ssq 9.0226-9.0226 reflect
+step 3033 ssq 9.0226-9.0226 reflect
+step 3034 ssq 9.0226-9.0226 reflect
+step 3035 ssq 9.0226-9.0226 reflect
+step 3036 ssq 9.0226-9.0226 expand
+step 3037 ssq 9.0226-9.0226 contract inside
+step 3038 ssq 9.0226-9.0226 reflect
+step 3039 ssq 9.0226-9.0226 contract inside
+step 3040 ssq 9.0226-9.0226 reflect
+step 3041 ssq 9.0226-9.0226 reflect
+step 3042 ssq 9.0226-9.0226 reflect
+step 3043 ssq 9.0226-9.0226 reflect
+step 3044 ssq 9.0226-9.0226 reflect
+step 3045 ssq 9.0226-9.0226 reflect
+step 3046 ssq 9.0226-9.0226 reflect
+step 3047 ssq 9.0226-9.0226 reflect
+step 3048 ssq 9.0226-9.0226 contract inside
+step 3049 ssq 9.0226-9.0226 reflect
+step 3050 ssq 9.0226-9.0226 reflect
+step 3051 ssq 9.0226-9.0226 contract inside
+step 3052 ssq 9.0226-9.0226 contract inside
+step 3053 ssq 9.0226-9.0226 contract inside
+step 3054 ssq 9.0226-9.0226 contract inside
+step 3055 ssq 9.0226-9.0226 reflect
+step 3056 ssq 9.0226-9.0226 reflect
+step 3057 ssq 9.0226-9.0226 reflect
+step 3058 ssq 9.0226-9.0226 contract inside
+step 3059 ssq 9.0226-9.0226 contract inside
+step 3060 ssq 9.0226-9.0226 reflect
+step 3061 ssq 9.0226-9.0226 contract outside
+step 3062 ssq 9.0226-9.0226 contract inside
+step 3063 ssq 9.0226-9.0226 reflect
+step 3064 ssq 9.0226-9.0226 reflect
+step 3065 ssq 9.0226-9.0226 reflect
+step 3066 ssq 9.0226-9.0226 reflect
+step 3067 ssq 9.0226-9.0226 expand
+step 3068 ssq 9.0226-9.0226 reflect
+step 3069 ssq 9.0226-9.0226 contract inside
+step 3070 ssq 9.0226-9.0226 contract inside
+step 3071 ssq 9.0226-9.0226 reflect
+step 3072 ssq 9.0226-9.0226 reflect
+step 3073 ssq 9.0226-9.0226 reflect
+step 3074 ssq 9.0226-9.0226 contract inside
+step 3075 ssq 9.0226-9.0226 reflect
+step 3076 ssq 9.0226-9.0226 reflect
+step 3077 ssq 9.0226-9.0226 reflect
+step 3078 ssq 9.0226-9.0226 contract inside
+step 3079 ssq 9.0226-9.0226 reflect
+step 3080 ssq 9.0226-9.0226 reflect
+step 3081 ssq 9.0226-9.0226 contract inside
+step 3082 ssq 9.0226-9.0226 contract inside
+step 3083 ssq 9.0226-9.0226 reflect
+step 3084 ssq 9.0226-9.0226 reflect
+step 3085 ssq 9.0226-9.0226 reflect
+step 3086 ssq 9.0226-9.0226 contract inside
+step 3087 ssq 9.0226-9.0226 reflect
+step 3088 ssq 9.0226-9.0226 reflect
+step 3089 ssq 9.0226-9.0226 contract inside
+step 3090 ssq 9.0226-9.0226 expand
+step 3091 ssq 9.0226-9.0226 reflect
+step 3092 ssq 9.0226-9.0226 contract inside
+step 3093 ssq 9.0226-9.0226 reflect
+step 3094 ssq 9.0226-9.0226 reflect
+step 3095 ssq 9.0226-9.0226 reflect
+step 3096 ssq 9.0226-9.0226 reflect
+step 3097 ssq 9.0226-9.0226 reflect
+step 3098 ssq 9.0226-9.0226 reflect
+step 3099 ssq 9.0226-9.0226 contract inside
+step 3100 ssq 9.0226-9.0226 reflect
+step 3101 ssq 9.0226-9.0226 reflect
+step 3102 ssq 9.0226-9.0226 expand
+step 3103 ssq 9.0226-9.0226 contract inside
+step 3104 ssq 9.0226-9.0226 reflect
+step 3105 ssq 9.0226-9.0226 reflect
+step 3106 ssq 9.0226-9.0226 reflect
+step 3107 ssq 9.0226-9.0226 contract outside
+step 3108 ssq 9.0226-9.0226 reflect
+step 3109 ssq 9.0226-9.0226 contract inside
+step 3110 ssq 9.0226-9.0226 reflect
+step 3111 ssq 9.0226-9.0226 reflect
+step 3112 ssq 9.0226-9.0226 reflect
+step 3113 ssq 9.0226-9.0226 reflect
+step 3114 ssq 9.0226-9.0226 reflect
+step 3115 ssq 9.0226-9.0226 expand
+step 3116 ssq 9.0226-9.0226 reflect
+step 3117 ssq 9.0226-9.0226 reflect
+step 3118 ssq 9.0226-9.0226 reflect
+step 3119 ssq 9.0226-9.0226 reflect
+step 3120 ssq 9.0226-9.0226 reflect
+step 3121 ssq 9.0226-9.0226 contract inside
+step 3122 ssq 9.0226-9.0226 reflect
+step 3123 ssq 9.0226-9.0226 reflect
+step 3124 ssq 9.0226-9.0226 reflect
+step 3125 ssq 9.0226-9.0226 reflect
+step 3126 ssq 9.0226-9.0226 expand
+step 3127 ssq 9.0226-9.0226 contract inside
+step 3128 ssq 9.0226-9.0226 reflect
+step 3129 ssq 9.0226-9.0226 reflect
+step 3130 ssq 9.0226-9.0226 reflect
+step 3131 ssq 9.0226-9.0226 reflect
+step 3132 ssq 9.0226-9.0226 reflect
+step 3133 ssq 9.0226-9.0226 reflect
+step 3134 ssq 9.0226-9.0226 contract inside
+step 3135 ssq 9.0226-9.0226 reflect
+step 3136 ssq 9.0226-9.0226 reflect
+step 3137 ssq 9.0226-9.0226 contract inside
+step 3138 ssq 9.0226-9.0226 contract inside
+step 3139 ssq 9.0226-9.0226 contract inside
+step 3140 ssq 9.0226-9.0226 contract inside
+step 3141 ssq 9.0226-9.0226 contract inside
+step 3142 ssq 9.0226-9.0226 reflect
+step 3143 ssq 9.0226-9.0226 contract outside
+step 3144 ssq 9.0226-9.0226 contract inside
+step 3145 ssq 9.0226-9.0226 reflect
+step 3146 ssq 9.0226-9.0226 expand
+step 3147 ssq 9.0226-9.0226 reflect
+step 3148 ssq 9.0226-9.0226 contract inside
+step 3149 ssq 9.0226-9.0226 reflect
+step 3150 ssq 9.0226-9.0226 reflect
+step 3151 ssq 9.0226-9.0226 reflect
+step 3152 ssq 9.0226-9.0226 reflect
+step 3153 ssq 9.0226-9.0226 reflect
+step 3154 ssq 9.0226-9.0226 contract inside
+step 3155 ssq 9.0226-9.0226 reflect
+step 3156 ssq 9.0226-9.0226 contract inside
+step 3157 ssq 9.0226-9.0226 reflect
+step 3158 ssq 9.0226-9.0226 contract inside
+step 3159 ssq 9.0226-9.0226 reflect
+step 3160 ssq 9.0226-9.0226 contract inside
+step 3161 ssq 9.0226-9.0226 contract inside
+step 3162 ssq 9.0226-9.0226 reflect
+step 3163 ssq 9.0226-9.0226 contract inside
+step 3164 ssq 9.0226-9.0226 reflect
+step 3165 ssq 9.0226-9.0226 reflect
+step 3166 ssq 9.0226-9.0226 contract inside
+step 3167 ssq 9.0226-9.0226 reflect
+step 3168 ssq 9.0226-9.0226 reflect
+step 3169 ssq 9.0226-9.0226 contract inside
+step 3170 ssq 9.0226-9.0226 contract inside
+step 3171 ssq 9.0226-9.0226 contract inside
+step 3172 ssq 9.0226-9.0226 reflect
+step 3173 ssq 9.0226-9.0226 contract inside
+step 3174 ssq 9.0226-9.0226 contract inside
+step 3175 ssq 9.0226-9.0226 contract inside
+step 3176 ssq 9.0226-9.0226 contract inside
+step 3177 ssq 9.0226-9.0226 contract inside
+step 3178 ssq 9.0226-9.0226 reflect
+step 3179 ssq 9.0226-9.0226 reflect
+step 3180 ssq 9.0226-9.0226 contract inside
+step 3181 ssq 9.0226-9.0226 contract inside
+step 3182 ssq 9.0226-9.0226 contract inside
+step 3183 ssq 9.0226-9.0226 reflect
+step 3184 ssq 9.0226-9.0226 contract inside
+step 3185 ssq 9.0226-9.0226 reflect
+step 3186 ssq 9.0226-9.0226 reflect
+step 3187 ssq 9.0226-9.0226 reflect
+step 3188 ssq 9.0226-9.0226 reflect
+step 3189 ssq 9.0226-9.0226 reflect
+step 3190 ssq 9.0226-9.0226 reflect
+step 3191 ssq 9.0226-9.0226 reflect
+step 3192 ssq 9.0226-9.0226 reflect
+step 3193 ssq 9.0226-9.0226 reflect
+step 3194 ssq 9.0226-9.0226 reflect
+step 3195 ssq 9.0226-9.0226 reflect
+step 3196 ssq 9.0226-9.0226 reflect
+step 3197 ssq 9.0226-9.0226 contract inside
+step 3198 ssq 9.0226-9.0226 contract inside
+step 3199 ssq 9.0226-9.0226 reflect
+step 3200 ssq 9.0226-9.0226 contract inside
+step 3201 ssq 9.0226-9.0226 contract inside
+step 3202 ssq 9.0226-9.0226 contract inside
+step 3203 ssq 9.0226-9.0226 contract inside
+step 3204 ssq 9.0226-9.0226 reflect
+step 3205 ssq 9.0226-9.0226 reflect
+step 3206 ssq 9.0226-9.0226 reflect
+step 3207 ssq 9.0226-9.0226 contract inside
+step 3208 ssq 9.0226-9.0226 expand
+step 3209 ssq 9.0226-9.0226 contract inside
+step 3210 ssq 9.0226-9.0226 reflect
+step 3211 ssq 9.0226-9.0226 contract inside
+step 3212 ssq 9.0226-9.0226 reflect
+step 3213 ssq 9.0226-9.0226 reflect
+step 3214 ssq 9.0226-9.0226 reflect
+step 3215 ssq 9.0226-9.0226 contract inside
+step 3216 ssq 9.0226-9.0226 contract inside
+step 3217 ssq 9.0226-9.0226 reflect
+step 3218 ssq 9.0226-9.0226 reflect
+step 3219 ssq 9.0226-9.0226 contract inside
+step 3220 ssq 9.0226-9.0226 reflect
+step 3221 ssq 9.0226-9.0226 reflect
+step 3222 ssq 9.0226-9.0226 reflect
+step 3223 ssq 9.0226-9.0226 reflect
+step 3224 ssq 9.0226-9.0226 reflect
+step 3225 ssq 9.0226-9.0226 reflect
+step 3226 ssq 9.0226-9.0226 reflect
+step 3227 ssq 9.0226-9.0226 reflect
+step 3228 ssq 9.0226-9.0226 contract inside
+step 3229 ssq 9.0226-9.0226 expand
+step 3230 ssq 9.0226-9.0226 reflect
+step 3231 ssq 9.0226-9.0226 expand
+step 3232 ssq 9.0226-9.0226 reflect
+step 3233 ssq 9.0226-9.0226 contract inside
+step 3234 ssq 9.0226-9.0226 reflect
+step 3235 ssq 9.0226-9.0226 reflect
+step 3236 ssq 9.0226-9.0226 expand
+step 3237 ssq 9.0226-9.0226 reflect
+step 3238 ssq 9.0226-9.0226 reflect
+step 3239 ssq 9.0226-9.0226 reflect
+step 3240 ssq 9.0226-9.0226 reflect
+step 3241 ssq 9.0226-9.0226 expand
+step 3242 ssq 9.0226-9.0226 reflect
+step 3243 ssq 9.0226-9.0226 reflect
+step 3244 ssq 9.0226-9.0226 reflect
+step 3245 ssq 9.0226-9.0226 reflect
+step 3246 ssq 9.0226-9.0226 expand
+step 3247 ssq 9.0226-9.0226 reflect
+step 3248 ssq 9.0226-9.0226 reflect
+step 3249 ssq 9.0226-9.0226 expand
+step 3250 ssq 9.0226-9.0226 reflect
+step 3251 ssq 9.0226-9.0226 reflect
+step 3252 ssq 9.0226-9.0226 reflect
+step 3253 ssq 9.0226-9.0226 reflect
+step 3254 ssq 9.0226-9.0226 reflect
+step 3255 ssq 9.0226-9.0226 reflect
+step 3256 ssq 9.0226-9.0226 reflect
+step 3257 ssq 9.0226-9.0226 reflect
+step 3258 ssq 9.0226-9.0226 reflect
+step 3259 ssq 9.0226-9.0226 reflect
+step 3260 ssq 9.0226-9.0226 reflect
+step 3261 ssq 9.0226-9.0226 reflect
+step 3262 ssq 9.0226-9.0226 contract inside
+step 3263 ssq 9.0226-9.0226 contract inside
+step 3264 ssq 9.0226-9.0226 reflect
+step 3265 ssq 9.0226-9.0226 reflect
+step 3266 ssq 9.0226-9.0226 reflect
+step 3267 ssq 9.0226-9.0226 reflect
+step 3268 ssq 9.0226-9.0226 reflect
+step 3269 ssq 9.0226-9.0226 reflect
+step 3270 ssq 9.0226-9.0226 reflect
+step 3271 ssq 9.0226-9.0226 reflect
+step 3272 ssq 9.0226-9.0226 reflect
+step 3273 ssq 9.0226-9.0226 contract outside
+step 3274 ssq 9.0226-9.0226 contract inside
+step 3275 ssq 9.0226-9.0226 contract outside
+step 3276 ssq 9.0226-9.0226 reflect
+step 3277 ssq 9.0226-9.0226 reflect
+step 3278 ssq 9.0226-9.0226 reflect
+step 3279 ssq 9.0226-9.0226 reflect
+step 3280 ssq 9.0226-9.0226 reflect
+step 3281 ssq 9.0226-9.0226 contract inside
+step 3282 ssq 9.0226-9.0226 expand
+step 3283 ssq 9.0226-9.0226 reflect
+step 3284 ssq 9.0226-9.0226 contract inside
+step 3285 ssq 9.0226-9.0226 reflect
+step 3286 ssq 9.0226-9.0226 contract inside
+step 3287 ssq 9.0226-9.0226 reflect
+step 3288 ssq 9.0226-9.0226 reflect
+step 3289 ssq 9.0226-9.0226 contract inside
+step 3290 ssq 9.0226-9.0226 contract inside
+step 3291 ssq 9.0226-9.0226 reflect
+step 3292 ssq 9.0226-9.0226 contract outside
+step 3293 ssq 9.0226-9.0226 reflect
+step 3294 ssq 9.0226-9.0226 expand
+step 3295 ssq 9.0226-9.0226 reflect
+step 3296 ssq 9.0226-9.0226 reflect
+step 3297 ssq 9.0226-9.0226 reflect
+step 3298 ssq 9.0226-9.0226 reflect
+step 3299 ssq 9.0226-9.0226 reflect
+step 3300 ssq 9.0226-9.0226 reflect
+step 3301 ssq 9.0226-9.0226 contract outside
+step 3302 ssq 9.0226-9.0226 reflect
+step 3303 ssq 9.0226-9.0226 expand
+step 3304 ssq 9.0226-9.0226 reflect
+step 3305 ssq 9.0226-9.0226 contract inside
+step 3306 ssq 9.0226-9.0226 reflect
+step 3307 ssq 9.0226-9.0226 reflect
+step 3308 ssq 9.0226-9.0226 reflect
+step 3309 ssq 9.0226-9.0226 reflect
+step 3310 ssq 9.0226-9.0226 reflect
+step 3311 ssq 9.0226-9.0226 contract inside
+step 3312 ssq 9.0226-9.0226 contract inside
+step 3313 ssq 9.0226-9.0226 reflect
+step 3314 ssq 9.0226-9.0226 contract inside
+step 3315 ssq 9.0226-9.0226 reflect
+step 3316 ssq 9.0226-9.0226 contract inside
+step 3317 ssq 9.0226-9.0226 reflect
+step 3318 ssq 9.0226-9.0226 contract inside
+step 3319 ssq 9.0226-9.0226 reflect
+step 3320 ssq 9.0226-9.0226 contract inside
+step 3321 ssq 9.0226-9.0226 reflect
+step 3322 ssq 9.0226-9.0226 contract inside
+step 3323 ssq 9.0226-9.0226 contract outside
+step 3324 ssq 9.0226-9.0226 reflect
+step 3325 ssq 9.0226-9.0226 contract inside
+step 3326 ssq 9.0226-9.0226 contract inside
+step 3327 ssq 9.0226-9.0226 reflect
+step 3328 ssq 9.0226-9.0226 contract outside
+step 3329 ssq 9.0226-9.0226 reflect
+step 3330 ssq 9.0226-9.0226 reflect
+step 3331 ssq 9.0226-9.0226 reflect
+step 3332 ssq 9.0226-9.0226 reflect
+step 3333 ssq 9.0226-9.0226 reflect
+step 3334 ssq 9.0226-9.0226 reflect
+step 3335 ssq 9.0226-9.0226 expand
+step 3336 ssq 9.0226-9.0226 contract inside
+step 3337 ssq 9.0226-9.0226 contract inside
+step 3338 ssq 9.0226-9.0226 reflect
+step 3339 ssq 9.0226-9.0226 reflect
+step 3340 ssq 9.0226-9.0226 reflect
+step 3341 ssq 9.0226-9.0226 reflect
+step 3342 ssq 9.0226-9.0226 contract inside
+step 3343 ssq 9.0226-9.0226 contract inside
+step 3344 ssq 9.0226-9.0226 reflect
+step 3345 ssq 9.0226-9.0226 contract inside
+step 3346 ssq 9.0226-9.0226 reflect
+step 3347 ssq 9.0226-9.0226 contract inside
+step 3348 ssq 9.0226-9.0226 reflect
+step 3349 ssq 9.0226-9.0226 expand
+step 3350 ssq 9.0226-9.0226 reflect
+step 3351 ssq 9.0226-9.0226 reflect
+step 3352 ssq 9.0226-9.0226 reflect
+step 3353 ssq 9.0226-9.0226 reflect
+step 3354 ssq 9.0226-9.0226 reflect
+step 3355 ssq 9.0226-9.0226 reflect
+step 3356 ssq 9.0226-9.0226 reflect
+step 3357 ssq 9.0226-9.0226 reflect
+step 3358 ssq 9.0226-9.0226 reflect
+step 3359 ssq 9.0226-9.0226 reflect
+step 3360 ssq 9.0226-9.0226 contract inside
+step 3361 ssq 9.0226-9.0226 reflect
+step 3362 ssq 9.0226-9.0226 reflect
+step 3363 ssq 9.0226-9.0226 contract inside
+step 3364 ssq 9.0226-9.0226 reflect
+step 3365 ssq 9.0226-9.0226 contract inside
+step 3366 ssq 9.0226-9.0226 reflect
+step 3367 ssq 9.0226-9.0226 contract inside
+step 3368 ssq 9.0226-9.0226 reflect
+step 3369 ssq 9.0226-9.0226 expand
+step 3370 ssq 9.0226-9.0226 reflect
+step 3371 ssq 9.0226-9.0226 reflect
+step 3372 ssq 9.0226-9.0226 reflect
+step 3373 ssq 9.0226-9.0226 expand
+step 3374 ssq 9.0226-9.0226 reflect
+step 3375 ssq 9.0226-9.0226 reflect
+step 3376 ssq 9.0226-9.0226 reflect
+step 3377 ssq 9.0226-9.0226 reflect
+step 3378 ssq 9.0226-9.0226 reflect
+step 3379 ssq 9.0226-9.0226 expand
+step 3380 ssq 9.0226-9.0226 reflect
+step 3381 ssq 9.0226-9.0226 reflect
+step 3382 ssq 9.0226-9.0226 reflect
+step 3383 ssq 9.0226-9.0226 expand
+step 3384 ssq 9.0226-9.0226 reflect
+step 3385 ssq 9.0226-9.0226 reflect
+step 3386 ssq 9.0226-9.0226 reflect
+step 3387 ssq 9.0226-9.0226 reflect
+step 3388 ssq 9.0226-9.0226 reflect
+step 3389 ssq 9.0226-9.0226 expand
+step 3390 ssq 9.0226-9.0226 reflect
+step 3391 ssq 9.0226-9.0226 reflect
+step 3392 ssq 9.0226-9.0226 reflect
+step 3393 ssq 9.0226-9.0226 reflect
+step 3394 ssq 9.0226-9.0226 expand
+step 3395 ssq 9.0226-9.0226 expand
+step 3396 ssq 9.0226-9.0226 reflect
+step 3397 ssq 9.0226-9.0226 expand
+step 3398 ssq 9.0226-9.0226 reflect
+step 3399 ssq 9.0226-9.0226 reflect
+step 3400 ssq 9.0226-9.0226 reflect
+step 3401 ssq 9.0226-9.0226 reflect
+step 3402 ssq 9.0226-9.0226 reflect
+step 3403 ssq 9.0226-9.0226 expand
+step 3404 ssq 9.0226-9.0226 reflect
+step 3405 ssq 9.0226-9.0226 reflect
+step 3406 ssq 9.0226-9.0226 reflect
+step 3407 ssq 9.0226-9.0226 reflect
+step 3408 ssq 9.0226-9.0226 expand
+step 3409 ssq 9.0226-9.0226 reflect
+step 3410 ssq 9.0226-9.0226 expand
+step 3411 ssq 9.0226-9.0226 reflect
+step 3412 ssq 9.0226-9.0226 reflect
+step 3413 ssq 9.0226-9.0226 expand
+step 3414 ssq 9.0226-9.0226 reflect
+step 3415 ssq 9.0226-9.0226 expand
+step 3416 ssq 9.0226-9.0226 expand
+step 3417 ssq 9.0226-9.0226 reflect
+step 3418 ssq 9.0226-9.0226 expand
+step 3419 ssq 9.0226-9.0226 reflect
+step 3420 ssq 9.0226-9.0226 reflect
+step 3421 ssq 9.0226-9.0226 reflect
+step 3422 ssq 9.0226-9.0226 reflect
+step 3423 ssq 9.0226-9.0226 reflect
+step 3424 ssq 9.0226-9.0226 reflect
+step 3425 ssq 9.0226-9.0226 reflect
+step 3426 ssq 9.0226-9.0226 contract inside
+step 3427 ssq 9.0226-9.0226 reflect
+step 3428 ssq 9.0226-9.0226 reflect
+step 3429 ssq 9.0226-9.0226 reflect
+step 3430 ssq 9.0226-9.0226 expand
+step 3431 ssq 9.0226-9.0226 reflect
+step 3432 ssq 9.0226-9.0226 contract inside
+step 3433 ssq 9.0226-9.0226 contract inside
+step 3434 ssq 9.0226-9.0226 reflect
+step 3435 ssq 9.0226-9.0226 contract inside
+step 3436 ssq 9.0226-9.0226 reflect
+step 3437 ssq 9.0226-9.0226 reflect
+step 3438 ssq 9.0226-9.0226 expand
+step 3439 ssq 9.0226-9.0226 reflect
+step 3440 ssq 9.0226-9.0226 reflect
+step 3441 ssq 9.0226-9.0226 reflect
+step 3442 ssq 9.0226-9.0226 reflect
+step 3443 ssq 9.0226-9.0226 reflect
+step 3444 ssq 9.0226-9.0226 reflect
+step 3445 ssq 9.0226-9.0226 expand
+step 3446 ssq 9.0226-9.0226 expand
+step 3447 ssq 9.0226-9.0226 reflect
+step 3448 ssq 9.0226-9.0226 reflect
+step 3449 ssq 9.0226-9.0226 reflect
+step 3450 ssq 9.0226-9.0226 reflect
+step 3451 ssq 9.0226-9.0226 contract inside
+step 3452 ssq 9.0226-9.0226 reflect
+step 3453 ssq 9.0226-9.0226 reflect
+step 3454 ssq 9.0226-9.0226 expand
+step 3455 ssq 9.0226-9.0226 reflect
+step 3456 ssq 9.0226-9.0226 reflect
+step 3457 ssq 9.0226-9.0226 reflect
+step 3458 ssq 9.0226-9.0226 reflect
+step 3459 ssq 9.0226-9.0226 expand
+step 3460 ssq 9.0226-9.0226 reflect
+step 3461 ssq 9.0226-9.0226 reflect
+step 3462 ssq 9.0226-9.0226 reflect
+step 3463 ssq 9.0226-9.0226 reflect
+step 3464 ssq 9.0226-9.0226 contract inside
+step 3465 ssq 9.0226-9.0226 reflect
+step 3466 ssq 9.0226-9.0226 reflect
+step 3467 ssq 9.0226-9.0226 contract inside
+step 3468 ssq 9.0226-9.0226 contract inside
+step 3469 ssq 9.0226-9.0226 reflect
+step 3470 ssq 9.0226-9.0226 reflect
+step 3471 ssq 9.0226-9.0226 contract inside
+step 3472 ssq 9.0226-9.0226 reflect
+step 3473 ssq 9.0226-9.0226 reflect
+step 3474 ssq 9.0226-9.0226 reflect
+step 3475 ssq 9.0226-9.0226 reflect
+step 3476 ssq 9.0226-9.0226 reflect
+step 3477 ssq 9.0226-9.0226 reflect
+step 3478 ssq 9.0226-9.0226 reflect
+step 3479 ssq 9.0226-9.0226 contract outside
+step 3480 ssq 9.0226-9.0226 reflect
+step 3481 ssq 9.0226-9.0226 reflect
+step 3482 ssq 9.0226-9.0226 reflect
+step 3483 ssq 9.0226-9.0226 reflect
+step 3484 ssq 9.0226-9.0226 reflect
+step 3485 ssq 9.0226-9.0226 reflect
+step 3486 ssq 9.0226-9.0226 contract outside
+step 3487 ssq 9.0226-9.0226 reflect
+step 3488 ssq 9.0226-9.0226 contract inside
+step 3489 ssq 9.0226-9.0226 reflect
+step 3490 ssq 9.0226-9.0226 reflect
+step 3491 ssq 9.0226-9.0226 reflect
+step 3492 ssq 9.0226-9.0226 reflect
+step 3493 ssq 9.0226-9.0226 reflect
+step 3494 ssq 9.0226-9.0226 contract inside
+step 3495 ssq 9.0226-9.0226 expand
+step 3496 ssq 9.0226-9.0226 contract inside
+step 3497 ssq 9.0226-9.0226 reflect
+step 3498 ssq 9.0226-9.0226 reflect
+step 3499 ssq 9.0226-9.0226 reflect
+step 3500 ssq 9.0226-9.0226 reflect
+step 3501 ssq 9.0226-9.0226 contract inside
+step 3502 ssq 9.0226-9.0226 reflect
+step 3503 ssq 9.0226-9.0226 contract inside
+step 3504 ssq 9.0226-9.0226 contract inside
+step 3505 ssq 9.0226-9.0226 contract inside
+step 3506 ssq 9.0226-9.0226 contract inside
+step 3507 ssq 9.0226-9.0226 reflect
+step 3508 ssq 9.0226-9.0226 reflect
+step 3509 ssq 9.0226-9.0226 reflect
+step 3510 ssq 9.0226-9.0226 reflect
+step 3511 ssq 9.0226-9.0226 contract inside
+step 3512 ssq 9.0226-9.0226 expand
+step 3513 ssq 9.0226-9.0226 reflect
+step 3514 ssq 9.0226-9.0226 reflect
+step 3515 ssq 9.0226-9.0226 reflect
+step 3516 ssq 9.0226-9.0226 contract inside
+step 3517 ssq 9.0226-9.0226 reflect
+step 3518 ssq 9.0226-9.0226 reflect
+step 3519 ssq 9.0226-9.0226 reflect
+step 3520 ssq 9.0226-9.0226 contract inside
+step 3521 ssq 9.0226-9.0226 reflect
+step 3522 ssq 9.0226-9.0226 contract inside
+step 3523 ssq 9.0226-9.0226 contract inside
+step 3524 ssq 9.0226-9.0226 reflect
+step 3525 ssq 9.0226-9.0226 reflect
+step 3526 ssq 9.0226-9.0226 contract inside
+step 3527 ssq 9.0226-9.0226 contract inside
+step 3528 ssq 9.0226-9.0226 reflect
+step 3529 ssq 9.0226-9.0226 reflect
+step 3530 ssq 9.0226-9.0226 reflect
+step 3531 ssq 9.0226-9.0226 contract inside
+step 3532 ssq 9.0226-9.0226 reflect
+step 3533 ssq 9.0226-9.0226 contract outside
+step 3534 ssq 9.0226-9.0226 reflect
+step 3535 ssq 9.0226-9.0226 reflect
+step 3536 ssq 9.0226-9.0226 reflect
+step 3537 ssq 9.0226-9.0226 reflect
+step 3538 ssq 9.0226-9.0226 contract inside
+step 3539 ssq 9.0226-9.0226 reflect
+step 3540 ssq 9.0226-9.0226 contract inside
+step 3541 ssq 9.0226-9.0226 contract inside
+step 3542 ssq 9.0226-9.0226 reflect
+step 3543 ssq 9.0226-9.0226 contract inside
+step 3544 ssq 9.0226-9.0226 reflect
+step 3545 ssq 9.0226-9.0226 reflect
+step 3546 ssq 9.0226-9.0226 reflect
+step 3547 ssq 9.0226-9.0226 contract inside
+step 3548 ssq 9.0226-9.0226 contract inside
+step 3549 ssq 9.0226-9.0226 contract inside
+step 3550 ssq 9.0226-9.0226 reflect
+step 3551 ssq 9.0226-9.0226 contract inside
+step 3552 ssq 9.0226-9.0226 reflect
+step 3553 ssq 9.0226-9.0226 contract inside
+step 3554 ssq 9.0226-9.0226 contract inside
+step 3555 ssq 9.0226-9.0226 reflect
+step 3556 ssq 9.0226-9.0226 reflect
+step 3557 ssq 9.0226-9.0226 reflect
+step 3558 ssq 9.0226-9.0226 reflect
+step 3559 ssq 9.0226-9.0226 reflect
+step 3560 ssq 9.0226-9.0226 contract inside
+step 3561 ssq 9.0226-9.0226 expand
+step 3562 ssq 9.0226-9.0226 reflect
+step 3563 ssq 9.0226-9.0226 reflect
+step 3564 ssq 9.0226-9.0226 contract inside
+step 3565 ssq 9.0226-9.0226 contract inside
+step 3566 ssq 9.0226-9.0226 contract inside
+step 3567 ssq 9.0226-9.0226 reflect
+step 3568 ssq 9.0226-9.0226 contract inside
+step 3569 ssq 9.0226-9.0226 reflect
+step 3570 ssq 9.0226-9.0226 reflect
+step 3571 ssq 9.0226-9.0226 reflect
+step 3572 ssq 9.0226-9.0226 reflect
+step 3573 ssq 9.0226-9.0226 reflect
+step 3574 ssq 9.0226-9.0226 reflect
+step 3575 ssq 9.0226-9.0226 contract inside
+step 3576 ssq 9.0226-9.0226 contract inside
+step 3577 ssq 9.0226-9.0226 contract inside
+step 3578 ssq 9.0226-9.0226 reflect
+step 3579 ssq 9.0226-9.0226 contract inside
+step 3580 ssq 9.0226-9.0226 reflect
+step 3581 ssq 9.0226-9.0226 reflect
+step 3582 ssq 9.0226-9.0226 contract inside
+step 3583 ssq 9.0226-9.0226 reflect
+step 3584 ssq 9.0226-9.0226 reflect
+step 3585 ssq 9.0226-9.0226 reflect
+step 3586 ssq 9.0226-9.0226 reflect
+step 3587 ssq 9.0226-9.0226 reflect
+step 3588 ssq 9.0226-9.0226 reflect
+step 3589 ssq 9.0226-9.0226 contract inside
+step 3590 ssq 9.0226-9.0226 reflect
+step 3591 ssq 9.0226-9.0226 contract inside
+step 3592 ssq 9.0226-9.0226 reflect
+step 3593 ssq 9.0226-9.0226 contract inside
+step 3594 ssq 9.0226-9.0226 contract outside
+step 3595 ssq 9.0226-9.0226 reflect
+step 3596 ssq 9.0226-9.0226 reflect
+step 3597 ssq 9.0226-9.0226 contract outside
+step 3598 ssq 9.0226-9.0226 reflect
+step 3599 ssq 9.0226-9.0226 contract inside
+step 3600 ssq 9.0226-9.0226 reflect
+step 3601 ssq 9.0226-9.0226 reflect
+step 3602 ssq 9.0226-9.0226 reflect
+step 3603 ssq 9.0226-9.0226 contract inside
+step 3604 ssq 9.0226-9.0226 reflect
+step 3605 ssq 9.0226-9.0226 reflect
+step 3606 ssq 9.0226-9.0226 reflect
+step 3607 ssq 9.0226-9.0226 reflect
+step 3608 ssq 9.0226-9.0226 reflect
+step 3609 ssq 9.0226-9.0226 reflect
+step 3610 ssq 9.0226-9.0226 reflect
+step 3611 ssq 9.0226-9.0226 contract inside
+step 3612 ssq 9.0226-9.0226 reflect
+step 3613 ssq 9.0226-9.0226 reflect
+step 3614 ssq 9.0226-9.0226 reflect
+step 3615 ssq 9.0226-9.0226 contract inside
+step 3616 ssq 9.0226-9.0226 contract inside
+step 3617 ssq 9.0226-9.0226 contract inside
+step 3618 ssq 9.0226-9.0226 reflect
+step 3619 ssq 9.0226-9.0226 expand
+step 3620 ssq 9.0226-9.0226 reflect
+step 3621 ssq 9.0226-9.0226 reflect
+step 3622 ssq 9.0226-9.0226 reflect
+step 3623 ssq 9.0226-9.0226 reflect
+step 3624 ssq 9.0226-9.0226 reflect
+step 3625 ssq 9.0226-9.0226 reflect
+step 3626 ssq 9.0226-9.0226 contract outside
+step 3627 ssq 9.0226-9.0226 reflect
+step 3628 ssq 9.0226-9.0226 reflect
+step 3629 ssq 9.0226-9.0226 contract inside
+step 3630 ssq 9.0226-9.0226 reflect
+step 3631 ssq 9.0226-9.0226 reflect
+step 3632 ssq 9.0226-9.0226 reflect
+step 3633 ssq 9.0226-9.0226 reflect
+step 3634 ssq 9.0226-9.0226 reflect
+step 3635 ssq 9.0226-9.0226 contract inside
+step 3636 ssq 9.0226-9.0226 reflect
+step 3637 ssq 9.0226-9.0226 reflect
+step 3638 ssq 9.0226-9.0226 reflect
+step 3639 ssq 9.0226-9.0226 expand
+step 3640 ssq 9.0226-9.0226 reflect
+step 3641 ssq 9.0226-9.0226 reflect
+step 3642 ssq 9.0226-9.0226 expand
+step 3643 ssq 9.0226-9.0226 contract inside
+step 3644 ssq 9.0226-9.0226 contract inside
+step 3645 ssq 9.0226-9.0226 reflect
+step 3646 ssq 9.0226-9.0226 contract inside
+step 3647 ssq 9.0226-9.0226 reflect
+step 3648 ssq 9.0226-9.0226 reflect
+step 3649 ssq 9.0226-9.0226 reflect
+step 3650 ssq 9.0226-9.0226 contract inside
+step 3651 ssq 9.0226-9.0226 reflect
+step 3652 ssq 9.0226-9.0226 reflect
+step 3653 ssq 9.0226-9.0226 reflect
+step 3654 ssq 9.0226-9.0226 contract inside
+step 3655 ssq 9.0226-9.0226 reflect
+step 3656 ssq 9.0226-9.0226 reflect
+step 3657 ssq 9.0226-9.0226 reflect
+step 3658 ssq 9.0226-9.0226 reflect
+step 3659 ssq 9.0226-9.0226 contract inside
+step 3660 ssq 9.0226-9.0226 reflect
+step 3661 ssq 9.0226-9.0226 contract inside
+step 3662 ssq 9.0226-9.0226 reflect
+step 3663 ssq 9.0226-9.0226 expand
+step 3664 ssq 9.0226-9.0226 reflect
+step 3665 ssq 9.0226-9.0226 reflect
+step 3666 ssq 9.0226-9.0226 reflect
+step 3667 ssq 9.0226-9.0226 reflect
+step 3668 ssq 9.0226-9.0226 reflect
+step 3669 ssq 9.0226-9.0226 reflect
+step 3670 ssq 9.0226-9.0226 reflect
+step 3671 ssq 9.0226-9.0226 reflect
+step 3672 ssq 9.0226-9.0226 contract inside
+step 3673 ssq 9.0226-9.0226 contract inside
+step 3674 ssq 9.0226-9.0226 reflect
+step 3675 ssq 9.0226-9.0226 shrink
+step 3676 ssq 9.0226-9.0226 contract inside
+step 3677 ssq 9.0226-9.0226 reflect
+step 3678 ssq 9.0226-9.0226 shrink
+step 3679 ssq 9.0226-9.0226 reflect
+step 3680 ssq 9.0226-9.0226 reflect
+step 3681 ssq 9.0226-9.0226 reflect
+step 3682 ssq 9.0226-9.0226 contract inside
+step 3683 ssq 9.0226-9.0226 contract inside
+step 3684 ssq 9.0226-9.0226 reflect
+step 3685 ssq 9.0226-9.0226 reflect
+step 3686 ssq 9.0226-9.0226 reflect
+step 3687 ssq 9.0226-9.0226 contract inside
+step 3688 ssq 9.0226-9.0226 reflect
+step 3689 ssq 9.0226-9.0226 shrink
+step 3690 ssq 9.0226-9.0226 reflect
+step 3691 ssq 9.0226-9.0226 contract inside
+step 3692 ssq 9.0226-9.0226 reflect
+step 3693 ssq 9.0226-9.0226 contract inside
+step 3694 ssq 9.0226-9.0226 reflect
+step 3695 ssq 9.0226-9.0226 shrink
+step 3696 ssq 9.0226-9.0226 reflect
+step 3697 ssq 9.0226-9.0226 contract inside
+step 3698 ssq 9.0226-9.0226 contract inside
+step 3699 ssq 9.0226-9.0226 shrink
+step 3700 ssq 9.0226-9.0226 reflect
+step 3701 ssq 9.0226-9.0226 reflect
+step 3702 ssq 9.0226-9.0226 reflect
+step 3703 ssq 9.0226-9.0226 reflect
+step 3704 ssq 9.0226-9.0226 reflect
+step 3705 ssq 9.0226-9.0226 reflect
+step 3706 ssq 9.0226-9.0226 reflect
+step 3707 ssq 9.0226-9.0226 reflect
+step 3708 ssq 9.0226-9.0226 contract outside
+step 3709 ssq 9.0226-9.0226 shrink
+step 3710 ssq 9.0226-9.0226 reflect
+step 3711 ssq 9.0226-9.0226 reflect
+step 3712 ssq 9.0226-9.0226 reflect
+step 3713 ssq 9.0226-9.0226 contract inside
+step 3714 ssq 9.0226-9.0226 contract inside
+step 3715 ssq 9.0226-9.0226 reflect
+step 3716 ssq 9.0226-9.0226 shrink
+step 3717 ssq 9.0226-9.0226 reflect
+step 3718 ssq 9.0226-9.0226 reflect
+step 3719 ssq 9.0226-9.0226 reflect
+step 3720 ssq 9.0226-9.0226 contract inside
+step 3721 ssq 9.0226-9.0226 contract outside
+step 3722 ssq 9.0226-9.0226 shrink
+step 3723 ssq 9.0226-9.0226 reflect
+step 3724 ssq 9.0226-9.0226 reflect
+step 3725 ssq 9.0226-9.0226 shrink
+step 3726 ssq 9.0226-9.0226 reflect
+step 3727 ssq 9.0226-9.0226 reflect
+step 3728 ssq 9.0226-9.0226 reflect
+step 3729 ssq 9.0226-9.0226 reflect
+step 3730 ssq 9.0226-9.0226 shrink
+step 3731 ssq 9.0226-9.0226 shrink
+step 3732 ssq 9.0226-9.0226 reflect
+step 3733 ssq 9.0226-9.0226 reflect
+step 3734 ssq 9.0226-9.0226 reflect
+step 3735 ssq 9.0226-9.0226 contract inside
+step 3736 ssq 9.0226-9.0226 reflect
+step 3737 ssq 9.0226-9.0226 reflect
+step 3738 ssq 9.0226-9.0226 shrink
+step 3739 ssq 9.0226-9.0226 reflect
+step 3740 ssq 9.0226-9.0226 reflect
+step 3741 ssq 9.0226-9.0226 contract outside
+step 3742 ssq 9.0226-9.0226 contract inside
+step 3743 ssq 9.0226-9.0226 contract inside
+step 3744 ssq 9.0226-9.0226 contract inside
+step 3745 ssq 9.0226-9.0226 shrink
+step 3746 ssq 9.0226-9.0226 contract inside
+step 3747 ssq 9.0226-9.0226 reflect
+step 3748 ssq 9.0226-9.0226 shrink
+step 3749 ssq 9.0226-9.0226 reflect
+step 3750 ssq 9.0226-9.0226 reflect
+step 3751 ssq 9.0226-9.0226 reflect
+step 3752 ssq 9.0226-9.0226 shrink
+step 3753 ssq 9.0226-9.0226 contract inside
+step 3754 ssq 9.0226-9.0226 contract outside
+step 3755 ssq 9.0226-9.0226 contract inside
+step 3756 ssq 9.0226-9.0226 reflect
+step 3757 ssq 9.0226-9.0226 shrink
+step 3758 ssq 9.0226-9.0226 reflect
+step 3759 ssq 9.0226-9.0226 reflect
+step 3760 ssq 9.0226-9.0226 reflect
+step 3761 ssq 9.0226-9.0226 reflect
+step 3762 ssq 9.0226-9.0226 reflect
+step 3763 ssq 9.0226-9.0226 reflect
+step 3764 ssq 9.0226-9.0226 shrink
+step 3765 ssq 9.0226-9.0226 reflect
+step 3766 ssq 9.0226-9.0226 contract inside
+step 3767 ssq 9.0226-9.0226 reflect
+step 3768 ssq 9.0226-9.0226 reflect
+step 3769 ssq 9.0226-9.0226 reflect
+step 3770 ssq 9.0226-9.0226 reflect
+step 3771 ssq 9.0226-9.0226 reflect
+step 3772 ssq 9.0226-9.0226 contract inside
+step 3773 ssq 9.0226-9.0226 shrink
+Successful convergence 
+Parameter values and standard deviations 
+1 ab, d, age at birth       336    328.8 
+2 ap, d, age at puberty      2555     3401 
+3 Lb, cm, length at birth       700    717.1 
+4 Lp, cm, length at puberty      2050     1633 
+5 Li, cm, ultimate length      2700     2619 
+6 Wb, g, weight at birth  2.75e+05 3.505e+05 
+7 Wp, g, weight at puberty   6.9e+06 4.14e+06 
+8 Wi, g, ultimate weight   1.6e+07 1.708e+07 
+9 rB, 1/d, von Bert growth rate  0.0005918 0.0008249 
+10 Ri, #/d, maximum reprod rate    0.0011 0.001222 
+11 am, d, life span  2.92e+04 -1.341e+154 
+12 T,  K, actual body temp       310      310 
+13 T_ref, K, reference temp       293      293 
+14 T_A,   K, Arrhenius temp  1.28e+04 1.492e+04 
+15 f, scaled functional response         1        1 
+16 z, zoom factor       128      115 
+17 del_M,  -, shape coefficient      0.04   0.0439 
+18 F_m, l/d.cm^2, {F_m} max spec search r       6.5      6.5 
+19 kap_X, -, digestion efficiency       0.8      0.8 
+20 v, cm/d, energy conductance      0.02  0.01761 
+21 kap, -, allocation fraction to soma       0.8   0.9856 
+22 kap_R, -, reproduction efficiency      0.95     0.95 
+23 [p_M], J/d.cm^3, vol-spec som maint        18     32.1 
+24 {p_T}, J/d.cm^2, sur-spec som maint         0        0 
+25 k_J, 1/d, maturity maint rate coefficient     0.002 0.0002644 
+26 [E_G], J/cm^3, spec cost for structure     2800     2020 
+27 E_H^b, J, maturity investm at birth  1.153e+07 1.58e+07 
+28 E_H^p, J, maturity investm at puberty  3.146e+08 4.56e+08 
+29 h_a, 1/d^2, Weibull aging acceleration  1.28e-07 -1.254e-08 
+30 s_G, -, Gompertz stress coefficient      0.5      0.5 
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Demonstrates the use og get_pars_m
+% get parameters for Balaenoptera musculus
+% get_pars_m is adapted for placentalia data (foetal development)
+
+
+global dwm % pass d_O, w_O, mu_O directly to get_pars_m
+
+% first initial estimators of the parameter values
+% copy-paste from pars_animal
+
+
+T    =   273 + 37; % K, actual body temperature ADAPT THIS FOR B.musculus
+T_ref  = 293;      % K, temp for which rate pars are given 
+T_A  =  1.6*8000;  % K, Arrhenius temp ADAT THIS FOR B.musculus
+f = 1.0;           % scaled functional response
+z = 128;           % zoom factor ADAPT THIS FOR B.musculus
+del_M =.16/ 4;     % -, shape coefficient ADAPT THIS FOR B.musculus
+F_m = 6.5;         % l/d.cm^2, {F_m} max spec searching rate
+kap_X = 0.8;       % -, digestion efficiency of food to reserve
+v = 0.02;          % cm/d, energy conductance
+kap = 0.8;         % -, alloaction fraction to soma = growth + somatic maintenance
+kap_R = 0.95;      % -, reproduction efficiency
+p_M = 18;          % J/d.cm^3, [p_M] vol-specific somatic maintenance
+p_T =  0;          % J/d.cm^2, {p_T} surface-specific som maintenance
+k_J = 0.002;       % 1/d, < k_M = p_M/E_G, maturity maint rate coefficient
+E_G = 2800;        % J/cm^3, [E_G], spec cost for structure
+E_Hb = 20 * 1e-3 * 275 * z^3; % J, E_H^b ADAPT THIS FOR B.musculus
+E_Hp = 3 * 50 * z^3;  % J, E_H^p ADAPT THIS FOR B.musculus
+h_a = z * 1e-9;    % 1/d^2, Weibull aging acceleration
+s_G = 0.5;         % -, Gompertz stress coefficient ADAPT THIS FOR B.musculus
+
+% pack 18 parameters and fix T, T_ref, f, F_m, kap_X, kap_R, p_T, h_a, s_G
+pars_Bm = [T 0; T_ref 0; T_A 1; f 0; z 1; del_M 1; 
+    F_m 0; kap_X 0; v 1; kap 1; kap_R 0; p_M 1; p_T 0; k_J 1; E_G 1; E_Hb 1; E_Hp 1; h_a 1; s_G 0];
+
+% 10 data for B.musculus
+ab = 336;       %   1 ab    % d, age at birth
+ap = 2555;      %   2 ap    % d, age at puberty
+Lb = 700;       %   3 Lb    % cm, length at birth
+Lp = 2050;      %   4 Lp    % cm, length at puberty
+Li = 2700;      %   5 Li    % cm, ultimate length
+Wb = 275000;    %   6 Wb    % g, weight at birth
+Wp = 6900000;   %   7 Wp    % g, weight at puberty
+Wi = 16000000;  %   8 Wi    % g, ultimate weight
+rB = 5.9178e-4; %   9 rB    % 1/d, von Bertalanffy growth rate
+Ri = .0011;     %  10 Ri    % #/d, maximum reproduction rate
+tm = 29200;     %  11 tm    % d, life span
+
+% pack data for B.musculus
+%  append parameters for generalised animal as data
+%   to make sure that those of B.musculus are near, except for z
+data_Bm = [ab; ap; Lb; Lp; Li; Wb; Wp; Wi; rB; Ri; tm; pars_Bm(:,1)];
+% nmregr wants to have 3 columns: indpendent var, dependent var, weight coeff
+%   prepend independent variable (not used) and append weight coefficients
+%   weight coeff inverse to squared data
+Data_Bm = [zeros(30,1), data_Bm, 1 ./ max(1e-6, data_Bm) .^ 2];
+Data_Bm(1:11,3) = 10 * Data_Bm(1:11,3); % give Bm data more weight
+Data_Bm(11,3) = 0; % no weight to a_m; small value gives numerical problems
+% we should turn to years, rather than days as unit of time to solve this problem
+Data_Bm(26,3) = 20 * Data_Bm(26,3); % more weight to E_G
+Data_Bm([14 20],3) = 10 * Data_Bm([14 20],3); % more weight to v, T_A
+Data_Bm([12 13 16 27 28],3) = 0; % set weight for T, T_ref, z, E_Hb, E_Hp to zero
+
+%% conversion coefficients (selected copy-paste from pars_animal)
+
+n_O = [1.00, 1.00, 1.00, 1.00;  % C/C, equals 1 by definition
+       1.80, 1.80, 2.00, 1.80;  % H/C
+       0.50, 0.50, 0.75, 0.50;  % O/C
+       0.20, 0.15, 0.20, 0.15]; % N/C
+   
+d_O = [.1; .1; .1; .1];     % g/cm^3, specific densities for organics
+mu_X = 525000;                    % J/mol, chemical potential of food
+mu_V = 500000;                    % J/mol, chemical potential of structure
+mu_E = 550000;                    % J/mol, chemical potential of reserve
+mu_P = 480000;                    % J/mol, chemical potential of faeces
+mu_O = [mu_X; mu_V; mu_E; mu_P];  % J/mol, chemical potentials of organics
+w_O = n_O' * [12; 1; 16; 14];     % g/mol, mol-weights for org. compounds
+dwm = [d_O, w_O, mu_O]; % g/cm^3, g/mol, kJ/mol spec density, mol weight, chem pot
+
+%% tune parameters
+nmregr_options('max_step_number',2e4)
+nmregr_options('max_fun_evals',2e4)
+pars_Bm = nmregr('get_pars_m', pars_Bm, Data_Bm);
+Edata_Bm = get_pars_m(pars_Bm(:,1), Data_Bm);
+format short eng
+
+txt_Bm = {...
+    '1 ab, d, age at birth ';
+    '2 ap, d, age at puberty ';
+    '3 Lb, cm, length at birth ';
+    '4 Lp, cm, length at puberty ';
+    '5 Li, cm, ultimate length ';
+    '6 Wb, g, weight at birth ';
+    '7 Wp, g, weight at puberty ';
+    '8 Wi, g, ultimate weight ';
+    '9 rB, 1/d, von Bert growth rate ';
+   '10 Ri, #/d, maximum reprod rate ';
+   '11 am, d, life span ';
+   '12 T,  K, actual body temp ';
+   '13 T_ref, K, reference temp ';
+   '14 T_A,   K, Arrhenius temp ';
+   '15 f, scaled functional response ';
+   '16 z, zoom factor ';
+   '17 del_M,  -, shape coefficient ';
+   '18 F_m, l/d.cm^2, {F_m} max spec search r ';
+   '19 kap_X, -, digestion efficiency ';
+   '20 v, cm/d, energy conductance ';
+   '21 kap, -, allocation fraction to soma ';
+   '22 kap_R, -, reproduction efficiency ';
+   '23 [p_M], J/d.cm^3, vol-spec som maint ';
+   '24 {p_T}, J/d.cm^2, sur-spec som maint ';
+   '25 k_J, 1/d, maturity maint rate coefficient ';
+   '26 [E_G], J/cm^3, spec cost for structure'; 
+   '27 E_H^b, J, maturity investm at birth ';
+   '28 E_H^p, J, maturity investm at puberty ';
+   '29 h_a, 1/d^2, Weibull aging acceleration ';
+   '30 s_G, -, Gompertz stress coefficient'};
+
+printpar(txt_Bm, data_Bm, Edata_Bm)
+##### SOURCE END #####
+--></body></html>

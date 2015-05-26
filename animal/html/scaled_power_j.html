@@ -1,0 +1,148 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>scaled_power_j</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-09"><meta name="DC.source" content="scaled_power_j.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>scaled_power_j</h1><!--introduction--><p>Gets scaled powers as function of length in case of type M acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>pACSJGRD = <a href="..scaled_power_j.m"><b>scaled_power_j</b></a> (L, f, p, lb, lj, lp)</p><h2>Description<a name="4"></a></h2><p>Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length</p><p>Input</p><div><ul><li>L: n-vector with lengths</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapR g kJ kM LT v UHb UHj UHp</li><li>lb: scalar with scaled length at birth for f; if not existent: NaN</li><li>lj: scalar with scaled length at metamorphosis for f; if not existent: NaN</li><li>lp: scalar with scaled length at puberty for f; if not existent: NaN</li></ul></div><p>Output</p><div><ul><li>pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Similar to <a href="scaled_power.html"><b>scaled_power</b></a> for metabolic acceleration between birth and metamorphosis. The maturity value relates to the one for which f has been constant. Powers can become negative for shrinking of structure or maturity. See function <a href="scaled_power_j.html"><b>scaled_power</b></a> for no metabolic acceleration.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../statistics.m"><b>statistics</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% scaled_power_j
+% Gets scaled powers as function of length in case of type M acceleration
+
+%%
+function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
+  % created 2011/04/28 by Bas Kooijman, modified 2012/09/22
+  
+  %% Syntax
+  % pACSJGRD = <..scaled_power_j.m *scaled_power_j*> (L, f, p, lb, lj, lp)
+  
+  %% Description
+  % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance,
+  % growth, reproduction and dissipation as function of length
+  %
+  % Input
+  %
+  % * L: n-vector with lengths
+  % * f: scalar with (constant) scaled functional response
+  % * p: 10-vector with parameters: kap kapR g kJ kM LT v UHb UHj UHp
+  % * lb: scalar with scaled length at birth for f; if not existent: NaN
+  % * lj: scalar with scaled length at metamorphosis for f; if not existent: NaN
+  % * lp: scalar with scaled length at puberty for f; if not existent: NaN  
+  %
+  % Output
+  %
+  % * pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}
+  
+  %% Remarks
+  % Similar to <scaled_power.html *scaled_power*> for metabolic acceleration between birth and metamorphosis.
+  % The maturity value relates to the one for which f has been constant.
+  % Powers can become negative for shrinking of structure or maturity.
+  % See function <scaled_power_j.html *scaled_power*> for no metabolic acceleration.
+  
+  %% Example of use
+  % See <../statistics.m *statistics*>
+
+  % unpack parameters
+  kap  = p(1);  % -, fraction allocated to growth + som maint
+  kapR = p(2);  % -, fraction of reprod flux that is fixed in embryo reserve 
+  g    = p(3);  % -, energy investment ratio
+  kJ   = p(4);  % 1/d, maturity maint rate coeff
+  kM   = p(5);  % 1/d, somatic maint rate coeff
+  LT   = p(6);  % cm, heating length 
+  v    = p(7);  % cm/d, energy conductance
+  U_Hb = p(8);  % d cm^2, scaled maturity at birth
+  U_Hj = p(9);  % d cm^2, scaled maturity at metamorphosis
+  U_Hp = p(10); % d cm^2, scaled maturity at puberty
+
+  Lm = v/ kM/ g; k = kJ/ kM;
+  L = L(:); l = L/ Lm; lT = LT/ Lm; 
+
+  if isnan(lb) && isnan(lp) % juvenile stage cannot be reached
+    lT = 0 * l;
+    assim = 0 * l;
+    kapR = 0 * l;
+    sM = 1 + 0 * l;
+  elseif isnan(lj) % metamorphosis cannot be reached
+    lT = (l > lb) .* lT;
+    assim = (l > lb);
+    kapR = 0 * l;
+    sM = max(lb, l)/ lb;    % -, stress fractor for acceleration
+  elseif isnan(lp) % adult stage cannot be reached
+    lT = (l > lb) .* lT;
+    assim = (l > lb);
+    kapR = 0 * l;
+    sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
+  else % adult stage can be reached
+    lT = (l > lb) .* lT;
+    assim = (l > lb);
+    kapR = kapR * (l > lp);
+    sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
+  end
+
+  H = maturity_j(L, f, p);  % scaled maturities E_H/ {p_Am}
+  uH = H *  g^2 * kM^3/ v^2;
+
+  % scaled powers: powers per max assimilation {p_Am} L_m^2
+  pA = assim * f .* sM .* l.^2;              % assim
+  pC = l.^2 .* ((g + lT) .* sM + l )/ (1 + g/ f);   % mobilisation
+  pS = kap * l.^2 .* (l + lT);               % somatic  maint
+  pJ = k * uH;                               % maturity maint
+  pG = kap * pC - pS;                        % growth
+  pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
+  pD = pS + pJ + (1 - kapR) .* pR ;          % dissipation
+
+  pACSJGRD = [pA, pC, pS, pJ, pG , pR, pD];
+##### SOURCE END #####
+--></body></html>

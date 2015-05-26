@@ -1,0 +1,147 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Script animal</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-16"><meta name="DC.source" content="animal.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Script animal</h1><!--introduction--><pre>Created by Bas Kooijman at 2000/10/18; modified 2011/02/03</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Description</a></li><li><a href="#2">Example of use</a></li></ul></div><h2>Description<a name="1"></a></h2><p>Calculates statistics and produces plots of state variables and fluxes. The parameters in the function <a href="pars_animal.html"><b>pars_animal</b></a> can be modified.</p><p>The theory for the standard DEB model can be found in:    Kooijman, S. A. L. M. 2010 Dynamic Energy Budgets theory    for metabolic organisation. Cambridge University Press.</p><pre>The standard DEB model accounts for:
+  effects of food availability (X) and temperature (T).
+  These environmental parameters are taken to be constant in pars_animal
+  but other routines let them vary in time.</pre><pre>The animal is decomposed in structure (V) and general reserve (E),
+  and metabolic switching is linked to maturity (H)
+The animal developes through an embryonic, juvenile and adult phase.
+  Assimilation is switched on at birth
+  Investment in maturity is redirected to reproduction at puberty
+Organic compounds:
+  X = food, V = structure, E = reserve, P = faeces
+Mineral compounds:
+  C = carbon dioxide, H = water, O = dioxygen, N = nitrogen waste</pre><pre>Uptake is proportional to surface area, which is taken to be
+  proportional to the structural volume^(2/3): isomorph</pre><h2>Example of use<a name="2"></a></h2><p>animal</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Script animal
+%  Created by Bas Kooijman at 2000/10/18; modified 2011/02/03
+
+%% Description
+% Calculates statistics and produces plots of state variables and fluxes.
+% The parameters in the function <pars_animal.html *pars_animal*> can be modified.
+%
+% The theory for the standard DEB model can be found in:
+%    Kooijman, S. A. L. M. 2010 Dynamic Energy Budgets theory
+%    for metabolic organisation. Cambridge University Press.
+% 
+%  The standard DEB model accounts for:
+%    effects of food availability (X) and temperature (T).
+%    These environmental parameters are taken to be constant in pars_animal
+%    but other routines let them vary in time.
+%
+%  The animal is decomposed in structure (V) and general reserve (E),
+%    and metabolic switching is linked to maturity (H)
+%  The animal developes through an embryonic, juvenile and adult phase.
+%    Assimilation is switched on at birth
+%    Investment in maturity is redirected to reproduction at puberty
+%  Organic compounds:
+%    X = food, V = structure, E = reserve, P = faeces
+%  Mineral compounds:
+%    C = carbon dioxide, H = water, O = dioxygen, N = nitrogen waste
+% 
+%  Uptake is proportional to surface area, which is taken to be
+%    proportional to the structural volume^(2/3): isomorph
+
+%% Example of use
+% animal
+ 
+pars_animal % set parameters and compute quantities
+
+%lsode_options('relative tolerance', 1e-3)
+
+clf; shbirth_pie;
+fprintf('hit a key to proceed \n');
+pause; close all;
+
+clf; shmics;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shtime_animal;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shphase;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shflux;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shflux_struc;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shflux_weight;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shratio;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shpower;
+fprintf('hit a key to proceed \n');
+pause;
+
+clf; shscale;
+##### SOURCE END #####
+--></body></html>

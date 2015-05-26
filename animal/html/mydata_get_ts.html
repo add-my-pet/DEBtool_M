@@ -1,0 +1,207 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_get_ts</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_get_ts.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Demonstrates the use of get_ts and get_tj</a></li><li><a href="#2">set parameters and f</a></li><li><a href="#3">get scaled ages, lengths, growth rates</a></li><li><a href="#4">plotting</a></li></ul></div><h2>Demonstrates the use of get_ts and get_tj<a name="1"></a></h2><pre class="codeinput"><span class="comment">% metabolic acceleration between stages s and j at constant f</span>
+<span class="comment">%  with vHb &gt;= vHs &gt;= vHj &gt;= vHp</span>
+<span class="comment">% if vHb = vHs = vHj: standard DEB model</span>
+<span class="comment">% if vHb = vHs &lt; vHj: maximum acceleration, given vHj</span>
+<span class="comment">% during acceleration {F_m}, {p_Am} and v increase with length</span>
+<span class="comment">% notice that K, f, [E_m], g, r_B are not affected by this increase</span>
+<span class="comment">% scaling of lengths is always with respect to embryo parameter values</span>
+<span class="comment">% lT = 0 during embryo stage (no heating or osmotic work)</span>
+</pre><h2>set parameters and f<a name="2"></a></h2><pre class="codeinput">  g   = 0.0424;  <span class="comment">% [E_G] v/ kap {p_Am}, energy investment ratio</span>
+  k   = 0.0118;  <span class="comment">% k_J/ k_M, ratio of maturity and somatic maintenance rate coeff</span>
+  lT  = .0;      <span class="comment">% {p_T}/[p_M]Lm,  scaled heating length</span>
+  vHb = 2.52e-6; <span class="comment">% v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}, mat at birth: start of feeding</span>
+  vHs = 7.40e-5; <span class="comment">% v_H^s = U_H^s g^2 kM^3/ (1 - kap) v^2; U_B^s = M_H^s/ {J_EAm}, mat at settlemen: start of acceletation</span>
+  vHj = 8.88e-4; <span class="comment">% v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}, mat at metamorphosis: end of acceleration</span>
+  vHp = 3.13e-2;  <span class="comment">% v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}, mat at puberty: ceasing of maturation, start of reproduction</span>
+  pars_ts = [g; k; lT; vHb; vHs; vHj; vHp]; <span class="comment">% parameters for get_ts</span>
+  pars_tj = [g; k; lT; vHb; vHj; vHp];      <span class="comment">% parameters for get_tj, for comparison (vHs = vHb)</span>
+  pars_tb = [g; k; vHb];                    <span class="comment">% parameters for get_tb</span>
+
+  f = 0.8;
+</pre><h2>get scaled ages, lengths, growth rates<a name="3"></a></h2><pre class="codeinput">  <span class="comment">% first use get_ts (vHs &gt; vHb)</span>
+  [ts tj tp tb ls lj lp lb li rj rB info] = get_ts(pars_ts, f);
+  <span class="keyword">if</span> info ~=1
+      fprintf(<span class="string">'warning in get_ts: no convergence\n'</span>)
+  <span class="keyword">end</span>
+
+  ti = 2 * tp; <span class="comment">% maximum scaled age for plotting</span>
+  t_bs = linspace(tb, ts, 50)'; <span class="comment">% scaled ages between b and s</span>
+  t_sj = linspace(ts, tj, 50)'; <span class="comment">% scaled ages between s and j</span>
+  t_jp = linspace(tj, tp, 50)'; <span class="comment">% scaled ages between j and p</span>
+  t_pi = linspace(tp, ti, 50)'; <span class="comment">% scaled ages after p</span>
+
+  l_bs = f - lT - (f - lT - lb) * exp(- rB * (t_bs - tb)); <span class="comment">% von Bert growth between b and s</span>
+  l_sj = ls * exp (rj * (t_sj - ts)/ 3);                   <span class="comment">% exponential growth between s and j</span>
+  l_jp = li - (li - lj) * exp(- rB * (t_jp - tj));         <span class="comment">% von Bert growth between j and p</span>
+  l_pi = li - (li - lp) * exp(- rB * (t_pi - tp));         <span class="comment">% von Bert growth between p and i</span>
+
+  <span class="comment">% compare with get_tj (vHs = vHb)</span>
+  [tj_j tp_j tb_j lj_j lp_j lb_j li_j rj_j rB_j info] = get_tj(pars_tj, f);
+  <span class="keyword">if</span> info ~=1
+      fprintf(<span class="string">'warning in get_tj: no convergence\n'</span>)
+  <span class="keyword">end</span>
+  t_bj   = linspace(tb_j, tj_j, 50)';
+  t_jp_j = linspace(tj_j, tp_j, 50)';
+  t_pi_j = linspace(tp_j, ti, 50)';
+
+  l_bj = lb_j * exp (rj_j * (t_bj - tb_j)/ 3);                   <span class="comment">% exponential growth between b and j</span>
+  l_jp_j = li_j - (li_j - lj_j) * exp(- rB_j * (t_jp_j - tj_j)); <span class="comment">% von Bert growth between j and p</span>
+  l_pi_j = li_j - (li_j - lp_j) * exp(- rB_j * (t_pi_j - tp_j)); <span class="comment">% von Bert growth between p and i</span>
+
+  <span class="comment">% compare with no acceleration</span>
+  [tb_b lb_b info] = get_tb(pars_tb, f);
+  <span class="keyword">if</span> info ~=1
+      fprintf(<span class="string">'warning in get_tb: no convergence\n'</span>)
+  <span class="keyword">end</span>
+
+  t_bi = linspace(tb_b, ti, 100)';
+  rB_b = 1/ 3/ (1 + f/ g);
+  l_bi = f - lT - (f - lT - lb_b) * exp(- rB_b * (t_bi - tb_b)); <span class="comment">% von Bert growth between b and i</span>
+</pre><h2>plotting<a name="4"></a></h2><pre class="codeinput">  close <span class="string">all</span>
+
+  plot(t_bs, l_bs, <span class="string">'b'</span>, t_sj, l_sj, <span class="string">'g'</span>, t_jp, l_jp, <span class="string">'r'</span>, t_pi, l_pi, <span class="string">'k'</span>, <span class="keyword">...</span>
+       t_bj, l_bj, <span class="string">'g'</span>, t_jp_j, l_jp_j, <span class="string">'r'</span>, t_pi_j, l_pi_j, <span class="string">'k'</span>, <span class="keyword">...</span>
+       t_bi, l_bi, <span class="string">'b'</span>)
+  xlabel(<span class="string">'scaled age'</span>)
+  ylabel(<span class="string">'scaled length'</span>)
+</pre><img vspace="5" hspace="5" src="mydata_get_ts_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Demonstrates the use of get_ts and get_tj
+
+% metabolic acceleration between stages s and j at constant f
+%  with vHb >= vHs >= vHj >= vHp
+% if vHb = vHs = vHj: standard DEB model
+% if vHb = vHs < vHj: maximum acceleration, given vHj
+% during acceleration {F_m}, {p_Am} and v increase with length
+% notice that K, f, [E_m], g, r_B are not affected by this increase
+% scaling of lengths is always with respect to embryo parameter values
+% lT = 0 during embryo stage (no heating or osmotic work)
+
+%% set parameters and f
+
+  g   = 0.0424;  % [E_G] v/ kap {p_Am}, energy investment ratio 
+  k   = 0.0118;  % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = .0;      % {p_T}/[p_M]Lm,  scaled heating length 
+  vHb = 2.52e-6; % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}, mat at birth: start of feeding
+  vHs = 7.40e-5; % v_H^s = U_H^s g^2 kM^3/ (1 - kap) v^2; U_B^s = M_H^s/ {J_EAm}, mat at settlemen: start of acceletation
+  vHj = 8.88e-4; % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}, mat at metamorphosis: end of acceleration
+  vHp = 3.13e-2;  % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}, mat at puberty: ceasing of maturation, start of reproduction
+  pars_ts = [g; k; lT; vHb; vHs; vHj; vHp]; % parameters for get_ts
+  pars_tj = [g; k; lT; vHb; vHj; vHp];      % parameters for get_tj, for comparison (vHs = vHb)
+  pars_tb = [g; k; vHb];                    % parameters for get_tb
+  
+  f = 0.8;
+  
+%% get scaled ages, lengths, growth rates
+
+  % first use get_ts (vHs > vHb)
+  [ts tj tp tb ls lj lp lb li rj rB info] = get_ts(pars_ts, f);
+  if info ~=1
+      fprintf('warning in get_ts: no convergence\n')
+  end
+  
+  ti = 2 * tp; % maximum scaled age for plotting
+  t_bs = linspace(tb, ts, 50)'; % scaled ages between b and s
+  t_sj = linspace(ts, tj, 50)'; % scaled ages between s and j
+  t_jp = linspace(tj, tp, 50)'; % scaled ages between j and p
+  t_pi = linspace(tp, ti, 50)'; % scaled ages after p
+  
+  l_bs = f - lT - (f - lT - lb) * exp(- rB * (t_bs - tb)); % von Bert growth between b and s
+  l_sj = ls * exp (rj * (t_sj - ts)/ 3);                   % exponential growth between s and j
+  l_jp = li - (li - lj) * exp(- rB * (t_jp - tj));         % von Bert growth between j and p
+  l_pi = li - (li - lp) * exp(- rB * (t_pi - tp));         % von Bert growth between p and i
+ 
+  % compare with get_tj (vHs = vHb)
+  [tj_j tp_j tb_j lj_j lp_j lb_j li_j rj_j rB_j info] = get_tj(pars_tj, f);
+  if info ~=1
+      fprintf('warning in get_tj: no convergence\n')
+  end
+  t_bj   = linspace(tb_j, tj_j, 50)';
+  t_jp_j = linspace(tj_j, tp_j, 50)';
+  t_pi_j = linspace(tp_j, ti, 50)';
+  
+  l_bj = lb_j * exp (rj_j * (t_bj - tb_j)/ 3);                   % exponential growth between b and j
+  l_jp_j = li_j - (li_j - lj_j) * exp(- rB_j * (t_jp_j - tj_j)); % von Bert growth between j and p
+  l_pi_j = li_j - (li_j - lp_j) * exp(- rB_j * (t_pi_j - tp_j)); % von Bert growth between p and i
+  
+  % compare with no acceleration
+  [tb_b lb_b info] = get_tb(pars_tb, f);
+  if info ~=1
+      fprintf('warning in get_tb: no convergence\n')
+  end
+
+  t_bi = linspace(tb_b, ti, 100)';
+  rB_b = 1/ 3/ (1 + f/ g);
+  l_bi = f - lT - (f - lT - lb_b) * exp(- rB_b * (t_bi - tb_b)); % von Bert growth between b and i
+ 
+  
+%% plotting
+
+  close all
+  
+  plot(t_bs, l_bs, 'b', t_sj, l_sj, 'g', t_jp, l_jp, 'r', t_pi, l_pi, 'k', ...
+       t_bj, l_bj, 'g', t_jp_j, l_jp_j, 'r', t_pi_j, l_pi_j, 'k', ...
+       t_bi, l_bi, 'b')
+  xlabel('scaled age')
+  ylabel('scaled length')
+  
+##### SOURCE END #####
+--></body></html>

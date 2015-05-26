@@ -1,0 +1,174 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maturity_j</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="maturity_j.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>maturity_j</h1><!--introduction--><p>Gets maturity as function of length for type M acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[H, a, info] = <a href="../maturity_j.m"><b>maturity_j</b></a> (L, f, p)</p><h2>Description<a name="4"></a></h2><p>Calculates the scaled maturity UH = MH/ {JEAm} at constant food  density in the case of acceleration between UHb and UHj  with UHb &lt; UHj &lt; UHp</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapR g kJ kM LT v Hb Hj Hp</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm}</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="maturity.html"><b>maturity</b></a> in absence of acceleration and <a href="maturity_s.html"><b>maturity_s</b></a> if accleration is delayed</p><h2>Example of use<a name="6"></a></h2><p>[H, a, info] = maturity_j(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% maturity_j
+% Gets maturity as function of length for type M acceleration
+
+%%
+function [H, a, info] = maturity_j(L, f, p)
+  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03
+  
+  %% Syntax
+  % [H, a, info] = <../maturity_j.m *maturity_j*> (L, f, p)
+  
+  %% Description
+  % Calculates the scaled maturity UH = MH/ {JEAm} at constant food
+  %  density in the case of acceleration between UHb and UHj
+  %  with UHb < UHj < UHp
+  %
+  % Input
+  %
+  % * L: n-vector with length 
+  % * f: scalar with (constant) scaled functional response
+  % * p: 10-vector with parameters: kap kapR g kJ kM LT v Hb Hj Hp
+  %
+  % Output
+  %
+  % * H: n-vector with scaled maturities: H = M_H/ {J_EAm}
+  % * info: scalar for 1 for success, 0 otherwise
+  
+  %% Remarks
+  % See <maturity.html *maturity*> in absence of acceleration and
+  % <maturity_s.html *maturity_s*> if accleration is delayed
+
+  %% Example of use
+  % [H, a, info] = maturity_j(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])
+ 
+  % unpack parameters
+  kap = p(1); % -, fraction allocated to growth + som maint
+  %kapR = p(2);% -, fraction of reprod flux that is fixed in embryo reserve 
+  g  = p(3);  % -, energy investment ratio
+  kJ = p(4);  % 1/d, maturity maint rate coeff
+  kM = p(5);  % 1/d, somatic maint rate coeff
+  LT = p(6);  % cm, heating length
+  v  = p(7);  % cm/d, energy conductance
+  Hb = p(8); % d cm^2, scaled maturity at birth
+  Hj = p(9); % d cm^2, scaled maturity at metamorphosis
+  Hp = p(10); % d cm^2, scaled maturity at puberty
+  % kapR is not used, but kept for consistency with iget_pars_r, reprod_rate
+    
+  if exist('F','var') == 0
+    f = 1; % abundant food
+  end
+
+  Lm = v/ kM/ g; lT = LT/ Lm; k = kJ/ kM;
+  
+  uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
+  uHj = Hj * g^2 * kM^3/ (v^2); vHj = uHj/ (1 - kap);
+  uHp = Hp * g^2 * kM^3/ (v^2); vHp = uHp/ (1 - kap);
+  [lj, lp, lb, info] = get_lj([g; k; lT; vHb; vHj; vHp], f);
+  Lp = Lm * lp; 
+  
+  ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
+  [l_out, teh] = ode45(@dget_teh_j, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHj, uHp, lT, lb, lj);
+  teh(1:2,:) = []; 
+  H = teh(:,3) * v^2/ g^2/ kM^3;
+  H(L >= Lp) = Hp;
+  a = teh(:,1)/ kM;
+
+end
+
+% subfunctions
+
+function dtEH = dget_teh_j(l, tEH, k, g, kap, f, uHb, uHj, uHp, lT, lb, lj)
+  % l: scalar with scaled length  l = L g k_M/ v
+  % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
+  %   tau = a k_M; scaled age
+  %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
+  %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
+  % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
+  % called by maturity_j
+  
+  t = tEH(1); % scaled age
+  uE = max(1e-10,tEH(2)); % scaled reserve
+  uH = tEH(3); % scaled maturity
+  l2 = l * l; l3 = l2 * l;
+ 
+  % first obtain dl/dt, duE/dt, duH/dt
+  if uH < uHb % isomorphic embryo
+    r = (g * uE/ l - l3)/ (uE + l3); % spec growth rate in scaled time
+    dl = l * r/ 3;
+    duE =  - uE * (g/ l - r);
+    duH = (1 - kap) * uE * (g/ l - r) - k * uH;
+  elseif uH < uHj % V1-morphic early juvenile
+    rj = (g * uE/ lb - l3 * lT/ lb - l3)/ (uE + l3); % scaled exponential growth rate between b and j
+    dl = l * rj/ 3;
+    duE = f * l^3/ lb - uE * (g/ lb - rj);
+    duH = (1 - kap) * uE * (g/ lb - rj) - k * uH;
+  elseif uH < uHp % isomorphic late juvenile
+    sM = lj/ lb;
+    r = (g * uE * sM/ l - l2 * lT * sM - l3)/ (uE + l3); % spec growth rate in scaled time
+    dl = l * r/ 3;
+    duE = f * l2 * sM - uE * (g * sM/ l - r);
+    duH = (1 - kap) * uE * (g * sM/ l - r) - k * uH;
+  else % isomorphic adult
+    sM = lj/ lb;
+    r = (g * uE * sM/ l - l2 * lT * sM - l3)/ (uE + l3); % spec growth rate in scaled time
+    dl = l * r/ 3;
+    duE = f * l2 * sM - uE * (g * sM/ l - r);
+    duH = 0; % no maturation in adults
+  end
+
+  % then obtain dt/dl, duE/dl, duH/dl, 
+  dtEH = [1; duE; duH]/ dl;
+end
+
+##### SOURCE END #####
+--></body></html>

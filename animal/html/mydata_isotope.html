@@ -1,0 +1,411 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_isotope</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_isotope.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Example of running isotope 2008/03/12</a></li><li><a href="#2">parameters, rates are at temp T_ref = 286 K</a></li><li><a href="#3">chemical indices for minerals, organics</a></li><li><a href="#4">reshuffle parameters</a></li><li><a href="#5">aD: (4,12)-matrix with reshuffle coefficients for dissipation</a></li><li><a href="#6">aG: (4,8)-matrix with reshuffle coefficients for growth</a></li><li><a href="#7">odds: (4,4)-matrix with odds ratios</a></li><li><a href="#8">environmental forcing</a></li><li><a href="#9">T = (286 + 1.85) * ones(nt,1);</a></li><li><a href="#10">pack forcing variables</a></li><li><a href="#11">initial values of the 13 states at time t = 0</a></li><li><a href="#12">run isotope</a></li><li><a href="#13">plotting</a></li><li><a href="#14">subplot(3,4,1); clf</a></li><li><a href="#15">subplot(3,4,2); clf</a></li><li><a href="#16">subplot(3,4,3); clf</a></li><li><a href="#17">subplot(3,4,4); clf</a></li><li><a href="#18">subplot(3,4,5); clf</a></li><li><a href="#19">subplot(3,4,6); clf</a></li><li><a href="#20">subplot(3,4,7); clf</a></li><li><a href="#21">subplot(3,4,8); clf</a></li><li><a href="#22">xlabel('time, d'); ylabel('del_N');</a></li><li><a href="#23">plot(tMd(:,1), tMd(:,9), 'r');</a></li><li><a href="#24">subplot(3,4,9); clf</a></li><li><a href="#25">subplot(3,4,10); clf</a></li><li><a href="#26">subplot(3,4,11); clf</a></li><li><a href="#27">subplot(3,4,12); clf</a></li></ul></div><h2>Example of running isotope 2008/03/12<a name="1"></a></h2><pre>choice [M_OD] = [M_OG] = 1 is made and (M_OD + M_OG)^(1/3) = L_O
+  for graph resentation only
+allocation to otolith is ignored in mineral fluxes and yOE_A = 0
+only 13C is followed</pre><pre class="codeinput"><span class="comment">%  chemical labels:</span>
+<span class="comment">%    chemical elements: C, H, O, N</span>
+<span class="comment">%    minerals: carbon dioxide C, water H, dioxygen O, ammonia N</span>
+<span class="comment">%    organics: food X, structure V, reserve V, faces P, otoltih O</span>
+<span class="comment">%  minor notation problem: O stands for dioxygen and otolith in code</span>
+
+<span class="comment">%  2006/03/27 Set anchovy parameters</span>
+<span class="comment">%   Lb = .1; % 1, d.cm^2, scaled maturity at birth</span>
+<span class="comment">%   Lp = 1.6; % 2, d.cm^2, scaled maturity at puberty</span>
+<span class="comment">%   vOD = 1.1861e-005; % 4, mum/d, otolith speed for dissipation</span>
+<span class="comment">%   vOG = .00011049; % 5, mum/d, otolith speed for growth</span>
+<span class="comment">%   kM = .015; % 6, 1/d, somatic maintenance rate coeff</span>
+<span class="comment">%   g = 6; % 7, -, energy investment ratio</span>
+</pre><h2>parameters, rates are at temp T_ref = 286 K<a name="2"></a></h2><pre class="codeinput">JEAm = 5.5;  <span class="comment">% 1: mmol/d/mm^2, {J_EAm}, spec max assim rate</span>
+b = 50;    <span class="comment">% 2: dm^3/d/mm^2, {b}, spec searching rate</span>
+yEX = 0.8; <span class="comment">% 3: mol/mol, yield of reserve on food</span>
+yVE = 0.9; <span class="comment">% 4: mol/mol, yield of structure on reserve</span>
+v = 0.53;  <span class="comment">% 5: mm/d, energy conductance</span>
+JEM = 0.008;<span class="comment">% 6: mmol/mm^3, [\dot{J}_EM], vol-spec som maint cost</span>
+JET = 0;   <span class="comment">% 7: mmol/mm^2, {\dot{J}_ET}, surface area-spec maint cost</span>
+kJ = 0.001;<span class="comment">% 8: 1/d, mat maint rate coeff</span>
+kap = 0.65;<span class="comment">% 9:  -, allocation fraction to soma</span>
+kapR = 0.95; <span class="comment">% 10: -, allocation fraction to reprod, 1 - kapR = repod overhead</span>
+MHb = 1e-5 ; <span class="comment">% 11: mmol, maturity at birth</span>
+MHp = 500;   <span class="comment">% 12: mmol, maturity at puberty</span>
+MV = 0.041;  <span class="comment">% 13: mmol/mm^3, [M_V], vol-spec structural mass</span>
+yPX = 0.3;   <span class="comment">% 14: mol/mol, yield of faces on food</span>
+yVE_D = 1.1; <span class="comment">% 15: mol/mol, yield of structure on reserve in som maint</span>
+kapD = 0.25; <span class="comment">% 16: -, fraction of reserve for structure turnover in dissip</span>
+TA = 9800;   <span class="comment">% 17: K, Arrh temp; ref = after Regner 1996;</span>
+yOE_D = 1e-6; <span class="comment">% 18: mol/mol, yield of otolith on reserve in dissipation</span>
+yOE_G = 5e-6; <span class="comment">% 19: mol/mol, yield of otolith on reserve in growth</span>
+delS = 20;    <span class="comment">% 20: -, shape of the otosac</span>
+
+<span class="comment">% pack parameters</span>
+par = [JEAm; b; yEX; yVE; v; JEM;  JET;  kJ;  kap;  kapR; <span class="keyword">...</span>
+       MHb; MHp; MV; yPX; yVE_D; kapD; TA; yOE_D; yOE_G; delS];
+</pre><h2>chemical indices for minerals, organics<a name="3"></a></h2><pre>cols: CO2, H2O, O2, N-waste, food, structure, reserve, faeces</pre><pre class="codeinput">nMO = [1 0 0 0 1   1   1   1   ; <span class="keyword">...</span><span class="comment"> % C</span>
+       0 2 0 3 1.8 1.8 1.8 1.8 ; <span class="keyword">...</span><span class="comment"> % H</span>
+       2 1 2 0 0.5 0.5 0.5 0.5 ; <span class="keyword">...</span><span class="comment"> % O</span>
+       0 0 0 1 0.2 0.2 0.2 0.2];     <span class="comment">% N</span>
+</pre><h2>reshuffle parameters<a name="4"></a></h2><pre>aA: (5,8)-matrix with reshuffle coefficients for assimilation
+  rows prod E P C H N; cols: substr (X,O) for elements *;
+  sum over rows (= products) must be equal to one</pre><pre class="codeinput">aA = [];
+</pre><h2>aD: (4,12)-matrix with reshuffle coefficients for dissipation<a name="5"></a></h2><pre>  rows prod V C H N; cols: substr (E,V,O) for elements *
+  sum over rows (= products) must be equal to one</pre><pre class="codeinput">aD = [];
+</pre><h2>aG: (4,8)-matrix with reshuffle coefficients for growth<a name="6"></a></h2><pre>  rows prod V C H N; cols: substr (E,O) for elements *
+  sum over rows (= products) must be equal to one</pre><pre class="codeinput">aG = [];
+</pre><h2>odds: (4,4)-matrix with odds ratios<a name="7"></a></h2><pre>  not more than 1 element per column can differ from 1
+  rows: elements *
+  cols: X in assim A_a, E,V in dissi D_a, E in growth G_a
+     X E V   E</pre><pre class="codeinput">odds = [1.05 1.05 1.05 1.3;  <span class="comment">% C select for 13C in anabolic flux</span>
+	1   1   1   1;    <span class="comment">% H</span>
+	1   1   1   1;    <span class="comment">% O</span>
+	1   1   1   1];   <span class="comment">% N</span>
+
+nt = 200; t = linspace(0, 3 * 365, nt)'; <span class="comment">% time points for simulation</span>
+</pre><h2>environmental forcing<a name="8"></a></h2><pre class="codeinput">T_ref = 286; <span class="comment">% K, Reference temperature ;</span>
+T = 286 + 1.85 * sin(2 * pi * (t + 207)/ 365); <span class="comment">% K, temp at time t</span>
+</pre><h2>T = (286 + 1.85) * ones(nt,1);<a name="9"></a></h2><pre class="codeinput">p5 = 1.0e+002 * <span class="keyword">...</span>
+   [3.650000000000000 0.000338436258255;
+   0.000139797026871 -0.000061529908266;
+  -0.000140529304759 -0.000037548182856;
+   0.000005704656069  0.000066063518408;
+   0.000047981953130  0.000016729882406;
+  -0.000005258679892 -0.000022614364105];
+
+X = fnfourier(mod(t, 365), p5);
+<span class="comment">%%X = 1 * ones(nt,1);</span>
+
+delCX = 1e-3 * ones(nt,1); <span class="comment">% C-isotope in food</span>
+delHX = 1e-3 * ones(nt,1); <span class="comment">% H-isotope in food</span>
+delOX = 1e-3 * ones(nt,1); <span class="comment">% O-isotope in food</span>
+delNX = 1e-3 * ones(nt,1); <span class="comment">% N-isotope in food</span>
+delOO = 1e-3 * ones(nt,1); <span class="comment">% O-isotope in dioxygen</span>
+</pre><h2>pack forcing variables<a name="10"></a></h2><pre class="codeinput">tTXd = [t, T, X, delCX, delHX, delOX, delNX, delOO];
+</pre><h2>initial values of the 13 states at time t = 0<a name="11"></a></h2><pre class="codeinput">mEm = JEAm/ v/ MV; <span class="comment">% max res density mol/mol</span>
+JXAm = JEAm/ yEX; <span class="comment">% max spec food uptake rate</span>
+K = JXAm/ b; <span class="comment">% half saturation coefficient</span>
+f = X(1)/ (K + X(1)); M_V0 = .1;
+Md = [f * mEm * M_V0, M_V0, 1e-4 <span class="keyword">...</span><span class="comment"> % M_E(0), M_V(0), M_H(0) in mol</span>
+      1e-5 1e-5 <span class="keyword">...</span><span class="comment">            % M_OD(0), M_OG(0) in mol (otolith)</span>
+      1e-3 1e-3 1e-3 1e-3 <span class="keyword">...</span><span class="comment">  % del_CE(0), del_HE(0), del_OE(0), del_NE(0)</span>
+      1e-3 1e-3 1e-3 1e-3]';   <span class="comment">% del_CV(0), del_HV(0), del_OV(0), del_NV(0)</span>
+</pre><h2>run isotope<a name="12"></a></h2><pre class="codeinput">[tMd, aA, aD, aG] = isotope(tTXd, Md, par, nMO, aA, aD, aG, odds);
+<span class="comment">%  tMd: (n,14)-matrix with cols</span>
+<span class="comment">%       1 time, 2 res M_E, 3 struc M_V, 4 mat M_H,</span>
+<span class="comment">%       5 otolith M_OD, 6 otol M_OG</span>
+<span class="comment">%       7 del_CE,  8 del_HE,  9 del_OE, 10 del_NE,</span>
+<span class="comment">%      11 del_CV, 12 del_HV, 13 del_OV, 14 del_NV</span>
+
+tOd = otolith([tMd, tTXd(:,2)], par, nMO, aA, aD, aG, odds);
+<span class="comment">%  tOd = (nt,12)-matrix with cols</span>
+<span class="comment">%     time, otolith length, otolith color, 9 del_CO's</span>
+</pre><h2>plotting<a name="13"></a></h2><pre class="codeinput">clf
+</pre><h2>subplot(3,4,1); clf<a name="14"></a></h2><pre class="codeinput">  figure(1)
+  plot(t, tMd(:,2) ./ tMd(:,3)/ mEm, <span class="string">'r'</span>, t, X ./ (K + X), <span class="string">'g'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'res dens e, f'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_01.png" alt=""> <h2>subplot(3,4,2); clf<a name="15"></a></h2><pre class="codeinput">  figure(2)
+  L = (tMd(:,3)/ MV) .^(1/3);
+  plot(t, L, <span class="string">'r'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'length, mm'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_02.png" alt=""> <h2>subplot(3,4,3); clf<a name="16"></a></h2><pre class="codeinput">  figure(3)
+  plot(t, tMd(:,4), <span class="string">'r'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'maturity, mol'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_03.png" alt=""> <h2>subplot(3,4,4); clf<a name="17"></a></h2><pre class="codeinput">  figure(4)
+  plot(t, tOd(:,2), <span class="string">'r'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'otoloth length'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_04.png" alt=""> <h2>subplot(3,4,5); clf<a name="18"></a></h2><pre class="codeinput">  figure(5)
+  plot(t, T, <span class="string">'r'</span>)
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'temp, K'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_05.png" alt=""> <h2>subplot(3,4,6); clf<a name="19"></a></h2><pre class="codeinput">  figure(6)
+  plot(tMd(:,1), tMd(:,7), <span class="string">'r'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'del_CE'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_06.png" alt=""> <h2>subplot(3,4,7); clf<a name="20"></a></h2><pre class="codeinput">  figure(7)
+  plot(tMd(:,1), tMd(:,11), <span class="string">'r'</span>);
+  xlabel(<span class="string">'time, d'</span>); ylabel(<span class="string">'del_CV'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_07.png" alt=""> <h2>subplot(3,4,8); clf<a name="21"></a></h2><pre class="codeinput">  figure(8)
+</pre><img vspace="5" hspace="5" src="mydata_isotope_08.png" alt=""> <h2>xlabel('time, d'); ylabel('del_N');<a name="22"></a></h2><h2>plot(tMd(:,1), tMd(:,9), 'r');<a name="23"></a></h2><pre class="codeinput">  plot(tOd(:,2), tOd(:,3), <span class="string">'r'</span>);
+  xlabel(<span class="string">'O-length'</span>); ylabel(<span class="string">'O-color'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_09.png" alt=""> <h2>subplot(3,4,9); clf<a name="24"></a></h2><pre class="codeinput">  figure(9)
+  plot(tOd(:,2), L, <span class="string">'r'</span>);
+  xlabel(<span class="string">'O-length'</span>); ylabel(<span class="string">'body length, mm'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_10.png" alt=""> <h2>subplot(3,4,10); clf<a name="25"></a></h2><pre class="codeinput">  figure(10)
+  plot(tOd(:,2), tOd(:,4), <span class="string">'r'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,5), <span class="string">'g'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,6), <span class="string">'b'</span>);
+  xlabel(<span class="string">'O-length'</span>); ylabel(<span class="string">'del_CO 1-3'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_11.png" alt=""> <h2>subplot(3,4,11); clf<a name="26"></a></h2><pre class="codeinput">  figure(11)
+  plot(tOd(:,2), tOd(:,7), <span class="string">'r'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,8), <span class="string">'g'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,9), <span class="string">'b'</span>);
+  xlabel(<span class="string">'O-length'</span>); ylabel(<span class="string">'del_CO 4-6'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_12.png" alt=""> <h2>subplot(3,4,12); clf<a name="27"></a></h2><pre class="codeinput">  figure(12)
+  plot(tOd(:,2), tOd(:,10), <span class="string">'r'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,11), <span class="string">'g'</span>, <span class="keyword">...</span>
+       tOd(:,2), tOd(:,12), <span class="string">'b'</span>);
+  xlabel(<span class="string">'O-length'</span>); ylabel(<span class="string">'del_CO 7-9'</span>);
+</pre><img vspace="5" hspace="5" src="mydata_isotope_13.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example of running isotope 2008/03/12
+%  choice [M_OD] = [M_OG] = 1 is made and (M_OD + M_OG)^(1/3) = L_O
+%    for graph resentation only
+%  allocation to otolith is ignored in mineral fluxes and yOE_A = 0
+%  only 13C is followed
+
+%  chemical labels:
+%    chemical elements: C, H, O, N
+%    minerals: carbon dioxide C, water H, dioxygen O, ammonia N
+%    organics: food X, structure V, reserve V, faces P, otoltih O
+%  minor notation problem: O stands for dioxygen and otolith in code
+  
+%  2006/03/27 Set anchovy parameters
+%   Lb = .1; % 1, d.cm^2, scaled maturity at birth
+%   Lp = 1.6; % 2, d.cm^2, scaled maturity at puberty
+%   vOD = 1.1861e-005; % 4, mum/d, otolith speed for dissipation
+%   vOG = .00011049; % 5, mum/d, otolith speed for growth
+%   kM = .015; % 6, 1/d, somatic maintenance rate coeff
+%   g = 6; % 7, -, energy investment ratio
+
+%% parameters, rates are at temp T_ref = 286 K
+JEAm = 5.5;  % 1: mmol/d/mm^2, {J_EAm}, spec max assim rate
+b = 50;    % 2: dm^3/d/mm^2, {b}, spec searching rate
+yEX = 0.8; % 3: mol/mol, yield of reserve on food
+yVE = 0.9; % 4: mol/mol, yield of structure on reserve
+v = 0.53;  % 5: mm/d, energy conductance
+JEM = 0.008;% 6: mmol/mm^3, [\dot{J}_EM], vol-spec som maint cost
+JET = 0;   % 7: mmol/mm^2, {\dot{J}_ET}, surface area-spec maint cost
+kJ = 0.001;% 8: 1/d, mat maint rate coeff
+kap = 0.65;% 9:  -, allocation fraction to soma
+kapR = 0.95; % 10: -, allocation fraction to reprod, 1 - kapR = repod overhead
+MHb = 1e-5 ; % 11: mmol, maturity at birth
+MHp = 500;   % 12: mmol, maturity at puberty 
+MV = 0.041;  % 13: mmol/mm^3, [M_V], vol-spec structural mass
+yPX = 0.3;   % 14: mol/mol, yield of faces on food
+yVE_D = 1.1; % 15: mol/mol, yield of structure on reserve in som maint
+kapD = 0.25; % 16: -, fraction of reserve for structure turnover in dissip 
+TA = 9800;   % 17: K, Arrh temp; ref = after Regner 1996;
+yOE_D = 1e-6; % 18: mol/mol, yield of otolith on reserve in dissipation
+yOE_G = 5e-6; % 19: mol/mol, yield of otolith on reserve in growth
+delS = 20;    % 20: -, shape of the otosac
+
+% pack parameters
+par = [JEAm; b; yEX; yVE; v; JEM;  JET;  kJ;  kap;  kapR; ...
+       MHb; MHp; MV; yPX; yVE_D; kapD; TA; yOE_D; yOE_G; delS];
+
+%% chemical indices for minerals, organics
+%  cols: CO2, H2O, O2, N-waste, food, structure, reserve, faeces
+nMO = [1 0 0 0 1   1   1   1   ; ... % C
+       0 2 0 3 1.8 1.8 1.8 1.8 ; ... % H
+       2 1 2 0 0.5 0.5 0.5 0.5 ; ... % O
+       0 0 0 1 0.2 0.2 0.2 0.2];     % N
+
+%% reshuffle parameters
+%  aA: (5,8)-matrix with reshuffle coefficients for assimilation
+%    rows prod E P C H N; cols: substr (X,O) for elements *;
+%    sum over rows (= products) must be equal to one
+aA = [];
+
+%% aD: (4,12)-matrix with reshuffle coefficients for dissipation
+%    rows prod V C H N; cols: substr (E,V,O) for elements *
+%    sum over rows (= products) must be equal to one
+aD = [];
+
+%% aG: (4,8)-matrix with reshuffle coefficients for growth 
+%    rows prod V C H N; cols: substr (E,O) for elements *
+%    sum over rows (= products) must be equal to one
+aG = [];
+
+%% odds: (4,4)-matrix with odds ratios
+%    not more than 1 element per column can differ from 1
+%    rows: elements *
+%    cols: X in assim A_a, E,V in dissi D_a, E in growth G_a
+%       X E V   E
+odds = [1.05 1.05 1.05 1.3;  % C select for 13C in anabolic flux
+	1   1   1   1;    % H
+	1   1   1   1;    % O
+	1   1   1   1];   % N
+
+nt = 200; t = linspace(0, 3 * 365, nt)'; % time points for simulation 
+
+
+%% environmental forcing
+T_ref = 286; % K, Reference temperature ;
+T = 286 + 1.85 * sin(2 * pi * (t + 207)/ 365); % K, temp at time t
+%% T = (286 + 1.85) * ones(nt,1);
+
+p5 = 1.0e+002 * ...
+   [3.650000000000000 0.000338436258255;
+   0.000139797026871 -0.000061529908266;
+  -0.000140529304759 -0.000037548182856;
+   0.000005704656069  0.000066063518408;
+   0.000047981953130  0.000016729882406;
+  -0.000005258679892 -0.000022614364105];
+
+X = fnfourier(mod(t, 365), p5);
+%%X = 1 * ones(nt,1);
+
+delCX = 1e-3 * ones(nt,1); % C-isotope in food
+delHX = 1e-3 * ones(nt,1); % H-isotope in food
+delOX = 1e-3 * ones(nt,1); % O-isotope in food
+delNX = 1e-3 * ones(nt,1); % N-isotope in food
+delOO = 1e-3 * ones(nt,1); % O-isotope in dioxygen
+
+%% pack forcing variables
+tTXd = [t, T, X, delCX, delHX, delOX, delNX, delOO];
+
+
+%% initial values of the 13 states at time t = 0
+mEm = JEAm/ v/ MV; % max res density mol/mol
+JXAm = JEAm/ yEX; % max spec food uptake rate
+K = JXAm/ b; % half saturation coefficient
+f = X(1)/ (K + X(1)); M_V0 = .1;
+Md = [f * mEm * M_V0, M_V0, 1e-4 ... % M_E(0), M_V(0), M_H(0) in mol
+      1e-5 1e-5 ...            % M_OD(0), M_OG(0) in mol (otolith)
+      1e-3 1e-3 1e-3 1e-3 ...  % del_CE(0), del_HE(0), del_OE(0), del_NE(0)
+      1e-3 1e-3 1e-3 1e-3]';   % del_CV(0), del_HV(0), del_OV(0), del_NV(0)
+
+%% run isotope
+[tMd, aA, aD, aG] = isotope(tTXd, Md, par, nMO, aA, aD, aG, odds);
+%  tMd: (n,14)-matrix with cols
+%       1 time, 2 res M_E, 3 struc M_V, 4 mat M_H,
+%       5 otolith M_OD, 6 otol M_OG
+%       7 del_CE,  8 del_HE,  9 del_OE, 10 del_NE,
+%      11 del_CV, 12 del_HV, 13 del_OV, 14 del_NV
+
+tOd = otolith([tMd, tTXd(:,2)], par, nMO, aA, aD, aG, odds); 
+%  tOd = (nt,12)-matrix with cols
+%     time, otolith length, otolith color, 9 del_CO's
+
+%% plotting
+clf
+
+  %% subplot(3,4,1); clf
+  figure(1)
+  plot(t, tMd(:,2) ./ tMd(:,3)/ mEm, 'r', t, X ./ (K + X), 'g');
+  xlabel('time, d'); ylabel('res dens e, f');
+
+  %% subplot(3,4,2); clf
+  figure(2)
+  L = (tMd(:,3)/ MV) .^(1/3);
+  plot(t, L, 'r');
+  xlabel('time, d'); ylabel('length, mm');
+
+  %% subplot(3,4,3); clf
+  figure(3)
+  plot(t, tMd(:,4), 'r');
+  xlabel('time, d'); ylabel('maturity, mol'); 
+
+  %% subplot(3,4,4); clf
+  figure(4)
+  plot(t, tOd(:,2), 'r');
+  xlabel('time, d'); ylabel('otoloth length'); 
+  
+  %% subplot(3,4,5); clf
+  figure(5)
+  plot(t, T, 'r')
+  xlabel('time, d'); ylabel('temp, K'); 
+
+  %% subplot(3,4,6); clf
+  figure(6)
+  plot(tMd(:,1), tMd(:,7), 'r');
+  xlabel('time, d'); ylabel('del_CE'); 
+
+  %% subplot(3,4,7); clf
+  figure(7)
+  plot(tMd(:,1), tMd(:,11), 'r');
+  xlabel('time, d'); ylabel('del_CV'); 
+
+  %% subplot(3,4,8); clf
+  figure(8)
+  %% xlabel('time, d'); ylabel('del_N'); 
+  %% plot(tMd(:,1), tMd(:,9), 'r');
+  plot(tOd(:,2), tOd(:,3), 'r');
+  xlabel('O-length'); ylabel('O-color'); 
+
+  %% subplot(3,4,9); clf
+  figure(9)
+  plot(tOd(:,2), L, 'r');
+  xlabel('O-length'); ylabel('body length, mm');
+
+  %% subplot(3,4,10); clf
+  figure(10)
+  plot(tOd(:,2), tOd(:,4), 'r', ...
+       tOd(:,2), tOd(:,5), 'g', ...
+       tOd(:,2), tOd(:,6), 'b');
+  xlabel('O-length'); ylabel('del_CO 1-3'); 
+
+  %% subplot(3,4,11); clf
+  figure(11)
+  plot(tOd(:,2), tOd(:,7), 'r', ...
+       tOd(:,2), tOd(:,8), 'g', ...
+       tOd(:,2), tOd(:,9), 'b');
+  xlabel('O-length'); ylabel('del_CO 4-6'); 
+
+  %% subplot(3,4,12); clf
+  figure(12)
+  plot(tOd(:,2), tOd(:,10), 'r', ...
+       tOd(:,2), tOd(:,11), 'g', ...
+       tOd(:,2), tOd(:,12), 'b');
+  xlabel('O-length'); ylabel('del_CO 7-9'); 
+  
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,169 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_lb1</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_lb1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_lb1</h1><!--introduction--><p>Obtains scaled length at birth, given the scaled reserve density at birth</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[lb info] = <a href="../get_lb1.m"><b>get_lb1</b></a> (p, eb, lb0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled length at birth, given the scaled reserve density at birth.</p><p>Input</p><div><ul><li>p: 3-vector with parameters: g, k, v_H^b (see below)</li><li>eb: optional scalar with scaled reserve density at birth (default eb = 1)</li><li>lb0: optional scalar with initial estimate for scaled length at birth (default lb0: lb for k = 1)</li></ul></div><p>Output</p><div><ul><li>lb: scalar with scaled length at birth</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Like <a href="get_lb.html"><b>get_lb</b></a>, but using ode23, rather than Euler integration</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_lb1
+% Obtains scaled length at birth, given the scaled reserve density at birth
+
+%%
+function [lb info] = get_lb1(p, eb, lb0)
+  % created 2007/08/02 by Bas Kooijman; modified 2013/08/19, 2015/01/18
+  
+  %% Syntax
+  % [lb info] = <../get_lb1.m *get_lb1*> (p, eb, lb0)
+  
+  %% Description
+  % Obtains scaled length at birth, given the scaled reserve density at birth. 
+  %
+  % Input
+  %
+  % * p: 3-vector with parameters: g, k, v_H^b (see below)
+  % * eb: optional scalar with scaled reserve density at birth (default eb = 1)
+  % * lb0: optional scalar with initial estimate for scaled length at birth (default lb0: lb for k = 1)
+  %  
+  % Output
+  %
+  % * lb: scalar with scaled length at birth 
+  % * info: indicator equals 1 if successful, 0 otherwise
+
+  %% Remarks
+  % Like <get_lb.html *get_lb*>, but using ode23, rather than Euler integration
+
+  %  unpack p
+  g = p(1);   % g = [E_G] * v/ kap * {p_Am}, energy investment ratio
+  k = p(2);   % k = k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  vHb = p(3); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm}
+
+  info = 1;
+
+  if ~exist('lb0','var') || k == 1
+    lb = vHb ^ (1/3); % exact solution for k = 1
+    if k == 1
+      return;
+    end
+  elseif isempty(lb0)
+    lb = vHb^(1/ 3); % exact solution for k = 1     
+  else
+    lb = lb0;
+  end
+  if ~exist('eb','var')
+    eb = 1;
+  elseif isempty(eb)
+    eb = 1;
+  end
+   
+  xb = g/ (g + eb);
+  xb3 = xb^(1/ 3);
+  t0 = xb * g * vHb;
+  i = 0; norm = 1; % make sure that we start Newton Raphson procedure
+  ni = 100; % max number of iterations
+  
+  while i < ni  && norm > 1e-8
+    z0 = [1, 1, 0, 0]; % v(0), v'(0)/v(0); int_0^0 r(x)/ v(x) dx
+    [x, z]  = ode23s(@dget_lb1, [1e-10; xb], z0, [], k, g, lb, xb, xb3);
+    v  = z(end,1); % v(x_b)
+    lv = z(end,2); % v'(x_b)/ v(x_b)
+    rv = z(end,3); % int_0^xb r(x)/ v(x) dx
+    w  = z(end,4); % int_0^xb (r'(x)/r(x) - v'(x)/v(x)) r(x)/v(x) dx
+   
+    t = t0/ lb^3/ v - rv;
+    dt = - t0/ lb^3/ v * (3/ lb + lv) - w;
+    lb = lb - t/ dt; % Newton Raphson step
+    norm = t^2; i = i + 1;
+  end
+    
+  if i == ni || lb < 0 || lb > 1
+    fprintf(['warning get_lb1: no convergence of l_b within ', num2str(ni),' steps \n']);
+    info = 0;
+  end
+  
+end
+
+% subfunction
+
+function dz = dget_lb1(x, z, k, g, lb, xb, xb3)
+  % modified 2009/09/29
+  % dz = dget_lb2(x, z)
+  % z: 4-vector with (v,dv,rv,w) of embryo
+  % dz: 4-vector with d/dx (v,dv,rv,w)
+  
+  v  = z(1); % v(x)
+  lv = z(2); % v'(x)/v(x); v'(x) = d/d l_b v(x)
+  %rv = z(3); % r(x)/ v(x)
+  %w  = z(4); % (r'(x)/r(x) - v'(x)/v(x)) r(x)/v(x)
+  
+  x3 = x^(1/ 3);
+  l = x3/ (xb3/ lb - beta0(x, xb)/ 3/ g); % l(x)
+  dl = (l/ lb)^2 * xb3/ x3; % l'(x)
+  
+  dv = - v * (k - x)/ (1 - x) * l/ g/ x; % d/dx v(x)
+
+  dlv = - lv * (k - x)/ (1 - x) * dl/ g/ x; % d/dx v'(x)/v(x)
+
+  r = l + g;
+  drv = r/ v; % r(x)/ v(x)
+
+  lr = dl/ r; % r'(x)/ r(x)
+  dw = (lr - lv) * drv;
+  
+  dz = [dv; dlv; drv; dw];
+end
+
+##### SOURCE END #####
+--></body></html>

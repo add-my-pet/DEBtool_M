@@ -1,0 +1,200 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_pars_u</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_pars_u.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_pars_u</h1><!--introduction--><p>Gets primary parameters from compound parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[par, aLM] = <a href="../get_pars_u.m"><b>get_pars_u</b></a>(q, p)</p><h2>Description<a name="4"></a></h2><p>Gets primary parameters from compound parameters Surface linked somatic maintenance costs are not included</p><p>Input</p><div><ul><li>q: 4-vector with</li></ul></div><pre>  1 JXAm  % mmol/d.mm^2 % {J_{XAm}} max spec food uptake rate
+  2 K     % M    % half saturation coefficient
+  3 ME0   % mol  % M_E^0 mass at time 0 (all mass consists of reserve)
+  4 MWb   % mol  % M_W^b mass at birth (reserve plus structure)
+  this data must be supplied to convert compound to primary pars
+  we here assume that ME0 and MWb are given at abundant food
+  (reserve density at birth equals that of the mother at egg production)</pre><div><ul><li>p: 8-vector with</li></ul></div><pre>  1 kap   % -      % fraction allocated to som maint + growth
+  2 kapR  % -      % fraction of energy to reprod that is fixed in embryo
+  3 g     % -      % energy investment ratio
+  4 kJ    % d^-1   % maturity maintenance rate coefficient
+  5 kM    % d^-1   % somatic maintenance rate coefficient
+  6 v     % mm/d   % energy conductance
+  7 Hb    % d.mm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  8 Hp    % d.mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  this vector is output of get_pars_s</pre><p>Output</p><div><ul><li>par: 12-vector with primary pars of standard DEB model</li></ul></div><pre>  1  JEAm % mmol/d.mm^2 % {J_{EAm}} max spec assimilation rate
+  2  b    % m^3/ d.mm^2 % {b} spec searching rate
+  3  yEX  % mol/mol     % y_EX yield of reserve on food
+  4  yVE  % mol/mol     % y_VE yield of structure on reserve
+  5  v    % mm/d        % energy conductance
+  6  JEM  % mol/d.mm^3  % [J_{EM}] spec somatic maintenance costs
+  7  kJ   % 1/d         % k_J maturity maintenance rate coefficient
+  8  kap  % -           % \kappa fraction to som maint + growth
+  9  kapR % -           % \kappa_R fraction fixed in embryo
+ 10  MHb  % mol         % M_H^b maturity at birth
+ 11  MHp  % mol         % M_H^p maturity at puberty
+ 12  MV   % mol/ mm^3   % [M_V] mass-volume converter for structure</pre><div><ul><li>aLM: (4,4)-matrix with</li></ul></div><pre>  age a, length L, mass of reserve M_E, mass of structure M_V
+  at age 0, at birth, at puberty, at infinity</pre><h2>Remarks<a name="5"></a></h2><p>Notice that all quantities that involve length depend on the shape unless if chosen for volumetric lengths</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_pars.m"><b>mydata_get_pars</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_pars_u
+% Gets primary parameters from compound parameters
+
+%%
+function [par, aLM] = get_pars_u(q, p)
+  %  created 2007/01/27 by Bas Kooyman, modified 2007/08/07
+  
+  %% Syntax
+  % [par, aLM] = <../get_pars_u.m *get_pars_u*>(q, p)
+  
+  %% Description
+  % Gets primary parameters from compound parameters
+  % Surface linked somatic maintenance costs are not included
+  %
+  % Input
+  %
+  % * q: 4-vector with
+  %
+  %    1 JXAm  % mmol/d.mm^2 % {J_{XAm}} max spec food uptake rate
+  %    2 K     % M    % half saturation coefficient
+  %    3 ME0   % mol  % M_E^0 mass at time 0 (all mass consists of reserve)
+  %    4 MWb   % mol  % M_W^b mass at birth (reserve plus structure)
+  %    this data must be supplied to convert compound to primary pars
+  %    we here assume that ME0 and MWb are given at abundant food
+  %    (reserve density at birth equals that of the mother at egg production)
+  %
+  % * p: 8-vector with
+  %
+  %    1 kap   % -      % fraction allocated to som maint + growth
+  %    2 kapR  % -      % fraction of energy to reprod that is fixed in embryo
+  %    3 g     % -      % energy investment ratio
+  %    4 kJ    % d^-1   % maturity maintenance rate coefficient
+  %    5 kM    % d^-1   % somatic maintenance rate coefficient
+  %    6 v     % mm/d   % energy conductance
+  %    7 Hb    % d.mm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  %    8 Hp    % d.mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  %    this vector is output of get_pars_s
+  %
+  % Output
+  %
+  % * par: 12-vector with primary pars of standard DEB model
+  %
+  %    1  JEAm % mmol/d.mm^2 % {J_{EAm}} max spec assimilation rate
+  %    2  b    % m^3/ d.mm^2 % {b} spec searching rate
+  %    3  yEX  % mol/mol     % y_EX yield of reserve on food
+  %    4  yVE  % mol/mol     % y_VE yield of structure on reserve
+  %    5  v    % mm/d        % energy conductance
+  %    6  JEM  % mol/d.mm^3  % [J_{EM}] spec somatic maintenance costs
+  %    7  kJ   % 1/d         % k_J maturity maintenance rate coefficient
+  %    8  kap  % -           % \kappa fraction to som maint + growth
+  %    9  kapR % -           % \kappa_R fraction fixed in embryo 
+  %   10  MHb  % mol         % M_H^b maturity at birth
+  %   11  MHp  % mol         % M_H^p maturity at puberty
+  %   12  MV   % mol/ mm^3   % [M_V] mass-volume converter for structure
+  %
+  % * aLM: (4,4)-matrix with 
+  %
+  %    age a, length L, mass of reserve M_E, mass of structure M_V
+  %    at age 0, at birth, at puberty, at infinity
+  
+  %% Remarks
+  % Notice that all quantities that involve length depend on the shape unless if chosen for volumetric lengths
+
+  %% Example of use
+  % See <../mydata_get_pars.m *mydata_get_pars*>
+
+  % unpack q
+  JXAm = q(1); K   = q(2); ME0 = q(3); MWb = q(4);
+  % unpack p
+  kap = p(1); kapR = p(2); g   = p(3); kJ  = p(4);
+  kM  = p(5); v    = p(6); Hb  = p(7); Hp  = p(8);
+
+  Lm = v/ (kM * g); % max length for transfer to dget_aul
+  f = 1; % scaled functional response for transfer to dget_aul_p
+
+  % get initial scaled reserve, assuming abundant food (f = 1)
+  [U0, Lb, info] = initial_scaled_reserve(f, [Hb/(1-kap); g; kJ; kM; v]);
+  if info ~= 1
+    fprintf('problems in finding initial scaled reserve\n');
+  end
+
+  % get states at birth: age, scaled reserve, length
+  ab = get_tb([g; kJ/ kM], f, Lb/ Lm)/ kM;
+  Ub = f * Lb^3/ v; 
+ 
+  b    = JXAm/ K;
+  JEAm = ME0/ U0;
+  yEX  = JEAm/ JXAm;
+  MHb  = JEAm * Hb;
+  MHp  = JEAm * Hp;
+  MEb  = JEAm * Ub;
+  MVb  = MWb - MEb;
+  MV   = MVb/ Lb^3;
+  yVE  = v * MV/ (kap * JEAm * g);
+  JEM  = kM * MV/ yVE;
+  
+  % pack parameters of the standard model
+  par = [JEAm; b; yEX; yVE; v; JEM; kJ; kap; kapR; MHb; MHp; MV];
+
+  % get states at puberty: age, scaled reserve, length
+  [H, aUL] = ode45(@dget_aul_p, [Hb;Hp], [ab, Ub, Lb], [], kap, v, kJ, g, Lm, f);
+  ap = aUL(end,1); Up = aUL(end,2); Lp = aUL(end,3);
+  MEp = JEAm * Up; MVp = MV * Lp^3;
+
+  % states at infinite age
+  MVm = MV * Lm^3; MEm = MEp * (Lm/ Lp)^3;
+
+  % pack states 
+  aLM = [ 0,  0, ME0,   0;
+	 ab, Lb, MEb, MVb;
+	 ap, Lp, MEp, MVp;
+	Inf, Lm, MEm, MVm];
+##### SOURCE END #####
+--></body></html>

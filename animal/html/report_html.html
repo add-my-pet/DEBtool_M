@@ -1,0 +1,227 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>report_html</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="report_html.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>report_html</h1><!--introduction--><p>clear and create file my_pet.html in subdirectory html and write data to it append data to Species.html in current directory append data to primary_parameters.html and statistics.html in subdirectory html this script is called at start of report_xls and assumes that report_html_int has been run previously files must be completed by report_html_close</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Species.html</a></li><li><a href="#2">primary_parameters.html</a></li><li><a href="#3">statistics.html</a></li><li><a href="#4">my_pet.html</a></li></ul></div><h2>Species.html<a name="1"></a></h2><pre class="codeinput">  n_data_0 = size(data_0,1); n_data_1 = size(data_1,1);
+
+  fprintf(fid_Spec, <span class="string">'      &lt;TR&gt;\n'</span>);
+  fprintf(fid_Spec,[<span class="string">'        &lt;TD&gt;'</span>, phylum, <span class="string">'&lt;/TD&gt;  &lt;TD&gt;'</span>, class, <span class="string">'&lt;/TD&gt; &lt;TD&gt;'</span>, order, <span class="string">'&lt;/TD&gt; &lt;TD&gt;'</span>, family, <span class="string">'&lt;/TD&gt; '</span>]);
+  fprintf(fid_Spec,[<span class="string">'&lt;TD&gt;&lt;A HREF="./html/'</span>, species, <span class="string">'.html"&gt;'</span>, species, <span class="string">'&lt;/A&gt;&lt;/TD&gt; &lt;TD&gt;'</span>, species_en, <span class="string">'&lt;/TD&gt; '</span>]);
+  fprintf(fid_Spec, <span class="string">'&lt;TD BGCOLOR = "#FFC6A5"&gt;%g&lt;/TD&gt; '</span>, TYPE);
+  fprintf(fid_Spec, <span class="string">'&lt;TD BGCOLOR = "#FFE7C6"&gt;%g&lt;/TD&gt; '</span>, FIT);
+  fprintf(fid_Spec, <span class="string">'&lt;TD BGCOLOR = "#FFCE9C"&gt;%g&lt;/TD&gt;\n        '</span>, COMPLETE);
+  <span class="keyword">for</span> i = 1:n_data_0
+    fprintf(fid_Spec, <span class="string">'&lt;TD BGCOLOR = "#FFFFC6"&gt;%s&lt;/TD&gt; '</span>, data_0{i});
+  <span class="keyword">end</span>
+  <span class="keyword">for</span> i = 1:n_data_1
+    fprintf(fid_Spec, <span class="string">'&lt;TD BGCOLOR = "#FFFF9C"&gt;%s&lt;/TD&gt;'</span>, data_1{i});
+  <span class="keyword">end</span>
+  fprintf(fid_Spec, <span class="string">'\n      &lt;/TR&gt;\n'</span>);
+</pre><h2>primary_parameters.html<a name="2"></a></h2><pre class="codeinput">  <span class="comment">% sequence of par_prim equals that of header in report_html_init and in report_xls_init</span>
+  <span class="comment">% present rates at reference temperature</span>
+  par_primary = [ <span class="keyword">...</span>
+      T; T_A; T_L; T_H; T_AL; T_AH;
+      f; z; del_M; FT_m; kap_X; kap_X_P;
+      p_Am; v; kap; kap_R; p_M; p_T; k_J; E_G;
+      E_Hb; E_Hj; E_Hp; h_a; s_G;
+      mu_X; mu_V; mu_E; mu_P;
+      d_O;
+      n_O(2:4,1); n_O(2:4,2);
+      n_O(2:4,3); n_O(2:4,4)];
+
+  n_par_primary = size(par_primary,1);
+
+  fprintf(fid_par,  <span class="string">'      &lt;TR&gt;\n'</span>);
+  fprintf(fid_par, [<span class="string">'        &lt;TD&gt;&lt;A HREF="./'</span>, species, <span class="string">'.html"&gt;'</span>, species, <span class="string">'&lt;/A&gt;&lt;/TD&gt;\n'</span>]);
+  <span class="keyword">for</span> i = 1:n_par_primary
+    fprintf(fid_par,<span class="string">'        &lt;TD BGCOLOR = "%s"&gt;%g&lt;/TD&gt; '</span>, col_par_primary{i}, par_primary(i));
+  <span class="keyword">end</span>
+  fprintf(fid_par,<span class="string">'\n      &lt;/TR&gt;\n'</span>);
+</pre><h2>statistics.html<a name="3"></a></h2><pre class="codeinput">  fprintf(fid_stat, <span class="string">'      &lt;TR&gt;\n'</span>);
+  fprintf(fid_stat, [<span class="string">'        &lt;TD&gt;&lt;A HREF="./'</span>, species, <span class="string">'.html"&gt;'</span>, species, <span class="string">'&lt;/A&gt;&lt;/TD&gt;\n        '</span>]);
+  <span class="keyword">for</span> i = 1:n_statistics
+    fprintf(fid_stat, <span class="string">'&lt;TD BGCOLOR = "%s"&gt;%g&lt;/TD&gt; '</span>, col_statistics{i}, val_statistics(i));
+  <span class="keyword">end</span>
+  fprintf(fid_stat, <span class="string">'      &lt;/TR&gt;\n'</span>);
+</pre><h2>my_pet.html<a name="4"></a></h2><pre class="codeinput">  oid = fopen([<span class="string">'./html/'</span>, species, <span class="string">'.html'</span>], <span class="string">'w+'</span>); <span class="comment">% % open file for writing, delete existing content</span>
+  fprintf(oid, <span class="string">'%s\n'</span> ,<span class="string">'&lt;HTML&gt;'</span>);
+  fprintf(oid, <span class="string">'%s\n'</span> ,<span class="string">'  &lt;HEAD&gt;'</span>);
+  fprintf(oid,[<span class="string">'    &lt;TITLE&gt;add_my_pet:'</span>, species, <span class="string">'&lt;/TITLE&gt;\n'</span>]);
+  fprintf(oid, <span class="string">'%s'</span>   ,<span class="string">'    &lt;META NAME = "keywords" '</span>);
+  fprintf(oid, <span class="string">'%s\n'</span> ,<span class="string">'     CONTENT="add_my_pet, Dynamic Energy Budget theory, DEBtool"&gt;'</span>);
+  fprintf(oid, <span class="string">'%s\n'</span> ,<span class="string">'  &lt;/HEAD&gt;'</span>);
+  fprintf(oid,<span class="string">'%s\n\n'</span>,<span class="string">'  &lt;BODY&gt;'</span>);
+  fprintf(oid,[<span class="string">'    &lt;H1 ALIGN="CENTER"&gt;'</span>, species, <span class="string">': '</span>, species_en, <span class="string">'&lt;/H1&gt;\n\n'</span>]);
+  fprintf(oid, <span class="string">'    &lt;H3 ALIGN="CENTER"&gt;Go to &lt;A HREF="../Species.html"&gt;species-list&lt;/A&gt;, \n'</span>);
+  fprintf(oid,[<span class="string">'                             &lt;A HREF="../pars_'</span>, species, <span class="string">'.m"&gt;pars&lt;/A&gt;, \n'</span>]);
+  fprintf(oid,[<span class="string">'                             &lt;A HREF="../mydata/mydata_'</span>,  species, <span class="string">'.m"&gt;mydata&lt;/A&gt;, \n'</span>]);
+  fprintf(oid,[<span class="string">'                             &lt;A HREF="../mydata/predict_'</span>, species, <span class="string">'.m"&gt;predict&lt;/A&gt;, \n'</span>]);
+  fprintf(oid,[<span class="string">'                             &lt;A HREF="../mydata/html/mydata_'</span>, species, <span class="string">'.html"&gt;fit&lt;/A&gt;&lt;H3&gt;\n\n'</span>]);
+  fprintf(oid, <span class="string">'  &lt;TABLE CELLSPACING=50&gt;&lt;TR VALIGN=TOP&gt;&lt;TD&gt;\n'</span>);
+  fprintf(oid, <span class="string">'    &lt;TABLE&gt;\n'</span>);
+  fprintf(oid, <span class="string">'      &lt;TR BGCOLOR = "#FFE7C6"&gt; &lt;TH&gt;statistic&lt;/TH&gt; &lt;TH&gt;value at T&lt;/TH&gt; &lt;/TR&gt;\n'</span>);
+  <span class="keyword">for</span> i = 1: n_statistics
+    fprintf(oid, <span class="string">'      &lt;TR&gt;&lt;TD BGCOLOR = "%s"&gt;%s&lt;/TD&gt; &lt;TD BGCOLOR = "%s"&gt;%g&lt;/TD&gt;&lt;/TR&gt;\n'</span>, col_statistics{i}, txt_statistics{i}, col_statistics{i}, val_statistics(i));
+  <span class="keyword">end</span>
+  fprintf(oid, <span class="string">'    &lt;/TABLE&gt;\n'</span>);
+  fprintf(oid, <span class="string">'  &lt;/TD&gt;&lt;TD&gt;\n'</span>);
+  fprintf(oid, <span class="string">'    &lt;TABLE&gt;\n'</span>);
+  fprintf(oid, <span class="string">'      &lt;TR BGCOLOR = "#FFE7C6"&gt; &lt;TH&gt;parameter&lt;/TH&gt; &lt;TH&gt;value  at T_ref&lt;/TH&gt; &lt;/TR&gt;\n'</span>);
+  <span class="keyword">for</span> i = 1: n_par_primary
+    fprintf(oid, <span class="string">'      &lt;TR&gt;&lt;TD BGCOLOR = "%s"&gt;%s&lt;/TD&gt; &lt;TD BGCOLOR = "%s"&gt;%g&lt;/TD&gt;&lt;/TR&gt;\n'</span>, col_par_primary{i}, txt_par_primary{i}, col_par_primary{i}, par_primary(i));
+  <span class="keyword">end</span>
+  fprintf(oid, <span class="string">'    &lt;/TABLE&gt;\n'</span>);
+  fprintf(oid, <span class="string">'  &lt;/TD&gt;&lt;/TABLE&gt;\n'</span>);
+  fprintf(oid, <span class="string">'  &lt;/BODY&gt;\n'</span>);
+  fprintf(oid, <span class="string">'&lt;/HTML&gt;\n'</span>);
+  fclose(oid);
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% report_html
+% clear and create file my_pet.html in subdirectory html and write data to it
+% append data to Species.html in current directory
+% append data to primary_parameters.html and statistics.html in subdirectory html
+% this script is called at start of report_xls and assumes that report_html_int has been run previously
+% files must be completed by report_html_close
+
+%% Species.html
+
+  n_data_0 = size(data_0,1); n_data_1 = size(data_1,1); 
+  
+  fprintf(fid_Spec, '      <TR>\n');
+  fprintf(fid_Spec,['        <TD>', phylum, '</TD>  <TD>', class, '</TD> <TD>', order, '</TD> <TD>', family, '</TD> ']);
+  fprintf(fid_Spec,['<TD><A HREF="./html/', species, '.html">', species, '</A></TD> <TD>', species_en, '</TD> ']);
+  fprintf(fid_Spec, '<TD BGCOLOR = "#FFC6A5">%g</TD> ', TYPE);
+  fprintf(fid_Spec, '<TD BGCOLOR = "#FFE7C6">%g</TD> ', FIT);
+  fprintf(fid_Spec, '<TD BGCOLOR = "#FFCE9C">%g</TD>\n        ', COMPLETE);
+  for i = 1:n_data_0
+    fprintf(fid_Spec, '<TD BGCOLOR = "#FFFFC6">%s</TD> ', data_0{i});      
+  end
+  for i = 1:n_data_1
+    fprintf(fid_Spec, '<TD BGCOLOR = "#FFFF9C">%s</TD>', data_1{i});  
+  end
+  fprintf(fid_Spec, '\n      </TR>\n');
+
+%% primary_parameters.html
+ 
+  % sequence of par_prim equals that of header in report_html_init and in report_xls_init
+  % present rates at reference temperature
+  par_primary = [ ...
+      T; T_A; T_L; T_H; T_AL; T_AH;
+      f; z; del_M; FT_m; kap_X; kap_X_P;
+      p_Am; v; kap; kap_R; p_M; p_T; k_J; E_G;
+      E_Hb; E_Hj; E_Hp; h_a; s_G;
+      mu_X; mu_V; mu_E; mu_P;
+      d_O;
+      n_O(2:4,1); n_O(2:4,2);
+      n_O(2:4,3); n_O(2:4,4)];
+
+  n_par_primary = size(par_primary,1);
+  
+  fprintf(fid_par,  '      <TR>\n');
+  fprintf(fid_par, ['        <TD><A HREF="./', species, '.html">', species, '</A></TD>\n']);
+  for i = 1:n_par_primary
+    fprintf(fid_par,'        <TD BGCOLOR = "%s">%g</TD> ', col_par_primary{i}, par_primary(i));
+  end  
+  fprintf(fid_par,'\n      </TR>\n');
+
+%% statistics.html
+
+  fprintf(fid_stat, '      <TR>\n');
+  fprintf(fid_stat, ['        <TD><A HREF="./', species, '.html">', species, '</A></TD>\n        ']);
+  for i = 1:n_statistics
+    fprintf(fid_stat, '<TD BGCOLOR = "%s">%g</TD> ', col_statistics{i}, val_statistics(i));
+  end  
+  fprintf(fid_stat, '      </TR>\n');
+
+%% my_pet.html
+
+  oid = fopen(['./html/', species, '.html'], 'w+'); % % open file for writing, delete existing content
+  fprintf(oid, '%s\n' ,'<HTML>');
+  fprintf(oid, '%s\n' ,'  <HEAD>');
+  fprintf(oid,['    <TITLE>add_my_pet:', species, '</TITLE>\n']);
+  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+  fprintf(oid, '%s\n' ,'     CONTENT="add_my_pet, Dynamic Energy Budget theory, DEBtool">');
+  fprintf(oid, '%s\n' ,'  </HEAD>');
+  fprintf(oid,'%s\n\n','  <BODY>');
+  fprintf(oid,['    <H1 ALIGN="CENTER">', species, ': ', species_en, '</H1>\n\n']);
+  fprintf(oid, '    <H3 ALIGN="CENTER">Go to <A HREF="../Species.html">species-list</A>, \n'); 
+  fprintf(oid,['                             <A HREF="../pars_', species, '.m">pars</A>, \n']);
+  fprintf(oid,['                             <A HREF="../mydata/mydata_',  species, '.m">mydata</A>, \n']);
+  fprintf(oid,['                             <A HREF="../mydata/predict_', species, '.m">predict</A>, \n']);
+  fprintf(oid,['                             <A HREF="../mydata/html/mydata_', species, '.html">fit</A><H3>\n\n']);
+  fprintf(oid, '  <TABLE CELLSPACING=50><TR VALIGN=TOP><TD>\n');
+  fprintf(oid, '    <TABLE>\n');
+  fprintf(oid, '      <TR BGCOLOR = "#FFE7C6"> <TH>statistic</TH> <TH>value at T</TH> </TR>\n');
+  for i = 1: n_statistics
+    fprintf(oid, '      <TR><TD BGCOLOR = "%s">%s</TD> <TD BGCOLOR = "%s">%g</TD></TR>\n', col_statistics{i}, txt_statistics{i}, col_statistics{i}, val_statistics(i));
+  end
+  fprintf(oid, '    </TABLE>\n');
+  fprintf(oid, '  </TD><TD>\n');
+  fprintf(oid, '    <TABLE>\n');
+  fprintf(oid, '      <TR BGCOLOR = "#FFE7C6"> <TH>parameter</TH> <TH>value  at T_ref</TH> </TR>\n');
+  for i = 1: n_par_primary
+    fprintf(oid, '      <TR><TD BGCOLOR = "%s">%s</TD> <TD BGCOLOR = "%s">%g</TD></TR>\n', col_par_primary{i}, txt_par_primary{i}, col_par_primary{i}, par_primary(i));
+  end  
+  fprintf(oid, '    </TABLE>\n');  
+  fprintf(oid, '  </TD></TABLE>\n');  
+  fprintf(oid, '  </BODY>\n');
+  fprintf(oid, '</HTML>\n');
+  fclose(oid);
+
+##### SOURCE END #####
+--></body></html>

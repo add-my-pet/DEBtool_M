@@ -1,0 +1,107 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>egg_j</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-08"><meta name="DC.source" content="egg_j.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>egg_j</h1><!--introduction--><p>Gets embryo maturity, reserb and length as function of age  in case of type M acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>aHEL = <a href="../egg_j.m"><b>egg_j</b></a>(par, HEL0, a)</p><h2>Description<a name="4"></a></h2><p>Gets embryo maturity, reserb and length as function of age</p><p>Input</p><div><ul><li>par: 8-vector with parameters:    {J_EAm}, kap, v, [J_EM], k_J, y_VE, M_Hb, [M_V]</li><li>HEL0: 3-vector with M_H^0, M_E^0, L_0</li><li>a: n-vector with ages</li></ul></div><p>Output</p><div><ul><li>aHEL: (n,4)-matrix with a, M_H, M_E, L</li></ul></div><h2>Example of use<a name="5"></a></h2><p>See <a href="../mydata_egg_j.m"><b>mydata_egg_j</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% egg_j
+% Gets embryo maturity, reserb and length as function of age 
+%  in case of type M acceleration
+
+%%
+function aHEL = egg_j(par, HEL0, a)
+  % created 2006/08/28 by Bas Kooijman, modified 2009/09/29
+  
+  %% Syntax
+  % aHEL = <../egg_j.m *egg_j*>(par, HEL0, a)
+  
+  %% Description
+  % Gets embryo maturity, reserb and length as function of age
+  %
+  % Input
+  %
+  % * par: 8-vector with parameters:
+  %    {J_EAm}, kap, v, [J_EM], k_J, y_VE, M_Hb, [M_V]
+  % * HEL0: 3-vector with M_H^0, M_E^0, L_0
+  % * a: n-vector with ages
+  %
+  % Output
+  %
+  % * aHEL: (n,4)-matrix with a, M_H, M_E, L
+  
+  %% Example of use
+  % See <../mydata_egg_j.m *mydata_egg_j*>
+  
+  global JEAm kap v kJ g Lm
+
+  JEAm = par(1); % {J_EAm}
+  kap  = par(2); % \kappa
+  v    = par(3); % v
+  JEM  = par(4); % [J_EM]
+  kJ   = par(5); % k_J
+  yVE  = par(6); % y_VE
+  %MHb  = par(7); % M_H^b
+  MV   = par(8); % [M_V]
+
+  g = v * MV/ (kap * JEAm * yVE); % energy investment ratio
+  Lm = kap * JEAm/ JEM; % maximum length
+
+  [a, HEL] = ode45('degg_j',a, HEL0);
+  aHEL = [a, HEL];
+
+##### SOURCE END #####
+--></body></html>

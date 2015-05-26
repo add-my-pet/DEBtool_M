@@ -1,0 +1,181 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_reprod_rate</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-02-26"><meta name="DC.source" content="mydata_reprod_rate.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% script to illustrate reprod_rate</span>
+
+z = 1;           <span class="comment">% -, zoom factor</span>
+F_m = 6.5;       <span class="comment">% l/d.cm^2, {F_m} max spec searching rate</span>
+kap_X = 0.8;     <span class="comment">% -, digestion efficiency of food to reserve</span>
+kap_X_P = 0.1;   <span class="comment">% -, faecation efficiency of food to faeces</span>
+<span class="comment">% kap_X_P does not affect state varables, only mineral and faeces fluxes</span>
+v = 0.02;        <span class="comment">% cm/d, energy conductance</span>
+kap = 0.8;       <span class="comment">% -, alloaction fraction to soma = growth + somatic maintenance</span>
+kap_R = 0.95;    <span class="comment">% -, reproduction efficiency</span>
+p_M = 18;        <span class="comment">% J/d.cm^3, [p_M] vol-specific somatic maintenance</span>
+p_T =  0;        <span class="comment">% J/d.cm^2, {p_T} surface-specific som maintenance</span>
+k_J = 0.002;     <span class="comment">% 1/d, maturity maint rate coefficient</span>
+E_G = 2800;      <span class="comment">% J/cm^3, [E_G], spec cost for structure</span>
+
+<span class="comment">% life stage parameters: b = birth; i = metamorphosis; p = puberty</span>
+<span class="comment">% E_H is the cumulated energy from reserve invested in maturation</span>
+E_Hb = 275e-3 * z^3; <span class="comment">% J, E_H^b, maturity at birth</span>
+E_Hs = E_Hb + 1e-5;  <span class="comment">% J, E_H^s, maturity at start acceleration</span>
+E_Hj = E_Hb + 2e-5;  <span class="comment">% J, E_H^j, maturity at end acceleration</span>
+E_Hp = 50 * z^3;     <span class="comment">% J, E_H^p, maturity at puberty</span>
+
+f = 1;               <span class="comment">% -, scaled functional response</span>
+
+p_Am = z * p_M/ kap; E_m = p_Am/ v; g = E_G/ kap/ E_m; k_M = p_M/ E_G; L_T = 0;
+U_Hb = E_Hb/ p_Am; U_Hp = E_Hp/ p_Am;
+pars_reprod_rate = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];
+
+L = (.001:.05:1)'; Lf = [.15 .5];
+[R, UE0, Lb, Lp, info] = reprod_rate(L, f, pars_reprod_rate, Lf);
+
+subplot(1,3,1)
+plot(L, R, <span class="string">'r'</span>, Lp, 0, <span class="string">'or'</span>)
+xlabel(<span class="string">'length, cm'</span>)
+ylabel(<span class="string">'reprod rate, #/d'</span>)
+
+<span class="comment">% now with acceleration</span>
+
+E_Hj = 20 * z^3;
+U_Hj = E_Hj/ p_Am;
+pars_reprod_rate_j = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];
+[R, UE0, Lb, Lj, Lp, info] = reprod_rate_j(L, f, pars_reprod_rate_j, Lf);
+
+subplot(1,3,2)
+plot(L, R, <span class="string">'r'</span>, Lp, 0, <span class="string">'or'</span>)
+xlabel(<span class="string">'length, cm'</span>)
+ylabel(<span class="string">'reprod rate acc, #/d'</span>)
+
+<span class="comment">% now with delayed acceleration</span>
+
+E_Hs = 2 * z^3;
+U_Hs = E_Hs/ p_Am;
+pars_reprod_rate_s = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];
+[R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, pars_reprod_rate_s, Lf);
+
+subplot(1,3,3)
+plot(L, R, <span class="string">'r'</span>, Lp, 0, <span class="string">'or'</span>)
+xlabel(<span class="string">'length, cm'</span>)
+ylabel(<span class="string">'reprod rate d acc, #/d'</span>)
+</pre><img vspace="5" hspace="5" src="mydata_reprod_rate_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% script to illustrate reprod_rate
+
+z = 1;           % -, zoom factor
+F_m = 6.5;       % l/d.cm^2, {F_m} max spec searching rate
+kap_X = 0.8;     % -, digestion efficiency of food to reserve
+kap_X_P = 0.1;   % -, faecation efficiency of food to faeces
+% kap_X_P does not affect state varables, only mineral and faeces fluxes
+v = 0.02;        % cm/d, energy conductance
+kap = 0.8;       % -, alloaction fraction to soma = growth + somatic maintenance
+kap_R = 0.95;    % -, reproduction efficiency
+p_M = 18;        % J/d.cm^3, [p_M] vol-specific somatic maintenance
+p_T =  0;        % J/d.cm^2, {p_T} surface-specific som maintenance
+k_J = 0.002;     % 1/d, maturity maint rate coefficient
+E_G = 2800;      % J/cm^3, [E_G], spec cost for structure
+
+% life stage parameters: b = birth; i = metamorphosis; p = puberty
+% E_H is the cumulated energy from reserve invested in maturation
+E_Hb = 275e-3 * z^3; % J, E_H^b, maturity at birth
+E_Hs = E_Hb + 1e-5;  % J, E_H^s, maturity at start acceleration
+E_Hj = E_Hb + 2e-5;  % J, E_H^j, maturity at end acceleration
+E_Hp = 50 * z^3;     % J, E_H^p, maturity at puberty
+
+f = 1;               % -, scaled functional response 
+
+p_Am = z * p_M/ kap; E_m = p_Am/ v; g = E_G/ kap/ E_m; k_M = p_M/ E_G; L_T = 0; 
+U_Hb = E_Hb/ p_Am; U_Hp = E_Hp/ p_Am;
+pars_reprod_rate = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];
+
+L = (.001:.05:1)'; Lf = [.15 .5]; 
+[R, UE0, Lb, Lp, info] = reprod_rate(L, f, pars_reprod_rate, Lf);
+
+subplot(1,3,1)
+plot(L, R, 'r', Lp, 0, 'or')
+xlabel('length, cm')
+ylabel('reprod rate, #/d')
+
+% now with acceleration
+
+E_Hj = 20 * z^3;
+U_Hj = E_Hj/ p_Am;
+pars_reprod_rate_j = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];
+[R, UE0, Lb, Lj, Lp, info] = reprod_rate_j(L, f, pars_reprod_rate_j, Lf);
+
+subplot(1,3,2)
+plot(L, R, 'r', Lp, 0, 'or')
+xlabel('length, cm')
+ylabel('reprod rate acc, #/d')
+
+% now with delayed acceleration
+
+E_Hs = 2 * z^3;
+U_Hs = E_Hs/ p_Am;
+pars_reprod_rate_s = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];
+[R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, pars_reprod_rate_s, Lf);
+
+subplot(1,3,3)
+plot(L, R, 'r', Lp, 0, 'or')
+xlabel('length, cm')
+ylabel('reprod rate d acc, #/d')
+
+##### SOURCE END #####
+--></body></html>

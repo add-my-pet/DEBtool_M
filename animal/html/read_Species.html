@@ -1,0 +1,453 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>read_Species</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="read_Species.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Reads Species.xls and assigns parameters and variables</a></li><li><a href="#2">species_list</a></li><li><a href="#3">primary_parameters at T_ref</a></li><li><a href="#4">statistics at T and f</a></li></ul></div><h2>Reads Species.xls and assigns parameters and variables<a name="1"></a></h2><pre class="codeinput">  <span class="comment">% file = 'Species.xls'; file + path is set in sh-scripts</span>
+</pre><h2>species_list<a name="2"></a></h2><pre class="codeinput">  <span class="comment">% read TYPE, FIT, COMPLETE</span>
+  sheet = 1; <span class="comment">% species_list; xlsread in new versions of Matlab cannot read names of sheets</span>
+  COMPLETE = xlsread(file, sheet, <span class="string">'I2:I1000'</span>); <span class="comment">% read COMPLETE marks</span>
+  <span class="comment">% TYPE: 0 = weird; 1 = standard DEB; 2 = foetus; 3 = acceleration; 4 = foetus + acceleration</span>
+  TYPE = xlsread(file, sheet, <span class="string">'G2:G1000'</span>); <span class="comment">% read types</span>
+  FIT = xlsread(file, sheet, <span class="string">'H2:H1000'</span>);  <span class="comment">% read FIT marks</span>
+  n_species = size(COMPLETE,1);
+
+  <span class="comment">% read taxa</span>
+  txt_n = num2str(1+n_species); <span class="comment">% xlsread in new versions of Matlab reads txt-columns till space-rows minus one</span>
+  [x phylum]  = xlsread(file, sheet, [<span class="string">'A2:A'</span>, txt_n]); <span class="comment">% read phylum name</span>
+  [x class]   = xlsread(file, sheet, [<span class="string">'B2:B'</span>, txt_n]); <span class="comment">% read class name</span>
+  [x order]   = xlsread(file, sheet, [<span class="string">'C2:C'</span>, txt_n]); <span class="comment">% read order name</span>
+  [x family]  = xlsread(file, sheet, [<span class="string">'D2:D'</span>, txt_n]); <span class="comment">% read family name</span>
+  [x species] = xlsread(file, sheet, [<span class="string">'E2:E'</span>, txt_n]); <span class="comment">% read species name</span>
+
+  <span class="comment">% identify taxa</span>
+  n0 = zeros(n_species,1); <span class="comment">% number of species</span>
+  <span class="comment">% initiate taxa</span>
+  superphylum = phylum; genus = species; spec = species;
+  radiata = n0; bilateria = n0; platyzoa = n0; lophotrochozoa = n0; ecdysozoa = n0;
+  deuterostomata = n0; vertebrata = n0; endotherms = n0; fish = n0; Aves = n0; Mammalia = n0;
+  <span class="comment">% assign taxa spec, genus &amp; superphylum as cells and some high taxa as boleans</span>
+  <span class="keyword">for</span> i = 1:n_species
+      radiata(i) =  <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Ctenophora'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Cnidaria'</span>);
+      bilateria(i) =  <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Chaetognatha'</span>);
+      platyzoa(i) =  <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Platyhelminthes'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Acanthocephala'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Rotifera'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Gastrotricha'</span>);
+      lophotrochozoa(i) = <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Annelida'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Mollusca'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Bryozoa'</span>);
+      ecdysozoa(i) = <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Nematoda'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Tardigrada'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Arthropoda'</span>);
+      deuterostomata(i) = <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Echinodermata'</span>)| <span class="keyword">...</span>
+             strcmp(phylum{i}, <span class="string">'Chordata'</span>);
+      vertebrata(i) = <span class="keyword">...</span>
+             strcmp(class{i}, <span class="string">'Myxini'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Cephalaspidomorphi'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Chondrichthyes'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Actinopterygii'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Sarcopterygii'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Amphibia'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Reptilia'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Aves'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Mammalia'</span>);
+      fish(i) = <span class="keyword">...</span>
+             strcmp(class{i}, <span class="string">'Myxini'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Cephalaspidomorphi'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Chondrichthyes'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Actinopterygii'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Sarcopterygii'</span>);
+      endotherms(i) = <span class="keyword">...</span><span class="comment">;</span>
+             strcmp(class{i}, <span class="string">'Aves'</span>)| <span class="keyword">...</span><span class="comment">.</span>
+             strcmp(class{i}, <span class="string">'Mammalia'</span>);
+      Aves(i) = strcmp(class{i}, <span class="string">'Aves'</span>);
+      Mammalia(i) = strcmp(class{i}, <span class="string">'Mammalia'</span>);
+      <span class="keyword">if</span> radiata(i) == 1
+          superphylum{i} = <span class="string">'radiata'</span>;
+      <span class="keyword">elseif</span> bilateria(i) == 1
+          superphylum{i} = <span class="string">'bilateria'</span>;
+      <span class="keyword">elseif</span> platyzoa(i) == 1
+          superphylum{i} = <span class="string">'platyzoa'</span>;
+      <span class="keyword">elseif</span> lophotrochozoa(i) == 1
+          superphylum{i} = <span class="string">'lophotrochozoa'</span>;
+      <span class="keyword">elseif</span> ecdysozoa(i) == 1
+          superphylum{i} = <span class="string">'ecdysozoa'</span>;
+      <span class="keyword">elseif</span> deuterostomata(i) == 1
+          superphylum{i} = <span class="string">'deuterostomata'</span>;
+      <span class="keyword">end</span>
+      <span class="keyword">if</span> strcmp(class{i}, <span class="string">'Insecta'</span>)
+          TYPE(i) = 0;
+      <span class="keyword">end</span>
+      txt = species{i}; s = [findstr(<span class="string">'_'</span>, txt), 1 + size(txt,2)];
+      genus{i} = txt(1: s(1) - 1); spec{i} = txt(s(1) + 1 : s(2) - 1);
+  <span class="keyword">end</span>
+
+  n_radi = sum(radiata); n_bila = sum(bilateria); n_plat = sum(platyzoa);
+  n_loph = sum(lophotrochozoa); n_ecdy = sum(ecdysozoa); n_deut = sum(deuterostomata);
+  n_vert = sum(vertebrata); n_endo = sum(endotherms);
+  <span class="comment">% set colours for taxa</span>
+  color = zeros(n_species,3);           <span class="comment">% RGB colours, black by default</span>
+  col_radi = [0 0 1]; color(radiata == 1,:) = ones(n_radi,1) * col_radi; <span class="comment">% blue</span>
+  col_bila = [.8 .8 0]; color(bilateria == 1,:) = ones(n_bila,1) * col_bila;<span class="comment">% dark blue</span>
+  col_plat = [0 1 1]; color(platyzoa == 1, :) = ones(n_plat,1) * col_plat; <span class="comment">% turquoise</span>
+  col_loph = [0 .8 .8]; color(lophotrochozoa == 1, :) = ones(n_loph,1) * col_loph;<span class="comment">% dark turquoise</span>
+  col_ecdy = [0 1 0]; color(ecdysozoa == 1,:) = ones(n_ecdy,1) * col_ecdy; <span class="comment">% green</span>
+  col_deut = [0 0 0]; <span class="comment">% invertebrate deuterostomata, black</span>
+  col_vert = [1 0 1]; color(vertebrata == 1,:) = ones(n_vert,1) * col_vert; <span class="comment">% magenta</span>
+  col_endo = [1 0 0]; color(endotherms == 1,:) = ones(n_endo,1) * col_endo; <span class="comment">% red</span>
+  marker(1:n_species,1) = <span class="string">'*'</span>;
+  taxa = {<span class="string">'radi'</span>; <span class="string">'bila'</span>; <span class="string">'plat'</span>; <span class="string">'loph'</span>; <span class="string">'ecdy'</span>; <span class="string">'deut'</span>; <span class="string">'vert'</span>; <span class="string">'endo'</span>};
+  col_taxa = [col_radi; col_bila; col_plat; col_loph; col_ecdy; col_deut; col_vert; col_endo];
+
+  <span class="comment">% define selections for plotting</span>
+  sel_1 = (TYPE == 1 | TYPE == 2) &amp; ~vertebrata;
+  sel_2 = (TYPE == 1 | TYPE == 2) &amp; vertebrata;
+  sel_3 = (TYPE == 1 | TYPE == 2) &amp; endotherms;
+  sel_4 = (TYPE == 3 | TYPE == 4) &amp; ~vertebrata;
+  sel_5 = (TYPE == 3 | TYPE == 4) &amp; vertebrata;
+  sel_6 = (TYPE == 3 | TYPE == 4) &amp; endotherms;
+</pre><h2>primary_parameters at T_ref<a name="3"></a></h2><pre class="codeinput">  sheet = 2; <span class="comment">% primary_parameters: xlsread in new versions of Matlab cannot read names of sheets</span>
+  pars = xlsread(file, sheet , <span class="string">'B2:AS1000'</span>); <span class="comment">% read parameters</span>
+
+  <span class="comment">% unpack pars, z, pAm, v refer to neonate settings (in case of acceleration)</span>
+  z    = pars(:,8);
+  pAm  = pars(:,13);                        <span class="comment">% pAm_j = pAm .* sM;</span>
+  v    = pars(:,14);                        <span class="comment">% vj = v .* sM; % cm/d, energy conductance after metamorphosis</span>
+  kap  = pars(:,15);
+  kapR = pars(:,16);
+  pM   = pars(:,17);
+  pT   = pars(:,18);
+  kJ   = pars(:,19);
+  EG   = pars(:,20);
+  EHb  = pars(:,21);
+  EHj  = pars(:,22);
+  EHp  = pars(:,23);
+  ha   = pars(:,24);
+  sG   = pars(:,25);
+  mu_E = pars(:,28);
+  dV   = pars(:,31);
+  wV   = 12 + pars(:,37:39) * [1; 16; 14];
+  wE   = 12 + pars(:,40:42) * [1; 16; 14];
+
+  <span class="comment">% compound parameters</span>
+  kM = pM ./ EG;                           <span class="comment">% 1/d, somatic maintenance rate coefficient</span>
+  k = kJ ./ kM;                            <span class="comment">% -, maintenance ratio</span>
+  Em = pAm ./ v;                           <span class="comment">% J/cm^3, max reserve capacity</span>
+  g = EG ./ kap ./ Em;                     <span class="comment">% -, energy investment ratio</span>
+  LT = pT ./ pM;                           <span class="comment">% cm, heating length</span>
+  Lm = kap .* pAm ./ pM;                   <span class="comment">% cm, max structural length: refers to neonate</span>
+  lT = LT ./ Lm;                           <span class="comment">% -, scaled heating length</span>
+  U_Hb = EHb ./ pAm;                       <span class="comment">% cm^2 d, scaled maturity at birth</span>
+  V_Hb = U_Hb ./ (1 - kap);                <span class="comment">% cm^2 d, scaled maturity at birth</span>
+  v_Hb = V_Hb .* g.^2 .* kM.^3 ./ v.^2;    <span class="comment">% -, scaled maturity at birth</span>
+  U_Hj = EHj ./ pAm;                       <span class="comment">% cm^2 d, scaled maturity at metamorphosis</span>
+  V_Hj = U_Hj ./ (1 - kap);                <span class="comment">% cm^2 d, scaled maturity at metamorposis</span>
+  v_Hj = V_Hj .* g.^2 .* kM.^3 ./ v.^2;    <span class="comment">% -, scaled maturity at metamorphosis</span>
+  U_Hp = EHp ./ pAm;                       <span class="comment">% cm^2 d, scaled maturity at puberty</span>
+  V_Hp = U_Hp ./ (1 - kap);                <span class="comment">% cm^2 d, scaled maturity at puberty</span>
+  v_Hp = V_Hp .* g.^2 .* kM.^3 ./ v.^2;    <span class="comment">% -, scaled maturity at puberty</span>
+</pre><h2>statistics at T and f<a name="4"></a></h2><pre class="codeinput">  sheet = 3; <span class="comment">% statistics: xlsread in new versions of Matlab cannot read names of sheets</span>
+  vars = xlsread(file, sheet, <span class="string">'A2:DB1000'</span>); <span class="comment">% read statistics</span>
+
+  <span class="comment">% z relates to before acceleration (birth), zj to after acceleration (metamorphosis)</span>
+  TC = vars(:,3);  <span class="comment">% -, temp correction factor</span>
+  E0 = vars(:,8);  <span class="comment">% J, initial (egg) reserve mass</span>
+  Lb = vars(:,11); <span class="comment">% cm, structural length at birth</span>
+  Lj = vars(:,16); <span class="comment">% cm, structural length at metamorphosis</span>
+  Lp = vars(:,21); <span class="comment">% cm, structural length at puberty</span>
+  Li = vars(:,27); <span class="comment">% cm, ultimate structural length (after metam)</span>
+  Li(TYPE==0) = Lj(TYPE==0); <span class="comment">% set ultimate length to length at metam for insects</span>
+
+  s_M = Lj ./ Lb;  <span class="comment">% -, acceleration</span>
+  vj = v .* s_M;    <span class="comment">% cm/d, energy conductance after metamorphosis</span>
+  pAmj = pAm .* s_M;<span class="comment">% J/d.cm^2, max spec assim rate after metamorphosis</span>
+
+  l_p = Lp ./ Li;  <span class="comment">% -, determinateness</span>
+  zj = z .* s_M;   <span class="comment">% -, zoom factor for late juveniles and adults</span>
+  zj3 = zj .* zj .* zj; <span class="comment">% -, cubed zj</span>
+
+  s_H = log10(EHp ./ EHb); <span class="comment">% altriciality index</span>
+
+  M_E0_min = vars(:,4);
+  M_E0_max = vars(:,7);
+  twin = M_E0_max ./ M_E0_min;
+  s_E = log10(twin);     <span class="comment">% -, yolkiness</span>
+  Wdm = vars(:,30);      <span class="comment">% g, max dry weight</span>
+  Wwm = Wdm ./ dV;       <span class="comment">% g, max wet weight</span>
+
+  fmin = vars(:,44);     <span class="comment">% -, f at which growth and mat ceases at p</span>
+  VO = vars(:,77) ./ TC; <span class="comment">% mol O2/d, respiration at 20 C</span>
+  kapG = vars(:,79);     <span class="comment">% -, growth efficiency</span>
+  rB = vars(:,81) ./ TC; <span class="comment">% 1/d, von Bertalanffy growth rate</span>
+  Ri = vars(:,82) ./ TC; <span class="comment">% #/d, reprod rate at 20 C</span>
+  ab = vars(:,84) .* TC; <span class="comment">% d, age at birth at 20 C</span>
+  ap = vars(:,86) .* TC; <span class="comment">% d, age at puberty at 20 C</span>
+  am = vars(:,88) .* TC; <span class="comment">% d, age at death at 20 C</span>
+  rm = max(1e-10, vars(:,97)) ./ TC; <span class="comment">% 1/d, population growth rate at 20 C</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Reads Species.xls and assigns parameters and variables
+ 
+  % file = 'Species.xls'; file + path is set in sh-scripts
+  
+%% species_list
+
+  % read TYPE, FIT, COMPLETE
+  sheet = 1; % species_list; xlsread in new versions of Matlab cannot read names of sheets
+  COMPLETE = xlsread(file, sheet, 'I2:I1000'); % read COMPLETE marks
+  % TYPE: 0 = weird; 1 = standard DEB; 2 = foetus; 3 = acceleration; 4 = foetus + acceleration
+  TYPE = xlsread(file, sheet, 'G2:G1000'); % read types
+  FIT = xlsread(file, sheet, 'H2:H1000');  % read FIT marks
+  n_species = size(COMPLETE,1); 
+  
+  % read taxa 
+  txt_n = num2str(1+n_species); % xlsread in new versions of Matlab reads txt-columns till space-rows minus one
+  [x phylum]  = xlsread(file, sheet, ['A2:A', txt_n]); % read phylum name
+  [x class]   = xlsread(file, sheet, ['B2:B', txt_n]); % read class name
+  [x order]   = xlsread(file, sheet, ['C2:C', txt_n]); % read order name
+  [x family]  = xlsread(file, sheet, ['D2:D', txt_n]); % read family name
+  [x species] = xlsread(file, sheet, ['E2:E', txt_n]); % read species name
+    
+  % identify taxa
+  n0 = zeros(n_species,1); % number of species
+  % initiate taxa
+  superphylum = phylum; genus = species; spec = species;
+  radiata = n0; bilateria = n0; platyzoa = n0; lophotrochozoa = n0; ecdysozoa = n0; 
+  deuterostomata = n0; vertebrata = n0; endotherms = n0; fish = n0; Aves = n0; Mammalia = n0;
+  % assign taxa spec, genus & superphylum as cells and some high taxa as boleans
+  for i = 1:n_species
+      radiata(i) =  ...
+             strcmp(phylum{i}, 'Ctenophora')| ...
+             strcmp(phylum{i}, 'Cnidaria');
+      bilateria(i) =  ...
+             strcmp(phylum{i}, 'Chaetognatha');
+      platyzoa(i) =  ...
+             strcmp(phylum{i}, 'Platyhelminthes')| ...
+             strcmp(phylum{i}, 'Acanthocephala')| ...
+             strcmp(phylum{i}, 'Rotifera')| ...
+             strcmp(phylum{i}, 'Gastrotricha'); 
+      lophotrochozoa(i) = ...
+             strcmp(phylum{i}, 'Annelida')| ...
+             strcmp(phylum{i}, 'Mollusca')| ...
+             strcmp(phylum{i}, 'Bryozoa'); 
+      ecdysozoa(i) = ...  
+             strcmp(phylum{i}, 'Nematoda')| ...
+             strcmp(phylum{i}, 'Tardigrada')| ...
+             strcmp(phylum{i}, 'Arthropoda'); 
+      deuterostomata(i) = ... 
+             strcmp(phylum{i}, 'Echinodermata')| ...
+             strcmp(phylum{i}, 'Chordata');
+      vertebrata(i) = ...
+             strcmp(class{i}, 'Myxini')| ....
+             strcmp(class{i}, 'Cephalaspidomorphi')| ....
+             strcmp(class{i}, 'Chondrichthyes')| ....
+             strcmp(class{i}, 'Actinopterygii')| ....
+             strcmp(class{i}, 'Sarcopterygii')| ....
+             strcmp(class{i}, 'Amphibia')| ....
+             strcmp(class{i}, 'Reptilia')| ....
+             strcmp(class{i}, 'Aves')| ....
+             strcmp(class{i}, 'Mammalia');
+      fish(i) = ...
+             strcmp(class{i}, 'Myxini')| ....
+             strcmp(class{i}, 'Cephalaspidomorphi')| ....
+             strcmp(class{i}, 'Chondrichthyes')| ....
+             strcmp(class{i}, 'Actinopterygii')| ....
+             strcmp(class{i}, 'Sarcopterygii');
+      endotherms(i) = ...;
+             strcmp(class{i}, 'Aves')| ....
+             strcmp(class{i}, 'Mammalia');
+      Aves(i) = strcmp(class{i}, 'Aves');
+      Mammalia(i) = strcmp(class{i}, 'Mammalia');
+      if radiata(i) == 1
+          superphylum{i} = 'radiata';
+      elseif bilateria(i) == 1
+          superphylum{i} = 'bilateria';
+      elseif platyzoa(i) == 1
+          superphylum{i} = 'platyzoa';
+      elseif lophotrochozoa(i) == 1
+          superphylum{i} = 'lophotrochozoa';
+      elseif ecdysozoa(i) == 1
+          superphylum{i} = 'ecdysozoa';
+      elseif deuterostomata(i) == 1
+          superphylum{i} = 'deuterostomata';
+      end
+      if strcmp(class{i}, 'Insecta')
+          TYPE(i) = 0;
+      end
+      txt = species{i}; s = [findstr('_', txt), 1 + size(txt,2)];
+      genus{i} = txt(1: s(1) - 1); spec{i} = txt(s(1) + 1 : s(2) - 1);
+  end
+
+  n_radi = sum(radiata); n_bila = sum(bilateria); n_plat = sum(platyzoa);
+  n_loph = sum(lophotrochozoa); n_ecdy = sum(ecdysozoa); n_deut = sum(deuterostomata);
+  n_vert = sum(vertebrata); n_endo = sum(endotherms);
+  % set colours for taxa
+  color = zeros(n_species,3);           % RGB colours, black by default
+  col_radi = [0 0 1]; color(radiata == 1,:) = ones(n_radi,1) * col_radi; % blue 
+  col_bila = [.8 .8 0]; color(bilateria == 1,:) = ones(n_bila,1) * col_bila;% dark blue 
+  col_plat = [0 1 1]; color(platyzoa == 1, :) = ones(n_plat,1) * col_plat; % turquoise
+  col_loph = [0 .8 .8]; color(lophotrochozoa == 1, :) = ones(n_loph,1) * col_loph;% dark turquoise
+  col_ecdy = [0 1 0]; color(ecdysozoa == 1,:) = ones(n_ecdy,1) * col_ecdy; % green
+  col_deut = [0 0 0]; % invertebrate deuterostomata, black
+  col_vert = [1 0 1]; color(vertebrata == 1,:) = ones(n_vert,1) * col_vert; % magenta
+  col_endo = [1 0 0]; color(endotherms == 1,:) = ones(n_endo,1) * col_endo; % red
+  marker(1:n_species,1) = '*';
+  taxa = {'radi'; 'bila'; 'plat'; 'loph'; 'ecdy'; 'deut'; 'vert'; 'endo'};
+  col_taxa = [col_radi; col_bila; col_plat; col_loph; col_ecdy; col_deut; col_vert; col_endo];
+
+  % define selections for plotting
+  sel_1 = (TYPE == 1 | TYPE == 2) & ~vertebrata;
+  sel_2 = (TYPE == 1 | TYPE == 2) & vertebrata;
+  sel_3 = (TYPE == 1 | TYPE == 2) & endotherms;
+  sel_4 = (TYPE == 3 | TYPE == 4) & ~vertebrata;
+  sel_5 = (TYPE == 3 | TYPE == 4) & vertebrata;
+  sel_6 = (TYPE == 3 | TYPE == 4) & endotherms;
+
+  
+%% primary_parameters at T_ref
+
+  sheet = 2; % primary_parameters: xlsread in new versions of Matlab cannot read names of sheets
+  pars = xlsread(file, sheet , 'B2:AS1000'); % read parameters                             
+  
+  % unpack pars, z, pAm, v refer to neonate settings (in case of acceleration)
+  z    = pars(:,8);
+  pAm  = pars(:,13);                        % pAm_j = pAm .* sM;
+  v    = pars(:,14);                        % vj = v .* sM; % cm/d, energy conductance after metamorphosis
+  kap  = pars(:,15);
+  kapR = pars(:,16);
+  pM   = pars(:,17);
+  pT   = pars(:,18);
+  kJ   = pars(:,19);
+  EG   = pars(:,20);
+  EHb  = pars(:,21);
+  EHj  = pars(:,22);
+  EHp  = pars(:,23);
+  ha   = pars(:,24);
+  sG   = pars(:,25);
+  mu_E = pars(:,28);
+  dV   = pars(:,31); 
+  wV   = 12 + pars(:,37:39) * [1; 16; 14];
+  wE   = 12 + pars(:,40:42) * [1; 16; 14];
+
+  % compound parameters
+  kM = pM ./ EG;                           % 1/d, somatic maintenance rate coefficient
+  k = kJ ./ kM;                            % -, maintenance ratio
+  Em = pAm ./ v;                           % J/cm^3, max reserve capacity
+  g = EG ./ kap ./ Em;                     % -, energy investment ratio
+  LT = pT ./ pM;                           % cm, heating length
+  Lm = kap .* pAm ./ pM;                   % cm, max structural length: refers to neonate
+  lT = LT ./ Lm;                           % -, scaled heating length
+  U_Hb = EHb ./ pAm;                       % cm^2 d, scaled maturity at birth
+  V_Hb = U_Hb ./ (1 - kap);                % cm^2 d, scaled maturity at birth
+  v_Hb = V_Hb .* g.^2 .* kM.^3 ./ v.^2;    % -, scaled maturity at birth
+  U_Hj = EHj ./ pAm;                       % cm^2 d, scaled maturity at metamorphosis 
+  V_Hj = U_Hj ./ (1 - kap);                % cm^2 d, scaled maturity at metamorposis
+  v_Hj = V_Hj .* g.^2 .* kM.^3 ./ v.^2;    % -, scaled maturity at metamorphosis
+  U_Hp = EHp ./ pAm;                       % cm^2 d, scaled maturity at puberty 
+  V_Hp = U_Hp ./ (1 - kap);                % cm^2 d, scaled maturity at puberty
+  v_Hp = V_Hp .* g.^2 .* kM.^3 ./ v.^2;    % -, scaled maturity at puberty
+
+%% statistics at T and f
+
+  sheet = 3; % statistics: xlsread in new versions of Matlab cannot read names of sheets
+  vars = xlsread(file, sheet, 'A2:DB1000'); % read statistics
+  
+  % z relates to before acceleration (birth), zj to after acceleration (metamorphosis)
+  TC = vars(:,3);  % -, temp correction factor
+  E0 = vars(:,8);  % J, initial (egg) reserve mass
+  Lb = vars(:,11); % cm, structural length at birth
+  Lj = vars(:,16); % cm, structural length at metamorphosis
+  Lp = vars(:,21); % cm, structural length at puberty
+  Li = vars(:,27); % cm, ultimate structural length (after metam)
+  Li(TYPE==0) = Lj(TYPE==0); % set ultimate length to length at metam for insects
+
+  s_M = Lj ./ Lb;  % -, acceleration
+  vj = v .* s_M;    % cm/d, energy conductance after metamorphosis
+  pAmj = pAm .* s_M;% J/d.cm^2, max spec assim rate after metamorphosis
+  
+  l_p = Lp ./ Li;  % -, determinateness
+  zj = z .* s_M;   % -, zoom factor for late juveniles and adults
+  zj3 = zj .* zj .* zj; % -, cubed zj
+
+  s_H = log10(EHp ./ EHb); % altriciality index
+
+  M_E0_min = vars(:,4); 
+  M_E0_max = vars(:,7); 
+  twin = M_E0_max ./ M_E0_min;
+  s_E = log10(twin);     % -, yolkiness
+  Wdm = vars(:,30);      % g, max dry weight
+  Wwm = Wdm ./ dV;       % g, max wet weight
+  
+  fmin = vars(:,44);     % -, f at which growth and mat ceases at p
+  VO = vars(:,77) ./ TC; % mol O2/d, respiration at 20 C
+  kapG = vars(:,79);     % -, growth efficiency
+  rB = vars(:,81) ./ TC; % 1/d, von Bertalanffy growth rate
+  Ri = vars(:,82) ./ TC; % #/d, reprod rate at 20 C
+  ab = vars(:,84) .* TC; % d, age at birth at 20 C
+  ap = vars(:,86) .* TC; % d, age at puberty at 20 C
+  am = vars(:,88) .* TC; % d, age at death at 20 C
+  rm = max(1e-10, vars(:,97)) ./ TC; % 1/d, population growth rate at 20 C
+
+##### SOURCE END #####
+--></body></html>

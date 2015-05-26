@@ -1,0 +1,351 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pars_animal</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="pars_animal.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">parameters for 'animal'</a></li><li><a href="#2">temperature parameters (in Kelvin)</a></li><li><a href="#3">food abundance</a></li><li><a href="#4">chemical indices (relative elemental frequencies)</a></li><li><a href="#5">parameters that link moles to grams (wet weight), volumes and energy</a></li><li><a href="#6">conversion parameters</a></li><li><a href="#7">primary parameters of the standard DEB model in energy</a></li></ul></div><h2>parameters for 'animal'<a name="1"></a></h2><p>created 2000/11/02 by Bas Kooijman, modified 2009/09/29 not all parameters are required for any particular application warning: length units refer to volumetric lengths multiply by the shape coefficient for physical length suggestion: copy pars_animal first to pars_mydata before changing values   then run pars_mydata</p><pre class="codeinput">mydata = 0; foetus = 0; <span class="comment">% for compatibility with pars_my_pet in add_my_pet</span>
+
+<span class="keyword">global</span> T T_ref pars_T TC pT_Am pT_M k
+<span class="keyword">global</span> n_O n_M w_O d_O mu_T mu_M mu_O mu_E eta_O M_Vb M_Vp M_Vm M_E0 M_Em m_Em p_ref M_V
+<span class="keyword">global</span> f K eb_min ep_min y_E_X y_X_E y_V_E y_E_V y_P_X y_X_P kap kap_R
+<span class="keyword">global</span> jT_X_Am jT_E_Am JT_X_Am JT_E_Am jT_E_M jT_E_J
+<span class="keyword">global</span> vT g kT_M kT_J E_G R_m hT_a s_G a_m
+<span class="keyword">global</span> L_d L_b L_p L_m L_T l_b l_p l_T V_Hb v_Hb v_Hp u_Hb u_Hp U_Hb U_Hp
+</pre><h2>temperature parameters (in Kelvin)<a name="2"></a></h2><pre class="language-matlab">these <span class="string">pars</span> <span class="string">are</span> <span class="string">not</span> <span class="string">relevant</span> <span class="string">if</span> <span class="string">T</span> <span class="string">=</span> <span class="string">T_1</span>
+</pre><pre class="codeinput">T    =   293; <span class="comment">% K, actual body temperature</span>
+T_ref  = 293; <span class="comment">% K, temp for which rate pars are given</span>
+
+T_A  =  8000; <span class="comment">% K, Arrhenius temp</span>
+T_L  =   277; <span class="comment">% K, lower boundary tolerance range</span>
+T_H  =   318; <span class="comment">% K, upper boundary tolerance range</span>
+T_AL = 20000; <span class="comment">% K, Arrhenius temp for lower boundary</span>
+T_AH =190000; <span class="comment">% K, Arrhenius temp for upper boundary</span>
+pars_T = [T_A T_L T_H T_AL T_AH];
+</pre><h2>food abundance<a name="3"></a></h2><p>values computed in routine statistics depend on this</p><pre class="codeinput">f = 1.0; <span class="comment">% scaled functional response</span>
+<span class="comment">% this is the food intake relative to the max for individuals of that size</span>
+</pre><h2>chemical indices (relative elemental frequencies)<a name="4"></a></h2><p>notice that these values relate to dry mass wet mass has ten times more H and O, relative to C organic compounds   columns: food, structure, reserve, faeces      X     V     E     P</p><pre class="codeinput">n_O = [1.00, 1.00, 1.00, 1.00;  <span class="comment">% C/C, equals 1 by definition</span>
+       1.80, 1.80, 2.00, 1.80;  <span class="comment">% H/C</span>
+       0.50, 0.50, 0.75, 0.50;  <span class="comment">% O/C</span>
+       0.20, 0.15, 0.20, 0.15]; <span class="comment">% N/C</span>
+
+<span class="comment">% minerals</span>
+<span class="comment">%   rows: elements carbon, hydrogen, oxygen, nitrogen</span>
+<span class="comment">%   columns: carbon dioxide (C), water (H), dioxygen (O), ammonia (N)</span>
+<span class="comment">%     CO2 H2O O2 NH3</span>
+n_M = [1,  0, 0,  0;  <span class="comment">% C</span>
+       0,  2, 0,  3;  <span class="comment">% H</span>
+       2,  1, 2,  0;  <span class="comment">% O</span>
+       0,  0, 0,  1]; <span class="comment">% N</span>
+</pre><h2>parameters that link moles to grams (wet weight), volumes and energy<a name="5"></a></h2><pre class="codeinput"><span class="comment">%   given in vector form for food, structure, reserve, feaces</span>
+<span class="comment">%   these parameters do not affect the dynamics; just output mapping</span>
+d_O = [.1; .1; .1; .1];     <span class="comment">% g/cm^3, specific densities for organics</span>
+<span class="comment">% dry mass per wet volume</span>
+mu_X = 525000;                    <span class="comment">% J/mol, chemical potential of food</span>
+mu_V = 500000;                    <span class="comment">% J/mol, chemical potential of structure</span>
+mu_E = 550000;                    <span class="comment">% J/mol, chemical potential of reserve</span>
+mu_P = 480000;                    <span class="comment">% J/mol, chemical potential of faeces</span>
+mu_O = [mu_X; mu_V; mu_E; mu_P];  <span class="comment">%J/mol, chemical potentials of organics</span>
+
+mu_M = [0; 0; 0; 0];           <span class="comment">% kJ/mol, chemical potentials of minerals</span>
+<span class="comment">% C: CO2, H: H2O, O: O2, N: NH3</span>
+
+<span class="comment">% molar volume of gas at 1 bar and 20 C is 24.4 L/mol</span>
+X_gas = T_ref/ T/ 24.4;     <span class="comment">% M, mol of gas per litre at 20 C and 1 bar</span>
+</pre><h2>conversion parameters<a name="6"></a></h2><pre class="codeinput">z = 1;       <span class="comment">% zoom factor rel to reference L_m = 1 cm to compare species</span>
+del_M = .16; <span class="comment">% -, shape coefficient to convert vol-length to physical length</span>
+</pre><h2>primary parameters of the standard DEB model in energy<a name="7"></a></h2><p>only p_Am, E_Hb, E_Hp, h_a depend on zoom factor z (interspecifically)</p><pre class="codeinput">F_m = 6.5;       <span class="comment">% l/d.cm^2, {F_m} max spec searching rate</span>
+kap_X = 0.8;     <span class="comment">% -, digestion efficiency of food to reserve</span>
+kap_X_P = 0.1;   <span class="comment">% -, faecation efficiency of food to faeces</span>
+<span class="comment">% kap_X_P does not affect state varables, only mineral and faeces fluxes</span>
+v = 0.02;        <span class="comment">% cm/d, energy conductance</span>
+kap = 0.8;       <span class="comment">% -, alloaction fraction to soma = growth + somatic maintenance</span>
+kap_R = 0.95;    <span class="comment">% -, reproduction efficiency</span>
+p_M = 18;        <span class="comment">% J/d.cm^3, [p_M] vol-specific somatic maintenance</span>
+p_T =  0;        <span class="comment">% J/d.cm^2, {p_T} surface-specific som maintenance</span>
+k_J = 0.002;     <span class="comment">% 1/d, &lt; k_M = p_M/E_G, maturity maint rate coefficient</span>
+E_G = 2800;      <span class="comment">% J/cm^3, [E_G], spec cost for structure</span>
+
+<span class="comment">% life stage parameters: b = birth; i = metamorphosis; p = puberty</span>
+<span class="comment">% E_H is the cumulated energy from reserve invested in maturation</span>
+E_Hb = 1e-3 * 275 * z^3; <span class="comment">% J, E_H^b</span>
+E_Hj = E_Hb;             <span class="comment">% J, E_H^j, no metamorphosis</span>
+E_Hp = 50 * z^3;         <span class="comment">% J, E_H^p</span>
+
+<span class="comment">% aging process</span>
+h_a = z * 1e-6;   <span class="comment">% 1/d^2, Weibull aging acceleration</span>
+s_G = 1e-4;       <span class="comment">% -, Gompertz stress coefficient</span>
+
+parscomp          <span class="comment">% compound parameters</span>
+statistics        <span class="comment">% food-dependend quantities</span>
+report_animal     <span class="comment">% print result to screen</span>
+</pre><pre class="codeoutput">Parameter values 
+reference temp, T_ref, K       293 
+actual temp, T, K       293 
+temperature correction factor, c_T, -         1 
+initial reserve mass at growth ceasing at birth, M_E^0, mol  2.619e-06 
+initial reserve mass at maturation ceasing at birth, M_E^0, mol  2.605e-06 
+initial reserve mass at maturation ceasing at puberty, M_E^0, mol  2.76e-06 
+initial reserve mass at f, M_E^0, mol  3.312e-06 
+initial reserve energy at f, E_0, J     1.822 
+initial dry weight at f, W_d^0, g  9.539e-05 
+fraction of reserve left at birth, U_E^b/ U_E^0, -    0.2367 
+structural length at birth, L_b, cm   0.07264 
+structural mass at birth, M_V^b, mol  1.604e-06 
+physical length at birth, L_w^b, cm     0.454 
+dry weight at birth, W_d^b, g  6.092e-05 
+birth weight as fraction of max, W_b/ W_m, -  0.0003833 
+structural length at metamorphosis, L_j, cm   0.07264 
+structural mass at metamorphosis, M_V^j, mol  1.604e-06 
+physical length at metamorphosis, L_w^j, cm     0.454 
+dry weight at metamorphosis, W_d^j, g  6.092e-05 
+metamorphosis weight as fraction of max, W_j/ W_m, -  0.0003833 
+structural length at puberty, L_p, cm    0.3774 
+structural mass at puberty, M_V^p, mol  0.000225 
+physical length at puberty, L_w^p, cm     2.359 
+dry weight at puberty, W_d^p, g  0.008545 
+puberty weight as fraction of max, W_p/ W_m, -   0.05377 
+maximum structural length, L_m, cm         1 
+ultimate structural length, L_i, cm        1 
+ultimate structural mass, M_V^i, mol  0.004184 
+physical ultimate length, L_w^i, cm      6.25 
+maximum dry weight, W_d^m, g    0.1589 
+ultimate dry weight, W_d^i, g   0.1589 
+fraction of weight that is structure, del_V, -    0.6293 
+max spec searching rate at T, {F_m}, l/d.cm^2      6.5 
+clearance rate at birth, CR_b, l/d   0.0343 
+clearance rate at puberty, CR_p, l/d    0.926 
+ultimate clearance rate, CR_i, l/d      6.5 
+half saturation coefficient, K, M  8.242e-06 
+food dens for maturation ceasing at birth, X_J^b, M  6.384e-07 
+food dens for growth ceasing at birth, X_G^b, M  1.985e-07 
+food dens for maturation and growth ceasing at puberty, X_J^p, M  3.223e-06 
+scaled functional response, f, -         1 
+func resp for growth ceasing at birth, f_G^b, -   0.07189 
+func resp for maturation ceasing at birth, f_J^b, -   0.02352 
+func resp for maturation and growth ceasing at puberty, f_J^p, -    0.2811 
+max surface-spec feeding rate, {p_Xm}, J/d.cm^2     28.13 
+max surface-spec feeding rate, {J_XAm}, mol/d.cm^2  5.357e-05 
+food energy intake at birth, p_Xb, J/d   0.1484 
+food mass intake at birth, J_XAb, mol/d 2.827e-07 
+food energy intake at puberty, p_Xp, J/d    4.007 
+food mass intake at puberty, J_XAp, mol/d 7.632e-06 
+ultimate food energy intake, p_Xi, J/d    28.13 
+ultimate food mass intake, J_XAi, mol/d 5.357e-05 
+max survival time when starved, [E_m]/[p_M], d     62.5 
+max spec assimilation rate at T, {p_Am}, J/d.cm^2     22.5 
+max surface-spec assimilation rate, {J_EAm}, mol/d.cm^2  4.091e-05 
+yield of reserve on food, y_EX, mol/mol    0.7636 
+yield of faeces on food, y_PX, mol/mol    0.1094 
+energy conductance at T, v, cm/d     0.02 
+maximum reserve residence time, t_E, d       50 
+reserve capacity, [E_m], J/cm^3      1125 
+reserve capacity, m_Em, mol/mol    0.4889 
+vol-specific somatic maintenance at T, [p_M], J/d.cm^3       18 
+surface-specific som maintenance at T, {p_T}, J/d.cm^2        0 
+heating length, L_T, cm         0 
+somatic maintenance rate coeff, k_M, 1/d 0.006429 
+maturity maint rate coefficient at T, k_J, 1/d    0.002 
+maintenance ratio, k, -    0.3111 
+volume-spec som maint costs, [J_EM], mol/d.cm^3  3.273e-05 
+surface-spec som maint costs, {J_ET}, mol/d.cm^2         0 
+mass-spec somatic  maint costs, j_EM,  mol/mol.d  0.007822 
+mass-spec maturity  maint costs, j_EJ, mol/mol.d  0.002433 
+specific dynamic action, SDA, mol O/ mol X    0.1865 
+respiration quotient for L = L_m, RQ, mol C/ mol O     1.026 
+urination quotient for L = L_m, UQ, mol N/ mol O    0.2051 
+watering quotient for L = L_m, WQ, mol H/ mol O    0.7179 
+heat dissipation for L = L_i, p_T^+, J/d     21.13 
+dioxygen use per gram max dry weight, L/g.h -0.0002078 
+yield of structure on reserve, y_VE, mol/mol    0.8219 
+growth efficiency, kappa_G, -    0.7472 
+energy investment ratio, g, -     3.111 
+von Bertalanffy growth rate, r_B, 1/d  0.001622 
+ultimate reproduction rate, R_i, 1/d     2.295 
+gonado-somatic index, GSI, mol/mol    0.4687 
+age at birth, a_b, d      15.2 
+age at metamorphosis, a_j, d      15.2 
+age at puberty, a_p, d       261 
+age at 99% of ultimate length, d     2809 
+mean life span, a_m, d     597.7 
+survival probability at birth, S_b, -         1 
+survival probability at puberty, S_p, -    0.9425 
+Weibull aging acceleration at T, h_a , 1/d^2    1e-06 
+Weibull aging rate at T, h_W, 1/d 0.001494 
+Gompertz aging rate at T, h_G, 1/d    2e-06 
+vol-spec structural mass, [M_V], mol/cm^3  0.004184 
+vol-spec structural energy, [E_V], J/cm^3      2092 
+energy density of whole dry body, &lt;E + E_V&gt;, J/g  2.024e+04 
+maximum specific population growth rate, r_m, 1/d   0.01225 
+mean age of juveniles + adults at f=1, Ea, d      94.3 
+mean structural length of juveniles + adults at f=1, EL, cm    0.1783 
+mean squared structural length of juv + adults at f=1, EL^2, cm^2   0.04038 
+mean structural cubed length of juv + adults at f=1, EL^3, cm^3   0.01131 
+scaled func response at no pop growth, f_0, -    0.2868 
+mean age of juveniles + adults at r=0, Ea, d     298.9 
+mean structural length of juveniles + adults at r=0, EL, cm    0.1551 
+mean squared structural length of juv + adults at r=0, EL^2, cm^2   0.02638 
+mean cubed structural length of juv + adults at r=0, EL^3, cm^3   0.00471 
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% parameters for 'animal'
+% created 2000/11/02 by Bas Kooijman, modified 2009/09/29
+% not all parameters are required for any particular application
+% warning: length units refer to volumetric lengths
+% multiply by the shape coefficient for physical length
+% suggestion: copy pars_animal first to pars_mydata before changing values
+%   then run pars_mydata
+
+mydata = 0; foetus = 0; % for compatibility with pars_my_pet in add_my_pet
+
+global T T_ref pars_T TC pT_Am pT_M k
+global n_O n_M w_O d_O mu_T mu_M mu_O mu_E eta_O M_Vb M_Vp M_Vm M_E0 M_Em m_Em p_ref M_V
+global f K eb_min ep_min y_E_X y_X_E y_V_E y_E_V y_P_X y_X_P kap kap_R
+global jT_X_Am jT_E_Am JT_X_Am JT_E_Am jT_E_M jT_E_J 
+global vT g kT_M kT_J E_G R_m hT_a s_G a_m
+global L_d L_b L_p L_m L_T l_b l_p l_T V_Hb v_Hb v_Hp u_Hb u_Hp U_Hb U_Hp 
+
+%% temperature parameters (in Kelvin)
+%   these pars are not relevant if T = T_1
+T    =   293; % K, actual body temperature
+T_ref  = 293; % K, temp for which rate pars are given 
+
+T_A  =  8000; % K, Arrhenius temp
+T_L  =   277; % K, lower boundary tolerance range
+T_H  =   318; % K, upper boundary tolerance range
+T_AL = 20000; % K, Arrhenius temp for lower boundary
+T_AH =190000; % K, Arrhenius temp for upper boundary
+pars_T = [T_A T_L T_H T_AL T_AH];    
+
+%% food abundance
+% values computed in routine statistics depend on this
+
+f = 1.0; % scaled functional response
+% this is the food intake relative to the max for individuals of that size
+
+%% chemical indices (relative elemental frequencies)
+% notice that these values relate to dry mass
+% wet mass has ten times more H and O, relative to C
+% organic compounds
+%   columns: food, structure, reserve, faeces
+%      X     V     E     P
+n_O = [1.00, 1.00, 1.00, 1.00;  % C/C, equals 1 by definition
+       1.80, 1.80, 2.00, 1.80;  % H/C
+       0.50, 0.50, 0.75, 0.50;  % O/C
+       0.20, 0.15, 0.20, 0.15]; % N/C
+   
+% minerals
+%   rows: elements carbon, hydrogen, oxygen, nitrogen
+%   columns: carbon dioxide (C), water (H), dioxygen (O), ammonia (N)
+%     CO2 H2O O2 NH3
+n_M = [1,  0, 0,  0;  % C
+       0,  2, 0,  3;  % H
+       2,  1, 2,  0;  % O
+       0,  0, 0,  1]; % N
+
+%% parameters that link moles to grams (wet weight), volumes and energy
+
+%   given in vector form for food, structure, reserve, feaces
+%   these parameters do not affect the dynamics; just output mapping 
+d_O = [.1; .1; .1; .1];     % g/cm^3, specific densities for organics
+% dry mass per wet volume
+mu_X = 525000;                    % J/mol, chemical potential of food
+mu_V = 500000;                    % J/mol, chemical potential of structure
+mu_E = 550000;                    % J/mol, chemical potential of reserve
+mu_P = 480000;                    % J/mol, chemical potential of faeces
+mu_O = [mu_X; mu_V; mu_E; mu_P];  %J/mol, chemical potentials of organics
+
+mu_M = [0; 0; 0; 0];           % kJ/mol, chemical potentials of minerals
+% C: CO2, H: H2O, O: O2, N: NH3
+
+% molar volume of gas at 1 bar and 20 C is 24.4 L/mol
+X_gas = T_ref/ T/ 24.4;     % M, mol of gas per litre at 20 C and 1 bar 
+
+
+%% conversion parameters
+
+z = 1;       % zoom factor rel to reference L_m = 1 cm to compare species
+del_M = .16; % -, shape coefficient to convert vol-length to physical length
+
+%% primary parameters of the standard DEB model in energy
+% only p_Am, E_Hb, E_Hp, h_a depend on zoom factor z (interspecifically)
+
+F_m = 6.5;       % l/d.cm^2, {F_m} max spec searching rate
+kap_X = 0.8;     % -, digestion efficiency of food to reserve
+kap_X_P = 0.1;   % -, faecation efficiency of food to faeces
+% kap_X_P does not affect state varables, only mineral and faeces fluxes
+v = 0.02;        % cm/d, energy conductance
+kap = 0.8;       % -, alloaction fraction to soma = growth + somatic maintenance
+kap_R = 0.95;    % -, reproduction efficiency
+p_M = 18;        % J/d.cm^3, [p_M] vol-specific somatic maintenance
+p_T =  0;        % J/d.cm^2, {p_T} surface-specific som maintenance
+k_J = 0.002;     % 1/d, < k_M = p_M/E_G, maturity maint rate coefficient
+E_G = 2800;      % J/cm^3, [E_G], spec cost for structure
+
+% life stage parameters: b = birth; i = metamorphosis; p = puberty
+% E_H is the cumulated energy from reserve invested in maturation
+E_Hb = 1e-3 * 275 * z^3; % J, E_H^b
+E_Hj = E_Hb;             % J, E_H^j, no metamorphosis
+E_Hp = 50 * z^3;         % J, E_H^p 
+
+% aging process
+h_a = z * 1e-6;   % 1/d^2, Weibull aging acceleration
+s_G = 1e-4;       % -, Gompertz stress coefficient
+
+parscomp          % compound parameters
+statistics        % food-dependend quantities
+report_animal     % print result to screen
+##### SOURCE END #####
+--></body></html>

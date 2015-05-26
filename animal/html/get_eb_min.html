@@ -1,0 +1,157 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_eb_min</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_eb_min.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_eb_min</h1><!--introduction--><p>Gets eb such that growth or maturation  ceases at birth</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2009/01/15 by Bas Kooijman; modified 2013/08/15</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>created 2009/01/15 by Bas Kooijman; modified 2013/08/15<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>[eb lb uE0 info] = <a href="../get_eb_min.m"><b>get_eb_min</b></a>(p, option)</p><h2>Description<a name="4"></a></h2><p>Obtains the scaled reserve at birth for growth or maturation ceases at birth. It can be seen as the lower viable scaled reserve density for embryo development.</p><p>Input</p><div><ul><li>p: 3-vector with parameters: g, k, v_H^b see get_lb</li><li>option: optional scalar with</li></ul></div><pre class="language-matlab">0: growth ceases <span class="string">at</span> <span class="string">birth</span>
+1: maturitation ceases <span class="string">at</span> <span class="string">birth</span>
+2: growth, maturity <span class="string">ceases</span> <span class="string">at</span> <span class="string">birth</span> <span class="string">(default)</span>
+</pre><p>Output</p><div><ul><li>eb: 1 or 2-vector with e_b such that growth and/or maturation cease at birth</li><li>lb: 1 or 2-vector with l_b such that growth and/or maturition cease at birth</li><li>uE0: 1 or 2-vector with u_E^0</li><li>info: 1 or 2-vector with 1's for success and 0's otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The theory behind get_eb_min is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html">the comments for DEB3</a>. Shell around <a href="get_eb_min_G.html"><b>get_eb_min_G</b></a> and <a href="get_eb_min_R.html"><b>get_eb_min_R</b></a>. Cf <a href="get_ep_min.html"><b>get_ep_min</b></a>  for minimum e to reach puberty</p><h2>Example of use<a name="6"></a></h2><p>get_eb_min([.1 .3 .01])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_eb_min
+% Gets eb such that growth or maturation  ceases at birth
+
+%%
+function [eb lb uE0 info] = get_eb_min(p, option)
+  %% created 2009/01/15 by Bas Kooijman; modified 2013/08/15
+  
+  %% Syntax
+  % [eb lb uE0 info] = <../get_eb_min.m *get_eb_min*>(p, option)
+  
+  %% Description
+  % Obtains the scaled reserve at birth for growth or maturation ceases at birth. 
+  % It can be seen as the lower viable scaled reserve density for embryo development. 
+  %
+  % Input
+  %
+  % * p: 3-vector with parameters: g, k, v_H^b see get_lb
+  % * option: optional scalar with
+  %
+  %   0: growth ceases at birth
+  %   1: maturitation ceases at birth
+  %   2: growth, maturity ceases at birth (default)
+  %  
+  % Output
+  %
+  % * eb: 1 or 2-vector with e_b such that growth and/or maturation cease at birth
+  % * lb: 1 or 2-vector with l_b such that growth and/or maturition cease at birth
+  % * uE0: 1 or 2-vector with u_E^0
+  % * info: 1 or 2-vector with 1's for success and 0's otherwise
+  
+  %% Remarks
+  % The theory behind get_eb_min is discussed in 
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html the comments for DEB3>.
+  % Shell around <get_eb_min_G.html *get_eb_min_G*> and <get_eb_min_R.html *get_eb_min_R*>.
+  % Cf <get_ep_min.html *get_ep_min*>  for minimum e to reach puberty
+
+  %% Example of use
+  % get_eb_min([.1 .3 .01])
+      
+  if exist('option', 'var') == 0
+      option = 2;
+  end
+  if ~(option == 0 || option == 1 || option == 2)
+    fprintf('unknown option value\n');
+    info = 0;
+    eb = []; lb = []; uE0 = [];
+    return
+  end
+  
+  g = p(1); k = p(2); vHb = p(3);
+  
+  if k == 1;
+    lb = vHb^(1/ 3);
+    if option == 0 
+      uEb = lb^4/ g;
+      eb = g * uEb/ lb^3;  
+      uE0 = get_ue0(p, eb);
+      info = 1;
+    elseif option == 1
+      uEb = vHb * lb/ (g + lb - vHb/ lb^2);
+      eb = g * uEb/ lb^3;        
+      uE0 = get_ue0(p, eb);
+      info = 1;
+    elseif option == 2
+      uEb = [lb^4/ g; vHb * lb/ (g + lb - vHb/ lb^2)];        
+      eb = g * uEb/ lb^3;        
+      lb = lb * [1;1];
+      uE0 = [get_ue0(p, eb(1)); get_ue0(p, eb(2))];
+      info = [1; 1];
+    end
+    return
+  end
+    
+  if option == 0 % growth ceases
+    [eb lb info] = get_eb_min_G(p);
+    [uE0 lb]  = get_ue0(p, eb, lb);
+
+  elseif option == 1 % maturation ceases
+    [eb lb info] = get_eb_min_R(p);
+    [uE0 lb]  = get_ue0(p, eb, lb);
+
+  else % option == 2 % growth, maturation caeses
+    % growth ceases
+    [eb_G lb_G info_G] = get_eb_min_G(p);
+    [uE0_G lb_G]  = get_ue0(p, eb_G, lb_G);
+    [eb_R lb_R info_R] = get_eb_min_R(p, lb_G);
+    [uE0_R lb_R]  = get_ue0(p, eb_R, lb_R);
+    eb = [eb_G; eb_R]; 
+    lb = [eb_G; lb_R];
+    uE0 = [uE0_G; uE0_R];
+    info = [info_G; info_R];  
+  end
+##### SOURCE END #####
+--></body></html>

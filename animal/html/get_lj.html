@@ -1,0 +1,170 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_lj</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-19"><meta name="DC.source" content="get_lj.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_lj</h1><!--introduction--><p>Gets scaled length at metamorphosis</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[lj, lp, lb, info] = <a href="../get_lj.m"><b>get_lj</b></a>(p, f, lb0)</p><h2>Description<a name="4"></a></h2><p>Type M-acceleration: Isomorph, but V1-morph between vHb and vHj This routine obtaines scaled length at metamorphosis lj given scaled muturity at metamorphosis vHj. The theory behind get_lj, is discussed in the comments to DEB3. If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate);  if it is specified. however, is it just copied to the (third) output. The code assumes vHb &lt; vHj &lt; vHp (see first input).</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p</li></ul></div><pre>   if p is a 5-vector, output lp is empty</pre><div><ul><li>f: optional scalar with scaled functional responses (default 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><p>Output</p><div><ul><li>lj: scalar with scaled length at metamorphosis</li><li>lp: scalar with scaled length at puberty</li><li>lb: scalar with scaled length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Similar to <a href="get_lj1.html">get_lj1</a>, which uses root finding, rather than integration Scaled length l = L/ L_m with L_m = kap {p_Am}/ [p_M] where {p_Am} is of embryo,  because the amount of acceleration is food-dependent so the value after metamorphosis is not a parameter. {p_Am} and v increase between maturities v_H^b and v_H^j till    {p_Am} l_j/ l_b  and v l_j/ l_b at metamorphosis. After metamorphosis l increases from l_j till l_i = f l_j/ l_b - l_T. Scaled length l can thus be larger than 1. See <a href="get_lj_foetus.html"><b>get_lj_foetus</b></a> for foetal development.</p><h2>Example of use<a name="6"></a></h2><p>get_lj([.5, .1, .1, .01, .2, .3])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_lj
+% Gets scaled length at metamorphosis
+
+%%
+function [lj, lp, lb, info] = get_lj(p, f, lb0)
+  %  created at 2010/02/10 by Bas Kooijman, 
+  %  modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  
+  %% Syntax
+  % [lj, lp, lb, info] = <../get_lj.m *get_lj*>(p, f, lb0)
+  
+  %% Description
+  % Type M-acceleration: Isomorph, but V1-morph between vHb and vHj
+  % This routine obtaines scaled length at metamorphosis lj given scaled muturity at metamorphosis vHj. 
+  % The theory behind get_lj, is discussed in the comments to DEB3. 
+  % If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate); 
+  %  if it is specified. however, is it just copied to the (third) output. 
+  % The code assumes vHb < vHj < vHp (see first input). 
+  %
+  % Input
+  %
+  % * p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p
+  %
+  %     if p is a 5-vector, output lp is empty
+  %
+  % * f: optional scalar with scaled functional responses (default 1)
+  % * lb0: optional scalar with scaled length at birth
+  %
+  % Output
+  %
+  % * lj: scalar with scaled length at metamorphosis
+  % * lp: scalar with scaled length at puberty
+  % * lb: scalar with scaled length at birth
+  % * info: indicator equals 1 if successful
+  
+  %% Remarks
+  % Similar to <get_lj1.html get_lj1>, which uses root finding, rather than integration
+  % Scaled length l = L/ L_m with L_m = kap {p_Am}/ [p_M] where {p_Am} is of embryo, 
+  %  because the amount of acceleration is food-dependent so the value after metamorphosis is not a parameter.
+  % {p_Am} and v increase between maturities v_H^b and v_H^j till
+  %    {p_Am} l_j/ l_b  and v l_j/ l_b at metamorphosis.
+  % After metamorphosis l increases from l_j till l_i = f l_j/ l_b - l_T.
+  % Scaled length l can thus be larger than 1.
+  % See <get_lj_foetus.html *get_lj_foetus*> for foetal development. 
+  
+  %% Example of use
+  % get_lj([.5, .1, .1, .01, .2, .3])
+  
+  n_p = length(p);
+
+  % unpack pars
+  g   = p(1); % energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % scaled heating length {p_T}/[p_M]
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = M_H^j/ {J_EAm} = E_H^j/ {p_Am}
+  if n_p > 5
+    vHp = p(6); % v_H^p = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
+  end
+
+  if ~exist('f', 'var')
+    f = 1;
+  elseif  isempty(f)
+    f = 1;
+  end
+  
+  % get lb
+  if ~exist('lb0', 'var')
+    lb0 = [];
+  end
+  if isempty(lb0)
+    [lb info] = get_lb([g; k; vHb], f, lb0);
+  else
+    info = 1;
+    lb = lb0;
+  end
+
+  if lT > f - lb % no growth is possible at birth
+    lj = []; lp = []; 
+    info = 0;
+    return
+  end
+
+  % no acceleration
+  if vHb == vHj 
+    if n_p == 5 % no puberty specified
+      [lb, info] = get_lb(p([1 2 4]), f, lb0);
+      lj = lb; lp = []; 
+      return
+    else % puberty specified
+      [lp, lb, info] = get_tp(p([1 2 3 4 6]), f, lb0);
+      lj = lb; 
+      return
+    end
+  end
+
+  % get lj
+  [vH lj] = ode45(@dget_l_V1, [vHb; vHj], lb, [], k, lT, g, f, lb); 
+  lj = lj(end); sM = lj/ lb;
+  
+  % get lp
+  if n_p > 5
+    [vH lp] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); 
+    lp = lp(end);
+  else
+    lp = [];
+  end
+
+##### SOURCE END #####
+--></body></html>

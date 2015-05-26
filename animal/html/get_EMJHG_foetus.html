@@ -1,0 +1,143 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_EMJHG_foetus</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_EMJHG_foetus.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_EMJHG_foetus</h1><!--introduction--><p>gets cumulative energy investment to endpoints at birth for foetal development</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[EMJHG info] = <a href="../get_EMJHG_foetus.m"><b>get_EMJHG_foetus</b></a> (p, eb)</p><h2>Description<a name="4"></a></h2><p>Gets cumulative energy investment to somatic and maturity maintenance, growth and maturation at birth for foetal development</p><p>Input</p><div><ul><li>p: 4 or 5-vector with parameters: g, k, vHb, kap, kap_G</li><li>eb: optional scalar with scaled reserve density at birth (default eb = 1)</li></ul></div><p>Output</p><div><ul><li>EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth</li><li>reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth</li></ul></div><pre>  if p(5) is specified, growth is splitted in dissipated and fixed in structure
+   info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations</pre><h2>Remark<a name="5"></a></h2><p>Called by <a href="birth_pie_foetus.html"><b>birth_pie_foetus</b></a> for graphical presentation</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_EMJHG_foetus
+% gets cumulative energy investment to endpoints at birth for foetal development
+
+%%
+function [EMJHG info] = get_EMJHG_foetus(p, eb)
+  % created at 2011/01/19 by Bas Kooijman 
+  
+  %% Syntax
+  % [EMJHG info] = <../get_EMJHG_foetus.m *get_EMJHG_foetus*> (p, eb)
+  
+  %% Description
+  % Gets cumulative energy investment to somatic and maturity maintenance,
+  % growth and maturation at birth for foetal development
+  %
+  % Input
+  %
+  % * p: 4 or 5-vector with parameters: g, k, vHb, kap, kap_G
+  % * eb: optional scalar with scaled reserve density at birth (default eb = 1)
+  %
+  % Output
+  %
+  % * EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth
+  % * reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
+  %
+  %    if p(5) is specified, growth is splitted in dissipated and fixed in structure
+  %     info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations
+  
+  %% Remark
+  % Called by <birth_pie_foetus.html *birth_pie_foetus*> for graphical presentation
+  
+  % unpack p
+  g   = p(1);
+  k   = p(2); 
+  vHb = p(3);
+  kap = p(4);
+
+  if length(p) > 4
+    kap_G = p(5);
+  end
+
+  if exist('eb','var') == 0
+    eb = 1; % maximum value as juvenile
+  end
+  n = length(eb);
+  EMJHG = zeros(n,5); info = ones(n);
+
+  for i = 1:n
+    [uE0, lb, tb, info(i)] = get_ue0_foetus(p, eb(i));
+    [t ulhMJ] = ode45(@dget_ulhMJ_foetus, [0;tb], [uE0; 0; 0; 0; 0], [], g, kap, k);
+    EMJHG(i, :) = [eb(i) * lb^3/ g, ulhMJ(end,[4 5]), vHb * (1 - kap), kap * lb^3];
+    EMJHG(i, :) = EMJHG(i, :)/sum(EMJHG(i, :));
+  end
+
+  if exist('kap_G','var') == 1
+    EMJHG = [EMJHG(:,1:4), EMJHG(:,5) * [ (1 - kap_G), kap_G]];
+  end
+end
+
+% subfunction
+
+function dulhMJ = dget_ulhMJ_foetus(t, ulhMJ, g, kap, k)
+  % change in state variables during embryo stage
+  % called by get_EMJG_foetus to get energy fractions at birth
+  
+  % unpack state variables
+  u = ulhMJ(1);  % u_E scaled reserve
+  l = ulhMJ(2);  % l, scaled length
+  h = ulhMJ(3);  % u_H, scaled maturity
+  
+  l2 = l * l; l3 = l2 * l;
+
+  du = 0;                                 % d/dt u_E 
+  dl = g/ 3;                              % d/dt l
+  dh = (1 - kap) * l2 * (g + l) - k * h;  % d/dt u_H
+  dM = kap * l3;                          % d/dt u_M, som maint
+  dJ = k * h;                             % d/dt u_J, mat maint
+
+  % pack derivatives
+  dulhMJ = [du; dl; dh; dM; dJ];
+end
+##### SOURCE END #####
+--></body></html>

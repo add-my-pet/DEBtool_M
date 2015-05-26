@@ -1,0 +1,199 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_get_pars_9</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_get_pars_9.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% created 2013/07/08 by Bas Kooijman; modified 2013/09/26</span>
+<span class="comment">% runs get_pars_9 and its inverse iget_pars_9</span>
+<span class="comment">% consider increase of numerical accuracy in the case of large relative errors</span>
+
+<span class="comment">% set parameters according to generalised animal (see mydata_my_pet, but kap_G = 0.8)</span>
+<span class="comment">%  assume T = T_ref; f = 1</span>
+d_V = 0.1;           <span class="comment">% g/cm^3, specific density of structure</span>
+z = 10;              <span class="comment">%  -, zoom factor</span>
+v = 0.02;            <span class="comment">% 2 cm/d, energy conductance</span>
+kap = 0.8;           <span class="comment">% 3 -, allocation fraction to soma = growth + somatic maintenance</span>
+p_M = 18;            <span class="comment">% 4 J/d.cm^3, [p_M], vol-specific somatic maintenance</span>
+p_Am = z * p_M/ kap; <span class="comment">% 1 J/d.cm^2, max specific assimilation rate</span>
+E_G = 2.6151e4 * d_V;<span class="comment">% 5 J/cm^3, [E_G], spec cost for structure</span>
+E_Hb = z^3 * .275;   <span class="comment">% 6 J, E_H^b, maturity at birth</span>
+E_Hj = 10 * E_Hb;    <span class="comment">% 7 J, E_H^j, maturity at metamorphosis</span>
+E_Hp = z^3 * 50;     <span class="comment">% 8 J, E_H^p, maturity at puberty</span>
+h_a = 1e-6;          <span class="comment">% 9 1/d^2, Weibull aging acceleration</span>
+
+<span class="comment">% pack par</span>
+par = [p_Am; v; kap; p_M; E_G; E_Hb; E_Hj; E_Hp; h_a];
+
+<span class="comment">% run iget_pars_9 and get_pars_9</span>
+data = iget_pars_9(par);   <span class="comment">% map par to data</span>
+Epar = get_pars_9(data);   <span class="comment">% map data to par</span>
+Edata = iget_pars_9(Epar); <span class="comment">% map par to data</span>
+
+txt_par = { <span class="keyword">...</span>
+ <span class="string">'1 p_Am, J/d.cm^2, max specific assimilation rate'</span>;
+ <span class="string">'2 v, cm/d, energy conductance'</span>;
+ <span class="string">'3 kap, -, allocation fraction to soma'</span>;
+ <span class="string">'4 p_M, J/d.cm^3, [p_M], vol-specific somatic maintenance'</span>;
+ <span class="string">'5 E_G, J/cm^3, [E_G], spec cost for structure'</span>;
+ <span class="string">'6 E_Hb, J, E_H^b, maturity at birth'</span>;
+ <span class="string">'7 E_Hj, J, E_H^j, maturity at metamorphosis'</span>;
+ <span class="string">'8 E_Hp, J, E_H^p, maturity at puberty'</span>;
+ <span class="string">'9 h_a, 1/d^2, Weibull aging acceleration'</span>};
+
+txt_data = { <span class="keyword">...</span>
+ <span class="string">'1 d_V, g/cm^3, specific density of structure'</span>;
+ <span class="string">'2 a_b, d, age at birth'</span>;
+ <span class="string">'3 a_p, d, age at puberty'</span>;
+ <span class="string">'4 a_m, d, age at death due to ageing'</span>;
+ <span class="string">'5 W_b, g, wet weight at birth'</span>;
+ <span class="string">'6 W_j, g, wet weight at metamorphosis'</span>;
+ <span class="string">'7 W_p, g, wet weight at puberty'</span>;
+ <span class="string">'8 W_m, g, maximum wet weight'</span>;
+ <span class="string">'9 R_m, #/d, maximum reproduction rate'</span>};
+
+printpar(txt_par, par, Epar, <span class="string">'name, pars, back-estimated pars'</span>)
+fprintf(<span class="string">'\n'</span>); <span class="comment">% insert blank line</span>
+printpar(txt_data, data, Edata, <span class="string">'name, data, back-estimated data'</span>)
+
+MRE_par = sum(abs(par - Epar) ./ par)/9;
+MRE_data = sum(abs(data - Edata) ./ data)/9;
+fprintf(<span class="string">'\n'</span>); <span class="comment">% insert blank line</span>
+printpar({<span class="string">'mean relative error of par and data'</span>}, MRE_par, MRE_data, <span class="string">''</span>)
+</pre><pre class="codeoutput">name, pars, back-estimated pars 
+1 p_Am, J/d.cm^2, max specific assimilation rate      225      225 
+2 v, cm/d, energy conductance     0.02     0.02 
+3 kap, -, allocation fraction to soma      0.8      0.8 
+4 p_M, J/d.cm^3, [p_M], vol-specific somatic maintenance       18       18 
+5 E_G, J/cm^3, [E_G], spec cost for structure     2615     2615 
+6 E_Hb, J, E_H^b, maturity at birth      275      275 
+7 E_Hj, J, E_H^j, maturity at metamorphosis     2750     2750 
+8 E_Hp, J, E_H^p, maturity at puberty    5e+04 5.001e+04 
+9 h_a, 1/d^2, Weibull aging acceleration    1e-06 9.995e-07 
+
+name, data, back-estimated data 
+1 d_V, g/cm^3, specific density of structure      0.1      0.1 
+2 a_b, d, age at birth    115.8    115.8 
+3 a_p, d, age at puberty    464.1    464.1 
+4 a_m, d, age at death due to ageing     1288     1288 
+5 W_b, g, wet weight at birth    2.156    2.156 
+6 W_j, g, wet weight at metamorphosis    20.39     20.4 
+7 W_p, g, wet weight at puberty      316    316.1 
+8 W_m, g, maximum wet weight 5.57e+04 5.571e+04 
+9 R_m, #/d, maximum reproduction rate     7.23    7.231 
+
+ 
+mean relative error of par and data 0.0001039 0.0001122 
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% created 2013/07/08 by Bas Kooijman; modified 2013/09/26
+% runs get_pars_9 and its inverse iget_pars_9
+% consider increase of numerical accuracy in the case of large relative errors
+
+% set parameters according to generalised animal (see mydata_my_pet, but kap_G = 0.8)
+%  assume T = T_ref; f = 1
+d_V = 0.1;           % g/cm^3, specific density of structure
+z = 10;              %  -, zoom factor
+v = 0.02;            % 2 cm/d, energy conductance
+kap = 0.8;           % 3 -, allocation fraction to soma = growth + somatic maintenance
+p_M = 18;            % 4 J/d.cm^3, [p_M], vol-specific somatic maintenance
+p_Am = z * p_M/ kap; % 1 J/d.cm^2, max specific assimilation rate
+E_G = 2.6151e4 * d_V;% 5 J/cm^3, [E_G], spec cost for structure
+E_Hb = z^3 * .275;   % 6 J, E_H^b, maturity at birth
+E_Hj = 10 * E_Hb;    % 7 J, E_H^j, maturity at metamorphosis
+E_Hp = z^3 * 50;     % 8 J, E_H^p, maturity at puberty
+h_a = 1e-6;          % 9 1/d^2, Weibull aging acceleration
+
+% pack par
+par = [p_Am; v; kap; p_M; E_G; E_Hb; E_Hj; E_Hp; h_a];
+
+% run iget_pars_9 and get_pars_9
+data = iget_pars_9(par);   % map par to data
+Epar = get_pars_9(data);   % map data to par
+Edata = iget_pars_9(Epar); % map par to data
+
+txt_par = { ...
+ '1 p_Am, J/d.cm^2, max specific assimilation rate';
+ '2 v, cm/d, energy conductance';
+ '3 kap, -, allocation fraction to soma';
+ '4 p_M, J/d.cm^3, [p_M], vol-specific somatic maintenance';
+ '5 E_G, J/cm^3, [E_G], spec cost for structure';
+ '6 E_Hb, J, E_H^b, maturity at birth';
+ '7 E_Hj, J, E_H^j, maturity at metamorphosis';
+ '8 E_Hp, J, E_H^p, maturity at puberty';
+ '9 h_a, 1/d^2, Weibull aging acceleration'};
+
+txt_data = { ...
+ '1 d_V, g/cm^3, specific density of structure';
+ '2 a_b, d, age at birth';
+ '3 a_p, d, age at puberty';
+ '4 a_m, d, age at death due to ageing';
+ '5 W_b, g, wet weight at birth';
+ '6 W_j, g, wet weight at metamorphosis';
+ '7 W_p, g, wet weight at puberty';
+ '8 W_m, g, maximum wet weight';
+ '9 R_m, #/d, maximum reproduction rate'};
+   
+printpar(txt_par, par, Epar, 'name, pars, back-estimated pars')
+fprintf('\n'); % insert blank line
+printpar(txt_data, data, Edata, 'name, data, back-estimated data')
+
+MRE_par = sum(abs(par - Epar) ./ par)/9;
+MRE_data = sum(abs(data - Edata) ./ data)/9;
+fprintf('\n'); % insert blank line
+printpar({'mean relative error of par and data'}, MRE_par, MRE_data, '')
+
+##### SOURCE END #####
+--></body></html>

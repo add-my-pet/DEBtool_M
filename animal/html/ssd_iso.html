@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ssd_iso</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-19"><meta name="DC.source" content="ssd_iso.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>ssd_iso</h1><!--introduction--><p>Gets mean age, L, L^2, L^3 and specific growth rate</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[r Ea EL EL2 EL3 info] = <a href="../ssd_iso.m"><b>ssd_iso</b></a>(p, F, r0)</p><h2>Description<a name="4"></a></h2><p>Obtains mean age, length, squared length, cubed length, spec pop growth rate of isomorphs. Egg development is assumed, without acceleration, and the embryonic stage is excluded. Food ensity is assumed to be constant.</p><p>Input</p><div><ul><li>p: 11-vector with parameters: kap kapR g kJ kM LT v UHb UHp ha sG</li><li>f: optional scalar with scaled function response (default 1)</li><li>r0: optional scalar with specific population growth rate</li></ul></div><pre>   if specified, its computation is supressed</pre><p>Output</p><div><ul><li>r: scalar with specific population growth rate</li><li>Ea: scalar with mean age of juveniles &amp; adults</li><li>EL: scalar with mean structural length</li><li>EL2: scale with mean squared structural length</li><li>EL3: scale with mean cubed structural length</li><li>info: scalar with 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>r is solved numerically from: 1 = \int_0^infty S(t) R(t) exp(- r t) dt See <a href="ssd_iso_foestus.html"><b>ssd_iso_foestus</b></a> for foetal development, embryonic stage is excluded See <a href="ssd_iso_metam.html"><b>ssd_iso_metam</b></a> for type M acceleration</p><h2>Example of use<a name="6"></a></h2><p>[r Ea EL EL2 EL3 info] = ssd_iso([0.8 0.95 0.1 0.002 0.02 0 0.02 1 5 1e-7 1e-8])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% ssd_iso
+% Gets mean age, L, L^2, L^3 and specific growth rate
+
+%%
+function [r Ea EL EL2 EL3 info] = ssd_iso(p, f, r0) 
+  % created 2010/09/29 by Bas Kooijman, modified 2011/04/26
+  
+  %% Syntax
+  % [r Ea EL EL2 EL3 info] = <../ssd_iso.m *ssd_iso*>(p, F, r0) 
+  
+  %% Description
+  % Obtains mean age, length, squared length, cubed length, spec pop growth rate of isomorphs.
+  % Egg development is assumed, without acceleration, and the embryonic stage is excluded. 
+  % Food ensity is assumed to be constant.
+  %
+  % Input
+  %
+  % * p: 11-vector with parameters: kap kapR g kJ kM LT v UHb UHp ha sG
+  % * f: optional scalar with scaled function response (default 1)
+  % * r0: optional scalar with specific population growth rate
+  %
+  %     if specified, its computation is supressed
+  %
+  % Output
+  %
+  % * r: scalar with specific population growth rate
+  % * Ea: scalar with mean age of juveniles & adults
+  % * EL: scalar with mean structural length
+  % * EL2: scale with mean squared structural length
+  % * EL3: scale with mean cubed structural length
+  % * info: scalar with 1 for success, 0 otherwise
+  
+  %% Remarks
+  % r is solved numerically from: 1 = \int_0^infty S(t) R(t) exp(- r t) dt
+  % See <ssd_iso_foestus.html *ssd_iso_foestus*> for foetal development, embryonic stage is excluded
+  % See <ssd_iso_metam.html *ssd_iso_metam*> for type M acceleration
+  
+  %% Example of use
+  % [r Ea EL EL2 EL3 info] = ssd_iso([0.8 0.95 0.1 0.002 0.02 0 0.02 1 5 1e-7 1e-8])
+   
+  % unpack parameters
+  kap = p(1); kapR = p(2); g   = p(3); 
+  kJ  = p(4); kM   = p(5); LT  = p(6);  
+  v   = p(7); UHb  = p(8); UHp = p(9);
+  ha = p(10); sG = p(11);
+
+  if ~exist('f','var')
+    f = 1;
+  end
+
+  if exist('r0','var')
+    r = r0; info = 1; k = kJ/ kM; Lm = v/g/kM; lT = LT/Lm; 
+    vHb = UHb * g^2 * kM^3/ v^2/ (1 - kap); % -, scaled maturity density at birth
+    vHp = UHp * g^2 * kM^3/ v^2/ (1 - kap); % -, scaled maturity density at puberty
+    [tp, tb, lp, lb] = get_tp([g, k, lT, vHb, vHp], f);
+  else
+    [r info tb tp lb lp] = sgr_iso (p, f);
+  end
+  
+  k = kJ/ kM;
+  Lm = v/ g/ kM;
+  lT = LT/ Lm;
+  li = f - lT;
+  rho = r/ kM;
+  Lm = v/ g/ kM;
+
+  if info == 1 && r > 0
+    rhoB = 1/ (3 + 3 * f/g); % rB/ kM
+    hW = (ha * g/ 6/ kM^2)^(1/3); % hW/ kM
+    hG = sG * g * f^3; % hG/ kM
+    hWG3 = (hW/ hG)^3;
+    tm = roots3([hW^3 0 rho log(1e-12)],1);
+
+    N = quad('fnE_iso', tb, tm, [], [], rho, hWG3, hW, hG); % norm to ensure that pdf integrates till 1
+    Ea = quad('fnEa_iso', tb, tm, [], [], rho, hWG3, hW, hG)/ N/ kM;
+    EL = Lm * quad('fnEL_iso', tb, tm, [], [], f, lb, tb, rho, rhoB, hWG3, hW, hG)/ N;
+    EL2 = Lm^2 * quad('fnEL2_iso', tb, tm, [], [], f, lb, tb, rho, rhoB, hWG3, hW, hG)/ N;
+    EL3 = Lm^3 * quad('fnEL3_iso', tb, tm, [], [], f, lb, tb, rho, rhoB, hWG3, hW, hG)/ N;
+  else % info == 2
+    VHb = UHb/ (1 - kap); VHp = UHp/ (1 - kap);
+    vHb = VHb * g^2 * kM^3/ v^2; vHp = VHp * g^2 * kM^3/ v^2;
+    rhoB = 1/(3 + 3 * f/g); % rB/ kM
+
+    pars_tm = [g; k; lT; vHb; vHp; ha/ kM^2; sG]; % compose parameter vector
+    tm = get_tm_s(pars_tm, f, lb, lp);            % -, scaled mean life span
+    N = tm; % norm to ensure that pdf integrates till 1
+    Ea = 0.5 * tm/ kM;
+    EL = Lm * quad(@fnEL_iso_tm, tb, tm, [], [], f, lb, tb, rhoB)/ N;
+    EL2 = Lm^2 * quad(@fnEL2_iso_tm, tb, tm, [], [], f, lb, tb, rhoB)/ N;
+    EL3 = Lm^3 * quad(@fnEL3_iso_tm, tb, tm, [], [], f, lb, tb, rhoB)/ N;
+  end
+end
+  
+% subfunctions
+
+function int = fnEL_iso_tm(t, f, lb, tb, rhoB)
+  % t: a * kM
+  % int: l(t) * exp(- rho*t) * S(t)
+  % called by ssd_iso
+
+  l = f - (f - lb) .* exp( - rhoB * (t - tb));
+  int = l;
+end
+
+function int = fnEL2_iso_tm(t, f, lb, tb, rhoB)
+  % t: a * kM
+  % int: l(t) * exp(- rho*t) * S(t)
+  % called by ssd_iso
+ 
+  l = f - (f - lb) .* exp( - rhoB * (t - tb));
+  int = l .* l;
+end
+
+function int = fnEL3_iso_tm(t, f, lb, tb, rhoB)
+  % t: a * kM
+  % int: l(t) * exp(- rho*t) * S(t)
+  % called by ssd_iso
+  
+  l = f - (f - lb) .* exp( - rhoB * (t - tb));
+  int = l .* l .* l;
+end
+##### SOURCE END #####
+--></body></html>
