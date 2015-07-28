@@ -31,7 +31,7 @@ function estim_pars
 global pets pars_init_method method filter
 
 % set data
-[data, txt_data, metadata] = mydata_pets;
+[data, auxData, txtData, metaData, weights] = mydata_pets;
 
 % set parameters
 if pars_init_method == 0
