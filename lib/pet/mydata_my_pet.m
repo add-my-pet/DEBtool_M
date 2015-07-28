@@ -133,22 +133,11 @@ weight = setweights(data, []);
 % data.psd.p_M = 1000;                    % my_pet belongs to a group with high somatic maint 
 % weight.psd.kap = 10 * weight.psd.kap;   % I need to give this pseudo data a higher weight
 
-%% pack data and txt_data for output
-data.weight = weight;
-data.temp = temp;
-txt_data.units = units;
-txt_data.label = label;
-txt_data.bibkey = bibkey;
-if exist('comment','var')
-  txt_data.comment = comment;
-end
-
 %% Facts
 % list facts: F1, F2, etc.
 % make sure each fact has a corresponding bib key
 % do not put any DEB modelling assumptions here, only relevant information on
 % biology and life-cycles etc.
-
 F1 = 'The larval stage last 202 days and no feeding occurs';
 metadata.bibkey.F1 = 'Wiki'; % optional bibkey
 metadata.facts = struct('F1',F1);
@@ -159,6 +148,17 @@ D1 = 'Author_mod_1: I found information on the number of eggs per female as a fu
 D2 = 'Author_mod_1: I was surprised to observe that the weight coefficient for ab changed so much the parameter values';     
 % optional bibkey: bibkey.D2 = 'Kooy2010';
 metadata.discussion = struct('D1', D1, 'D2', D2);
+
+
+%% pack data and txt_data for output
+data.weight = weight;
+data.temp = temp;
+txt_data.units = units;
+txt_data.label = label;
+txt_data.bibkey = bibkey;
+if exist('comment','var')
+  txt_data.comment = comment;
+end
 
 %% References
   % the following two references should be kept-----------------------------------------------------------
