@@ -4,7 +4,7 @@
 %%
 function [data, auxData, txtData, metaData, weights] = mydata_my_pet 
   % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/03/31
-  % last modified: 07/28/2015 
+  % last modified: 2015/07/28 
   
   %% Syntax
   % [data, auxData, txtData, metaData, weights] = <../mydata_my_pet.m *mydata_my_pet*>
@@ -76,10 +76,10 @@ metaData.address  = {'affiliation, zipcode, country'};   % affiliation, postcode
 
 % age 0 is at onset of embryo development
 data.ab = 15;      units.ab = 'd';    label.ab = 'age at birth';  bibkey.ab = 'MollCano2010';   comment.ab  = 'mean value taken from several measurements'; 
-  temp.ab = T_C + 20;  % K, temperature 
+  temp.ab = T_C + 20;  units.temp.ab = 'K'; label.temp.ab = 'temperature';
   % observed age at birth is frequently larger than ab, because of diapauzes during incubation
 data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = 'Anon2015';
-  temp.ap = T_C + 20;  % K, temperature 
+  temp.ap = T_C + 20;  units.temp.ap = 'K'; label.temp.ap = 'temperature';
   % observed age at puberty is frequently larger than ap, 
   %   because allocation to reproduction starts before first eggs appear
 data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
@@ -97,7 +97,7 @@ data.Wdp = 8e-3;   units.Wdp = 'g';    label.Wdp = 'dry weights at puberty';    
 data.Wdi = 0.15;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weights';             bibkey.Wdi = 'Wiki';
 data.Ri  = 2.3;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Wiki';   
 % for an individual of ultimate length Li 
-temp.Ri = T_C + 20;  % K, temperature 
+temp.Ri = T_C + 20;  units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
  
 % uni-variate data
 
@@ -106,14 +106,13 @@ temp.Ri = T_C + 20;  % K, temperature
 data.tL = [0     50  100 200 300 400 500 600;    % d, time since birth
            0.45  1.1 1.7 2.7 3.4 4.0 4.5 4.9]';  % cm, snout-to-vent length at f and T
 units.tL   = {'d', 'cm'};  label.tL = {'time since birth', 'snout to vent length'};  bibkey.tL = 'Anon2015';
-temp.tL    = T_C + 25;  % K, temperature
-comment.tL = 'Put here any remarks about the experimental protocol'; % optional field
-
+temp.tL    = T_C + 25;  units.temp.tL = 'K'; label.temp.tL = 'temperature';
+comment.tL = 'Put here any relevant remarks about this data'; % optional field
   
 data.LW = [0.9 1.8 3.2 4.3 5.0;      % cm, snout-to-vent length at f
            0.004 0.03 0.20 0.55 1.1]';   % g, wet weights at f and T
 units.LW = {'cm', 'g'};     label.LW = {'snout to vent length', 'wet weights'};  bibkey.LW = 'Anon2015';
-comment.LW = 'Put here any remarks about the experimental protocol'; % optional field
+comment.LW = 'Put here any relevant remarks about this data'; % optional field
 
 %% set weights for all real data
 weights = setweights(data, []);
