@@ -118,7 +118,21 @@ if 1
   xlabel('_{10}log L_\infty, cm')
   ylabel('_{10}log [p_M], J cm^{-3} d^{-1}')
   txt_taxa(2, 3, taxa, col_taxa);
-  
+
+  figure % L_i - p_M
+  hold on
+  pMLi3 = pM .* Li.^3;
+  %scatter(log10(Li(TYPE>0)), log10(pM(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li), log10(pMLi3), 60, color, 'LineWidth', 2)
+  %scatter(log10(Li(TYPE>0 & s_M == 1)), log10(pM(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  scatter(log10(Li(s_M == 1)), log10(pMLi3(s_M == 1)), 20, color(s_M == 1, :), 'LineWidth', 4)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log p_M, J d^{-1}')
+  txt_taxa(2, 3, taxa, col_taxa);
+
   figure % L_i - [p_M]/ d_V
   pMdV = pM ./ dV;
   hold on

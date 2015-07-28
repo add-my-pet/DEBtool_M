@@ -3,8 +3,10 @@
 
 %%
 function results_my_pet(txt_par, par, chem, metapar, txt_data, data)
-  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
 
+  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
+  % modified 07/07/2015 by starrlight
+  
   %% Syntax
   % <../results_my_pet.m *results_my_pet*>(txt_par, par, chem, metapar, txt_data, data)
   
@@ -40,16 +42,25 @@ function results_my_pet(txt_par, par, chem, metapar, txt_data, data)
   close all % remove existing figures, else you get more and more if you retry
 
   figure % figure to show results of uni-variate data
-  subplot(1,2,1)
-  plot(t, EL, 'g', tL(:,1), tL(:,2), '.r', 'markersize', 20, 'linewidth', 4)
-  set(gca, 'Fontsize', 15, 'Box', 'on')
-  xlabel('time since birth, d')
-  ylabel('snout-to-vent length, cm')
-  %print -dpng results_my_pet_01.png
+  set(gca,'Fontsize',12, 'Box', 'on')
+  set(gcf,'PaperPositionMode','manual');
+  set(gcf,'PaperUnits','points'); 
+  set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+         
+  plot(t, EL, 'g', tL(:,1), tL(:,2), '.r', 'markersize', 20, 'linewidth', 2)
+  xlabel([txt_data.label.tL{1}, ', ', txt_data.units.tL{1}])
+  ylabel([txt_data.label.tL{2}, ', ', txt_data.units.tL{2}])
   
-  subplot(1,2,2)
-  plot(L, EW, 'g', LW(:,1), LW(:,2), '.r', 'markersize', 20, 'linewidth', 4)
-  set(gca, 'Fontsize', 15, 'Box', 'on')
-  xlabel('snout-to-vent length, cm')
-  ylabel('wet weight, g')
-  %print -dpng results_my_pet_02.png
+print -dpng results_my_pet_01.png
+  
+  figure % figure to show results of uni-variate data
+  set(gca,'Fontsize',12, 'Box', 'on')
+  set(gcf,'PaperPositionMode','manual');
+  set(gcf,'PaperUnits','points'); 
+  set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+
+  plot(L, EW, 'g', LW(:,1), LW(:,2), '.r', 'markersize', 20, 'linewidth', 2)
+  xlabel([txt_data.label.LW{1}, ', ', txt_data.units.LW{1}])
+  ylabel([txt_data.label.LW{2}, ', ', txt_data.units.LW{2}])
+ 
+print -dpng results_my_pet_02.png

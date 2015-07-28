@@ -63,7 +63,7 @@ switch mode
     j_E1_S = kap * j_E1C;
     j_E1P = 0; j_E2P = 0;                                   % mol/d.mol, specific rejection flux
       
-  otherwise % mode = 1: reserve 2 can fuel all maintenance and growth overhead
+  otherwise
     mode  = 1; % case 1: reserve 2 fuels all maintenance and growth overheads
     r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate
     j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;        % mol/d.mol, specific mobilisation rates

@@ -1,12 +1,13 @@
 %% <../run_my_pet.m *run_my_pet*>
 % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/01/22
-% modified 2015/03/25
+% modified 2015/07/08
 
 %clear all; 
 global pets
 
 % species names
 pets = {'my_pet'};
+check_my_pet(pets); % check pet-files for required fields
 
 % See estim_options for more options
 estim_options('default'); % runs estimation, uses nmregr method and filter
@@ -27,5 +28,4 @@ estim_options('pars_init_method', 0);
 estim_options('results_output', 1);
 %estim_options('method', 'no');
 
-% check_my_pet('my_pet') % check pet-files for required fields
 estim_pars; % run estimation

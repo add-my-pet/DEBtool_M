@@ -33,18 +33,16 @@ function [output1 output2] = debtool_function(input1, input2)
 % * two examples of specifying an output are lb: scalar with scaled length at birth, info: indicator equals 1 if successful, 0 otherwise
 
 %% Remarks
-% Add this section if need be to put any specific comments one might have
-% about the script or the function. For example you could write something
-% like: the theory behind debtool_function is discussed in
-% <http://www.bio.vu.nl/thb/research/bib/Kooy2009b.html Kooy2009b *this
-% paper*>.In fact it is highly recommended to put a link to a relevant DEB
-% theory paper upon which the function/script is based.
+% Add this section if need be to put any specific comments one might have about the script or the function. 
+% For example you could write something like: the theory behind debtool_function is discussed in
+% <http://www.bio.vu.nl/thb/research/bib/Kooy2009b.html Kooy2009b *this paper*>.
+% In fact it is highly recommended to put a link to a relevant DEB theory paper upon which the function/script is based.
 
 %% Example of use
-% Put here an example of use. Often times there is a
-% mydata_debtool_function script which uses the function. We can refer to
-% that script here and perhaps make a link to it. See how the link to a
-% function is implemented under the syntax function.
+% Put here an example of use. 
+% Often times there is a mydata_debtool_function script which uses the function. 
+% We can refer to that script here and perhaps make a link to it. 
+% See how the link to a function is implemented under the syntax function.
 
 %% Publish settings
 % options.showCode = false; 

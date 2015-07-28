@@ -8,22 +8,22 @@
 
 %% set parameters at T_ref = 293 K
 M_X1      = 1e-3;   M_X2      = 1e-3;  % mol, size of food particle of type i
-F_X1m     = 50;     F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
+F_X1m     = 10;     F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
 y_P1X1    = 0.15;   y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
-y_E1X1    = 0.65;   y_E2X1    = 0.15;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
-y_E1X2    = 0.15;   y_E2X2    = 0.65;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-J_X1Am    = 2.0e-3; J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+y_E1X1    = 0.55;   y_E2X1    = 0.25;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
+y_E1X2    = 0.25;   y_E2X2    = 0.55;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
+J_X1Am    = 1.0e-3; J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
 v         = 0.02;   kap       = 0.8;   % cm/d, energy conductance, 
                                        % -, allocation fraction to soma
-mu_E1     = 4e5;    mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
-mu_V      = 5e5;    j_E1M     = 0.09;  % J/mol, chemical potenial of structure
+mu_E1     = 4e5;    mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
+mu_V      = 5e5;    j_E1M     = 0.09;  % J/mol, chemical potenial of structure; j_E2M = j_E1M * mu_E1/ mu_E2
                                        % mol/d.mol, specific som maint costs
 J_E1T     = 0;      MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
                                        % mol/cm^3, [M_V] density of structure
 k_J       = 0.002;  k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 kap_G      = 0.8;   del_V     = 0.8;   % -, growth efficiency
                                        % -, threshold for death by  shrinking
-kap_E1    = 0;      kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
+kap_E1    = 1;      kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
 % since j_E1P = 0, kap_E1 is not relevant
 kap_R1    = 0.95;   kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 E_Hb      = 1e1;    E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
@@ -62,20 +62,20 @@ n_M = [...
 
 %% set environmental variables
 t = linspace(0,8e3,5e2)'; tXT = [t, t, t, t]; % d, time points
-tXT(:,2) = 1;     tXT(:,3) = 4;               % mol/dm^2, food densities (don't need to be constant)
+tXT(:,2) = 4000;     tXT(:,3) = 4000;               % mol/dm^2, food densities (don't need to be constant)
 tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
 [var_b a_b M_E10 M_E20] = iso_21_b_var(tXT, par_iso_221);
 
-return
+%return
 %% run iso_221
 [var flux]  = iso_221_var(tXT, var_b, par_iso_221, n_O, n_M); % from birth to t = tXT(end,1)
 
 if 1
 % continue with a period with only food type 2
 t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
-tXT2(:,2) = 0; tXT2(:,3) = 1; tXT2(:,4) = 293;         % set food, temp
+tXT2(:,2) = 4000; tXT2(:,3) = 0; tXT2(:,4) = 293;         % set food, temp
 var_0 = var(end,:)';                                   % copy last state to initial state
 [var2 flux2]  = iso_221_var(tXT2, var_0, par_iso_221, n_O, n_M, 0); % run iso_221_var
 % catenate results for plotting

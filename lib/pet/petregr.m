@@ -21,19 +21,19 @@ function [q, info] = petregr(func, par, chem, T_ref, data)
 % * T_ref: scalar with refeerence temperature
 % * data: structure with 
 %
-%    data values
-%    a field 'weight' with the weights of the data values
-%    a field 'temp' with the temperature of some of the data values
-%    The number of fields in data is variable
+%    data values and
+%    field 'weight' with the weights of the data values
+%    field 'temp' with the temperature of some of the data values
 %  
 % Output
 % 
-%  * q: structure with parameters, result of the least squares estimates
-%  * info: 1 if convergence has been successful; 0 otherwise
+% * q: structure with parameters, result of the least squares estimates
+% * info: 1 if convergence has been successful; 0 otherwise
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.
-% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction
+% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction.
+% The number of fields in data is variable
    
    
   global report max_step_number max_fun_evals tol_simplex tol_fun

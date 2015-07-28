@@ -3,7 +3,10 @@
 
 function [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model) %% T_ref from metapar or input like T?
 % created 2000/11/02 by Bas Kooijman, modified 2014/03/17 
-% created 2015/03/25 by Starrlight Augustine, 2015/04/01 by Goncalo Marques
+% created 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
+% last modified 2015/07/27 by starrlight
+
+%% FUNCTION STILL UNDER CONSTRUCTION
 
 %% Description
 % Computes quantites which depend on parameters, temperature and food
@@ -137,8 +140,6 @@ s_M = 1;                        % -, acceleration factor
 l_i = s_M * (f - l_T);            % scaled ultimate length
 rho_B = 1/ 3/ (1 + f/ g);       % scaled von Bert growth rate
 
-
-
 E_0    = p_Am * U_E0;           % J, initial reserve (of embryo)
 M_E0   = E_0/ mu_E;             % mol, initial reserve (of embryo)
 W_0    = M_E0 * w_E;            % g, initial reserve (of embryo)
@@ -197,7 +198,7 @@ del_Ub = U_Eb/ U_E0;            % -, fraction of reserve left at birth
 label.c_T  = 'temp. correction factor'; units.c_T = '-'; stat.c_T = TC;   
 % pack output:
 label.a_99 = 'age at 99% of ultimate length'; units.a_99 = 'd';   stat.a_99 = a_99; temp.a_99 = T;
-label.r_B  = 'von Bertalanffy growth rate';   units.ap   = '1/d'; stat.r_B  = r_B;  temp.r_B  = T;
+label.r_B  = 'von Bertalanffy growth rate';   units.r_B   = '1/d'; stat.r_B  = r_B;  temp.r_B  = T;
 label.del_Ub = 'fraction of reserve left at birth';  units.del_Ub = '-';   stat.del_Ub  = del_Ub;
 
 % reproduction
@@ -236,6 +237,9 @@ Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at p
 label.Kb_min = 'food density where growth, maturation cease at birth';   units.Kb_min = 'mol/l'; stat.Kb_min  = Kb_min;
 label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
 
+label.eb_ming = 'scaled func. resp. such that growth ceases at birth';   units.eb_ming = '-'; stat.eb_ming  = eb_min(1);
+label.eb_minh = 'scaled func. resp. such that maturation ceases at birth';   units.eb_minh = '-'; stat.eb_minh  = eb_min(2);
+label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
 
 %%
 
@@ -273,10 +277,15 @@ t_starve = E_m/ p_M;  % d, max survival time when starved
 % temperature correct output:
 t_E = t_E/ TC; t_starve = t_starve/ TC;  
 
-label.t_starve = 'maximum survival time when starved'; units.t_starve = 'd';    stat.t_starve  = t_starve;
-label.t_E = 'maximum reserve residence time';          units.t_E  = 'd';        stat.t_E  = t_E;
-label.E_m = 'reserve capacity';                        units.E_m  = 'J/cm^3';   stat.E_m  = E_m;
-label.m_Em = 'reserve capacity';                       units.m_Em = 'mol/cm^3'; stat.m_Em  = m_Em;
+label.del_Wb   = 'birth weight as fraction of maximum weight';   units.del_Wb = '-';      stat.del_Wb  = del_Wb;
+label.del_Wp   = 'puberty weight as fraction of maximum weight'; units.del_Wp  = '-';     stat.del_Wp  = del_Wp;
+label.xi_W_E   = 'whole-body energy density (no reprod buffer)'; units.xi_W_E  = 'kJ/g';  stat.xi_W_E  = xi_W_E;
+label.del_V    = 'fraction of max weight that is structure';     units.del_V = '-';       stat.del_V  = del_V;
+label.t_starve = 'maximum survival time when starved';           units.t_starve = 'd';    stat.t_starve  = t_starve;
+label.t_E      = 'maximum reserve residence time';               units.t_E  = 'd';        stat.t_E  = t_E;
+label.E_m      = 'reserve capacity';                             units.E_m  = 'J/cm^3';   stat.E_m  = E_m;
+label.m_Em     = 'reserve capacity';                             units.m_Em = 'mol/cm^3'; stat.m_Em  = m_Em;
+
 
 
 %% 
@@ -302,13 +311,13 @@ label.h_G = 'Gompertz aging rate';             units.h_G = '1/d';   stat.h_G  = 
 %%
 % mass fluxes for L = L_i = s_M (f L_m - L_T)
 
-mu_O = [mu_X; mu_V; mu_E; mu_P];
+ mu_O = [mu_X; mu_V; mu_E; mu_P];
 
-eta_O = [...   %%% pag. 141
-    -3/2, 0, 0;
-    0,    0, 1/2;
-    1,   -1, -1;
-    1/2,  0,  0];
+% eta_O = [...   %%% pag. 141
+%     -3/2, 0, 0;
+%     0,    0, 1/2;
+%     1,   -1, -1;
+%     1/2,  0,  0];
 
 p_ref = p_Am * L_m^2;        % max assimilation power at max size
 
@@ -363,11 +372,12 @@ end
 % indices 
   
 s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3; % -, supply stress
+s_s = log10(s_s);
 s_H = log10(E_Hp/E_Hb); % altriciality index, log10 s_H^pb, - 
 
 label.s_M = 'acceleration factor'; units.s_M = '-';   stat.s_M = s_M;
-label.s_s = 'supply stress';       units.s_s = '-';   stat.s_s = s_s;
-label.s_H = 'altriciality index';  units.s_H = 'mol'; stat.s_H = s_H;
+label.s_s = 'log 10 supply stress';       units.s_s = '-';   stat.s_s = s_s;
+label.s_H = 'log 10 altriciality index';  units.s_H = '-'; stat.s_H = s_H;
 
 
 % packing

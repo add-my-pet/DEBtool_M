@@ -2,9 +2,10 @@
 % Computes model predictions and handles them
 
 %%
-function results_pets(txt_par, par_pets, metapar, chem, txt_data, data,  metadata) 
+function results_pets(txt_par, par_pets, metapar, chem, txt_data, data, metadata) 
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14 by Goncalo Marques, 2015/04/27 by Goncalo Marques, 2015/05/05 by Goncalo Marques
+% modified 2015/07/05 by Starrlight
 
 %% Syntax
 % <../results_pets.m *results_pets*>(txt_par, par_pets, chem, txt_data, data,  metadata) 
@@ -99,41 +100,76 @@ if results_output == 0 || results_output == 1
     eval(['printprd_st(txt_data.pet', ci, ', data.pet', ci, ', Prd_data.pet', ci, ', RE);']);  
     printpar_st(txt_par, par);
 
-    if exist(['results_', pets{i}, '.m'], 'file')
+%     if exist(['results_', pets{i}, '.m'], 'file')
+%       par = par_pets;   % for the case with no zoom factor transformation
+%       eval(['results_', pets{i}, '(txt_par, par, chem, metapar, txt_data.pet', ci, ', data.pet', ci, ');']);
+%     
+%     else
+%     
+%       eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
+%       for j = 1:nst
+%         eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
+%         if k >= 2 && isempty(strfind(nm{j}, 'temp.'))
+%           figure;
+%           set(gca,'Fontsize',12)
+%           eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
+%           eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
+%           eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
+%           eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
+%           plot(xpred, ypred, 'b', xdata, ydata, '.r', 'Markersize',20, 'linewidth', 4)
+%           eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
+%           xlabel(lblx);
+%           eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
+%           ylabel(lbly);
+%         end
+%       end
+%     end
+    fprintf('\n')
+  end
+end
+
+if results_output == 1 || results_output == 2
+    
+  par = par_pets;
+  filenm = ['results_', pets{1}, '.mat'];
+  metadata = metadata.pet1;
+  save(filenm, 'txt_par', 'par', 'metapar', 'chem', 'metadata');
+  
+end
+
+
+if exist(['results_', pets{i}, '.m'], 'file')
       par = par_pets;   % for the case with no zoom factor transformation
       eval(['results_', pets{i}, '(txt_par, par, chem, metapar, txt_data.pet', ci, ', data.pet', ci, ');']);
-    else
+    
+else
     
       eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
       for j = 1:nst
         eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
         if k >= 2 && isempty(strfind(nm{j}, 'temp.'))
           figure;
+          set(gca,'Fontsize',12)
+          set(gcf,'PaperPositionMode','manual');
+          set(gcf,'PaperUnits','points'); 
+          set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
           eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
           eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
           eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
           eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
-          plot(xdata, ydata, '.r', xpred, ypred, 'g')
+          plot(xpred, ypred, 'b', xdata, ydata, '.r', 'Markersize',20, 'linewidth', 4)
           eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
           xlabel(lblx);
           eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
           ylabel(lbly);
         end
       end
-    end
-    fprintf('\n')
-  end
 end
+ 
+if results_output == 2  
 
-if results_output == 1 || results_output == 2
-  par = par_pets;
-  filenm = ['results_', pets{1}, '.mat'];
-  metadata = metadata.pet1;
-  save(filenm, 'txt_par', 'par', 'metapar', 'chem', 'metadata');
-end
-
-if results_output == 2
-
+%  if ~exist(['results_', pets{i}, '.m'], 'file')
+     
   for i = 1:length(pets)
     % produce par for species
     par = par_pets;   % for the case with no zoom factor transformation
@@ -144,31 +180,39 @@ if results_output == 2
     ci = num2str(i);
     graphnm = ['results_', pets{i}, '_'];
     
-    if ~exist(['results_', pets{i}, '.m'], 'file')
+%      if ~exist(['results_', pets{i}, '.m'], 'file')
       eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
       counter = 1;
       for j = 1:nst
         eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
         if k >= 2
-          figure;
-          eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
-          eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
-          eval(['xpred = datapl.pet', ci, '.', nm{j}, ';']);
-          eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
-          plot(xdata, ydata, '.r', xpred, ypred, 'g')
-          eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
-          xlabel(lblx);
-          eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
-          ylabel(lbly);
+%           figure;
+%           set(gca,'Fontsize',12)
+%           set(gcf,'PaperPositionMode','manual');
+%           set(gcf,'PaperUnits','points'); 
+%           set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+%           eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
+%           eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
+%           eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
+%           eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
+%           plot( xpred, ypred, 'b', xdata, ydata, '.r','Markersize',15, 'linewidth', 2)
+%           eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
+%           xlabel(lblx);
+%           eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
+%           ylabel(lbly);
           if counter < 10
+            figure(counter)  
             eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
           else
+            figure(counter)  
             eval(['print -dpng ', graphnm, num2str(counter), '.png']);
           end
           counter = counter + 1;
         end
       end
-    end
-    fprintf('\n')
   end
+    fprintf('\n')
+%   end
 end
+
+

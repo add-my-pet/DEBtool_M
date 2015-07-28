@@ -5,7 +5,7 @@
 %%
 function print_species_html(metadata, metapar, fid_Spec)
 % originally created by Bas Kooijman; modified 2015/04/14 Starrlight &
-% Goncalo Marques
+% Goncalo Marques; modified 2015/07/21 Starrlight
 
 %% Syntax
 % <../print_species_html.m *print_species_html*> (metadata, metapar, fid_Spec) 
@@ -38,7 +38,7 @@ end
   
   fprintf(fid_Spec, '      <TR>\n');
   fprintf(fid_Spec,['        <TD>', phylum, '</TD>  <TD>', CLASS, '</TD> <TD>', order, '</TD> <TD>', family, '</TD> ']);
-  fprintf(fid_Spec,['<TD><A TARGET="_top" HREF="./main/i_', species, '.html">', speciesprintnm, '</A></TD> <TD>', speciesprintnm_en, '</TD> ']);
+  fprintf(fid_Spec,['<TD><A TARGET="_top" HREF="entries/',species,'/i_results_', species, '.html">', speciesprintnm, '</A></TD> <TD>', speciesprintnm_en, '</TD> ']);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFC6A5">%s</TD> ', model);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFE7C6">%8.3f</TD> ', MRE);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFCE9C">%g</TD>\n', COMPLETE);

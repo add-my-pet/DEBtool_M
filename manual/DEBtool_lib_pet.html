@@ -36,10 +36,9 @@ Load the following files from this subdirectory in the editor, while <code>pwd</
    <li><a href="../lib/pet/html/mydata_my_pet.html"><code>mydata_my_pet</code></a> for setting data and references</li>
    <li><a href="../lib/pet/html/predict_my_pet.html"><code>predict_my_pet</code></a> for specifying model predictions</li>
    <li><a href="../lib/pet/html/pars_init_my_pet.html"><code>pars_init_my_pet</code></a> for initiating parameter values and fix/free them</li>
-   <li><a href="../lib/pet/html/results_my_pet.html"><code>results_my_pet</code></a> for customizing the presentation of results (optional)</li>
-   <li><a href="../lib/pet/html/run_my_pet.html"><code>run_my_pet</code></a> for setting estimation options and run estimation</li>
+   <li><a href="../lib/pet/html/run_my_pet.html"><code>run_my_pet</code></a> for checking, setting estimation options and run estimation</li>
 </ul>
-You subsequently edit these files, replacing <code>my_pet</code> by the latin name of your species(genus and species name connected by an underscore), store them in your workspace and type <code>run_my_pet</code> in the active window.
+You subsequently edit these files, replacing <code>my_pet</code> by the latin name of your species (genus and species in the name connected by an underscore), store them in your workspace and type <code>run_my_pet</code> in the active window.
 Make sure that the path to DEBtool_M and its subdirectories has been set.
 
 <p>
@@ -52,36 +51,52 @@ The function
 <a href="../lib/pet/html/parscomp_st.html"><code>parscomp_st</code></a> 
 is used in <code>predict</code> files to compute compound parameter from primary parameters;
 most DEBtool/animal functions work with scaled parameters.
+The script 
+<a href="../lib/pet/html/run_my_pet.html"><code>run_my_pet</code></a> 
+first checks the consistency of the three user-defined functions with
+<a href="../lib/pet/html/check_my_pet.html"><code>check_my_pet</code></a>, 
+assuming that they have no Matlab errors.
+Then estimation-options are set, such as the maximum number of iterations, or no estimation at all.
+Finally the estimation and automatized presentation of results are called;
+the presentation of results can (optionally) be customized with function <a href="../lib/pet/html/results_my_pet.html"><code>results_my_pet</code></a>.
 
 <p>
 A detailed account of the method is presented in <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET = "_top">the add_my_pet manual</a>
 
 <H4><A NAME="curators">For curators only</H4>
 
-The core code <a href="../lib/pet/html/estim_pars.html"><code>estim_pars</code></a> is a macro around regression function 
-<a href="../lib/regr/html/petregr_f.html"><code>petregr_f</code></a> 
-(with filters or  <a href="../lib/regr/html/petregr.html"><code>petregr</code></a> without; model-specific filters prevent the estimation process to sample outside the allowed parameter space); 
-options can be set with <a href="../lib/pet/html/estim_options.html"><code>estim_options</code></a>.
-Fix or release settings of parameters and chemical parameters are always taken from <code>pars_init_my_pet</code>;
+The core code 
+<a href="../lib/pet/html/estim_pars.html"><code>estim_pars</code></a> is a macro around regression function 
+<a href="../lib/pet/html/petregr_f.html"><code>petregr_f</code></a> 
+(with filters or  
+<a href="../lib/pet/html/petregr.html"><code>petregr</code></a> without; 
+model-specific filters prevent the estimation process to sample outside the allowed parameter space); 
+options can be set with 
+<a href="../lib/pet/html/estim_options.html"><code>estim_options</code></a>.
+Fix or release settings of parameters and chemical parameters are always taken from 
+<a href="../lib/pet/html/pars_init_my_pet.html"><code>pars_init_my_pet</code></a>;
 the parameters values might be set by 
 <a href="../lib/pet/html/get_pars.html"><code>get_pars</code></a> 
 if <code>estim_options('pars_init_method', 0)</code> (and parameters are free, not fixed) or are set by <code>results_my_pet.mat</code> if <code>estim_options('pars_init_method', 1)</code>.
+The function
+<a href="../lib/pet/html/matisinit.html"><code>matisinit</code></a> can be used to check if the values in <code>results_my_pet.mat</code> equal those in <code>pars_init_my_pet</code>.
+If so, the <code>.mat</code> file was not produced via <code>estim_pars</code> and method-option 0 was used in combination with output-option 1 or 2. 
 
 <h5><a NAME="filters">filters</a></h5>
 This regression function uses filters for the various
-<a href="../manual/DEBtool_animal.html">models</a>,
-<a href="../lib/pet/html/filter_abj.html"><code>filter_abj</code></a> and 
-<a href="../lib/pet/html/filter_std.html"><code>filter_std</code></a>, while warnings are specified by 
-<a href="../lib/pet/html/warning_abj.html"><code>warning_abj</code></a> and
+<a href="../manual/DEBtool_animal.html">models</a>, such as
+<a href="../lib/pet/html/filter_std.html"><code>filter_std</code></a>, 
+while warnings are specified by e.g. 
 <a href="../lib/pet/html/warning_std.html"><code>warning_std</code></a>.
 Filter holds are reported by 
-<a href="../lib/pet/html/print_filterflag.html"><code>print_filterflag</code></a> in <code>estim_pars</code>.
+<a href="../lib/pet/html/print_filterflag.html"><code>print_filterflag</code></a> 
+in <code>estim_pars</code>.
+Customized filters can be build into the predict-file, directly after unpacking of inputs, by conditionally  emptying output <code>Prd_data</code>, setting <code>info = 0</code> and <code>return</code>.
 
 <h5><a NAME="weights">weights/errors</a></h5>
 Weight coefficients are set by  <a href="../lib/pet/html/setweights.html"><code>setweights</code></a>. 
 Relative errors are computed by <a href="../lib/pet/html/mre_st.html"><code>mre_st</code></a>;
 These means are about the absolute values of the relative errrors.
-
 
 <h5><a NAME="pseudodata">pseudodata</a></h5>
 Pseudodata are data that are (simple functions of) parameter values, while data and their predictions still might differ.

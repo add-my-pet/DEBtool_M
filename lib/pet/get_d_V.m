@@ -2,8 +2,8 @@
 % Gets specific density of structure from phylum or class
 
 %%
-function d_V = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman
+function [d_V info] = get_d_V(phylum, class)
+  % created 2015/01/18 by Bas Kooijman, modified 2015/06/01
   
   %% Syntax
   % d_V = <../get_d_V.m *get_d_V*>
@@ -19,23 +19,32 @@ function d_V = get_d_V(phylum, class)
   % Output
   %
   %  d_V: scalar with specific density in g/cm^3 of dry mass
+  %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
   % d_V has units g/cm^3 and refers to dry mass.
   % Since the specific density of wet mass is taken to be 1 g/cm^3,
   % it can also be considered as a dry/wet mass ratio
+  % Check spelling if info = 0
   
+info = 1;
 switch phylum
     case 'Porifera'
         d_V = 0.11;
     case {'Ctenophora', 'Cnidaria'}
         d_V = 0.01;
+    case 'Gastrotricha'                              % Platyzoa
+        d_V = 0.05;
+    case 'Rotifera'
+        d_V = 0.06;
     case 'Platyhelminthes'
         d_V = 0.25;
-    case {'Ectoprocta', 'Entoprocta', 'Chaetognata'}
+    case {'Ectoprocta', 'Entoprocta'}                % Spiralia 
         d_V = 0.07;
     case 'Annelida'
         d_V = 0.16;
+    case 'Sipuncula'
+        d_V = 0.11;
     case 'Mollusca'
         switch class
             case 'Cephalopoda'
@@ -47,11 +56,11 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case 'Tardigrada'
+    case {'Tardigrada', 'Chaetognata', 'Priapulida'} % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
         d_V = 0.17;
-    case 'Echinodermata'
+    case 'Echinodermata'                             % deuterostomata
         d_V = 0.09;
     case 'Hemichordata'
         d_V = 0.07;
@@ -63,11 +72,15 @@ switch phylum
               d_V = 0.28;
             case {'Myxini', 'Cephalaspidomorphi', 'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
               d_V = 0.2;
-            otherwise % Ascidiacea, Thaliacea, Appendicularia
+            case {'Appendicularia'}
+              d_V = 0.045;
+            case {'Thaliacea'}
+              d_V = 0.08;
+            otherwise % Ascidiacea
               d_V = 0.06;
         end    
     otherwise
         fprintf('warning from get_d_V: taxon could not be identified: d_V = 0.1 g/cm^3\n')
-        d_V = 0.1;
+        d_V = 0.1; info = 0;
 end
 end

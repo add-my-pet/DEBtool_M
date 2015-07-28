@@ -7,10 +7,10 @@ function cp = parscomp_st(par, chem)
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
   
   %% Syntax
-  % cp = <../parscomp_st.m * parscomp_st*> (par, chem)
+  % cp = <../parscomp_st.m *parscomp_st*> (par, chem)
   
   %% Description
-  % Computes compound parameters from primary parameters that are frequently just
+  % Computes compound parameters from primary parameters that are frequently used
   %
   % Input
   %
@@ -20,6 +20,41 @@ function cp = parscomp_st(par, chem)
   % Output
   %
   % * cp : structure with scaled quantities and compound parameters
+  
+  %% Remarks
+  % The quantities that are computed concern, where relevant:
+  %
+  % * p_Am: J/d.cm^2, {p_Am}, spec assimilation flux
+  % * w_O, w_X, w_V, w_E, w_P: g/mol, mol-weights for (unhydrated)  org. compounds
+  % * M_V: mol/cm^3, [M_V], volume-specific mass of structure
+  % * y_V_E: mol/mol, yield of structure on reserve
+  % * y_E_V: mol/mol, yield of reserve on structure
+  % * k_M: 1/d, somatic maintenance rate coefficient
+  % * k: -, maintenance ratio
+  % * E_m: J/cm^3, [E_m], reserve capacity 
+  % * m_Em: mol/mol, reserve capacity
+  % * g: -, energy investment ratio
+  % * L_m: cm, maximum length
+  % * L_T: cm, heating length (also applies to osmotic work)
+  % * l_T: - , scaled heating length
+  % * w: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
+  % * J_E_Am: mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
+  % * y_E_X: mol/mol, yield of reserve on food
+  % * y_X_E: mol/mol, yield of food on reserve
+  % * p_Xm: J/d.cm^2, max spec feeding power
+  % * J_X_Am: mol/d.cm^2, {J_XAm}, max surface-spec feeding flux
+  % * y_P_X: mol/mol, yield of faeces on food 
+  % * y_X_P: mol/mol, yield of food on faeces
+  % * y_P_E: mol/mol, yield of faeces on reserve
+  % * eta_XA, eta_PA, eta_VG; eta_O: mol/J, mass-power couplers
+  % * J_E_M: mol/d.cm^3, [J_EM], vol-spec somatic  maint costs
+  % * J_E_T: mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs
+  % * j_E_M: mol/d.mol, mass-spec somatic  maint costs
+  % * j_E_J: mol/d.mol, mass-spec maturity maint costs
+  % * kap_G: -, growth efficiency
+  % * E_V: J/cm^3, [E_V], volume-specific energy of structure
+  % * K: c-mol X/l, half-saturation coefficient
+  % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
 
 v2struct(par); v2struct(chem); % convert structures to variables
 
@@ -43,16 +78,16 @@ y_V_E   = mu_E * M_V/ E_G;     % mol/mol, yield of structure on reserve
 y_E_V   = 1/ y_V_E;            % mol/mol, yield of reserve on structure
 k_M     = p_M/ E_G;            % 1/d, somatic maintenance rate coefficient
 k       = k_J/ k_M;            % -, maintenance ratio
-E_m     = p_Am/ v;             % J/cm^3, reserve capacity [E_m]
+E_m     = p_Am/ v;             % J/cm^3, [E_m], reserve capacity 
 m_Em    = y_E_V * E_m / E_G;   % mol/mol, reserve capacity
 g       = E_G/ kap/ E_m ;      % -, energy investment ratio
 L_m     = v/ k_M/ g;           % cm, maximum length
 L_T     = p_T/ p_M ;           % cm, heating length (also applies to osmotic work)
 l_T     = L_T/ L_m;            % - , scaled heating length
-w       = m_Em * w_E * d_E/ d_V/ w_V; % -, contribution of ash free dry mass of reserve to total ash free dry biomass
+w       = m_Em * w_E * d_E/ d_V/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 J_E_Am  = p_Am/ mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
-if exist('kap_X','var') == 1
+if exist('kap_X', 'var') == 1
 y_E_X   = kap_X * mu_X/ mu_E;  % mol/mol, yield of reserve on food
 y_X_E   = 1/ y_E_X;            % mol/mol, yield of food on reserve
 p_Xm    = p_Am/ kap_X;         % J/d.cm^2, max spec feeding power
@@ -76,14 +111,14 @@ y_P_E   = y_P_X/ y_E_X;          % mol/mol, yield of faeces on reserve
 	          eta_PA   0         0]; 
 end
 
-J_E_M   = p_M/ mu_E;          % mol/d.cm^3, [J_EM]
-J_E_T   = p_T/ mu_E;          % mol/d.cm^2, {J_ET}
-j_E_M   = k_M * y_E_V;        % mol/d.mol, spec somatic  maint costs
-j_E_J   = k_J * y_E_V;        % mol/d.mol, spec maturity maint costs
+J_E_M   = p_M/ mu_E;          % mol/d.cm^3, [J_EM], volume-spec somatic  maint costs
+J_E_T   = p_T/ mu_E;          % mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs
+j_E_M   = k_M * y_E_V;        % mol/d.mol, mass-spec somatic  maint costs
+j_E_J   = k_J * y_E_V;        % mol/d.mol, mass-spec maturity maint costs
 kap_G   = mu_V * M_V/ E_G;    % -, growth efficiency
 E_V     = d_V * mu_V/ w_V;    % J/cm^3, [E_V] volume-specific energy of structure
 
-if exist('F_m','var') == 1
+if exist('F_m', 'var') == 1
 K       = J_X_Am/ F_m;        % c-mol X/l, half-saturation coefficient
 end
 
@@ -118,11 +153,15 @@ for i = 1:length(mat_ind)
 end
 
 if exist('kap_P', 'var') == 1
-    cp = v2struct(y_P_X, y_X_P, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
+    cp = v2struct(y_P_X, y_X_P, nameOfStruct2Update);
 end
 
 if exist('kap_X', 'var') == 1
     cp = v2struct(y_E_X, y_X_E, p_Xm, J_X_Am, nameOfStruct2Update);
+end
+
+if exist('kap_P', 'var') == 1 && exist('kap_X', 'var') == 1
+    cp = v2struct(y_P_E, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
 end
 
 if exist('F_m', 'var') == 1

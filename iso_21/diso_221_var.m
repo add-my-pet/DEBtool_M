@@ -62,7 +62,7 @@ end
 % help quantities
 L = (M_V/ MV)^(1/3);               % cm, structural length
 k_E = v/ L;                        % 1/d,  reserve turnover rate
-mu_EV = mu_E1/ mu_V;               % -, ratio of chemical potential
+mu_EV = mu_E1/ mu_V;               % -, ratio of chemical potentials
 m_E1 = M_E1/ M_V; m_E2 = M_E2/ M_V;% mol/mol, reserve density
 % somatic maintenance
 j_E2M = j_E1M * mu_E1/ mu_E2;      % mol/d.mol

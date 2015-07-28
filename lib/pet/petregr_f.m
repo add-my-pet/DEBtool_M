@@ -21,22 +21,23 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
 % * T_ref: scalar with refeerence temperature
 % * data: structure with 
 %
-%    data values
-%    a field 'weight' with the weights of the data values
-%    a field 'temp' with the temperature of some of the data values
-%    The number of fields in data is variable
+%    data values and
+%    field 'weight' with the weights of the data values
+%    field 'temp' with the temperature of some of the data values
 %
-%  * filter: character string with name of user-defined filter function
+% * filter: character string with name of user-defined filter function
 %  
 % Output
 % 
-%  * q: structure with parameters, result of the least squares estimates
-%  * info: 1 if convergence has been successful; 0 otherwise
+% * q: structure with parameters, result of the least squares estimates
+% * info: 1 if convergence has been successful; 0 otherwise
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.
 % Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction
-%   and uses a filter
+%   and uses a filter.
+% The number of fields in data is variable
+
    
    
   global report max_step_number max_fun_evals tol_simplex tol_fun
@@ -44,10 +45,10 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   % option settings
   info = 1; % initiate info setting
   
-  %% prepare variables
-  % st: structure with data vaules
-  % wst: structure with weghts (identical to st)
-  % data4pred: data ready to send to predict files
+  % prepare variables
+  %   st: structure with data vaules
+  %   wst: structure with weghts (identical to st)
+  %   data4pred: data ready to send to predict files
   nmweight = fieldnm_wtxt(data, 'weight');
   nmwst = strrep(nmweight, '.weight', '');
   nmwst = strcat('wst.', nmwst);

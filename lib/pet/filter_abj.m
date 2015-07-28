@@ -3,7 +3,7 @@
 
 %%
 function [filter, flag] = filter_abj(par, chem)
-% created 2014/01/22 by Bas Kooijman; modified 2015/03/17 by Goncalo Marques
+% created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/06/19 by Goncalo Marques
 
 %% Syntax
 % [filter flag] = <../filter_abj.m *filter_abj*> (par, chem)
@@ -81,7 +81,7 @@ function [filter, flag] = filter_abj(par, chem)
     return;
   end
 
-  if k * v_Hb >= 1 % constraint required for reaching birth
+  if ~reach_birth(g, k, v_Hb, f) % constraint required for reaching birth
     flag = 6;    
     return;
   end
