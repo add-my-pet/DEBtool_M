@@ -3,7 +3,7 @@
 
 %%
 function nmregr_options (key, val)
-  %  created at 2002/02/10 by Bas Kooijman; modified 2015/01/16, 2015/02/27 Goncalo Marques
+  %  created at 2002/02/10 by Bas Kooijman; modified 2015/01/16, 2015/02/27, 2015/07/28 Goncalo Marques
   
   %% Syntax
   % <../nmregr_options .m *nmregr_options*> (key, val)
@@ -28,6 +28,8 @@ function nmregr_options (key, val)
   %       together to call them the same
   %    'tol_tun': tolerance for how close the loss-function values must be
   %       together to call them the same
+  %    'simplex_size': proportion added (subtracted if negative) to the 
+  %       free parameters when building the simplex
   %
   % Output
   %
@@ -36,7 +38,7 @@ function nmregr_options (key, val)
   %% Example of use
   % nmregr_options('default'); nmregr_options('report', 0)
 
-    global report max_step_number max_fun_evals tol_simplex tol_fun
+    global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
  
     if ~exist('key','var')
       key = 'inexistent';
@@ -50,6 +52,7 @@ function nmregr_options (key, val)
 	    max_fun_evals = 2000;
 	    tol_simplex = 1e-4;
 	    tol_fun = 1e-4;
+        simplex_size = 0.05;
 
       case 'report'
 	    if exist('val','var') == 0
@@ -105,6 +108,17 @@ function nmregr_options (key, val)
 	    else
 	      tol_fun = val;
         end
+
+      case 'simplex_size'
+	    if ~exist('val','var') 
+	      if numel(simplex_size) ~= 0
+	        fprintf(['simplex_size = ', num2str(simplex_size),' \n']);
+	      else
+	        fprintf('simplex_size = unknown \n');
+	      end
+	    else
+	      simplex_size = val;
+        end
         
       otherwise
         if ~strcmp(key, 'inexistent')   
@@ -134,5 +148,10 @@ function nmregr_options (key, val)
 	      fprintf(['tol_fun = ', num2str(tol_fun),' \n']);
 	    else
 	      fprintf('tol_fun = unknown \n');
+	    end
+	    if numel(simplex_size) ~= 0
+	      fprintf(['simplex_size = ', num2str(simplex_size),' \n']);
+	    else
+	      fprintf('simplex_size = unknown \n');
 	    end
      end

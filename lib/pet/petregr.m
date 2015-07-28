@@ -4,7 +4,7 @@
 %%
 function [q, info] = petregr(func, par, chem, T_ref, data)
 % created 2001/09/07 by Bas Kooijman; 
-% modified 2015/03/30 by Goncalo Marques
+% modified 2015/03/30, 2015/07/28 by Goncalo Marques
 
 %% Syntax
 % [q, info] = <../petregr.m *petregr*> (func, par, chem, T_ref, data)
@@ -36,7 +36,7 @@ function [q, info] = petregr(func, par, chem, T_ref, data)
 % The number of fields in data is variable
    
    
-  global report max_step_number max_fun_evals tol_simplex tol_fun
+  global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
   % option settings
   info = 1; % initiate info setting
@@ -98,6 +98,9 @@ function [q, info] = petregr(func, par, chem, T_ref, data)
   if ~exist('tol_fun','var') || isempty(tol_fun)
     nmregr_options('tol_fun', 1e-4);
   end
+  if ~exist('simplex_size','var') || isempty(simplex_size)
+    nmregr_options('simplex_size', 0.05);
+  end
   if ~exist('report','var') || isempty(report)
     nmregr_options('report', 1);
   end
@@ -115,7 +118,7 @@ function [q, info] = petregr(func, par, chem, T_ref, data)
   eval(['f = ', func, '(q, chem, T_ref, data4pred);']);
   eval(['fv(:,1) = W'' * ([', listf, '] - Y).^2;']);
   % Following improvement suggested by L.Pfeffer at Stanford
-  usual_delta = 0.05;             % 5 percent deltas for non-zero terms
+  usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
   for j = 1:n_par
     y = xin;
