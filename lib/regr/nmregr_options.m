@@ -28,8 +28,8 @@ function nmregr_options (key, val)
   %       together to call them the same
   %    'tol_tun': tolerance for how close the loss-function values must be
   %       together to call them the same
-  %    'simplex_size': proportion added (subtracted if negative) to the 
-  %       free parameters when building the simplex
+  %    'simplex_size': fraction added (subtracted if negative) to the free
+  %       parameters when building the simplex
   %
   % Output
   %
