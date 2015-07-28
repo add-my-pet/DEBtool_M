@@ -29,6 +29,7 @@ function [data, txt_data, metadata] = mydata_my_pet
   % * OPTIONAL : add discussion points / comments before the reference list
 
 %% set metadata
+%% blah bal albe
 
 T_C = 273.15; % K, temperature at 0 degrees C (used in T_typical)
 
