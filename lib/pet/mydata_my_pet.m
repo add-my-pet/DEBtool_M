@@ -11,7 +11,7 @@ function [data, txt_data, metadata] = mydata_my_pet
   
   %% Description
   % Sets data, pseudodata, metadata, explanatory text, weight coefficients.
-  % Meant to be a template in add_my_pet
+  % Meant to be a template in add-my-pet
   %
   % Output
   %
@@ -68,14 +68,14 @@ metadata.address  = {'affiliation, zipcode, country'};   % affiliation, postcode
 % here assumed to be equal for all real data; the value of f is specified in pars_init_my_pet.
 
 % age 0 is at onset of embryo development
-data.ab = 15;      units.ab = 'd';    label.ab = 'age at birth';                bibkey.ab = 'MollCano2010';    
+data.ab = 15;      units.ab = 'd';    label.ab = 'age at birth';  bibkey.ab = 'MollCano2010';   comment.ab  = 'mean value taken from several measurements'; 
   temp.ab = T_C + 20;  % K, temperature 
   % observed age at birth is frequently larger than ab, because of diapauzes during incubation
-data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty';              bibkey.ap = 'Anon2015';
+data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = 'Anon2015';
   temp.ap = T_C + 20;  % K, temperature 
   % observed age at puberty is frequently larger than ap, 
   %   because allocation to reproduction starts before first eggs appear
-data.am = 591;     units.am = 'd';    label.am = 'life span';                   bibkey.am = 'Wiki';   
+data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
   temp.am = T_C + 20;  % K, temperature 
 % (accounting for aging only) 
 
@@ -84,7 +84,7 @@ data.am = 591;     units.am = 'd';    label.am = 'life span';                   
 % add an optional comment structure to give any additional explanations on
 % how the value was chosen, see the last column of the Lb data set for an
 % example
-data.Lb  = 0.45;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Anon2015'; comment.Lb  = 'mean value taken from several measurements';
+data.Lb  = 0.45;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Anon2015'; 
 data.Lp  = 2.36;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = {'Anon2015','Wiki'}; % for multiple references, please use commas to separate references
 data.Li  = 6.25;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Wiki';
 data.Wdb = 5.8e-5; units.Wdb = 'g';    label.Wdb = 'dry weight at birth';              bibkey.Wdb = 'Anon2015';
@@ -134,22 +134,11 @@ weight = setweights(data, []);
 % data.psd.p_M = 1000;                    % my_pet belongs to a group with high somatic maint 
 % weight.psd.kap = 10 * weight.psd.kap;   % I need to give this pseudo data a higher weight
 
-%% pack data and txt_data for output
-data.weight = weight;
-data.temp = temp;
-txt_data.units = units;
-txt_data.label = label;
-txt_data.bibkey = bibkey;
-if exist('comment','var')
-  txt_data.comment = comment;
-end
-
 %% Facts
 % list facts: F1, F2, etc.
 % make sure each fact has a corresponding bib key
 % do not put any DEB modelling assumptions here, only relevant information on
 % biology and life-cycles etc.
-
 F1 = 'The larval stage last 202 days and no feeding occurs';
 metadata.bibkey.F1 = 'Wiki'; % optional bibkey
 metadata.facts = struct('F1',F1);
@@ -160,6 +149,17 @@ D1 = 'Author_mod_1: I found information on the number of eggs per female as a fu
 D2 = 'Author_mod_1: I was surprised to observe that the weight coefficient for ab changed so much the parameter values';     
 % optional bibkey: bibkey.D2 = 'Kooy2010';
 metadata.discussion = struct('D1', D1, 'D2', D2);
+
+
+%% pack data and txt_data for output
+data.weight = weight;
+data.temp = temp;
+txt_data.units = units;
+txt_data.label = label;
+txt_data.bibkey = bibkey;
+if exist('comment','var')
+  txt_data.comment = comment;
+end
 
 %% References
   % the following two references should be kept-----------------------------------------------------------
