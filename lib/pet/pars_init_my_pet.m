@@ -60,7 +60,7 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 
 %% set chemical parameters from Kooy2010 
 %  don't change these values, unless you have a good reason
-[par, free, units, label] = addchem(par, free, units, label, metaData.phylum, metaData.class);
+[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class);
 
 % if you do have a good reason you may overwrite any of the values here, but please provide an explanations. 
 % For example:

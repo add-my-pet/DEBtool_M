@@ -2,29 +2,31 @@
 % computes compound parameters from primary parameters
 
 %%
-function cp = parscomp_st(par, chem)
+function cPar = parscomp_st(par)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
+  % modified 2015/07/29 
   
   %% Syntax
-  % cp = <../parscomp_st.m *parscomp_st*> (par, chem)
+  % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
   
   %% Description
   % Computes compound parameters from primary parameters that are frequently used
   %
   % Input
   %
-  % * par : structure with values of primary parameters
-  % * chem : structure with values of chemical indices
+  % * par : structure with parameters
   %  
   % Output
   %
-  % * cp : structure with scaled quantities and compound parameters
+  % * cPar : structure with scaled quantities and compound parameters
   
   %% Remarks
   % The quantities that are computed concern, where relevant:
   %
   % * p_Am: J/d.cm^2, {p_Am}, spec assimilation flux
+  % * n_O, 4-4 matrix of chemical indices for water-free organics
+  % * n_M,  4-4 matrix of chemical indices for minerals
   % * w_O, w_X, w_V, w_E, w_P: g/mol, mol-weights for (unhydrated)  org. compounds
   % * M_V: mol/cm^3, [M_V], volume-specific mass of structure
   % * y_V_E: mol/mol, yield of structure on reserve
@@ -56,12 +58,24 @@ function cp = parscomp_st(par, chem)
   % * K: c-mol X/l, half-saturation coefficient
   % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
 
-v2struct(par); v2struct(chem); % convert structures to variables
-
+v2struct(par);   
+  
 if ~exist('p_Am','var')
   p_Am = z * p_M/ kap;        % J/d.cm^2, {p_Am} spec assimilation flux
 end
 
+% %               X         V          E         P
+n_O = [n_CX, n_CV, n_CE, n_CP;  % C/C, equals 1 by definition
+       n_HX, n_HV, n_HE, n_HP;  % H/C  these values show that we consider dry-mass
+       n_OX, n_OV, n_OE, n_OP;  % O/C
+       n_NX, n_NV, n_NE, n_NP]; % N/C
+        
+%            C     H     O     N
+n_M = [ n_CC, n_CH, n_CO, n_CN;  % CO2
+        n_HC, n_HH, n_HO, n_HN;  % H2O  
+        n_OC, n_OH, n_OO, n_ON;  % O2
+        n_NC, n_NH, n_NO, n_NN]; % NH3
+          
 % -------------------------------------------------------------------------
 % Molecular weights:
 w_O = n_O' * [12; 1; 16; 14]; % g/mol, mol-weights for (unhydrated)  org. compounds
@@ -71,8 +85,7 @@ w_E = w_O(3);
 w_P = w_O(4);
 
 % -------------------------------------------------------------------------
-% Conversions and compound parameters cp
-
+% Conversions and compound parameters cPar
 M_V     = d_V/ w_V;            % mol/cm^3, [M_V], volume-specific mass of structure
 y_V_E   = mu_E * M_V/ E_G;     % mol/mol, yield of structure on reserve
 y_E_V   = 1/ y_V_E;            % mol/mol, yield of reserve on structure
@@ -125,12 +138,12 @@ end
 % -------------------------------------------------------------------------
 % Scaled maturity
 
-par_names = fields(par);
-mat_lev = par_names(strncmp(par_names, 'E_H', 3));
-mat_ind = strrep(mat_lev, 'E_H', '');  % maturity levels' indices
+parNames = fields(par);
+matLev = parNames(strncmp(parNames, 'E_H', 3));
+matInd = strrep(matLev, 'E_H', '');  % maturity levels' indices
 
-for i = 1:length(mat_ind)
-  stri = mat_ind{i};
+for i = 1:length(matInd)
+  stri = matInd{i};
   eval(['M_H', stri, '= E_H', stri, '/ mu_E;']);              % mmol, maturity at level i
   eval(['U_H', stri, '= E_H', stri, '/ p_Am;']);              % cm^2 d, scaled maturity at level i
   eval(['V_H', stri, '= U_H', stri, '/ (1 - kap);']);         % cm^2 d, scaled maturity at level i
@@ -141,29 +154,29 @@ end
 % -------------------------------------------------------------------------
 % pack output:
 
-cp = v2struct(p_Am, w_X, w_V, w_E, w_P, M_V, y_V_E, y_E_V, ...
+cPar = v2struct(p_Am, w_X, w_V, w_E, w_P, M_V, y_V_E, y_E_V, ...
     k_M, k, E_m, m_Em, g, L_m, L_T, l_T, w, ...
-    J_E_Am, J_E_M, J_E_T, j_E_M, j_E_J, kap_G, E_V);
+    J_E_Am, J_E_M, J_E_T, j_E_M, j_E_J, kap_G, E_V, n_O, n_M);
 
-nameOfStruct2Update = 'cp';
+nameOfStruct2Update = 'cPar';
 
-for i = 1:length(mat_ind)
-  stri = mat_ind{i};
-  eval(['cp = v2struct(M_H', stri, ', U_H', stri, ', V_H', stri, ', v_H', stri, ', u_H', stri, ', nameOfStruct2Update);']);
+for i = 1:length(matInd)
+  stri = matInd{i};
+  eval(['cPar = v2struct(M_H', stri, ', U_H', stri, ', V_H', stri, ', v_H', stri, ', u_H', stri, ', nameOfStruct2Update);']);
 end
 
 if exist('kap_P', 'var') == 1
-    cp = v2struct(y_P_X, y_X_P, nameOfStruct2Update);
+    cPar = v2struct(y_P_X, y_X_P, nameOfStruct2Update);
 end
 
 if exist('kap_X', 'var') == 1
-    cp = v2struct(y_E_X, y_X_E, p_Xm, J_X_Am, nameOfStruct2Update);
+    cPar = v2struct(y_E_X, y_X_E, p_Xm, J_X_Am, nameOfStruct2Update);
 end
 
 if exist('kap_P', 'var') == 1 && exist('kap_X', 'var') == 1
-    cp = v2struct(y_P_E, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
+    cPar = v2struct(y_P_E, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
 end
 
 if exist('F_m', 'var') == 1
-    cp = v2struct(K, nameOfStruct2Update);                          
+    cPar = v2struct(K, nameOfStruct2Update);                          
 end

@@ -2,7 +2,7 @@
 % sets chemical parameters and text for units and labels
 
 %%
-function [par, free, units, label] = addchem(par, free, units, label, phylum, class)
+function [par, units, label, free] = addchem(par, units, label, free, phylum, class)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/07/23
   % last modified 2015/07/29
   
