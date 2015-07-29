@@ -7,7 +7,7 @@ function prdData = predict_pseudodata(par, data, prdData)
 % modified 2015/07/29
 
 %% Syntax
-% prd = <../predict_pseudodata.m *predict_pseudodata*> (prd, par, data)
+% prd = <../predict_pseudodata.m *predict_pseudodata*> (par, data, prdData)
 
 %% Description
 % Appends pseudodata predictions to a structure containing predictions for real data. 
@@ -37,6 +37,6 @@ if nst > 0
   
   % adds pseudodata predictions to structure
   for i = 1:length(varnm)
-    eval(['prd.psd.', varnm{i}, ' = ', varnm{i},';']);
+    eval(['prdData.psd.', varnm{i}, ' = ', varnm{i},';']);
   end
 end
