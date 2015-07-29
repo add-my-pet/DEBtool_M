@@ -31,18 +31,18 @@ if nargin == 1
   filenm = ['results_', species, '.mat'];
   load(filenm,'txt_par', 'par','chem');
 else 
-  txt_par = varargin{1};
-  par     = varargin{2};
+  par     = varargin{1};
+  txt_par = varargin{2};
+  
 end
 
 fprintf('\nParameters \n');
 free = par.free;                    % copy substructure
 parpl = rmfield_wtxt(par, 'free');  % remove substructure free from par
 [nm nst] = fieldnmnst_st(parpl);    % get number of parameter fields
-
 for j = 1:nst % scan parameter fields
   eval(['str = [txt_par.label.', nm{j},', '', '', txt_par.units.', nm{j},'];']);
   str = [str,  ' %3.4g %d \n'];
-  eval(['fprintf(str, parpl.', nm{j},', free.', nm{j},');']);
+eval(['fprintf(str, parpl.', nm{j},', free.', nm{j},');']);
 end
 

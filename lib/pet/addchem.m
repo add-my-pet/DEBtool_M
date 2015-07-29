@@ -7,20 +7,32 @@ function [par, units, label, free] = addchem(par, units, label, free, phylum, cl
   % last modified 2015/07/29
   
   %% Syntax
-  % [chem, txt_chem] = <../addpar.m *addchem*>(phylum, class)
+  % [par, units, label, free] = <../addchem.m *addchem*>(par, units, label, free, phylum, class)
   
   %% Description
   % sets chemical parameters and text for units and labels
   %
   % Input
   %
-  % * phylum to get d_V
-  % * class to get d_V
+  % * par: strucutre with parameters - each field is a scalar
+  % * units: structure with units of each parameters - each field is a
+  % string
+  % * label: structure with the description of each parameter - each field is a
+  % string
+  % * free: structure with each field  being a 0 or 1 - this specifies
+  % whether the parameter is to be freed to not during estimation
+  % * phylum, character string used to get d_V
+  % * class, character string used to get d_V
   %  
   % Output
   %
-  % * chem : structure with values of chemical parameters
-  % * txt_chem: structure with information on chemical parameters
+  % * par: strucutre with parameters - each field is a scalar
+  % * units: structure with units of each parameters - each field is a
+  % string
+  % * label: structure with the description of each parameter - each field is a
+  % string
+  % * free: structure with each field  being a 0 or 1 - this specifies
+  % whether the parameter is to be freed to not during estimation
   
   %% Remark
   % Calls get_d_V to set specific density of structure
