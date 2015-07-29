@@ -2,7 +2,7 @@
 % Obtains predictions, using parameters and data
 
 %%
-function [prdData, info] = predict_my_pet(par, data, auxData, T_ref)
+function [prdData, info] = predict_my_pet(par, data, auxData)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30; 
   % last modified 2015/07/29
   
