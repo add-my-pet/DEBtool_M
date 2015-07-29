@@ -70,7 +70,7 @@ if ~strcmp(method, 'no')
 end
 
 % Results
-results_pets(par, txtPar, metaPar, data, txtData, metaData, weights);
+results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
 
 if filter
   eval(['warning_', metaPar.model,'(par)';]);
