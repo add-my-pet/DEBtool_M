@@ -39,7 +39,7 @@ if pars_init_method == 0
 elseif pars_init_method == 1
   filenm = ['results_', pets{1}, '.mat'];
   load(filenm, 'par');
-  [par2, metapar, txt_par, chem] = feval(['pars_init_', pets{1}], metadata.pet1);
+  [par2, metaPar, txtPar] = feval(['pars_init_', pets{1}], metaData.pet1);
   if length(fieldnames(par.free)) ~= length(fieldnames(par2.free))
     fprintf('The number of parameters in pars.free in the pars_init and in the .mat file are not the same. \n');
     return;
