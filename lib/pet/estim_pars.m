@@ -73,5 +73,5 @@ end
 results_pets(par, txtPar, metaPar, data, txtData, metaData, weights);
 
 if filter
-  eval(['warning_', metapar.model,'(par)';]);
+  eval(['warning_', metaPar.model,'(par)';]);
 end

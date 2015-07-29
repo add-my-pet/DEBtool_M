@@ -2,11 +2,11 @@
 % warns if parameter values are in the reasonable part of the parameter space of standard DEB model with fetus and without acceleration
 
 %%
-function warning_stf(par, chem)
-% created 2015/02/09 by Goncalo Marques; modified 2015/04/14 by Goncalo Marques
+function warning_stf(par)
+% created 2015/02/09 by Goncalo Marques; modified 2015/04/14, 2015/07/29 by Goncalo Marques
 
 %% Syntax
-% <../warning_abj.m *warning_abj*> (par, chem)
+% <../warning_abj.m *warning_abj*> (par)
 
 %% Description
 % Checks if parameter values are in the reasonable part of the parameter
@@ -16,14 +16,10 @@ function warning_stf(par, chem)
 % Input
 %
 % * par: structure with parameters (see below)
-% * chem: structure with biochemical parameters
 
 
-  % unpack par, chem
-  v2struct(par); v2struct(chem);
-
-  cpar = parscomp_st(par, chem);
-  v2struct(cpar);
+  cPar = parscomp_st(par);
+  v2struct(par);  v2struct(cPar);  % unpack par, cPar
 
   if kap_G >= mu_V / mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
     fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
