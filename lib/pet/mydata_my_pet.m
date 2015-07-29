@@ -2,12 +2,12 @@
 % Sets referenced data
 
 %%
-function [data, auxData, txtData, metaData, weights] = mydata_my_pet 
+function [data, auxData, metaData, txtData, weights] = mydata_my_pet 
   % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/03/31
   % last modified: 2015/07/28 
   
   %% Syntax
-  % [data, auxData, txtData, metaData, weights] = <../mydata_my_pet.m *mydata_my_pet*>
+  % [data, auxData, metaData, txtData, weights] = <../mydata_my_pet.m *mydata_my_pet*>
   
   %% Description
   % Sets data, pseudodata, metadata, explanatory text, weights coefficients.

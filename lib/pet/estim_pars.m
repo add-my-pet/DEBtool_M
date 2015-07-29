@@ -31,7 +31,7 @@ function estim_pars
 global pets pars_init_method method filter
 
 % set data
-[data, auxData, txtData, metaData, weights] = mydata_pets;
+[data, auxData, metaData, txtData, weights] = mydata_pets;
 
 % set parameters
 if pars_init_method == 0
@@ -62,16 +62,16 @@ end
 if ~strcmp(method, 'no')
   if strcmp(method, 'nm')
     if filter
-      par = petregr_f('predict_pets', par, chem, metapar.T_ref, data, filternm); % WLS estimate parameters using overwrite
+      par = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
     else
-      par = petregr('predict_pets', par, chem, metapar.T_ref, data); % WLS estimate parameters using overwrite
+      par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
     end
   end
 end
 
 % Results
-results_pets(txt_par, par, metapar, chem, txt_data, data, metadata);
+results_pets(par, txtPar, metaPar, data, txtData, metaData, weights);
 
 if filter
-  eval(['warning_', metapar.model,'(par, chem)';]);
+  eval(['warning_', metapar.model,'(par)';]);
 end
