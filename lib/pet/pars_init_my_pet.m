@@ -58,14 +58,7 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 
 %% set chemical parameters from Kooy2010 
 %  don't change these values, unless you have a good reason
-[chem, freeChem, unitsChem, labelChem] = addchem(metaData.phylum, metaData.class);
-[nm, nst] = fieldnmnst_st(chem);
-for j = 1:nst
-    eval(['par.',nm{j},' = chem.',nm{j}]);
-    eval(['free.',nm{j},' = freeChem.',nm{j}]);
-    eval(['units.',nm{j},' = unitsChem.',nm{j}]);
-    eval(['label.',nm{j},' = labelChem.',nm{j}]);
-end
+[par, txtPar] = addchem(par, txtPar, metaData.phylum, metaData.class);
 
 % if you do have a good reason you may overwrite any of the values, but you must provide an explanations. 
 % For example:
