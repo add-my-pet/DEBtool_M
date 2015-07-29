@@ -58,7 +58,10 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 
 %% set chemical parameters from Kooy2010 
 %  don't change these values, unless you have a good reason
-[par, txtPar] = addchem(par, txtPar, metaData.phylum, metaData.class);
+[par, free, units, label] = addchem(par, free, units, label, metaData.phylum, metaData.class);
+
+% names = [fieldnames(par); fieldnames(parChem)];
+% par = cell2struct([struct2cell(par); struct2cell(parChem)], names, 1);
 
 % if you do have a good reason you may overwrite any of the values, but you must provide an explanations. 
 % For example:
@@ -72,10 +75,10 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 % chem.n_OD = 0.55;   txt_chem.units.n_OD = '-';     txt_chem.label.n_OD = 'chem. index of oxygen in product';
 % chem.n_ND = 0.1;    txt_chem.units.n_ND = '-';     txt_chem.label.n_ND = 'chem. index of nitrogen in product';
 
-
-
 %% Pack output:
 txtPar.units = units; txtPar.label = label; par.free = free; % pack units, label, free in structure
+
+
 
 
 
