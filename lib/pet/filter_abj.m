@@ -2,11 +2,11 @@
 % filters for allowable parameters of standard DEB model with acceleration (abj)
 
 %%
-function [filter, flag] = filter_abj(par, chem)
-% created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/06/19 by Goncalo Marques
+function [filter, flag] = filter_abj(par)
+% created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/06/19, 2015/07/29 by Goncalo Marques
 
 %% Syntax
-% [filter flag] = <../filter_abj.m *filter_abj*> (par, chem)
+% [filter flag] = <../filter_abj.m *filter_abj*> (par)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
@@ -16,7 +16,6 @@ function [filter, flag] = filter_abj(par, chem)
 % Input
 %
 % * par: structure with parameters (see below)
-% * chem: structure with biochemical parameters
 %  
 % Output
 %
@@ -37,8 +36,8 @@ function [filter, flag] = filter_abj(par, chem)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  % unpack par, chem
-  v2struct(par); v2struct(chem);
+  % unpack par
+  v2struct(par);
 
   parvec = [z; v; kap; p_M; E_G; k_J; E_Hb; E_Hj; E_Hp; kap_R; h_a; s_G];
   
@@ -72,9 +71,9 @@ function [filter, flag] = filter_abj(par, chem)
     return;
   end
 
-  % compute and unpack cpar (compound parameters)
-  cpar = parscomp_st(par, chem);
-  v2struct(cpar);
+  % compute and unpack cPar (compound parameters)
+  cPar = parscomp_st(par);
+  v2struct(cPar);
 
   if kap_G >= 1 % growth efficiency
     flag = 3;    

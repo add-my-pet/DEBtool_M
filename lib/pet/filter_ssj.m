@@ -2,6 +2,6 @@
 % filters for allowable parameters of the ssj model 
 
 %%
-function [filter flag] = filter_ssj(par, chem)
+function [filter flag] = filter_ssj(par)
 
-[filter flag] = filter_std(par, chem);
+[filter flag] = filter_std(par);

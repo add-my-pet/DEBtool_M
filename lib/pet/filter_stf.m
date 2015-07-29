@@ -2,11 +2,11 @@
 % filters for allowable parameters of standard DEB model with fetus and without acceleration
 
 %%
-function [filter flag] = filter_stf(par, chem)
-% created 2014/01/22 by Bas Kooijman; modified 2015/04/15 by Goncalo Marques
+function [filter flag] = filter_stf(par)
+% created 2014/01/22 by Bas Kooijman; modified 2015/04/15, 2015/07/29 by Goncalo Marques
 
 %% Syntax
-% [filter flag] = <../filter_std.m *filter_std*> (par, chem)
+% [filter flag] = <../filter_std.m *filter_std*> (par)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
@@ -16,7 +16,6 @@ function [filter flag] = filter_stf(par, chem)
 % Input
 %
 % * par: structure with parameters (see below)
-% * chem: structure with biochemical parameters
 %  
 % Output
 %
@@ -36,8 +35,8 @@ function [filter flag] = filter_stf(par, chem)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  % unpack par, chem
-  v2struct(par); v2struct(chem);
+  % unpack par
+  v2struct(par);
 
   parvec = [z; v; kap; p_M; E_G; k_J; E_Hb; E_Hp; kap_R; h_a; s_G];
   
@@ -67,8 +66,8 @@ function [filter flag] = filter_stf(par, chem)
   end
 
   % compute and unpack cpar (compound parameters)
-  cpar = parscomp_st(par, chem);
-  v2struct(cpar);
+  cPar = parscomp_st(par);
+  v2struct(cPar);
 
   if kap_G >= 1 % growth efficiency
     flag = 3;    

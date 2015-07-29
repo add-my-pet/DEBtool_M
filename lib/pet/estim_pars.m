@@ -51,7 +51,7 @@ end
 % check parameter set if you are using a filter
 if filter
   filternm = ['filter_', metaPar.model];
-  [pass, flag]  = feval(filternm, par, chem);
+  [pass, flag]  = feval(filternm, par);
   if ~pass 
     fprintf('The seed parameter set is not realistic. \n');
     print_filterflag(flag);
