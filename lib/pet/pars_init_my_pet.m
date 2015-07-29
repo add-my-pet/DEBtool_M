@@ -23,7 +23,6 @@ function [par, metaPar, txtPar] = pars_init_my_pet(metaData)
   % * txtPar: structure with information on parameters
 
 % parameters: initial values at reference temperature:
-metaPar.T_ref = C2K(20); % K, reference temperature
 metaPar.model = 'std'; % see online manual for explanation and alternatives 
 % be aware that each model type is associated with a specific list of core
 % primary parameters. Those listed here are for model 'std'. See the manual
@@ -32,6 +31,9 @@ metaPar.model = 'std'; % see online manual for explanation and alternatives
 % edit the values below such that predictions are not too far off;
 % the values must be set in the standard DEB units:
 %   d for time; cm for length; J for energy; K for temperature
+
+% reference parameter (not to be changed)
+par.T_ref = C2K(20); free.T_ref = 0; units.T_ref = 'K';        label.T_ref = 'Reference temperature';
 
 %% core primary parameters
 par.z    = 1;      free.z     = 1;   units.z     = '-';        label.z     = 'zoom factor'; %for z = 1: L_m = 1 cm
