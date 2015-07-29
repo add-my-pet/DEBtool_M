@@ -2,31 +2,29 @@
 % sets (initial values for) parameters
 
 %%
-function [par, metapar, txt_par, chem] = pars_init_my_pet(metadata)
+function [par, metaPar, txtPar] = pars_init_my_pet(metaData)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/03/31
-  % modified 2015/07/22 by starrlight - description was added 
+  % modified 2015/07/29 by Starrlight 
   
   %% Syntax
-  % [par, txt_par, chem] = <../pars_init_my_pet.m *pars_init_my_pet*>(metadata)
+  % [par, metaPar, txtPar] = <../pars_init_my_pet.m *pars_init_my_pet*>(metaData)
   
   %% Description
   % sets (initial values for) parameters
   %
   % Input
   %
-  % * metadata for names of phylum and class to get d_V
+  % * metaData for names of phylum and class to get d_V
   %  
   % Output
   %
   % * par : structure with values of parameters
-  % * txt_par: structure with information on parameters
-  % * chem : structure with values of chemical parameters
+  % * metaPar: structure with information on metaparameters
+  % * txtPar: structure with information on parameters
 
-% parameters: initial values at 
-T_C = 273.15;     % K, temperature at 0 degrees C
-T_ref = T_C + 20; % K, reference temperature
-metapar.T_ref = T_ref;
-metapar.model = 'std'; % see online manual for explanation and alternatives
+% parameters: initial values at reference temperature:
+metaPar.T_ref = 215; %C2K(20); % K, reference temperature
+metaPar.model = 'std'; % see online manual for explanation and alternatives
 
 % edit the values below such that predictions are not too far off;
 % the values must be set in the standard DEB units:
@@ -54,60 +52,39 @@ par.T_A   = 8000;   free.T_A   = 0;    units.T_A = 'K';        label.T_A = 'Arrh
 par.del_M = 0.16;   free.del_M = 1;    units.del_M = '-';      label.del_M = 'shape coefficient';
 
 % environmental parameters (temperatures are in data)
-par.f = 1.0;        free.f     = 0;    units.f = '-';          label.f = 'scaled functional response for 0-var data';
+par.f = 1.0;        free.f     = 0;    units.f = '-';          label.f    = 'scaled functional response for 0-var data';
 par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'scaled functional response for 1-var data';
 
-txt_par.units = units; txt_par.label = label; par.free = free; % pack units, label, free in structure
 
 %% set chemical parameters from Kooy2010 
 %  don't change these values, unless you have a good reason
+[chem, freeChem, unitsChem, labelChem] = addchem(metaData.phylum, metaData.class);
+[nm, nst] = fieldnmnst_st(chem);
+for j = 1:nst
+    eval(['par.',nm{j},' = chem.',nm{j}]);
+    eval(['free.',nm{j},' = freeChem.',nm{j}]);
+    eval(['units.',nm{j},' = unitsChem.',nm{j}]);
+    eval(['label.',nm{j},' = labelChem.',nm{j}]);
+end
 
-% specific densities
-%   set specific densites using the pet's taxonomy
-d_V = get_d_V(metadata.phylum, metadata.class); d_E = d_V;
-% For a specific density of wet mass of 1 g/cm^3,
-%   a specific density of d_E = d_V = 0.1 g/cm^3 means a dry-over-wet weight ratio of 0.1
-% Replace d_V and d_E to more appropriate values if you have them
-% see comments on section 3.2.1 of DEB3 
-%
-%       X     V     E     P       food, structure, reserve, product (=faeces)
-d_O = [0.1;  d_V;  d_E;  0.1];    % g/cm^3, specific densities for organics
+% if you do have a good reason you may overwrite any of the values, but you must provide an explanations. 
+% For example:
+% chem.d_V = 0.33;     % g/cm^3, specific density of structure, see ref bibkey
+% chem.d_E = chem.d_V; % g/cm^3, specific density of reserve
+%   or add a product D like:
+% chem.d_D = 0.1;     txt_chem.units.d_D  = 'g/cm^3';txt_chem.label.d_D  = 'specific density of product';
+% chem.mu_D = 273210; txt_chem.units.mu.D = 'J/mol'; txt_chem.label.mu_D = 'chemical potential of product';
+% chem.n_CD = 1;      txt_chem.units.n_CD = '-';     txt_chem.label.n_CD = 'chem. index of carbon in product';
+% chem.HD = 1.2;      txt_chem.units.n_HD = '-';     txt_chem.label.n_HD = 'chem. index of hydrogen in product';
+% chem.n_OD = 0.55;   txt_chem.units.n_OD = '-';     txt_chem.label.n_OD = 'chem. index of oxygen in product';
+% chem.n_ND = 0.1;    txt_chem.units.n_ND = '-';     txt_chem.label.n_ND = 'chem. index of nitrogen in product';
 
-% chemical potentials from Kooy2010 Tab 4.2
-%        X     V     E     P
-mu_O = [525; 500;  550;  480] * 1000; % J/mol, chemical potentials for organics
-%       C  H  O  N     CO2, H2O, O2, NH3
-mu_M = [0; 0; 0; 0]; % chemical potential of minerals
 
-% chemical indices from Kooy2010 Fig 4.15
-%       X     V     E     P
-n_O = [1.00, 1.00, 1.00, 1.00;  % C/C, equals 1 by definition
-       1.80, 1.80, 1.80, 1.80;  % H/C  these values show that we consider dry-mass
-       0.50, 0.50, 0.50, 0.50;  % O/C
-       0.15, 0.15, 0.15, 0.15]; % N/C
-%       C     H     O     N
-n_M = [ 1     0     0     0;    % C/C, equals 0 or 1
-        0     2     0     3;    % H/C
-        2     1     2     0;    % O/C
-        0     0     0     1];   % N/C
 
-% makes structure with chemical indices
-% molar volume of gas at 1 bar and 20 C is 24.4 L/mol
-T = T_C + 20;            % K, temp of measurement equipment
-X_gas = T_ref/ T/ 24.4;  % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
+%% Pack output:
+txtPar.units = units; txtPar.label = label; par.free = free; % pack units, label, free in structure
 
-% pack chem 
-chem = struct(...
-'mu_M', mu_M,  ...
-'mu_X', mu_O(1),  ...
-'mu_V', mu_O(2),  ...
-'mu_E', mu_O(3),  ...
-'mu_P', mu_O(4),  ...
-'d_X',  d_O(1),   ...
-'d_V',  d_O(2),   ...
-'d_E',  d_O(3),   ...
-'d_P',  d_O(4),   ...
-'X_gas', X_gas, ...
-'n_O',  n_O,   ...
-'n_M',  n_M);
+
+
+
 

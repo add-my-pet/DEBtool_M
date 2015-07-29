@@ -2,8 +2,9 @@
 % sets chemical parameters and text for units and labels
 
 %%
-function [chem, txt_chem] = addchem(phylum, class, T_ref)
+function [chem, free, units, label] = addchem(phylum, class)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/07/23
+  % last modified 2015/07/29
   
   %% Syntax
   % [chem, txt_chem] = <../addchem.m *addchem*>(phylum, class)
@@ -68,23 +69,26 @@ chem.n_HP = 1.8;   units.n_HP = '-'; label.n_HP = 'chem. index of hydrogen in fa
 chem.n_OP = 0.5;   units.n_OP = '-'; label.n_OP = 'chem. index of oxygen in faeces';
 chem.n_NP = 0.15;  units.n_NP = '-'; label.n_NP = 'chem. index of nitrogen in faeces';
     
-%               X         V          E         P
-chem.n_O = [chem.n_CX, chem.n_CV, chem.n_CE, chem.n_CP;  % C/C, equals 1 by definition
-            chem.n_HX, chem.n_HV, chem.n_HE, chem.n_HP;  % H/C  these values show that we consider dry-mass
-            chem.n_OX, chem.n_OV, chem.n_OE, chem.n_OP;  % O/C
-            chem.n_NX, chem.n_NV, chem.n_NE, chem.n_NP]; % N/C
+% %               X         V          E         P
+% chem.n_O = [chem.n_CX, chem.n_CV, chem.n_CE, chem.n_CP;  % C/C, equals 1 by definition
+%             chem.n_HX, chem.n_HV, chem.n_HE, chem.n_HP;  % H/C  these values show that we consider dry-mass
+%             chem.n_OX, chem.n_OV, chem.n_OE, chem.n_OP;  % O/C
+%             chem.n_NX, chem.n_NV, chem.n_NE, chem.n_NP]; % N/C
         
 %            C     H     O     N
-chem.n_M = [ 1     0     0     0;    % C/C, equals 0 or 1
-             0     2     0     3;    % H/C
-             2     1     2     0;    % O/C
-             0     0     0     1];   % N/C
+% chem.n_M = [ 1     0     0     0;    % C/C, equals 0 or 1
+%              0     2     0     3;    % H/C
+%              2     1     2     0;    % O/C
+%              0     0     0     1];   % N/C
 
-% molar volume of gas at 1 bar and 20 C is 24.4 L/mol
-T_C = 273.15; % K, temp at 0 degrees C
-T = T_C + 20; % K, temp of measurement equipment
-chem.X_gas = T_ref/ T/ 24.4;  units.X_gas = 'M'; label.X_gas = 'mol of gas per litre at T_ref (= 20 C) and 1 bar ';
 
-txt_chem.units = units; txt_chem.label = label; % pack units, label in structure
+% all of these parameters are fixed by default.
+% the user must overwrite these values in pars_init-my_pet if they wish to
+% estimate them.
+[nm, nst] = fieldnmnst_st(chem);
+for j = 1:nst
+    eval(['free.',nm{j},' = 0']);
+end         
+         
 
 end
