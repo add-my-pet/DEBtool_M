@@ -4,11 +4,10 @@
 %%
 function [merr, rerr] = mre_st(func, par, data, auxData, weights)
   % created: 2001/09/07 by Bas Kooijman; 
-  % modified: 2013/05/02 by Goncalo Marques, 2015/03/30 by Goncalo Marques, 2015/04/27 by Goncalo Marques
-  % modified 2015/07/29
+  % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques, 2015/07/29 by Starrlight Augustine
   
   %% Syntax 
-  % [merr, rerr] = <../mre_st.m *mre_st*>(func, par, data)
+  % [merr, rerr] = <../mre_st.m *mre_st*>(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the mean absolute relative error, used in add_my_pet
