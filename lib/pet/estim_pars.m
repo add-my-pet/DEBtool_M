@@ -35,7 +35,7 @@ global pets pars_init_method method filter
 
 % set parameters
 if pars_init_method == 0
-  [par, metapar, txt_par, chem, flag] = get_pars(data.pet1, metadata.pet1);
+  [par, metaPar, txtPar, flag] = get_pars(data.pet1, auxData.pet1, metaData.pet1);
 elseif pars_init_method == 1
   filenm = ['results_', pets{1}, '.mat'];
   load(filenm, 'par');
@@ -46,11 +46,11 @@ elseif pars_init_method == 1
   end
   par.free = par2.free;
 elseif pars_init_method == 2
-  [par, metapar, txt_par, chem] = feval(['pars_init_', pets{1}], metadata.pet1);
+  [par, metaPar, txtPar] = feval(['pars_init_', pets{1}], metaData.pet1);
 end
 % check parameter set if you are using a filter
 if filter
-  filternm = ['filter_', metapar.model];
+  filternm = ['filter_', metaPar.model];
   [pass, flag]  = feval(filternm, par, chem);
   if ~pass 
     fprintf('The seed parameter set is not realistic. \n');
