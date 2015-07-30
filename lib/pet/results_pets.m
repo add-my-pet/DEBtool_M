@@ -31,27 +31,7 @@ global pets results_output pseudodata_pets
 
 close all
 
-% get (mean) relative errors
-% dataMre = data;  % define a data structure with weight 1 for every data point and 0 for the pseudodata 
-% nmweight = fieldnm_wtxt(dataMre, 'weight');
-% nmwst = strrep(nmweight, '.weight', '');
-% for i = 1:length(nmweight)
-%   eval(['dtsets = fieldnames(dataMre.', nmweight{i},');']);
-%   for j = 1:length(dtsets)
-%     if strcmp(dtsets{j}, 'psd')
-%       eval(['psdsets = fieldnames(dataMre.', nmweight{i},'.psd);']);
-%       for j = 1:length(psdsets)
-%         eval(['dataMre.', nmweight{i}, '.psd.', psdsets{j}, ' = zeros(length(dataMre.', nmweight{i}, '.psd.', psdsets{j}, '), 1);']);
-%       end
-%     else
-%       eval(['dataMre.', nmweight{i}, '.', dtsets{j}, ' = ones(length(dataMre.', nmweight{i}, '.', dtsets{j}, '), 1);']);
-%     end
-%   end
-% end
-
-newWeights = weights;
-
-[MRE, RE] = mre_st('predict_pets', par, data, auxData, newWeights); % WLS-method
+[MRE, RE] = mre_st('predict_pets', par, data, auxData, weights); % WLS-method
 metaPar.MRE = MRE;
 metaPar.RE = RE;
 
@@ -98,7 +78,8 @@ if results_output == 0 || results_output == 1
   
     ci = num2str(i);
     fprintf([pets{i}, ' \n']); % print the species name
-    eval(['fprintf(''COMPLETE = %3.1f \n'', metaData.pet', ci, '.COMPLETE);']);
+    fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
+%     eval(['fprintf(''COMPLETE = %3.1f \n'', metaData.pet', ci, '.COMPLETE);']);
     fprintf('MRE = %8.3f \n\n', MRE)
     
     fprintf('\n');
