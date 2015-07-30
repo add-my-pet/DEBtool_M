@@ -30,13 +30,16 @@ function prdData = predict_pseudodata(par, data, prdData)
 
 if nst > 0
   % unpack coefficients
-  cPar = parscomp_st(par);
-  v2struct(par); v2struct(cPar);
+  cPar = parscomp_st(par);  allPar = par;
+  fieldNames = fieldnames(cPar);
+  for i = 1:size(fieldNames,1)
+    allPar.(fieldNames{i}) = cPar.(fieldNames{i});
+  end
   
-  eval(['varnm = fieldnames(data.', nm{1}, ');']);
+  varnm = fieldnames(data.(nm{1}));
   
   % adds pseudodata predictions to structure
   for i = 1:length(varnm)
-    eval(['prdData.psd.', varnm{i}, ' = ', varnm{i},';']);
+    prdData.psd.(varnm{i}) = allPar.(varnm{i});
   end
 end

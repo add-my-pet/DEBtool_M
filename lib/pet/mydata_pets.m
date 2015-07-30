@@ -22,8 +22,8 @@ function [data, auxData, metaData, txtData, weights] = mydata_pets
 global pets pseudodata_pets
 
 for i = 1:length(pets)             % calls species mydata functions
-  ci = num2str(i); 
-  eval(['[data.pet', ci,', auxData.pet', ci, ', metaData.pet', ci,', txtData.pet', ci, ', weights.pet', ci,'] = mydata_', pets{i},';']);
+  currentPet = sprintf('pet%d',i);
+  [data.(currentPet), auxData.(currentPet), metaData.(currentPet), txtData.(currentPet), weights.(currentPet)] = feval(['mydata_', pets{i}]);
 end 
 
 if pseudodata_pets == 1

@@ -33,15 +33,15 @@ v2struct(parGrp);
 % produce pars for species and predict
 for i = 1:length(pets)
  % for the case with no zoom factor transformation
-  ci = num2str(i); 
-  eval(['[prdData.pet', ci,', info] = predict_', pets{i},'(parGrp, data.pet', ci,', auxData.pet', ci,');']);
+  currentPet = sprintf('pet%d',i);
+  [prdData.(currentPet), info] = feval(['predict_', pets{i}], parGrp, data.(currentPet), auxData.(currentPet));
   if ~info
     return;
   end
   
   % predict pseudodata
   if pseudodata_pets == 0 % option of estim
-    eval(['prdData.pet', ci,' = predict_pseudodata(parGrp, data.pet', ci,', prdData.pet', ci,');']);
+    prdData.(currentPet) = predict_pseudodata(parGrp, data.(currentPet), prdData.(currentPet));
   end
 end
 
