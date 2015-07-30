@@ -4,7 +4,7 @@
 %%
 function estim_pars
   % created 2015/02/10 by Goncalo Marques
-  % modified 2015/02/10 by Bas Kooijman, 2015/03/31 by Goncalo Marques
+  % modified 2015/02/10 by Bas Kooijman, 2015/03/31, 2015/07/30 by Goncalo Marques
   
   %% Syntax 
   % <../estim_pars.m *estim_pars*>
@@ -73,5 +73,5 @@ end
 results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
 
 if filter
-  eval(['warning_', metaPar.model,'(par)';]);
+  feval(['warning_', metaPar.model], par);
 end
