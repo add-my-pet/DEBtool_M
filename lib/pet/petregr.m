@@ -42,22 +42,20 @@ function [q, info] = petregr(func, par, data, auxData, weights)
   %   st: structure with dependent data values only
   st = data;
   [nm nst] = fieldnmnst_st(st); % nst: number of data sets
-  
-  listst = strjoin(strcat('st.', nm)', '; ');
-  listweights = strjoin(strcat('weights.', nm)', '; ');
-  listf = strjoin(strcat('f.', nm)', '; ');
-  
+    
   for i = 1:nst   % makes st only with dependent variables
-    eval(['[~, k] = size(st.', nm{i}, ');']); 
-    if k == 2
-      eval(['st.', nm{i}, ' = st.', nm{i},'(:,2);']);
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    k = size(auxVar, 2);
+    if k >= 2
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
     end
   end
   
   % Y: vector with all dependent data
   % W: vector with all weights
-  eval(['Y = [', listst, '];']);
-  eval(['W = [', listweights, '];']);
+  Y = struct2vector(st, nm);
+  W = struct2vector(weights, nm);
   
   parnm = fieldnames(par.free);
   np = numel(parnm);
@@ -103,8 +101,8 @@ function [q, info] = petregr(func, par, data, auxData, weights)
   % Set up a simplex near the initial guess.
   xin = qvec(index);    % Place input guess in the simplex
   v(:,1) = xin;
-  eval(['f = ', func, '(q, data, auxData);']);
-  eval(['fv(:,1) = W'' * ([', listf, '] - Y).^2;']);
+  f = feval(func, q, data, auxData);
+  fv(:,1) = W' * (struct2vector(f, nm) - Y).^2;
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -116,9 +114,9 @@ function [q, info] = petregr(func, par, data, auxData, weights)
       y(j) = zero_term_delta;
     end
     qvec(index) = y; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-    eval(['[f, f_test] = ', func, '(q, data, auxData);']);
+    [f, f_test] = feval(func, q, data, auxData);
     v(:,j+1) = y;
-    eval(['fv(:,j+1) = W'' * ([', listf, '] - Y).^2;']);
+    fv(:,j+1) = W' * (struct2vector(f, nm) - Y).^2;
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -151,16 +149,16 @@ function [q, info] = petregr(func, par, data, auxData, weights)
   xbar = sum(v(:,one2n), 2)/ n_par;
   xr = (1 + rho) * xbar - rho * v(:,np1);
   qvec(index) = xr; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-  eval(['[f, f_test] = ', func, '(q, data, auxData);']);
-  eval(['fxr = W'' * ([', listf, '] - Y).^2;']);
+  [f, f_test] = feval(func, q, data, auxData);
+  fxr = W' * (struct2vector(f, nm) - Y).^2;
   func_evals = func_evals + 1;
    
    if fxr < fv(:,1)
       % Calculate the expansion point
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
       qvec(index) = xe; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-      eval(['[f, f_test] = ', func, '(q, data, auxData);']);
-      eval(['fxe = W'' * ([', listf, '] - Y).^2;']);
+      [f, f_test] = feval(func, q, data, auxData);
+      fxe = W' * (struct2vector(f, nm) - Y).^2;
       func_evals = func_evals + 1;
       if fxe < fxr
          v(:,np1) = xe;
@@ -182,8 +180,8 @@ function [q, info] = petregr(func, par, data, auxData, weights)
             % Perform an outside contraction
             xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
             qvec(index) = xc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            eval(['[f, f_test] = ', func, '(q, data, auxData);']);
-            eval(['fxc = W'' * ([', listf, '] - Y).^2;']);
+            [f, f_test] = feval(func, q, data, auxData);
+            fxc = W' * (struct2vector(f, nm) - Y).^2;
             func_evals = func_evals + 1;
             
             if fxc <= fxr
@@ -198,8 +196,8 @@ function [q, info] = petregr(func, par, data, auxData, weights)
             % Perform an inside contraction
             xcc = (1 - psi) * xbar + psi * v(:,np1);
             qvec(index) = xcc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            eval(['[f, f_test] = ', func, '(q, data, auxData);']);
-            eval(['fxcc = W'' * ([', listf, '] - Y).^2;']);
+            [f, f_test] = feval(func, q, data, auxData);
+            fxcc = W' * (struct2vector(f, nm) - Y).^2;
             func_evals = func_evals + 1;
             if fxcc < fv(:,np1)
                v(:,np1) = xcc;
@@ -217,10 +215,10 @@ function [q, info] = petregr(func, par, data, auxData, weights)
                while ~f_test
                   v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
                   qvec(index) = v_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-                  eval(['[f, f_test] = ', func, '(q, data, auxData);']);
+                  [f, f_test] = feval(func, q, data, auxData);
                end
                v(:,j) = v_test;
-               eval(['fv(:,j) = W'' * ([', listf, '] - Y).^2;']);
+               fv(:,j) = W' * (struct2vector(f, nm) - Y).^2;
             end
             func_evals = func_evals + n_par;
          end
