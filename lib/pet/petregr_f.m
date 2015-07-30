@@ -4,7 +4,7 @@
 %%
 function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
 % created 2001/09/07 by Bas Kooijman; 
-% modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30 by Goncalo Marques, 2015/04/27 by Goncalo Marques
+% modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30, 2015/04/27, 2015/07/28 by Goncalo Marques
 
 %% Syntax
 % [q, info] = <../petregr_f.m *petregr_f*> (func, par, chem, T_ref, data, filter)
@@ -40,7 +40,7 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
 
    
    
-  global report max_step_number max_fun_evals tol_simplex tol_fun
+  global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
   % option settings
   info = 1; % initiate info setting
@@ -102,6 +102,9 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   if ~exist('tol_fun','var') || isempty(tol_fun)
     nmregr_options('tol_fun', 1e-4);
   end
+  if ~exist('simplex_size','var') || isempty(simplex_size)
+    nmregr_options('simplex_size', 0.05);
+  end
   if ~exist('report','var') || isempty(report)
     nmregr_options('report', 1);
   end
@@ -119,7 +122,7 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   eval(['f = ', func, '(q, chem, T_ref, data4pred);']);
   eval(['fv(:,1) = W'' * ([', listf, '] - Y).^2;']);
   % Following improvement suggested by L.Pfeffer at Stanford
-  usual_delta = 0.05;             % 5 percent deltas for non-zero terms
+  usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
   for j = 1:n_par
     y = xin;

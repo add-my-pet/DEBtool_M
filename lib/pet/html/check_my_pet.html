@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>check_my_pet</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-07-18"><meta name="DC.source" content="check_my_pet.m"><style type="text/css">
+      --><title>check_my_pet</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-07-28"><meta name="DC.source" content="check_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,21 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>check_my_pet</h1><!--introduction--><p>Checks my_data, pars_init and predict files for field inconsistencies</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li><li><a href="#8">Checking the my_data file</a></li><li><a href="#9">Checking the pars_init file</a></li><li><a href="#10">Checking the predict file</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../check_my_pet.m"><b>check_my_pet</b></a> (speciesnm)</p><h2>Description<a name="4"></a></h2><p>Checks my_data, pars_init and predict files for field inconsistencies. Checking points for my_data:</p><pre class="language-matlab">* existence of <span class="string">standard</span> <span class="string">metadata</span> <span class="string">fields</span>
-* existence of <span class="string">temp</span>
-* existence of <span class="string">pseudodata</span>
-* existence of <span class="string">weights</span>
-* existence of <span class="string">units</span> <span class="string">(and number consistence with type of data)</span>
-* existence of <span class="string">labels</span> <span class="string">(and number consistence with type of data)</span>
-* existence of <span class="string">bibkeys</span> <span class="string">and</span> <span class="string">the</span> <span class="string">corresponding</span> <span class="string">entrances</span> <span class="string">in</span> <span class="string">biblist</span>
-</pre><p>Checking points for pars_init:</p><pre class="language-matlab">* existence of <span class="string">standard</span> <span class="string">metapar</span> <span class="string">fields</span>
-* model is <span class="string">one</span> <span class="string">of</span> <span class="string">the</span> <span class="string">predefined</span> <span class="string">models</span>
-* existence of <span class="string">free</span>
-* existence of <span class="string">units</span>
-* existence of <span class="string">labels</span>
-</pre><p>Checking points for predict:</p><pre class="language-matlab">* existence of <span class="string">the</span> <span class="string">same</span> <span class="string">fields</span> <span class="string">as</span> <span class="string">in</span> <span class="string">data</span>
-* length of <span class="string">prediction</span> <span class="string">results</span> <span class="string">matches</span> <span class="string">the</span> <span class="string">length</span> <span class="string">of</span> <span class="string">data</span>
-</pre><p>Input:</p><div><ul><li>string with species name or cell vector with multiple species names</li></ul></div><p>Output:</p><div><ul><li>warnings are printed to screen</li></ul></div><h2>Example of use<a name="5"></a></h2><p>See <a href="../run_my_pet.m"><b>run_my_pet</b></a></p><h2>Checking the my_data file<a name="8"></a></h2><h2>Checking the pars_init file<a name="9"></a></h2><h2>Checking the predict file<a name="10"></a></h2><p class="footer"><br>
+  </style></head><body><div class="content"><h1>check_my_pet</h1><!--introduction--><p>Checks my_data, pars_init and predict files for field inconsistencies</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li><li><a href="#8">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#10">Checking the my_data file</a></li><li><a href="#12">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#13">checking the existence of metadata fields</a></li><li><a href="#14">checking if metadata.species matches speciesnm</a></li><li><a href="#15">checking the existence of temp in the data structure</a></li><li><a href="#16">checking the existence of psd in the data structure</a></li><li><a href="#17">checking the existence of weight in the data structure</a></li><li><a href="#18">checking the existence of units in the txt_data structure</a></li><li><a href="#19">checking the existence of labels in the txt_data structure</a></li><li><a href="#20">checking the existence of facts</a></li><li><a href="#21">checking the existence of bibkeys in the txt_data structure</a></li><li><a href="#22">checking the existence of bibkeys in the biblist structure</a></li><li><a href="#23">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#25">Checking the pars_init file</a></li><li><a href="#27">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#28">checking the existence of metapar fields</a></li><li><a href="#29">checking the existence of metapar fields</a></li><li><a href="#30">checking the existence of par fields</a></li><li><a href="#31">checking the existence of free in the par structure and if it filled with either 0 or 1</a></li><li><a href="#32">checking the existence of units in the txt_par structure</a></li><li><a href="#33">checking the existence of labels in the txt_par structure</a></li><li><a href="#34">checking the realism of the par set</a></li><li><a href="#35">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#37">Checking the predict file</a></li><li><a href="#39">%%%%%%%%%%%%%%%%%%%%%%%%%%%</a></li><li><a href="#40">checking the existence of psd in the Prd_data structure</a></li><li><a href="#41">checking for the bijection data-predictions</a></li><li><a href="#42">checking for the pseudodate predictions in data</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../check_my_pet.m"><b>check_my_pet</b></a> (speciesnm)</p><h2>Description<a name="4"></a></h2><p>Checks my_data, pars_init and predict files for field inconsistencies Checking points for my_data:   - existence of standard metadata fields   - existence of temp   - existence of pseudodata   - existence of weights   - existence of units (and number consistence with type of data)   - existence of labels (and number consistence with type of data)   - existence of bibkeys               and the corresponding entrances in biblist Checking points for pars_init:   - existence of standard metapar fields   - model is one of the predefined models   - existence of free   - existence of units   - existence of labels Checking points for predict:   - existence of the same fields as in data   - length of prediction results matches the length of data</p><p>Input</p><div><ul><li>speciesnms: string with species name or cell vector with multiple species names</li></ul></div><h2>Example of use<a name="5"></a></h2><p>check_files('my_pet')</p><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="8"></a></h2><h2>Checking the my_data file<a name="10"></a></h2><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="12"></a></h2><h2>checking the existence of metadata fields<a name="13"></a></h2><h2>checking if metadata.species matches speciesnm<a name="14"></a></h2><h2>checking the existence of temp in the data structure<a name="15"></a></h2><h2>checking the existence of psd in the data structure<a name="16"></a></h2><h2>checking the existence of weight in the data structure<a name="17"></a></h2><h2>checking the existence of units in the txt_data structure<a name="18"></a></h2><h2>checking the existence of labels in the txt_data structure<a name="19"></a></h2><h2>checking the existence of facts<a name="20"></a></h2><h2>checking the existence of bibkeys in the txt_data structure<a name="21"></a></h2><h2>checking the existence of bibkeys in the biblist structure<a name="22"></a></h2><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="23"></a></h2><h2>Checking the pars_init file<a name="25"></a></h2><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="27"></a></h2><h2>checking the existence of metapar fields<a name="28"></a></h2><h2>checking the existence of metapar fields<a name="29"></a></h2><h2>checking the existence of par fields<a name="30"></a></h2><h2>checking the existence of free in the par structure and if it filled with either 0 or 1<a name="31"></a></h2><h2>checking the existence of units in the txt_par structure<a name="32"></a></h2><h2>checking the existence of labels in the txt_par structure<a name="33"></a></h2><h2>checking the realism of the par set<a name="34"></a></h2><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="35"></a></h2><h2>Checking the predict file<a name="37"></a></h2><h2>%%%%%%%%%%%%%%%%%%%%%%%%%%%<a name="39"></a></h2><h2>checking the existence of psd in the Prd_data structure<a name="40"></a></h2><h2>checking for the bijection data-predictions<a name="41"></a></h2><h2>checking for the pseudodate predictions in data<a name="42"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% check_my_pet
@@ -77,46 +63,39 @@ span.syscmd { color:#B28C00 }
 
 %%
 function check_my_pet(speciesnms)
-  % created 2015/05/05 by Goncalo Marques; modified 2015/05/12, 2015/06/05, 2015/07/02 and 2015/07/08 by Goncalo Marques
+  % created 2015/05/05 by Goncalo Marques; modified 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08 and 2015/07/22 by Goncalo Marques
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
 
   %% Description
-  % Checks my_data, pars_init and predict files for field inconsistencies.
+  % Checks my_data, pars_init and predict files for field inconsistencies
   % Checking points for my_data:
-  %
-  %   * existence of standard metadata fields
-  %   * existence of temp
-  %   * existence of pseudodata
-  %   * existence of weights
-  %   * existence of units (and number consistence with type of data)
-  %   * existence of labels (and number consistence with type of data)
-  %   * existence of bibkeys and the corresponding entrances in biblist
-  %
+  %   - existence of standard metadata fields
+  %   - existence of temp
+  %   - existence of pseudodata
+  %   - existence of weights
+  %   - existence of units (and number consistence with type of data)
+  %   - existence of labels (and number consistence with type of data)
+  %   - existence of bibkeys
+  %               and the corresponding entrances in biblist
   % Checking points for pars_init:
-  %
-  %   * existence of standard metapar fields
-  %   * model is one of the predefined models
-  %   * existence of free 
-  %   * existence of units 
-  %   * existence of labels 
-  %
+  %   - existence of standard metapar fields
+  %   - model is one of the predefined models
+  %   - existence of free 
+  %   - existence of units 
+  %   - existence of labels 
   % Checking points for predict:
+  %   - existence of the same fields as in data
+  %   - length of prediction results matches the length of data
   %
-  %   * existence of the same fields as in data
-  %   * length of prediction results matches the length of data
+  % Input
   %
-  % Input:
-  %
-  % * string with species name or cell vector with multiple species names
+  % * speciesnms: string with species name or cell vector with multiple species names
   %  
-  % Output:
-  %
-  % * warnings are printed to screen
 
   %% Example of use
-  % See <../run_my_pet.m *run_my_pet*> 
+  % check_files('my_pet') 
 
 if iscell(speciesnms)
   k = length(speciesnms);
@@ -133,15 +112,21 @@ function check_my_pet_stnm(speciesnm)
 info = 0;
 
 if ~isempty(strfind(speciesnm, ' '))
-  fprintf(['The species name in input should not have spaces.\n']);
-  fprintf(['The standard species name follow the form ''Genus_species''.\n']);
+  fprintf('The species name in input should not have spaces.\n');
+  fprintf('The standard species name follow the form ''Genus_species''.\n');
   return;
 end
   
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 %% Checking the my_data file
- 
-if exist(['mydata_', speciesnm], 'var')~=2
+%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+bibNotToCheck = {'Kooy2010'};    % list of bib references that does not need to have an explicit reference
+
+if exist(['mydata_', speciesnm], 'file')~=2
   fprintf(['There is no mydata_', speciesnm,' file.\n']);
   return;
 end
@@ -151,7 +136,7 @@ end
 datafields = fields(data);
 txtdatafields = fields(txt_data);
 
-% checking the existence of metadata fields
+%% checking the existence of metadata fields
 mtdtfields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
 
 for i = 1:length(mtdtfields)
@@ -160,12 +145,12 @@ for i = 1:length(mtdtfields)
   end
 end
 
-% checking if metadata.species matches speciesnm
+%% checking if metadata.species matches speciesnm
 if ~strcmp(speciesnm, metadata.species)
-  fprintf(['The species name in metadata.species does not match the species name in the mydata file name.\n']);
+  fprintf('The species name in metadata.species does not match the species name in the mydata file name.\n');
 end
 
-% checking the existence of temp in the data structure
+%% checking the existence of temp in the data structure
 if sum(strcmp(datafields, 'temp')) == 0
   fprintf('The data structure does not include temperature data. \n');
 else
@@ -179,7 +164,7 @@ else
   end
 end
 
-% checking the existence of psd in the data structure
+%% checking the existence of psd in the data structure
 if sum(strcmp(datafields, 'psd')) == 0
   fprintf('The data structure does not include the pseudodata for the regression. \n');
   psdexist = 0;
@@ -189,7 +174,7 @@ else
   psdexist = 1;
 end
 
-% checking the existence of weight in the data structure
+%% checking the existence of weight in the data structure
 if sum(strcmp(datafields, 'weight')) == 0
   fprintf('The data structure does not include the weights for the regression. \n');
   info = 1;
@@ -232,7 +217,7 @@ else
   end
 end
 
-% checking the existence of units in the txt_data structure
+%% checking the existence of units in the txt_data structure
 if sum(strcmp(txtdatafields, 'units')) == 0
   fprintf('The txt_data structure does not include the data units. \n');
 else
@@ -281,7 +266,7 @@ else
   end
 end
   
-% checking the existence of labels in the txt_data structure
+%% checking the existence of labels in the txt_data structure
 if sum(strcmp(txtdatafields, 'label')) == 0
   fprintf('The txt_data structure does not include the data labels. \n');
 else
@@ -330,40 +315,50 @@ else
   end
 end
 
-% checking the existence of bibkeys in the txt_data structure
+%% checking the existence of facts
+if isfield(metadata, 'facts')
+  factsfields = fields(metadata.facts);
+  factsfields = factsfields(~strcmp(factsfields, 'bibkey'));
+else
+  factsfields = {};
+end
+
+%% checking the existence of bibkeys in the txt_data structure
 if sum(strcmp(txtdatafields, 'bibkey')) == 0
   fprintf('The txt_data structure does not include the bibkeys. \n');
 else
   bibkeyfields = fields(txt_data.bibkey);
+  referencedfields = [datafields; factsfields];
 
-  if length(bibkeyfields) > length(datafields)
+  if length(bibkeyfields) > length(referencedfields)
     for i = 1:length(bibkeyfields)
-      if sum(strcmp(datafields, bibkeyfields(i))) == 0
-        fprintf(['There is a bibkey defined for ', bibkeyfields{i}, ' but there is no corresponding data. \n']);
+      if sum(strcmp(referencedfields, bibkeyfields(i))) == 0
+        fprintf(['There is a bibkey defined for ', bibkeyfields{i}, ' but there is no corresponding data or fact. \n']);
       end
     end
   else
-    for i = 1:length(datafields)
-      if sum(strcmp(datafields(i), bibkeyfields)) == 0
-        fprintf(['There is no bibkey defined for data point/set ', datafields{i}, '. \n']);
+    for i = 1:length(referencedfields)
+      if sum(strcmp(referencedfields(i), bibkeyfields)) == 0
+        fprintf(['There is no bibkey defined for data point/set or fact ', referencedfields{i}, '. \n']);
       end
     end
   end
 end
 
-% checking the existence of bibkeys in the biblist structure
+%% checking the existence of bibkeys in the biblist structure
 if sum(strcmp(fields(metadata), 'biblist')) == 0
   fprintf('The metadata structure does not include the biblist. \n');
 else
   biblistfields = fields(metadata.biblist);
+  biblistfields = biblistfields(~strcmp(biblistfields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
   for i = 1:length(bibkeyfields)
-    eval(['bibkeynm = txt_data.bibkey.', bibkeyfields{i}, ';']);
+    bibkeynm = eval(['txt_data.bibkey.', bibkeyfields{i}]);
     if ~iscell(bibkeynm) 
       if sum(strcmp(biblistfields, cellstr(bibkeynm))) == 0
         fprintf(['The bibkey ', bibkeynm, ' defined for ', bibkeyfields{i}, ' has no corresponding reference in biblist. \n']);
       end
     else
-      [lin k] = size(bibkeynm);
+      [lin, k] = size(bibkeynm);
       if lin ~= 1 % check if for multiple references they are in a line vector
         fprintf(['The bibkey defined for ', bibkeyfields{i}, ' should be a line vector - use commas (,) to separate multiple references. \n']);
       else
@@ -398,9 +393,13 @@ if info == 1
 end
 
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 %% Checking the pars_init file
+%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if exist(['pars_init_', speciesnm], 'var')~=2
+if exist(['pars_init_', speciesnm], 'file')~=2
   fprintf(['There is no pars_init_', speciesnm,' file.\n']);
   return;
 end
@@ -410,7 +409,7 @@ end
 parfields = fields(par);
 txtparfields = fields(txt_par);
 
-% checking the existence of metapar fields
+%% checking the existence of metapar fields
 mtparfields = {'model', 'T_ref'};
 
 for i = 1:length(mtparfields)
@@ -419,15 +418,26 @@ for i = 1:length(mtparfields)
   end
 end
 
-% checking the existence of metapar fields
-possible_models = {'std', 'stf', 'stx', 'abj', 'hex'};
+%% checking the existence of metapar fields
+possible_models = {'std', 'stf', 'stx', 'ssj', 'abj', 'asj', 'hex'};
 
 if sum(strcmp(metapar.model, possible_models)) == 0
   fprintf(['The model ', metapar.model, ' is not one of the predefined models. \n']);
 end
 
-% checking the existence of par fields
-Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
+%% checking the existence of par fields
+switch metapar.model
+  case {'std', 'stf'}
+    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
+  case 'stx'
+    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hx', 'E_Hp', 'h_a', 's_G', 'a_0'};
+  case 'abj'
+    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
+  case 'asj'
+    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hs', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
+  case 'hex'
+    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_s', 'E_He', 'h_a', 's_G'};
+end
 
 for i = 1:length(Eparfields)
   if ~isfield(par, Eparfields{i})
@@ -435,19 +445,7 @@ for i = 1:length(Eparfields)
   end
 end
 
-if strcmp(metapar.model, 'abj')
-  if ~isfield(par, 'E_Hj')
-    fprintf('The parameter E_Hj is missing in the par structure. \n');
-  end
-end
-
-if strcmp(metapar.model, 'stx')
-  if ~isfield(par, 'E_Hx')
-    fprintf('The parameter E_Hx is missing in the par structure. \n');
-  end
-end
-
-% checking the existence of free in the par structure
+%% checking the existence of free in the par structure and if it filled with either 0 or 1
 if sum(strcmp(parfields, 'free')) == 0
   fprintf('The par structure does not include the free substructure. \n');
 else
@@ -457,19 +455,29 @@ else
   if length(freefields) > length(parfields)
     for i = 1:length(freefields)
       if sum(strcmp(parfields, freefields(i))) == 0
-        fprintf(['There are units defined for ', freefields{i}, ' but there is no corresponding data. \n']);
+        fprintf(['There is free defined for ', freefields{i}, ' but there is no corresponding data. \n']);
+      else
+        freeval = eval(['par.free.', freefields{i}]);
+        if freeval ~= 0 && freeval ~= 1
+          fprintf(['The value in free for ', freefields{i}, ' should be either 0 or 1. \n']);
+        end
       end
     end
   else
     for i = 1:length(parfields)
       if sum(strcmp(parfields(i), freefields)) == 0
-        fprintf(['There are no units defined for data point/set ', parfields{i}, '. \n']);
+        fprintf(['There is no free defined for data point/set ', parfields{i}, '. \n']);
+      else
+        freeval = eval(['par.free.', parfields{i}]);
+        if freeval ~= 0 && freeval ~= 1
+          fprintf(['The value in free for ', parfields{i}, ' should be either 0 or 1. \n']);
+        end
       end
     end
   end
 end
 
-% checking the existence of units in the txt_par structure
+%% checking the existence of units in the txt_par structure
 if sum(strcmp(txtparfields, 'units')) == 0
   fprintf('The txt_par structure does not include the parameter units. \n');
 else
@@ -490,7 +498,7 @@ else
   end
 end
 
-% checking the existence of labels in the txt_par structure
+%% checking the existence of labels in the txt_par structure
 if sum(strcmp(txtparfields, 'label')) == 0
   fprintf('The txt_par structure does not include the parameter units. \n');
 else
@@ -512,7 +520,7 @@ else
 end
 
 
-% checking the realism of the par set
+%% checking the realism of the par set
 filternm = ['filter_', metapar.model];
 [pass, flag]  = feval(filternm, par, chem);
 if ~pass 
@@ -527,9 +535,13 @@ if info == 1
 end
 
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 %% Checking the predict file
+%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if exist(['predict_', speciesnm], 'var')~=2
+if exist(['predict_', speciesnm], 'file')~=2
   fprintf(['There is no predict_', speciesnm,' file.\n']);
   return;
 end
@@ -543,6 +555,16 @@ end
 
 Prd_datafields = fields(Prd_data);
 
+%% checking the existence of psd in the Prd_data structure
+if sum(strcmp(Prd_datafields, 'psd')) == 0
+  Prd_psdexist = 0;
+else
+  Prd_datafields = Prd_datafields(~strcmp(Prd_datafields, 'psd'));
+  Prd_psdfields = fields(Prd_data.psd);
+  Prd_psdexist = 1;
+end
+
+%% checking for the bijection data-predictions
 if length(Prd_datafields) > length(datafields)
   for i = 1:length(Prd_datafields)
     if sum(strcmp(datafields, Prd_datafields(i))) == 0
@@ -569,6 +591,20 @@ else
   end
 end
 
+%% checking for the pseudodate predictions in data
+if Prd_psdexist 
+  for i = 1:length(Prd_psdfields)
+    if sum(strcmp(psdfields, Prd_psdfields(i))) == 0
+      fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' but there is no corresponding data. \n']);
+    else 
+      eval(['[ldt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
+      eval(['[lprdt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
+      if ldt ~= lprdt
+        fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+      end
+    end
+  end
+end
 
 
 ##### SOURCE END #####
