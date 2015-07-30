@@ -5,7 +5,7 @@
 function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14 by Goncalo Marques, 2015/04/27 by Goncalo Marques, 2015/05/05 by Goncalo Marques
-% modified 2015/07/29 
+% modified 2015/07/30 
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -79,11 +79,10 @@ if results_output == 0 || results_output == 1
     ci = num2str(i);
     fprintf([pets{i}, ' \n']); % print the species name
     fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
-%     eval(['fprintf(''COMPLETE = %3.1f \n'', metaData.pet', ci, '.COMPLETE);']);
     fprintf('MRE = %8.3f \n\n', MRE)
     
     fprintf('\n');
-    eval(['printprd_st(data.pet', ci, ', txtData.pet', ci, ', prdData.pet', ci, ', RE);']);  
+%     eval(['printprd_st(data.pet', ci, ', txtData.pet', ci, ', prdData.pet', ci, ', RE);']);  
  
  free = par.free;  
  corePar = rmfield_wtxt(par,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
