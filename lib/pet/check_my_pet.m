@@ -307,86 +307,91 @@ else
   fprintf('The txtData structure does not include the data labels. \n');
 end
 
+% checking the existence of facts
+if isfield(metaData, 'facts')
+  factsFields = fields(metaData.facts);
+  factsFields = factsFields(~strcmp(factsFields, 'bibkey'));
+else
+  factsFields = {};
+end
 
-% % checking the existence of facts
-% if isfield(metadata, 'facts')
-%   factsfields = fields(metadata.facts);
-%   factsfields = factsfields(~strcmp(factsfields, 'bibkey'));
-% else
-%   factsfields = {};
-% end
-% 
-% % checking the existence of bibkeys in the txt_data structure
-% if sum(strcmp(txtdatafields, 'bibkey')) == 0
-%   fprintf('The txt_data structure does not include the bibkeys. \n');
-% else
-%   bibkeyfields = fields(txt_data.bibkey);
-%   referencedfields = [datafields; factsfields];
-% 
-%   if length(bibkeyfields) > length(referencedfields)
-%     for i = 1:length(bibkeyfields)
-%       if sum(strcmp(referencedfields, bibkeyfields(i))) == 0
-%         fprintf(['There is a bibkey defined for ', bibkeyfields{i}, ' but there is no corresponding data or fact. \n']);
-%       end
-%     end
-%   else
-%     for i = 1:length(referencedfields)
-%       if sum(strcmp(referencedfields(i), bibkeyfields)) == 0
-%         fprintf(['There is no bibkey defined for data point/set or fact ', referencedfields{i}, '. \n']);
-%       end
-%     end
-%   end
-% end
-% 
-% % checking the existence of bibkeys in the biblist structure
-% if sum(strcmp(fields(metadata), 'biblist')) == 0
-%   fprintf('The metadata structure does not include the biblist. \n');
-% else
-%   biblistfields = fields(metadata.biblist);
-%   biblistfields = biblistfields(~strcmp(biblistfields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
-%   for i = 1:length(bibkeyfields)
-%     bibkeynm = eval(['txt_data.bibkey.', bibkeyfields{i}]);
-%     if ~iscell(bibkeynm) 
-%       if sum(strcmp(biblistfields, cellstr(bibkeynm))) == 0
-%         fprintf(['The bibkey ', bibkeynm, ' defined for ', bibkeyfields{i}, ' has no corresponding reference in biblist. \n']);
-%       end
-%     else
-%       [lin, k] = size(bibkeynm);
-%       if lin ~= 1 % check if for multiple references they are in a line vector
-%         fprintf(['The bibkey defined for ', bibkeyfields{i}, ' should be a line vector - use commas (,) to separate multiple references. \n']);
-%       else
-%         for j = 1:k
-%           if sum(strcmp(biblistfields, bibkeynm(j))) == 0
-%             fprintf(['The bibkey ', bibkeynm{j}, ' defined for ', bibkeyfields{i}, ' has no corresponding reference in biblist. \n']);
-%           end
-%         end
-%       end
-%     end
-%   end
-%   
-%   listbibused = {};
-%   for i = 1:length(bibkeyfields)
-%     eval(['bib = txt_data.bibkey.', bibkeyfields{i}, ';']);
-%     if iscell(bib)
-%       listbibused = [listbibused, bib];
-%     else
-%       listbibused(length(listbibused) + 1) = {bib};
-%     end
-%   end
-%   for i = 1:length(biblistfields)
-%     if sum(strcmp(biblistfields(i), listbibused)) == 0
-%       fprintf(['The reference ', biblistfields{i}, ' in biblist is not used for any data point/set. \n']);
-%     end
-%   end
-% end
-% 
-% if info == 1
-%   fprintf('Due to the problems stated above only the my_data file was checked. \n');
-%   return;
-% end
-% 
-% % %%%%%%%%%%%%%%%% Checking the pars_init file %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+% checking the existence of bibkeys in the txtData structure
+if sum(strcmp(txtDataFields, 'bibkey'))
+  bibkeyFields = fields(txtData.bibkey);
+  referencedFields = [dataFields; factsFields];
+
+  if length(bibkeyFields) > length(referencedFields)
+    for i = 1:length(bibkeyFields)
+      if sum(strcmp(referencedFields, bibkeyFields(i))) == 0
+        fprintf(['There is a bibkey defined for ', bibkeyFields{i}, ' but there is no corresponding data or fact. \n']);
+      end
+    end
+  else
+    for i = 1:length(referencedFields)
+      if sum(strcmp(referencedFields(i), bibkeyFields)) == 0
+        fprintf(['There is no bibkey defined for data point/set or fact ', referencedFields{i}, '. \n']);
+      end
+    end
+  end
+else
+  fprintf('The txtData structure does not include the bibkeys. \n');
+end
+
+% checking the existence of bibkeys in the biblist structure
+if sum(strcmp(fields(metaData), 'biblist'))
+  biblistFields = fields(metaData.biblist);
+  biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
+  for i = 1:length(bibkeyFields)
+    bibkeynm = txtData.bibkey.(bibkeyFields{i});
+    if ~iscell(bibkeynm) 
+      if ~sum(strcmp(biblistFields, cellstr(bibkeynm)))
+        fprintf(['The bibkey ', bibkeynm, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
+      end
+    else
+      [lin, k] = size(bibkeynm);
+      if lin ~= 1 % check if for multiple references they are in a line vector
+        fprintf(['The bibkey defined for ', bibkeyFields{i}, ' should be a line vector - use commas (,) to separate multiple references. \n']);
+      else
+        for j = 1:k
+          if ~sum(strcmp(biblistFields, bibkeynm(j)))
+            fprintf(['The bibkey ', bibkeynm{j}, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
+          end
+        end
+      end
+    end
+  end
+  
+  listbibUsed = {};
+  for i = 1:length(bibkeyFields)
+    bib = txtData.bibkey.(bibkeyFields{i});
+    if iscell(bib)
+      listbibUsed = [listbibUsed, bib];
+    else
+      listbibUsed(length(listbibUsed) + 1) = {bib};
+    end
+  end
+  for i = 1:length(biblistFields)
+    if ~sum(strcmp(biblistFields(i), listbibUsed))
+      fprintf(['The reference ', biblistFields{i}, ' in biblist is not used for any data point/set. \n']);
+    end
+  end
+else
+  fprintf('The metadata structure does not include the biblist. \n');
+end
+
+if info 
+  fprintf('Due to the problems stated above only the my_data file was checked. \n');
+  return;
+end
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Checking the pars_init file
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 % if exist(['pars_init_', speciesnm], 'file')~=2
 %   fprintf(['There is no pars_init_', speciesnm,' file.\n']);
 %   return;
