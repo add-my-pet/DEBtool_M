@@ -520,69 +520,61 @@ end
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if exist(['predict_', speciesnm], 'file')~=2
+  fprintf(['There is no predict_', speciesnm,' file.\n']);
+  return;
+end
 
-% if exist(['predict_', speciesnm], 'file')~=2
-%   fprintf(['There is no predict_', speciesnm,' file.\n']);
-%   return;
-% end
-% 
-% [Prd_data, info_prd] = feval(['predict_', speciesnm], par, chem, metapar.T_ref, data);
-% 
-% if info_prd == 0 
-%   fprintf('The seed parameter set is not realistic (from use of info in the predict file). \n');
-%   return;
-% end
-% 
-% Prd_datafields = fields(Prd_data);
-% 
-% % checking the existence of psd in the Prd_data structure
-% if sum(strcmp(Prd_datafields, 'psd')) == 0
-%   Prd_psdexist = 0;
-% else
-%   Prd_datafields = Prd_datafields(~strcmp(Prd_datafields, 'psd'));
-%   Prd_psdfields = fields(Prd_data.psd);
-%   Prd_psdexist = 1;
-% end
-% 
-% % checking for the bijection data-predictions
-% if length(Prd_datafields) > length(datafields)
-%   for i = 1:length(Prd_datafields)
-%     if sum(strcmp(datafields, Prd_datafields(i))) == 0
-%       fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' but there is no corresponding data. \n']);
-%     else 
-%       eval(['[ldt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
-%       eval(['[lprdt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
-%       if ldt ~= lprdt
-%         fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
-%       end
-%     end
-%   end
-% else
-%   for i = 1:length(datafields)
-%     if sum(strcmp(datafields(i), Prd_datafields)) == 0
-%       fprintf(['There are no predictions defined for data point/set ', datafields{i}, '. \n']);
-%     else 
-%       eval(['[ldt, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-%       eval(['[lprdt, k] = size(Prd_data.', datafields{i}, ');']);  % number of data points per set
-%       if ldt ~= lprdt
-%         fprintf(['The prediction defined for ', datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
-%       end
-%     end
-%   end
-% end
-% 
-% % checking for the pseudodate predictions in data
-% if Prd_psdexist 
-%   for i = 1:length(Prd_psdfields)
-%     if sum(strcmp(psdfields, Prd_psdfields(i))) == 0
-%       fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' but there is no corresponding data. \n']);
-%     else 
-%       eval(['[ldt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
-%       eval(['[lprdt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
-%       if ldt ~= lprdt
-%         fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
-%       end
-%     end
-%   end
-% end
+[prdData, infoPrd] = feval(['predict_', speciesnm], par, data, auxData);
 
+if infoPrd == 0 
+  fprintf('The seed parameter set is not realistic (from use of info in the predict file). \n');
+  return;
+end
+
+prdDataFields = fields(prdData);
+
+% checking the existence of psd in the prdData structure
+if sum(strcmp(prdDataFields, 'psd'))
+  prdDataFields = prdDataFields(~strcmp(prdDataFields, 'psd'));
+  prdpsdFields = fields(prdData.psd);
+  prdpsdexist = 1;
+else
+  prdpsdexist = 0;
+end
+
+% checking for the bijection data-predictions
+if length(prdDataFields) > length(dataFields)
+  for i = 1:length(Prd_datafields)
+    if sum(strcmp(dataFields, prdDataFields(i)))
+      ldt = size(data.(prdDataFields{i}), 1);       % number of data points per set
+      lprdt = size(prdData.(prdDataFields{i}), 1);  % number of prdData points per set
+      if ldt ~= lprdt
+        fprintf(['There is a prediction defined for ', prdDataFields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+      end
+    else 
+      fprintf(['There is no data defined for the predictions ', prdDataFields{i}, '. \n']);
+    end
+  end
+else
+  for i = 1:length(dataFields)
+    if sum(strcmp(dataFields(i), prdDataFields))
+      ldt = size(data.(dataFields{i}), 1);       % number of data points per set
+      lprdt = size(prdData.(dataFields{i}), 1);  % number of prdData points per set
+      if ldt ~= lprdt
+        fprintf(['The data defined for ', dataFields{i}, ' has a length of ', num2str(ldt), ' but the corresponding prediction has a length of ', num2str(lprdt), '. \n']);
+      end
+    else 
+      fprintf(['There are no predictions defined for data point/set ', datafields{i}, '. \n']);
+    end
+  end
+end
+
+% checking for the pseudodate predictions in data (assuming each psd point has length 1)
+if prdpsdexist 
+  for i = 1:length(prdpsdFields)
+    if ~sum(strcmp(psdfields, prdpsdFields(i)))
+      fprintf(['There is a prediction defined for psd.', prdpsdFields{i}, ' but there is no corresponding pseudodata point. \n']);
+    end
+  end
+end
