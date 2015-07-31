@@ -5,7 +5,7 @@
 function cPar = parscomp_st(par)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
-  % modified 2015/07/29 
+  % modified 2015/07/31 
   
   %% Syntax
   % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
@@ -101,27 +101,27 @@ w       = m_Em * w_E * d_E/ d_V/ w_V; % -, \omega, contribution of ash free dry 
 J_E_Am  = p_Am/ mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
 if exist('kap_X', 'var') == 1
-y_E_X   = kap_X * mu_X/ mu_E;  % mol/mol, yield of reserve on food
-y_X_E   = 1/ y_E_X;            % mol/mol, yield of food on reserve
-p_Xm    = p_Am/ kap_X;         % J/d.cm^2, max spec feeding power
-J_X_Am  = y_X_E * J_E_Am;      % mol/d.cm^2, {J_XAm}, max surface-spec feeding flux
+  y_E_X  = kap_X * mu_X/ mu_E;  % mol/mol, yield of reserve on food
+  y_X_E  = 1/ y_E_X;            % mol/mol, yield of food on reserve
+  p_Xm   = p_Am/ kap_X;         % J/d.cm^2, max spec feeding power
+  J_X_Am = y_X_E * J_E_Am;      % mol/d.cm^2, {J_XAm}, max surface-spec feeding flux
 end
 
 if exist('kap_P', 'var') == 1
-y_P_X   = kap_P * mu_X/ mu_P;  % mol/mol, yield of faeces on food 
-y_X_P   = 1/ y_P_X;            % mol/mol, yield of food on faeces
+  y_P_X  = kap_P * mu_X/ mu_P;  % mol/mol, yield of faeces on food 
+  y_X_P  = 1/ y_P_X;            % mol/mol, yield of food on faeces
 end
 
 if exist('kap_P', 'var') == 1 && exist('kap_X', 'var') == 1
-y_P_E   = y_P_X/ y_E_X;          % mol/mol, yield of faeces on reserve
-%  Mass-power couplers
+  y_P_E  = y_P_X/ y_E_X;          % mol/mol, yield of faeces on reserve
+  %  Mass-power couplers
   eta_XA = y_X_E/ mu_E;          % mol/J, food-assim energy coupler
   eta_PA = y_P_E/ mu_E;          % mol/J, faeces-assim energy coupler
   eta_VG = y_V_E/ mu_E;          % mol/J, struct-growth energy coupler
-  eta_O = [  -eta_XA   0         0;         % mol/J, mass-energy coupler
-	               0   0         eta_VG;    % used in: J_O = eta_O * p
-	          1/mu_E   -1/mu_E   -1/mu_E;
-	          eta_PA   0         0]; 
+  eta_O  = [  -eta_XA   0         0;         % mol/J, mass-energy coupler
+	                0   0         eta_VG;    % used in: J_O = eta_O * p
+	           1/mu_E   -1/mu_E   -1/mu_E;
+	           eta_PA   0         0]; 
 end
 
 J_E_M   = p_M/ mu_E;          % mol/d.cm^3, [J_EM], volume-spec somatic  maint costs
@@ -132,7 +132,7 @@ kap_G   = mu_V * M_V/ E_G;    % -, growth efficiency
 E_V     = d_V * mu_V/ w_V;    % J/cm^3, [E_V] volume-specific energy of structure
 
 if exist('F_m', 'var') == 1
-K       = J_X_Am/ F_m;        % c-mol X/l, half-saturation coefficient
+  K = J_X_Am/ F_m;        % c-mol X/l, half-saturation coefficient
 end
 
 % -------------------------------------------------------------------------
@@ -156,7 +156,7 @@ end
 
 cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
               'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'w', w, ...
-              'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
+              'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_M', j_E_M, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
 
 for i = 1:length(matInd)
   stri = ['_H', matInd{i}];
