@@ -3,8 +3,7 @@
 % given DEB model
 
 function [coreParFields, info] = get_parfields(model)
-% created 2015/07/31 by Goncalo Marques; Starrlight Augustine; Laure
-% Pecquerie; Bar Kooijman; Dina Lika
+% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques;
  
   %% Syntax 
   % <../get_parfields.m *get_parfields*> (model)
@@ -28,7 +27,7 @@ function [coreParFields, info] = get_parfields(model)
   
   info = 1;
   
-  switch metapar.model
+  switch model
       
   case {'std', 'stf'}
     coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
