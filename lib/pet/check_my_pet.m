@@ -392,144 +392,135 @@ end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% if exist(['pars_init_', speciesnm], 'file')~=2
-%   fprintf(['There is no pars_init_', speciesnm,' file.\n']);
-%   return;
-% end
-% 
-% [par, metapar, txt_par, chem] = feval(['pars_init_', speciesnm], metadata);
-% 
-% parfields = fields(par);
-% txtparfields = fields(txt_par);
-% 
-% % checking the existence of metapar fields
-% mtparfields = {'model', 'T_ref'};
-% 
-% for i = 1:length(mtparfields)
-%   if ~isfield(metapar, mtparfields{i})
-%     fprintf(['The field ', mtparfields{i}, ' is missing in metapar. \n']);
-%   end
-% end
-% 
-% % checking the existence of metapar fields
-% possible_models = {'std', 'stf', 'stx', 'ssj', 'abj', 'asj', 'hex'};
-% 
-% if sum(strcmp(metapar.model, possible_models)) == 0
-%   fprintf(['The model ', metapar.model, ' is not one of the predefined models. \n']);
-% end
-% 
-% % checking the existence of par fields
-% switch metapar.model
-%   case {'std', 'stf'}
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
-%   case 'stx'
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hx', 'E_Hp', 'h_a', 's_G', 'a_0'};
-%   case 'ssj'
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hs', 't_0', 'h_a', 's_G'};        
-%   case 'abj'
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
-%   case 'asj'
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hs', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
-%   case 'hex'
-%     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_s', 'E_He', 'h_a', 's_G'};
-% end
-% 
-% for i = 1:length(Eparfields)
-%   if ~isfield(par, Eparfields{i})
-%     fprintf(['The parameter ', Eparfields{i}, ' is missing in the par structure. \n']);
-%   end
-% end
-% 
-% % checking the existence of free in the par structure and if it filled with either 0 or 1
-% if sum(strcmp(parfields, 'free')) == 0
-%   fprintf('The par structure does not include the free substructure. \n');
-% else
-%   parfields = parfields(~strcmp(parfields, 'free'));
-%   freefields = fields(par.free);
-% 
-%   if length(freefields) > length(parfields)
-%     for i = 1:length(freefields)
-%       if sum(strcmp(parfields, freefields(i))) == 0
-%         fprintf(['There is free defined for ', freefields{i}, ' but there is no corresponding data. \n']);
-%       else
-%         freeval = eval(['par.free.', freefields{i}]);
-%         if freeval ~= 0 && freeval ~= 1
-%           fprintf(['The value in free for ', freefields{i}, ' should be either 0 or 1. \n']);
-%         end
-%       end
-%     end
-%   else
-%     for i = 1:length(parfields)
-%       if sum(strcmp(parfields(i), freefields)) == 0
-%         fprintf(['There is no free defined for data point/set ', parfields{i}, '. \n']);
-%       else
-%         freeval = eval(['par.free.', parfields{i}]);
-%         if freeval ~= 0 && freeval ~= 1
-%           fprintf(['The value in free for ', parfields{i}, ' should be either 0 or 1. \n']);
-%         end
-%       end
-%     end
-%   end
-% end
-% 
-% % checking the existence of units in the txt_par structure
-% if sum(strcmp(txtparfields, 'units')) == 0
-%   fprintf('The txt_par structure does not include the parameter units. \n');
-% else
-%   unitsfields = fields(txt_par.units);
-% 
-%   if length(unitsfields) > length(parfields)
-%     for i = 1:length(unitsfields)
-%       if sum(strcmp(parfields, unitsfields(i))) == 0
-%         fprintf(['There are units defined for ', unitsfields{i}, ' but there is no corresponding data. \n']);
-%       end
-%     end
-%   else
-%     for i = 1:length(parfields)
-%       if sum(strcmp(parfields(i), unitsfields)) == 0
-%         fprintf(['There are no units defined for data point/set ', parfields{i}, '. \n']);
-%       end
-%     end
-%   end
-% end
-% 
-% % checking the existence of labels in the txt_par structure
-% if sum(strcmp(txtparfields, 'label')) == 0
-%   fprintf('The txt_par structure does not include the parameter units. \n');
-% else
-%   labelfields = fields(txt_par.label);
-% 
-%   if length(labelfields) > length(parfields)
-%     for i = 1:length(labelfields)
-%       if sum(strcmp(parfields, labelfields(i))) == 0
-%         fprintf(['There is a label defined for ', labelfields{i}, ' but there is no corresponding parameter. \n']);
-%       end
-%     end
-%   else
-%     for i = 1:length(parfields)
-%       if sum(strcmp(parfields(i), labelfields)) == 0
-%         fprintf(['There is no label defined for data point/set ', parfields{i}, '. \n']);
-%       end
-%     end
-%   end
-% end
-% 
-% % checking the realism of the par set
-% filternm = ['filter_', metapar.model];
-% [pass, flag]  = feval(filternm, par, chem);
-% if ~pass 
-%   fprintf('The seed parameter set is not realistic. \n');
-%   print_filterflag(flag);
-%   info = 1;
-% end
-% 
-% if info == 1
-%   fprintf('Due to the problems stated above only the my_data and pars_init files were checked. \n');
-%   return;
-% end
-% 
-% % %%%%%%%%%%%%%%%% Checking the predict file  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+if exist(['pars_init_', speciesnm], 'file')~=2
+  fprintf(['There is no pars_init_', speciesnm,' file.\n']);
+  return;
+end
+
+[par, metaPar, txtPar] = feval(['pars_init_', speciesnm], metaData);
+
+parFields = fields(par);
+txtParTypes = fields(txtPar);
+
+% checking the existence of metapar fields
+metaParFields = {'model'};
+
+for i = 1:length(metaParFields)
+  if ~isfield(metaPar, metaParFields{i})
+    fprintf(['The field ', metaParFields{i}, ' is missing in metapar. \n']);
+  end
+end
+
+% checking the existence of metapar fields
+EparFields = get_parfields(metaPar.model);
+
+if isempty(EparFields)
+  fprintf(['The model ', metaPar.model, ' is not one of the predefined models. \n']);
+end
+
+% checking the existence of par fields
+for i = 1:length(EparFields)
+  if ~isfield(par, EparFields{i})
+    fprintf(['The parameter ', EparFields{i}, ' is missing in the par structure. \n']);
+  end
+end
+
+% checking the existence of free in the par structure and if it is filled with either 0 or 1
+if sum(strcmp(parFields, 'free'))
+  parFields = parFields(~strcmp(parFields, 'free'));
+  freeFields = fields(par.free);
+
+  if length(freeFields) > length(parFields)
+    for i = 1:length(freeFields)
+      if sum(strcmp(parFields, freeFields(i)))
+        freeVal = par.free.(freeFields{i});
+        if freeVal ~= 0 && freeVal ~= 1
+          fprintf(['The value in free for ', freeFields{i}, ' should be either 0 or 1. \n']);
+        end
+      else
+        fprintf(['There is free defined for ', freeFields{i}, ' but there is no corresponding data. \n']);
+      end
+    end
+  else
+    for i = 1:length(parFields)
+      if sum(strcmp(parFields(i), freeFields))
+        freeVal = eval(['par.free.', parFields{i}]);
+        if freeVal ~= 0 && freeVal ~= 1
+          fprintf(['The value in free for ', parFields{i}, ' should be either 0 or 1. \n']);
+        end
+      else
+        fprintf(['There is no free defined for data point/set ', parFields{i}, '. \n']);
+      end
+    end
+  end
+else
+  fprintf('The par structure does not include the free substructure. \n');
+end
+
+% checking the existence of units in the txtPar structure
+if sum(strcmp(txtParTypes, 'units')) == 0
+  unitsFields = fields(txtPar.units);
+
+  if length(unitsFields) > length(parFields)
+    for i = 1:length(unitsFields)
+      if ~sum(strcmp(parFields, unitsFields(i)))
+        fprintf(['There are units defined for ', unitsFields{i}, ' but there is no corresponding data. \n']);
+      end
+    end
+  else
+    for i = 1:length(parFields)
+      if ~sum(strcmp(parFields(i), unitsFields))
+        fprintf(['There are no units defined for data point/set ', parFields{i}, '. \n']);
+      end
+    end
+  end
+else
+  fprintf('The txtPar structure does not include the parameter units. \n');
+end
+
+% checking the existence of labels in the txtPar structure
+if sum(strcmp(txtParTypes, 'label'))
+  labelFields = fields(txtPar.label);
+
+  if length(labelFields) > length(parFields)
+    for i = 1:length(labelFields)
+      if sum(strcmp(parFields, labelFields(i))) == 0
+        fprintf(['There is a label defined for ', labelFields{i}, ' but there is no corresponding parameter. \n']);
+      end
+    end
+  else
+    for i = 1:length(parFields)
+      if sum(strcmp(parFields(i), labelFields)) == 0
+        fprintf(['There is no label defined for data point/set ', parFields{i}, '. \n']);
+      end
+    end
+  end
+else
+  fprintf('The txtPar structure does not include the parameter labels. \n');
+end
+
+% checking the realism of the par set
+filternm = ['filter_', metaPar.model];
+[pass, flag]  = feval(filternm, par);
+if ~pass 
+  fprintf('The seed parameter set is not realistic. \n');
+  print_filterflag(flag);
+  info = 1;
+end
+
+if info == 1
+  fprintf('Due to the problems stated above only the my_data and pars_init files were checked. \n');
+  return;
+end
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Checking the predict file
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 % if exist(['predict_', speciesnm], 'file')~=2
 %   fprintf(['There is no predict_', speciesnm,' file.\n']);
 %   return;
