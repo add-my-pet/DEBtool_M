@@ -8,7 +8,7 @@ global pets
 
 % species names
 pets = {'my_pet'};
-% check_my_pet(pets); % check pet-files for required fields
+check_my_pet(pets); % check pet-files for required fields
 
 % See estim_options for more options
 estim_options('default'); % runs estimation, uses nmregr method and filter
