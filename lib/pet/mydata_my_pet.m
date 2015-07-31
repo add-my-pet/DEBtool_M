@@ -136,6 +136,16 @@ weights = setweights(data, []);
 % data.psd.p_M = 1000;                    % my_pet belongs to a group with high somatic maint 
 % weights.psd.kap = 10 * weights.psd.kap;   % I need to give this pseudo data a higher weights
 
+
+%% pack auxData and txtData for output
+auxData.temp = temp;
+txtData.units = units;
+txtData.label = label;
+txtData.bibkey = bibkey;
+if exist('comment','var')
+  txtData.comment = comment;
+end
+
 %% Facts
 % list facts: F1, F2, etc.
 % make sure each fact has a corresponding bib key
@@ -151,17 +161,6 @@ D1 = 'Author_mod_1: I found information on the number of eggs per female as a fu
 D2 = 'Author_mod_1: I was surprised to observe that the weights coefficient for ab changed so much the parameter values';     
 % optional bibkey: bibkey.D2 = 'Kooy2010';
 metaData.discussion = struct('D1', D1, 'D2', D2);
-
-
-%% pack data and txtData for output
-% data.weights = weights;
-auxData.temp = temp;
-txtData.units = units;
-txtData.label = label;
-txtData.bibkey = bibkey;
-if exist('comment','var')
-  txtData.comment = comment;
-end
 
 %% References
   % the following two references should be kept-----------------------------------------------------------
