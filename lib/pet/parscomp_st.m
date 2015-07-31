@@ -58,9 +58,9 @@ function cPar = parscomp_st(par)
   % * K: c-mol X/l, half-saturation coefficient
   % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
 
-v2struct(par);   
-  
-if ~exist('p_Am','var')
+v2struct(par);
+
+if ~exist('p_Am', 'var')
   p_Am = z * p_M/ kap;        % J/d.cm^2, {p_Am} spec assimilation flux
 end
 
@@ -154,29 +154,40 @@ end
 % -------------------------------------------------------------------------
 % pack output:
 
-cPar = v2struct(p_Am, w_X, w_V, w_E, w_P, M_V, y_V_E, y_E_V, ...
-    k_M, k, E_m, m_Em, g, L_m, L_T, l_T, w, ...
-    J_E_Am, J_E_M, J_E_T, j_E_M, j_E_J, kap_G, E_V, n_O, n_M);
-
-nameOfStruct2Update = 'cPar';
+cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
+              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'w', w, ...
+              'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
 
 for i = 1:length(matInd)
-  stri = matInd{i};
-  eval(['cPar = v2struct(M_H', stri, ', U_H', stri, ', V_H', stri, ', v_H', stri, ', u_H', stri, ', nameOfStruct2Update);']);
+  stri = ['_H', matInd{i}];
+  currentField = ['M', stri];  cPar.(currentField) = eval(currentField);
+  currentField = ['U', stri];  cPar.(currentField) = eval(currentField);
+  currentField = ['V', stri];  cPar.(currentField) = eval(currentField);
+  currentField = ['u', stri];  cPar.(currentField) = eval(currentField);
+  currentField = ['v', stri];  cPar.(currentField) = eval(currentField);
 end
 
-if exist('kap_P', 'var') == 1
-    cPar = v2struct(y_P_X, y_X_P, nameOfStruct2Update);
+if exist('kap_P', 'var')
+  cPar.y_P_X = y_P_X;
+  cPar.y_X_P = y_X_P;  
 end
 
-if exist('kap_X', 'var') == 1
-    cPar = v2struct(y_E_X, y_X_E, p_Xm, J_X_Am, nameOfStruct2Update);
+if exist('kap_X', 'var')
+  cPar.y_E_X = y_E_X;
+  cPar.y_X_E = y_X_E;  
+  cPar.p_Xm = p_Xm;
+  cPar.J_X_Am = J_X_Am;  
 end
 
-if exist('kap_P', 'var') == 1 && exist('kap_X', 'var') == 1
-    cPar = v2struct(y_P_E, eta_XA, eta_PA, eta_VG, eta_O, nameOfStruct2Update);
+if exist('kap_P', 'var') == 1 && exist('kap_X', 'var')
+  cPar.y_P_E = y_P_E;
+  cPar.eta_XA = eta_XA;  
+  cPar.eta_PA = eta_PA;
+  cPar.eta_VG = eta_VG;  
+  cPar.eta_O = eta_O;  
 end
 
 if exist('F_m', 'var') == 1
-    cPar = v2struct(K, nameOfStruct2Update);                          
+  cPar.K = K;
 end
+
