@@ -3,29 +3,36 @@
 
 %%
 function check_my_pet(speciesnms)
-  % created 2015/05/05 by Goncalo Marques; modified 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08 and 2015/07/22 by Goncalo Marques
+  % created 2015/05/05 by Goncalo Marques; 
+  % modified Goncalo Marques 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08, 2015/07/22 
+  % modified Bas Kooijman 2015/07/31
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
 
   %% Description
-  % Checks my_data, pars_init and predict files for field inconsistencies
+  % Checks my_data, pars_init and predict files for field inconsistencies.
+  %
   % Checking points for my_data:
+  %
   %   - existence of standard metadata fields
   %   - existence of temp
   %   - existence of pseudodata
   %   - existence of weights
   %   - existence of units (and number consistence with type of data)
   %   - existence of labels (and number consistence with type of data)
-  %   - existence of bibkeys
-  %               and the corresponding entrances in biblist
+  %   - existence of bibkeys and the corresponding entries in biblist
+  %
   % Checking points for pars_init:
+  %
   %   - existence of standard metapar fields
   %   - model is one of the predefined models
   %   - existence of free 
   %   - existence of units 
   %   - existence of labels 
+  %
   % Checking points for predict:
+  %
   %   - existence of the same fields as in data
   %   - length of prediction results matches the length of data
   %
@@ -33,9 +40,13 @@ function check_my_pet(speciesnms)
   %
   % * speciesnms: string with species name or cell vector with multiple species names
   %  
+  % Output is printed to screen as warnings
+  
+  %% Remarks
+  % check_my_pet is a macro for check_my_pet_stnm, which checks each species one by one
 
   %% Example of use
-  % check_files('my_pet') 
+  % check_my_pet('my_pet') 
 
 if iscell(speciesnms)
   k = length(speciesnms);
@@ -45,7 +56,6 @@ if iscell(speciesnms)
 else
   check_my_pet_stnm(speciesnms);
 end
-    
     
 function check_my_pet_stnm(speciesnm)
 
@@ -57,12 +67,7 @@ if ~isempty(strfind(speciesnm, ' '))
   return;
 end
   
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the my_data file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%% Checking the my_data file %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 bibNotToCheck = {'Kooy2010'};    % list of bib references that does not need to have an explicit reference
 
@@ -76,7 +81,7 @@ end
 datafields = fields(data);
 txtdatafields = fields(txt_data);
 
-%% checking the existence of metadata fields
+% checking the existence of metadata fields
 mtdtfields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
 
 for i = 1:length(mtdtfields)
@@ -85,12 +90,12 @@ for i = 1:length(mtdtfields)
   end
 end
 
-%% checking if metadata.species matches speciesnm
+% checking if metadata.species matches speciesnm
 if ~strcmp(speciesnm, metadata.species)
   fprintf('The species name in metadata.species does not match the species name in the mydata file name.\n');
 end
 
-%% checking the existence of temp in the data structure
+% checking the existence of temp in the data structure
 if sum(strcmp(datafields, 'temp')) == 0
   fprintf('The data structure does not include temperature data. \n');
 else
@@ -104,7 +109,7 @@ else
   end
 end
 
-%% checking the existence of psd in the data structure
+% checking the existence of psd in the data structure
 if sum(strcmp(datafields, 'psd')) == 0
   fprintf('The data structure does not include the pseudodata for the regression. \n');
   psdexist = 0;
@@ -114,7 +119,7 @@ else
   psdexist = 1;
 end
 
-%% checking the existence of weight in the data structure
+% checking the existence of weight in the data structure
 if sum(strcmp(datafields, 'weight')) == 0
   fprintf('The data structure does not include the weights for the regression. \n');
   info = 1;
@@ -157,7 +162,7 @@ else
   end
 end
 
-%% checking the existence of units in the txt_data structure
+% checking the existence of units in the txt_data structure
 if sum(strcmp(txtdatafields, 'units')) == 0
   fprintf('The txt_data structure does not include the data units. \n');
 else
@@ -206,7 +211,7 @@ else
   end
 end
   
-%% checking the existence of labels in the txt_data structure
+% checking the existence of labels in the txt_data structure
 if sum(strcmp(txtdatafields, 'label')) == 0
   fprintf('The txt_data structure does not include the data labels. \n');
 else
@@ -255,7 +260,7 @@ else
   end
 end
 
-%% checking the existence of facts
+% checking the existence of facts
 if isfield(metadata, 'facts')
   factsfields = fields(metadata.facts);
   factsfields = factsfields(~strcmp(factsfields, 'bibkey'));
@@ -263,7 +268,7 @@ else
   factsfields = {};
 end
 
-%% checking the existence of bibkeys in the txt_data structure
+% checking the existence of bibkeys in the txt_data structure
 if sum(strcmp(txtdatafields, 'bibkey')) == 0
   fprintf('The txt_data structure does not include the bibkeys. \n');
 else
@@ -285,7 +290,7 @@ else
   end
 end
 
-%% checking the existence of bibkeys in the biblist structure
+% checking the existence of bibkeys in the biblist structure
 if sum(strcmp(fields(metadata), 'biblist')) == 0
   fprintf('The metadata structure does not include the biblist. \n');
 else
@@ -332,12 +337,7 @@ if info == 1
   return;
 end
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the pars_init file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%% Checking the pars_init file %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist(['pars_init_', speciesnm], 'file')~=2
   fprintf(['There is no pars_init_', speciesnm,' file.\n']);
@@ -349,7 +349,7 @@ end
 parfields = fields(par);
 txtparfields = fields(txt_par);
 
-%% checking the existence of metapar fields
+% checking the existence of metapar fields
 mtparfields = {'model', 'T_ref'};
 
 for i = 1:length(mtparfields)
@@ -358,14 +358,14 @@ for i = 1:length(mtparfields)
   end
 end
 
-%% checking the existence of metapar fields
+% checking the existence of metapar fields
 possible_models = {'std', 'stf', 'stx', 'ssj', 'abj', 'asj', 'hex'};
 
 if sum(strcmp(metapar.model, possible_models)) == 0
   fprintf(['The model ', metapar.model, ' is not one of the predefined models. \n']);
 end
 
-%% checking the existence of par fields
+% checking the existence of par fields
 switch metapar.model
   case {'std', 'stf'}
     Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
@@ -385,7 +385,7 @@ for i = 1:length(Eparfields)
   end
 end
 
-%% checking the existence of free in the par structure and if it filled with either 0 or 1
+% checking the existence of free in the par structure and if it filled with either 0 or 1
 if sum(strcmp(parfields, 'free')) == 0
   fprintf('The par structure does not include the free substructure. \n');
 else
@@ -417,7 +417,7 @@ else
   end
 end
 
-%% checking the existence of units in the txt_par structure
+% checking the existence of units in the txt_par structure
 if sum(strcmp(txtparfields, 'units')) == 0
   fprintf('The txt_par structure does not include the parameter units. \n');
 else
@@ -438,7 +438,7 @@ else
   end
 end
 
-%% checking the existence of labels in the txt_par structure
+% checking the existence of labels in the txt_par structure
 if sum(strcmp(txtparfields, 'label')) == 0
   fprintf('The txt_par structure does not include the parameter units. \n');
 else
@@ -459,8 +459,7 @@ else
   end
 end
 
-
-%% checking the realism of the par set
+% checking the realism of the par set
 filternm = ['filter_', metapar.model];
 [pass, flag]  = feval(filternm, par, chem);
 if ~pass 
@@ -474,12 +473,7 @@ if info == 1
   return;
 end
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the predict file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%% Checking the predict file  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist(['predict_', speciesnm], 'file')~=2
   fprintf(['There is no predict_', speciesnm,' file.\n']);
@@ -495,7 +489,7 @@ end
 
 Prd_datafields = fields(Prd_data);
 
-%% checking the existence of psd in the Prd_data structure
+% checking the existence of psd in the Prd_data structure
 if sum(strcmp(Prd_datafields, 'psd')) == 0
   Prd_psdexist = 0;
 else
@@ -504,7 +498,7 @@ else
   Prd_psdexist = 1;
 end
 
-%% checking for the bijection data-predictions
+% checking for the bijection data-predictions
 if length(Prd_datafields) > length(datafields)
   for i = 1:length(Prd_datafields)
     if sum(strcmp(datafields, Prd_datafields(i))) == 0
@@ -531,7 +525,7 @@ else
   end
 end
 
-%% checking for the pseudodate predictions in data
+% checking for the pseudodate predictions in data
 if Prd_psdexist 
   for i = 1:length(Prd_psdfields)
     if sum(strcmp(psdfields, Prd_psdfields(i))) == 0
