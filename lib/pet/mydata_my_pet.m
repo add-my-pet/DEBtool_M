@@ -171,7 +171,7 @@ metaData.discussion = struct('D1', D1, 'D2', D2);
   'publisher = {Cambridge Univ. Press, Cambridge}, ' ...
   'pages = {Table 4.2 (page 150), 8.1 (page 300)}, ' ...
   'howpublished = {\url{http://www.bio.vu.nl/thb/research/bib/Kooy2010.html}}'];
-  eval(['metaData.biblist.' bibkey, '= ''@', type, '{', bibkey, ', ' bib, '}'';']);
+  metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
   %
   bibkey = 'LikaKear2011'; type = 'Article'; bib = [ ...  % used for the estimation method
    'author = {Lika, K. and Kearney, M.R. and Freitas, V. and van der Veer, H.W. and van der Meer, J. and Wijsman, J.W.M. and Pecquerie, L. and Kooijman, S.A.L.M.},'...
@@ -183,7 +183,7 @@ metaData.discussion = struct('D1', D1, 'D2', D2);
    'pages = {270-277},'...
    'DOI = {10.1016/j.seares.2011.07.010},'...
    'howpublished = {\url{http://www.sciencedirect.com/science/article/pii/S1385110111001055}}'];
-  eval(['metaData.biblist.' bibkey, '= ''@', type, '{', bibkey, ', ' bib, '}'';']);
+  metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
   %------------------------------------------------------------------------------------------------------
 
  % References for the data, following BibTex rules
@@ -193,7 +193,7 @@ metaData.discussion = struct('D1', D1, 'D2', D2);
   bibkey = 'Wiki'; type = 'Misc'; bib = [...
   'howpublished = {\url{http://en.wikipedia.org/wiki/my_pet}},'...% replace my_pet by latin species name
   'note = {Accessed : 2015-04-30}'];
-  eval(['metaData.biblist.' bibkey, '= ''@', type, '{', bibkey, ', ' bib, '}'';']);
+  metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
   %
   bibkey = 'MollCano2010'; type = 'Article'; bib = [ ... % meant as example; replace this and further bib entries
   'author = {M{\o}ller, L. F. and Canon, J. M. and Tiselius, P.}, ' ... 
@@ -203,12 +203,12 @@ metaData.discussion = struct('D1', D1, 'D2', D2);
   'volume = {645}, ' ...
   'number = {4}, '...
   'pages = {167-178}'];
-  eval(['metaData.biblist.' bibkey, '= ''@', type, '{', bibkey, ', ' bib, '}'';']);
+  metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
   %
   bibkey = 'Anon2015'; type = 'Misc'; bib = [ ...
   'author = {Anonymous}, ' ...
   'year = {2015}, ' ...
   'howpublished = {\url{http://www.fishbase.org/summary/Rhincodon-typus.html}}'];
-  eval(['metaData.biblist.' bibkey, '= ''@', type, '{', bibkey, ', ' bib, '}'';']);
+  metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 
 
