@@ -15,7 +15,7 @@ function check_my_pet(speciesnms)
   %
   % Checking points for my_data:
   %
-  %   - existence of standard metadata fields
+  %   - existence of standard metaData fields
   %   - existence of temp
   %   - existence of pseudodata
   %   - existence of weights
@@ -87,18 +87,18 @@ auxDataTypes = fields(auxData);
 txtDataFields = fields(txtData);
 weightFields = fields(weights);
 
-% checking the existence of metadata fields
+% checking the existence of metaData fields
 metaDataFields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
 
 for i = 1:length(metaDataFields)
   if ~isfield(metaData, metaDataFields{i})
-    fprintf(['The field ', metaDataFields{i}, ' is missing in metadata. \n']);
+    fprintf(['The field ', metaDataFields{i}, ' is missing in metaData. \n']);
   end
 end
 
-% checking if metadata.species matches speciesnm
+% checking if metaData.species matches speciesnm
 if ~strcmp(speciesnm, metaData.species)
-  fprintf('The species name in metadata.species does not match the species name in the mydata file name.\n');
+  fprintf('The species name in metaData.species does not match the species name in the mydata file name.\n');
 end
 
 % checking the existence of psd in the data structure
@@ -310,14 +310,15 @@ end
 % checking the existence of facts
 if isfield(metaData, 'facts')
   factsFields = fields(metaData.facts);
-  factsFields = factsFields(~strcmp(factsFields, 'bibkey'));
+  factsBibkeys = fields(metaData.bibkey);
 else
   factsFields = {};
+  factsBibkeys = {};
 end
 
 % checking the existence of bibkeys in the txtData structure
 if sum(strcmp(txtDataFields, 'bibkey'))
-  bibkeyFields = fields(txtData.bibkey);
+  bibkeyFields = [fields(txtData.bibkey); factsBibkeys];
   referencedFields = [dataFields; factsFields];
 
   if length(bibkeyFields) > length(referencedFields)
@@ -341,8 +342,13 @@ end
 if sum(strcmp(fields(metaData), 'biblist'))
   biblistFields = fields(metaData.biblist);
   biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
+  bibkeyMarker = length(fields(txtData.bibkey));
   for i = 1:length(bibkeyFields)
-    bibkeynm = txtData.bibkey.(bibkeyFields{i});
+    if i > bibkeyMarker
+      bibkeynm = metaData.bibkey.(bibkeyFields{i});
+    else
+      bibkeynm = txtData.bibkey.(bibkeyFields{i});
+    end
     if ~iscell(bibkeynm) 
       if ~sum(strcmp(biblistFields, cellstr(bibkeynm)))
         fprintf(['The bibkey ', bibkeynm, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
@@ -363,7 +369,11 @@ if sum(strcmp(fields(metaData), 'biblist'))
   
   listbibUsed = {};
   for i = 1:length(bibkeyFields)
-    bib = txtData.bibkey.(bibkeyFields{i});
+    if i > bibkeyMarker
+      bib = metaData.bibkey.(bibkeyFields{i});
+    else
+      bib = txtData.bibkey.(bibkeyFields{i});
+    end
     if iscell(bib)
       listbibUsed = [listbibUsed, bib];
     else
@@ -376,7 +386,7 @@ if sum(strcmp(fields(metaData), 'biblist'))
     end
   end
 else
-  fprintf('The metadata structure does not include the biblist. \n');
+  fprintf('The metaData structure does not include the biblist. \n');
 end
 
 if info 
@@ -458,7 +468,7 @@ else
 end
 
 % checking the existence of units in the txtPar structure
-if sum(strcmp(txtParTypes, 'units')) == 0
+if sum(strcmp(txtParTypes, 'units'))
   unitsFields = fields(txtPar.units);
 
   if length(unitsFields) > length(parFields)
