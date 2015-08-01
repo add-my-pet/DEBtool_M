@@ -81,8 +81,7 @@ data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = '
   % observed age at puberty is frequently larger than ap, 
   %   because allocation to reproduction starts before first eggs appear
 data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
-  temp.am = C2K(20);  units.temp.am = 'K'; label.temp.am = 'temperature';
-  
+  temp.am = C2K(20);  units.temp.am = 'K'; label.temp.am = 'temperature'; 
 % (accounting for aging only) 
 
 % Please specify what type of length measurement is used for your species.
@@ -90,9 +89,11 @@ data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'W
 data.Lb  = 0.45;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Anon2015';  
 data.Lp  = 2.36;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = {'Anon2015','Wiki'}; % for multiple references, please use commas to separate references
 data.Li  = 6.25;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Wiki';
+
 data.Wdb = 5.8e-5; units.Wdb = 'g';    label.Wdb = 'dry weights at birth';             bibkey.Wdb = 'Anon2015';
 data.Wdp = 8e-3;   units.Wdp = 'g';    label.Wdp = 'dry weights at puberty';           bibkey.Wdp = 'Anon2015';
 data.Wdi = 0.15;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weights';             bibkey.Wdi = 'Wiki';
+
 data.Ri  = 2.3;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Wiki';   
 % for an individual of ultimate length Li 
 temp.Ri = C2K(20);  units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
