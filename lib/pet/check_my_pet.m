@@ -208,13 +208,13 @@ if sum(strcmp(txtDataFields, 'units'))
       if length(auxDataFields) > length(auxDataUnitsFields)
         for j = 1:length(auxDataFields)
           if ~sum(strcmp(auxDataFields(j), auxDataUnitsFields))
-            fprintf(['There are no units defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{j}, '. \n']);
+            fprintf(['There are no units defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{i}, '. \n']);
           end
         end
       else
         for j = 1:length(auxDataUnitsFields)
           if ~sum(strcmp(auxDataFields, auxDataUnitsFields(i)))
-            fprintf(['There are units defined for auxiliary data ', auxDataUnitsFields{j}, ' of type ', auxDataTypes{j}, ' but no corresponding value. \n']);
+            fprintf(['There are units defined for auxiliary data ', auxDataUnitsFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
           end
         end
       end
@@ -280,13 +280,13 @@ if sum(strcmp(txtDataFields, 'label'))
       if length(auxDataFields) > length(auxDataLabelFields)
         for j = 1:length(auxDataFields)
           if ~sum(strcmp(auxDataFields(j), auxDataLabelFields))
-            fprintf(['There are no labels defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{j}, '. \n']);
+            fprintf(['There are no labels defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{i}, '. \n']);
           end
         end
       else
         for j = 1:length(auxDataLabelFields)
           if ~sum(strcmp(auxDataFields, auxDataLabelFields(i)))
-            fprintf(['There are labels defined for auxiliary data ', auxDataLabelFields{j}, ' of type ', auxDataTypes{j}, ' but no corresponding value. \n']);
+            fprintf(['There are labels defined for auxiliary data ', auxDataLabelFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
           end
         end
       end
