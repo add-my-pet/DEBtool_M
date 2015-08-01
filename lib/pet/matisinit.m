@@ -2,7 +2,7 @@
 % checks if parameter values of results_my_pet.mat matches those of pars_init_my_pet
 
 %%
-function [info_par, info_metapar, info_txt_par, info_chem] = matisinit(my_pet)
+function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo, Marques and Laure Pecquerie 2015/07/19
 
   %% Syntax
@@ -36,19 +36,17 @@ function [info_par, info_metapar, info_txt_par, info_chem] = matisinit(my_pet)
     return
   end
       
-  eval(['[data, txt_data, metadata] = mydata_', my_pet, ';']); % get data
-  load(filenm,'txt_par', 'par', 'metapar', 'chem');            % load results from .mat
+  [data, auxData, metaData, txtData, weights] = feval(['mydata_', my_pet]); % get data
+  load(filenm,'txtPar', 'par', 'metaPar');                % load results from .mat
   % get outputs from pars_init
-  eval(['[par_init, metapar_init, txt_par_init, chem_init] = pars_init_', my_pet, '(metadata);'])
+  [parInit, metaParInit, txtParInit] = feval(['pars_init_', my_pet], metaData);
   
   par = rmfield_wtxt(par, 'free');                       
-  par_init = rmfield_wtxt(par_init, 'free');   
-  info_par = isempty(comp_struct(par, par_init, 0)); 
+  parInit = rmfield_wtxt(parInit, 'free');   
+  infoPar = isequal(par, parInit);  % isempty(comp_struct()) -> isequal()
  
-  metapar = rmfield_wtxt(metapar, 'MRE');
-  metapar = rmfield_wtxt(metapar, 'RE');
-  info_metapar = isempty(comp_struct(metapar, metapar_init, 0)); 
+  metaPar = rmfield_wtxt(metaPar, 'MRE');
+  metaPar = rmfield_wtxt(metaPar, 'RE');
+  infoMetaPar = isequal(metaPar, metaParInit); 
 
-  info_txt_par = isempty(comp_struct(txt_par, txt_par_init, 0)); 
-
-  info_chem = isempty(comp_struct(chem, chem_init, 0)); 
+  infoTxtPar = isequal(txtPar, txtParInit); 
