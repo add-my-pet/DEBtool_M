@@ -34,7 +34,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   data2plot = data;
 
   for i = 1:length(pets)
-    ci = num2str(i); st = data2plot.(['pet', ci]); [nm, nst] = fieldnmnst_st(st);
+    currentPet = ['pet',num2str(i)];
+    st = data2plot.(currentPet); 
+    [nm, nst] = fieldnmnst_st(st);
     for j = 1:nst  % replace univariate data by plot data 
       fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
       var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
@@ -55,11 +57,15 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         end
       end
     end
-    data2plot.(['pet', ci]) = st;
+    data2plot.(currentPet) = st;
   end
+  
   prdData = predict_pets(par, data2plot, auxData);
+  
   for i = 1:length(pets)
-    ci = num2str(i); st = data.(['pet', ci]); [nm, nst] = fieldnmnst_st(st);
+    currentPet = ['pet', num2str(i)];
+    st = data.(currentPet); 
+    [nm, nst] = fieldnmnst_st(st);
     counter = 0;
     for j = 1:nst
       fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
@@ -68,22 +74,39 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       if k == 2 
         counter = counter + 1; 
         if exist(['results_', pets{i}, '.m'], 'file')
-          eval(['results_', pets{i}, '(txtPar, par, metaPar, txtData.pet', ci, ', data.pet', ci, ');']);
+          feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
         else
-          figure;
-          set(gca,'Fontsize',12); 
-          set(gcf,'PaperPositionMode','manual');
-          set(gcf,'PaperUnits','points'); 
-          set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-          xData = st.(nm{j})(:,1); 
-          yData = st.(nm{j})(:,2);
-          xPred = data2plot.(['pet', ci]).(nm{j})(:,1); 
-          yPred = prdData.(['pet', ci]).(nm{j});
-          plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
-          eval(['lblx = [char(txtData.pet', ci, '.label.', nm{j},'(1)), '', '', char(txtData.pet', ci, '.units.', nm{j},'(1))];']);
-          xlabel(lblx);
-          eval(['lbly = [char(txtData.pet', ci, '.label.', nm{j},'(2)), '', '', char(txtData.pet', ci, '.units.', nm{j},'(2))];']);
-          ylabel(lbly);
+          if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
+            figure;
+            set(gca,'Fontsize',12); 
+            set(gcf,'PaperPositionMode','manual');
+            set(gcf,'PaperUnits','points'); 
+            set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+            xData = st.(nm{j})(:,1); 
+            yData = st.(nm{j})(:,2);
+            xPred = data2plot.(currentPet).(nm{j})(:,1); 
+            yPred = prdData.(currentPet).(nm{j});
+            plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+            lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
+            xlabel(lblx);
+            lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
+            ylabel(lbly);
+          else
+            figure;
+            set(gca,'Fontsize',12); 
+            set(gcf,'PaperPositionMode','manual');
+            set(gcf,'PaperUnits','points'); 
+            set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+            xData = st.(nm{j})(:,1); 
+            yData = st.(nm{j})(:,2);
+            xPred = data2plot.(currentPet).(nm{j})(:,1); 
+            yPred = prdData.(currentPet).(nm{j});
+            plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+            lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
+            xlabel(lblx);
+            lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
+            ylabel(lbly);
+          end
         end
         if results_output == 2  % save graphs to .png
           graphnm = ['results_', pets{i}, '_'];
@@ -96,8 +119,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end
         end
       end
-     end 
-     if results_output < 2
+    end 
+    if results_output < 2
       v2struct(par); ci = num2str(i);
       fprintf([pets{i}, ' \n']); % print the species name
       fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
@@ -128,5 +151,4 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     end
   end
-  
 end
