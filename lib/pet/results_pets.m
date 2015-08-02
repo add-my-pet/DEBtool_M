@@ -77,7 +77,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
         else
           if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
-            %metaData.grp.sets;
+            plotColours = {'r', 'b', 'g', 'c'};
             grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
             if sum(strcmp(grpSet1st, nm{j}))
               sets2print = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
@@ -92,7 +92,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 yData = st.(sets2print{ii})(:,2);
                 xPred = data2plot.(currentPet).(sets2print{ii})(:,1); 
                 yPred = prdData.(currentPet).(sets2print{ii});
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                plot(xPred, yPred, plotColours{ii}, xData, yData, ['.', plotColours{ii}], 'Markersize',20, 'linewidth', 4)
                 lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
                 xlabel(lblx);
                 lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
