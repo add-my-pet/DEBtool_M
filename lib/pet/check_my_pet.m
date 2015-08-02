@@ -393,6 +393,17 @@ else
   fprintf('The metaData structure does not include the biblist. \n');
 end
 
+% checking the consistency of group setting for plotting
+if isfield(metaData, 'grp')
+  grpFields = fields(metaData.grp);
+  setsInGroups = horzcat(metaData.grp.sets{:});
+  for i = 1:length(setsInGroups)
+    if ~sum(strcmp(setsInGroups(i), dataFields))
+      fprintf(['The data set ', setsInGroups{i}, ' in grp setting for plotting is not defined in data. \n']);
+    end
+  end
+end
+
 if info 
   fprintf('Due to the problems stated above only the my_data file was checked. \n');
   return;

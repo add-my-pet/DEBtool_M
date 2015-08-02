@@ -77,27 +77,38 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
         else
           if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
-            plotColours = {'r', 'b', 'g', 'c'};
+            
+            plotColours4AllSets = {{'r', 'b'}, ...  % defining the colours depending of the number of sets
+                                   {'r', 'm', 'b'}, ...
+                                   {'r', 'm', 'b', 'k'}, ...
+                                   {'y', 'r', 'm', 'b', 'k'}};
+            
             grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
-            if sum(strcmp(grpSet1st, nm{j}))
-              sets2print = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
+            if sum(strcmp(grpSet1st, nm{j})) 
+              sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
+              if length(sets2plot) < 5  % choosing the right set of colours depending on the number of ses to plot
+                plotColours = plotColours4AllSets{length(sets2plot) - 1}; 
+              else
+                plotColours = plotColours4AllSets{4};
+              end
               figure;
               hold on;
               set(gca,'Fontsize',12); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
               set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-              for ii = 1: length(sets2print)
-                xData = st.(sets2print{ii})(:,1); 
-                yData = st.(sets2print{ii})(:,2);
-                xPred = data2plot.(currentPet).(sets2print{ii})(:,1); 
-                yPred = prdData.(currentPet).(sets2print{ii});
-                plot(xPred, yPred, plotColours{ii}, xData, yData, ['.', plotColours{ii}], 'Markersize',20, 'linewidth', 4)
+              for ii = 1: length(sets2plot)
+                xData = st.(sets2plot{ii})(:,1); 
+                yData = st.(sets2plot{ii})(:,2);
+                xPred = data2plot.(currentPet).(sets2plot{ii})(:,1); 
+                yPred = prdData.(currentPet).(sets2plot{ii});
+                plot(xPred, yPred, plotColours{mod(ii, 5)}, xData, yData, ['.', plotColours{mod(ii, 5)}], 'Markersize',20, 'linewidth', 4)
                 lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
                 xlabel(lblx);
                 lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
                 ylabel(lbly);
               end
+              title(metaData.(currentPet).grp.caption{strcmp(grpSet1st, nm{j})});
             end
           else
             figure;
