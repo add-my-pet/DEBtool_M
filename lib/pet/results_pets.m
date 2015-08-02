@@ -77,20 +77,28 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
         else
           if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
-            figure;
-            set(gca,'Fontsize',12); 
-            set(gcf,'PaperPositionMode','manual');
-            set(gcf,'PaperUnits','points'); 
-            set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-            xData = st.(nm{j})(:,1); 
-            yData = st.(nm{j})(:,2);
-            xPred = data2plot.(currentPet).(nm{j})(:,1); 
-            yPred = prdData.(currentPet).(nm{j});
-            plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
-            lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
-            xlabel(lblx);
-            lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
-            ylabel(lbly);
+            %metaData.grp.sets;
+            grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
+            if sum(strcmp(grpSet1st, nm{j}))
+              sets2print = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
+              figure;
+              hold on;
+              set(gca,'Fontsize',12); 
+              set(gcf,'PaperPositionMode','manual');
+              set(gcf,'PaperUnits','points'); 
+              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              for ii = 1: length(sets2print)
+                xData = st.(sets2print{ii})(:,1); 
+                yData = st.(sets2print{ii})(:,2);
+                xPred = data2plot.(currentPet).(sets2print{ii})(:,1); 
+                yPred = prdData.(currentPet).(sets2print{ii});
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
+                xlabel(lblx);
+                lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
+                ylabel(lbly);
+              end
+            end
           else
             figure;
             set(gca,'Fontsize',12); 
