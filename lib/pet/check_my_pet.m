@@ -310,9 +310,13 @@ end
 % checking the existence of facts
 if isfield(metaData, 'facts')
   factsFields = fields(metaData.facts);
-  factsBibkeys = fields(metaData.bibkey);
 else
   factsFields = {};
+end
+
+if isfield(metaData, 'bibkey')
+  factsFields = fields(metaData.bibkey);
+else
   factsBibkeys = {};
 end
 
