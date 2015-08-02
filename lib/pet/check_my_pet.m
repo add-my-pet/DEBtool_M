@@ -315,7 +315,7 @@ else
 end
 
 if isfield(metaData, 'bibkey')
-  factsFields = fields(metaData.bibkey);
+  factsBibkeys = fields(metaData.bibkey);
 else
   factsBibkeys = {};
 end

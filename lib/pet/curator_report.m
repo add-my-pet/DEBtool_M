@@ -76,6 +76,10 @@ for i = 1:length(dataFields1)
   fprintf([dataFields1{i}, ', ', txtData.label.(dataFields1{i}){1},  ' vs. ', txtData.label.(dataFields1{i}){2}, '\n']);
 end
 
+fprintf('\nCheck the consistency between metaData and data.\n');
+fprintf('Check that the labels for each data type are used and consistent with the contents.\n');
+fprintf('Contact the web administrator with any new labels that should be added to the table (http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/manual/index_data.html)\n');
+
 pointNumber = pointNumber + 1;
 
 % check data_0 and data_1
