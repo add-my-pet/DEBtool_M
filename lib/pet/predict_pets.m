@@ -4,7 +4,7 @@
 %%
 function [prdData, info] = predict_pets(parGrp, data, auxData)
 % created 2015/01/17 by Goncalo Marques, modified 2015/03/30 by Goncalo Marques
-% modified 2015/07/29 by Starrlight
+% modified 2015/08/03 by Starrlight
 
 %% Syntax
 % [prdData, info] = <../predict_pets.m *predict_pets*>(parGrp, data, auxData)
@@ -26,9 +26,6 @@ function [prdData, info] = predict_pets(parGrp, data, auxData)
 global pets pseudodata_pets 
 
 info = 0;
-
-% unpack par
-v2struct(parGrp);
 
 % produce pars for species and predict
 for i = 1:length(pets)

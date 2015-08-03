@@ -146,7 +146,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     end 
     if results_output < 2
-      v2struct(par); ci = num2str(i);
+%       v2struct(par); 
+      ci = num2str(i);
       fprintf([pets{i}, ' \n']); % print the species name
       fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
       fprintf('MRE = %8.3f \n\n', MRE)

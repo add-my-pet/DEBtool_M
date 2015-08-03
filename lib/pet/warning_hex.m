@@ -2,11 +2,11 @@
 % warns if parameter values are in the reasonable part of the parameter space of holometabolous insect model 
 
 %%
-function warning_std(par)
+function warning_hex(p)
 % created 2015/06/05 by Goncalo Marques; modified 2015/07/29 by Goncalo Marques
-
+% 2015/08/03 by starrlight
 %% Syntax
-% <../warning_hex.m *warning_hex*> (par)
+% <../warning_hex.m *warning_hex*> (p)
 
 %% Description
 % Checks if parameter values are in the reasonable part of the parameter
@@ -15,22 +15,21 @@ function warning_std(par)
 %
 % Input
 %
-% * par: structure with parameters (see below)
+% * p: structure with parameters (see below)
 
 
-  cPar = parscomp_st(par);
-  v2struct(par);  v2struct(cPar);  % unpack par, cPar
+  c = parscomp_st(p);
 
-  if kap_G >= mu_V / mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
+  if c.kap_G >= p.mu_V / p.mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
     fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
   end
 
-  if kap_X >= mu_X / mu_E; % can only occur if y_XE > 1, meaning that CO2 is consumed
+  if p.kap_X >= p.mu_X / p.mu_E; % can only occur if y_XE > 1, meaning that CO2 is consumed
     fprintf('kap_X >= mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
   end
 
-  if exist('kap_P', 'var')
-    if kap_P >= mu_X / mu_P; % can only occur if y_XE > 1, meaning that CO2 is consumed
+  if isfield(p,'kap_P')
+    if p.kap_P >= p.mu_X / p.mu_P; % can only occur if y_XE > 1, meaning that CO2 is consumed
       fprintf('kap_P >= mu_X / mu_P, which is not allowed if CO2 production occurs in association with assimilation. \n');
     end
   end

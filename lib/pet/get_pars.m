@@ -73,7 +73,7 @@ function [par, metaPar, txtPar, flag] = get_pars(data, auxData, metaData)
   %% Example of use
   % See <../mydata_get_pars_2_9.m *mydata_get_pars_2_9*> for application of functions called by this one. 
 
-[par, metaPar, txtPar] = eval(['pars_init_', metaData.species, '(metaData)']); % set pars and chem 
+[par, metaPar, txtPar] = feval(['pars_init_', metaData.species], metaData); % set pars and chem 
 % some elements of par will be overwritten below
 % T_ref is in chem, T_A in par; these are used for temp corrections
 

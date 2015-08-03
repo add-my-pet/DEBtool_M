@@ -37,7 +37,8 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   
   % unpack par, data, auxData
   cPar = parscomp_st(par);
-  v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData); 
+  vars_pull(par); vars_pull(cPar);  vars_pull(data);  vars_pull(auxData);
+%   v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData); 
     
   % customized filter
   if k * v_Hp >= f_tL^3  % constraint required for reaching puberty with f_tL

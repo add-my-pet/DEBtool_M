@@ -2,11 +2,12 @@
 % filters for allowable parameters of standard DEB model with fetus and without acceleration
 
 %%
-function [filter flag] = filter_stf(par)
+function [filter, flag] = filter_stf(p)
 % created 2014/01/22 by Bas Kooijman; modified 2015/04/15, 2015/07/29 by Goncalo Marques
+% modified 2015/08/03 by starrlight
 
 %% Syntax
-% [filter flag] = <../filter_std.m *filter_std*> (par)
+% [filter, flag] = <../filter_std.m *filter_std*> (p)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
@@ -15,7 +16,7 @@ function [filter flag] = filter_stf(par)
 %
 % Input
 %
-% * par: structure with parameters (see below)
+% * p: structure with parameters (see below)
 %  
 % Output
 %
@@ -35,20 +36,17 @@ function [filter flag] = filter_stf(par)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  % unpack par
-  v2struct(par);
-
-  parvec = [z; v; kap; p_M; E_G; k_J; E_Hb; E_Hp; kap_R; h_a; s_G];
+  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.kap_R; p.h_a; p.s_G];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
     return;
-  elseif p_T < 0
+  elseif p.p_T < 0
     flag = 1;
     return;
   end
 
-  if E_Hb >= E_Hp % maturity at birth, puberty
+  if p.E_Hb >= p.E_Hp % maturity at birth, puberty
     flag = 4;
     return;
   end
@@ -58,23 +56,22 @@ function [filter flag] = filter_stf(par)
     return;
   end
 
-  parvec = [kap; kap_R];
+  parvec = [p.kap; p.kap_R];
   
   if sum(parvec >= 1) > 0 
     flag = 2;
     return;
   end
 
-  % compute and unpack cpar (compound parameters)
-  cPar = parscomp_st(par);
-  v2struct(cPar);
+  % compute c (compound parameters)
+  c = parscomp_st(p);
 
-  if kap_G >= 1 % growth efficiency
+  if c.kap_G >= 1 % growth efficiency
     flag = 3;    
     return;
   end
 
-  if k * v_Hp >= f^3 % constraint required for reaching puberty
+  if c.k * c.v_Hp >= f^3 % constraint required for reaching puberty
     flag = 5;    
     return;
   end

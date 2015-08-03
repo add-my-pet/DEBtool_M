@@ -2,11 +2,12 @@
 % filters for allowable parameters of standard DEB model with acceleration (abj)
 
 %%
-function [filter, flag] = filter_abj(par)
+function [filter, flag] = filter_abj(p)
 % created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/06/19, 2015/07/29 by Goncalo Marques
+% modified 2015/08/03 by starrlight
 
 %% Syntax
-% [filter flag] = <../filter_abj.m *filter_abj*> (par)
+% [filter, flag] = <../filter_abj.m *filter_abj*> (p)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
@@ -36,59 +37,55 @@ function [filter, flag] = filter_abj(par)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  % unpack par
-  v2struct(par);
-
-  parvec = [z; v; kap; p_M; E_G; k_J; E_Hb; E_Hj; E_Hp; kap_R; h_a; s_G];
+  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hj; p.E_Hp; p.kap_R; p.h_a; p.s_G];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
     return;
-  elseif p_T < 0
+  elseif p.p_T < 0
     flag = 1;
     return;
   end
 
-  if E_Hb >= E_Hj % maturity at birth, puberty
+  if p.E_Hb >= p.E_Hj % maturity at birth, puberty
     flag = 4;
     return;
   end
 
-  if E_Hj >= E_Hp % maturity at birth, puberty
+  if p.E_Hj >= p.E_Hp % maturity at birth, puberty
     flag = 4;
     return;
   end
 
-  if f > 1
+  if p.f > 1
     flag = 2;
     return;
   end
 
-  parvec = [kap; kap_R];
+  parvec = [p.kap; p.kap_R];
   
   if sum(parvec >= 1) > 0 
     flag = 2;
     return;
   end
 
-  % compute and unpack cPar (compound parameters)
-  cPar = parscomp_st(par);
-  v2struct(cPar);
+  % compute and unpack c (compound parameters)
+  c = parscomp_st(p);
 
-  if kap_G >= 1 % growth efficiency
+  if c.kap_G >= 1 % growth efficiency
     flag = 3;    
     return;
   end
 
-  if ~reach_birth(g, k, v_Hb, f) % constraint required for reaching birth
+  if ~reach_birth(c.g, c.k, c.v_Hb, p.f) % constraint required for reaching birth
     flag = 6;    
     return;
   end
   
-  pars_lb = [g; k; v_Hb];
-  [l_b info] = get_lb(pars_lb);  
+  pars_lb = [c.g; c.k; c.v_Hb];
+  [l_b, info] = get_lb(pars_lb);  
   
-  pars_tj = [g; k; l_T; v_Hb; v_Hj; v_Hp]; % compose parameter vector for get_tj
+  pars_tj = [c.g; c.k; c.l_T; c.v_Hb; c.v_Hj; c.v_Hp]; % compose parameter vector for get_tj
   [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rj, rB, info] = get_tj(pars_tj, 1, l_b);
   if info ~= 1
     flag = 5;
@@ -96,7 +93,7 @@ function [filter, flag] = filter_abj(par)
   end
 
   s_M = l_j/ l_b;                          % -, acceleration factor
-  if k * v_Hp >= f^3 * s_M^3 % constraint required for reaching puberty
+  if c.k * c.v_Hp >= p.f^3 * s_M^3 % constraint required for reaching puberty
     flag = 5;    
     return;
   end
