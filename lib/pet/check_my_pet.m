@@ -570,7 +570,7 @@ end
 
 % checking for the bijection data-predictions
 if length(prdDataFields) > length(dataFields)
-  for i = 1:length(Prd_datafields)
+  for i = 1:length(prdDataFields)
     if sum(strcmp(dataFields, prdDataFields(i)))
       ldt = size(data.(prdDataFields{i}), 1);       % number of data points per set
       lprdt = size(prdData.(prdDataFields{i}), 1);  % number of prdData points per set
