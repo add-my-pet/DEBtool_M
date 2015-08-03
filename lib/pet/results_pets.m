@@ -94,6 +94,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             maxGroupColourSize = length(plotColours4AllSets) + 1;
             
             grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
+            allSetsInGroup = horzcat(metaData.(currentPet).grp.sets{:});
             if sum(strcmp(grpSet1st, nm{j})) 
               sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
               if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of ses to plot
@@ -117,6 +118,19 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
               title(metaData.(currentPet).grp.caption{strcmp(grpSet1st, nm{j})});
+            elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
+              figure;
+              set(gca,'Fontsize',12); 
+              set(gcf,'PaperPositionMode','manual');
+              set(gcf,'PaperUnits','points'); 
+              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              xData = st.(nm{j})(:,1); 
+              yData = st.(nm{j})(:,2);
+              xPred = data2plot.(currentPet).(nm{j})(:,1); 
+              yPred = prdData.(currentPet).(nm{j});
+              plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+              xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+              ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);              
             end
           else
             figure;
