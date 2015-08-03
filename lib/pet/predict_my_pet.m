@@ -35,7 +35,7 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   %% Example of a costumized filter
   % See the lines just below unpacking
   
-  % unpack par, chem, cpar and data
+  % unpack par, data, auxData
   cPar = parscomp_st(par);
   v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData); 
     

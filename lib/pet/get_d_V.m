@@ -70,11 +70,15 @@ switch phylum
               d_V = 0.3;
             case {'Aves', 'Amphibia'}
               d_V = 0.28;
-            case {'Myxini', 'Cephalaspidomorphi', 'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
+            case {'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
               d_V = 0.2;
-            case {'Appendicularia'}
+            case 'Myxini'
+              d_V = 0.17;
+            case 'Cephalaspidomorphi'
+              d_V = 0.125;
+            case 'Appendicularia'
               d_V = 0.045;
-            case {'Thaliacea'}
+            case 'Thaliacea'
               d_V = 0.08;
             otherwise % Ascidiacea
               d_V = 0.06;

@@ -84,7 +84,7 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 
 
 %% Pack output:
-txtPar.units = units; txtPar.label = label; par.free = free; % pack units, label, free in structure
+txtPar.units = units; txtPar.label = label; par.free = free; 
 
 
 
