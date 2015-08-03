@@ -4,7 +4,7 @@
 %%
 function printmat(my_pet)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
-  % modified 2015/04/20 by Goncalo Marques
+  % modified 2015/04/20, 2015/08/03 by Goncalo Marques
   
   %% Syntax
   % <../printmat.m *printmat*>(my_pet)
@@ -32,16 +32,13 @@ function printmat(my_pet)
  
   filenm = ['results_', my_pet, '.m'];                         % customized presentation for univariate data
   if exist(filenm, 'file')
-    eval(['results_', my_pet, '(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);']); % get predictions
+    feval(['results_', my_pet], par, metaPar, txtPar, data, auxData, metaData, txtData, weights); % get predictions
   else
     pets = {my_pet};
     aux = data; clear data; data.pet1 = aux;
+    aux = auxData; clear auxData; auxData.pet1 = aux;
     aux = metaData; clear metaData; metaData.pet1 = aux;
     aux = txtData; clear txtData; txtData.pet1 = aux;
+    aux = weights; clear weights; weights.pet1 = aux;
     results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights); 
   end  
-  
-  % remove this line when .mat has txt_chem (and edit line 34)
-  %[CHEM, txt_chem] = addchem(metaData.pet1.phylum, metaData.pet1.class, metaPar.T_ref);
-  
-  printchem(chem, txt_chem);
