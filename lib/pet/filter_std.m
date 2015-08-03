@@ -76,4 +76,9 @@ function [filter, flag] = filter_std(p)
     return;
   end
 
+  if ~reach_birth(c.g, c.k, c.v_Hb, p.f) % constraint required for reaching birth
+    flag = 6;    
+    return;
+  end  
+  
   filter = 1;
