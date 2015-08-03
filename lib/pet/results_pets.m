@@ -29,7 +29,19 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 
   global pets results_output pseudodata_pets 
   
-  [MRE, RE] = mre_st('predict_pets', par, data, auxData, weights); % WLS-method
+  % get (mean) relative errors
+  weightsMRE = weights;  % define a weights structure with weight 1 for every data point and 0 for the pseudodata 
+  for k = 1:length(pets)
+    currentPet = ['pet',num2str(k)];
+    if isfield(weights.(currentPet), 'psd')
+      psdSets = fields(weights.(currentPet).psd);
+      for j = 1:length(psdSets)
+        weightsMRE.(currentPet).psd.(psdSets{j}) = zeros(length(weightsMRE.(currentPet).psd.(psdSets{j})), 1);
+      end
+    end
+  end
+  
+  [MRE, RE] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
   metaPar.MRE = MRE; metaPar.RE = RE;
   data2plot = data;
 
