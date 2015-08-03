@@ -1,5 +1,8 @@
+%% vars_pull
+
 function vars_pull(s)
-%% This is great111!
+% created 2015/08/03
+
     for n = fieldnames(s)'
         name = n{1};
         value = s.(name);
