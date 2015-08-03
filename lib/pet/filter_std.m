@@ -80,4 +80,9 @@ function [filter flag] = filter_std(par, chem)
     return;
   end
 
+  if ~reach_birth(g, k, v_Hb, f) % constraint required for reaching birth
+    flag = 6;    
+    return;
+  end
+
   filter = 1;
