@@ -78,15 +78,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         else
           if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
             
-            plotColours4AllSets = {{'r', 'b'}, ...  % defining the colours depending of the number of sets
-                                   {'r', 'm', 'b'}, ...
-                                   {'r', 'm', 'b', 'k'}, ...
-                                   {'y', 'r', 'm', 'b', 'k'}};
+            plotColours4AllSets = listOfPlotColours4UpTo13Sets;
+            maxGroupColourSize = length(plotColours4AllSets) + 1;
             
             grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
             if sum(strcmp(grpSet1st, nm{j})) 
               sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
-              if length(sets2plot) < 5  % choosing the right set of colours depending on the number of ses to plot
+              if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of ses to plot
                 plotColours = plotColours4AllSets{length(sets2plot) - 1}; 
               else
                 plotColours = plotColours4AllSets{4};
@@ -102,11 +100,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 yData = st.(sets2plot{ii})(:,2);
                 xPred = data2plot.(currentPet).(sets2plot{ii})(:,1); 
                 yPred = prdData.(currentPet).(sets2plot{ii});
-                plot(xPred, yPred, plotColours{mod(ii, 5)}, xData, yData, ['.', plotColours{mod(ii, 5)}], 'Markersize',20, 'linewidth', 4)
-                lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
-                xlabel(lblx);
-                lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
-                ylabel(lbly);
+                plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
+                xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+                ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
               title(metaData.(currentPet).grp.caption{strcmp(grpSet1st, nm{j})});
             end
@@ -121,10 +117,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             xPred = data2plot.(currentPet).(nm{j})(:,1); 
             yPred = prdData.(currentPet).(nm{j});
             plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
-            lblx = [txtData.(currentPet).label.(nm{j}){1}, txtData.(currentPet).units.(nm{j}){1}];
-            xlabel(lblx);
-            lbly = [txtData.(currentPet).label.(nm{j}){2}, txtData.(currentPet).units.(nm{j}){2}];
-            ylabel(lbly);
+            xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+            ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
           end
         end
         if results_output == 2  % save graphs to .png
@@ -170,4 +164,21 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     end
   end
+end
+
+function plotColours4AllSets = listOfPlotColours4UpTo13Sets
+
+  plotColours4AllSets = {{[1, 0, 0], [0, 0, 1]}, ...
+                         {[1, 0, 0], [1, 0, 1], [0, 0, 1]}, ...
+                         {[1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, 0]}, ...
+                         {[1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, 0]}, ...
+                         {[1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, .75], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}}
+
 end
