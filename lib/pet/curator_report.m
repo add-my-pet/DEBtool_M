@@ -82,7 +82,7 @@ fprintf('Contact the web administrator with any new labels that should be added 
 
 pointNumber = pointNumber + 1;
 
-% check data_0 and data_1
+% compare values in pars_init with values in the .mat
 fprintf('\n%d. Comparison of parameters in pars_init with .mat file:\n\n', pointNumber);
 
 [infoPar, infoMetaPar, infoTxtPar] = matisinit(speciesnm);
@@ -104,4 +104,55 @@ if infoTxtPar
 else
   fprintf('The txtPar is different in pars_init and .mat.\n');
 end
+
+pointNumber = pointNumber + 1;
+
+% check extra parameters
+fprintf('\n%d. Checking extra parameters:\n\n', pointNumber);
+
+[par, metaPar, txtPar] = feval(['pars_init_', speciesnm], metaData);
+
+parFields = fields(par);
+parFields  = setdiff(parFields, {'free'});
+auxParFields = setdiff(parFields, parFields(cellfun(@(s) ~isempty(strfind(s, 'n_')), parFields)));
+auxParFields = setdiff(auxParFields, auxParFields(cellfun(@(s) ~isempty(strfind(s, 'mu_')), auxParFields)));
+nonChemParFields = setdiff(auxParFields, auxParFields(cellfun(@(s) ~isempty(strfind(s, 'd_')), auxParFields)));
+
+EparFields = get_parfields(metaPar.model);
+extraParFields = setdiff(nonChemParFields, EparFields);
+
+fprintf('Extra parameters\n');
+for i = 1:length(extraParFields)
+  fprintf([extraParFields{i}, ', ', txtPar.label.(extraParFields{i}), '\n']);
+end
+
+fprintf('\nCheck if these are all used in predict.\n');
+fprintf('Check if there should exist customized filters involving hese parameters.\n');
+
+pointNumber = pointNumber + 1;
+
+% check freeing of parameters
+fprintf('\n%d. Checking choice of free parameters:\n\n', pointNumber);
+
+freeFixedFields = fields(par.free);
+
+freeFields = freeFixedFields(structfun(@(s) s==1, par.free));
+fixedFields = setdiff(freeFixedFields, freeFields);
+
+fprintf('Fixed parameters\n');
+for i = 1:length(fixedFields)
+  fprintf([fixedFields{i}, ' = ', num2str(par.(fixedFields{i})), ' ', txtPar.units.(fixedFields{i}), ', ' , txtPar.label.(fixedFields{i}), '\n']);
+end
+
+fprintf('\nCheck if the values above are standard or have been substantiated.\n\n');
+
+fprintf('Free parameters\n');
+for i = 1:length(freeFields)
+  fprintf([freeFields{i}, ' = ', num2str(par.(freeFields{i})), ' ', txtPar.units.(freeFields{i}), ', ' , txtPar.label.(freeFields{i}), '\n']);
+end
+
+fprintf('\nCheck if the values above are reasonable and if there is enough data to estimate them.\n\n');
+
+
+
 
