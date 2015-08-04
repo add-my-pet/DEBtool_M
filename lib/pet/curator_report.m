@@ -44,6 +44,8 @@ check_my_pet(speciesnm);
 
 pointNumber = pointNumber + 1;
 
+pause
+
 % check data_0 and data_1
 fprintf('\n%d. Data types:\n\n', pointNumber);
 
@@ -82,6 +84,8 @@ fprintf('Contact the web administrator with any new labels that should be added 
 
 pointNumber = pointNumber + 1;
 
+pause
+
 % compare values in pars_init with values in the .mat
 fprintf('\n%d. Comparison of parameters in pars_init with .mat file:\n\n', pointNumber);
 
@@ -107,6 +111,8 @@ end
 
 pointNumber = pointNumber + 1;
 
+pause
+
 % check extra parameters
 fprintf('\n%d. Checking extra parameters:\n\n', pointNumber);
 
@@ -127,9 +133,11 @@ for i = 1:length(extraParFields)
 end
 
 fprintf('\nCheck if these are all used in predict.\n');
-fprintf('Check if there should exist customized filters involving hese parameters.\n');
+fprintf('Check if there should exist customized filters involving these parameters.\n');
 
 pointNumber = pointNumber + 1;
+
+pause
 
 % check freeing of parameters
 fprintf('\n%d. Checking choice of free parameters:\n\n', pointNumber);
@@ -153,6 +161,36 @@ end
 
 fprintf('\nCheck if the values above are reasonable and if there is enough data to estimate them.\n\n');
 
+pause
 
+% check if the parameter set was obtained after continuation from .mat 
+fprintf('\n%d. Check if the parameter set was obtained after continuation from .mat.\n\n', pointNumber);
 
+fprintf('Copy results_my_pet.mat to results_my_pet_author.mat\n\n', pointNumber);
 
+ filenm1 = ['results_', speciesnm, '.mat']; 
+ filenm2 = ['results_', speciesnm, '_author.mat'];
+copyfile(filenm1,filenm2)
+
+fprintf('Run estimation, check if there is successful convergence:\n\n');
+
+s = input('Do you want to run estimation automatically? - if so enter 1, otherwise enter 0:   ')
+
+if s
+eval(['run_', speciesnm]);
+
+pause
+
+fprintf('Restart from .mat after first convergence. Press enter:\n\n');
+
+eval(['run_', speciesnm]);
+
+[info_par, info_metaPar, info_txtPar] = matismat_DINA( speciesnm, [speciesnm, '_author']);
+
+if info_par
+    fprintf('The parameter values were obtained after continuation from .mat file.\n');
+else
+    fprintf('The parameter values were obtained after continuation from .mat file.\n');
+end
+
+end
