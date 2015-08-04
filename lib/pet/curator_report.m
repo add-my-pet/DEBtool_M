@@ -85,7 +85,7 @@ pointNumber = pointNumber + 1;
 % check data_0 and data_1
 fprintf('\n%d. Comparison of parameters in pars_init with .mat file:\n\n', pointNumber);
 
-[infoPar, infoMetaPar, infoTxtPar] = matisinit('my_pet');
+[infoPar, infoMetaPar, infoTxtPar] = matisinit(speciesnm);
 
 if infoPar
   fprintf('The parameter values are the same in pars_init and .mat.\n');
