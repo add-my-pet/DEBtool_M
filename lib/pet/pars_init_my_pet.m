@@ -56,7 +56,7 @@ par.s_G   = 1e-4;  free.s_G   = 0;   units.s_G   = '-';        label.s_G   = 'Go
 par.T_A   = 8000;   free.T_A   = 0;    units.T_A = 'K';        label.T_A = 'Arrhenius temperature';
 par.del_M = 0.16;   free.del_M = 1;    units.del_M = '-';      label.del_M = 'shape coefficient';
 
-% environmental parameters (temperatures are in data)
+%% environmental parameters (temperatures are in data)
 par.f = 1.0;        free.f     = 0;    units.f = '-';          label.f    = 'scaled functional response for 0-var data';
 par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'scaled functional response for 1-var data';
 
@@ -85,10 +85,4 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 
 %% Pack output:
 txtPar.units = units; txtPar.label = label; par.free = free; 
-
-
-
-
-
-
 
