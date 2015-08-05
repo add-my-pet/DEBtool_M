@@ -229,7 +229,7 @@
 %--SC       Clupea_harengus
 %--SC       Alosa_sapidissima
 %--SC       Engraulis_encrasicolus
-%---C       Chirocentrus_dorab
+%--SC       Chirocentrus_dorab
   % Gonorynchiformes
 %---C       Chanos_chanos
   % Cypriniformes
@@ -262,12 +262,12 @@
   % Lampriformes
   % Polymixiiformes
   % Percopsiformes
-%-?    Percopsis_omiscomaycus
+%---C       Percopsis_omiscomaycus
   % Batrachoidiformes
-%-?    Opsanus_tau
-%-?    Halobatrachus_didactylus
+%---C       Opsanus_tau
+%---C       Halobatrachus_didactylus
   % Lophiiformes
-%-?    Lophius_piscatorius
+%---C       Lophius_piscatorius
   % Gadiformes
 %----       Gadus_morhua
 %---C       Merlangius_merlangus_f
