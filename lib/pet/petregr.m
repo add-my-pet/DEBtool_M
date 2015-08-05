@@ -239,19 +239,19 @@ function [q, info] = petregr(func, par, data, auxData, weights)
 
    fval = min(fv); 
    if func_evals >= max_fun_evals
-     if report > 0
+     %if report > 0
        fprintf(['No convergences with ', ...
 		num2str(max_fun_evals), ' function evaluations\n']);
-     end
+     %end
      info = 0;
    elseif itercount >= max_step_number 
-     if report > 0
+     %if report > 0
        fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
-     end
+     %end
      info = 0; 
    else
-     if report > 0
+     %if report > 0
        fprintf('Successful convergence \n');              
-     end
+     %end
      info = 1;
    end
