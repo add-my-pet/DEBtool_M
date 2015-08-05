@@ -148,9 +148,9 @@ end
 
 %% Discussion points
 D1 = 'Author_mod_1: I found information on the number of eggs per female as a function of length in Anon2013 that was much higher than in Anon2015 but chose to not include it as the temperature was not provided';
-% optional bibkey: bibkey.D1 = 'Anon2013';
+% optional bibkey: metaData.bibkey.D1 = 'Anon2013';
 D2 = 'Author_mod_1: I was surprised to observe that the weights coefficient for ab changed so much the parameter values';     
-% optional bibkey: bibkey.D2 = 'Kooy2010';
+% optional bibkey: metaData.bibkey.D2 = 'Kooy2010';
 metaData.discussion = struct('D1', D1, 'D2', D2);
 
 %% Facts
