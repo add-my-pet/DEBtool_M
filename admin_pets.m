@@ -1,8 +1,9 @@
-%% Entry administration
-% C: converted from old to (rather) new
-% S: submitted = added to Dropbox
-% R: ready for web = move from submitted to ready in Dropbox
+%% Entry administration: replace ---- by WRSC then fully done
 % W: added to web = removed from Dropbox
+% R: ready for web = move from submitted to ready in Dropbox
+% S: submitted = added to Dropbox
+% C: converted from old to (rather) new
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Cnidaria
 %----       Chironex_fleckeri
@@ -233,7 +234,7 @@
   % Gonorynchiformes
 %---C       Chanos_chanos
   % Cypriniformes
-%--C        Danio_rerio
+%---C        Danio_rerio
 %---C       Pimephales_promelas
   % Characiformes
 %---C       Hydrocynus_vittatus
