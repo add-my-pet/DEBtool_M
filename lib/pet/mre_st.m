@@ -30,11 +30,19 @@ function [merr, rerr] = mre_st(func, par, data, auxData, weights)
   %data      = rmfield_wtxt(data, 'psd');   % STA: this is because there is an assymetry is the output of mydata_my_pet and predict_my_pet
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   prdData   = feval(func, par, data, auxData); % call predicted values for all of the data
+  [nmPrd, nstPrd] = fieldnmnst_st(prdData); % nstPrd: number of data sets in prdData
+  for i = 1:nstPrd
+      if isempty(prdData.(nmPrd{i}))
+        rerr = -999;
+        merr = -999;
+        return
+      end
+  end
   rerr      = zeros(nst, 2);  % prepare output
   
   for i = 1:nst   % first we remove independant variables from uni-variate data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var = getfield(data, fieldsInCells{1}{:});   % scaler, vecotr or matrix with data in field nm{i}
+    var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
     k = size(var, 2);
     if k >= 2
       data = setfield(data, fieldsInCells{1}{:}, var(:,2));
