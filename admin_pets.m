@@ -1,0 +1,548 @@
+%% Entry administration
+% C: converted from old to (rather) new
+% S: submitted = added to Dropbox
+% R: ready for web = move from submitted to ready in Dropbox
+% W: added to web = removed from Dropbox
+
+% Cnidaria
+%----       Chironex_fleckeri
+%----       Hydra_viridissima
+%----       Pelagia_noctiluca
+
+% Ctenophora
+%----       Mnemiopsis_leidyi
+%----       Bolinopsis_mikado
+%----       Callianira_antarctica
+%----       Pleurobrachia_pileus
+%----       Pleurobrachia_bachei
+%----       Beroe_gracilis
+%----       Beroe_ovata
+
+% Chaetognatha
+%----       Sagitta_hispida 
+
+% Acanthocephala
+%----       Moniliformis_dubius
+
+% Rotifera
+%----       Asplanchna_girodi
+%--SC       Brachionus_plicatilis
+
+% Gastrotricha
+%----       Aspidiophorus_polystictos
+
+% Platyhelminthes
+%----       Schmidtea_polychroa
+
+% Poronida
+%----       Phoronis_pallida
+
+% Bryozoa
+%----       Flustra_foliacea
+
+% Brachiopoda
+%----       Magellania_fragilis
+
+% Annelida 
+%----       Capitella_teleta
+%----       Arenicola_marina
+%----       Dendrobaena_octaedra
+%----       Lumbricus_terrestris
+%----       Octolasion_cyaneum
+%----       Aporrectodea_longa
+
+% Mollusca
+  % Bivalvia
+%----       Cerastoderma_edule
+%----       Crassostrea_gigas
+%----       Macoma_balthica
+%----       Ensis_directus
+%----       Mya_arenaria
+%----       Perna_viridis
+%----       Mytilus_edulis
+%----       Mytilus_californianus
+%----       Mytilus_galloprovincialis
+%----       Brachidontes_pharaonis
+%----       Mytilaster_minimus
+%----       Ruditapes_philippinarum
+%----       Argopecten_purpuratus
+%----       Pecten_maximus
+  % Gastropoda
+%----       Crepidula_fornicata
+%----       Lymnaea_stagnalis
+%----       Stagnicola_palustris
+%----       Biophalaria_glabrata
+%----       Planorbis_planorbis
+%----       Clione_limacina
+%----       Cuthona_nana
+  % Cephalopoda
+%----       Sepia_officinalis
+%----       Sepiola_atlantica
+%----       Sepietta_obscura
+%----       Euprymna_hyllebergi
+%----       Doryteuthis_pealei
+%----       Octopus_cyanea
+%----       Octopus_maya
+%----       Octopus_vulgaris
+
+% Tardigrada
+%--SC       Macrobiotus_hufelandii
+%--SC       Hypsibius_convergens
+%--SC       Hypsibius_oberhaeuseri
+%--SC       Milnesium_tardigradum
+
+% Nematoda
+%----       Caenorhabditis_elegans  
+
+% Chelicerata: Arthropoda
+%----       Pycnogonum_litorale
+%----       Smeringurus_mesaensis
+%----       Aglaoctenus_lagotis
+
+% Myriapoda: Arthropoda
+
+% Crustacea: Arthropoda
+  % Ostracoda
+%----       Cyprideis_torosa
+  % Branchiopoda
+%----       Triops_longicaudatus
+%----       Bosmina_coregoni
+%----       Bosmina_longirostris
+%----       Chydorus_sphaericus
+%----       Pleuroxus_aduncus
+%----       Pleuroxus_striatus
+%----       Ceriodaphnia_pulchella
+%----       Daphnia_cucullata_f
+%----       Daphnia_hyalina_f
+%----       Daphnia_magna_f
+%----       Daphnia_pulex_f
+%----       Scapholeberis_mucronata
+%----       Simocephalus_serrulatus
+%----       Diaphanosoma_brachyurum
+%----       Leptodora_kindtii
+  % Maxillopoda
+%      Acanthocyclops_robustus
+%----       Cyclops_vicinus
+%----       Mesocyclops_leukarti
+%----       Eurytemora_affinis
+  % Malacostraca
+%----       Asellus_aquaticus_mf
+%----       Porcellio_scaber_mf
+%--SC       Corophium_volutator
+%----       Gammarus_pseudolimnaeus
+%----       Gammarus_pulex
+%----       Palaemonetes_pugio
+%----       Meganyctiphanes_norvegica
+%----       Carcinus_maenas_f
+
+% Entomobryomorpha: Arthropoda
+%----       Folsomia_candida
+
+% Insecta: Arthropoda
+%----       Lepisma_saccharina
+%----       Oligoneuriella_rhenana
+%----       Locusta_migratoria
+%----       Acyrthosiphon_pisum
+%----       Aedes_aegypti
+%----       Chaoborus_americanus
+%----       Bombyx_mori
+%----       Venturia_canescens
+
+% Echinodermata
+%----       Asterias_rubens
+%----       Asterina_gibbosa
+%----       Pisaster_ochraceus
+%----       Echinus_affinis
+%----       Paracentrotus_lividus
+
+% Tunicata
+%--SC       Oikopleura_dioica  
+%--SC       Oikopleura_longicauda
+%--SC       Thalia_democratica
+%--SC       Ciona_intestinalis
+
+% Leptocardii
+%--SC       Branchiostoma_floridae
+
+% Myxini
+%--SC       Myxine_glutinosa
+%--SC       Eptatretus_stoutii
+
+% Cephalaspidomorphi
+%--SC       Lampetra_planeri
+
+% Chondrichthyes
+  % Holocephali
+%--SC       Callorhinchus_capensis
+  % Batoidea 
+%--SC       Raja_brachyura
+%--SC       Raja_clavata
+%--SC       Leucoraja_erinacea
+%--SC       Rhinobatos_productus
+%--SC       Trygonoptera_personata
+%--SC       Manta_birostris
+%--SC       Torpedo_marmorata
+%--SC       Pristis_pectinata
+  % Squalomorphi 
+%--SC       Squatina_californica
+%--SC       Pristiophorus_cirratus
+%--SC       Squalus_acanthias
+%--SC       Etmopterus_perryi
+%--SC       Chlamydoselachus_anguineus
+%--SC       Heptranchias_perlo
+  % Galeomorphi
+%--SC       Heterodontus_portusjacksoni
+%--SC       Chiloscyllium_plagiosum
+%--SC       Rhincodon_typus
+%--SC       Sphyrna_lewini
+%--SC       Rhizoprionodon_acutus
+%--SC       Scyliorhinus_canicula
+%--SC       Carcharodon_carcharias
+
+% Actinopterygii
+  % Polypteriformes
+%--SC       Erpetoichthys_calabaricus
+  % Acipenseriformes
+%--SC       Acipenser_ruthenus                       
+%--SC       Acipenser_sturio                        
+  % Lepisosteiformes
+%--SC       Atractosteus_spatula
+  % Amiiformes
+%--SC       Amia_calva
+  % Osteoglossiformes
+%--SC       Osteoglossum_bicirrhosum
+%--SC       Notopterus_notopterus
+%--SC       Arapaima_gigas
+  % Hiodontiformes
+%--SC       Hiodon_tergisus
+  % Elopiformes
+%--SC       Megalops_atlanticus
+  % Albuliformes
+%--SC       Albula_vulpes
+  % Notacanthiformes
+  % Anguilliformes
+%--SC       Anguilla_anguilla_f
+  % Saccopharyngiformes
+  % Clupeiformes
+%--SC       Sardina_pilchardus
+%--SC       Sprattus_sprattus
+%--SC       Clupea_harengus
+%--SC       Alosa_sapidissima
+%--SC       Engraulis_encrasicolus
+%---C       Chirocentrus_dorab
+  % Gonorynchiformes
+%---C       Chanos_chanos
+  % Cypriniformes
+%--C        Danio_rerio
+%---C       Pimephales_promelas
+  % Characiformes
+%---C       Hydrocynus_vittatus
+  % Gymnotiformes
+%---C       Electrophorus_electricus
+  % Siluriformes
+%---C       Silurus_glanis
+%---C       Pangasianodon_hypophthalmus
+%---C       Corydoras_aeneaus
+  % Argentiniformes
+  % Salmoniformes
+%---C       Thymallus_thymallus
+%---C       Oncorhynchus_tshawytscha
+%---C       Oncorhynchus_mykiss
+%---C       Salmo_trutta
+%---C       Salvelinus_alpinus
+  % Esociformes
+%---C       Esox_lucius
+  % Osmeriformes
+%---C       Osmerus_mordax
+%---C       Mallotus_villosus
+  % Ateleopodiformes
+  % Stomiiformes
+  % Aulopiformes
+  % Myctophiformes
+  % Lampriformes
+  % Polymixiiformes
+  % Percopsiformes
+%-?    Percopsis_omiscomaycus
+  % Batrachoidiformes
+%-?    Opsanus_tau
+%-?    Halobatrachus_didactylus
+  % Lophiiformes
+%-?    Lophius_piscatorius
+  % Gadiformes
+%----       Gadus_morhua
+%---C       Merlangius_merlangus_f
+%----       Merlangius_merlangus_m
+%----       Pleuronectes_platessa
+  % Scorpaeniformes
+%----       Myoxocephalus_scorpius
+%----       Scorpaenichthys_marmoratus
+%----       Chelidonichthys_lucerna
+%----       Cyclopterus_lumpus
+  % Perciformes
+  %   Percoidea
+%----       Perca_fluviatilis
+%----       Lepomis_cyanellus
+%----       Trachurus_trachurus
+%----       Seriola_dumerili
+%----       Epinephelus_marginatus
+%----       Dicentrarchus_labrax
+%----       Sparus_aurata
+%----       Pagellus_erythrinus
+%----       Diplodus_puntazzo
+%----       Dentex_dentex
+%----       Coryphaena_hippurus
+%----       Sciaena_umbra
+%----       Argyrosomus_regius
+  %   Labroidei
+%----       Chromis_chromis
+  %   Zoarcoidei
+%----       Anarhichas_lupus
+%----       Zoarces_viviparus_f
+  %   Gobiodei
+%----       Pomatoschistus_minutus
+  %   Scombroidei
+%----       Xiphias_gladius
+%----       Makaira_nigricans
+%----       Thunnus_orientalis
+%----       Thunnus_thynnus
+%----       Scomber_scombrus
+  %   Channoidei
+%----       Channa_punctata
+
+% Sarcopterygii
+%----       Neoceratodus_forsteri
+%----       Latimeria_chalumnae
+
+% Amphibia
+  % Gymnophiona
+%----       Ichthyophis_kohtaoensis
+  % Caudata
+%---C       Lissotriton_vulgaris
+%----       Andrias_japonicus
+  % Anura
+%----       Crinia_nimbus
+%----       Crinia_georgiana
+%----       Geocrinia_vitellina
+%----       Pseudophryne_bibronii
+%----       Bufo_bufo
+
+% Reptilia
+  % Testudines
+%----       Pseudemydura_umbrina  
+%----       Caretta_caretta
+%----       Dermochelys_coriacea
+  % Crocodilia
+%----       Crocodylus_johnstoni
+  % Sphenodontia
+%----       Sphenodon_punctatus
+  % Squamata
+%----       Amphisbaena_alba
+%----       Heteronotia_binoei
+%----       Eulamprus_quoyii
+%---C       Tiliqua_rugosa
+%----       Egernia_cunninghami
+%----       Sceloporus_undulatus
+%----       Varanus_komodoensis
+%----       Python_regius
+%----       Boa_constrictor
+%----       Eunectes_murinus
+
+% Aves
+  % Paleognathae
+%---C       Apteryx_mantelli
+%----       Dromaius_novaehollandiae
+%----       Struthio_camelus
+%----       Rhea_americana
+%----       Rhynchotus_rufescens
+  % non-passerine Neognathae
+% Galloanserae 
+%----       Gallus_gallus  
+%----       Gallus_gallus_IR_f
+%----       Gallus_gallus_IR_m
+%----       Gallus_gallus_RJ_f
+%----       Gallus_gallus_RJ_m
+%----       Gallus_gallus_WL_f
+%----       Gallus_gallus_WL_m
+%----       Anas_platyrhynchos
+% Metaves
+  % Opisthocomiformes
+%----       Opisthocomus_hoazin
+% sister of Insolitaves and Litoritelluraves
+  % Pteroclidiformes
+%----       Pterocles_alchata
+  % Mesitornithiformes
+%----       Mesitornis_variegatus
+  % Phaethontiformes
+%----       Phaethon_rubricauda
+  % Eurypygiformes
+%----       Rhynochetos_jubatus
+  % Columbiformes
+%----       Columba_livia
+  % Podicipediformes
+%----       Podilymbus_podiceps
+  % Phoenicopteriformes
+%----       Phoeniconaias_minor
+  % Caprimulgiformes
+%----       Podargus_strigoides
+  % Apodiformes
+%----       Apus_apus
+% Insolitaves
+  % Otidiformes
+%----       Ardeotis_kori
+  % Cuculiformes
+%----       Cuculus_canorus
+  % Gruiformes
+%----       Gallinula_chloropus
+  % Musophagiformes
+%----       Tauraco_erythrolophus
+  % Gaviformes
+%----       Gavia_immer
+%----       Diomedea_exulans
+  % Sphenisciformes
+%----       Pygoscelis_adeliae
+  % Ciconiformes
+%----       Ciconia_ciconia
+  % Suliformes
+%----       Phalacrocorax_auritus
+  % Pelecaniformes
+%----       Pelecanus_onocrotalus
+% Litoritelluraves (till end Aves)
+  % Charadriiformes
+%----       Larus_argentatus
+% Afroavis
+  % Accipitriformes
+%----       Aquila_chrysaetos
+  % Strigiformes
+%----       Tyto_alba
+  % Coliiformes
+%----       Urocolius_macrourus
+  % Leptosomatiformes
+%----       Leptosomus_discolor
+  % Trogoniformes
+%----       Euptilotis_neoxenus
+  % Bucerotiformes
+%----       Bucorvus_leadbeateri
+  % Piciformes
+%----       Ramphastos_toco
+  % Coraciformes
+%----       Todiramphus_cinnamominus
+% Australavis
+  % Cariamae
+%----       Cariama_cristata
+  % Falconiformes
+%----       Falco_naumanni
+  % Psittaciformes
+%----       Melopsittacus_undulatus
+%----       Forpus_passerinus
+  % Passeriformes
+%----       Toxostoma_recurvirostre
+%----       Parus_atricapillus
+%----       Parus_major
+%----       Passerculus_sandwichensis
+
+% Mammalia
+  % Monotremata
+%----       Ornithorhynchus_anatinus
+%----       Tachyglossus_aculeatus  
+  % Marsupialia
+%----       Didelphis_virginiana
+%----       Sarcophilus_harrisii
+%----       Dasyurus_viverrinus
+%----       Perameles_nasuta
+%----       Phascolarctos_cinereus
+%----       Tarsipes_rostratus
+%----       Lagostrophus_fasciatus
+%----       Lagorchestes_conspicillatus
+%----       Lagorchestes_hirsutus
+%----       Macropus_agilis
+%----       Macropus_antilopinus
+%----       Macropus_eugenii
+%----       Macropus_fuliginosus
+%----       Macropus_giganteus
+%----       Macropus_parma
+%----       Macropus_rufogriseus
+%----       Macropus_rufus
+%----       Onychogalea_fraenata
+%----       Petrogale_xanthopus
+%----       Setonix_brachyurus
+%----       Wallabia_bicolor
+  % Xenarthra
+%----       Myrmecophaga_tridactyla
+%----       Dasypus_novemcinctus
+  % Afrotheria
+%----       Loxodonta_africana
+%----       Elephas_maximus
+%----       Trichechus_inunguis
+%----       Procavia_capensis
+%----       Orycteropus_afer
+%----       Macroscelides_proboscideus
+%----       Hemicentetes_semispinosus
+  % Laurasiatheria
+%----       Sorex_araneus
+%----       Erinaceus_europaeus
+%----       Pipistrellus_pipistrellus
+%----       Desmodus_rotundus
+%----       Carollia_perspicillata
+%----       Manis_crassicaudata
+%----       Crocuta_crocuta
+%----       Panthera_leo
+%----       Vulpes_vulpes
+%----       Meles_meles
+%----       Ursus_arctos
+%----       Callorhinus_ursinus_f
+%----       Mirounga_leonina
+%----       Odocoileus_virginianus
+%----       Aepyceros_melampus
+%----       Bos_primigenius_Angus_f
+%----       Bos_primigenius_Angus_m
+%----       Bos_primigenius_Holstein_f
+%----       Bos_primigenius_Holstein_m
+%----       Bos_primigenius_Brahman_f
+%----       Bos_primigenius_Brahman_m
+%----       Hippopotamus_amphibius
+%---C       Balaenoptera_musculus
+%---C       Phocoena_phocoena
+%----       Delphinus_delphis
+%----       Tapirus_terrestris
+%----       Rhinoceros_unicornis
+%----       Dicerorhinus_sumatrensis
+%----       Ceratotherium_simum
+  % Euarchontoglires
+%----       Microtus_cabrerae
+%----       Mus_musculus
+%----       Rattus_norvegicus
+%----       Heterocephalus_glaber
+%----       Cavia_cutleri
+%----       Hydrochoerus_hydrochaeris
+%----       Hystrix_africaeaustralis
+%----       Oryctolagus_cuniculus
+%----       Lepus_europaeus
+%----       Galeopterus_variegatus
+%----       Tupaia_glis
+%----       Nycticebus_coucang
+%----       Loris_tardigradus
+%----       Galago_senegalensis
+%----       Tarsius_tarsier
+%----       Microcebus_murinus
+%----       Daubentonia_madagascariensis
+%----       Lepilemur_mustelinus
+%----       Varecia_variegata
+%----       Propithecus_diadema
+%----       Callithrix_pygmaea
+%----       Callithrix_jacchus
+%----       Leontopithecus_rosalia
+%----       Aotus_trivirgatus
+%----       Pithecia_pithecia
+%----       Cebus_capucinus
+%----       Saimiri_sciureus
+%----       Alouatta_palliata
+%----       Chlorocebus_aethiops
+%----       Papio_hamadryas
+%----       Nasalis_larvatus
+%----       Macaca_mulatta
+%----       Hylobates_lar
+%----       Symphalangus_syndactylus
+%----       Pongo_pygmaeus
+%----       Gorilla_gorilla
+%----       Pan_troglodytes
+%----       Homo_sapiens
