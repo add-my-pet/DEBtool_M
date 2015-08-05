@@ -35,7 +35,7 @@ function warning_abj(p)
   end
   
   pars_tj = [c.g; c.k; c.l_T; c.v_Hb; c.v_Hj; c.v_Hp];
-  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, r_j, r_B, info] = get_tj(pars_tj, f);
+  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, r_j, r_B, info] = get_tj(pars_tj, p.f);
   pars_tm = [c.g; c.l_T; p.h_a/ c.k_M^2; p.s_G];     % compose parameter vector
   t_m = get_tm_s(pars_tm, 1);              % -, scaled mean life span
 
