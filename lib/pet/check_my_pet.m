@@ -600,7 +600,7 @@ end
 % checking for the pseudodate predictions in data (assuming each psd point has length 1)
 if prdpsdexist 
   for i = 1:length(prdpsdFields)
-    if ~sum(strcmp(psdfields, prdpsdFields(i)))
+    if ~sum(strcmp(psdFields, prdpsdFields(i)))
       fprintf(['There is a prediction defined for psd.', prdpsdFields{i}, ' but there is no corresponding pseudodata point. \n']);
     end
   end
