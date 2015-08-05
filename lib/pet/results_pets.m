@@ -84,7 +84,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
       k = size(var, 2);
       if k == 2 
-        counter = counter + 1; 
         if exist(['results_', pets{i}, '.m'], 'file')
           feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
         else
@@ -102,7 +101,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               else
                 plotColours = plotColours4AllSets{4};
               end
-              figure;
+              figure; counter = counter + 1; 
               hold on;
               set(gca,'Fontsize',12); 
               set(gcf,'PaperPositionMode','manual');
@@ -119,7 +118,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               end
               title(metaData.(currentPet).grp.caption{strcmp(grpSet1st, nm{j})});
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
-              figure;
+              figure; counter = counter + 1;
               set(gca,'Fontsize',12); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
@@ -133,7 +132,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);              
             end
           else
-            figure;
+            figure; counter = counter + 1; 
             set(gca,'Fontsize',12); 
             set(gcf,'PaperPositionMode','manual');
             set(gcf,'PaperUnits','points'); 
@@ -148,13 +147,15 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end
         end
         if results_output == 2  % save graphs to .png
-          graphnm = ['results_', pets{i}, '_'];
-          if counter < 10
-            figure(counter)  
-            eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
-          else
-            figure(counter)  
-            eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+          if counter > 0
+            graphnm = ['results_', pets{i}, '_'];
+            if counter < 10
+              figure(counter)  
+              eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
+            else
+              figure(counter)  
+              eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+            end
           end
         end
       end
