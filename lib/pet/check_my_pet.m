@@ -73,7 +73,7 @@ end
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-bibNotToCheck = {'Kooy2010'};    % list of bib references that does not need to have an explicit reference
+bibNotToCheck = {'Kooy2010', 'LikaKear2011'};    % list of bib references that does not need to have an explicit reference
 
 if exist(['mydata_', speciesnm], 'file')~=2
   fprintf(['There is no mydata_', speciesnm,' file.\n']);
@@ -345,7 +345,9 @@ end
 % checking the existence of bibkeys in the biblist structure
 if sum(strcmp(fields(metaData), 'biblist'))
   biblistFields = fields(metaData.biblist);
-  biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
+  for i = 1:length(bibNotToCheck)
+      biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck{i}));    % bibNotToCheck defined at the beginning of mydata section
+  end
   bibkeyMarker = length(fields(txtData.bibkey));
   for i = 1:length(bibkeyFields)
     if i > bibkeyMarker
