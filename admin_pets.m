@@ -243,7 +243,7 @@
 %--?C       Danio_rerio
 %--SC       Pimephales_promelas
   % Characiformes
-%---C       Hydrocynus_vittatus
+%--SC       Hydrocynus_vittatus
   % Gymnotiformes
 %---C       Electrophorus_electricus
   % Siluriformes
