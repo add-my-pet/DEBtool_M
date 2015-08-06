@@ -4,6 +4,7 @@
 %%
 function curator_report(speciesnm)
   % created 2015/08/01 by Goncalo Marques
+  % modified 2015/08/06 Dina Lika
   
   %% Syntax 
   % <../curator_report.m *curator_report*> (speciesnm)
@@ -175,23 +176,47 @@ copyfile(filenm1,filenm2)
 
 fprintf('Run estimation, check if there is successful convergence:\n\n');
 
-s = input('Do you want to run estimation automatically? - if so enter 1, otherwise enter 0:   ')
+autoEst = input('Do you want to run estimation automatically? - if so enter 1, otherwise enter 0: ');
 
-if s
+if autoEst
 eval(['run_', speciesnm]);
-
-pause
 
 fprintf('Restart from .mat after first convergence. Press enter:\n\n');
 
+pause
+
 eval(['run_', speciesnm]);
 
-[info_par, info_metaPar, info_txtPar] = matismat_DINA( speciesnm, [speciesnm, '_author']);
+[info_par, info_metaPar, info_txtPar] = matismat(speciesnm, [speciesnm, '_author']);
 
 if info_par
     fprintf('The parameter values were obtained after continuation from .mat file.\n');
 else
-    fprintf('The parameter values were obtained after continuation from .mat file.\n');
+    fprintf('The parameter values were not obtained after continuation from .mat file.\n');
 end
 
 end
+
+pointNumber = pointNumber + 1;
+
+% check implied properties 
+fprintf('\n%d. Check implied model properties and parameter values of my_pet. Creates my_pet.html.\n\n', pointNumber);
+prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
+
+if prnt
+    print_my_pet_html(metaData, metaPar, par, txtPar)
+elseif strcmp(metaPar.model,'std')
+    [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
+elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
+    [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
+end
+
+pointNumber = pointNumber + 1;
+
+% check bibliography
+
+fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
+ 
+print_bib_my_pet(metaData.species,metaData.biblist)
+
+
