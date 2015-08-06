@@ -2,12 +2,12 @@
 % Creates my_pet.html 
 
 %%
-function print_my_pet_html(metadata, metapar, par, txt_par, chem)
+function print_my_pet_html(metaData, metaPar, par, txtPar)
 % created 2015/04/11 by Starrlight (heavily inspired by a file created by Bas Kooijman)
 % modified 2015/07/27 by starrlight
 
 %% Syntax
-% <../print_my_pet_html.m *print_my_pet_html*> (imetadata, par, chem, stat) 
+% <../print_my_pet_html.m *print_my_pet_html*> (metaData, metaPar, par, txtPar) 
 
 %% Description
 % Read and writes my_pet.html. This pages contains a list of implied model
@@ -15,9 +15,8 @@ function print_my_pet_html(metadata, metapar, par, txt_par, chem)
 %
 % Input:
 %
-% * metadata: structure
+% * metaData: structure
 % * par: structure
-% * chem: structure
 % * stat: structure
 
 
@@ -28,9 +27,9 @@ function print_my_pet_html(metadata, metapar, par, txt_par, chem)
 
 %% Example of use
 % load('results_my_pet.mat');
-% print_my_pet_html(metadata)
+% print_my_pet_html(metaData)
 
-v2struct(metadata); 
+v2struct(metaData); 
 
 n_author = length(author);
 
@@ -74,7 +73,7 @@ txt_date_mod_1 =  '';
 end  
 
 % default parameters for model std after Marques et al 2015 - 
-if strcmp(metapar.model,'abj')
+if strcmp(metaPar.model,'abj')
     fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hj'; 'E_Hp'; 'h_a'; 's_G'};
 else
@@ -86,8 +85,8 @@ end
 % my_pet:
 par_aux   = rmfield_wtxt(par, fields_std{1});
 par_aux   = rmfield_wtxt(par_aux, 'free');
-label_aux = rmfield_wtxt(txt_par.label, fields_std{1});
-units_aux = rmfield_wtxt(txt_par.units, fields_std{1});
+label_aux = rmfield_wtxt(txtPar.label, fields_std{1});
+units_aux = rmfield_wtxt(txtPar.units, fields_std{1});
 for j = 2:length(fields_std)
 par_aux   = rmfield_wtxt(par_aux, fields_std{j});
 label_aux = rmfield_wtxt(label_aux, fields_std{j});
@@ -98,8 +97,8 @@ end
 [fields_aux, nst] = fieldnmnst_st(par_aux); 
 par_std   = rmfield_wtxt(par, fields_aux{1});
 par_std   = rmfield_wtxt(par_std, 'free');
-label_std = rmfield_wtxt(txt_par.label, fields_aux{1});
-units_std = rmfield_wtxt(txt_par.units, fields_aux{1});
+label_std = rmfield_wtxt(txtPar.label, fields_aux{1});
+units_std = rmfield_wtxt(txtPar.units, fields_aux{1});
 for j = 2:nst
 par_std   = rmfield_wtxt(par_std, fields_aux{j});
 label_std = rmfield_wtxt(label_std, fields_aux{j});
@@ -128,7 +127,7 @@ col_par.h_a = '#BDC6DE';  col_par.s_G = '#BDC6DE';
 % make structure with label, units and values of statistics
 % statistics we would like to see on the web:
 
-if strcmp(metapar.model,'abj')
+if strcmp(metaPar.model,'abj')
     fields_stat = {'c_T'; ...
     's_M'; 's_H'; 's_s'; ...'E_0'; 'W_0';'del_Ub'; ...
     'a_b'; 'a_j'; 'a_p'; 'a_99'; ...
@@ -139,8 +138,8 @@ if strcmp(metapar.model,'abj')
     'VO_b'; 'VO_j'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_j'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_j'; 'RQ_p'; 'RQ_i'};
-[stat, txt_stat] = statistics_abj(par, chem, metadata.T_typical, metapar.T_ref, 1, metapar.model);
-elseif strcmp(metapar.model,'ssj') % not correct but ok for now
+[stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model);
+elseif strcmp(metaPar.model,'ssj') % not correct but ok for now
 fields_stat = {'c_T'; ...
     's_H'; 's_s'; ...
     'E_0'; 'W_0';'del_Ub'; ...
@@ -152,7 +151,7 @@ fields_stat = {'c_T'; ...
     'VO_b'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_p'; 'RQ_i'};    
-[stat, txt_stat] = statistics_ssj(par, chem, metadata.T_typical, metapar.T_ref, 1, metapar.model);
+[stat, txt_stat] = statistics_ssj(par, metaData.T_typical, 1, metaPar.model);
 else % std, stx, stf ...
 fields_stat = {'c_T'; ...
     's_H'; 's_s'; ...
@@ -165,7 +164,7 @@ fields_stat = {'c_T'; ...
     'VO_b'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_p'; 'RQ_i'};
-[stat, txt_stat] = statistics_std(par, chem, metadata.T_typical, metapar.T_ref, 1, metapar.model);
+[stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model);
 end
 [fields, nst] = fieldnmnst_st(stat); 
 for  i = 1:length(fields_stat)
@@ -190,7 +189,7 @@ col_stat.p_t_b = '#FFFFC6'; col_stat.p_t_p = '#FFFFC6'; col_stat.p_t_i = '#FFFFC
 col_stat.RQ_b = '#FFFF9C'; col_stat.RQ_p = '#FFFF9C'; col_stat.RQ_i = '#FFFF9C';
 
 
-if strcmp(metapar.model,'abj')
+if strcmp(metaPar.model,'abj')
     col_stat.s_M = '#F7BDDE'; 
     description.E_Hj  = 'maturity at metamorphosis';
     col_par.E_Hj = col_par.E_Hb;
@@ -225,37 +224,33 @@ description.E_Hp  = 'maturity at puberty';
 description.h_a   = 'Weibull aging acceleration';
 description.s_G   = 'Gompertz stress coefficient';
 
-
-
-
-v2struct(chem);
 chem_out = { ...
 % temperature  #FFC6A5    
-'#FFC6A5', 'mu_X', mu_X,  'J/ mol', 'chemical potential of food'  
-'#FFC6A5', 'mu_V', mu_V,  'J/ mol', 'chemical potential of structure'    
-'#FFC6A5', 'mu_E', mu_E,  'J/ mol', 'chemical potential of reserve'    
-'#FFC6A5', 'mu_P', mu_P,  'J/ mol', 'chemical potential of faeces'   
+'#FFC6A5', 'mu_X', par.mu_X,  'J/ mol', 'chemical potential of food'  
+'#FFC6A5', 'mu_V', par.mu_V,  'J/ mol', 'chemical potential of structure'    
+'#FFC6A5', 'mu_E', par.mu_E,  'J/ mol', 'chemical potential of reserve'    
+'#FFC6A5', 'mu_P', par.mu_P,  'J/ mol', 'chemical potential of faeces'   
 %
-'#CEEFBD', 'd_X',   d_X,  'g/cm^3', 'specific density of food'   
-'#CEEFBD', 'd_V',   d_V,  'g/cm^3', 'specific density of structure'   
-'#CEEFBD', 'd_E',   d_E,  'g/cm^3', 'specific density of reserve'   
-'#CEEFBD', 'd_P',   d_P,  'g/cm^3', 'specific density of faeces' 
+'#CEEFBD', 'd_X',   par.d_X,  'g/cm^3', 'specific density of food'   
+'#CEEFBD', 'd_V',   par.d_V,  'g/cm^3', 'specific density of structure'   
+'#CEEFBD', 'd_E',   par.d_E,  'g/cm^3', 'specific density of reserve'   
+'#CEEFBD', 'd_P',   par.d_P,  'g/cm^3', 'specific density of faeces' 
 % 
-'#DEF3BD', 'n_HX',    n_O(2,1),  '-',     'chem. index of hydrogen in food'   
-'#DEF3BD', 'n_OX',    n_O(3,1),  '-',     'chem. index of oxygen in food'     
-'#DEF3BD', 'n_NX',    n_O(4,1),  '-',     'chem. index of nitrogen in food'   
+'#DEF3BD', 'n_HX',    par.n_HX,  '-',     'chem. index of hydrogen in food'   
+'#DEF3BD', 'n_OX',    par.n_OX,  '-',     'chem. index of oxygen in food'     
+'#DEF3BD', 'n_NX',    par.n_NX,  '-',     'chem. index of nitrogen in food'   
 % 
-'#FFFF9C', 'n_HV',    n_O(2,2),  '-',     'chem. index of hydrogen in structure'     
-'#FFFF9C', 'n_OV',    n_O(3,2),  '-',     'chem. index of oxygen in structure'    
-'#FFFF9C', 'n_NV',    n_O(4,2),  '-',     'chem. index of nitrogen in structure'    
+'#FFFF9C', 'n_HV',    par.n_HV,  '-',     'chem. index of hydrogen in structure'     
+'#FFFF9C', 'n_OV',    par.n_OV,  '-',     'chem. index of oxygen in structure'    
+'#FFFF9C', 'n_NV',    par.n_NV,  '-',     'chem. index of nitrogen in structure'    
 % 
-'#FFFFC6', 'n_HE',    n_O(2,3),  '-',     'chem. index of hydrogen in reserve'  
-'#FFFFC6', 'n_OE',    n_O(3,3),  '-',     'chem. index of oxygen in reserve'
-'#FFFFC6', 'n_NE',    n_O(4,3),  '-',     'chem. index of nitrogen in reserve'
+'#FFFFC6', 'n_HE',    par.n_HE,  '-',     'chem. index of hydrogen in reserve'  
+'#FFFFC6', 'n_OE',    par.n_OE,  '-',     'chem. index of oxygen in reserve'
+'#FFFFC6', 'n_NE',    par.n_NE,  '-',     'chem. index of nitrogen in reserve'
 % 
-'#94D6E7', 'n_HP',    n_O(2,4),  '-',     'chem. index of hydrogen in faeces' 
-'#94D6E7', 'n_OP',    n_O(3,4),  '-',     'chem. index of oxygen in faeces' 
-'#94D6E7', 'n_NP',    n_O(4,4),  '-',     'chem. index of nitrogen in faeces' 
+'#94D6E7', 'n_HP',    par.n_HP,  '-',     'chem. index of hydrogen in faeces' 
+'#94D6E7', 'n_OP',    par.n_OP,  '-',     'chem. index of oxygen in faeces' 
+'#94D6E7', 'n_NP',    par.n_NP,  '-',     'chem. index of nitrogen in faeces' 
 };
 
 % --------------------------------------------------
@@ -287,7 +282,7 @@ fprintf(oid, '<TABLE CELLSPACING=60><TR VALIGN=TOP><TD>\n');
 
 % statistics table (column 1):
 fprintf(oid, '      <TABLE>\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Properties temperature corrected to %g deg. C (f = %g) </TH></TR>\n', metadata.T_typical - 273.15, 1);
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Properties temperature corrected to %g deg. C (f = %g) </TH></TR>\n', metaData.T_typical - 273.15, 1);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
   for i = 1:  size(fields_stat,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
@@ -303,7 +298,7 @@ fprintf(oid, '    </TD><TD>\n');
 %% primary parameters tables:
    
 fprintf(oid, '    <TABLE>\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Primary parameters at reference temperature (%g deg. C)</TH></TR>\n', metapar.T_ref - 273.15);
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Primary parameters at reference temperature (%g deg. C)</TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
   for i = 1:  size(fields_std,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
@@ -332,7 +327,7 @@ fprintf(oid, '    </TD>\n');
 
 fprintf(oid, '    <TD>\n');  
 fprintf(oid, '    <TABLE>\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Parameters specific for this entry (%g deg. C) </TH></TR>\n', metapar.T_ref - 273.15);
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Parameters specific for this entry (%g deg. C) </TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
   for i = 1:  size(fields_aux,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...

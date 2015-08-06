@@ -1,10 +1,11 @@
 %% statistics_abj
 % Computes implied properties of standard DEB model with acceleration at birth
 
-function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_ref from metapar or input like T?
+function [stat, txt_stat] = statistics_abj(par, T, f, model) %% T_ref from metaPar or input like T?
 % created 2000/11/02 by Bas Kooijman, modified 2014/03/17 
 % created 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight
+% modified 2015/08/06 by Dina Lika
 
 %% function still under construction
 
@@ -16,9 +17,8 @@ function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_r
 %
 % Inputs:
 %
-% * par :  structure with primary parameters at reference temperature
-% * chem:  structure with chemical parameters for each field
-% * T:     scalar with temperature in Kelvin
+% * par :  structure with parameters at reference temperature
+% * T:     scalar with typical temperature in Kelvin
 % * T_ref: scalar with reference temperature in Kelvin
 % * f:     scalar (between 0 and 1) scaled functional response
 % * model: 3 letter string with model key
@@ -28,7 +28,7 @@ function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_r
 % * structure with statistics
 
 %% Syntax
-% stats = statistics_abj(par, chem, T, T_ref, f, foetus)
+% stats = statistics_abj(par, T, T_ref, f, model)
 
 %% Comments
 % If the shape coefficient $\delta_M$ is not in the par structure then the
@@ -37,9 +37,8 @@ function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_r
 
 %% Example
 
-
-cp = parscomp_st(par,chem);
-v2struct(cp); v2struct(par);  v2struct(chem); 
+cPar = parscomp_st(par);
+vars_pull(cPar);  vars_pull(par);
 
 par_names = fields(par);
 % mat_lev = par_names(strncmp(par_names, 'E_H', 3));
@@ -276,7 +275,9 @@ label.h_G = 'Gompertz aging rate';             units.h_G = '1/d';   stat.h_G  = 
 %%
 % mass fluxes for L = L_i = s_M (f L_m - L_T)
 
-mu_O = [mu_X; mu_V; mu_E; mu_P];
+ mu_Or = [mu_X; mu_V; mu_E; mu_P]; % J/mol, chemical potentials for organics
+
+ mu_M = [mu_C; mu_H; mu_O; mu_N];  % chemical potential of minerals
 
 p_ref = p_Am * L_m^2;        % max assimilation power at max size
 
@@ -301,6 +302,8 @@ end
 % VO_b = J_M(3,2)/ W_b/ 24/ X_gas; % L/g.h, dioxygen use per gram max dry weight, <J_OD>
 % p_t_b = sum(- J_O' * mu_O - J_M' * mu_M); % J/d, dissipating heat
 
+X_gas = T_ref/ T/ 24.4;  % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
+
 for i = 1:length(mat_ind)
   stri = mat_ind{i};
   labeli = mat_label{i};
@@ -312,7 +315,7 @@ for i = 1:length(mat_ind)
   eval(['WQ_', stri, ' = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3));']); % mol H/ mol O, water quotient
   eval(['SDA_', stri, ' = J_M(3,1)/ J_O(1,1);']);                 % mol O/mol X, specific dynamic action
   eval(['VO_', stri,  ' = J_M(3,2)/ W_', stri, '/ 24/ X_gas;']);  % L/g.h, dioxygen use per gram max dry weight, <J_OD>
-  eval(['p_t_', stri, ' = sum(- J_O'' * mu_O - J_M'' * mu_M);']); % J/d, dissipating heat
+  eval(['p_t_', stri, ' = sum(- J_O'' * mu_Or - J_M'' * mu_M);']); % J/d, dissipating heat
 
   %temperature corrections
   eval(['VO_', stri, ' = VO_', stri, ' * TC; p_t_', stri, ' = p_t_', stri, ' * TC;']); 
