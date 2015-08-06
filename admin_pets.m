@@ -245,7 +245,7 @@
   % Characiformes
 %--SC       Hydrocynus_vittatus
   % Gymnotiformes
-%---C       Electrophorus_electricus
+%--SC       Electrophorus_electricus
   % Siluriformes
 %---C       Silurus_glanis
 %---C       Pangasianodon_hypophthalmus
