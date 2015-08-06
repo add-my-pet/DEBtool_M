@@ -1,8 +1,13 @@
 %% Entry administration: replace ---- by WRSC then fully done
+%
 % W: added to web = removed from Dropbox
 % R: ready for web = move from submitted to ready in Dropbox
 % S: submitted = added to Dropbox
-% C: converted from old to (rather) new
+% C: converted from old to new
+
+% If Laure or Dina remove an entry from submitted for review, please put a L or D on the R-position, so that we can know where missing entries are.
+% Please keep the number entries and time of being removed to a minimum. Replace L or D by R when you put them in the ready-folder
+%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Cnidaria
@@ -234,7 +239,7 @@
   % Gonorynchiformes
 %---C       Chanos_chanos
   % Cypriniformes
-%---C        Danio_rerio
+%---C       Danio_rerio
 %---C       Pimephales_promelas
   % Characiformes
 %---C       Hydrocynus_vittatus
