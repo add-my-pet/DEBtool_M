@@ -240,8 +240,8 @@
   % Gonorynchiformes
 %--SC       Chanos_chanos
   % Cypriniformes
-%---C       Danio_rerio
-%---C       Pimephales_promelas
+%--?C       Danio_rerio
+%--SC       Pimephales_promelas
   % Characiformes
 %---C       Hydrocynus_vittatus
   % Gymnotiformes
