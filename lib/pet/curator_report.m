@@ -126,6 +126,7 @@ nonChemParFields = setdiff(auxParFields, auxParFields(cellfun(@(s) ~isempty(strf
 
 EparFields = get_parfields(metaPar.model);
 extraParFields = setdiff(nonChemParFields, EparFields);
+extraParFields = setdiff(extraParFields, {'T_ref', 'T_A', 'f'});
 
 fprintf('Extra parameters\n');
 for i = 1:length(extraParFields)
