@@ -7,6 +7,7 @@
 
 % If Laure or Dina remove an entry from submitted for review, please put a L or D on the R-position, so that we can know where missing entries are.
 % Please keep the number entries and time of being removed to a minimum. Replace L or D by R when you put them in the ready-folder
+% Starrlight places the W when she removes the entry from ready for the web
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -237,7 +238,7 @@
 %--SC       Engraulis_encrasicolus
 %--SC       Chirocentrus_dorab
   % Gonorynchiformes
-%---C       Chanos_chanos
+%--SC       Chanos_chanos
   % Cypriniformes
 %---C       Danio_rerio
 %---C       Pimephales_promelas
