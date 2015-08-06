@@ -42,10 +42,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   [MRE, RE] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
-  if MRE == -999 
-        fprintf('\n The parameter set in .mat file is unrealistic and did not pass the customized filters.\n');
-      return
-  end
   metaPar.MRE = MRE; metaPar.RE = RE;
   data2plot = data;
 
