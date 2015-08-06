@@ -397,11 +397,25 @@ end
 
 % checking the consistency of group setting for plotting
 if isfield(metaData, 'grp')
-  grpFields = fields(metaData.grp);
   setsInGroups = horzcat(metaData.grp.sets{:});
   for i = 1:length(setsInGroups)
     if ~sum(strcmp(setsInGroups(i), dataFields))
       fprintf(['The data set ', setsInGroups{i}, ' in grp setting for plotting is not defined in data. \n']);
+    end
+  end
+  
+  % checking the units in a group
+  %grpNumber = length(metaData.grp.sets);
+  for i = 1:length(metaData.grp.sets)
+    unitsOf1stSet = txtData.units.(metaData.grp.sets{i}{1});
+    labelOf1stSet = txtData.label.(metaData.grp.sets{i}{1});
+    for j = 2:length(metaData.grp.sets{i})
+      if sum(strcmp(unitsOf1stSet, txtData.units.(metaData.grp.sets{i}{j}))) ~= 2
+        fprintf(['The sets ', metaData.grp.sets{i}{1}, ' and ' metaData.grp.sets{i}{j}, ' are in the same group for plotting but have different units. \n']);
+      end
+      if sum(strcmp(labelOf1stSet, txtData.label.(metaData.grp.sets{i}{j}))) ~= 2
+        fprintf(['The sets ', metaData.grp.sets{i}{1}, ' and ' metaData.grp.sets{i}{j}, ' are in the same group for plotting but have different labels. \n']);
+      end
     end
   end
 end
@@ -445,11 +459,20 @@ if isempty(EparFields)
   fprintf(['The model ', metaPar.model, ' is not one of the predefined models. \n']);
 end
 
+parFields2Check = [EparFields, 'T_A', 'f'];
+
 % checking the existence of par fields
-for i = 1:length(EparFields)
-  if ~isfield(par, EparFields{i})
-    fprintf(['The parameter ', EparFields{i}, ' is missing in the par structure. \n']);
+for i = 1:length(parFields2Check)
+  if ~isfield(par, parFields2Check{i})
+    fprintf(['The parameter ', parFields2Check{i}, ' is missing in the par structure. \n']);
   end
+end
+
+% checking the T_ref
+if ~isfield(par, 'T_ref')
+    fprintf('The parameter T_ref is missing in the par structure. \n');
+elseif par.T_ref ~= C2K(20)
+    fprintf('The parameter T_ref is not 20ºC (or 293.15K) and it should be. \n');
 end
 
 % checking the existence of free in the par structure and if it is filled with either 0 or 1
