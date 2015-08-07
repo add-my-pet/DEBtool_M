@@ -22,11 +22,12 @@ function [par, metaPar, txtPar] = pars_init_my_pet(metaData)
   % * metaPar: structure with information on metaparameters
   % * txtPar: structure with information on parameters
 
-% parameters: initial values at reference temperature:
-metaPar.model = 'std'; % see online manual for explanation and alternatives 
+% parameters: initial values at reference temperature T_ref
+% model type : see online manual for explanation and alternatives 
 % be aware that each model type is associated with a specific list of core
 % primary parameters. Those listed here are for model 'std'. See the manual
 % for parameters associated with the other model types.
+metaPar.model = 'std'; 
 
 % edit the values below such that predictions are not too far off;
 % the values must be set in the standard DEB units:
