@@ -96,8 +96,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             allSetsInGroup = horzcat(metaData.(currentPet).grp.sets{:});
             if sum(strcmp(grpSet1st, nm{j})) 
               sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
-              if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of ses to plot
-                plotColours = plotColours4AllSets{length(sets2plot) - 1}; 
+              n_sets2plot = length(sets2plot);
+              if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
+                plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
               else
                 plotColours = plotColours4AllSets{4};
               end
@@ -107,12 +108,17 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
               set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-              for ii = 1: length(sets2plot)
+              for ii = 1: n_sets2plot
                 xData = st.(sets2plot{ii})(:,1); 
                 yData = st.(sets2plot{ii})(:,2);
                 xPred = data2plot.(currentPet).(sets2plot{ii})(:,1); 
                 yPred = prdData.(currentPet).(sets2plot{ii});
-                plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
+                if n_sets2plot == 1
+                  plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 4)
+                  plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',20)
+                else
+                  plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
+                end
                 xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
                 ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
