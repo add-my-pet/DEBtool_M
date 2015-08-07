@@ -45,6 +45,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   metaPar.MRE = MRE; metaPar.RE = RE;
   data2plot = data;
 
+  if results_output == 2 % to avoid saving figures generated prior the current run
+      close all
+  end
+  
   for i = 1:length(pets)
     currentPet = ['pet',num2str(i)];
     st = data2plot.(currentPet); 
