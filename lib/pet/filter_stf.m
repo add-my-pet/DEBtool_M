@@ -51,7 +51,7 @@ function [filter, flag] = filter_stf(p)
     return;
   end
 
-  if f > 1
+  if p.kap > 1
     flag = 2;
     return;
   end
@@ -71,7 +71,7 @@ function [filter, flag] = filter_stf(p)
     return;
   end
 
-  if c.k * c.v_Hp >= f^3 % constraint required for reaching puberty
+  if c.k * c.v_Hp >= p.f^3 % constraint required for reaching puberty
     flag = 5;    
     return;
   end
