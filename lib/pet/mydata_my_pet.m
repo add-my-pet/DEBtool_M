@@ -16,13 +16,14 @@ function [data, auxData, metaData, txtData, weights] = mydata_my_pet
   % Output
   %
   % * data: structure with data
-  % * auxData: structure with auxilliairy information concerning the data
-  %   (temperature, food, initial size of organisms etc.). auxData is
-  %   unpacked in predict and the user needs to construct predictions
-  %   accordingly.
+  % * auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.). 
+  %   auxData is unpacked in predict and the user needs to construct predictions accordingly.
   % * txtData: text vector for the presentation of results
   % * metaData: structure with info about this entry
   % * weights: structure with weights for each data set
+  
+  %% Remarks
+  % Plots with the same labels and units can be combined into one plot by assigning a cell string with dataset names to metaData.grp,sets, and a caption to metaData.grp.caption. 
   
   %% To do (remove these remarks after editing this file)
   % * copy this template; replace 'my_pet' by the name of your species (Genus_species)
