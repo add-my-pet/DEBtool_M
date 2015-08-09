@@ -615,7 +615,7 @@ else
         fprintf(['The data defined for ', dataFields{i}, ' has a length of ', num2str(ldt), ' but the corresponding prediction has a length of ', num2str(lprdt), '. \n']);
       end
     else 
-      fprintf(['There are no predictions defined for data point/set ', datafields{i}, '. \n']);
+      fprintf(['There are no predictions defined for data point/set ', dataFields{i}, '. \n']);
     end
   end
 end
