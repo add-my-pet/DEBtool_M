@@ -91,7 +91,7 @@ function [lb, info] = get_lb(p, eb, lb0)
     norm = t^2; i = i + 1;
   end
     
-  if i == ni || lb < 0 || lb > 1 || isnan(norm) % no convergence
+  if i == ni || lb < 0 || lb > 1 || isnan(norm) || isnan(lb) % no convergence
     % try to recover with a shooting method
     if isempty(lb0)
       [lb, info] = get_lb2(p, eb);
