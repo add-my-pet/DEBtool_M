@@ -184,6 +184,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       free = par.free;  
       corePar = rmfield_wtxt(par,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
       [parFields, nbParFields] = fieldnmnst_st(corePar);
+      % we need to make a small addition so that it recognised if one of the
+      % chemical parameters was released and then print that to the screen
       for j = 1:nbParFields
         if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
           corePar          = rmfield_wtxt(corePar, parFields{j});
