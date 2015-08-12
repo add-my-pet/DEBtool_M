@@ -51,10 +51,14 @@ function [lb info] = get_lb2(p, eb, lb0)
 
   xb = g/ (eb + g); 
   xb3 = xb^(1/3); 
-    
-  [lb, flag, info] = fzero(@fnget_lb2, lb, [], xb, xb3, g, vHb, k);
-  if lb < 0 || lb > 1
+  
+  if isnan(fnget_lb2(lb, xb, xb3, g, vHb, k))
+    info = 0;
+  else
+    [lb, flag, info] = fzero(@fnget_lb2, lb, [], xb, xb3, g, vHb, k);
+    if lb < 0 || lb > 1 || isnan(lb)
       info = 0;
+    end
   end
   
 end
