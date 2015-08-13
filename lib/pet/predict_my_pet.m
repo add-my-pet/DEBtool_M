@@ -120,12 +120,12 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   ir_B = 3/ k_M + 3 * f * L_m/ v; r_B = 1/ ir_B;             % d, 1/von Bert growth rate
   Lw_i = (f * L_m - L_T)/ del_M;                             % cm, ultimate physical length at f
   Lw_b = get_lb(pars_lb, f) * L_m/ del_M;                    % cm, physical length at birth at f
-  EL = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
+  ELw = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
   %
   % length-weight
-  EW = (LW(:,1) * del_M).^3 * (1 + f * w);                   % g, expected wet weight at time
+  EWw = (LW(:,1) * del_M).^3 * (1 + f * w);                   % g, expected wet weight at time
 
   % pack to output
   % the names of the fields in the structure must be the same as the data names in the mydata file
-  prdData.tL = EL;
-  prdData.LW = EW;
+  prdData.tL = ELw;
+  prdData.LW = EWw;

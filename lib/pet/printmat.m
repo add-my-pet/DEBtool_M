@@ -30,7 +30,7 @@ function printmat(my_pet)
   load(filenm, 'par', 'metaPar', 'txtPar');           % load results
  
  
-  filenm = ['results_', my_pet, '.m'];                         % customized presentation for univariate data
+  filenm = ['results_', my_pet, '.m'];                % customized presentation for univariate data
   if exist(filenm, 'file')
     feval(['results_', my_pet], par, metaPar, txtPar, data, auxData, metaData, txtData, weights); % get predictions
   else
@@ -42,3 +42,4 @@ function printmat(my_pet)
     aux = weights; clear weights; weights.pet1 = aux;
     results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights); 
   end  
+  
