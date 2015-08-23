@@ -204,6 +204,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     end
   end
+  
+close all;  
 end
 
 function plotColours4AllSets = listOfPlotColours4UpTo13Sets
@@ -222,3 +224,5 @@ function plotColours4AllSets = listOfPlotColours4UpTo13Sets
                          {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, .75], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}};
 
 end
+
+
