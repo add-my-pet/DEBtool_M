@@ -15,8 +15,8 @@ function [coreParFields, info] = get_parfields(model)
   % Input
   %
   % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'abj',
-  % 'asj'. The the model doesn't exist the output is empty
-  %  * info: scalar 1 for sucess 0 for failure
+  % 'asj'. If the model doesn't exist, the output is empty
+  %  * info: scalar 1 for sucess, 0 for failure
   % 
   
   %% Remarks

@@ -82,7 +82,9 @@ switch phylum
               d_V = 0.08;
             otherwise % Ascidiacea
               d_V = 0.06;
-        end    
+        end 
+    case 'my_pet_phylum'
+        d_V = 0.1;
     otherwise
         fprintf('warning from get_d_V: taxon could not be identified: d_V = 0.1 g/cm^3\n')
         d_V = 0.1; info = 0;
