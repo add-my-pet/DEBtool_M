@@ -36,11 +36,11 @@ function [data, auxData, metaData, txtData, weights] = mydata_my_pet
 
 %% set metaData
 
-metaData.phylum     = 'phylum'; 
-metaData.class      = 'class'; 
-metaData.order      = 'order'; 
-metaData.family     = 'family';
-metaData.species    = 'my_pet'; 
+metaData.phylum     = 'my_pet_phylum'; 
+metaData.class      = 'my_pet_class'; 
+metaData.order      = 'my_pet_order'; 
+metaData.family     = 'my_pet_family';
+metaData.species    = 'my_pet'; % 
 metaData.species_en = 'my_pet_english_name'; 
 metaData.T_typical  = C2K(20); % K, body temp
 metaData.data_0     = {'ab'; 'ap'; 'am'; 'Lb'; 'Lp'; 'Li'; 'Wdb'; 'Wdp'; 'Wdi'; 'Ri'};  % tags for different types of zero-variate data

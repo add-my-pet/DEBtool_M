@@ -98,6 +98,15 @@ if ~strcmp(speciesnm, metaData.species)
   fprintf(['In mydata_',speciesnm,'.m: The species name in metaData.species does not match the species name in the mydata file name.\n']);
 end
 
+for i = 1 : 5
+    if strncmp(metaData.(metaDataFields{i}),'my_pet_', 7 ) 
+         fprintf(['In mydata_',speciesnm,'.m: ', metaDataFields{i}, ' still set for my_pet example \n']);
+    end  
+end
+
+    
+
+
 % checking the existence of psd in the data structure
 if sum(strcmp(dataFields, 'psd'))
   dataFields = dataFields(~strcmp(dataFields, 'psd'));
