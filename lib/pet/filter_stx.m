@@ -35,8 +35,13 @@ function [filter, flag] = filter_stx(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
 
-  if a_0 < 0 % all pars must be positive
+  if p.a_0 < 0 % all pars must be positive
     flag = 1;
+    return;
+  end
+  
+  if p.E_Hb >= p.E_Hx || p.E_Hx >= p.E_Hp % maturity at birth, puberty
+    flag = 4;
     return;
   end
   
