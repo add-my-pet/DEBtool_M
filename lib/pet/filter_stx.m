@@ -34,6 +34,11 @@ function [filter, flag] = filter_stx(p)
 %    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html LikaAugu2013>.
 
   filter = 0; flag = 0; % default setting of filter and flag
+
+  if a_0 < 0 % all pars must be positive
+    flag = 1;
+    return;
+  end
   
   [filter, flag] = filter_stf(p);
   
