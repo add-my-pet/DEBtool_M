@@ -126,7 +126,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
                 ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
-              title(metaData.(currentPet).grp.caption{strcmp(grpSet1st, nm{j})});
+              title(metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})});
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
               figure; counter = counter + 1;
               set(gca,'Fontsize',12); 
