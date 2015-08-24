@@ -205,7 +205,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
-close all;  
+ 
 end
 
 function plotColours4AllSets = listOfPlotColours4UpTo13Sets
