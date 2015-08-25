@@ -1,7 +1,7 @@
 %% statistics_std
 % Computes implied properties of standard DEB model 
 
-function [stat, txt_stat] = statistics_std(par, T, f, model) %% T_ref from metapar or input like T?
+function [stat, txt_stat] = statistics_std(par, T, fStat, model) %% T_ref from metapar or input like T?
 % created 2000/11/02 by Bas Kooijman, modified 2014/03/17 
 % created 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % last modified 2015/07/27 by starrlight
@@ -19,15 +19,16 @@ function [stat, txt_stat] = statistics_std(par, T, f, model) %% T_ref from metap
 %
 % * par :  structure with primary parameters at reference temperature
 % * T:     scalar with temperature in Kelvin
-% * f:     scalar (between 0 and 1) scaled functional response
+% * fStat:     scalar (between 0 and 1) scaled functional response
 % * model: 3 letter string with model key
+% NOTA : fStat is used to not be confused with  par.f
 
 % Output:
 % 
 % * structure with statistics
 
 %% Syntax
-% stats = statistics_std(par, T, T_ref, f, model)
+% stats = statistics_std(par, T, f, model)
 
 %% Comments
 % If the shape coefficient $\delta_M$ is not in the par structure then the
@@ -35,6 +36,15 @@ function [stat, txt_stat] = statistics_std(par, T, f, model) %% T_ref from metap
 
 
 %% Example
+
+
+ par.f = fStat; %fStats is user-defined and replaces par.f
+ filternm = ['filter_', model];
+ [pass, flag]  = feval(filternm, par);
+ if ~pass 
+      print_filterflag(flag);
+      error('    The parameter set is not realistic');
+ end
 
 cPar = parscomp_st(par);
 vars_pull(cPar);  vars_pull(par);

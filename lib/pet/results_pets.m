@@ -82,23 +82,21 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   prdData = predict_pets(par, data2plot, auxData);
   
   for i = 1:length(pets)
-    currentPet = ['pet', num2str(i)];
-    st = data.(currentPet); 
-    [nm, nst] = fieldnmnst_st(st);
-    counter = 0;
-    for j = 1:nst
-      fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-      var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
-      k = size(var, 2);
-      if k == 2 
-        if exist(['results_', pets{i}, '.m'], 'file')
-          feval(['results_', pets{i}], par, metaPar, txtPar, data.(currentPet), txtData.(currentPet));
-        else
+    if exist(['custom_results_', pets{i}, '.m'], 'file')
+          feval(['custom_results_', pets{i}], par, metaPar, data.(currentPet), txtData.(currentPet), auxData.(currentPet));
+    else
+      currentPet = ['pet', num2str(i)];
+      st = data.(currentPet); 
+      [nm, nst] = fieldnmnst_st(st);
+      counter = 0;
+      for j = 1:nst
+        fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
+        var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+        k = size(var, 2);
+        if k == 2 
           if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
-            
             plotColours4AllSets = listOfPlotColours4UpTo13Sets;
             maxGroupColourSize = length(plotColours4AllSets) + 1;
-            
             grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
             allSetsInGroup = horzcat(metaData.(currentPet).grp.sets{:});
             if sum(strcmp(grpSet1st, nm{j})) 

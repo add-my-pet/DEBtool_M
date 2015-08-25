@@ -7,7 +7,7 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   % last modified 2015/07/29
   
   %% Syntax
-  % [prdData, info] = <../predict_my_pet.m *predict_my_pet*>(par, chem, data)
+  % [prdData, info] = <../predict_my_pet.m *predict_my_pet*>(par, data, auxData)
   
   %% Description
   % Obtains predictions, using parameters and data
@@ -15,8 +15,8 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   % Input
   %
   % * par: structure with parameters (see below)
-  % * chem: structure with biochemical parameters
   % * data: structure with data (not all elements are used)
+  % * auxData : structure with temp data and other potential environmental data
   %  
   % Output
   %
