@@ -62,12 +62,19 @@ elseif pars_init_method == 2
   [par, metaPar, txtPar] = feval(pars_initnm, metaData.pet1);
 end
 
+if petsnumber > 1
+  cov_rulesnm = ['cov_rules_', metaPar.covRules];
+else
+  cov_rulesnm = 'cov_rules_1species';
+end
+
+
 % check parameter set if you are using a filter
 if filter
   filternm = ['filter_', metaPar.model];
   pass = 1;
   for i = 1:petsnumber
-    [passSpec, flag]  = feval(filternm, mspec_rules_basic(par, 1));
+    [passSpec, flag]  = feval(filternm, feval(cov_rulesnm, par,i));
     if ~passSpec
       fprintf('The seed parameter set is not realistic. \n');
       print_filterflag(flag);
@@ -102,3 +109,5 @@ if filter
     end
   end
 end
+
+function par = cov_rules_1species(par, i)
