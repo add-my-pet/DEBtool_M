@@ -120,17 +120,18 @@ data    = rmfield_wtxt(data, 'psd');
 prdData    = rmfield_wtxt(prdData, 'psd');
 txtData    = rmfield_wtxt(txtData, 'psd');
 
-% cell array of string with fieldnames of data.weight
-[nm, nst] = fieldnmnst_st(data);
+
 
 %-----------------------------------------------------------
 % make table for zero-variate data set:
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="7"><a class="link" href="#" onclick="BoxArt_data2();">Zero-variate</a> data</TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b></TD><TD><b>Predicted</b></TD><TD><b>(RE)</b></TD><TD><b>Unit</b></TD><TD><b>Description</b></TD><TD><b>Reference</b></TD></TR>\n');
-  for j = 1:nst
+% cell array of string with fieldnames of data
+[nm, nst] = fieldnmnst_st(data);
+ for j = 1:nst
  [~, k] = size(data.(nm{j})); % number of data points per set
-    if k == 1 && isempty(strfind(nm{j},'psd.')) % if it is a zero-variate data set
+    if k == 1       
     name = nm{j};
     dta   = data.(nm{j}); 
     prdta = prdData.(nm{j});

@@ -38,7 +38,7 @@ end
   
   fprintf(fid_Spec, '      <TR>\n');
   fprintf(fid_Spec,['        <TD>', phylum, '</TD>  <TD>', CLASS, '</TD> <TD>', order, '</TD> <TD>', family, '</TD> ']);
-  fprintf(fid_Spec,['<TD><A TARGET="_top" HREF="entries_web/',species,'/i_results_', species, '.html">', speciesprintnm, '</A></TD> <TD>', speciesprintnm_en, '</TD> ']);
+  fprintf(fid_Spec,['<TD><A TARGET="_top" HREF="entries_web/i_results_', species, '.html">', speciesprintnm, '</A></TD> <TD>', speciesprintnm_en, '</TD> ']);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFC6A5">%s</TD> ', model);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFE7C6">%8.3f</TD> ', MRE);
   fprintf(fid_Spec, '<TD style="text-align:center"  BGCOLOR = "#FFCE9C">%g</TD>\n', COMPLETE);
