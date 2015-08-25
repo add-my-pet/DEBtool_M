@@ -3,7 +3,7 @@
 
 %%
 function [d_V info] = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman, modified 2015/06/01
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24
   
   %% Syntax
   % d_V = <../get_d_V.m *get_d_V*>

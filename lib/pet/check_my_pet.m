@@ -486,7 +486,7 @@ if sum(strcmp(parFields, 'free'))
       if sum(strcmp(parFields, freeFields(i)))
         freeVal = par.free.(freeFields{i});
         if freeVal ~= 0 && freeVal ~= 1
-          fprintf(['In pars_init_',speciesnm,'.m: The value in free for ', freeFields{i}, ' should be either 0 or 1. \n']);
+          error(['    In pars_init_',speciesnm,'.m: The value in free for ', freeFields{i}, ' should be either 0 or 1']);
         end
       else
         fprintf(['In pars_init_',speciesnm,'.m: There is free defined for ', freeFields{i}, ' but there is no corresponding data. \n']);
@@ -497,7 +497,7 @@ if sum(strcmp(parFields, 'free'))
       if sum(strcmp(parFields(i), freeFields))
         freeVal = eval(['par.free.', parFields{i}]);
         if freeVal ~= 0 && freeVal ~= 1
-          fprintf(['In pars_init_',speciesnm,'.m: The value in free for ', parFields{i}, ' should be either 0 or 1. \n']);
+          error(['    In pars_init_',speciesnm,'.m: The value in free for ', parFields{i}, ' should be either 0 or 1']);
         end
       else
         error(['    In pars_init_',speciesnm,'.m: There is no free defined for data point/set ', parFields{i}]);
