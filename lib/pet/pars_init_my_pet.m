@@ -14,7 +14,8 @@ function [par, metaPar, txtPar] = pars_init_my_pet(metaData)
   %
   % Input
   %
-  % * metaData for names of phylum and class to get d_V
+  % * metaData: structure with info about this entry (needed for names of
+  %   phylum and class to get d_V)
   %  
   % Output
   %

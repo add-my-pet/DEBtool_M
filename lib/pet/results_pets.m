@@ -6,7 +6,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
-
+% modified 2015/08/25 by Dina Lika
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
 
@@ -15,12 +15,15 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 %
 % Input
 % 
-% * txtPar: information on the parameters
 % * par: structure with parameters of species
-% * chem: structure with chemical parameters for species
-% * txtData: structure with information on the data
+% * metaPar: structure with information on metaparameters
+% * txtPar: structure with information on parameters
 % * data: structure with data for species
+% * auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.). 
+%   auxData is unpacked in predict and the user needs to construct predictions accordingly.
 % * metaData: structure with information on the entry
+% * txtData: structure with information on the data
+% * weights: structure with weights for each data set
 
 %% Remarks
 % Depending on <estim_options.html *estim_options*> settings:
