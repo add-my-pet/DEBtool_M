@@ -6,6 +6,7 @@ function print_my_pet_html(metaData, metaPar, par, txtPar)
 % created 2015/04/11 by Starrlight (heavily inspired by a file created by Bas Kooijman)
 % modified 2015/07/27 by starrlight
 % modified 2015/08/06 by Dina
+% modified 2015/08/25 by Starrlight
 
 %% Syntax
 % <../print_my_pet_html.m *print_my_pet_html*> (metaData, metaPar, par, txtPar) 
@@ -82,6 +83,13 @@ fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};
 end
 
+fldsChem = {'mu_X'; 'mu_V'; 'mu_E'; 'mu_P'; 'd_X'; 'd_V'; 'd_E'; 'd_P'; ...
+    'n_CX'; 'n_CV'; 'n_CE'; 'n_CP'; 'n_OX'; 'n_NX'; 'n_HV'; 'n_OV'; 'n_NV'; 'n_HE'; 'n_HX'; 'n_OE'; 'n_NE';'n_HP'; 'n_OP'; 'n_NP';};
+
+fldsOther = {'mu_C'; 'mu_H'; 'mu_O'; 'mu_N'; 'n_CC'; 'n_HC'; 'n_OC'; 'n_NC'; ...
+    'n_CH'; 'n_HH'; 'n_OH'; 'n_NH';'n_CO'; 'n_HO'; 'n_OO'; 'n_NO';'n_CN'; 'n_HN'; 'n_ON'; 'n_NN'};
+
+
 % make structure with label, units and values of parameters specific for
 % my_pet:
 par_aux   = rmfield_wtxt(par, fields_std{1});
@@ -93,6 +101,17 @@ par_aux   = rmfield_wtxt(par_aux, fields_std{j});
 label_aux = rmfield_wtxt(label_aux, fields_std{j});
 units_aux = rmfield_wtxt(units_aux, fields_std{j});
 end
+for j = 1:length(fldsChem)
+par_aux   = rmfield_wtxt(par_aux, fldsChem{j});
+label_aux = rmfield_wtxt(label_aux, fldsChem{j});
+units_aux = rmfield_wtxt(units_aux, fldsChem{j});
+end
+for j = 1:length(fldsOther)
+par_aux   = rmfield_wtxt(par_aux, fldsOther{j});
+label_aux = rmfield_wtxt(label_aux, fldsOther{j});
+units_aux = rmfield_wtxt(units_aux, fldsOther{j});
+end
+
 
 % make structure with label, units and values of standard parameters
 [fields_aux, nst] = fieldnmnst_st(par_aux); 
