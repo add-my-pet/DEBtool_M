@@ -2,9 +2,9 @@
 % Catenates predictions from predict files
 
 %%
-function [prdData, info] = predict_pets(parGrp, data, auxData)
+function [prdData, info] = predict_pets(parGrp, data, auxData, covRulesnm)
 % created 2015/01/17 by Goncalo Marques, modified 2015/03/30 by Goncalo Marques
-% modified 2015/08/03 by Starrlight
+% modified 2015/08/03 by Starrlight, modified 2015/08/26 by Goncalo Marques
 
 %% Syntax
 % [prdData, info] = <../predict_pets.m *predict_pets*>(parGrp, data, auxData)
@@ -17,6 +17,7 @@ function [prdData, info] = predict_pets(parGrp, data, auxData)
 % * parGrp: structure with par for several species
 % * data: structure with data for several species
 % * auxData: structure with auxiliary data for several species
+% * covRulesnm: character string with name of user-defined covariation rules function
 %
 % Output
 %
@@ -27,24 +28,29 @@ global pets pseudodata_pets
 
 info = 0;
 
+petsnumber = length(pets);
+
 % produce pars for species and predict
-for i = 1:length(pets)
+for i = 1:petsnumber
  % for the case with no zoom factor transformation
+  par = feval(covRulesnm, parGrp, i);
   currentPet = sprintf('pet%d',i);
-  [prdData.(currentPet), info] = feval(['predict_', pets{i}], parGrp, data.(currentPet), auxData.(currentPet));
+  [prdData.(currentPet), info] = feval(['predict_', pets{i}], par, data.(currentPet), auxData.(currentPet));
   if ~info
     return;
   end
   
   % predict pseudodata
   if pseudodata_pets == 0 % option of estim
-    prdData.(currentPet) = predict_pseudodata(parGrp, data.(currentPet), prdData.(currentPet));
+    prdData.(currentPet) = predict_pseudodata(par, data.(currentPet), prdData.(currentPet));
   end
 end
 
 if pseudodata_pets == 1
   % predicts pseudodata
-  prdData = predict_pseudodata(parGrp, data, prdData);
+  prdData = predict_pseudodata(feval(covRulesnm, parGrp, 1), data, prdData);
 end
 
 info = 1;
+
+function par = cov_rules_1species(par, i)

@@ -59,35 +59,33 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
   Y = struct2vector(st, nm);
   W = struct2vector(weights, nm);
   
-  parnm = fieldnames(par.free);
-  mapVec2Struct = {};
+  free = par.free; % free is here removed, and after iteration added again
+  q = rmfield(par, 'free'); % copy input parameter matrix into output
+  
+  parnm = fieldnames(free);
+  qfreevec = [];          % vector with free parameters
+  mapVec2Struct = {}; % cell vector with map to go from vector to structure
   for i = 1:length(parnm)
-    currentFree = par.free.(parnm{i});
+    currentFree = free.(parnm{i});
     lCurrentFree = length(currentFree);
     if lCurrentFree == 1 && currentFree == 1
-      qvec = [qvec; par.(parnm{i})];
-      mapVec2Struct(end + 1) = {parnm{i}, 1};
+      qfreevec = [qfreevec; par.(parnm{i})];
+      mapVec2Struct{end + 1} = {parnm{i}, 1};
     elseif lCurrentFree > 1 && sum(currentFree) > 0
       for j = 1:lCurrentFree
-        if par.free.(parnm{i})(j) == 1
-          qvec = [qvec; par.(parnm{i})(j)];
-          mapVec2Struct(end + 1) = {parnm{i}, j};
+        if free.(parnm{i})(j) == 1
+          qfreevec = [qfreevec; par.(parnm{i})(j)];
+          mapVec2Struct{end + 1} = {parnm{i}, j};
         end
       end
     end
   end
   
-  np = numel(parnm);
-  n_par = sum(cell2mat(struct2cell(par.free)));
+  n_par = numel(mapVec2Struct);
   if (n_par == 0)
     return; % no parameters to iterate
   end
-  index = 1:np;
-  index = index(cell2mat(struct2cell(par.free)) == 1);  % indices of free parameters
 
-  free = par.free; % free is here removed, and after iteration added again
-  q = rmfield(par, 'free'); % copy input parameter matrix into output
-  qvec = cell2mat(struct2cell(q));
   info = 1; % convergence has been successful
   
   % set options if necessary
@@ -118,9 +116,9 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
   np1 = n_par + 1;
 
   % Set up a simplex near the initial guess.
-  xin = qvec(index);    % Place input guess in the simplex
+  xin = qfreevec;    % Place input guess in the simplex
   v(:,1) = xin;
-  f = feval(func, q, data, auxData);
+  f = feval(func, q, data, auxData, covRulesnm);
   fv(:,1) = W' * (struct2vector(f, nm) - Y).^2;
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
