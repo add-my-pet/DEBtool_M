@@ -39,8 +39,6 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
     fprintf(['\n acceleration factor s_M is ', num2str(stat.s_M), ' \n'])
   end
 
-  
-  
   % unpack data & predictions
   tL     = data.tL;     % data points first set
   LW     = data.LW;     % data points second set
@@ -53,22 +51,16 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   set(gca,'Fontsize',12, 'Box', 'on')
   set(gcf,'PaperPositionMode','manual');
   set(gcf,'PaperUnits','points'); 
-  set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+  set(gcf,'PaperPosition',[0 0 350 200]);%left bottom width height
          
+  subplot(1,2,1)
   plot(t, EL, 'g', tL(:,1), tL(:,2), '.r', 'markersize', 20, 'linewidth', 2)
   xlabel([txtData.label.tL{1}, ', ', txtData.units.tL{1}])
   ylabel([txtData.label.tL{2}, ', ', txtData.units.tL{2}])
   
-print -dpng results_my_pet_01.png
-  
-  figure % figure to show results of uni-variate data
-  set(gca,'Fontsize',12, 'Box', 'on')
-  set(gcf,'PaperPositionMode','manual');
-  set(gcf,'PaperUnits','points'); 
-  set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-
+  subplot(1,2,2) % figure to show results of uni-variate data
   plot(L, EW, 'g', LW(:,1), LW(:,2), '.r', 'markersize', 20, 'linewidth', 2)
   xlabel([txtData.label.LW{1}, ', ', txtData.units.LW{1}])
   ylabel([txtData.label.LW{2}, ', ', txtData.units.LW{2}])
  
-print -dpng results_my_pet_02.png
+  print -dpng results_my_pet_01.png

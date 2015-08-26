@@ -44,7 +44,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
-  [MRE, RE] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
+  [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
+  if info == 0
+      error(  'One parameter set did not pass the customized filters in the predict file')
+  end
   metaPar.MRE = MRE; metaPar.RE = RE;
   data2plot = data;
 

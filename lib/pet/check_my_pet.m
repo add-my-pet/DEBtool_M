@@ -59,8 +59,6 @@ end
     
 function check_my_pet_stnm(speciesnm)
 
-info = 0;
-
 if ~isempty(strfind(speciesnm, ' '))
   error('   The species name in input should not have spaces.\n The standard species name follow the form ''Genus_species' );
 end
@@ -87,7 +85,13 @@ weightFields = fields(weights);
 % checking the existence of metaData fields
 metaDataFields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
 
-for i = 1:length(metaDataFields)
+for i = 1:2 %phylum and class are needed in get_d_V.m
+    if ~isfield(metaData,metaDataFields{i}) 
+      error(['    In mydata_',speciesnm,'.m: The field ', metaDataFields{i}, ' is missing in metaData']);
+    end  
+end
+
+for i = 3:length(metaDataFields)
   if ~isfield(metaData, metaDataFields{i})
     fprintf(['In mydata_',speciesnm,'.m: The field ', metaDataFields{i}, ' is missing in metaData. \n']);
   end
@@ -554,15 +558,10 @@ end
 filternm = ['filter_', metaPar.model];
 [pass, flag]  = feval(filternm, par);
 if ~pass 
-    fprintf(['In pars_init_',speciesnm,'.m: The seed parameter set is not realistic. \n']);
     print_filterflag(flag);
-    info = 1;
+    error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter \n', print_filterflag(flag)]);
 end
 
-if info == 1
-  fprintf('Due to the problems stated above only the my_data and pars_init files were checked. \n');
-  return;
-end
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -578,8 +577,7 @@ end
 [prdData, infoPrd] = feval(['predict_', speciesnm], par, data, auxData);
 
 if infoPrd == 0 
-  fprintf('The seed parameter set is not realistic (from use of info in the predict file). \n');
-  return;
+  error(['    In predict_', speciesnm, '.m: The seed parameter set did not pass customized filters']);
 end
 
 prdDataFields = fields(prdData);
