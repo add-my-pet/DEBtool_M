@@ -68,7 +68,6 @@ else
   cov_rulesnm = 'cov_rules_1species';
 end
 
-
 % check parameter set if you are using a filter
 if filter
   filternm = ['filter_', metaPar.model];
@@ -88,10 +87,14 @@ end
 
 if ~strcmp(method, 'no')
   if strcmp(method, 'nm')
-    if filter
-      par = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
+    if petsnumber == 1
+      if filter
+        par = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
+      else
+        par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
+      end
     else
-      par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
+      par = groupregr_f('predict_pets', par, data, auxData, weights, filternm, covRulesnm); % WLS estimate parameters using overwrite
     end
   end
 end
