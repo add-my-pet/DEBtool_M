@@ -134,17 +134,11 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
       else 
         y_test(j) = zero_term_delta / step_reducer;
       end
-      qvec(index) = y_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-      f_test = feval(filternm, q);
+      q = parVec2Struct(q, y_test, mapVec2Struct);
+      [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);     
       if ~f_test 
         fprintf('The parameter set for the simplex construction is not realistic. \n');
         step_reducer = 2 * step_reducer;
-      else
-        [f, f_test] = feval(func, q, data, auxData);
-        if ~f_test 
-          fprintf('The parameter set for the simplex construction is not realistic. \n');
-          step_reducer = 2 * step_reducer;
-        end
       end
     end  
     v(:,j+1) = y_test;
@@ -173,41 +167,31 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
        max(abs(fv(1)-fv(two2np1))) <= tol_fun
       break
     end
-  how = '';
+    how = '';
    
-  % Compute the reflection point
+    % Compute the reflection point
    
-  % xbar = average of the n (NOT n+1) best points
-  xbar = sum(v(:,one2n), 2)/ n_par;
-  xr = (1 + rho) * xbar - rho * v(:,np1);
-  qvec(index) = xr; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-  f_test = feval(filternm, q);
-  if ~f_test
-    fxr = fv(:,np1) + 1;
-  else
-    [f, f_test] = feval(func, q, data, auxData);
+    % xbar = average of the n (NOT n+1) best points
+    xbar = sum(v(:,one2n), 2)/ n_par;
+    xr = (1 + rho) * xbar - rho * v(:,np1);
+    q = parVec2Struct(q, xr, mapVec2Struct);
+    [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
     if ~f_test 
       fxr = fv(:,np1) + 1;
     else
       fxr = W' * (struct2vector(f, nm) - Y).^2;
     end
-  end
-  func_evals = func_evals + 1;
+    func_evals = func_evals + 1;
    
-   if fxr < fv(:,1)
+    if fxr < fv(:,1)
       % Calculate the expansion point
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
-      qvec(index) = xe; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-      f_test = feval(filternm, q);
+      q = parVec2Struct(q, xe, mapVec2Struct);
+      [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
       if ~f_test
          fxe = fxr + 1;
       else
-        [f, f_test] = feval(func, q, data, auxData);
-        if ~f_test 
-          fxe = fv(:,np1) + 1;
-        else
-          fxe = W' * (struct2vector(f, nm) - Y).^2;
-        end
+         fxe = W' * (struct2vector(f, nm) - Y).^2;
       end
       func_evals = func_evals + 1;
       if fxe < fxr
@@ -219,7 +203,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
          fv(:,np1) = fxr;
          how = 'reflect';
       end
-   else % fv(:,1) <= fxr
+    else % fv(:,1) <= fxr
       if fxr < fv(:,n_par)
          v(:,np1) = xr; 
          fv(:,np1) = fxr;
@@ -229,17 +213,12 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
          if fxr < fv(:,np1)
             % Perform an outside contraction
             xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
-            qvec(index) = xc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            f_test = feval(filternm, q);
+            q = parVec2Struct(q, xc, mapVec2Struct);
+            [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
             if ~f_test
               fxc = fxr + 1;
             else            
-              [f, f_test] = feval(func, q, data, auxData);
-              if ~f_test 
-                fxc = fv(:,np1) + 1;
-              else
-                fxc = W' * (struct2vector(f, nm) - Y).^2;
-              end
+              fxc = W' * (struct2vector(f, nm) - Y).^2;
             end
             func_evals = func_evals + 1;
             
@@ -254,17 +233,12 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
          else
             % Perform an inside contraction
             xcc = (1 - psi) * xbar + psi * v(:,np1);
-            qvec(index) = xcc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            f_test = feval(filternm, q);
+            q = parVec2Struct(q, xcc, mapVec2Struct);
+            [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
             if ~f_test
               fxcc = fv(:,np1) + 1;
             else
-              [f, f_test] = feval(func, q, data, auxData);
-              if ~f_test 
-                fxcc = fv(:,np1) + 1;
-              else
-                fxcc = W' * (struct2vector(f, nm) - Y).^2;
-              end
+              fxcc = W' * (struct2vector(f, nm) - Y).^2;
             end
             func_evals = func_evals + 1;
             
@@ -283,17 +257,11 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
                step_reducer = 1;             % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
                while ~f_test
                   v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
-                  qvec(index) = v_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-                  f_test = feval(filternm, q);
+                  q = parVec2Struct(q, v_test, mapVec2Struct);
+                  [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
                   if ~f_test 
                      fprintf('The parameter set for the simplex shrinking is not realistic. \n');
                      step_reducer = 2 * step_reducer;
-                  else
-                    [f, f_test] = feval(func, q, data, auxData);
-                    if ~f_test 
-                      fprintf('The parameter set for the simplex shrinking is not realistic. \n');
-                      step_reducer = 2 * step_reducer;
-                    end
                   end
                end
                v(:,j) = v_test;
@@ -302,47 +270,79 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
             func_evals = func_evals + n_par;
          end
       end
-   end
-   [fv,j] = sort(fv);
-   v = v(:,j);
-   itercount = itercount + 1;
-   if (mod(itercount, 10) == 0 && report == 1)
-     fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
+    end
+    [fv,j] = sort(fv);
+    v = v(:,j);
+    itercount = itercount + 1;
+    if (mod(itercount, 10) == 0 && report == 1)
+      fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
 	     '-', num2str(max(fv)), ' ', how, '\n']);
-   end  
-   
-%    if itercount == 655
-%      fprintf('stop');
-%    end
-   
-   end   % while
+    end  
+      
+  end 
 
+  q = parVec2Struct(q, v(:,1), mapVec2Struct);
+  q.free = free; % add substructure free to q,
 
-   qvec(index) = v(:,1); q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-   q.free = free; % add substructure free to q,
-
-   fval = min(fv); 
-   if func_evals >= max_fun_evals
-     %if report > 0
-       fprintf(['No convergences with ', ...
-		num2str(max_fun_evals), ' function evaluations\n']);
-     %end
-     info = 0;
-   elseif itercount >= max_step_number 
-     %if report > 0
-       fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
-     %end
-     info = 0; 
-   else
-     %if report > 0
-       fprintf('Successful convergence \n');              
-     %end
-     info = 1;
-   end
+  fval = min(fv); 
+  if func_evals >= max_fun_evals
+    %if report > 0
+    fprintf(['No convergences with ', ...
+      num2str(max_fun_evals), ' function evaluations\n']);
+    %end
+    info = 0;
+  elseif itercount >= max_step_number 
+    %if report > 0
+      fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
+    %end
+    info = 0; 
+  else
+    %if report > 0
+      fprintf('Successful convergence \n');              
+    %end
+    info = 1;
+  end
    
 function vec = struct2vector(struct, fieldNames)
+% Constructs vector from fields fielNames of structure struct
+% Used to transform prdData into vector for easy computation of loss function
   vec = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
     vec = [vec; getfield(struct, fieldsInCells{1}{:})];
   end
+
+function q = parVec2Struct(q, vec, mapVec2Struct)
+% Replaces values in q with the ones in vec using the map of fields in mapVec2Struct
+  for i = 1:length(vec)
+    q.(mapVec2Struct{i}{1})(mapVec2Struct{i}{2}) = vec(i);
+  end
+
+function [f, pass] = getPrediction(func, q, data, auxData, filternm, covRulesnm)
+% Tests if prameter set q passes the filters (default and customized) and if yes returns predictions 
+  f = {};
+  if strcmp(covRulesnm, 'cov_rules_1species')
+    pass = feval(filternm, q);
+  else
+    pass = filter_multispecies(filternm, q, covRulesnm);
+  end
+  if pass
+    [f, pass] = feval(func, q, data, auxData, covRulesnm);
+  end
+
+function pass = filter_multispecies(filternm, q, covRulesnm)
+% Tests if prameter set q passes the filternm filters for multiple species
+  global pets
+  
+  petsnumber = length(pets);
+  pass = 1;
+  for i = 1:petsnumber
+    [pass, flag]  = feval(filternm, feval(covRulesnm, q, i));
+    if ~pass
+      return;
+    end
+  end
+
+
+
+  
