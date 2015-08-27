@@ -32,9 +32,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 
   global pets results_output pseudodata_pets 
   
+  petsnumber = length(pets);
+  
   % get (mean) relative errors
   weightsMRE = weights;  % define a weights structure with weight 1 for every data point and 0 for the pseudodata 
-  for k = 1:length(pets)
+  for k = 1:petsnumber
     currentPet = ['pet',num2str(k)];
     if isfield(weights.(currentPet), 'psd')
       psdSets = fields(weights.(currentPet).psd);
@@ -55,28 +57,32 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       close all
   end
   
-  for i = 1:length(pets)
+  for i = 1:petsnumber
     currentPet = ['pet',num2str(i)];
     st = data2plot.(currentPet); 
     [nm, nst] = fieldnmnst_st(st);
     for j = 1:nst  % replace univariate data by plot data 
       fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-      var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
-      k = size(var, 2);  
+      varData = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+      k = size(varData, 2);  
       if k == 2 
-        dataVec = st.(nm{j})(:,1); 
-        xAxis = linspace(min(dataVec), max(dataVec), 100)';
-        st.(nm{j}) = xAxis;
-        if k >= 3
-          yAxis = zeros(length(xAxis), 1);
-          yAxis(1) = st.(nm{j})(1,2);
-          st.(nm{j})(:,2) = yAxis;
-          for l = 3:k
-            dataVec = [st.(nm{j})(:,1), st.(nm{j})(:,l)];  
-            extraDependentVar = spline1(xAxis, dataVec);
-            st.(nm{j})(:,l) = extraDependentVar;
+        auxDataFields = fields(auxData.(currentPet));
+        dataCode = fieldsInCells{1}{end};
+        univarAuxData = {};
+        for ii = 1:length(auxDataFields) % add to univarAuxData all auxData for the data set that has length > 1
+          if isfield(auxData.(currentPet).(auxDataFields{ii}), dataCode) && length(auxData.(currentPet).(auxDataFields{ii}).(dataCode)) > 1
+            univarAuxData{end + 1} = auxDataFields{ii};
           end
         end
+        dataVec = st.(nm{j})(:,1); 
+        if isempty(univarAuxData) % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
+          xAxis = linspace(min(dataVec), max(dataVec), 100)';
+          univarX.(dataCode) = 'dft'; % 'dft': default number of plotting points for the x-axis 
+        else
+          xAxis = dataVec;
+          univarX.(dataCode) = 'usr'; % 'usr': user defined number of plotting points for the x-axis 
+        end
+        st.(nm{j}) = xAxis;
       end
     end
     data2plot.(currentPet) = st;
@@ -84,7 +90,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   
   prdData = predict_pets(par, data2plot, auxData);
   
-  for i = 1:length(pets)
+  for i = 1:petsnumber
     if exist(['custom_results_', pets{i}, '.m'], 'file')
           feval(['custom_results_', pets{i}], par, metaPar, data.(currentPet), txtData.(currentPet), auxData.(currentPet));
     else
@@ -155,7 +161,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             yData = st.(nm{j})(:,2);
             xPred = data2plot.(currentPet).(nm{j})(:,1); 
             yPred = prdData.(currentPet).(nm{j});
-            plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+            if strcmp(univarX.(nm{j}), 'dft')
+              plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+            elseif strcmp(univarX.(nm{j}), 'usr')
+              plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',20, 'linestyle', 'none')
+            end
             xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
             ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
           end
