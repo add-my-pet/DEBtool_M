@@ -94,19 +94,18 @@ if ~strcmp(method, 'no')
         par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
       end
     else
-      par = groupregr_f('predict_pets', par, data, auxData, weights, filternm, covRulesnm); % WLS estimate parameters using overwrite
+      par = groupregr_f('predict_pets', par, data, auxData, weights, filternm, cov_rulesnm); % WLS estimate parameters using overwrite
     end
   end
 end
 
 % Results
-results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+results_pets_2(par, metaPar, txtPar, data, auxData, metaData, txtData, weights, cov_rulesnm);
 
 if filter
   if petsnumber == 1
     feval(['warning_', metaPar.model], par);
   else
-    cov_rulesnm = ['cov_rules_', metaPar.covRules];
     for i = 1:length(pets)
       feval(['warning_', metaPar.model], feval(cov_rulesnm, par,i));
     end
