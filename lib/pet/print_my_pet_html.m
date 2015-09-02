@@ -76,10 +76,10 @@ end
 
 % default parameters for model std after Marques et al 2015 - 
 if strcmp(metaPar.model,'abj')
-    fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+    fldsStd = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hj'; 'E_Hp'; 'h_a'; 's_G'};
 else
-fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+fldsStd = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};
 end
 
@@ -92,53 +92,53 @@ fldsOther = {'mu_C'; 'mu_H'; 'mu_O'; 'mu_N'; 'n_CC'; 'n_HC'; 'n_OC'; 'n_NC'; ...
 
 % make structure with label, units and values of parameters specific for
 % my_pet:
-par_aux   = rmfield_wtxt(par, fields_std{1});
-par_aux   = rmfield_wtxt(par_aux, 'free');
-label_aux = rmfield_wtxt(txtPar.label, fields_std{1});
-units_aux = rmfield_wtxt(txtPar.units, fields_std{1});
-for j = 2:length(fields_std)
-par_aux   = rmfield_wtxt(par_aux, fields_std{j});
-label_aux = rmfield_wtxt(label_aux, fields_std{j});
-units_aux = rmfield_wtxt(units_aux, fields_std{j});
+parAux   = rmfield_wtxt(par, fldsStd{1});
+parAux   = rmfield_wtxt(parAux, 'free');
+labelAux = rmfield_wtxt(txtPar.label, fldsStd{1});
+unitsAux = rmfield_wtxt(txtPar.units, fldsStd{1});
+for j = 2:length(fldsStd)
+parAux   = rmfield_wtxt(parAux, fldsStd{j});
+labelAux = rmfield_wtxt(labelAux, fldsStd{j});
+unitsAux = rmfield_wtxt(unitsAux, fldsStd{j});
 end
 for j = 1:length(fldsChem)
-par_aux   = rmfield_wtxt(par_aux, fldsChem{j});
-label_aux = rmfield_wtxt(label_aux, fldsChem{j});
-units_aux = rmfield_wtxt(units_aux, fldsChem{j});
+parAux   = rmfield_wtxt(parAux, fldsChem{j});
+labelAux = rmfield_wtxt(labelAux, fldsChem{j});
+unitsAux = rmfield_wtxt(unitsAux, fldsChem{j});
 end
 for j = 1:length(fldsOther)
-par_aux   = rmfield_wtxt(par_aux, fldsOther{j});
-label_aux = rmfield_wtxt(label_aux, fldsOther{j});
-units_aux = rmfield_wtxt(units_aux, fldsOther{j});
+parAux   = rmfield_wtxt(parAux, fldsOther{j});
+labelAux = rmfield_wtxt(labelAux, fldsOther{j});
+unitsAux = rmfield_wtxt(unitsAux, fldsOther{j});
 end
 
 
 % make structure with label, units and values of standard parameters
-[fields_aux, nst] = fieldnmnst_st(par_aux); 
-par_std   = rmfield_wtxt(par, fields_aux{1});
-par_std   = rmfield_wtxt(par_std, 'free');
-label_std = rmfield_wtxt(txtPar.label, fields_aux{1});
-units_std = rmfield_wtxt(txtPar.units, fields_aux{1});
+[fldsAux, nst] = fieldnmnst_st(parAux); 
+parStd   = rmfield_wtxt(par, fldsAux{1});
+parStd   = rmfield_wtxt(parStd, 'free');
+labelStd = rmfield_wtxt(txtPar.label, fldsAux{1});
+unitsStd = rmfield_wtxt(txtPar.units, fldsAux{1});
 for j = 2:nst
-par_std   = rmfield_wtxt(par_std, fields_aux{j});
-label_std = rmfield_wtxt(label_std, fields_aux{j});
-units_std = rmfield_wtxt(units_std, fields_aux{j});
+parStd   = rmfield_wtxt(parStd, fldsAux{j});
+labelStd = rmfield_wtxt(labelStd, fldsAux{j});
+unitsStd = rmfield_wtxt(unitsStd, fldsAux{j});
 end
-par_std   = rmfield_wtxt(par_std, 'z');
-par_std.p_Am = par.z * par.p_M/ par.kap;
-label_std.p_Am = 'max spec assimilation rate';
-units_std.p_Am = 'J/d.cm^2';
+parStd   = rmfield_wtxt(parStd, 'z');
+parStd.p_Am = par.z * par.p_M/ par.kap;
+labelStd.p_Am = 'max spec assimilation rate';
+unitsStd.p_Am = 'J/d.cm^2';
 
-fields_std = {'T_A';'F_m'; 'kap_X'; 'kap_P'; 'p_Am'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+fldsStd = {'T_A';'F_m'; 'kap_X'; 'kap_P'; 'p_Am'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};  % overwrite the original fields_std
 
-col_par.T_A  = '#FFC6A5'; 
-col_par.F_m = '#CEEFBD';  col_par.kap_X = '#CEEFBD'; col_par.kap_P = '#CEEFBD';  col_par.p_Am = '#CEEFBD'; 
-col_par.v = '#DEF3BD';  col_par.kap = '#DEF3BD';  col_par.kap_R = '#DEF3BD'; 
-col_par.p_M = '#FFFF9C';  col_par.p_T = '#FFFF9C';  col_par.k_J = '#FFFF9C'; 
-col_par.E_G = '#FFFFC6'; 
-col_par.E_Hb = '#94D6E7';  col_par.E_Hp = '#94D6E7'; 
-col_par.h_a = '#BDC6DE';  col_par.s_G = '#BDC6DE'; 
+colPar.T_A  = '#FFC6A5'; 
+colPar.F_m = '#CEEFBD';  colPar.kap_X = '#CEEFBD'; colPar.kap_P = '#CEEFBD';  colPar.p_Am = '#CEEFBD'; 
+colPar.v = '#DEF3BD';  colPar.kap = '#DEF3BD';  colPar.kap_R = '#DEF3BD'; 
+colPar.p_M = '#FFFF9C';  colPar.p_T = '#FFFF9C';  colPar.k_J = '#FFFF9C'; 
+colPar.E_G = '#FFFFC6'; 
+colPar.E_Hb = '#94D6E7';  colPar.E_Hp = '#94D6E7'; 
+colPar.h_a = '#BDC6DE';  colPar.s_G = '#BDC6DE'; 
 % col_par = {... % colours for primary parameters
 %     '#FFC6A5'; '#F7BDDE'; '#DEBDDE'; '#CEEFBD'; '#DEF3BD'; '#FFFF9C'; '#FFFFC6'; '#94D6E7'; '#BDC6DE'; 
 %     '#C6E7DE'; '#C6EFF7'; '#F7BDDE'; '#FFFFFF'; '#F7BDDE'; '#FFFFFF'};
@@ -148,7 +148,7 @@ col_par.h_a = '#BDC6DE';  col_par.s_G = '#BDC6DE';
 % statistics we would like to see on the web:
 
 if strcmp(metaPar.model,'abj')
-    fields_stat = {'c_T'; ...
+    fldsStat = {'c_T'; ...
     's_M'; 's_H'; 's_s'; ...'E_0'; 'W_0';'del_Ub'; ...
     'a_b'; 'a_j'; 'a_p'; 'a_99'; ...
     'W_b'; 'W_j';'W_p'; 'W_i'; 'L_b'; 'L_j'; 'L_p'; 'L_i'; 'R_i'; ...
@@ -158,9 +158,9 @@ if strcmp(metaPar.model,'abj')
     'VO_b'; 'VO_j'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_j'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_j'; 'RQ_p'; 'RQ_i'};
-[stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model);
+[stat, txtStat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model);
 elseif strcmp(metaPar.model,'ssj') % not correct but ok for now
-fields_stat = {'c_T'; ...
+fldsStat = {'c_T'; ...
     's_H'; 's_s'; ...
     'E_0'; 'W_0';'del_Ub'; ...
     'a_b'; 'a_p'; 'a_99'; ...
@@ -171,9 +171,9 @@ fields_stat = {'c_T'; ...
     'VO_b'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_p'; 'RQ_i'};    
-[stat, txt_stat] = statistics_ssj(par, metaData.T_typical, 1, metaPar.model);
+[stat, txtStat] = statistics_ssj(par, metaData.T_typical, 1, metaPar.model);
 else % std, stx, stf ...
-fields_stat = {'c_T'; ...
+fldsStat = {'c_T'; ...
     's_H'; 's_s'; ...
     'E_0'; 'W_0';'del_Ub'; ...
     'a_b'; 'a_p'; 'a_99'; ...
@@ -184,37 +184,40 @@ fields_stat = {'c_T'; ...
     'VO_b'; 'VO_p'; 'VO_i'; ...
     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
     'RQ_b'; 'RQ_p'; 'RQ_i'};
-[stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model);
+[stat, txtStat] = statistics_std(par, metaData.T_typical, 1, metaPar.model);
 end
 [fields, nst] = fieldnmnst_st(stat); 
-for  i = 1:length(fields_stat)
-k = find(strcmp(fields_stat{i},fields));
-eval(['stat_std.',fields_stat{i},' = stat.',fields{k},';']);
-eval(['units_stat.',fields_stat{i},' = txt_stat.units.',fields{k},';']);
-eval(['label_stat.',fields_stat{i},' = txt_stat.label.',fields{k},';']);
+for  i = 1:length(fldsStat)
+k = find(strcmp(fldsStat{i},fields));
+statStd.(fldsStat{i}) = stat.(fields{k});
+unitsStat.(fldsStat{i}) = txtStat.units.(fields{k});
+labelStat.(fldsStat{i}) = txtStat.label.(fields{k});
+% eval(['statStd.',fldsStat{i},' = stat.',fields{k},';']);
+% eval(['unitsStat.',fldsStat{i},' = txtStat.units.',fields{k},';']);
+% eval(['labelStat.',fldsStat{i},' = txtStat.label.',fields{k},';']);
 end 
 
-col_stat.s_H = '#F7BDDE'; col_stat.s_s = '#F7BDDE';
-col_stat.c_T = '#FFC6A5';
-col_stat.E_0 = '#FFFFFF'; col_stat.W_0 = '#FFFFFF'; col_stat.del_Ub = '#FFFFFF'; 
-col_stat.a_b = '#C6E7DE'; col_stat.a_p = '#C6E7DE'; col_stat.a_99 = '#C6E7DE';
-col_stat.W_b = '#CEEFBD'; col_stat.W_p = '#CEEFBD'; col_stat.W_i = '#CEEFBD';
-col_stat.L_b = '#DEF3BD'; col_stat.L_p = '#DEF3BD'; col_stat.L_i = '#DEF3BD';
-col_stat.R_i = '#FFFFC6'; 
-col_stat.del_Wb = '#FFFF9C';  col_stat.del_Wp = '#FFFF9C';  col_stat.del_V = '#FFFF9C'; col_stat.r_B = '#FFFF9C'; 
-col_stat.E_m = '#FFC6A5';  col_stat.t_starve = '#FFC6A5';  col_stat.t_E = '#FFC6A5';  col_stat.xi_W_E = '#FFC6A5'; 
-col_stat.eb_ming = '#94D6E7'; col_stat.eb_minh = '#94D6E7'; col_stat.ep_min = '#94D6E7';
-col_stat.VO_b = '#FFFFFF'; col_stat.VO_p = '#FFFFFF'; col_stat.VO_i = '#FFFFFF';
-col_stat.p_t_b = '#FFFFC6'; col_stat.p_t_p = '#FFFFC6'; col_stat.p_t_i = '#FFFFC6'; 
-col_stat.RQ_b = '#FFFF9C'; col_stat.RQ_p = '#FFFF9C'; col_stat.RQ_i = '#FFFF9C';
+colStat.s_H = '#F7BDDE'; colStat.s_s = '#F7BDDE';
+colStat.c_T = '#FFC6A5';
+colStat.E_0 = '#FFFFFF'; colStat.W_0 = '#FFFFFF'; colStat.del_Ub = '#FFFFFF'; 
+colStat.a_b = '#C6E7DE'; colStat.a_p = '#C6E7DE'; colStat.a_99 = '#C6E7DE';
+colStat.W_b = '#CEEFBD'; colStat.W_p = '#CEEFBD'; colStat.W_i = '#CEEFBD';
+colStat.L_b = '#DEF3BD'; colStat.L_p = '#DEF3BD'; colStat.L_i = '#DEF3BD';
+colStat.R_i = '#FFFFC6'; 
+colStat.del_Wb = '#FFFF9C';  colStat.del_Wp = '#FFFF9C';  colStat.del_V = '#FFFF9C'; colStat.r_B = '#FFFF9C'; 
+colStat.E_m = '#FFC6A5';  colStat.t_starve = '#FFC6A5';  colStat.t_E = '#FFC6A5';  colStat.xi_W_E = '#FFC6A5'; 
+colStat.eb_ming = '#94D6E7'; colStat.eb_minh = '#94D6E7'; colStat.ep_min = '#94D6E7';
+colStat.VO_b = '#FFFFFF'; colStat.VO_p = '#FFFFFF'; colStat.VO_i = '#FFFFFF';
+colStat.p_t_b = '#FFFFC6'; colStat.p_t_p = '#FFFFC6'; colStat.p_t_i = '#FFFFC6'; 
+colStat.RQ_b = '#FFFF9C'; colStat.RQ_p = '#FFFF9C'; colStat.RQ_i = '#FFFF9C';
 
 
 if strcmp(metaPar.model,'abj')
-    col_stat.s_M = '#F7BDDE'; 
+    colStat.s_M = '#F7BDDE'; 
     description.E_Hj  = 'maturity at metamorphosis';
-    col_par.E_Hj = col_par.E_Hb;
-    col_stat.a_j = col_stat.a_b;  col_stat.L_j = col_stat.L_b;  col_stat.W_j = col_stat.W_b; 
-    col_stat.VO_j = col_stat.VO_b;  col_stat.p_t_j = col_stat.p_t_b; col_stat.RQ_j = col_stat.RQ_b;
+    colPar.E_Hj = colPar.E_Hb;
+    colStat.a_j = colStat.a_b;  colStat.L_j = colStat.L_b;  colStat.W_j = colStat.W_b; 
+    colStat.VO_j = colStat.VO_b;  colStat.p_t_j = colStat.p_t_b; colStat.RQ_j = colStat.RQ_b;
 end
 
 % colours for statistics
@@ -273,9 +276,7 @@ chem_out = { ...
 '#94D6E7', 'n_NP',    par.n_NP,  '-',     'chem. index of nitrogen in faeces' 
 };
 
-% --------------------------------------------------
 % ------------- WRITE THE INFORMATION COMPILED ABOVE TO MY_PET.HTML
-
 
   oid = fopen([species, '.html'], 'w+'); % % open file for writing, delete existing content
   fprintf(oid, '%s\n' ,'<!DOCTYPE html>');
@@ -304,10 +305,10 @@ fprintf(oid, '<TABLE CELLSPACING=60><TR VALIGN=TOP><TD>\n');
 fprintf(oid, '      <TABLE>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Properties temperature corrected to %g deg. C (f = %g) </TH></TR>\n', metaData.T_typical - 273.15, 1);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
-  for i = 1:  size(fields_stat,1)
+  for i = 1:  size(fldsStat,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
-       eval(['col_stat.',fields_stat{i}]), fields_stat{i}, eval(['stat_std.',fields_stat{i}]), ...
-       eval(['units_stat.',fields_stat{i}]), eval(['label_stat.',fields_stat{i}]));
+      colStat.(fldsStat{i}), fldsStat{i}, statStd.(fldsStat{i}), ...
+       unitsStat.(fldsStat{i}), labelStat.(fldsStat{i}));
   end
 fprintf(oid, '    </TABLE>\n');    
 % ----------------------------------------------------------------------
@@ -320,10 +321,10 @@ fprintf(oid, '    </TD><TD>\n');
 fprintf(oid, '    <TABLE>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Primary parameters at reference temperature (%g deg. C)</TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
-  for i = 1:  size(fields_std,1)
+  for i = 1:  size(fldsStd,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
-          eval(['col_par.',fields_std{i}]), fields_std{i}, eval(['par_std.',fields_std{i}]), ...
-       eval(['units_std.',fields_std{i}]), eval(['description.',fields_std{i}]));
+          colPar.(fldsStd{i}), fldsStd{i}, parStd.(fldsStd{i}), ...
+       unitsStd.(fldsStd{i}), description.(fldsStd{i}));
   end
   
 % Empty line in table so that there is a space between primary parameters
@@ -349,10 +350,10 @@ fprintf(oid, '    <TD>\n');
 fprintf(oid, '    <TABLE>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Parameters specific for this entry (%g deg. C) </TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
-  for i = 1:  size(fields_aux,1)
+  for i = 1:  size(fldsAux,1)
     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
-          '#FFFFFF', fields_aux{i}, eval(['par_aux.',fields_aux{i}]), ...
-       eval(['units_aux.',fields_aux{i}]), eval(['label_aux.',fields_aux{i}]));
+          '#FFFFFF', fldsAux{i}, parAux.(fldsAux{i}), ...
+       unitsAux.(fldsAux{i}), labelAux.(fldsAux{i}));
   end
  fprintf(oid, '    </TABLE>\n'); 
 
