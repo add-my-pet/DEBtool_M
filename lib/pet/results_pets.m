@@ -110,7 +110,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             allSetsInGroup = horzcat(metaData.(currentPet).grp.sets{:});
             if sum(strcmp(grpSet1st, nm{j})) 
               sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
-              n_sets2plot = length(sets2plot);
+              n_sets2plot = length(sets2plot); % actually: # of data sets in set j
               if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
                 plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
               else
