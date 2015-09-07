@@ -559,7 +559,7 @@ filternm = ['filter_', metaPar.model];
 [pass, flag]  = feval(filternm, par);
 if ~pass 
     print_filterflag(flag);
-    error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter \n', print_filterflag(flag)]);
+    error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter. Check previous warnings']);
 end
 
 
@@ -601,7 +601,7 @@ if length(prdDataFields) > length(dataFields)
         error(['    In predict_',speciesnm,'.m: There is a prediction defined for ', prdDataFields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt)]);
       end
     else 
-      error(['    In predict_',speciesnm,'.m: There is no data defined for the predictions ', prdDataFields{i}]);
+      error(['    In predict_',speciesnm,'.m: There is a prediction defined for ', prdDataFields{i}, ' that has no corresponding data point/set defined in mydata_',speciesnm,'.m']);
     end
   end
 else
