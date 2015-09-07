@@ -91,9 +91,9 @@ data.Lb  = 0.45;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birt
 data.Lp  = 2.36;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = {'Anon2015','Wiki'}; % for multiple references, please use commas to separate references
 data.Li  = 6.25;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Wiki';
 
-data.Wdb = 5.8e-5; units.Wdb = 'g';    label.Wdb = 'dry weights at birth';             bibkey.Wdb = 'Anon2015';
-data.Wdp = 8e-3;   units.Wdp = 'g';    label.Wdp = 'dry weights at puberty';           bibkey.Wdp = 'Anon2015';
-data.Wdi = 0.15;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weights';             bibkey.Wdi = 'Wiki';
+data.Wdb = 5.8e-5; units.Wdb = 'g';    label.Wdb = 'dry weight at birth';             bibkey.Wdb = 'Anon2015';
+data.Wdp = 8e-3;   units.Wdp = 'g';    label.Wdp = 'dry weight at puberty';           bibkey.Wdp = 'Anon2015';
+data.Wdi = 0.15;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weight';             bibkey.Wdi = 'Wiki';
 
 data.Ri  = 2.3;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Wiki';   
 % for an individual of ultimate length Li 
