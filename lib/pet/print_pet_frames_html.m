@@ -147,7 +147,7 @@ fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../ent
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
 
 
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "results_',metaData.species,'.mat" target = "_blank"> results.mat file </A>  </TR> \n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> V1 zipped folder  </A>  </TR> \n']);
 fprintf(oid, '</TABLE>\n');
 fprintf(oid, '</DIV>\n');
 

@@ -39,7 +39,8 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   cPar = parscomp_st(par); vars_pull(par); 
   vars_pull(cPar);  vars_pull(data);  vars_pull(auxData);
     
-  % customized filter
+  % customized filters for allowable parameters of the standard DEB model (std)
+  % for other models consult the appropriate filter function.
   if k * v_Hp >= f_tL^3  % constraint required for reaching puberty with f_tL
     info = 0;
     prdData = {};
