@@ -231,11 +231,17 @@ function results_pets_2(par, metaPar, txtPar, data, auxData, metaData, txtData, 
     end
     if results_output > 0
       filenm   = ['results_', pets{i}, '.mat'];
-      metaData = metaData.pet1;
+      metaData_sv = metaData;
+      metaData = metaData.(currentPet);
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+      metaData = metaData_sv;
     end
   end
   
+  if results_output > 0
+    filenm   = ['results_group.mat'];
+    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+  end
  
 end
 
