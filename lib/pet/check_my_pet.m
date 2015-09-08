@@ -213,6 +213,7 @@ if sum(strcmp(txtDataFields, 'units'))
   % then check if all fields in auxData have units
   for i = 1:length(auxDataTypes)
     if sum(strcmp(unitsFields, auxDataTypes(i)))
+      currentAuxDataType = auxDataTypes{i};
       auxDataFields = fields(auxData.(currentAuxDataType));
       auxDataUnitsFields = fields(txtData.units.(currentAuxDataType));
       if length(auxDataFields) > length(auxDataUnitsFields)
