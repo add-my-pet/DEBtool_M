@@ -131,7 +131,7 @@ for i = 1:size(auxDataTypes, 1)
   currentAuxDataType = auxDataTypes{i};
   auxDataFields = fields(auxData.(currentAuxDataType));
   for j = 1:size(auxDataFields, 1)
-    if sum(strcmp(dataFields, auxDataFields(i))) == 0
+    if sum(strcmp(dataFields, auxDataFields(j))) == 0
       error(['    In mydata_',speciesnm,'.m: There is a ', auxDataTypes{i},' defined for ', auxDataFields{i}, ' but there is no corresponding data']);
     end    
   end
