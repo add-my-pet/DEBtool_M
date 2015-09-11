@@ -45,4 +45,4 @@ function [xy, info] = knot(x, data, Dy1, Dyk)
     fprintf('no convergence\n');
   end
   
-  nrregr_options('report',i);
+  nrregr_options('report',1);
