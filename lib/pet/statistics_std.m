@@ -116,7 +116,7 @@ switch model
       fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
     end  
         
-  case 'stf' % standard model with foetal development, no acceleration   
+  case 'stf'  % standard model with foetal development, no acceleration   
     
     [U_E0, L_b, info] = initial_scaled_reserve_foetus(f, pars_E0); % d cm^2, initial scaled reserve
     if info ~= 1
@@ -139,6 +139,18 @@ switch model
 %       fprintf('warning in get_tj: invalid parameter value combination \n')
 %     end
       
+case 'stx'  % standard model with foetal development, no acceleration   
+    
+    [U_E0, L_b, info] = initial_scaled_reserve_foetus(f, pars_E0); % d cm^2, initial scaled reserve
+    if info ~= 1
+      fprintf('warning in initial_scaled_reserve_foetus: invalid parameter value combination for foetus \n')
+    end
+    [t_p, t_b, l_p, l_b, info] = get_tp_foetus(pars_tp, f);
+    if info ~= 1
+      fprintf('warning in get_tj: invalid parameter value combination \n')
+    end
+
+
   otherwise    % no foetal development
     fprintf('warning statistics_std: invalid model key \n')
     return;
