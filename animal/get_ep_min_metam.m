@@ -39,7 +39,13 @@ function [ep info] = get_ep_min_metam(p)
   vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
   vHp = p(6); % v_H^p = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
 
-  ep_0 = 0; ep_1 = 1; % lower and upper boundary for ep
+  ep_0 = 1; info = 1; % lower boundary for ep
+  while info == 1 && ep_0 >= 0
+    ep_0 = ep_0 - 0.1; 
+    [lj, lp, lb, info] = get_lj([g k lT vHb vHj], ep_0);
+  end
+  
+  ep_1 = 1; % upper boundary for ep
   norm = 1; i = 0; % initialise norm and step number
   
   while i < 200 && abs(norm) > 1e-3 % bisection method
@@ -47,7 +53,6 @@ function [ep info] = get_ep_min_metam(p)
     ep = (ep_0 + ep_1)/ 2;
     [lj, lp, lb, info] = get_lj([g k lT vHb vHj], ep);
     if info == 0
-      info = 0;
       ep = get_lb([g k vHb], 1);
       fprintf('get_ep_min_metam warning: no convergence for f\n')
       break
