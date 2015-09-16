@@ -30,6 +30,12 @@ function ep = get_ep_min(p)
   % get_ep_min([1 0 .1])
     
   k = p(1); lT = p(2); vHp = p(3);
+  
+  if lT == 0
+    ep = (k * vHp)^(1/3);
+    return
+  end
+  
   ep = roots3([1; -2 * lT; lT^2; - k * vHp], 2); ep = ep(ep>0);
   if length(ep) ~= 1  
      fprintf(['Warning in get_ep_min: ', num2str(length(ep)), ' solutions\n']);

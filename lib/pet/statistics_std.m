@@ -238,7 +238,7 @@ M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo)
 %     fprintf('Warning: no convergence for eb_min\n')
 % end
 
-ep_min  = get_ep_min([g; k; l_T; v_Hp]); % growth and maturation cease at puberty   
+ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
 % if length(ep_min) > 1
 %    ep_min = max(ep_min);
 % end
