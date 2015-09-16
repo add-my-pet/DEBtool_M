@@ -47,7 +47,6 @@ function [ep info] = get_ep_min_metam(p)
     ep = (ep_0 + ep_1)/ 2;
     [lj, lp, lb, info] = get_lj([g k lT vHb vHj], ep);
     if info == 0
-      info = 0;
       ep = get_lb([g k vHb], 1);
       fprintf('get_ep_min_metam warning: no convergence for f\n')
       break
