@@ -41,8 +41,8 @@ function [ep info] = get_ep_min_metam(p)
 
   ep_0 = 1; info = 1; % lower boundary for ep
   while info == 1 && ep_0 >= 0
-    ep_0 = ep_0 - 0.1; 
-    [lj, lp, lb, info] = get_lj([g k lT vHb vHj], ep_0);
+    ep_0 = ep_0 - 0.1;
+    [lj, lp, lb, info] = get_lj1([g k lT vHb vHj], ep_0);
   end
   
   ep_1 = 1; % upper boundary for ep

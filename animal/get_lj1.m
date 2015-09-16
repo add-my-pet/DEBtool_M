@@ -95,7 +95,7 @@ function [lj, lp, lb, info] = get_lj1(p, f, lb0)
   
     % get lp  
     if n_p > 5
-      [lp, lj, info] = get_lp1 ([p([1 2 3 5 6]); sM], f, lj);
+      [lp, lj, info] = get_lp1 ([p([1 2 3 5 6]), sM], f, lj);
     else
       lp = [];
     end
