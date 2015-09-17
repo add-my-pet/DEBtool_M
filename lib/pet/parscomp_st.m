@@ -99,7 +99,7 @@ g       = p.E_G/ p.kap/ E_m ;      % -, energy investment ratio
 L_m     = p.v/ k_M/ g;           % cm, maximum length
 L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic work)
 l_T     = L_T/ L_m;            % - , scaled heating length
-w       = m_Em * w_E * p.d_E/ p.d_V/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
+w       = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
 if isfield(p,'kap_X')
