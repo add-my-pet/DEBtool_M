@@ -6,7 +6,7 @@ function [members, taxon] = clade(taxa)
 % created 2015/09/18 by Bas Kooijman
 
 %% Syntax
-% clade = <../clade.m *clade*> (taxa) 
+% members = <../clade.m *clade*> (taxa) 
 
 %% Description
 % gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa

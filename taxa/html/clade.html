@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>lineage</h1><!--introduction--><p>gets all species that are closest related to specified taxa</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>clade = <a href="../clade.m"><b>clade</b></a> (taxa)</p><h2>Description<a name="4"></a></h2><p>gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa</p><p>Input:</p><div><ul><li>cell string with names of taxa</li></ul></div><p>Output:</p><div><ul><li>cell string with all species in the add_my_pet collection that belong to that taxon</li><li>character string with the name of the lowest taxon all taxa belong</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The root is Animalia. If this is the lowest common taxon, the output contains all species in the collection. The classification follows that of Wikipedia</p><h2>Example of use<a name="6"></a></h2><p>members  = clade({'Gorilla', 'Tupaia'})</p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>lineage</h1><!--introduction--><p>gets all species that are closest related to specified taxa</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>members = <a href="../clade.m"><b>clade</b></a> (taxa)</p><h2>Description<a name="4"></a></h2><p>gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa</p><p>Input:</p><div><ul><li>cell string with names of taxa</li></ul></div><p>Output:</p><div><ul><li>cell string with all species in the add_my_pet collection that belong to that taxon</li><li>character string with the name of the lowest taxon all taxa belong</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The root is Animalia. If this is the lowest common taxon, the output contains all species in the collection. The classification follows that of Wikipedia</p><h2>Example of use<a name="6"></a></h2><p>members  = clade({'Gorilla', 'Tupaia'})</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% lineage
@@ -66,7 +66,7 @@ function [members, taxon] = clade(taxa)
 % created 2015/09/18 by Bas Kooijman
 
 %% Syntax
-% clade = <../clade.m *clade*> (taxa) 
+% members = <../clade.m *clade*> (taxa) 
 
 %% Description
 % gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa
