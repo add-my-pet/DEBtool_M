@@ -23,7 +23,9 @@ function [members, taxon] = clade(taxa)
 %% Remarks
 % The root is Animalia. 
 % If this is the lowest common taxon, the output contains all species in the collection.
-% The classification follows that of Wikipedia
+% If the input cell string has length 1, clade is similar to <select.html
+% *select*>.
+% The classification follows that of Wikipedia.
 
 %% Example of use
 % members  = clade({'Gorilla', 'Tupaia'})
