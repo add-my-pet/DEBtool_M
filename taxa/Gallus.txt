@@ -1,0 +1,4 @@
+Gallus_gallus
+Gallus_gallus_IR
+Gallus_gallus_RJ
+Gallus_gallus_WL
