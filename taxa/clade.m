@@ -30,7 +30,7 @@ function [members, taxon] = clade(taxa)
 
   n = length(taxa);
   
-  for i = 1:n % obtain lineages for all taxa
+  for i = 1:n % obtain lineages for all taxa called lin1, lin2, ..
     lin = lineage(taxa{i});
     if ~isequal('Animalia', lin{1})
       fprintf([taxa{i}, ' is not recognized \n']);
@@ -39,20 +39,22 @@ function [members, taxon] = clade(taxa)
     eval(['lin', num2str(i), ' = lin;']);
   end
   
-  true = 1; j = 0;
-  while true
-    j = j + 1; % step down the lineage
-    lower_taxon = lin1{j};
-    for i = 2 : n % step through taxa
-      eval(['true = isequal(lower_taxon, lin', num2str(i), '{j});']);
-      if ~true
+  if n == 1 % nothing to compare with
+    taxon = taxa{1};
+  else      % n > 1
+    true = 1; j = 0; % initiate selection process
+    while true
+      j = j + 1; % step down the lineage
+      taxon = lin1{j};
+      for i = 2 : n % step through taxa
+        eval(['true = isequal(taxon, lin', num2str(i), '{j});']);
+        if ~true
           break
+        end
       end
     end
-    if true
-      taxon = lower_taxon;
-    end
-  end
+    taxon = lin1{j-1};
+  end 
   
   members = select(taxon); 
   
