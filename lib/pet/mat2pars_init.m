@@ -46,18 +46,58 @@ free = par.free;
 par = rmfield(par, 'free');
 parFields = fields(par);
 
-for i = 1:length(parFields)
-  currentPar = parFields{i};
-  fprintf(pars_init_id, ['par.', currentPar,' = ', num2str(par.(currentPar)), ';  ']);
-  fprintf(pars_init_id, ['free.', currentPar,' = ', num2str(free.(currentPar)), ';  ']);
-  fprintf(pars_init_id, ['units.', currentPar,' = ''', txtPar.units.(currentPar), ''';  ']);
-  fprintf(pars_init_id, ['label.', currentPar,' = ''', txtPar.label.(currentPar), '''; \n']);
+% checking the existence of metapar fields
+EparFields = get_parfields(metaPar.model);
+
+fprintf(pars_init_id, '%%%% core primary parameters \n');
+
+for i = 1:length(EparFields)
+  currentPar = EparFields{i};
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
 end
 
+fprintf(pars_init_id, '\n%%%% other parameters \n');
+
+parFields = setdiff(parFields, EparFields);
+
+% separate chemical parameters from other
+pos = [];
+for j = 1:length(parFields)
+  if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
+    pos = [pos, j];
+  end
+end
+
+chemParFields = parFields(pos);
+otherParFields = setdiff(parFields, chemParFields);
+
+for i = 1:length(otherParFields)
+  currentPar = otherParFields{i};
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
+end
+
+fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
+fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class);');
+
+par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+
+for i = 1:length(chemParFields)
+  currentPar = chemParFields{i};
+  if par.(currentPar) ~= par_auto.(currentPar)
+    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
+  end
+end
 
 fprintf(pars_init_id, '\n\n%%%% Pack output: \n');
 fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = free; \n');
 
 fclose(pars_init_id);
+
+
+function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString)
+  fprintf(file_id, ['par.', parName,' = ', num2str(parValue), ';  ']);
+  fprintf(file_id, ['free.', parName,' = ', num2str(freeValue), ';  ']);
+  fprintf(file_id, ['units.', parName,' = ''', unitsString, ''';  ']);
+  fprintf(file_id, ['label.', parName,' = ''', labelString, '''; \n']);
 
 
