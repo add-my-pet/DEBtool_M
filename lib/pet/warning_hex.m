@@ -24,13 +24,13 @@ function warning_hex(p)
     fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
   end
 
-  if p.kap_X >= p.mu_X / p.mu_E; % can only occur if y_XE > 1, meaning that CO2 is consumed
-    fprintf('kap_X >= mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
+  if p.kap_X >= p.mu_E / p.mu_X; % can only occur if y_XE > 1, meaning that CO2 is consumed
+    fprintf('kap_X > mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
   end
 
   if isfield(p,'kap_P')
-    if p.kap_P >= p.mu_X / p.mu_P; % can only occur if y_XE > 1, meaning that CO2 is consumed
-      fprintf('kap_P >= mu_X / mu_P, which is not allowed if CO2 production occurs in association with assimilation. \n');
+    if p.kap_X * p.mu_X / p.mu_E + p.kap_P * p.mu_X / p.mu_P >= 1; % can only occur if y_XE > 1, meaning that CO2 is consumed
+      fprintf('kap_X * mu_X / mu_E + kap_P * mu_X / mu_P > 1, which is not allowed if CO2 production occurs in association with assimilation. \n');
     end
   end
   
