@@ -41,13 +41,10 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
     
   % customized filters for allowable parameters of the standard DEB model (std)
   % for other models consult the appropriate filter function.
-  if k * v_Hp >= f_tL^3  % constraint required for reaching puberty with f_tL
-    info = 0;
-    prdData = {};
-    return
-  end
+  filterChecks = k * v_Hp >= f_tL^3 || ...         % constraint required for reaching puberty with f_tL
+                 ~reach_birth(g, k, v_Hb, f_tL);   % constraint required for reaching birth with f_tL
   
-  if ~reach_birth(g, k, v_Hb, f_tL) % constraint required for reaching birth with f_tL
+  if filterChecks  
     info = 0;
     prdData = {};
     return;
