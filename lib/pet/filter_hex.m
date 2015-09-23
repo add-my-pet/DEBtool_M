@@ -50,7 +50,7 @@ function [filter, flag] = filter_hex(p)
     return;
   end
 
-  parvec = [p.kap; p.kap_R];
+  parvec = [p.kap; p.kap_R; p.kap_X; p.kap_P];
   
   if sum(parvec >= 1) > 0 
     flag = 2;
