@@ -28,9 +28,20 @@ matFile = ['results_', speciesnm, '.mat'];
 
 % check that mydata actually exists
 if exist(matFile, 'file') == 0
-  fprintf([matFile, ' not found\n']);
+  fprintf([matFile, ' not found.\n']);
   return
-end  
+end
+
+pars_initFile = ['pars_init_', speciesnm, '.m'];
+
+if exist(pars_initFile, 'file') == 2
+  prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
+  overwr = lower(input(prompt, 's'));
+  if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
+    fprintf([pars_initFile, ' was not overwritten.\n']);
+    return
+  end
+end
 
 load(matFile);
 
@@ -62,13 +73,8 @@ parFields = setdiff(parFields, EparFields);
 
 % separate chemical parameters from other
 pos = [];
-for j = 1:length(parFields)
-  if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
-    pos = [pos, j];
-  end
-end
-
-chemParFields = parFields(pos);
+par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+chemParFields = fields(par_auto);
 otherParFields = setdiff(parFields, chemParFields);
 
 for i = 1:length(otherParFields)
@@ -78,8 +84,6 @@ end
 
 fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
 fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class);');
-
-par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
 
 for i = 1:length(chemParFields)
   currentPar = chemParFields{i};
