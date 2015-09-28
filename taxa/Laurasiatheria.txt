@@ -1,7 +1,2 @@
 Eulipotyphla
-Chiroptera
-Pholidota
-Carnivora
-Artiodactyla
-Cetacea
-Perissodactyla
+Ferungulata

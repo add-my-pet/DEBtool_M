@@ -1,3 +1,2 @@
-Monotremata
-Marsupialia
-Placentalia
+Prototheria
+Therriformes

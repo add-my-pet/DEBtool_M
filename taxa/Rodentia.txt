@@ -1,5 +1,2 @@
-Cricetidae
-Muridae
-Bathyergidae
-Caviidae
-Hystricidae
+Hystricomorpha
+Myomorpha
