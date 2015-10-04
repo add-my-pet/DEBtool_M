@@ -27,7 +27,14 @@ function tree = pedigree(taxon)
 %% Example of use
 % tree  = pedigree('Animalia')
 
+  WD = pwd;                 % store current path
+  taxa = which('pedigree'); % locate DEBtool_M/taxa/
+  taxa = taxa(1:end - 10);  % path to DEBtool_M/taxa/
+  cd(taxa)                  % goto taxa
+
   tree = perl('pedigree.pl', taxon); 
   
+  cd(WD)                    % goto original path
+
 end
 

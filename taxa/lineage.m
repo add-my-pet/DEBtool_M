@@ -26,7 +26,15 @@ function classification = lineage(taxon)
 %% Example of use
 % classification  = lineage('Gorilla_gorilla')
 
+  WD = pwd;                        % store current path
+  taxa = which('lineage');  % locate DEBtool_M/taxa/
+  taxa = taxa(1:end - 9);          % path to DEBtool_M/taxa/
+  cd(taxa)                         % goto taxa
+
   classification = textscan(perl('lineage.pl', taxon), '%s'); 
   classification = classification{1};
+  
+  cd(WD)                           % goto original path
+
 end
 

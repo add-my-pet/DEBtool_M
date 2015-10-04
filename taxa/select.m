@@ -27,7 +27,15 @@ function species = select(taxon)
 %% Example of use
 % species  = select('Animalia')
 
+  WD = pwd;                % store current path
+  taxa = which('select');  % locate DEBtool_M/taxa/
+  taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/
+  cd(taxa)                 % goto taxa
+
   species = textscan(perl('select.pl', taxon), '%s'); 
   species = species{1};
+  
+  cd(WD)                   % goto original path
+
 end
 

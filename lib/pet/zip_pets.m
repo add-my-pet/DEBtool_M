@@ -33,13 +33,6 @@ function zip_pets(taxon, basefolder)
   %% Example of use
   % zip_pets('Aves')
   
-  WD = pwd;                % store current path
-  taxa = which('select'); 
-  taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/
-  cd(taxa)                 % goto taxa
-  species = select(taxon); % select all species in a taxon
-  cd(WD)                   % goto original path
-
   if nargin == 1
     basefolder = '.'; % default path to the basefolder
   end

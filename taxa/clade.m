@@ -29,6 +29,12 @@ function [members, taxon] = clade(taxa)
 %% Example of use
 % members  = clade({'Gorilla', 'Tupaia'})
 
+
+  WD = pwd;                        % store current path
+  taxa_nm = which('clade');        % locate DEBtool_M/taxa/
+  taxa_nm = taxa_nm(1:end - 7);    % path to DEBtool_M/taxa/
+  cd(taxa_nm)                      % goto taxa
+
   n = length(taxa);
   
   for i = 1:n % obtain lineages for all taxa called lin1, lin2, ..
@@ -58,6 +64,7 @@ function [members, taxon] = clade(taxa)
   end 
   
   members = select(taxon); 
-  
+  cd(WD)                           % goto original path
+
 end
 
