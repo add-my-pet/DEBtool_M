@@ -179,7 +179,7 @@ for i = 1:length(mat_ind)
   stri = mat_ind{i};
   labeli = mat_label{i};
   eval(['L_',  stri, ' = L_m * l_', stri, ';']);   % cm, structural length
-  eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
+%   eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
 %   eval(['a_',  stri, ' = t_', stri, '/ k_M;']);  % d, age at birth at T_ref
 %   % temperature correction
 %   eval(['a_',  stri, ' = a_', stri, '/ TC;']);      % d, age at birth at T
@@ -187,7 +187,7 @@ for i = 1:length(mat_ind)
   eval(['W_',  stri, ' = L_', stri, '^3 * d_V * (1 + f * w);']); % g, dry weight
   
   eval(['label.L_',  stri, ' = ''structural length ',  labeli, ''';  units.L_',  stri, ' = ''cm'';  stat.L_',  stri, ' = L_',         stri, ';']);  %cm, structutral length
-  eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
+%   eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
   eval(['label.M_V', stri, ' = ''structural mass ',    labeli, ''';  units.M_V', stri, ' = ''mol''; stat.M_V', stri, ' = M_V',        stri, ';']);  %cm, structural mass
   eval(['label.E_V', stri, ' = ''structural energy ',  labeli, ''';  units.E_V', stri, ' = ''J'';   stat.E_V', stri, ' = mu_V * M_V', stri, ';']);  %cm, structutral energy
   eval(['label.W_',  stri, ' = ''dry weight ',         labeli, ''';  units.W_',  stri, ' = ''g'';   stat.W_',  stri, ' = W_',         stri, ';']);  %cm, dry weight
