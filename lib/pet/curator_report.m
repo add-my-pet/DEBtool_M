@@ -204,13 +204,19 @@ fprintf('\n%d. Check implied model properties and parameter values of my_pet. Cr
 prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
 
 if prnt
+    if strcmp(metaPar.model,'ssj')
+    print_my_pet_under_construction(metaData, metaPar, par, txtPar)
+    else
     print_my_pet_html(metaData, metaPar, par, txtPar)
+    end
 elseif strcmp(metaPar.model,'std')
     [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
 elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
     [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
 end
 
+
+%%
 pointNumber = pointNumber + 1;
 
 % check bibliography
