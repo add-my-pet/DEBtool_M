@@ -35,7 +35,7 @@ function [filter, flag] = filter_stx(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
 
-  if p.a_0 < 0 % all pars must be positive
+  if p.t_0 < 0 % all pars must be positive
     flag = 1;
     return;
   end
