@@ -4,7 +4,7 @@
 %%
 function species = select(taxon)
 % created 2015/09/18 by Bernd Brandt
-
+% modified 2015/10/07 by Dina Lika
 %% Syntax
 % species = <../select.m *select*> (taxon) 
 
@@ -31,11 +31,12 @@ function species = select(taxon)
   taxa = which('select');  % locate DEBtool_M/taxa/
   taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/
   cd(taxa)                 % goto taxa
-
-  species = textscan(perl('select.pl', taxon), '%s'); 
-  species = species{1};
-  
+  try
+    species = textscan(perl('select.pl', taxon), '%s'); 
+    species = species{1};
+  catch
+    disp('A statement in the try block generated an error')
+  end
   cd(WD)                   % goto original path
-
 end
 
