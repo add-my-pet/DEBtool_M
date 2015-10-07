@@ -75,8 +75,6 @@ if exist(['mydata_', speciesnm], 'file')~=2
   error(['    There is no mydata_', speciesnm,' file']);
 end
 
-fprintf(['Checking of mydata_', speciesnm, ' has started \n']);
-
 [data, auxData, metaData, txtData, weights] = feval(['mydata_', speciesnm]);
 
 dataFields = fields(data);
@@ -109,6 +107,8 @@ for i = 1 : 5
          fprintf(['In mydata_',speciesnm,'.m: ', metaDataFields{i}, ' still set for my_pet example \n']);
     end  
 end
+
+    
 
 
 % checking the existence of psd in the data structure
@@ -431,7 +431,6 @@ if isfield(metaData, 'grp')
   end
 end
 
-fprintf(['Checking of mydata_', speciesnm, ' has finished. \n']);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -443,8 +442,6 @@ fprintf(['Checking of mydata_', speciesnm, ' has finished. \n']);
 if exist(['pars_init_', speciesnm], 'file')~=2
   error(['    There is no pars_init_', speciesnm,' file']);
 end
-
-fprintf(['Checking of pars_init_', speciesnm, ' has started \n']);
 
 [par, metaPar, txtPar] = feval(['pars_init_', speciesnm], metaData);
 
@@ -464,7 +461,7 @@ end
 EparFields = get_parfields(metaPar.model);
 
 if isempty(EparFields)
-  fprintf(['In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models. \n']);
+  error(['    In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models']);
 end
 
 parFields2Check = [EparFields, 'T_A', 'f'];
@@ -566,7 +563,7 @@ if ~pass
     error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter. Check previous warnings']);
 end
 
-fprintf(['Checking of pars_init_', speciesnm, ' has finished. \n']);
+
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -577,8 +574,6 @@ fprintf(['Checking of pars_init_', speciesnm, ' has finished. \n']);
 if exist(['predict_', speciesnm], 'file')~=2
   error(['    There is no predict_', speciesnm,' file']);
 end
-
-fprintf(['Checking of predict_', speciesnm, ' has started \n']);
 
 [prdData, infoPrd] = feval(['predict_', speciesnm], par, data, auxData);
 
@@ -632,6 +627,3 @@ if prdpsdexist
     end
   end
 end
-
-fprintf(['Checking of predict_', speciesnm, ' has finished. \n']);
-fprintf(['mydata, pars_init and predict for ', speciesnm, ' have been checked. \n']);
