@@ -31,12 +31,14 @@ function species = select(taxon)
   taxa = which('select');  % locate DEBtool_M/taxa/
   taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/
   cd(taxa)                 % goto taxa
+  
   try
     species = textscan(perl('select.pl', taxon), '%s'); 
     species = species{1};
   catch
-    disp('A statement in the try block generated an error')
+    disp('Name of taxon is not recognized')
   end
+  
   cd(WD)                   % goto original path
 end
 

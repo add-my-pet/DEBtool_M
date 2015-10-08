@@ -32,7 +32,11 @@ function tree = pedigree(taxon)
   taxa = taxa(1:end - 10);  % path to DEBtool_M/taxa/
   cd(taxa)                  % goto taxa
 
-  tree = perl('pedigree.pl', taxon); 
+  try
+    tree = perl('pedigree.pl', taxon); 
+  catch
+    disp('Name of taxon is not recognized')
+  end
   
   cd(WD)                    % goto original path
 

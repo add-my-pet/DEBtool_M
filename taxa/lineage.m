@@ -31,8 +31,12 @@ function classification = lineage(taxon)
   taxa = taxa(1:end - 9);          % path to DEBtool_M/taxa/
   cd(taxa)                         % goto taxa
 
-  classification = textscan(perl('lineage.pl', taxon), '%s'); 
-  classification = classification{1};
+  try
+    classification = textscan(perl('lineage.pl', taxon), '%s'); 
+    classification = classification{1};
+  catch
+    disp('Name of taxon is not recognized')
+  end
   
   cd(WD)                           % goto original path
 
