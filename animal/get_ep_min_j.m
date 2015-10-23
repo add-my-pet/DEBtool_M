@@ -11,7 +11,6 @@ function [ep, info] = get_ep_min_j(p)
   %% Description
   % Obtains the scaled reserve at birth for growth and maturation ceases at puberty in case of acceleration. 
   % It can be seen as the lower viable scaled reserve density for reproduction. Cf get_eb_min.
-  % In the case the eb minimum already causes reproduction to exist, it returns ep = eb and info = 2. 
   %
   % Input
   %
@@ -32,19 +31,10 @@ function [ep, info] = get_ep_min_j(p)
   %% Example of use
   % get_ep_min_j([.1 1 0 .001 0.01 .1])
   
-  g = p(1); k = p(2); vHb = p(4);
-  [eb, lb, uE0, info] = get_eb_min([g, k, vHb]);
-  eb = min(eb);
-  
-  if fnget_ep_min_j(eb, p) > 0 
-    [l_j, l_p, l_b] = get_lj(p, 1); ep_0 = p(3) + l_p * l_b/ l_j;
-    [ep, fval, info] = fzero(@fnget_ep_min_j, ep_0, [], p);
-    if ep <= 0 || ep >= 1
-      info = 0;
-    end
-  else
-    ep = eb;
-    info = 2;
+  [l_j, l_p, l_b] = get_lj(p, 1); ep_0 = p(3) + l_p * l_b/ l_j;
+  [ep, fval, info] = fzero(@fnget_ep_min_j, ep_0, [], p);
+  if ep <= 0 || ep >= 1
+    info = 0;
   end
   
 end
