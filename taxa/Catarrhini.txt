@@ -1,3 +1,2 @@
-Cercopithecidae
-Hylobatidae
-Hominidae
+Cercopithecoidea
+Hominoidea
