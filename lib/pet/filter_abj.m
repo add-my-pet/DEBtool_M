@@ -47,18 +47,13 @@ function [filter, flag] = filter_abj(p)
     return;
   end
 
-  if p.E_Hb >= p.E_Hj % maturity at birth, puberty
+  if p.E_Hb >= p.E_Hj % maturity at birth, metam
     flag = 4;
     return;
   end
 
-  if p.E_Hj >= p.E_Hp % maturity at birth, puberty
+  if p.E_Hj >= p.E_Hp % maturity at metam, puberty
     flag = 4;
-    return;
-  end
-
-  if p.f > 1
-    flag = 2;
     return;
   end
 
