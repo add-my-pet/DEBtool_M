@@ -1,6 +1,2 @@
 Radiata
 Bilateria
-Platyzoa
-Lophotrochozoa
-Ecdysozoa
-Deuterostomata
