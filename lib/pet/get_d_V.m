@@ -60,7 +60,7 @@ switch phylum
         d_V = 0.07;
     case 'Arthropoda'
         d_V = 0.17;
-    case 'Echinodermata'                             % deuterostomata
+    case 'Echinodermata'                              % deuterostomata
         d_V = 0.09;
     case 'Hemichordata'
         d_V = 0.07;
