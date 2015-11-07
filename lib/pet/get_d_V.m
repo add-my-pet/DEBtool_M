@@ -38,7 +38,7 @@ switch phylum
     case 'Rotifera'
         d_V = 0.06;
     case 'Platyhelminthes'
-        d_V = 0.25;
+        d_V = 0.07;
     case {'Ectoprocta', 'Entoprocta'}                % Spiralia 
         d_V = 0.07;
     case 'Annelida'
