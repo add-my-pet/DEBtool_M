@@ -39,7 +39,7 @@ switch phylum
         d_V = 0.06;
     case 'Platyhelminthes'
         d_V = 0.07;
-    case {'Ectoprocta', 'Entoprocta'}                % Spiralia 
+    case {'Ectoprocta', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         d_V = 0.07;
     case 'Annelida'
         d_V = 0.16;
