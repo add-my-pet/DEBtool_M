@@ -24,7 +24,7 @@ function [tb lb] = get_tb_foetus(par)
   % * lb: scalar with scaled length at birth 
   %
   %% Remarks
-  %  Scaled reserve densit at birth equals 1
+  %  Scaled reserve density at birth equals 1
   
   %% Example of use
   % get_tb_foetus([.1;.5;.03])

@@ -3,29 +3,36 @@
 
 %%
 function check_my_pet(speciesnms)
-  % created 2015/05/05 by Goncalo Marques; modified 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08 and 2015/07/22 by Goncalo Marques
+  % created 2015/05/05 by Goncalo Marques; 
+  % modified Goncalo Marques 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08, 2015/07/22 
+  % modified Bas Kooijman 2015/07/31, modified Goncalo Marques 2015/07/31
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
 
   %% Description
-  % Checks my_data, pars_init and predict files for field inconsistencies
+  % Checks my_data, pars_init and predict files for field inconsistencies.
+  %
   % Checking points for my_data:
-  %   - existence of standard metadata fields
+  %
+  %   - existence of standard metaData fields
   %   - existence of temp
   %   - existence of pseudodata
   %   - existence of weights
   %   - existence of units (and number consistence with type of data)
   %   - existence of labels (and number consistence with type of data)
-  %   - existence of bibkeys
-  %               and the corresponding entrances in biblist
+  %   - existence of bibkeys and the corresponding entries in biblist
+  %
   % Checking points for pars_init:
+  %
   %   - existence of standard metapar fields
   %   - model is one of the predefined models
   %   - existence of free 
   %   - existence of units 
   %   - existence of labels 
+  %
   % Checking points for predict:
+  %
   %   - existence of the same fields as in data
   %   - length of prediction results matches the length of data
   %
@@ -33,9 +40,13 @@ function check_my_pet(speciesnms)
   %
   % * speciesnms: string with species name or cell vector with multiple species names
   %  
+  % Output is printed to screen as warnings
+  
+  %% Remarks
+  % check_my_pet is a macro for check_my_pet_stnm, which checks each species one by one
 
   %% Example of use
-  % check_files('my_pet') 
+  % check_my_pet('my_pet') 
 
 if iscell(speciesnms)
   k = length(speciesnms);
@@ -46,503 +57,573 @@ else
   check_my_pet_stnm(speciesnms);
 end
     
-    
 function check_my_pet_stnm(speciesnm)
 
-info = 0;
-
 if ~isempty(strfind(speciesnm, ' '))
-  fprintf('The species name in input should not have spaces.\n');
-  fprintf('The standard species name follow the form ''Genus_species''.\n');
-  return;
+  error('   The species name in input should not have spaces.\n The standard species name follow the form ''Genus_species' );
 end
   
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Checking the my_data file
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the my_data file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-bibNotToCheck = {'Kooy2010'};    % list of bib references that does not need to have an explicit reference
+bibNotToCheck = {'Kooy2010', 'LikaKear2011'};    % list of bib references that does not need to have an explicit reference
 
 if exist(['mydata_', speciesnm], 'file')~=2
-  fprintf(['There is no mydata_', speciesnm,' file.\n']);
-  return;
+  error(['    There is no mydata_', speciesnm,' file']);
 end
 
-[data, txt_data, metadata] = feval(['mydata_', speciesnm]);
+[data, auxData, metaData, txtData, weights] = feval(['mydata_', speciesnm]);
 
-datafields = fields(data);
-txtdatafields = fields(txt_data);
+dataFields = fields(data);
+auxDataTypes = fields(auxData);
+txtDataFields = fields(txtData);
+weightFields = fields(weights);
 
-%% checking the existence of metadata fields
-mtdtfields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
+% checking the existence of metaData fields
+metaDataFields = {'phylum', 'class', 'order', 'family', 'species', 'species_en', 'T_typical', 'data_0', 'data_1'};
 
-for i = 1:length(mtdtfields)
-  if ~isfield(metadata, mtdtfields{i})
-    fprintf(['The field ', mtdtfields{i}, ' is missing in metadata. \n']);
+for i = 1:2 %phylum and class are needed in get_d_V.m
+    if ~isfield(metaData,metaDataFields{i}) 
+      error(['    In mydata_',speciesnm,'.m: The field ', metaDataFields{i}, ' is missing in metaData']);
+    end  
+end
+
+for i = 3:length(metaDataFields)
+  if ~isfield(metaData, metaDataFields{i})
+    fprintf(['In mydata_',speciesnm,'.m: The field ', metaDataFields{i}, ' is missing in metaData. \n']);
   end
 end
 
-%% checking if metadata.species matches speciesnm
-if ~strcmp(speciesnm, metadata.species)
-  fprintf('The species name in metadata.species does not match the species name in the mydata file name.\n');
+% checking if metaData.species matches speciesnm
+if ~strcmp(speciesnm, metaData.species)
+  fprintf(['In mydata_',speciesnm,'.m: The species name in metaData.species does not match the species name in the mydata file name.\n']);
 end
 
-%% checking the existence of temp in the data structure
-if sum(strcmp(datafields, 'temp')) == 0
-  fprintf('The data structure does not include temperature data. \n');
-else
-  datafields = datafields(~strcmp(datafields, 'temp'));
-  tempfields = fields(data.temp);
-  
-  for i = 1:length(tempfields)
-    if sum(strcmp(datafields, tempfields(i))) == 0
-      fprintf(['There is a temperature defined for ', tempfields{i}, ' but there is no corresponding data. \n']);
-    end
-  end
+for i = 1 : 5
+    if strncmp(metaData.(metaDataFields{i}),'my_pet_', 7 ) 
+         fprintf(['In mydata_',speciesnm,'.m: ', metaDataFields{i}, ' still set for my_pet example \n']);
+    end  
 end
 
-%% checking the existence of psd in the data structure
-if sum(strcmp(datafields, 'psd')) == 0
-  fprintf('The data structure does not include the pseudodata for the regression. \n');
-  psdexist = 0;
-else
-  datafields = datafields(~strcmp(datafields, 'psd'));
-  psdfields = fields(data.psd);
+    
+
+
+% checking the existence of psd in the data structure
+if sum(strcmp(dataFields, 'psd'))
+  dataFields = dataFields(~strcmp(dataFields, 'psd'));
+  psdFields = fields(data.psd);
   psdexist = 1;
+else
+  fprintf(['In mydata_',speciesnm,'.m: The data structure does not include the pseudodata for the regression. \n']);
+  psdexist = 0;
 end
 
-%% checking the existence of weight in the data structure
-if sum(strcmp(datafields, 'weight')) == 0
-  fprintf('The data structure does not include the weights for the regression. \n');
-  info = 1;
-else
-  datafields = datafields(~strcmp(datafields, 'weight'));
-  weightfields = fields(data.weight);
-  if sum(strcmp(weightfields, 'psd')) == 1
-    psdweightfields = fields(data.weight.psd);
-    weightfields = weightfields(~strcmp(weightfields, 'psd'));
+% checking the existence of temp in the auxData structure
+if ~sum(strcmp(auxDataTypes, 'temp'))
+  error(['    In mydata_', speciesnm,'.m: The auxData structure does not include temperature data']);
+end
+
+% checking the auxData fields match data fields
+for i = 1:size(auxDataTypes, 1)
+  currentAuxDataType = auxDataTypes{i};
+  auxDataFields = fields(auxData.(currentAuxDataType));
+  for j = 1:size(auxDataFields, 1)
+    if sum(strcmp(dataFields, auxDataFields(j))) == 0
+      error(['    In mydata_',speciesnm,'.m: There is a ', auxDataTypes{i},' defined for ', auxDataFields{i}, ' but there is no corresponding data']);
+    end    
   end
+end
+
+% checking the weights fields match data fields
+if sum(strcmp(weightFields, 'psd'))
+  psdWeightFields = fields(weights.psd);
+  weightFields = weightFields(~strcmp(weightFields, 'psd'));
+end
   
-  if length(weightfields) > length(datafields)
-    for i = 1:length(weightfields)
-      if sum(strcmp(datafields, weightfields(i))) == 0
-        fprintf(['There is a weight defined for ', weightfields{i}, ' but there is no corresponding data. \n']);
+if length(weightFields) > length(dataFields)
+  for i = 1:length(weightFields)
+    if ~sum(strcmp(dataFields, weightFields(i)))
+      fprintf(['In mydata_',speciesnm,'.m: There is a weight defined for ', weightFields{i}, ' but there is no corresponding data. \n']);
+    end
+  end
+else
+  for i = 1:length(dataFields)
+    if ~sum(strcmp(dataFields(i), weightFields))
+      fprintf(['In mydata_',speciesnm,'.m: There is no weight defined for data point/set ', dataFields{i}, '. \n']);
+    end
+  end
+end
+
+if psdexist
+  if length(psdWeightFields) > length(psdFields)
+    for i = 1:length(psdWeightFields)
+      if ~sum(strcmp(psdFields, psdWeightFields(i)))
+        fprintf(['In mydata_',speciesnm,'.m: There is a weight defined for pseudodata ', psdWeightFields{i}, ' but there is no corresponding pseudodata. \n']);
       end
     end
   else
-    for i = 1:length(datafields)
-      if sum(strcmp(datafields(i), weightfields)) == 0
-        fprintf(['There is no weight defined for data point/set ', datafields{i}, '. \n']);
+    for i = 1:length(psdFields)
+      if ~sum(strcmp(psdFields(i), psdWeightFields))
+        fprintf(['In mydata_',speciesnm,'.m: There is no weight defined for pseudodata point ', psdFields{i}, '. \n']);
       end
     end
   end
+end
+
+% checking the existence of units in the txtData structure
+if sum(strcmp(txtDataFields, 'units'))
+  unitsFields = fields(txtData.units);
+  unitsChecked = zeros(length(unitsFields), 1);   % vector to keep track of the units that have been checked
   
-  if psdexist
-    if length(psdweightfields) > length(psdfields)
-      for i = 1:length(psdweightfields)
-        if sum(strcmp(psdfields, psdweightfields(i))) == 0
-          fprintf(['There is a weight defined for pseudodata ', psdweightfields{i}, ' but there is no corresponding pseudodata. \n']);
-        end
-      end
+  % first check if all fields in data have units
+  for i = 1:length(dataFields)
+    if sum(strcmp(dataFields(i), unitsFields))
+      unitsChecked = unitsChecked + strcmp(dataFields(i), unitsFields);
     else
-      for i = 1:length(psdfields)
-        if sum(strcmp(psdfields(i), psdweightfields)) == 0
-          fprintf(['There is no weight defined for pseudodata point ', psdfields{i}, '. \n']);
-        end
-      end
+      error(['   In mydata_',speciesnm,'.m: There are no units defined for data point/set ', dataFields{i}, '. \n']);
     end
   end
-end
-
-%% checking the existence of units in the txt_data structure
-if sum(strcmp(txtdatafields, 'units')) == 0
-  fprintf('The txt_data structure does not include the data units. \n');
-else
-  unitsfields = fields(txt_data.units);
-  if sum(strcmp(unitsfields, 'psd')) == 1
-    psdunitsfields = fields(txt_data.units.psd);
-    unitsfields = unitsfields(~strcmp(unitsfields, 'psd'));
-  end
-
-  if length(unitsfields) > length(datafields)
-    for i = 1:length(unitsfields)
-      if sum(strcmp(datafields, unitsfields(i))) == 0
-        fprintf(['There are units defined for ', unitsfields{i}, ' but there is no corresponding data. \n']);
-      else 
-        eval(['[aux, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-        if eval(['ischar(txt_data.units.', datafields{i}, ');'])
-          kunit = 1;
-        else
-          eval(['kunit = length(txt_data.units.', datafields{i}, ');']);
-        end
-        if k == 1 && kunit > 1
-          fprintf(['There is more than one unit defined for the zerovariate data ', unitsfields{i}, '. \n']);
-        elseif k > 1 && kunit ~= 2 && kunit ~= k
-          fprintf(['There should be two (or ', num2srt(k),') units defined for the univariate data ', unitsfields{i}, '. \n']);
-        end
-      end
-    end
-  else
-    for i = 1:length(datafields)
-      if sum(strcmp(datafields(i), unitsfields)) == 0
-        fprintf(['There are no units defined for data point/set ', datafields{i}, '. \n']);
-      else 
-        eval(['[aux, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-        if eval(['ischar(txt_data.units.', datafields{i}, ');'])
-          kunit = 1;
-        else
-          eval(['kunit = length(txt_data.units.', datafields{i}, ');']);
-        end
-        if k == 1 && kunit > 1
-          fprintf(['There is more than one unit defined for the zerovariate data ', unitsfields{i}, '. \n']);
-        elseif k > 1 && kunit ~= 2 && kunit ~= k
-          fprintf(['There should be two (or ', num2str(k),') units defined for the univariate data ', unitsfields{i}, '. \n']);
-        end
-      end
-    end
-  end
-end
   
-%% checking the existence of labels in the txt_data structure
-if sum(strcmp(txtdatafields, 'label')) == 0
-  fprintf('The txt_data structure does not include the data labels. \n');
-else
-  labelfields = fields(txt_data.label);
-  if sum(strcmp(labelfields, 'psd')) == 1
-    psdlabelfields = fields(txt_data.label.psd);
-    labelfields = labelfields(~strcmp(labelfields, 'psd'));
+  % then check if all fields in psd have units
+  if psdexist
+    if sum(strcmp(unitsFields, 'psd'))
+      psdUnitsFields = fields(txtData.units.psd);
+      if length(psdFields) > length(psdUnitsFields)
+        for i = 1:length(psdFields)
+          if ~sum(strcmp(psdFields(i), psdUnitsFields))
+            fprintf(['In mydata_',speciesnm,'.m: There are no units defined for pseudodata ', psdFields{i}, '. \n']);
+          end
+        end
+      else
+        for i = 1:length(psdUnitsFields)
+          if ~sum(strcmp(psdFields, psdUnitsFields(i)))
+            fprintf(['In mydata_',speciesnm,'.m: There are units defined for pseudodata ', psdUnitsFields{i}, ' but no corresponding value. \n']);
+          end
+        end
+      end
+      unitsChecked = unitsChecked + strcmp('psd', unitsFields); 
+    else
+      fprintf(['In mydata_',speciesnm,'.m: There are no units defined for pseudodata. \n'])
+    end
   end
+  
+  % then check if all fields in auxData have units
+  for i = 1:length(auxDataTypes)
+    if sum(strcmp(unitsFields, auxDataTypes(i)))
+      currentAuxDataType = auxDataTypes{i};
+      auxDataFields = fields(auxData.(currentAuxDataType));
+      auxDataUnitsFields = fields(txtData.units.(currentAuxDataType));
+      if length(auxDataFields) > length(auxDataUnitsFields)
+        for j = 1:length(auxDataFields)
+          if ~sum(strcmp(auxDataFields(j), auxDataUnitsFields))
+            fprintf(['In mydata_',speciesnm,'.m: There are no units defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{i}, '. \n']);
+          end
+        end
+      else
+        for j = 1:length(auxDataUnitsFields)
+          if ~sum(strcmp(auxDataFields, auxDataUnitsFields(j)))
+            fprintf(['In mydata_',speciesnm,'.m: There are units defined for auxiliary data ', auxDataUnitsFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
+          end
+        end
+      end
+      unitsChecked = unitsChecked + strcmp(auxDataTypes(i), unitsFields); 
+    else
+      fprintf(['In mydata_',speciesnm,'.m: There are no units defined for auxData type ', auxDataTypes{i},'. \n']);
+    end
+  end
+  
+  % finnaly check if there are extra unit fields without data
+  extraUnits = unitsFields(unitsChecked == 0);
+  if ~isempty(extraUnits)
+    for i = 1:length(extraUnits)
+      error(['    In mydata_',speciesnm,'.m: There are no units defined for ', extraUnits{i},' but no corresponding value(s). \n']);
+    end
+  end
+else
+  fprintf(['In mydata_',speciesnm,'.m: The txtData structure does not include the data units. \n']);
+end
 
-  if length(labelfields) > length(datafields)
-    for i = 1:length(labelfields)
-      if sum(strcmp(datafields, labelfields(i))) == 0
-        fprintf(['There is a label defined for ', labelfields{i}, ' but there is no corresponding data. \n']);
-      else 
-        eval(['[aux, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-        if eval(['ischar(txt_data.label.', datafields{i}, ');'])
-          kunit = 1;
-        else
-          eval(['kunit = length(txt_data.label.', datafields{i}, ');']);
+% checking the existence of labels in the txtData structure
+if sum(strcmp(txtDataFields, 'label'))
+  labelFields = fields(txtData.label);
+  labelChecked = zeros(length(labelFields), 1);   % vector to keep track of the labels that have been checked
+  
+  % first check if all fields in data have labels
+  for i = 1:length(dataFields)
+    if sum(strcmp(dataFields(i), labelFields))
+      labelChecked = labelChecked + strcmp(dataFields(i), labelFields);
+    else
+      error([' In mydata_',speciesnm,'.m: There are no labels defined for data point/set ', dataFields{i}, '. \n']);
+    end
+  end
+  
+  % then check if all fields in psd have labels
+  if psdexist
+    if sum(strcmp(labelFields, 'psd'))
+      psdLabelFields = fields(txtData.label.psd);
+      if length(psdFields) > length(psdLabelFields)
+        for i = 1:length(psdFields)
+          if ~sum(strcmp(psdFields(i), psdLabelFields))
+            fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for pseudodata ', psdFields{i}, '. \n']);
+          end
         end
-        if k == 1 && kunit > 1
-          fprintf(['There is more than one label defined for the zerovariate data ', labelfields{i}, '. \n']);
-        elseif k > 1 && kunit ~= 2 && kunit ~= k
-          fprintf(['There should be two (or ', num2srt(k),') labels defined for the univariate data ', labelfields{i}, '. \n']);
+      else
+        for i = 1:length(psdLabelFields)
+          if ~sum(strcmp(psdFields, psdLabelFields(i)))
+            fprintf(['In mydata_',speciesnm,'.m: There are labels defined for pseudodata ', psdLabelFields{i}, ' but no corresponding value. \n']);
+          end
         end
+      end
+      labelChecked = labelChecked + strcmp('psd', labelFields); 
+    else
+      fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for pseudodata. \n'])
+    end
+  end
+  
+  % then check if all fields in auxData have labels
+  for i = 1:length(auxDataTypes)
+    if sum(strcmp(labelFields, auxDataTypes(i)))
+      auxDataFields = fields(auxData.(currentAuxDataType));
+      auxDataLabelFields = fields(txtData.label.(currentAuxDataType));
+      if length(auxDataFields) > length(auxDataLabelFields)
+        for j = 1:length(auxDataFields)
+          if ~sum(strcmp(auxDataFields(j), auxDataLabelFields))
+            fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for auxiliary data ', auxDataFields{j}, ' of type ', auxDataTypes{i}, '. \n']);
+          end
+        end
+      else
+        for j = 1:length(auxDataLabelFields)
+          if ~sum(strcmp(auxDataFields, auxDataLabelFields(j)))
+            fprintf(['In mydata_',speciesnm,'.m: There are labels defined for auxiliary data ', auxDataLabelFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
+          end
+        end
+      end
+      labelChecked = labelChecked + strcmp(auxDataTypes(i), labelFields); 
+    else
+      fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for auxData type ', auxDataTypes{i},'. \n']);
+    end
+  end
+  
+  % finnaly check if there are extra label fields without data
+  extraLabel = labelFields(labelChecked == 0);
+  if ~isempty(extraLabel)
+    for i = 1:length(extraLabel)
+      fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for ', extraLabel{i},' but no corresponding value(s). \n']);
+    end
+  end
+else
+  fprintf(['In mydata_',speciesnm,'.m: The txtData structure does not include the data labels. \n']);
+end
+
+% checking the existence of facts
+if isfield(metaData, 'facts')
+  factsFields = fields(metaData.facts);
+else
+  factsFields = {};
+end
+
+if isfield(metaData, 'bibkey')
+  factsBibkeys = fields(metaData.bibkey);
+else
+  factsBibkeys = {};
+end
+
+% checking the existence of bibkeys in the txtData structure
+if sum(strcmp(txtDataFields, 'bibkey'))
+  bibkeyFields = [fields(txtData.bibkey); factsBibkeys];
+  referencedFields = [dataFields; factsFields];
+
+  if length(bibkeyFields) > length(referencedFields)
+    for i = 1:length(bibkeyFields)
+      if sum(strcmp(referencedFields, bibkeyFields(i))) == 0
+        fprintf(['In mydata_',speciesnm,'.m: There is a bibkey defined for ', bibkeyFields{i}, ' but there is no corresponding data or fact. \n']);
       end
     end
   else
-    for i = 1:length(datafields)
-      if sum(strcmp(datafields(i), labelfields)) == 0
-        fprintf(['There are no labels defined for data point/set ', datafields{i}, '. \n']);
-      else 
-        eval(['[aux, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-        if eval(['ischar(txt_data.label.', datafields{i}, ');'])
-          kunit = 1;
-        else
-          eval(['kunit = length(txt_data.label.', datafields{i}, ');']);
-        end
-        if k == 1 && kunit > 1
-          fprintf(['There is more than one label defined for the zerovariate data ', labelfields{i}, '. \n']);
-        elseif k > 1 && kunit ~= 2 && kunit ~= k
-          fprintf(['There should be two (or ', num2str(k),') labels defined for the univariate data ', labelfields{i}, '. \n']);
-        end
+    for i = 1:length(referencedFields)
+      if sum(strcmp(referencedFields(i), bibkeyFields)) == 0
+        fprintf(['In mydata_',speciesnm,'.m: There is no bibkey defined for data point/set or fact ', referencedFields{i}, '. \n']);
       end
     end
   end
+else
+  fprintf(['In mydata_',speciesnm,'.m: The txtData structure does not include the bibkeys. \n']);
 end
 
-%% checking the existence of facts
-if isfield(metadata, 'facts')
-  factsfields = fields(metadata.facts);
-  factsfields = factsfields(~strcmp(factsfields, 'bibkey'));
-else
-  factsfields = {};
-end
-
-%% checking the existence of bibkeys in the txt_data structure
-if sum(strcmp(txtdatafields, 'bibkey')) == 0
-  fprintf('The txt_data structure does not include the bibkeys. \n');
-else
-  bibkeyfields = fields(txt_data.bibkey);
-  referencedfields = [datafields; factsfields];
-
-  if length(bibkeyfields) > length(referencedfields)
-    for i = 1:length(bibkeyfields)
-      if sum(strcmp(referencedfields, bibkeyfields(i))) == 0
-        fprintf(['There is a bibkey defined for ', bibkeyfields{i}, ' but there is no corresponding data or fact. \n']);
-      end
-    end
-  else
-    for i = 1:length(referencedfields)
-      if sum(strcmp(referencedfields(i), bibkeyfields)) == 0
-        fprintf(['There is no bibkey defined for data point/set or fact ', referencedfields{i}, '. \n']);
-      end
-    end
+% checking the existence of bibkeys in the biblist structure
+if sum(strcmp(fields(metaData), 'biblist'))
+  biblistFields = fields(metaData.biblist);
+  for i = 1:length(bibNotToCheck)
+      biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck{i}));    % bibNotToCheck defined at the beginning of mydata section
   end
-end
-
-%% checking the existence of bibkeys in the biblist structure
-if sum(strcmp(fields(metadata), 'biblist')) == 0
-  fprintf('The metadata structure does not include the biblist. \n');
-else
-  biblistfields = fields(metadata.biblist);
-  biblistfields = biblistfields(~strcmp(biblistfields, bibNotToCheck));    % bibNotToCheck defined at the beginning of mydata section
-  for i = 1:length(bibkeyfields)
-    bibkeynm = eval(['txt_data.bibkey.', bibkeyfields{i}]);
+  bibkeyMarker = length(fields(txtData.bibkey));
+  for i = 1:length(bibkeyFields)
+    if i > bibkeyMarker
+      bibkeynm = metaData.bibkey.(bibkeyFields{i});
+    else
+      bibkeynm = txtData.bibkey.(bibkeyFields{i});
+    end
     if ~iscell(bibkeynm) 
-      if sum(strcmp(biblistfields, cellstr(bibkeynm))) == 0
-        fprintf(['The bibkey ', bibkeynm, ' defined for ', bibkeyfields{i}, ' has no corresponding reference in biblist. \n']);
+      if ~sum(strcmp(biblistFields, cellstr(bibkeynm)))
+        fprintf(['In mydata_',speciesnm,'.m: The bibkey ', bibkeynm, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
       end
     else
       [lin, k] = size(bibkeynm);
       if lin ~= 1 % check if for multiple references they are in a line vector
-        fprintf(['The bibkey defined for ', bibkeyfields{i}, ' should be a line vector - use commas (,) to separate multiple references. \n']);
+        fprintf(['In mydata_',speciesnm,'.m: The bibkey defined for ', bibkeyFields{i}, ' should be a line vector - use commas (,) to separate multiple references. \n']);
       else
         for j = 1:k
-          if sum(strcmp(biblistfields, bibkeynm(j))) == 0
-            fprintf(['The bibkey ', bibkeynm{j}, ' defined for ', bibkeyfields{i}, ' has no corresponding reference in biblist. \n']);
+          if ~sum(strcmp(biblistFields, bibkeynm(j)))
+            fprintf(['In mydata_',speciesnm,'.m: The bibkey ', bibkeynm{j}, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
           end
         end
       end
     end
   end
   
-  listbibused = {};
-  for i = 1:length(bibkeyfields)
-    eval(['bib = txt_data.bibkey.', bibkeyfields{i}, ';']);
-    if iscell(bib)
-      listbibused = [listbibused, bib];
+  listbibUsed = {};
+  for i = 1:length(bibkeyFields)
+    if i > bibkeyMarker
+      bib = metaData.bibkey.(bibkeyFields{i});
     else
-      listbibused(length(listbibused) + 1) = {bib};
+      bib = txtData.bibkey.(bibkeyFields{i});
+    end
+    if iscell(bib)
+      listbibUsed = [listbibUsed, bib];
+    else
+      listbibUsed(length(listbibUsed) + 1) = {bib};
     end
   end
-  for i = 1:length(biblistfields)
-    if sum(strcmp(biblistfields(i), listbibused)) == 0
-      fprintf(['The reference ', biblistfields{i}, ' in biblist is not used for any data point/set. \n']);
+  for i = 1:length(biblistFields)
+    if ~sum(strcmp(biblistFields(i), listbibUsed))
+      fprintf(['In mydata_',speciesnm,'.m: The reference ', biblistFields{i}, ' in biblist is not used for any data point/set. \n']);
+    end
+  end
+else
+  fprintf(['In mydata_',speciesnm,'.m: The metaData structure does not include the biblist. \n']);
+end
+
+% checking the consistency of group setting for plotting
+if isfield(metaData, 'grp')
+  setsInGroups = horzcat(metaData.grp.sets{:});
+  for i = 1:length(setsInGroups)
+    if ~sum(strcmp(setsInGroups(i), dataFields))
+      fprintf(['In mydata_',speciesnm,'.m: The data set ', setsInGroups{i}, ' in grp setting for plotting is not defined in data. \n']);
+    end
+  end
+  
+  % checking the units in a group
+  %grpNumber = length(metaData.grp.sets);
+  for i = 1:length(metaData.grp.sets)
+    unitsOf1stSet = txtData.units.(metaData.grp.sets{i}{1});
+    labelOf1stSet = txtData.label.(metaData.grp.sets{i}{1});
+    for j = 2:length(metaData.grp.sets{i})
+      if sum(strcmp(unitsOf1stSet, txtData.units.(metaData.grp.sets{i}{j}))) ~= 2
+        fprintf(['In mydata_',speciesnm,'.m: The sets ', metaData.grp.sets{i}{1}, ' and ' metaData.grp.sets{i}{j}, ' are in the same group for plotting but have different units. \n']);
+      end
+      if sum(strcmp(labelOf1stSet, txtData.label.(metaData.grp.sets{i}{j}))) ~= 2
+        fprintf(['In mydata_',speciesnm,'.m: The sets ', metaData.grp.sets{i}{1}, ' and ' metaData.grp.sets{i}{j}, ' are in the same group for plotting but have different labels. \n']);
+      end
     end
   end
 end
 
-if info == 1
-  fprintf('Due to the problems stated above only the my_data file was checked. \n');
-  return;
-end
 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Checking the pars_init file
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the pars_init file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist(['pars_init_', speciesnm], 'file')~=2
-  fprintf(['There is no pars_init_', speciesnm,' file.\n']);
-  return;
+  error(['    There is no pars_init_', speciesnm,' file']);
 end
 
-[par, metapar, txt_par, chem] = feval(['pars_init_', speciesnm], metadata);
+[par, metaPar, txtPar] = feval(['pars_init_', speciesnm], metaData);
 
-parfields = fields(par);
-txtparfields = fields(txt_par);
+parFields = fields(par);
+txtParTypes = fields(txtPar);
 
-%% checking the existence of metapar fields
-mtparfields = {'model', 'T_ref'};
+% checking the existence of metapar fields
+metaParFields = {'model'};
 
-for i = 1:length(mtparfields)
-  if ~isfield(metapar, mtparfields{i})
-    fprintf(['The field ', mtparfields{i}, ' is missing in metapar. \n']);
+for i = 1:length(metaParFields)
+  if ~isfield(metaPar, metaParFields{i})
+   error(['    In pars_init_',speciesnm,'.m: The field ', metaParFields{i}, ' is missing in metapar']);
   end
 end
 
-%% checking the existence of metapar fields
-possible_models = {'std', 'stf', 'stx', 'ssj', 'abj', 'asj', 'hex'};
+% checking the existence of metapar fields
+EparFields = get_parfields(metaPar.model);
 
-if sum(strcmp(metapar.model, possible_models)) == 0
-  fprintf(['The model ', metapar.model, ' is not one of the predefined models. \n']);
+if isempty(EparFields)
+  error(['    In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models']);
 end
 
-%% checking the existence of par fields
-switch metapar.model
-  case {'std', 'stf'}
-    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
-  case 'stx'
-    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hx', 'E_Hp', 'h_a', 's_G', 'a_0'};
-  case 'abj'
-    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
-  case 'asj'
-    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hs', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
-  case 'hex'
-    Eparfields = {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_s', 'E_He', 'h_a', 's_G'};
-end
+parFields2Check = [EparFields, 'T_A', 'f'];
 
-for i = 1:length(Eparfields)
-  if ~isfield(par, Eparfields{i})
-    fprintf(['The parameter ', Eparfields{i}, ' is missing in the par structure. \n']);
+% checking the existence of par fields
+for i = 1:length(parFields2Check)
+  if ~isfield(par, parFields2Check{i})
+    error(['    In pars_init_',speciesnm,'.m: The parameter ', parFields2Check{i}, ' is missing in the par structure']);
+
   end
 end
 
-%% checking the existence of free in the par structure and if it filled with either 0 or 1
-if sum(strcmp(parfields, 'free')) == 0
-  fprintf('The par structure does not include the free substructure. \n');
-else
-  parfields = parfields(~strcmp(parfields, 'free'));
-  freefields = fields(par.free);
+% checking the T_ref
+if ~isfield(par, 'T_ref')
+    error(['    In pars_init_',speciesnm,'.m: The parameter T_ref is missing in the par structure']);
+elseif par.T_ref ~= C2K(20)
+    error(['    In pars_init_',speciesnm,'.m: The parameter T_ref is not 20ºC (or 293.15K) and it should be']);
+end
 
-  if length(freefields) > length(parfields)
-    for i = 1:length(freefields)
-      if sum(strcmp(parfields, freefields(i))) == 0
-        fprintf(['There is free defined for ', freefields{i}, ' but there is no corresponding data. \n']);
-      else
-        freeval = eval(['par.free.', freefields{i}]);
-        if freeval ~= 0 && freeval ~= 1
-          fprintf(['The value in free for ', freefields{i}, ' should be either 0 or 1. \n']);
+% checking the existence of free in the par structure and if it is filled with either 0 or 1
+if sum(strcmp(parFields, 'free'))
+  parFields = parFields(~strcmp(parFields, 'free'));
+  freeFields = fields(par.free);
+
+  if length(freeFields) > length(parFields)
+    for i = 1:length(freeFields)
+      if sum(strcmp(parFields, freeFields(i)))
+        freeVal = par.free.(freeFields{i});
+        if freeVal ~= 0 && freeVal ~= 1
+          error(['    In pars_init_',speciesnm,'.m: The value in free for ', freeFields{i}, ' should be either 0 or 1']);
         end
-      end
-    end
-  else
-    for i = 1:length(parfields)
-      if sum(strcmp(parfields(i), freefields)) == 0
-        fprintf(['There is no free defined for data point/set ', parfields{i}, '. \n']);
       else
-        freeval = eval(['par.free.', parfields{i}]);
-        if freeval ~= 0 && freeval ~= 1
-          fprintf(['The value in free for ', parfields{i}, ' should be either 0 or 1. \n']);
+        fprintf(['In pars_init_',speciesnm,'.m: There is free defined for ', freeFields{i}, ' but there is no corresponding data. \n']);
+      end
+    end
+  else
+    for i = 1:length(parFields)
+      if sum(strcmp(parFields(i), freeFields))
+        freeVal = eval(['par.free.', parFields{i}]);
+        if freeVal ~= 0 && freeVal ~= 1
+          error(['    In pars_init_',speciesnm,'.m: The value in free for ', parFields{i}, ' should be either 0 or 1']);
         end
+      else
+        error(['    In pars_init_',speciesnm,'.m: There is no free defined for data point/set ', parFields{i}]);
       end
     end
   end
+else
+  fprintf(['In pars_init_',speciesnm,'.m: The par structure does not include the free substructure. \n']);
 end
 
-%% checking the existence of units in the txt_par structure
-if sum(strcmp(txtparfields, 'units')) == 0
-  fprintf('The txt_par structure does not include the parameter units. \n');
-else
-  unitsfields = fields(txt_par.units);
+% checking the existence of units in the txtPar structure
+if sum(strcmp(txtParTypes, 'units'))
+  unitsFields = fields(txtPar.units);
 
-  if length(unitsfields) > length(parfields)
-    for i = 1:length(unitsfields)
-      if sum(strcmp(parfields, unitsfields(i))) == 0
-        fprintf(['There are units defined for ', unitsfields{i}, ' but there is no corresponding data. \n']);
+  if length(unitsFields) > length(parFields)
+    for i = 1:length(unitsFields)
+      if ~sum(strcmp(parFields, unitsFields(i)))
+        fprintf(['In pars_init_',speciesnm,'.m: There are units defined for ', unitsFields{i}, ' but there is no corresponding data. \n']);
       end
     end
   else
-    for i = 1:length(parfields)
-      if sum(strcmp(parfields(i), unitsfields)) == 0
-        fprintf(['There are no units defined for data point/set ', parfields{i}, '. \n']);
+    for i = 1:length(parFields)
+      if ~sum(strcmp(parFields(i), unitsFields))
+        fprintf(['In pars_init_',speciesnm,'.m: There are no units defined for data point/set ', parFields{i}, '. \n']);
       end
     end
   end
+else
+  fprintf(['In pars_init_',speciesnm,'.m: The txtPar structure does not include the parameter units. \n']);
 end
 
-%% checking the existence of labels in the txt_par structure
-if sum(strcmp(txtparfields, 'label')) == 0
-  fprintf('The txt_par structure does not include the parameter units. \n');
-else
-  labelfields = fields(txt_par.label);
+% checking the existence of labels in the txtPar structure
+if sum(strcmp(txtParTypes, 'label'))
+  labelFields = fields(txtPar.label);
 
-  if length(labelfields) > length(parfields)
-    for i = 1:length(labelfields)
-      if sum(strcmp(parfields, labelfields(i))) == 0
-        fprintf(['There is a label defined for ', labelfields{i}, ' but there is no corresponding parameter. \n']);
+  if length(labelFields) > length(parFields)
+    for i = 1:length(labelFields)
+      if sum(strcmp(parFields, labelFields(i))) == 0
+        fprintf(['In pars_init_',speciesnm,'.m: There is a label defined for ', labelFields{i}, ' but there is no corresponding parameter. \n']);
       end
     end
   else
-    for i = 1:length(parfields)
-      if sum(strcmp(parfields(i), labelfields)) == 0
-        fprintf(['There is no label defined for data point/set ', parfields{i}, '. \n']);
+    for i = 1:length(parFields)
+      if sum(strcmp(parFields(i), labelFields)) == 0
+        fprintf(['In pars_init_',speciesnm,'.m: There is no label defined for data point/set ', parFields{i}, '. \n']);
       end
     end
   end
+else
+  fprintf(['In pars_init_',speciesnm,'.m: The txtPar structure does not include the parameter labels. \n']);
 end
 
-
-%% checking the realism of the par set
-filternm = ['filter_', metapar.model];
-[pass, flag]  = feval(filternm, par, chem);
+% checking the realism of the par set
+filternm = ['filter_', metaPar.model];
+[pass, flag]  = feval(filternm, par);
 if ~pass 
-  fprintf('The seed parameter set is not realistic. \n');
-  print_filterflag(flag);
-  info = 1;
-end
-
-if info == 1
-  fprintf('Due to the problems stated above only the my_data and pars_init files were checked. \n');
-  return;
+    print_filterflag(flag);
+    error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter. Check previous warnings']);
 end
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%% Checking the predict file
-%%
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Checking the predict file
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist(['predict_', speciesnm], 'file')~=2
-  fprintf(['There is no predict_', speciesnm,' file.\n']);
-  return;
+  error(['    There is no predict_', speciesnm,' file']);
 end
 
-[Prd_data, info_prd] = feval(['predict_', speciesnm], par, chem, metapar.T_ref, data);
+[prdData, infoPrd] = feval(['predict_', speciesnm], par, data, auxData);
 
-if info_prd == 0 
-  fprintf('The seed parameter set is not realistic (from use of info in the predict file). \n');
-  return;
+if infoPrd == 0 
+  error(['    In predict_', speciesnm, '.m: The seed parameter set did not pass customized filters']);
 end
 
-Prd_datafields = fields(Prd_data);
+prdDataFields = fields(prdData);
 
-%% checking the existence of psd in the Prd_data structure
-if sum(strcmp(Prd_datafields, 'psd')) == 0
-  Prd_psdexist = 0;
+% checking the existence of psd in the prdData structure
+if sum(strcmp(prdDataFields, 'psd'))
+  prdDataFields = prdDataFields(~strcmp(prdDataFields, 'psd'));
+  prdpsdFields = fields(prdData.psd);
+  prdpsdexist = 1;
 else
-  Prd_datafields = Prd_datafields(~strcmp(Prd_datafields, 'psd'));
-  Prd_psdfields = fields(Prd_data.psd);
-  Prd_psdexist = 1;
+  prdpsdexist = 0;
 end
 
-%% checking for the bijection data-predictions
-if length(Prd_datafields) > length(datafields)
-  for i = 1:length(Prd_datafields)
-    if sum(strcmp(datafields, Prd_datafields(i))) == 0
-      fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' but there is no corresponding data. \n']);
-    else 
-      eval(['[ldt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
-      eval(['[lprdt, k] = size(data.', Prd_datafields{i}, ');']);  % number of data points per set
+% checking for the bijection data-predictions
+if length(prdDataFields) > length(dataFields)
+  for i = 1:length(prdDataFields)
+    if sum(strcmp(dataFields, prdDataFields(i)))
+      ldt = size(data.(prdDataFields{i}), 1);       % number of data points per set
+      lprdt = size(prdData.(prdDataFields{i}), 1);  % number of prdData points per set
       if ldt ~= lprdt
-        fprintf(['There is a prediction defined for ', Prd_datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+        error(['    In predict_',speciesnm,'.m: There is a prediction defined for ', prdDataFields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt)]);
       end
+    else 
+      error(['    In predict_',speciesnm,'.m: There is a prediction defined for ', prdDataFields{i}, ' that has no corresponding data point/set defined in mydata_',speciesnm,'.m']);
     end
   end
 else
-  for i = 1:length(datafields)
-    if sum(strcmp(datafields(i), Prd_datafields)) == 0
-      fprintf(['There are no predictions defined for data point/set ', datafields{i}, '. \n']);
-    else 
-      eval(['[ldt, k] = size(data.', datafields{i}, ');']);  % number of data points per set
-      eval(['[lprdt, k] = size(Prd_data.', datafields{i}, ');']);  % number of data points per set
+  for i = 1:length(dataFields)
+    if sum(strcmp(dataFields(i), prdDataFields))
+      ldt = size(data.(dataFields{i}), 1);       % number of data points per set
+      lprdt = size(prdData.(dataFields{i}), 1);  % number of prdData points per set
       if ldt ~= lprdt
-        fprintf(['The prediction defined for ', datafields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
+        error(['    In predict_',speciesnm,'.m: The data defined for ', dataFields{i}, ' has a length of ', num2str(ldt), ' but the corresponding prediction has a length of ', num2str(lprdt)]);
       end
+    else 
+      error(['   In predict_',speciesnm,'.m: There are no predictions defined for data point/set ', dataFields{i}]);
     end
   end
 end
 
-%% checking for the pseudodate predictions in data
-if Prd_psdexist 
-  for i = 1:length(Prd_psdfields)
-    if sum(strcmp(psdfields, Prd_psdfields(i))) == 0
-      fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' but there is no corresponding data. \n']);
-    else 
-      eval(['[ldt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
-      eval(['[lprdt, k] = size(data.psd.', Prd_psdfields{i}, ');']);  % number of data points per set
-      if ldt ~= lprdt
-        fprintf(['There is a prediction defined for psd.', Prd_psdfields{i}, ' has a length of ', num2str(lprdt), ' but the corresponding data has a length of ', num2str(ldt), '. \n']);
-      end
+% checking for the pseudodata predictions in data (assuming each psd point has length 1)
+if prdpsdexist 
+  for i = 1:length(prdpsdFields)
+    if ~sum(strcmp(psdFields, prdpsdFields(i)))
+      error(['    In predict_',speciesnm,'.m: There is a prediction defined for psd.', prdpsdFields{i}, ' but there is no corresponding pseudodata point']);
     end
   end
 end
-

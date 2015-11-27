@@ -2,11 +2,12 @@
 % filters for allowable parameters of standard DEB model without acceleration
 
 %%
-function [filter flag] = filter_std(par, chem)
-% created 2014/01/22 by Bas Kooijman; modified 2015/03/17 by Goncalo Marques
+function [filter, flag] = filter_std(p)
+% created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/07/29 by Goncalo Marques
+% modified 2015/08/03 by starrlight
 
 %% Syntax
-% [filter flag] = <../filter_std.m *filter_std*> (par, chem)
+% [filter, flag] = <../filter_std.m *filter_std*> (p)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
@@ -15,8 +16,7 @@ function [filter flag] = filter_std(par, chem)
 %
 % Input
 %
-% * par: structure with parameters (see below)
-% * chem: structure with biochemical parameters
+% * p: structure with parameters (see below)
 %  
 % Output
 %
@@ -36,30 +36,27 @@ function [filter flag] = filter_std(par, chem)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  % unpack par, chem
-  v2struct(par); v2struct(chem);
-
-  parvec = [z; v; kap; p_M; E_G; k_J; E_Hb; E_Hp; kap_R; h_a; s_G];
+  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.kap_R; p.h_a; p.s_G; p.T_A];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
     return;
-  elseif p_T < 0
+  elseif p.p_T < 0
     flag = 1;
     return;
   end
 
-  if E_Hb >= E_Hp % maturity at birth, puberty
+  if p.E_Hb >= p.E_Hp % maturity at birth, puberty
     flag = 4;
     return;
   end
 
-  if f > 1
+  if p.f > 1
     flag = 2;
     return;
   end
 
-  parvec = [kap; kap_R];
+  parvec = [p.kap; p.kap_R; p.kap_X; p.kap_P];
   
   if sum(parvec >= 1) > 0 
     flag = 2;
@@ -67,22 +64,21 @@ function [filter flag] = filter_std(par, chem)
   end
 
   % compute and unpack cpar (compound parameters)
-  cpar = parscomp_st(par, chem);
-  v2struct(cpar);
+  c = parscomp_st(p);
 
-  if kap_G >= 1 % growth efficiency
+  if c.kap_G >= 1 % growth efficiency
     flag = 3;    
     return;
   end
 
-  if k * v_Hp >= f^3 % constraint required for reaching puberty
+  if c.k * c.v_Hp >= p.f^3 % constraint required for reaching puberty
     flag = 5;    
     return;
   end
 
-  if ~reach_birth(g, k, v_Hb, f) % constraint required for reaching birth
+  if ~reach_birth(c.g, c.k, c.v_Hb, p.f) % constraint required for reaching birth
     flag = 6;    
     return;
-  end
-
+  end  
+  
   filter = 1;

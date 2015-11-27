@@ -19,7 +19,7 @@ function  print_filterflag(flag)
 %  
 %     0: parameters pass the filter
 %     1: some parameter is negative
-%     2: some kappa is larger than 1
+%     2: some kappa or f is larger than 1
 %     3: growth efficiency is larger than 1
 %     4: maturity levels do not increase during life cycle
 %     5: puberty cannot be reached
@@ -35,7 +35,7 @@ switch flag
       fprintf('One or more parameters are negative \n');
       
     case 2
-      fprintf('kappa or one of the efficiencies is bigger than 1 \n');
+      fprintf('kappa, f or one of the fractions is bigger than 1 \n');
       
     case 3
       fprintf('growth efficiency is bigger than 1 \n');

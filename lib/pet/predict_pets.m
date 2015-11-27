@@ -2,52 +2,49 @@
 % Catenates predictions from predict files
 
 %%
-function [Prd_data, info] = predict_pets(pargrp, chem, T_ref, data)
+function [prdData, info] = predict_pets(parGrp, data, auxData)
 % created 2015/01/17 by Goncalo Marques, modified 2015/03/30 by Goncalo Marques
+% modified 2015/08/03 by Starrlight
 
 %% Syntax
-% [Prd_data, info] = <../predict_pets.m *predict_pets*>(pargrp, chem, T_ref, data)
+% [prdData, info] = <../predict_pets.m *predict_pets*>(parGrp, data, auxData)
 
 %% Description
 % Catenates predictions from predict files
 %
 % Input
 % 
-% * pargrp: structure with par for several species
-% * chem: structure with chemical parameters
-% * T_ref: scalar with refeerence temperature
+% * parGrp: structure with par for several species
 % * data: structure with data for several species
+% * auxData: structure with auxiliary data for several species
 %
 % Output
 %
-% * Prd_data: structure with predictions for several species
+% * prdData: structure with predictions for several species
 % * info: scalar with combined success (1) or failure (0) of predictions
  
 global pets pseudodata_pets 
 
 info = 0;
 
-% unpack par
-v2struct(pargrp);
-
 % produce pars for species and predict
 for i = 1:length(pets)
-  par = pargrp;   % for the case with no zoom factor transformation
-  ci = num2str(i);
-  eval(['[Prd_data.pet', ci,', info] = predict_', pets{i},'(par, chem, T_ref, data.pet', ci,');']);
+ % for the case with no zoom factor transformation
+  currentPet = sprintf('pet%d',i);
+  [prdData.(currentPet), info] = feval(['predict_', pets{i}], parGrp, data.(currentPet), auxData.(currentPet));
   if ~info
     return;
   end
   
   % predict pseudodata
   if pseudodata_pets == 0 % option of estim
-    eval(['Prd_data.pet', ci,' = predict_pseudodata(Prd_data.pet', ci,', par, chem, data.pet', ci,');']);
+    prdData.(currentPet) = predict_pseudodata(parGrp, data.(currentPet), prdData.(currentPet));
   end
 end
 
 if pseudodata_pets == 1
   % predicts pseudodata
-  Prd_data.psduni = predict_pseudodata([], pargrp, chem, data);
+  prdData = predict_pseudodata(parGrp, data, prdData);
 end
 
 info = 1;

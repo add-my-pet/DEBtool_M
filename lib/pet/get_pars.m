@@ -2,11 +2,12 @@
 % Gets some parameters, based on zero-variate data
 
 %%
-function [par, metapar, txt_par, chem, flag] = get_pars(data, metadata)
+function [par, metaPar, txtPar, flag] = get_pars(data, auxData, metaData)
   % created 2015/01/15 by Bas Kooijman and Goncalo Marques; modified 2015/03/07
+  % modified 2015/07/29
   
   %% Syntax 
-  % [par txt_par chem  flag] = <../get_pars.m *get_pars*> (data, metadata)
+  % [par, metaPar, txtPar, flag] = <../get_pars.m *get_pars*> (data, auxData, metaData)
 
   %% Description
   % Overwrites some parameters set by pars_init
@@ -15,7 +16,7 @@ function [par, metapar, txt_par, chem, flag] = get_pars(data, metadata)
   % * standard units have been used (d, cm, g, J)
   % * zero-variate data in mydata refer to condition f = 1 
   % * weights Wb, Wj, Wp and/or Wm as set in mydata_my_pet are wet weights
-  % * chemical pars w_V, w_E, mu_V, mu_E, T_ref exist in structure chem set in pars_init
+  % * chemical pars w_V, w_E, mu_V, mu_E, T_ref exist in structure par in pars_init
   %
   % Possible input data, read from structure data
   %
@@ -30,13 +31,13 @@ function [par, metapar, txt_par, chem, flag] = get_pars(data, metadata)
   % Input
   %
   % * data: structure with values of data (only zero-variate data are used)
-  % * metadata: structure with info about data, which is only passed to pars_init
+  % * auxData: structure with auxiliary data (includes temperatures) 
+  % * metaData: structure with info about data, which is only passed to pars_init
   %  
   % Output
   %
   % * par: structure with values for parameters
-  % * txt_par: as set in pars_init (not modified by this function)
-  % * chem: structure with values for chemical parameters, including T_ref
+  % * txtPar: as set in pars_init (not modified by this function)
   % * flag: identifier for the type of get_pars that has been used
   % 
   %     9: data: d_V, a_b, a_p, a_m, W_b, W_j, W_p, W_m, R_m
@@ -72,15 +73,15 @@ function [par, metapar, txt_par, chem, flag] = get_pars(data, metadata)
   %% Example of use
   % See <../mydata_get_pars_2_9.m *mydata_get_pars_2_9*> for application of functions called by this one. 
 
-eval(['[par, metapar, txt_par, chem] = pars_init_', metadata.species, '(metadata);']); % set pars and chem 
+[par, metaPar, txtPar] = feval(['pars_init_', metaData.species], metaData); % set pars and chem 
 % some elements of par will be overwritten below
 % T_ref is in chem, T_A in par; these are used for temp corrections
 
-v2struct(par); v2struct(chem); v2struct(metapar); % unpack par, chem, metapar
-cpar = parscomp_st(par, chem); v2struct(cpar);    % unpack cpar
+v2struct(par); v2struct(metaPar);         % unpack par, metaPar
+cpar = parscomp_st(par); v2struct(cpar);  % unpack cpar
 
 % Correct data for temperature
-v2struct(data); % unpack data
+v2struct(data); v2struct(auxData);   % unpack data and auxData
 if exist('ab', 'var')  % age at birth
   TC_ab = tempcorr(T_ref, temp.ab, T_A); % -, temp correction coefficient
   ab = ab/ TC_ab; % d, ab at T_ref
@@ -398,7 +399,7 @@ if isfield(par, 'E_Hx') && par.free.E_Hx % only set in case of weaning
 end
     
 % get del_M (relates structural to physical length)
-cpar = parscomp_st(par, chem); % compute compound parameters
+cpar = parscomp_st(par); % compute compound parameters
 v2struct(cpar);
 
 if isfield(par, 'del_M') && free.del_M

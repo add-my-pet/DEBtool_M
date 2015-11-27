@@ -7,9 +7,8 @@ function [output1 output2] = debtool_function(input1, input2)
 % created year/month/day by AUTHOR; modified year/month/day AUTHOR
 
 %% Syntax
-% [output1 output2] = <../debtool_function.m *debtool_function*> (input1,
-% input2) (please notice that the name of the function/script is hyperlinked to
-% the code for that function/script!)
+% [output1 output2] = <../debtool_function.m *debtool_function*> (input1, input2) 
+% (please notice that the name of the function/script is hyperlinked to the code for that function/script!)
 
 %% Description
 % Description of what the funtion or script actually does. It is even possible to

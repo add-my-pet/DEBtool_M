@@ -32,7 +32,7 @@ function [r Ea EL EL2 EL3 info] = ssd_iso_foetus(p, f, r0)
   
   %% Remarks
   %  r is solved numerically from: 1 = \int_0^infty S(t) R(t) exp(- r t) dt
-  % See <ssd_is.html *ssd_is*> for egg development.
+  % See <ssd_iso.html *ssd_iso*> for egg development.
   
   %% Example of use
   %  [r Ea EL EL2 EL3 info] = ssd_iso_foetus([0.8 0.95 0.1 0.002 0.02 0 0.02 1 5 1e-7 1e-8])

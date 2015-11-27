@@ -2,12 +2,12 @@
 % Calculates least squares estimates using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
+function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
 % created 2001/09/07 by Bas Kooijman; 
-% modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30, 2015/04/27, 2015/07/28 by Goncalo Marques
+% modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30, 2015/04/27, 2015/07/29 by Goncalo Marques
 
 %% Syntax
-% [q, info] = <../petregr_f.m *petregr_f*> (func, par, chem, T_ref, data, filter)
+% [q, info] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
 
 %% Description
 % Calculates least squares estimates using Nelder Mead's simplex method.
@@ -17,15 +17,10 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
 % * func: character string with name of user-defined function;
 %      see nrregr_st or nrregr  
 % * par: structure with parameters
-% * chem: structure with biochemical parameters
-% * T_ref: scalar with refeerence temperature
-% * data: structure with 
-%
-%    data values and
-%    field 'weight' with the weights of the data values
-%    field 'temp' with the temperature of some of the data values
-%
-% * filter: character string with name of user-defined filter function
+% * data: structure with data
+% * auxData: structure with auxiliary data
+% * weights: structure with weights
+% * filternm: character string with name of user-defined filter function
 %  
 % Output
 % 
@@ -45,35 +40,24 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   % option settings
   info = 1; % initiate info setting
   
-  % prepare variables
-  %   st: structure with data vaules
-  %   wst: structure with weghts (identical to st)
-  %   data4pred: data ready to send to predict files
-  nmweight = fieldnm_wtxt(data, 'weight');
-  nmwst = strrep(nmweight, '.weight', '');
-  nmwst = strcat('wst.', nmwst);
-  for i = 1:length(nmweight)
-    eval([nmwst{i}, ' = data.', nmweight{i}, ';']);
-  end
-  data4pred = rmfield_wtxt(data, 'weight');
-  st = rmfield_wtxt(data4pred, 'temp');
+  % prepare variable
+  %   st: structure with dependent data values only
+  st = data;
   [nm nst] = fieldnmnst_st(st); % nst: number of data sets
-  
-  listst = strjoin(strcat('st.', nm)', '; ');
-  listwst = strjoin(strcat('wst.', nm)', '; ');
-  listf = strjoin(strcat('f.', nm)', '; ');
-  
+    
   for i = 1:nst   % makes st only with dependent variables
-    eval(['[~, k] = size(st.', nm{i}, ');']); 
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    k = size(auxVar, 2);
     if k >= 2
-      eval(['st.', nm{i}, ' = st.', nm{i},'(:,2);']);
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
     end
   end
   
   % Y: vector with all dependent data
   % W: vector with all weights
-  eval(['Y = [', listst, '];']);
-  eval(['W = [', listwst, '];']);
+  Y = struct2vector(st, nm);
+  W = struct2vector(weights, nm);
   
   parnm = fieldnames(par.free);
   np = numel(parnm);
@@ -119,8 +103,8 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   % Set up a simplex near the initial guess.
   xin = qvec(index);    % Place input guess in the simplex
   v(:,1) = xin;
-  eval(['f = ', func, '(q, chem, T_ref, data4pred);']);
-  eval(['fv(:,1) = W'' * ([', listf, '] - Y).^2;']);
+  f = feval(func, q, data, auxData);
+  fv(:,1) = W' * (struct2vector(f, nm) - Y).^2;
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -136,12 +120,12 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
         y_test(j) = zero_term_delta / step_reducer;
       end
       qvec(index) = y_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-      f_test = eval([filter, '(q, chem)']);
+      f_test = feval(filternm, q);
       if ~f_test 
         fprintf('The parameter set for the simplex construction is not realistic. \n');
         step_reducer = 2 * step_reducer;
       else
-        eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+        [f, f_test] = feval(func, q, data, auxData);
         if ~f_test 
           fprintf('The parameter set for the simplex construction is not realistic. \n');
           step_reducer = 2 * step_reducer;
@@ -149,7 +133,7 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
       end
     end  
     v(:,j+1) = y_test;
-    eval(['fv(:,j+1) = W'' * ([', listf, '] - Y).^2;']);
+    fv(:,j+1) = W' * (struct2vector(f, nm) - Y).^2;
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -182,15 +166,15 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
   xbar = sum(v(:,one2n), 2)/ n_par;
   xr = (1 + rho) * xbar - rho * v(:,np1);
   qvec(index) = xr; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-  f_test = eval([filter, '(q, chem)']);
+  f_test = feval(filternm, q);
   if ~f_test
     fxr = fv(:,np1) + 1;
   else
-    eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+    [f, f_test] = feval(func, q, data, auxData);
     if ~f_test 
       fxr = fv(:,np1) + 1;
     else
-      eval(['fxr = W'' * ([', listf, '] - Y).^2;']);
+      fxr = W' * (struct2vector(f, nm) - Y).^2;
     end
   end
   func_evals = func_evals + 1;
@@ -199,15 +183,15 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
       % Calculate the expansion point
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
       qvec(index) = xe; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-      f_test = eval([filter, '(q, chem)']);
+      f_test = feval(filternm, q);
       if ~f_test
          fxe = fxr + 1;
       else
-        eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+        [f, f_test] = feval(func, q, data, auxData);
         if ~f_test 
           fxe = fv(:,np1) + 1;
         else
-          eval(['fxe = W'' * ([', listf, '] - Y).^2;']);
+          fxe = W' * (struct2vector(f, nm) - Y).^2;
         end
       end
       func_evals = func_evals + 1;
@@ -231,15 +215,15 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
             % Perform an outside contraction
             xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
             qvec(index) = xc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            f_test = eval([filter, '(q, chem)']);
+            f_test = feval(filternm, q);
             if ~f_test
               fxc = fxr + 1;
             else            
-              eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+              [f, f_test] = feval(func, q, data, auxData);
               if ~f_test 
                 fxc = fv(:,np1) + 1;
               else
-                eval(['fxc = W'' * ([', listf, '] - Y).^2;']);
+                fxc = W' * (struct2vector(f, nm) - Y).^2;
               end
             end
             func_evals = func_evals + 1;
@@ -256,15 +240,15 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
             % Perform an inside contraction
             xcc = (1 - psi) * xbar + psi * v(:,np1);
             qvec(index) = xcc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-            f_test = eval([filter, '(q, chem)']);
+            f_test = feval(filternm, q);
             if ~f_test
               fxcc = fv(:,np1) + 1;
             else
-              eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+              [f, f_test] = feval(func, q, data, auxData);
               if ~f_test 
                 fxcc = fv(:,np1) + 1;
               else
-                eval(['fxcc = W'' * ([', listf, '] - Y).^2;']);
+                fxcc = W' * (struct2vector(f, nm) - Y).^2;
               end
             end
             func_evals = func_evals + 1;
@@ -285,12 +269,12 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
                while ~f_test
                   v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
                   qvec(index) = v_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
-                  f_test = eval([filter, '(q, chem)']);
+                  f_test = feval(filternm, q);
                   if ~f_test 
                      fprintf('The parameter set for the simplex shrinking is not realistic. \n');
                      step_reducer = 2 * step_reducer;
                   else
-                    eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+                    [f, f_test] = feval(func, q, data, auxData);
                     if ~f_test 
                       fprintf('The parameter set for the simplex shrinking is not realistic. \n');
                       step_reducer = 2 * step_reducer;
@@ -298,7 +282,7 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
                   end
                end
                v(:,j) = v_test;
-               eval(['fv(:,j) = W'' * ([', listf, '] - Y).^2;']);
+               fv(:,j) = W' * (struct2vector(f, nm) - Y).^2;
             end
             func_evals = func_evals + n_par;
          end
@@ -319,19 +303,26 @@ function [q, info] = petregr_f(func, par, chem, T_ref, data, filter)
 
    fval = min(fv); 
    if func_evals >= max_fun_evals
-     if report > 0
+     %if report > 0
        fprintf(['No convergences with ', ...
 		num2str(max_fun_evals), ' function evaluations\n']);
-     end
+     %end
      info = 0;
    elseif itercount >= max_step_number 
-     if report > 0
+     %if report > 0
        fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
-     end
+     %end
      info = 0; 
    else
-     if report > 0
+     %if report > 0
        fprintf('Successful convergence \n');              
-     end
+     %end
      info = 1;
    end
+   
+function vec = struct2vector(struct, fieldNames)
+  vec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    vec = [vec; getfield(struct, fieldsInCells{1}{:})];
+  end

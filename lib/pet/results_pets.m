@@ -2,217 +2,241 @@
 % Computes model predictions and handles them
 
 %%
-function results_pets(txt_par, par_pets, metapar, chem, txt_data, data, metadata) 
+function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
-% modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14 by Goncalo Marques, 2015/04/27 by Goncalo Marques, 2015/05/05 by Goncalo Marques
-% modified 2015/07/05 by Starrlight
-
+% modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
+% modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
+% modified 2015/08/25 by Dina Lika
 %% Syntax
-% <../results_pets.m *results_pets*>(txt_par, par_pets, chem, txt_data, data,  metadata) 
+% <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
 
 %% Description
 % Computes model predictions and handles them (by plotting, saving or publishing)
 %
 % Input
 % 
-% * txt_par: information on the parameters
-% * par_pets: structure with parameters of species
-% * chem: structure with chemical parameters for species
-% * txt_data: structure with information on the data
+% * par: structure with parameters of species
+% * metaPar: structure with information on metaparameters
+% * txtPar: structure with information on parameters
 % * data: structure with data for species
-% * metadata: structure with information on the entry
+% * auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.). 
+%   auxData is unpacked in predict and the user needs to construct predictions accordingly.
+% * metaData: structure with information on the entry
+% * txtData: structure with information on the data
+% * weights: structure with weights for each data set
 
 %% Remarks
 % Depending on <estim_options.html *estim_options*> settings:
 % writes to results_my_pet.mat an/or results_my_pet.html, 
 % plots to screen
 
-global pets results_output pseudodata_pets 
-
-close all
-
-% get (mean) relative errors
-data_mre = data;  % define a data structure with weight 1 for every data point and 0 for the pseudodata 
-nmweight = fieldnm_wtxt(data_mre, 'weight');
-nmwst = strrep(nmweight, '.weight', '');
-for i = 1:length(nmweight)
-  eval(['dtsets = fieldnames(data_mre.', nmweight{i},');']);
-  for j = 1:length(dtsets)
-    if strcmp(dtsets{j}, 'psd')
-      eval(['psdsets = fieldnames(data_mre.', nmweight{i},'.psd);']);
-      for j = 1:length(psdsets)
-        eval(['data_mre.', nmweight{i}, '.psd.', psdsets{j}, ' = zeros(length(data_mre.', nmweight{i}, '.psd.', psdsets{j}, '), 1);']);
-      end
-    else
-      eval(['data_mre.', nmweight{i}, '.', dtsets{j}, ' = ones(length(data_mre.', nmweight{i}, '.', dtsets{j}, '), 1);']);
-    end
-  end
-end
-
-[MRE, RE] = mre_st('predict_pets', par_pets, chem, metapar.T_ref, data_mre); % WLS-method
-metapar.MRE = MRE;
-metapar.RE = RE;
-
-datapl = rmfield_wtxt(data, 'weight');
-
-for i = 1:length(pets)
-  ci = num2str(i);
-  eval(['[nm nst] = fieldnmnst_st(data.pet', ci,');']);  % nst: number of data sets for pet i
-  for j = 1:nst  % replace univariate data by plot data 
-    eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
-    if k >= 2 && isempty(strfind(nm{j}, 'temp.'))
-      eval(['datavec = data.pet', ci, '.', nm{j}, '(:,1);']);
-      xaxis = linspace(min(datavec), max(datavec), 100)';
-      eval(['datapl.pet', ci, '.', nm{j}, ' = xaxis;']);
-      if k >= 3
-        yaxis = zeros(length(xaxis), 1);
-        eval(['yaxis(1) = data.pet', ci, '.', nm{j}, '(1,2);']);
-        eval(['datapl.pet', ci, '.', nm{j}, '(:,2) = yaxis;']);
-        for l = 3:k
-          eval(['datavec = [data.pet', ci, '.', nm{j}, '(:,1), data.pet', ci, '.', nm{j}, '(:,l)];']);
-          extra_dependent_var = spline1(xaxis, datavec);
-          eval(['datapl.pet', ci, '.', nm{j}, '(:,l) = extra_dependent_var;']); 
-        end
+  global pets results_output pseudodata_pets 
+  
+  petsnumber = length(pets);
+  
+  % get (mean) relative errors
+  weightsMRE = weights;  % define a weights structure with weight 1 for every data point and 0 for the pseudodata 
+  for k = 1:petsnumber
+    currentPet = ['pet',num2str(k)];
+    if isfield(weights.(currentPet), 'psd')
+      psdSets = fields(weights.(currentPet).psd);
+      for j = 1:length(psdSets)
+        weightsMRE.(currentPet).psd.(psdSets{j}) = zeros(length(weightsMRE.(currentPet).psd.(psdSets{j})), 1);
       end
     end
   end
-end
-
-Prd_data = predict_pets(par_pets, chem, metapar.T_ref, datapl);
-
-RE_pointer = 1; %auxiliary pointer for the printing of the relative errors
-
-if results_output == 0 || results_output == 1
-
-  for i = 1:length(pets)
-    % produce par for species
-    par = par_pets;   % for the case with no zoom factor transformation
-    
-    % unpack par
-    v2struct(par);
   
-    ci = num2str(i);
-    fprintf([pets{i}, ' \n']); % print the species name
-    eval(['fprintf(''COMPLETE = %3.1f \n'', metadata.pet', ci, '.COMPLETE);']);
-    fprintf('MRE = %8.3f \n\n', MRE)
-    
-    fprintf('\n');
-    eval(['printprd_st(txt_data.pet', ci, ', data.pet', ci, ', Prd_data.pet', ci, ', RE);']);  
-    printpar_st(txt_par, par);
-
-%     if exist(['results_', pets{i}, '.m'], 'file')
-%       par = par_pets;   % for the case with no zoom factor transformation
-%       eval(['results_', pets{i}, '(txt_par, par, chem, metapar, txt_data.pet', ci, ', data.pet', ci, ');']);
-%     
-%     else
-%     
-%       eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
-%       for j = 1:nst
-%         eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
-%         if k >= 2 && isempty(strfind(nm{j}, 'temp.'))
-%           figure;
-%           set(gca,'Fontsize',12)
-%           eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
-%           eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
-%           eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
-%           eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
-%           plot(xpred, ypred, 'b', xdata, ydata, '.r', 'Markersize',20, 'linewidth', 4)
-%           eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
-%           xlabel(lblx);
-%           eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
-%           ylabel(lbly);
-%         end
-%       end
-%     end
-    fprintf('\n')
+  [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
+  if info == 0
+      error(  'One parameter set did not pass the customized filters in the predict file')
   end
-end
+  metaPar.MRE = MRE; metaPar.RE = RE;
+  data2plot = data;
 
-if results_output == 1 || results_output == 2
-    
-  par = par_pets;
-  filenm = ['results_', pets{1}, '.mat'];
-  metadata = metadata.pet1;
-  save(filenm, 'txt_par', 'par', 'metapar', 'chem', 'metadata');
+  if results_output == 2 % to avoid saving figures generated prior the current run
+      close all
+  end
   
-end
-
-
-if exist(['results_', pets{i}, '.m'], 'file')
-      par = par_pets;   % for the case with no zoom factor transformation
-      eval(['results_', pets{i}, '(txt_par, par, chem, metapar, txt_data.pet', ci, ', data.pet', ci, ');']);
-    
-else
-    
-      eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
-      for j = 1:nst
-        eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
-        if k >= 2 && isempty(strfind(nm{j}, 'temp.'))
-          figure;
-          set(gca,'Fontsize',12)
-          set(gcf,'PaperPositionMode','manual');
-          set(gcf,'PaperUnits','points'); 
-          set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-          eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
-          eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
-          eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
-          eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
-          plot(xpred, ypred, 'b', xdata, ydata, '.r', 'Markersize',20, 'linewidth', 4)
-          eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
-          xlabel(lblx);
-          eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
-          ylabel(lbly);
-        end
-      end
-end
- 
-if results_output == 2  
-
-%  if ~exist(['results_', pets{i}, '.m'], 'file')
-     
-  for i = 1:length(pets)
-    % produce par for species
-    par = par_pets;   % for the case with no zoom factor transformation
-    
-    % unpack par
-    v2struct(par);
-  
-    ci = num2str(i);
-    graphnm = ['results_', pets{i}, '_'];
-    
-%      if ~exist(['results_', pets{i}, '.m'], 'file')
-      eval(['[nm nst] = fieldnmnst_st(datapl.pet', ci, ');']);
-      counter = 1;
-      for j = 1:nst
-        eval(['[aux, k] = size(data.pet', ci, '.', nm{j}, ');']); % number of data points per set
-        if k >= 2
-%           figure;
-%           set(gca,'Fontsize',12)
-%           set(gcf,'PaperPositionMode','manual');
-%           set(gcf,'PaperUnits','points'); 
-%           set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-%           eval(['xdata = data.pet', ci, '.', nm{j}, '(:,1);']);
-%           eval(['ydata = data.pet', ci, '.', nm{j}, '(:,2);']);
-%           eval(['xpred = datapl.pet', ci, '.', nm{j}, '(:,1);']);
-%           eval(['ypred = Prd_data.pet', ci, '.', nm{j}, ';']);
-%           plot( xpred, ypred, 'b', xdata, ydata, '.r','Markersize',15, 'linewidth', 2)
-%           eval(['lblx = [char(txt_data.pet', ci, '.label.', nm{j},'(1)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(1))];']);
-%           xlabel(lblx);
-%           eval(['lbly = [char(txt_data.pet', ci, '.label.', nm{j},'(2)), '', '', char(txt_data.pet', ci, '.units.', nm{j},'(2))];']);
-%           ylabel(lbly);
-          if counter < 10
-            figure(counter)  
-            eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
-          else
-            figure(counter)  
-            eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+  for i = 1:petsnumber
+    currentPet = ['pet',num2str(i)];
+    st = data2plot.(currentPet); 
+    [nm, nst] = fieldnmnst_st(st);
+    for j = 1:nst  % replace univariate data by plot data 
+      fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
+      varData = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+      k = size(varData, 2);  
+      if k == 2 
+        auxDataFields = fields(auxData.(currentPet));
+        dataCode = fieldsInCells{1}{end};
+        univarAuxData = {};
+        for ii = 1:length(auxDataFields) % add to univarAuxData all auxData for the data set that has length > 1
+          if isfield(auxData.(currentPet).(auxDataFields{ii}), dataCode) && length(auxData.(currentPet).(auxDataFields{ii}).(dataCode)) > 1
+            univarAuxData{end + 1} = auxDataFields{ii};
           end
-          counter = counter + 1;
+        end
+        dataVec = st.(nm{j})(:,1); 
+        if isempty(univarAuxData) % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
+          xAxis = linspace(min(dataVec), max(dataVec), 100)';
+          univarX.(dataCode) = 'dft'; % 'dft': default number of plotting points for the x-axis 
+        else
+          xAxis = dataVec;
+          univarX.(dataCode) = 'usr'; % 'usr': user defined number of plotting points for the x-axis 
+        end
+        st.(nm{j}) = xAxis;
+      end
+    end
+    data2plot.(currentPet) = st;
+  end
+  
+  prdData = predict_pets(par, data2plot, auxData);
+  
+  for i = 1:petsnumber
+    if exist(['custom_results_', pets{i}, '.m'], 'file')
+          feval(['custom_results_', pets{i}], par, metaPar, data.(currentPet), txtData.(currentPet), auxData.(currentPet));
+    else
+      currentPet = ['pet', num2str(i)];
+      st = data.(currentPet); 
+      [nm, nst] = fieldnmnst_st(st);
+      counter = 0;
+      for j = 1:nst
+        fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
+        var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+        k = size(var, 2);
+        if k == 2 
+          if isfield(metaData.(currentPet), 'grp') % branch to start working on grouped graphs
+            plotColours4AllSets = listOfPlotColours4UpTo13Sets;
+            maxGroupColourSize = length(plotColours4AllSets) + 1;
+            grpSet1st = cellfun(@(v) v(1), metaData.(currentPet).grp.sets);
+            allSetsInGroup = horzcat(metaData.(currentPet).grp.sets{:});
+            if sum(strcmp(grpSet1st, nm{j})) 
+              sets2plot = metaData.(currentPet).grp.sets{strcmp(grpSet1st, nm{j})};
+              n_sets2plot = length(sets2plot); % actually: # of data sets in set j
+              if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
+                plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
+              else
+                plotColours = plotColours4AllSets{4};
+              end
+              figure; counter = counter + 1; 
+              hold on;
+              set(gca,'Fontsize',12); 
+              set(gcf,'PaperPositionMode','manual');
+              set(gcf,'PaperUnits','points'); 
+              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              for ii = 1: n_sets2plot
+                xData = st.(sets2plot{ii})(:,1); 
+                yData = st.(sets2plot{ii})(:,2);
+                xPred = data2plot.(currentPet).(sets2plot{ii})(:,1); 
+                yPred = prdData.(currentPet).(sets2plot{ii});
+                if n_sets2plot == 1
+                  plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 4)
+                  plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',20)
+                else
+                  plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
+                end
+                xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+                ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
+              end
+              title(metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})});
+            elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
+              figure; counter = counter + 1;
+              set(gca,'Fontsize',12); 
+              set(gcf,'PaperPositionMode','manual');
+              set(gcf,'PaperUnits','points'); 
+              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              xData = st.(nm{j})(:,1); 
+              yData = st.(nm{j})(:,2);
+              xPred = data2plot.(currentPet).(nm{j})(:,1); 
+              yPred = prdData.(currentPet).(nm{j});
+              plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+              xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+              ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);              
+            end
+          else
+            figure; counter = counter + 1; 
+            set(gca,'Fontsize',12); 
+            set(gcf,'PaperPositionMode','manual');
+            set(gcf,'PaperUnits','points'); 
+            set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+            xData = st.(nm{j})(:,1); 
+            yData = st.(nm{j})(:,2);
+            xPred = data2plot.(currentPet).(nm{j})(:,1); 
+            yPred = prdData.(currentPet).(nm{j});
+            if strcmp(univarX.(nm{j}), 'dft')
+              plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+            elseif strcmp(univarX.(nm{j}), 'usr')
+              plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',20, 'linestyle', 'none')
+            end
+            xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
+            ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
+          end
+        end
+        if results_output == 2  % save graphs to .png
+          if counter > 0
+            graphnm = ['results_', pets{i}, '_'];
+            if counter < 10
+              figure(counter)  
+              eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
+            else
+              figure(counter)  
+              eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+            end
+          end
         end
       end
+    end 
+    if results_output < 2
+%       v2struct(par); 
+      ci = num2str(i);
+      fprintf([pets{i}, ' \n']); % print the species name
+      fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
+      fprintf('MRE = %8.3f \n\n', MRE)
+      
+      fprintf('\n');
+      currentPet = sprintf('pet%d',i);
+      printprd_st(data.(currentPet), txtData.(currentPet), prdData.(currentPet), RE);
+      
+      free = par.free;  
+      corePar = rmfield_wtxt(par,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
+      [parFields, nbParFields] = fieldnmnst_st(corePar);
+      % we need to make a small addition so that it recognised if one of the
+      % chemical parameters was released and then print that to the screen
+      for j = 1:nbParFields
+        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
+          corePar          = rmfield_wtxt(corePar, parFields{j});
+          coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
+          coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
+          free  = rmfield_wtxt(free, parFields{j});
+        end
+      end
+      corePar.free = free;
+      printpar_st(corePar,coreTxtPar);
+      fprintf('\n')
+    end
+    if results_output > 0
+      filenm   = ['results_', pets{i}, '.mat'];
+      metaData = metaData.pet1;
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    end
   end
-    fprintf('\n')
-%   end
+  
+ 
+end
+
+function plotColours4AllSets = listOfPlotColours4UpTo13Sets
+
+  plotColours4AllSets = {{[1, 0, 0], [0, 0, 1]}, ...
+                         {[1, 0, 0], [1, 0, 1], [0, 0, 1]}, ...
+                         {[1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, 0]}, ...
+                         {[1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, 0]}, ...
+                         {[1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+                         {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, .75], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}};
+
 end
 
 

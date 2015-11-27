@@ -3,7 +3,7 @@
 
 %%
 function [d_V info] = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman, modified 2015/06/01
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24
   
   %% Syntax
   % d_V = <../get_d_V.m *get_d_V*>
@@ -37,9 +37,9 @@ switch phylum
         d_V = 0.05;
     case 'Rotifera'
         d_V = 0.06;
-    case 'Platyhelminthes'
-        d_V = 0.25;
-    case {'Ectoprocta', 'Entoprocta'}                % Spiralia 
+    case {'Platyhelminthes', 'Acanthocephala', 'Chaetognatha'}
+        d_V = 0.07;
+    case {'Ectoprocta', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         d_V = 0.07;
     case 'Annelida'
         d_V = 0.16;
@@ -56,11 +56,11 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case {'Tardigrada', 'Chaetognata', 'Priapulida'} % Ecdysozoa
+    case {'Tardigrada', 'Priapulida'} % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
         d_V = 0.17;
-    case 'Echinodermata'                             % deuterostomata
+    case 'Echinodermata'                                % deuterostomata
         d_V = 0.09;
     case 'Hemichordata'
         d_V = 0.07;
@@ -70,15 +70,21 @@ switch phylum
               d_V = 0.3;
             case {'Aves', 'Amphibia'}
               d_V = 0.28;
-            case {'Myxini', 'Cephalaspidomorphi', 'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
+            case {'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
               d_V = 0.2;
-            case {'Appendicularia'}
+            case 'Myxini'
+              d_V = 0.17;
+            case 'Cephalaspidomorphi'
+              d_V = 0.125;
+            case 'Appendicularia'
               d_V = 0.045;
-            case {'Thaliacea'}
+            case 'Thaliacea'
               d_V = 0.08;
             otherwise % Ascidiacea
               d_V = 0.06;
-        end    
+        end 
+    case 'my_pet_phylum'
+        d_V = 0.1;
     otherwise
         fprintf('warning from get_d_V: taxon could not be identified: d_V = 0.1 g/cm^3\n')
         d_V = 0.1; info = 0;

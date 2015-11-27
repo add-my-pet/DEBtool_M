@@ -3,7 +3,7 @@
 
 %%
 function printpar_st(varargin)
-% created 2015/03/20 by Goncalo Marques; modified 2015/03/21 by Bas Kooijman
+% created 2015/03/20 by Goncalo Marques; modified 2015/03/21 by Bas Kooijman; modified 2015/08/01 by Goncalo Marques
 
 %% Syntax
 % <../printpar_st.m *printpar_st*> (varargin)
@@ -29,20 +29,18 @@ function printpar_st(varargin)
 if nargin == 1
   species = varargin{1};
   filenm = ['results_', species, '.mat'];
-  load(filenm,'txt_par', 'par','chem');
+  load(filenm,'txtPar', 'par');
 else 
-  txt_par = varargin{1};
-  par     = varargin{2};
+  par    = varargin{1};
+  txtPar = varargin{2};
 end
 
 fprintf('\nParameters \n');
 free = par.free;                    % copy substructure
 parpl = rmfield_wtxt(par, 'free');  % remove substructure free from par
 [nm nst] = fieldnmnst_st(parpl);    % get number of parameter fields
-
 for j = 1:nst % scan parameter fields
-  eval(['str = [txt_par.label.', nm{j},', '', '', txt_par.units.', nm{j},'];']);
-  str = [str,  ' %3.4g %d \n'];
-  eval(['fprintf(str, parpl.', nm{j},', free.', nm{j},');']);
+  str = [nm{j}, ', ', txtPar.units.(nm{j}), ' %3.4g %d \n']; 
+  fprintf(str, parpl.(nm{j}), free.(nm{j}));
 end
 

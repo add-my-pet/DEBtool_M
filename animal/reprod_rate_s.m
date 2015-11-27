@@ -17,7 +17,7 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
   %
   % * L: n-vector with length
   % * f: scalar with functional response
-  % * p: 13-vector with parameters: kap kapR g kJ kM LT v UHb UHp Lb Ls Lj Lp
+  % * p: 11-vector with parameters: kap kapR g kJ kM LT v UHb UHs UHj UUHp 
   %
   %     g and v refer to the values for embryo; scaling is always with respect to embryo values
   %     V1-morphic juvenile between events s and j with E_Hb > E_Hs > E_Hj > E_Hp
@@ -75,7 +75,7 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
 
   if length(Lf) <= 1
     lb0 = Lf/ Lm; % scaled length at birth
-    [ls lj lp lb info_ls] = get_ls(p_ls, f, l0);
+    [ls lj lp lb info_ls] = get_ls(p_ls, f, lb0);
     Lb = lb * Lm; Ls = ls * Lm; Lj = lj * Lm; Lp = lp * Lm; % volumetric length at birth, puberty
     if info_ls ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate_j \n')

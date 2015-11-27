@@ -1,10 +1,11 @@
 %% statistics_abj
 % Computes implied properties of standard DEB model with acceleration at birth
 
-function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_ref from metapar or input like T?
+function [stat, txt_stat] = statistics_abj(par, T, fStat, model) %% T_ref from metaPar or input like T?
 % created 2000/11/02 by Bas Kooijman, modified 2014/03/17 
 % created 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight
+% modified 2015/08/06 by Dina Lika
 
 %% function still under construction
 
@@ -16,19 +17,20 @@ function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_r
 %
 % Inputs:
 %
-% * par :  structure with primary parameters at reference temperature
-% * chem:  structure with chemical parameters for each field
-% * T:     scalar with temperature in Kelvin
+% * par :  structure with parameters at reference temperature
+% * T:     scalar with typical temperature in Kelvin
 % * T_ref: scalar with reference temperature in Kelvin
-% * f:     scalar (between 0 and 1) scaled functional response
+% * fStat:     scalar (between 0 and 1) scaled functional response
 % * model: 3 letter string with model key
+% NOTA : fStat is used to not be confused with  par.f
+
 
 % Output:
 % 
 % * structure with statistics
 
 %% Syntax
-% stats = statistics_abj(par, chem, T, T_ref, f, foetus)
+% stats = statistics_abj(par, T, f, model)
 
 %% Comments
 % If the shape coefficient $\delta_M$ is not in the par structure then the
@@ -37,9 +39,16 @@ function [stat, txt_stat] = statistics_abj(par, chem, T, T_ref, f, model) %% T_r
 
 %% Example
 
+ par.f = fStat; %fStats is user-defined and replaces par.f
+ filternm = ['filter_', model];
+ [pass, flag]  = feval(filternm, par);
+ if ~pass 
+      print_filterflag(flag);
+      error('    The parameter set is not realistic');
+ end
 
-cp = parscomp_st(par,chem);
-v2struct(cp); v2struct(par);  v2struct(chem); 
+cPar = parscomp_st(par);
+vars_pull(cPar);  vars_pull(par);
 
 par_names = fields(par);
 % mat_lev = par_names(strncmp(par_names, 'E_H', 3));
@@ -124,7 +133,7 @@ for i = 1:length(mat_ind)
   stri = mat_ind{i};
   labeli = mat_label{i};
   eval(['L_',  stri, ' = L_m * l_', stri, ';']);   % cm, structural length
-  eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
+%   eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
 %   eval(['a_',  stri, ' = t_', stri, '/ k_M;']);  % d, age at birth at T_ref
 %   % temperature correction
 %   eval(['a_',  stri, ' = a_', stri, '/ TC;']);      % d, age at birth at T
@@ -132,7 +141,7 @@ for i = 1:length(mat_ind)
   eval(['W_',  stri, ' = L_', stri, '^3 * d_V * (1 + f * w);']); % g, dry weight
   
   eval(['label.L_',  stri, ' = ''structural length ',  labeli, ''';  units.L_',  stri, ' = ''cm'';  stat.L_',  stri, ' = L_',         stri, ';']);  %cm, structutral length
-  eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
+%   eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
   eval(['label.M_V', stri, ' = ''structural mass ',    labeli, ''';  units.M_V', stri, ' = ''mol''; stat.M_V', stri, ' = M_V',        stri, ';']);  %cm, structural mass
   eval(['label.E_V', stri, ' = ''structural energy ',  labeli, ''';  units.E_V', stri, ' = ''J'';   stat.E_V', stri, ' = mu_V * M_V', stri, ';']);  %cm, structutral energy
   eval(['label.W_',  stri, ' = ''dry weight ',         labeli, ''';  units.W_',  stri, ' = ''g'';   stat.W_',  stri, ' = W_',         stri, ';']);  %cm, dry weight
@@ -168,43 +177,39 @@ label.del_Ub = 'fraction of reserve left at birth';  units.del_Ub = '-';   stat.
 % reproduction
 R_i = reprod_rate_j(L_i, f, pars_R);
  R_i =  R_i * TC;
-R_p = reprod_rate_j(L_p, f, pars_R);
- R_p =  R_p * TC;
 
 label.R_i = 'ultimate reproduction rate';      units.R_i = '1/d';  stat.R_i = R_i; temp.R_i = T;
-label.R_p = 'reproduction rate at puberty';    units.R_p = '1/d';  stat.R_p = R_p; temp.R_p = T;
  
- % min and max possible egg sizes as determined by the maternal effect rule (e = f)
-
+% min and max possible egg sizes as determined by the maternal effect rule (e = f)
 [eb_min, lb_min, uE0_min, info_eb_min] = get_eb_min([g; k; v_Hb]); %#ok<*ASGLU> % growth, maturation cease at birth
 M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
 % if sum(info_eb_min) ~= 2
 %     fprintf('Warning: no convergence for eb_min\n')
 % end
 
-ep_min  = get_ep_min_metam([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+% ep_min  = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
 % if length(ep_min) > 1
 %    ep_min = max(ep_min);
 % end
-M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
+% M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
 
 label.M_E0_min_b = 'egg mass whereby growth ceases at birth';   units.M_E0_min_b = 'mol';  stat.M_E0_min_b = M_E0_min_b;
-label.M_E0_min_p = 'egg mass whereby growth ceases at puberty'; units.M_E0_min_p = 'mol';  stat.M_E0_min_p = M_E0_min_p;
+% label.M_E0_min_p = 'egg mass whereby growth ceases at puberty'; units.M_E0_min_p = 'mol';  stat.M_E0_min_p = M_E0_min_p;
 
 
 % Feeding module 
 
 % food densities for which growth/maturation ceases at a given life-stage
 Kb_min = K * eb_min ./ (1 - eb_min);          % growth, maturation cease at birth
-Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
+% Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
 
 label.Kb_min = 'food density where growth, maturation cease at birth';   units.Kb_min = 'mol/l'; stat.Kb_min  = Kb_min;
-label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
+% label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
 
 
 label.eb_ming = 'scaled func. resp. such that growth ceases at birth';   units.eb_ming = '-'; stat.eb_ming  = eb_min(1);
 label.eb_minh = 'scaled func. resp. such that maturation ceases at birth';   units.eb_minh = '-'; stat.eb_minh  = eb_min(2);
-label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
+% label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
 
 
 %%
@@ -276,7 +281,9 @@ label.h_G = 'Gompertz aging rate';             units.h_G = '1/d';   stat.h_G  = 
 %%
 % mass fluxes for L = L_i = s_M (f L_m - L_T)
 
-mu_O = [mu_X; mu_V; mu_E; mu_P];
+ mu_Or = [mu_X; mu_V; mu_E; mu_P]; % J/mol, chemical potentials for organics
+
+ mu_M = [mu_C; mu_H; mu_O; mu_N];  % chemical potential of minerals
 
 p_ref = p_Am * L_m^2;        % max assimilation power at max size
 
@@ -301,6 +308,8 @@ end
 % VO_b = J_M(3,2)/ W_b/ 24/ X_gas; % L/g.h, dioxygen use per gram max dry weight, <J_OD>
 % p_t_b = sum(- J_O' * mu_O - J_M' * mu_M); % J/d, dissipating heat
 
+X_gas = T_ref/ T/ 24.4;  % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
+
 for i = 1:length(mat_ind)
   stri = mat_ind{i};
   labeli = mat_label{i};
@@ -312,7 +321,7 @@ for i = 1:length(mat_ind)
   eval(['WQ_', stri, ' = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3));']); % mol H/ mol O, water quotient
   eval(['SDA_', stri, ' = J_M(3,1)/ J_O(1,1);']);                 % mol O/mol X, specific dynamic action
   eval(['VO_', stri,  ' = J_M(3,2)/ W_', stri, '/ 24/ X_gas;']);  % L/g.h, dioxygen use per gram max dry weight, <J_OD>
-  eval(['p_t_', stri, ' = sum(- J_O'' * mu_O - J_M'' * mu_M);']); % J/d, dissipating heat
+  eval(['p_t_', stri, ' = sum(- J_O'' * mu_Or - J_M'' * mu_M);']); % J/d, dissipating heat
 
   %temperature corrections
   eval(['VO_', stri, ' = VO_', stri, ' * TC; p_t_', stri, ' = p_t_', stri, ' * TC;']); 

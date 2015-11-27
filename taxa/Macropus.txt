@@ -1,0 +1,8 @@
+Macropus_agilis
+Macropus_antilopinus
+Macropus_eugenii
+Macropus_fuliginosus
+Macropus_giganteus
+Macropus_parma
+Macropus_rufogriseus
+Macropus_rufus

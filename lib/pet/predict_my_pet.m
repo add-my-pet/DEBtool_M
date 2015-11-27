@@ -2,11 +2,12 @@
 % Obtains predictions, using parameters and data
 
 %%
-function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
-  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30; modified 2015/06/19
+function [prdData, info] = predict_my_pet(par, data, auxData)
+  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30; 
+  % last modified 2015/07/29
   
   %% Syntax
-  % [Prd_data, info] = <../predict_my_pet.m *predict_my_pet*>(par, chem, data)
+  % [prdData, info] = <../predict_my_pet.m *predict_my_pet*>(par, data, auxData)
   
   %% Description
   % Obtains predictions, using parameters and data
@@ -14,38 +15,38 @@ function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
   % Input
   %
   % * par: structure with parameters (see below)
-  % * chem: structure with biochemical parameters
   % * data: structure with data (not all elements are used)
+  % * auxData : structure with temp data and other potential environmental data
   %  
   % Output
   %
-  % * Prd_data: structure with predicted values for data
+  % * prdData: structure with predicted values for data
   % * info: identified for correct setting of predictions (see remarks)
   
   %% Remarks
   % Template for use in add_my_pet.
-  % The code is symplified by calling <parscomp_st.html *parscomp_st*> to compute scaled quantities.
-  % With the use of filters, setting info = 0, Pred_dat = {}, return, has the effect that the parameter-combination is not selected for finding the best-fitting combination: 
-  % it acts as costumized filter.
+  % The code calls <parscomp_st.html *parscomp_st*> in order to compute
+  % scaled quantities, compound parameters, molecular weights and compose
+  % matrixes of mass to energy couplers and chemical indices.
+  % With the use of filters, setting info = 0, prdData = {}, return, has the effect
+  % that the parameter-combination is not selected for finding the
+  % best-fitting combination; this setting acts as customized filter.
   
   %% Example of a costumized filter
   % See the lines just below unpacking
   
-  % unpack par, chem, cpar and data
-  cpar = parscomp_st(par, chem);
-  v2struct(par); v2struct(chem); v2struct(cpar);
-  v2struct(data);
+  % unpack par, data, auxData
+  cPar = parscomp_st(par); vars_pull(par); 
+  vars_pull(cPar);  vars_pull(data);  vars_pull(auxData);
+    
+  % customized filters for allowable parameters of the standard DEB model (std)
+  % for other models consult the appropriate filter function.
+  filterChecks = k * v_Hp >= f_tL^3 || ...         % constraint required for reaching puberty with f_tL
+                 ~reach_birth(g, k, v_Hb, f_tL);   % constraint required for reaching birth with f_tL
   
-  % costumized filter
-  if k * v_Hp >= f_tL^3  % constraint required for reaching puberty with f_tL
+  if filterChecks  
     info = 0;
-    Prd_data = {};
-    return
-  end
-  
-  if ~reach_birth(g, k, v_Hb, f_tL) % constraint required for reaching birth with f_tL
-    info = 0;
-    Prd_data = {};
+    prdData = {};
     return;
   end  
   
@@ -56,7 +57,15 @@ function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
   TC_Ri = tempcorr(temp.Ri, T_ref, T_A);
   TC_tL = tempcorr(temp.tL, T_ref, T_A);
 
-  % zero-variate data
+% uncomment if you need this for computing moles of a gas to a volume of gas
+% - else feel free to delete  these lines
+% molar volume of gas at 1 bar and 20 C is 24.4 L/mol
+% T = C2K(20); % K, temp of measurement equipment- apperently this is
+% always the standard unless explicitely stated otherwise in a paper (pers.
+% comm. Mike Kearney).
+% X_gas = T_ref/ T/ 24.4;  % M,  mol of gas per litre at T_ref and 1 bar;
+  
+% zero-variate data
 
   % life cycle
   pars_tp = [g; k; l_T; v_Hb; v_Hp];               % compose parameter vector
@@ -91,16 +100,16 @@ function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
   
   % pack to output
   % the names of the fields in the structure must be the same as the data names in the mydata file
-  Prd_data.ab = aT_b;
-  Prd_data.ap = aT_p;
-  Prd_data.am = aT_m;
-  Prd_data.Lb = Lw_b;
-  Prd_data.Lp = Lw_p;
-  Prd_data.Li = Lw_i;
-  Prd_data.Wdb = Wd_b;
-  Prd_data.Wdp = Wd_p;
-  Prd_data.Wdi = Wd_i;
-  Prd_data.Ri = RT_i;
+  prdData.ab = aT_b;
+  prdData.ap = aT_p;
+  prdData.am = aT_m;
+  prdData.Lb = Lw_b;
+  prdData.Lp = Lw_p;
+  prdData.Li = Lw_i;
+  prdData.Wdb = Wd_b;
+  prdData.Wdp = Wd_p;
+  prdData.Wdi = Wd_i;
+  prdData.Ri = RT_i;
   
   % uni-variate data
   
@@ -109,12 +118,12 @@ function [Prd_data, info] = predict_my_pet(par, chem, T_ref, data)
   ir_B = 3/ k_M + 3 * f * L_m/ v; r_B = 1/ ir_B;             % d, 1/von Bert growth rate
   Lw_i = (f * L_m - L_T)/ del_M;                             % cm, ultimate physical length at f
   Lw_b = get_lb(pars_lb, f) * L_m/ del_M;                    % cm, physical length at birth at f
-  EL = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
+  ELw = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
   %
   % length-weight
-  EW = (LW(:,1) * del_M).^3 * (1 + f * w);                   % g, expected wet weight at time
+  EWw = (LW(:,1) * del_M).^3 * (1 + f * w);                   % g, expected wet weight at time
 
   % pack to output
   % the names of the fields in the structure must be the same as the data names in the mydata file
-  Prd_data.tL = EL;
-  Prd_data.LW = EW;
+  prdData.tL = ELw;
+  prdData.LW = EWw;

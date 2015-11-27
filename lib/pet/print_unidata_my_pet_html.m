@@ -2,19 +2,19 @@
 % read and write unidata_my_pet.html
 
 %%
-function print_unidata_my_pet_html(metadata, metapar)
-% created 2015/04/11 by Starrlight & Goncalo Marques; modified 2015/07/16 Starrlight 
+function print_unidata_my_pet_html(metaData, metaPar)
+% created 2015/04/11 by Starrlight & Goncalo Marques; modified 2015/08/23 Starrlight 
 
 %% Syntax
-% <../print_results_my_pet_html.m *print_results_my_pet_html*> (metadata, metapar) 
+% <../print_results_my_pet_html.m *print_results_my_pet_html*> (metaData, metaPar) 
 
 %% Description
-% Prints an html file which compares metapar.model predictions with data
+% Prints an html file which compares metaPar.model predictions with data
 %
 % Input:
 %
-% * metadata: structure
-% * metapar:  structure
+% * metaData: structure
+% * metaPar:  structure
 
 %% Remarks
 % Keep in mind that this function is specifically designed for created the
@@ -22,18 +22,19 @@ function print_unidata_my_pet_html(metadata, metapar)
 
 %% Example of use
 % load('results_my_pet.mat');
-% print_results_my_pet_html(metadata, metapar)
+% print_results_my_pet_html(metaData, metaPar)
 
-[data, txt_data] = feval(['mydata_',metadata.species]);
-% remove fields 'weight' and 'temp' from structure data:
-datapl    = rmfield_wtxt(data, 'weight');
-datapl    = rmfield_wtxt(datapl, 'temp');
-[nm, nst] = fieldnmnst_st(datapl);
+[data, auxData, metaData, txtData, weights] = feval(['mydata_',metaData.species]);
+% remove pseudodata:
+data    = rmfield_wtxt(data, 'psd');
+txtData    = rmfield_wtxt(txtData, 'psd');
 
+% cell array of string with fieldnames of data.weight
+[nm, nst] = fieldnmnst_st(data);
 
-speciesprintnm = strrep(metadata.species, '_', ' ');
+speciesprintnm = strrep(metaData.species, '_', ' ');
 
-oid = fopen(['unidata_', metadata.species, '.html'], 'w+'); % open file for reading and writing, delete existing content
+oid = fopen(['unidata_', metaData.species, '.html'], 'w+'); % open file for reading and writing, delete existing content
 fprintf(oid, '%s\n' ,'<!DOCTYPE html>');
 fprintf(oid, '%s\n' ,'<HTML>');
 fprintf(oid, '%s\n' ,'  <HEAD>');
@@ -48,39 +49,36 @@ fprintf(oid, '%s\n' , ' </HEAD>');
 fprintf(oid, '%s\n\n','  <BODY>');
   
 %% content of results_my_pet
-fprintf(oid, ['<H2>Univarariate data and ',metapar.model,' model predictions for ', speciesprintnm,' &nbsp;</a></H2>']);
+fprintf(oid, ['<H2>Univarariate data and ',metaPar.model,' model predictions for ', speciesprintnm,' &nbsp;</a></H2>']);
 
 %%% Print out all of the graphs with captions:
 unidta = [];
 
 for j = 1:nst
-  eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set
-  
-    if k >1
-      unidta = [unidta;j];
-    end
+[aux, k] = size(data.(nm{j})); % number of data points per set
+  if k >1
+  unidta = [unidta;j];
+  end
 end
 
 ex = 1;
 counter = 0;
 
-while ex 
+  while ex 
   test = counter + 1;
-  if test < 10
-    fullnm = ['results_',metadata.species, '_0', num2str(test), '.png'];
-  else
-    fullnm = ['results_',metadata.species, '_', num2str(test), '.png'];
-  end
-  
-  if exist(fullnm, 'file')
-     counter = counter +1;
-
- eval(['n = iscell(txt_data.bibkey.',nm{unidta(counter)},');'])
+    if test < 10
+    fullnm = ['results_',metaData.species, '_0', num2str(test), '.png'];
+    else
+    fullnm = ['results_',metaData.species, '_', num2str(test), '.png'];
+    end
+    if exist(fullnm, 'file')
+    counter = counter +1;
+    n = iscell(txtData.bibkey.(nm{unidta(counter)}));
       if n
-      n = eval(['length(txt_data.bibkey.',nm{unidta(counter)},');']);
+      n = length(txtData.bibkey.(nm{unidta(counter)}));
       REF = [];
         for i = 1:n
-        ref = eval(['txt_data.bibkey.',nm{unidta(counter)},'{i}']);
+        ref = txtData.bibkey.(nm{unidta(counter)});
           if i == 1
           REF = [REF,' ',ref];
           else
@@ -88,32 +86,22 @@ while ex
           end
         end
       else
-      REF = eval(['txt_data.bibkey.',nm{unidta(counter)}]);    
+      REF = txtData.bibkey.(nm{unidta(counter)});    
       end
-  
- fprintf(oid, '<div class="figure">\n');
- fprintf(oid, ['<p><img src="',fullnm,'" width = "380px" alt="Fig ',num2str(test),' 1"> \n']);
- fprintf(oid,[' <p>Fig. ', num2str(test),': symbols: data from ', REF,'. \n']);
- fprintf(oid,'Lines: %s metapar.model predictions. \n', metapar.model); 
-
- if isfield(txt_data, 'caption')
-      if isfield(txt_data.caption, nm{unidta(counter)})
-      str = eval(['txt_data.caption.',nm{unidta(counter)}]);
+      fprintf(oid, '<div class="figure">\n');
+      fprintf(oid, ['<p><img src="',fullnm,'" width = "380px" alt="Fig ',num2str(test),' 1"> \n']);
+      fprintf(oid,[' <p>Fig. ', num2str(test),': symbols: data from ', REF,'. \n']);
+      fprintf(oid,'Lines: %s model predictions. \n', metaPar.model); 
+      if isfield(txtData.comment, nm{unidta(counter)})
+      str = txtData.comment.(nm{unidta(counter)});
       fprintf(oid,str);     
       end
-      display('warning: change caption to comment in future version')
- end
- if isfield(txt_data, 'comment')
-      if isfield(txt_data.comment, nm{unidta(counter)})
-      str = eval(['txt_data.comment.',nm{unidta(counter)}]);
-      fprintf(oid,str);     
-      end
- end
- fprintf(oid,'</div> \n');   
-else
+      fprintf(oid,'</div> \n');   
+    else
     ex = 0;
+    end
   end
-end
+
 
 % close the file:
 

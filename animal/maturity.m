@@ -13,7 +13,7 @@ function [H, a, info] = maturity(L, f, p)
   %
   % Input
   %
-  % * L: n-vector with length 
+  % * L: n-vector with length, ordered from small to large 
   % * p: 9-vector with parameters (see below)
   % * F: scalar with (constant) scaled functional response
   %
@@ -50,15 +50,22 @@ function [H, a, info] = maturity(L, f, p)
   
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
   uHp = Hp * g^2 * kM^3/ (v^2); vHp = uHp/ (1 - kap);
-  [lp lb info] = get_lp([g; k; lT; vHb; vHp], f);
-  Lp = Lm * lp;
+  [tp, tb, lp, lb, info] = get_tp([g; k; lT; vHb; vHp], f);
+  Lp = Lm * lp; 
   
-  ue0 = get_ue0([g; k; vHb], f, lb); %% initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
-  teh(1:2,:) = [];
-  H = teh(:,3) * v^2/ g^2/ kM^3; 
-  H(L >= Lp) = Hp;
-  a = teh(:,1)/ kM;
+  H = Hp * (L >= Lp); a = tp * (L > Lp)/ kM; % prefill output for adults
+  
+  n_mat = sum(L < Lp); % number of embryo and juvenile values: H < Hp
+  if  n_mat == 0 % all adult lengths
+    return
+  else % some embryo and juvenile values
+    L = L(L< Lp); % select embryo and juvenile values
+    ue0 = get_ue0([g; k; vHb], f, lb); %% initial scaled reserve M_E^0/{J_EAm}
+    [l_out, teh] = ode45(@dget_teh, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
+    teh(1:2,:) = []; % remove added L values
+    H(1:n_mat) = teh(:,3) * v^2/ g^2/ kM^3; 
+    a(1:n_mat) = teh(:,1)/ kM;
+  end
 
 end
 

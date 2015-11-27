@@ -40,4 +40,12 @@ data.psd.kap_G = 0.8;  units.psd.kap_G = '-';      label.psd.kap_G = 'growth eff
 
 % set weights
 weight.psd = setweights(data.psd, []);
+weight.psd.v     = 0.1 * weight.psd.v;
+weight.psd.kap   = 0.1 * weight.psd.kap;
+weight.psd.kap_R = 0.1 * weight.psd.kap_R;
+weight.psd.p_M   = 0.1 * weight.psd.p_M;
+weight.psd.p_T   = 0.1 * weight.psd.p_T;
+weight.psd.k_J   = 0.1 * weight.psd.k_J;
+weight.psd.kap_G = 0.1 * weight.psd.kap_G;
+
 weight.psd.kap_G = 200 * weight.psd.kap_G;   % more weight to kap_G

@@ -2,41 +2,44 @@
 % Adds pseudodata predictions into predictions structure 
 
 %%
-function prd = predict_pseudodata(prd, par, chem, data)
+function prdData = predict_pseudodata(par, data, prdData)
 % created 2015/02/04 by Goncalo Marques
+% modified 2015/07/29
 
 %% Syntax
-% prd = <../predict_pseudodata.m *predict_pseudodata*> (prd, par, chem)
+% prd = <../predict_pseudodata.m *predict_pseudodata*> (par, data, prdData)
 
 %% Description
-% adds pseudodata predictions into predictions structure
-% uses par and chem to compute these predictions
+% Appends pseudodata predictions to a structure containing predictions for real data. 
+% Predictions generated using the par structure
 %
 % Inputs:
 %
-% * prd : structure with data predictions 
 % * par : structure with parameters 
-% * chem : structure with biochemical parameters 
+% * data : structure with data
+% * prdData : structure with data predictions 
 %
 % Output: 
 %
-% * prd : structure with data and pseudodata predictions 
+% * prdData : structure with predicted data and pseudodata 
 
 %% Example of use
-% prd = predict_pseudodata(prd, par, chem)
-% computes the pseudodata predictions and adds them to prd 
+% prdData = predict_pseudodata(par, data, prdData)
 
 [nm, nst] = fieldnm_wtxt(data, 'psd');
 
 if nst > 0
   % unpack coefficients
-  cpar = parscomp_st(par, chem);
-  v2struct(par); v2struct(chem); v2struct(cpar);
+  cPar = parscomp_st(par);  allPar = par;
+  fieldNames = fieldnames(cPar);
+  for i = 1:size(fieldNames,1)
+    allPar.(fieldNames{i}) = cPar.(fieldNames{i});
+  end
   
-  eval(['varnm = fieldnames(data.', nm{1}, ');']);
+  varnm = fieldnames(data.(nm{1}));
   
   % adds pseudodata predictions to structure
   for i = 1:length(varnm)
-    eval(['prd.psd.', varnm{i}, ' = ', varnm{i},';']);
+    prdData.psd.(varnm{i}) = allPar.(varnm{i});
   end
 end
