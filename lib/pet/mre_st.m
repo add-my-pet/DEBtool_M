@@ -51,7 +51,7 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
     var    = getfield(data, fieldsInCells{1}{:}); 
     prdVar = getfield(prdData, fieldsInCells{1}{:}); 
     w      = getfield(weights, fieldsInCells{1}{:});
-    rerr(i,1) = sum(abs(prdVar - var) .* w ./ max(1e-3, abs(var)), 1)/ sum(max(1e-6, w));
+    rerr(i,1) = sum(w .* abs(prdVar - var) ./ abs(var), 1)/ sum(w);
     rerr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
   end
     
