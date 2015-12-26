@@ -1,4 +1,2 @@
-Neotaenioglossa
-Pulmonata
-Gymnosomata
-Nudibranchia
+Prosobranchia
+Heterobranchia
