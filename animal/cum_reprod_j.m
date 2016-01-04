@@ -16,8 +16,7 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
   %
   % Input
   %
-  % * t: n-vector with time since L equals Lb0(1) or since birth if Lb0 is empty
-  %      the code assumes that t(1) < ap - ab
+  % * t: n-vector with time since L equals Lf(1) or since birth if Lf is empty
   % * f: scalar with functional response
   % * p: 10-vector with parameters:
   %     kappa; kappa_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp
@@ -114,8 +113,13 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
     t_b = t_p - (tp - tb)/ kM;
   end
  
-  [t LU] = ode45(@dcum_reprod_j, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
-  LU(1,:) = []; L = LU(:,1); UR = LU(:,2);
+  [T LU] = ode45(@dcum_reprod_j, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
+  if length(t) == 1
+    L = LU(end, 1); UR = LU(end, 2);
+  else
+    LU(1,:) = []; L = LU(:,1); UR = LU(:,2);
+  end
+      
   [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
   if info ~= 1 % return at failure for tp
     fprintf('UE0 could not be obtained in cum_reprod_j \n')
