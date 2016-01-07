@@ -72,9 +72,9 @@ par.f_tL = 0.8;     free.f_tL  = 1;    units.f_tL = '-';       label.f_tL = 'sca
 % par.d_E = par.d_V; % g/cm^3, specific density of reserve
 %   or alternatively you might want to add a product D like:
 % par.d_D = 0.1;     free.d_D = 0;  units.d_D  = 'g/cm^3'; label.d_D  = 'specific density of product';        
-% par.mu_D = 273210; free.mu_D = 0; units.mu.D = 'J/mol';  label.mu_D = 'chemical potential of product';      
+% par.mu_D = 273210; free.mu_D = 0; units.mu_D = 'J/mol';  label.mu_D = 'chemical potential of product';      
 % par.n_CD = 1;      free.n_CD = 0; units.n_CD = '-';      label.n_CD = 'chem. index of carbon in product';   
-% par.HD = 1.2;      free.n_HD = 0; units.n_HD = '-';      label.n_HD = 'chem. index of hydrogen in product'; 
+% par.n_HD = 1.2;      free.n_HD = 0; units.n_HD = '-';      label.n_HD = 'chem. index of hydrogen in product'; 
 % par.n_OD = 0.55;   free.n_OD = 0; units.n_OD = '-';      label.n_OD = 'chem. index of oxygen in product';   
 % par.n_ND = 0.1;    free.n_ND = 0; units.n_ND = '-';      label.n_ND = 'chem. index of nitrogen in product'; 
 
