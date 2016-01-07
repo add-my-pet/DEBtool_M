@@ -56,7 +56,7 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case {'Tardigrada', 'Priapulida'} % Ecdysozoa
+    case {'Tardigrada', 'Priapulida', 'Nematoda'} % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
         d_V = 0.17;
