@@ -58,10 +58,6 @@ function cPar = parscomp_st(p)
   % * K: c-mol X/l, half-saturation coefficient
   % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
 
-% v2struct(par);
-% vars_pull(par);
-% p = par;
-
 if isfield(p,'p_Am') == 0
   p_Am = p.z * p.p_M/ p.kap;        % J/d.cm^2, {p_Am} spec assimilation flux
 end
