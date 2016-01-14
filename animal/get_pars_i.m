@@ -21,7 +21,7 @@ function [par, U] = get_pars_i(p, w, par0)
   %    2 L_b   % mm % length at birth
   %    3 L_i   % mm % ultimate length
   %    4 \dot{r}_B % d^-1   % von Bertalanffy growth rate
-  
+  %
   % * w: optional (n,3)-matrix with weight coefficient (default is ones)
   % * par0: optional (4,1 or 2)-matrix with initial estimate for par
   %
