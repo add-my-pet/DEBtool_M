@@ -36,7 +36,7 @@ function [filter, flag] = filter_stf(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.kap_R; p.h_a; p.s_G; p.T_A];
+  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.kap_R; p.h_a; p.T_A];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
