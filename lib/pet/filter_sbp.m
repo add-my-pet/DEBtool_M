@@ -3,4 +3,4 @@
 % same at std model
 
 function [filter, flag] = filter_sbp(p)
-[filter, flag] = filter_std(p)
+[filter, flag] = filter_std(p);
