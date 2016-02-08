@@ -29,7 +29,7 @@ function [coreParFields, info] = get_parfields(model)
   
   switch model
       
-  case {'std', 'stf', 'abp'}
+  case {'std', 'stf', 'abp', 'sbp'}
     coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'h_a', 's_G'};
     
   case 'stx'
