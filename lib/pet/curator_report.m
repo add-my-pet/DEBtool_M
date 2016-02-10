@@ -76,7 +76,7 @@ fprintf('\ndata_1: ');
 fprintf('%s, ', metaData.data_1{1:end-1}); fprintf('%s \n', metaData.data_1{end});
 fprintf('univariate data: \n');
 for i = 1:length(dataFields1)
-  fprintf([dataFields1{i}, ', ', txtData.label.(dataFields1{i}){1},  ' vs. ', txtData.label.(dataFields1{i}){2}, '\n']);
+  fprintf([dataFields1{i}, ', ', txtData.label.(dataFields1{i}){2},  ' vs. ', txtData.label.(dataFields1{i}){1}, '\n']);
 end
 
 fprintf('\nCheck the consistency between metaData and data.\n');
@@ -118,12 +118,11 @@ pause
 fprintf('\n%d. Checking extra parameters:\n\n', pointNumber);
 
 [par, metaPar, txtPar] = feval(['pars_init_', speciesnm], metaData);
+standChem = addchem([], [], [], [], metaData.phylum, metaData.class);
 
-parFields = fields(par);
+parFields = fields(par);        standChemFields = fields(standChem);
 parFields  = setdiff(parFields, {'free'});
-auxParFields = setdiff(parFields, parFields(cellfun(@(s) ~isempty(strfind(s, 'n_')), parFields)));
-auxParFields = setdiff(auxParFields, auxParFields(cellfun(@(s) ~isempty(strfind(s, 'mu_')), auxParFields)));
-nonChemParFields = setdiff(auxParFields, auxParFields(cellfun(@(s) ~isempty(strfind(s, 'd_')), auxParFields)));
+nonChemParFields = setdiff(parFields, standChemFields);
 
 EparFields = get_parfields(metaPar.model);
 extraParFields = setdiff(nonChemParFields, EparFields);
@@ -149,9 +148,11 @@ freeFixedFields = fields(par.free);
 freeFields = freeFixedFields(structfun(@(s) s==1, par.free));
 fixedFields = setdiff(freeFixedFields, freeFields);
 
-fprintf('Fixed parameters\n');
+fprintf('Fixed parameters (excluding standard chemical pars with standard values)\n');
 for i = 1:length(fixedFields)
-  fprintf([fixedFields{i}, ' = ', num2str(par.(fixedFields{i})), ' ', txtPar.units.(fixedFields{i}), ', ' , txtPar.label.(fixedFields{i}), '\n']);
+  if sum(cellfun(@(s) strcmp(s, fixedFields{i}), standChemFields)) == 0 || par.(fixedFields{i}) ~= standChem.(fixedFields{i}) % print if is not standard chemical or if it standard but with non-standard value
+    fprintf([fixedFields{i}, ' = ', num2str(par.(fixedFields{i})), ' ', txtPar.units.(fixedFields{i}), ', ' , txtPar.label.(fixedFields{i}), '\n'])
+  end
 end
 
 fprintf('\nCheck if the values above are standard or have been substantiated.\n\n');
