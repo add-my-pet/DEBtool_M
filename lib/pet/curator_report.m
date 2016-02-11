@@ -73,7 +73,11 @@ for i = 1:length(dataFields0)
 end
 
 fprintf('\ndata_1: ');
-fprintf('%s, ', metaData.data_1{1:end-1}); fprintf('%s \n', metaData.data_1{end});
+if isfield(metaData, 'data_1') 
+  fprintf('%s, ', metaData.data_1{1:end-1}); fprintf('%s \n', metaData.data_1{end});
+else
+  fprintf('There is no data_1 vector with univariate data information.\n');
+end
 fprintf('univariate data: \n');
 for i = 1:length(dataFields1)
   fprintf([dataFields1{i}, ', ', txtData.label.(dataFields1{i}){2},  ' vs. ', txtData.label.(dataFields1{i}){1}, '\n']);
@@ -164,6 +168,8 @@ end
 
 fprintf('\nCheck if the values above are reasonable and if there is enough data to estimate them.\n\n');
 
+pointNumber = pointNumber + 1;
+
 pause
 
 % check if the parameter set was obtained after continuation from .mat 
@@ -171,8 +177,8 @@ fprintf('\n%d. Check if the parameter set was obtained after continuation from .
 
 fprintf('Copy results_my_pet.mat to results_my_pet_author.mat\n\n', pointNumber);
 
- filenm1 = ['results_', speciesnm, '.mat']; 
- filenm2 = ['results_', speciesnm, '_author.mat'];
+filenm1 = ['results_', speciesnm, '.mat']; 
+filenm2 = ['results_', speciesnm, '_author.mat'];
 copyfile(filenm1,filenm2)
 
 fprintf('Run estimation, check if there is successful convergence:\n\n');
@@ -180,21 +186,21 @@ fprintf('Run estimation, check if there is successful convergence:\n\n');
 autoEst = input('Do you want to run estimation automatically? - if so enter 1, otherwise enter 0: ');
 
 if autoEst
-eval(['run_', speciesnm]);
+  eval(['run_', speciesnm]);
 
-fprintf('Restart from .mat after first convergence. Press enter:\n\n');
+  fprintf('Restart from .mat after first convergence. Press enter:\n\n');
 
-pause
+  pause
 
-eval(['run_', speciesnm]);
+  eval(['run_', speciesnm]);
 
-[info_par, info_metaPar, info_txtPar] = matismat(speciesnm, [speciesnm, '_author']);
+  [info_par, info_metaPar, info_txtPar] = matismat(speciesnm, [speciesnm, '_author']);
 
-if info_par
+  if info_par
     fprintf('The parameter values were obtained after continuation from .mat file.\n');
-else
+  else
     fprintf('The parameter values were not obtained after continuation from .mat file.\n');
-end
+  end
 
 end
 
@@ -205,15 +211,15 @@ fprintf('\n%d. Check implied model properties and parameter values of my_pet. Cr
 prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
 
 if prnt
-    if strcmp(metaPar.model,'ssj')
+  if strcmp(metaPar.model,'ssj')
     print_my_pet_under_construction(metaData, metaPar, par, txtPar)
-    else
+  else
     print_my_pet_html(metaData, metaPar, par, txtPar)
-    end
+  end
 elseif strcmp(metaPar.model,'std')
-    [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
+  [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
 elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
-    [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
+  [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
 end
 
 
