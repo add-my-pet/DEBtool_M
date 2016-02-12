@@ -24,122 +24,145 @@
 Toolbox animal deals with the standard DEB model and some variants of this model.<br>
 Hunderds of examples of applications of functions in this toolbox can be found in the predict-files of the 
 <a href = "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET="_top"> add_my_pet collection</a>.<br>
-The following models are delineated
+The following models are delineated as variations on <a href="#std">model <i>std</i></a>
 
 <ul>
-  <li> <a NAME="std"><i>std</i></a>:<br>
-    The standard DEB model follows from the assumptions as listed in Table 2.4 of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB book</a>.
-    Within the famility of DEB models, it can be seen as a canonical form, which differs from other DEB models by
+  <li> s-models assume isomorphy throughout the full life cycle
     <ul>
-      <li> 1 type of food, 1 type of reserve, 1 type of structure</i>
-      <li> 3 life stages: embryo, juvenile, adult </li>
-      <li> isomorphism for all life stages </li>
-      <li> O_2 available without limitation </li>
-      <li> products: faeces and 3 minerals CO2, N_waste, H2O</li>
-    </ul>
-    The model equations are summarized in Table 2.5, and in scaled stochastic form in the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 2.9</a>.
-  </li>
+      <li> <a NAME="std"><i>std</i></a>:<br>
+        The standard DEB model follows from the assumptions as listed in Table 2.4 of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB book</a>.
+        Within the famility of DEB models, it can be seen as a canonical form, which differs from other DEB models by
+        <ul>
+          <li> 1 type of food, 1 type of reserve, 1 type of structure</i>
+          <li> 3 life stages (embryo, juvenile, adult) triggered by maturity thresholds.
+               Birth is defined as start of assimilation via food uptake, puverty as end of maturation and start of allocation to reproduction.</li>
+          <li> O_2 available without limitation </li>
+          <li> products: faeces and 3 minerals CO2, N_waste, H2O</li>
+        </ul>
+        The model equations are summarized in Table 2.5, and in scaled stochastic form in the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 2.9</a>.
+     </li>
 
-  <li> <a NAME="stf"><i>stf</i></a>:<br> 
-     Like <a href="#std">model <i>std</i></a> but with
-     <ul>
-       <li> foetal development (rather than egg development)</li>
-     </ul>
-     Budding, as found in cnidarians and salps has, metabolically, similarities with foetal propagation: no assimilation by buds during development.
-     Foetal development is found in e.g. peripatus, some cartilagenous and ray-finned fish. 
-  </li>
+     <li> <a NAME="stf"><i>stf</i></a>:<br> 
+       Like <a href="#std">model <i>std</i></a> but with
+       <ul>
+         <li> foetal development (rather than egg development)</li>
+       </ul>
+       Budding, as found in cnidarians and salps has, metabolically, similarities with foetal propagation: no assimilation by buds during development.
+       Foetal development is found in e.g. peripatus, some cartilagenous and ray-finned fish. 
+    </li>
 
-  <li> <a NAME="stx"><i>stx</i></a>:<br>
-     Like <a href="#stf">model <i>stf</i></a> but with 
-     <ul>  
-       <li> foetal development (rather than egg development) that first starts with a preparation stage and then sparks off at a time that is an extra parameter </li>
-       <li> a baby stage (for mammals) just after birth, ended by weaning, where juvenile switches from feeding on milk to solid food at maturity level E_Hx.
+    <li> <a NAME="stx"><i>stx</i></a>:<br>
+      Like <a href="#stf">model <i>stf</i></a> but with 
+      <ul>  
+        <li> foetal development (rather than egg development) that first starts with a preparation stage and then sparks off at a time that is an extra parameter </li>
+        <li> a baby stage (for mammals) just after birth, ended by weaning, where juvenile switches from feeding on milk to solid food at maturity level E_Hx.
            Weaning is between birth and puberty.</li>   
+       </ul>
+       In its simplest form, it is a two parameter extension of <a href="#std">model <i>std</i></a> at abundant food.
+       Food quality and upregulation can involve more parameters.
+       This life history is found in placentalia.
+       Milk production is from upregulated feeding/assimilation.
+       The quantification of this process involves further parameters. 
+       See <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.pdf">Section 7.7 of the DEB book</a> and 
+       <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">its comments</a>.
+    </li>
+
+    <li> <a NAME="ssj"><i>ssj</i></a>:<br>
+      Like <a href="#std">model <i>std</i></a> but with 
+      <ul>  
+        <li> a non-feeding stage between events s and j during the juvenile stage that is initiated at a particular maturity level and lasts a particular time.
+          Substantial metabolically controlled shrinking occur during this period, more than can be explained by starvation.</li>   
       </ul>
-      In its simplest form, it is a two parameter extension of <a href="#std">model <i>std</i></a> at abundant food.
-      Food quality and upregulation can involve more parameters.
-      This life history is found in placentalia.
-      Milk production is from upregulated feeding/assimilation.
-      The quantification of this process involves further parameters. 
-      See <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.pdf">Section 7.7 of the DEB book</a> and 
-      <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">its comments</a>.
-   </li>
+        It is a two or three parameter extension of <a href="#std">model <i>std</i></a>.
+        This life history is found in Elopiformes, Albuliformes, Notacanthiformes, Anguilliformes, Ophidiiformes, some Anura and Echinodermata.
+        The  <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 1.1.4</a> give more background.
+    </li>
 
-  <li> <a NAME="ssj"><i>ssj</i></a>:<br>
-     Like <a href="#std">model <i>std</i></a> but with 
-     <ul>  
-       <li> a non-feeding stage between events s and j during the juvenile stage that is initiated at a particular maturity level and lasts a particular time.
-            Substantial metabolically controlled shrinking occur during this period, more than can be explained by starvation.</li>   
-     </ul>
-      It is a two or three parameter extension of <a href="#std">model <i>std</i></a>.
-      This life history is found in Elopiformes, Albuliformes, Notacanthiformes, Anguilliformes, Ophidiiformes, some Anura and Echinodermata.
-      The  <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 1.1.4</a> give more background.
-   </li>
-
-  <li> <a NAME="sbp"><i>spb</i></a>:<br>
-     Like <a href="#std">model <i>std</i></a> but with 
-     <ul>  
-       <li> growth ceases at puberty, meaning that the kappa-rule is not operational in adults.</li>   
-     </ul>
+    <li> <a NAME="sbp"><i>spb</i></a>:<br>
+      Like <a href="#std">model <i>std</i></a> but with 
+      <ul>  
+        <li> growth ceases at puberty, meaning that the kappa-rule is not operational in adults.</li>   
+      </ul>
       It has the same parameters as the <a href="#std">model <i>std</i></a>, and is similar to the <a href="#abp">model <i>abp</i></a>, which differs by acceleration.
       This life history is found in Calanus, while other copepods accelerate. We obviously need more data and better culturing techniques. 
-   </li>
+    </li>
+  </ul>
 
-   <li> <a NAME="abj"><i>abj</i></a>:<br>
-     The DEB model with type M acceleration is like <a href="#std">model <i>std</i></a>, but 
-     <ul>
-       <li> acceleration between birth and metamorphosis (V1-morph)</li>
-       <li> before and after acceleration: isomorphy</li>
-     </ul>
-     Metamorphosis is before puberty and occurs at maturity E_Hj, which might or might not correspond with changes in morphology.
-     This model is a one-parameter extension of <a href="#std">model <i>std</i></a>.
-   </li>
+  <li> a-models also assume isomorphy, but during part of the life cycle metabolism accelerates following the rules for V1-morphy
+    
+    <ul>
+      <li> <a NAME="abj"><i>abj</i></a>:<br>
+        The DEB model with type M acceleration is like <a href="#std">model <i>std</i></a>, but 
+        <ul>
+          <li> acceleration between birth and metamorphosis </li>
+          <li> before and after acceleration: isomorphy</li>
+        </ul>
+        Metamorphosis is before puberty and occurs at maturity E_Hj, which might or might not correspond with changes in morphology.
+        This model is a one-parameter extension of <a href="#std">model <i>std</i></a>.
+      </li>
  
-   <li> <a NAME="asj"><i>asj</i></a>:<br>
-     The DEB model with delayed type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
-     <ul>
-       <li> start of acceleration is delayed till maturity level E_Hs</li>
-       <li> Before and after acceleration: isomorphy.</li>
-     </ul>
-     Metamorphosis is still before puberty.
-     This model is a one-parameter extension of model <i>abj</i>.
-     This life history is found in Mnemiopsis, Crassostrea and Aplysia.
-     Further improvement of data might require a change from <i>abj</i> to <i>asj</i> for quite a few species.
-   </li>
+      <li> <a NAME="asj"><i>asj</i></a>:<br>
+        The DEB model with delayed type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
+        <ul>
+          <li> start of acceleration is delayed till maturity level E_Hs</li>
+          <li> Before and after acceleration: isomorphy.</li>
+        </ul>
+        Metamorphosis is still before puberty.
+        This model is a one-parameter extension of model <i>abj</i>.
+        This life history is found in Mnemiopsis, Crassostrea and Aplysia.
+        Further improvement of data might require a change from <i>abj</i> to <i>asj</i> for quite a few species.
+      </li>
 
-   <li> <a NAME="abp"><i>abp</i></a>:<br>
-     The DEB model with type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
-     <ul>
-       <li> acceleration between birth and puberty (V1-morph)</li>
-       <li> before acceleration: isomorphy</li>
-       <li> after acceleration: no growth, so no kappa-rule</li>
-     </ul>
-     Metamorphosis can occur before puberty and occurs at maturity E_Hj, but only affects morphology, not metabolism.
-     This model has the same number of parameters as <a href="#std">model <i>std</i></a>. 
-     It is similar to the <a href="#sbp">model <i>sbp</i></a>, which has no acceleration.
-     It appies to copepods, may be also to ostracods, spiders and scorpions.
-   </li>
+      <li> <a NAME="abp"><i>abp</i></a>:<br>
+        The DEB model with type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
+        <ul>
+          <li> acceleration between birth and puberty </li>
+          <li> before acceleration: isomorphy</li>
+          <li> after acceleration: no growth, so no kappa-rule</li>
+        </ul>
+        Metamorphosis can occur before puberty and occurs at maturity E_Hj, but only affects morphology, not metabolism.
+        This model has the same number of parameters as <a href="#std">model <i>std</i></a>. 
+        It is similar to the <a href="#sbp">model <i>sbp</i></a>, which has no acceleration.
+        It appies to copepods, may be also to ostracods, spiders and scorpions.
+      </li>
+    </ul>
 
+  <li> h-models are as a-models, but with extra life stages (as found in insects) triggered by the reproduction buffer density
 
-   <li> <a NAME="hex"><i>hex</i></a>:<br>
-     The DEB model for insects (and some other hexapods) differs from <a href="#std">model <i>std</i></a> by
-     <ul> 
-       <li> 3 or 4 life stages: embryo, larva, (pupa), imago. </li>
-       <li> the embryo still behaves like <a href="#std">model <i>std</i></a></li>
-       <li> the juvenile stage is skipped</li>
-       <li> the larval stage accelerates (V1-morph) and behaves as adult,
-         i.e. no maturation, allocation to reproduction</li>
-       <li> pupation occurs when reproduction buffer density hits a threshold</li>
-       <li> pupa behaves like an isomorphic embryo of <a href="#std">model <i>std</i></a>, but larval structure rapidly transforms to pupal reserve just after start of pupation.</li>
-       <li> the reproduction buffer remains unchanged during the pupal stage.</li>
-       <li> the imago does not grow or allocate to reproduction.
-         It mobilises reserve to match constant (somatic plus maturity) maintenance.</li>
-     </ul>
-     Hemi-metabolic insects skip the pupal stage, don't convert larval structure to reserve. 
-     Imago structure equals larval stucture when reproduction buffer density hits a threshold.
-     The model is further discussed in the
-    <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments for Section 7.8</a>.
-   </li>
+    <ul>
+      <li> <a NAME="hep"><i>hep</i></a>:<br>
+        The DEB model for ephemeropternas and odonata differs from <a href="#abj">model <i>abj</i></a> by
+        <ul> 
+          <li> puberty coincides with end of acceleration</li>
+          <li> the embryo still behaves like <a href="#std">model <i>std</i></a></li>
+          <li> the accelerating larval stage (V1-morph) behaves as juvenile, the isomorphic larval stage as adult</li>
+          <li> emergence occurs when reproduction buffer density hits a threshold</li>
+          <li> the imago does not grow or allocate to reproduction; food (if taken) is used for maintenance</li>
+        </ul>
+        The model is further discussed in the
+        <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments for Section 7.8</a>.
+      </li>
+
+      <li> <a NAME="hex"><i>hex</i></a>:<br>
+        The DEB model for insects (and some other hexapods) differs from <a href="#std">model <i>std</i></a> by
+        <ul> 
+          <li> 3 or 4 life stages: embryo, larva, (pupa), imago. </li>
+          <li> the embryo still behaves like <a href="#std">model <i>std</i></a></li>
+          <li> the juvenile stage is skipped</li>
+          <li> the larval stage accelerates (V1-morph) and behaves as adult,
+            i.e. no maturation, allocation to reproduction</li>
+          <li> pupation occurs when reproduction buffer density hits a threshold</li>
+          <li> pupa behaves like an isomorphic embryo of <a href="#std">model <i>std</i></a>, but larval structure rapidly transforms to pupal reserve just after start of pupation.</li>
+          <li> the reproduction buffer remains unchanged during the pupal stage.</li>
+          <li> the imago does not grow or allocate to reproduction.
+            It mobilises reserve to match constant (somatic plus maturity) maintenance.</li>
+        </ul>
+        Hemi-metabolic insects skip the pupal stage, don't convert larval structure to reserve. 
+        Imago structure equals larval stucture when reproduction buffer density hits a threshold.
+        The model is further discussed in the
+        <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments for Section 7.8</a>.
+      </li>
+  </ul>
 
 </ul>
   
