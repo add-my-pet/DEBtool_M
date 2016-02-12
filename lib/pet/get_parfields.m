@@ -43,9 +43,12 @@ function [coreParFields, info] = get_parfields(model)
     
   case 'asj'
     coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hs', 'E_Hj', 'E_Hp', 'h_a', 's_G'};
-    
+
+  case 'hep'
+    coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 's_j', 'h_a', 's_G'};
+
   case 'hex'
-    coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_s', 'E_He', 'h_a', 's_G'};
+    coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};
     
   otherwise
      coreParFields  = {}; 
