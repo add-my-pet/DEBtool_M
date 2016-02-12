@@ -144,10 +144,11 @@ fprintf(oid, '<TR> <TD> &nbsp;</TD> </TR>\n');
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/mydata_',metaData.species,'.m" target = "_blank">mydata</A>  </TD></TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/predict_',metaData.species,'.m" target = "_blank">predict</A> </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/pars_init_',metaData.species,'.m" target = "_blank">pars_init</A> </TD> </TR>\n']);
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
-
-
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> V1 zipped folder  </A>  </TR> \n']);
+% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"> &nbsp; </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A HREF="../entries_zip/',metaData.species,'_zip.zip" TARGET="_top" onMouseOver="window.status=']);
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/folder.png" WIDTH="110px"  BORDER="0" ALT="*"> </A></TD> </TR>\n']);
+% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> All files  </A>  </TR> \n']);
 fprintf(oid, '</TABLE>\n');
 fprintf(oid, '</DIV>\n');
 

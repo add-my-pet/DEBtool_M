@@ -18,7 +18,7 @@ function print_results_my_pet_html(metaData, metaPar, par)
 % * par
 
 %% Remarks
-% Keep in mind that this function is specifically designed for created the
+% Keep in mind that this function is specifically designed for creating the
 % webpage of add-my-pet -
 
 %% Example of use
@@ -44,7 +44,7 @@ end
 
 txt_date = [num2str(metaData.date_acc(1)), '/', num2str(metaData.date_acc(2)), '/', num2str(metaData.date_acc(3))]; 
 
-if exist('metadata.author_mod_1', 'var') == 1 && exist('metadata.date_mod_1', 'var') == 1
+if isfield(metaData,'author_mod_1')
 n_author_mod_1 = length(metaData.author_mod_1);
 
     switch n_author_mod_1
@@ -75,9 +75,9 @@ fprintf(oid,['    <TITLE>add-my-pet: results ', speciesprintnm, '</TITLE>\n']);
 fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
 fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
 
-% ----- calls the javascript function (found in subfolder sys):
-fprintf(oid, '%s\n' ,'<script type="text/javascript" src="../sys/boxmodal.js"></script>');
-fprintf(oid, '%s\n' ,'<script type="text/javascript" src="entries.js"></script>'); % java functions specific for the entries of 
+% % ----- calls the javascript function (found in subfolder sys):
+% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="../sys/boxmodal.js"></script>');
+% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="entries.js"></script>'); % java functions specific for the entries of 
 
 % ------ calls the cascading style sheet (found in subfolder css):
 fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collectionstyle.css">'); 
@@ -87,20 +87,16 @@ fprintf(oid, '%s\n\n','  <BODY>');
   
    
 %% content of results_my_pet
-fprintf(oid, ['<H2>Model: <a class="link" href="#" onclick="BoxArt_type();">&nbsp;', metaPar.model,' &nbsp;</a></H2>']);
+fprintf(oid, ['<H2>Model: <a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Typified_models" >&nbsp;', metaPar.model,' &nbsp;</a></H2>']);
 
 %%% get the predictions vs the data: 
 
 fprintf(oid,'<p> \n');    
-fprintf(oid,['<a class="link" href="#" onclick="BoxArt_complete2();">COMPLETE</a>',' = %3.1f <BR>\n'],metaData.COMPLETE);
-fprintf(oid,['<a class="link" href="#" onclick="BoxArt_fit2();">MRE</a>',' = %8.3f \n'],metaPar.MRE);   
+fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Completeness" >COMPLETE</a>',' = %3.1f <BR>\n'],metaData.COMPLETE);
+fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction#Goodness_of_fit_criterion" >MRE</a>',' = %8.3f \n'],metaPar.MRE);   
 fprintf(oid,'</p> \n');     % close the paragraph
 
 [data, auxData, metaData, txtData, weights] = feval(['mydata_',metaData.species]); 
-% %%% these next lines of code have been canabalised from printprd_st.m:
-
-% load(['results_',metadata.species,'.mat'])
-
 prdData = feval(['predict_',metaData.species], par, data, auxData);
 
 % appends new field to prd_data with predictions for the pseudo data:
@@ -120,12 +116,10 @@ data    = rmfield_wtxt(data, 'psd');
 prdData    = rmfield_wtxt(prdData, 'psd');
 txtData    = rmfield_wtxt(txtData, 'psd');
 
-
-
 %-----------------------------------------------------------
 % make table for zero-variate data set:
 fprintf(oid, '      <TABLE id="t01">\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="7"><a class="link" href="#" onclick="BoxArt_data2();">Zero-variate</a> data</TH></TR>\n');
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="7"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Zero-variate_data" >Zero-variate</a> data</TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b></TD><TD><b>Predicted</b></TD><TD><b>(RE)</b></TD><TD><b>Unit</b></TD><TD><b>Description</b></TD><TD><b>Reference</b></TD></TR>\n');
 % cell array of string with fieldnames of data
 [nm, nst] = fieldnmnst_st(data);
@@ -162,31 +156,77 @@ fprintf(oid, '    </TABLE>\n');
 %%
 % make a nice table for uni-variate data set:
 if isempty(metaData.data_1) == 0
-fignum = 0; unidta = [];
 fprintf(oid, '      <TABLE id="t01">\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="6"><a class="link" href="#" onclick="BoxArt_data3();">Uni-variate</a> data </TH></TR>\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Dataset</b></TD><TD><b>Figure</b></TD><TD><b>(RE)</b></TD><TD><b>Independent variable</b></TD><TD><b>Dependent variable</b></TD><TD><b>Reference</b></TD></TR>\n');
-  for j = 1:nst
-  eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set
-  
-    if k >1
-      unidta = [unidta;j];
-      fignum = fignum + 1;
-      label = nm{j};
-      if fignum < 10
-      fig   = ['see <A href = "results_',metaData.species,'_0',num2str(fignum),'.png"> Fig. ',num2str(fignum),'</A>'];
-      else
-      fig   = ['see <A href = "results_',metaData.species,'_',num2str(fignum),'.png"> Fig. ',num2str(fignum),'</A>'];
-      end
-      re    = metaPar.RE(j); 
-      ivar   = txtData.label.(nm{j}){1};
-      dvar   = txtData.label.(nm{j}){2};
-      n = iscell(txtData.bibkey.(nm{j}));
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="6"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Univariate_data" >Uni-variate</a> data </TH></TR>\n');
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Dataset</b></TD><TD><b>Figure</b></TD><TD><b>(RE)</b></TD><TD><b>Independent variable</b></TD><TD><b>Dependent variable</b></TD><TD><b>Reference</b></TD></TR>\n');  
+unidta = []; 
+fignum = 0;
+
+   for j = 1:nst
+    eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set 
+        if k >1 
+        unidta = [unidta;j]; 
+        end
+   end
+
+FIGNUM = zeros(length(unidta),1);    
+   
+ switch isfield(metaData,'grp')
+    
+    case 0      
+        
+    for j = 1:length(unidta)
+        fignum = fignum + 1;
+        FIGNUM(j) = fignum;
+    end   
+        
+    otherwise
+        
+        nbGrpPlots = length(metaData.grp.sets); 
+        figID = zeros(length(unidta),nbGrpPlots);
+       
+            for j = 1:length(unidta)
+                Val = zeros(1,nbGrpPlots);
+                for t = 1:nbGrpPlots
+                 Val(1,t)  = sum(strcmp(nm{unidta(j)},metaData.grp.sets{t}));
+                end
+                figID(j,:) = Val;
+            end
+
+            FIGNUM(1) = 1;
+            for i = 1 : length(figID) - 1
+                
+                if sum(figID(i+1,:)) == 0
+                    FIGNUM(i+1) = FIGNUM(i) + 1;
+                else
+                    if isequal(figID(i+1,:), figID(i,:))
+                 FIGNUM(i+1) = FIGNUM(i);
+                    else
+                 FIGNUM(i+1) = FIGNUM(i) + 1;
+                    end  
+                end                                 
+            end
+                 
+ end 
+             
+
+     for j = 1: length(unidta)
+        label  = nm{unidta(j)};
+        re     = metaPar.RE(unidta(j)); 
+        ivar   = txtData.label.(nm{unidta(j)}){1};
+        dvar   = txtData.label.(nm{unidta(j)}){2};
+
+        if FIGNUM(j) < 10
+        fig   = ['see <A href = "results_',metaData.species,'_0',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        else
+        fig   = ['see <A href = "results_',metaData.species,'_',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        end        
+      n = iscell(txtData.bibkey.(nm{unidta(j)}));
       if n
-      n = length(txtData.bibkey.(nm{j}));
+      n = length(txtData.bibkey.(nm{unidta(j)}));
       REF = [];
         for i = 1:n
-        ref = txtData.bibkey.(nm{j}){i};
+        ref = txtData.bibkey.(nm{unidta(j)}){i};
           if i == 1
           REF = [REF,' ',ref];
           else
@@ -194,14 +234,12 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Dataset</b></TD><TD><b>Figure</
           end
         end
       else
-      REF = txtData.bibkey.(nm{j});    
+      REF = txtData.bibkey.(nm{unidta(j)});    
       end
       fprintf(oid, '    <TR > <TD>%s</TD> <TD>%s</TD> <TD>(%3.4g)</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD></TR>\n',...
       label, fig, re, ivar, dvar, REF);        
     end
-  end
  fprintf(oid, '    <TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD></TR>\n');
-%  fprintf(oid, ['    <TR><TH colspan = "6"><A href = "unidata_',metaData.species,'.html" target = "_blank"> View all of the figures here</A></TH></TR>\n']);
  fprintf(oid, '    </TABLE>\n'); 
 end
  
@@ -285,12 +323,6 @@ fprintf(oid,['    <H3 ALIGN="CENTER">', txt_author, ', ', txt_date, ...
         ' (last modified by ', txt_author_mod_1, '\n', txt_date_mod_1,')','</H3>\n']);
  
 %% close results_my_pet.html  
-  
-% these two lines are necessary for the boxes called by java scrip in
-% subfolder sys to work:
-fprintf(oid,'%s\n' , '<div style="position: absolute; z-index: 20000; visibility: hidden; display: none;" id="ext-comp-1001" class="x-tip"><div class="x-tip-tl"><div class="x-tip-tr"><div class="x-tip-tc"><div style="-moz-user-select: none;" id="ext-gen10" class="x-tip-header x-unselectable"><span class="x-tip-header-text"></span></div></div></div></div><div id="ext-gen11" class="x-tip-bwrap"><div class="x-tip-ml"><div class="x-tip-mr"><div class="x-tip-mc"><div style="height: auto;" id="ext-gen12" class="x-tip-body"></div></div></div></div>');
-fprintf(oid,'%s\n' , '<div class="x-tip-bl x-panel-nofooter"><div class="x-tip-br"><div class="x-tip-bc"></div></div></div></div></div><div id="xBoxScreen"></div>');
-
 fprintf(oid, '  </BODY>\n');
 fprintf(oid, '  </HTML>\n');
 fclose(oid);

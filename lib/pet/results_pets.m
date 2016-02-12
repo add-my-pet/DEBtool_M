@@ -149,7 +149,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               yPred = prdData.(currentPet).(nm{j});
               plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
               xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
-              ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);              
+              ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);   
+              title(txtData.(currentPet).bibkey.(nm{j}));
             end
           else
             figure; counter = counter + 1; 
@@ -168,6 +169,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             end
             xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
             ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
+            title(txtData.(currentPet).bibkey.(nm{j}));
           end
         end
         if results_output == 2  % save graphs to .png

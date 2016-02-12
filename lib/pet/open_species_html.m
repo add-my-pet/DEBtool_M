@@ -33,7 +33,6 @@ function fid_Spec = open_species_html
   fprintf(fid_Spec, '    <META NAME = "keywords" CONTENT="add_my_pet, Dynamic Energy Budget theory, DEBtool">\n');
 
 % ------------ style sheets and java script function ---------------------
-  fprintf(fid_Spec,'<script type="text/javascript" src="sys/boxmodal.js"></script>'); 
   fprintf(fid_Spec, '<link rel="stylesheet" type="text/css" href="css/collectionstyle.css">'); 
 % ------------------------------------------------------------------------
 
@@ -45,9 +44,9 @@ function fid_Spec = open_species_html
   
   fprintf(fid_Spec, '        <TH>class</TH> <TH>order</TH> <TH>family</TH>\n');
   fprintf(fid_Spec, '        <TH>species</TH> <TH>common name</TH>\n');
-  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFC6A5"><a class="link" href="#" onclick="BoxArt_type();">&nbsp; type &nbsp;</a></TH>\n');
-  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFE7C6"><a class="link" href="#" onclick="BoxArt_fit();"> &nbsp; MRE &nbsp;</a></TH>\n') ;
-  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFCE9C"><a class="link" href="#" onclick="BoxArt_complete();">&nbsp; complete &nbsp;</a></TH>\n');
-  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFFFC6"><a class="link" href="#" onclick="BoxArt_data();">&nbsp; data &nbsp;</a></TH>\n');
+  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFC6A5"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Typified_models">&nbsp; type &nbsp;</a></TH>\n');
+  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFE7C6"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction#Goodness_of_fit_criterion" > MRE &nbsp;</a></TH>\n') ;
+  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFCE9C"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Completeness" >&nbsp; complete &nbsp;</a></TH>\n');
+  fprintf(fid_Spec, '    <TH BGCOLOR = "#FFFFC6"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Data_types" >&nbsp; data &nbsp;</a></TH>\n');
   fprintf(fid_Spec, '      </TR>\n');
 
