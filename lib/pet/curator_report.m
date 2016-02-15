@@ -154,7 +154,7 @@ fixedFields = setdiff(freeFixedFields, freeFields);
 
 fprintf('Fixed parameters (excluding standard chemical pars with standard values)\n');
 for i = 1:length(fixedFields)
-  if sum(cellfun(@(s) strcmp(s, fixedFields{i}), standChemFields)) == 0 || par.(fixedFields{i}) ~= standChem.(fixedFields{i}) % print if is not standard chemical or if it standard but with non-standard value
+  if ~ismember(fixedFields{i}, standChemFields) || par.(fixedFields{i}) ~= standChem.(fixedFields{i}) % print if is not standard chemical or if it standard but with non-standard value
     fprintf([fixedFields{i}, ' = ', num2str(par.(fixedFields{i})), ' ', txtPar.units.(fixedFields{i}), ', ' , txtPar.label.(fixedFields{i}), '\n'])
   end
 end
