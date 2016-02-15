@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tj_foetus</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="get_tj_foetus.m"><style type="text/css">
+      --><title>get_tj_foetus</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-15"><meta name="DC.source" content="get_tj_foetus.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>get_tj_foetus</h1><!--introduction--><p>Get scaled age at metamorphosis for foetal development</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tj tp tb lj lp lb li rj rB info] = <a href="../get_tj_foetus.m"><b>get_tj_foetus</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages in case of foetal development Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and metamorphosis. Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tj: scaled with age at metamorphosis \tau_j = a_j k_M</li><li>tp: scaled with age at puberty \tau_p = a_p k_M</li><li>tb: scaled with age at birth \tau_b = a_b k_M</li><li>lj: scaled length at end of V1-stage</li><li>lp: scaled length at puberty</li><li>lb: scaled length at birth</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between s and j</li><li>rB: scaled von Bertalanffy growth rate between b and s and between j and i</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="get_tj.html"><b>get_tj</b></a> in case of egg development</p><h2>Example of use<a name="6"></a></h2><p>get_tj_foetus([.5, .1, 0, .01, .05, .2])</p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>get_tj_foetus</h1><!--introduction--><p>Get scaled age at metamorphosis for foetal development</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tj tp tb lj lp lb li rj rB info] = <a href="../get_tj_foetus.m"><b>get_tj_foetus</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages in case of foetal development Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and metamorphosis. Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tj: scaled age at metamorphosis \tau_j = a_j k_M</li><li>tp: scaled age at puberty \tau_p = a_p k_M</li><li>tb: scaled age at birth \tau_b = a_b k_M</li><li>lj: scaled length at end of V1-stage</li><li>lp: scaled length at puberty</li><li>lb: scaled length at birth</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between s and j</li><li>rB: scaled von Bertalanffy growth rate between b and s and between j and i</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="get_tj.html"><b>get_tj</b></a> in case of egg development</p><h2>Example of use<a name="6"></a></h2><p>get_tj_foetus([.5, .1, 0, .01, .05, .2])</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tj_foetus
@@ -81,9 +81,9 @@ function [tj tp tb lj lp lb li rj rB info] = get_tj_foetus(p, f)
   %  
   % Output
   %
-  % * tj: scaled with age at metamorphosis \tau_j = a_j k_M
-  % * tp: scaled with age at puberty \tau_p = a_p k_M
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tj: scaled age at metamorphosis \tau_j = a_j k_M
+  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at end of V1-stage
   % * lp: scaled length at puberty
   % * lb: scaled length at birth
@@ -102,9 +102,9 @@ function [tj tp tb lj lp lb li rj rB info] = get_tj_foetus(p, f)
   g   = p(1); % energy investment ratio
   k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
   lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
-  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}
-  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
-  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = E_H^j/ {p_Am}
+  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
   
   if ~exist('f','var')
     f = 1;

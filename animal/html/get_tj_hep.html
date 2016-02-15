@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tj_hep</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-15"><meta name="DC.source" content="get_tj_hep.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_tj_hep</h1><!--introduction--><p>Gets scaled age at emergence for hep model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunction</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <a href="../get_tj_hep.m"><b>get_tj_hep</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at emerence, puberty, birth and the scaled lengths at these ages for hep model of e.g. ephemeropterans; Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between b and p; isomorphy between p and j ( = emergence, e.g. transition from nymph to sub-imago). Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 with parameters: g, k, v_H^b, v_H^p, v_R^j</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tj: scaled age at emergence \tau_j = a_j k_M</li><li>tp: scaled age at puberty \tau_p = a_p k_M</li><li>tb: scaled age at birth \tau_b = a_b k_M</li><li>lj: scaled length at emergence</li><li>lp: scaled length at puberty = end of acceleration</li><li>lb: scaled length at birth = start of acceleration</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between b and p</li><li>rB: scaled von Bertalanffy growth rate between p  between j</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>Contrary to the abj-model, j (emergence) is here after p (puberty)
+See &lt;get_tj_hex.html get_tj_hex*&gt; in case of holo metabolic insects;</pre><h2>Example of use<a name="6"></a></h2><pre>get_tj_hep([.5, .1, .01, .05, .2])</pre><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tj_hep
+% Gets scaled age at emergence for hep model
+
+%%
+function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
+  % created at 2016/02/12 by Bas Kooijman, 
+  
+  %% Syntax
+  % [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <../get_tj_hep.m *get_tj_hep*> (p, f)
+  
+  %% Description
+  % Obtains scaled ages at emerence, puberty, birth and the scaled lengths at these ages for hep model of e.g. ephemeropterans;
+  % Food density is assumed to be constant.
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. 
+  % Metabolic acceleration occurs between b and p; isomorphy between p and j ( = emergence, e.g. transition from nymph to sub-imago). 
+  % Notice j-p-b sequence in output, due to the name of the routine
+  %
+  % Input
+  %
+  % * p: 5 with parameters: g, k, v_H^b, v_H^p, v_R^j 
+  % * f: optional scalar with functional response (default f = 1)
+  %  
+  % Output
+  %
+  % * tj: scaled age at emergence \tau_j = a_j k_M
+  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
+  % * lj: scaled length at emergence
+  % * lp: scaled length at puberty = end of acceleration
+  % * lb: scaled length at birth = start of acceleration
+  % * li: ultimate scaled length
+  % * rj: scaled exponential growth rate between b and p
+  % * rB: scaled von Bertalanffy growth rate between p  between j
+  % * info: indicator equals 1 if successful, 0 otherwise
+  
+  %% Remarks
+  %  Contrary to the abj-model, j (emergence) is here after p (puberty)
+  %  See <get_tj_hex.html get_tj_hex*> in case of holo metabolic insects;
+  
+  %% Example of use
+  %  get_tj_hep([.5, .1, .01, .05, .2])
+  
+  % unpack pars
+  g   = p(1); % energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  vHb = p(3); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am} start acceleration
+  vHp = p(4); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am} end acceleration
+  vRj = p(5); % (kap/(1 - kap)) [E_R^j]/ [E_G] scaled reprod buffer density at emergence 
+    
+  if ~exist('f', 'var')
+    f = 1;
+  elseif isempty(f)
+    f = 1;
+  end
+
+  pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
+  [tp, tpp, tb, lp, lpp, lb, li, rj, rB, info] = get_tj(pars_tj, f);
+  sM = lp/ lb; % -, acceleration factor
+
+  [vR tl] = ode45(@dget_tj_hep, [0; vRj], [0; lp], [], f, sM, rB, li, g, k, vHp);
+  tj = tp + tl(end,1); % -, scaled age at emergence 
+  lj = tl(end,2);      % -, scaled length at emergence
+        
+end
+
+%% subfunction
+function dtl = dget_tj_hep(vR, tl, f, sM, rB, li, g, k, vHp)
+  l = tl(2); % -, scaled length
+
+  dl = rB * (li - l);
+  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - rB * vR * (f * sM/ l - 1);
+
+  dtl = [1; dl]/ dvR; % pack output
+end
+##### SOURCE END #####
+--></body></html>

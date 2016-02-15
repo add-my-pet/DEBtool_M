@@ -31,7 +31,7 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   % * li: ultimate scaled length
   % * rj: scaled exponential growth rate between b and p
   % * vRj: scaled reproduction buffer density at pupation
-  % * uEe: scaled reserve at emergence: u_E^e = U_E^e g^2 kM^3/ v^2; E^e = E^e/ {p_Am}
+  % * uEe: scaled reserve at emergence: u_E^e = U_E^e g^2 kM^3/ v^2; U^e = E^e/ {p_Am}
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks

@@ -47,7 +47,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  %  See <get_tj_foetus.html 8get_tj_foetus*> in case of foetal development
+  %  See <get_tj_foetus.html get_tj_foetus*> in case of foetal development
   
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
