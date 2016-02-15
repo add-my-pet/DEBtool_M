@@ -64,8 +64,10 @@ fprintf(pars_init_id, '%%%% core primary parameters \n');
 
 for i = 1:length(EparFields)
   currentPar = EparFields{i};
+  if isfield(par,currentPar)
   write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
-end
+  end
+end 
 
 fprintf(pars_init_id, '\n%%%% other parameters \n');
 
