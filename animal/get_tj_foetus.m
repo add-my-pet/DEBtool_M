@@ -42,9 +42,9 @@ function [tj tp tb lj lp lb li rj rB info] = get_tj_foetus(p, f)
   g   = p(1); % energy investment ratio
   k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
   lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
-  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}
-  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
-  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = E_H^j/ {p_Am}
+  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
   
   if ~exist('f','var')
     f = 1;
