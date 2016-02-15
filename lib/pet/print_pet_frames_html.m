@@ -132,7 +132,7 @@ fprintf(oid, '<BR><BR>');
 
 fprintf(oid, '<P><DIV ALIGN=CENTER VALIGN="top">\n');
 fprintf(oid, '<A HREF="../index_species.html" TARGET="_top" onMouseOver="window.status=');
-fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/collection.png" WIDTH="110px"  BORDER="0" ALT="*"> </A>\n']);
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/collection.png" WIDTH="110px"  BORDER="0" ALT="Species list"> </A>\n']);
 fprintf(oid, '</DIV><BR>\n');
 fprintf(oid, '<DIV ALIGN=CENTER VALIGN="top">\n');
 fprintf(oid, '<TABLE>\n');
@@ -147,7 +147,7 @@ fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../ent
 % fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"> &nbsp; </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A HREF="../entries_zip/',metaData.species,'_zip.zip" TARGET="_top" onMouseOver="window.status=']);
-fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/folder.png" WIDTH="110px"  BORDER="0" ALT="*"> </A></TD> </TR>\n']);
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/folder.png" WIDTH="110px"  BORDER="0" ALT="DOWNLOAD ZIPPED FOLDER with files"> </A></TD> </TR>\n']);
 % fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> All files  </A>  </TR> \n']);
 fprintf(oid, '</TABLE>\n');
 fprintf(oid, '</DIV>\n');
