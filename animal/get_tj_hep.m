@@ -22,9 +22,9 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
   %  
   % Output
   %
-  % * tj: scaled with age at emergence \tau_j = a_j k_M
-  % * tp: scaled with age at puberty \tau_p = a_p k_M
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tj: scaled age at emergence \tau_j = a_j k_M
+  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at emergence
   % * lp: scaled length at puberty = end of acceleration
   % * lb: scaled length at birth = start of acceleration

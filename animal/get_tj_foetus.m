@@ -21,9 +21,9 @@ function [tj tp tb lj lp lb li rj rB info] = get_tj_foetus(p, f)
   %  
   % Output
   %
-  % * tj: scaled with age at metamorphosis \tau_j = a_j k_M
-  % * tp: scaled with age at puberty \tau_p = a_p k_M
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tj: scaled age at metamorphosis \tau_j = a_j k_M
+  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at end of V1-stage
   % * lp: scaled length at puberty
   % * lb: scaled length at birth

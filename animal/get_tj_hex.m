@@ -22,9 +22,9 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   %  
   % Output
   %
-  % * tj: scaled with age at pupation \tau_j = a_j k_M
-  % * te: scaled with age at emergence \tau_e = a_e k_M
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tj: scaled age at pupation \tau_j = a_j k_M
+  % * te: scaled age at emergence \tau_e = a_e k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at pupation = end of acceleration
   % * le: scaled length at emergence
   % * lb: scaled length at birth = start of acceleration
