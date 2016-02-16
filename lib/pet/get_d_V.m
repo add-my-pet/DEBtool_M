@@ -37,9 +37,9 @@ switch phylum
         d_V = 0.05;
     case 'Rotifera'
         d_V = 0.06;
-    case 'Platyhelminthes'
-        d_V = 0.25;
-    case {'Ectoprocta', 'Entoprocta'}                % Spiralia 
+    case {'Platyhelminthes', 'Acanthocephala', 'Chaetognatha'}
+        d_V = 0.07;
+    case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         d_V = 0.07;
     case 'Annelida'
         d_V = 0.16;
@@ -56,11 +56,11 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case {'Tardigrada', 'Chaetognata', 'Priapulida'} % Ecdysozoa
+    case {'Tardigrada', 'Priapulida', 'Nematoda'} % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
         d_V = 0.17;
-    case 'Echinodermata'                             % deuterostomata
+    case 'Echinodermata'                                % deuterostomata
         d_V = 0.09;
     case 'Hemichordata'
         d_V = 0.07;

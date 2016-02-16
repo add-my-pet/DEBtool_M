@@ -154,14 +154,16 @@ function estim_options (key, val)
       end
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
-        eval([method, 'regr_options;']);
+        if ~strcmp(method, 'no')
+          eval([method, 'regr_options;']);
+        end
       else
         fprintf('method = unknown \n');
       end
         
     otherwise % option 'other'
       if numel(method) ~= 0
-        if exist('val','var') == 0
+        if exist('val','var') == 0 && ~strcmp(method, 'no') 
           eval([method, 'regr_options(key);']);
         else
           eval([method, 'regr_options(key, val);']);

@@ -54,7 +54,7 @@ function [q, info] = petregr(func, par, data, auxData, weights)
   
   % Y: vector with all dependent data
   % W: vector with all weights
-  Y = struct2vector(st, nm);
+  Y = struct2vector(st, nm); 
   W = struct2vector(weights, nm);
   
   parnm = fieldnames(par.free);
@@ -255,3 +255,10 @@ function [q, info] = petregr(func, par, data, auxData, weights)
      %end
      info = 1;
    end
+   
+   function vec = struct2vector(struct, fieldNames)
+  vec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    vec = [vec; getfield(struct, fieldsInCells{1}{:})];
+  end

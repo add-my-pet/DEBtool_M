@@ -116,7 +116,7 @@ switch model
       fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
     end  
         
-  case 'stf' % standard model with foetal development, no acceleration   
+  case 'stf'  % standard model with foetal development, no acceleration   
     
     [U_E0, L_b, info] = initial_scaled_reserve_foetus(f, pars_E0); % d cm^2, initial scaled reserve
     if info ~= 1
@@ -139,6 +139,18 @@ switch model
 %       fprintf('warning in get_tj: invalid parameter value combination \n')
 %     end
       
+case 'stx'  % standard model with foetal development, no acceleration   
+    
+    [U_E0, L_b, info] = initial_scaled_reserve_foetus(f, pars_E0); % d cm^2, initial scaled reserve
+    if info ~= 1
+      fprintf('warning in initial_scaled_reserve_foetus: invalid parameter value combination for foetus \n')
+    end
+    [t_p, t_b, l_p, l_b, info] = get_tp_foetus(pars_tp, f);
+    if info ~= 1
+      fprintf('warning in get_tj: invalid parameter value combination \n')
+    end
+
+
   otherwise    % no foetal development
     fprintf('warning statistics_std: invalid model key \n')
     return;
@@ -167,7 +179,7 @@ for i = 1:length(mat_ind)
   stri = mat_ind{i};
   labeli = mat_label{i};
   eval(['L_',  stri, ' = L_m * l_', stri, ';']);   % cm, structural length
-  eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
+%   eval(['Lw_',  stri, ' = L_', stri, '/ del_M;']); % cm, physical length
 %   eval(['a_',  stri, ' = t_', stri, '/ k_M;']);  % d, age at birth at T_ref
 %   % temperature correction
 %   eval(['a_',  stri, ' = a_', stri, '/ TC;']);      % d, age at birth at T
@@ -175,7 +187,7 @@ for i = 1:length(mat_ind)
   eval(['W_',  stri, ' = L_', stri, '^3 * d_V * (1 + f * w);']); % g, dry weight
   
   eval(['label.L_',  stri, ' = ''structural length ',  labeli, ''';  units.L_',  stri, ' = ''cm'';  stat.L_',  stri, ' = L_',         stri, ';']);  %cm, structutral length
-  eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
+%   eval(['label.Lw_', stri, ' = ''physical length ',    labeli, ''';  units.Lw_', stri, ' = ''cm'';  stat.Lw_', stri, ' = Lw_',        stri, ';']);  %cm, physical length
   eval(['label.M_V', stri, ' = ''structural mass ',    labeli, ''';  units.M_V', stri, ' = ''mol''; stat.M_V', stri, ' = M_V',        stri, ';']);  %cm, structural mass
   eval(['label.E_V', stri, ' = ''structural energy ',  labeli, ''';  units.E_V', stri, ' = ''J'';   stat.E_V', stri, ' = mu_V * M_V', stri, ';']);  %cm, structutral energy
   eval(['label.W_',  stri, ' = ''dry weight ',         labeli, ''';  units.W_',  stri, ' = ''g'';   stat.W_',  stri, ' = W_',         stri, ';']);  %cm, dry weight
@@ -212,11 +224,8 @@ label.del_Ub = 'fraction of reserve left at birth';  units.del_Ub = '-';   stat.
 % reproduction
 R_i = reprod_rate(L_i, f, pars_R);
  R_i =  R_i * TC;
-R_p = reprod_rate(L_p, f, pars_R);
- R_p =  R_p * TC;
 
 label.R_i = 'ultimate reproduction rate';      units.R_i = '1/d';  stat.R_i = R_i; temp.R_i = T;
-label.R_p = 'reproduction rate at puberty';    units.R_p = '1/d';  stat.R_p = R_p; temp.R_p = T;
  
  % min and max possible egg sizes as determined by the maternal effect rule (e = f)
 
@@ -226,28 +235,28 @@ M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo)
 %     fprintf('Warning: no convergence for eb_min\n')
 % end
 
-ep_min  = get_ep_min([g; k; l_T; v_Hp]); % growth and maturation cease at puberty   
+% ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
 % if length(ep_min) > 1
 %    ep_min = max(ep_min);
 % end
-M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
+% M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
 
 label.M_E0_min_b = 'egg mass whereby growth ceases at birth';   units.M_E0_min_b = 'mol';  stat.M_E0_min_b = M_E0_min_b;
-label.M_E0_min_p = 'egg mass whereby growth ceases at puberty'; units.M_E0_min_p = 'mol';  stat.M_E0_min_p = M_E0_min_p;
+% label.M_E0_min_p = 'egg mass whereby growth ceases at puberty'; units.M_E0_min_p = 'mol';  stat.M_E0_min_p = M_E0_min_p;
 
 
 % Feeding module 
 
 % food densities for which growth/maturation ceases at a given life-stage
 Kb_min = K * eb_min ./ (1 - eb_min);          % growth, maturation cease at birth
-Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
+% Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
 
 label.Kb_min = 'food density where growth, maturation cease at birth';   units.Kb_min = 'mol/l'; stat.Kb_min  = Kb_min;
-label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
+% label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
 
 label.eb_ming = 'scaled func. resp. such that growth ceases at birth';   units.eb_ming = '-'; stat.eb_ming  = eb_min(1);
 label.eb_minh = 'scaled func. resp. such that maturation ceases at birth';   units.eb_minh = '-'; stat.eb_minh  = eb_min(2);
-label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
+% label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
 
 %%
 

@@ -29,15 +29,15 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %  
   % Output
   %
-  % * tj: scaled with age at metamorphosis \tau_j = a_j k_M
+  % * tj: scaled age at metamorphosis \tau_j = a_j k_M
   %
   %      if length(lb0)==2, tj is the scaled time till metamorphosis
   %
-  % * tp: scaled with age at puberty \tau_p = a_p k_M
+  % * tp: scaled age at puberty \tau_p = a_p k_M
   %
   %      if length(lb0)==2, tp is the scaled time till puberty
   %
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tb: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at end of V1-stage
   % * lp: scaled length at puberty
   % * lb: scaled length at birth
@@ -47,7 +47,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  %  See <get_tj_foetus.html 8get_tj_foetus*> in case of foetal development
+  %  See <get_tj_foetus.html get_tj_foetus*> in case of foetal development
   
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -58,10 +58,10 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   g   = p(1); % energy investment ratio
   k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
   lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
-  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}
-  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = E_H^j/ {p_Am}
   if n_p > 5
-    vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
+    vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
   else
     vHp = 0;
   end

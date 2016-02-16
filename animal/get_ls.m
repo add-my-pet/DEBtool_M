@@ -57,7 +57,7 @@ function [ls, lj, lp, lb, info] = get_ls(p, f, lb0)
   end
   
   % get lb
-  if ~exist('lb0', 'var')
+  if ~exist('lb0', 'var') || isempty(lb0)
     lb0 = [];
     [lb info] = get_lb([g; k; vHb], f, lb0);
   else

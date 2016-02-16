@@ -132,7 +132,7 @@ for i = 1:size(auxDataTypes, 1)
   auxDataFields = fields(auxData.(currentAuxDataType));
   for j = 1:size(auxDataFields, 1)
     if sum(strcmp(dataFields, auxDataFields(j))) == 0
-      error(['    In mydata_',speciesnm,'.m: There is a ', auxDataTypes{i},' defined for ', auxDataFields{i}, ' but there is no corresponding data']);
+      error(['    In mydata_',speciesnm,'.m: There is a ', auxDataTypes{i},' defined for ', auxDataFields{j}, ' but there is no corresponding data']);
     end    
   end
 end
@@ -224,7 +224,7 @@ if sum(strcmp(txtDataFields, 'units'))
         end
       else
         for j = 1:length(auxDataUnitsFields)
-          if ~sum(strcmp(auxDataFields, auxDataUnitsFields(i)))
+          if ~sum(strcmp(auxDataFields, auxDataUnitsFields(j)))
             fprintf(['In mydata_',speciesnm,'.m: There are units defined for auxiliary data ', auxDataUnitsFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
           end
         end
@@ -239,7 +239,7 @@ if sum(strcmp(txtDataFields, 'units'))
   extraUnits = unitsFields(unitsChecked == 0);
   if ~isempty(extraUnits)
     for i = 1:length(extraUnits)
-      error(['    In mydata_',speciesnm,'.m: There are no units defined for ', extraUnits{i},' but no corresponding value(s). \n']);
+      error(['    In mydata_',speciesnm,'.m: There are units defined for ', extraUnits{i},' but no corresponding value(s). \n']);
     end
   end
 else
@@ -296,7 +296,7 @@ if sum(strcmp(txtDataFields, 'label'))
         end
       else
         for j = 1:length(auxDataLabelFields)
-          if ~sum(strcmp(auxDataFields, auxDataLabelFields(i)))
+          if ~sum(strcmp(auxDataFields, auxDataLabelFields(j)))
             fprintf(['In mydata_',speciesnm,'.m: There are labels defined for auxiliary data ', auxDataLabelFields{j}, ' of type ', auxDataTypes{i}, ' but no corresponding value. \n']);
           end
         end

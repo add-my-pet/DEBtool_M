@@ -37,7 +37,7 @@ function [filter, flag] = filter_abj(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hj; p.E_Hp; p.kap_R; p.h_a; p.s_G];
+  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hj; p.E_Hp; p.kap_R; p.h_a; p.T_A];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
@@ -47,22 +47,17 @@ function [filter, flag] = filter_abj(p)
     return;
   end
 
-  if p.E_Hb >= p.E_Hj % maturity at birth, puberty
+  if p.E_Hb >= p.E_Hj % maturity at birth, metam
     flag = 4;
     return;
   end
 
-  if p.E_Hj >= p.E_Hp % maturity at birth, puberty
+  if p.E_Hj >= p.E_Hp % maturity at metam, puberty
     flag = 4;
     return;
   end
 
-  if p.f > 1
-    flag = 2;
-    return;
-  end
-
-  parvec = [p.kap; p.kap_R];
+  parvec = [p.kap; p.kap_R; p.kap_X; p.kap_P];
   
   if sum(parvec >= 1) > 0 
     flag = 2;

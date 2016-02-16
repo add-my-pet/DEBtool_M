@@ -3,7 +3,7 @@
 
 %%
 function weight = setweights(data, weight) 
-% created 2015/01/16 by Goncalo Marques and Bas Kooijman; modified 2015/03/30 by Goncalo Marques
+% created 2015/01/16 by Goncalo Marques and Bas Kooijman; modified 2015/03/30, 2016/02/11 by Goncalo Marques
 
 %% Syntax
 % weight = <../setweights.m *setweights*> (data, weight)
@@ -34,14 +34,14 @@ function weight = setweights(data, weight)
 nm = fieldnames(data); % vector of cells with names of data sets
 
 for i = 1:numel(nm)
-  eval(['[ndata nvar] = size(data.', nm{i},');']);
-  if eval(['~isfield(weight, ''', nm{i}, ''');']); % note that one has to write '' to mean '
+  [~, nvar] = size(data.(nm{i}));
+  if ~isfield(weight, nm{i}); 
     if nvar == 1 % zero-variate data
-      eval(['weight.', nm{i},' = min(100,1 ./ max(1e-6, data.', nm{i},') .^ 2);']);
+      weight.(nm{i}) = 1 ./ data.(nm{i}) .^ 2; 
     else % uni-variate data
-      eval(['N = length(data.', nm{i},');']);
-      eval(['meanval = mean(data.', nm{i}, '(:,2));']);
-      eval(['weight.', nm{i},' = 1/ meanval^2 / N * ones(N, 1);']);
+      N = length(data.(nm{i}));
+      meanval = mean(data.(nm{i})(:,2));
+      weight.(nm{i}) = 1/ meanval^2 / N * ones(N, 1);
     end
   end
 end

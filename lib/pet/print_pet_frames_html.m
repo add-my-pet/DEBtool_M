@@ -4,7 +4,7 @@
 %%
 function print_pet_frames_html(metaData)
 % created 2015/04/11 Starrlight & Goncalo Marques; 
-% modified 2015/08/23 Starrlight 
+% modified 2015/09/11 Starrlight 
 
 %% Syntax
 % <../print_pet_frames_html.m *print_pet_frames_html*> (metadata)
@@ -132,7 +132,7 @@ fprintf(oid, '<BR><BR>');
 
 fprintf(oid, '<P><DIV ALIGN=CENTER VALIGN="top">\n');
 fprintf(oid, '<A HREF="../index_species.html" TARGET="_top" onMouseOver="window.status=');
-fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/collection.png" WIDTH="110px"  BORDER="0" ALT="*"> </A>\n']);
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/collection.png" WIDTH="110px"  BORDER="0" ALT="Species list"> </A>\n']);
 fprintf(oid, '</DIV><BR>\n');
 fprintf(oid, '<DIV ALIGN=CENTER VALIGN="top">\n');
 fprintf(oid, '<TABLE>\n');
@@ -144,10 +144,11 @@ fprintf(oid, '<TR> <TD> &nbsp;</TD> </TR>\n');
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/mydata_',metaData.species,'.m" target = "_blank">mydata</A>  </TD></TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/predict_',metaData.species,'.m" target = "_blank">predict</A> </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/pars_init_',metaData.species,'.m" target = "_blank">pars_init</A> </TD> </TR>\n']);
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
-
-
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> V1 zipped folder  </A>  </TR> \n']);
+% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"> &nbsp; </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A HREF="../entries_zip/',metaData.species,'_zip.zip" TARGET="_top" onMouseOver="window.status=']);
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/folder.png" WIDTH="110px"  BORDER="0" ALT="DOWNLOAD ZIPPED FOLDER with files"> </A></TD> </TR>\n']);
+% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> All files  </A>  </TR> \n']);
 fprintf(oid, '</TABLE>\n');
 fprintf(oid, '</DIV>\n');
 

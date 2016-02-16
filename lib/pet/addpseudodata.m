@@ -34,10 +34,16 @@ data.psd.v = 0.02;     units.psd.v = 'cm/d';       label.psd.v = 'energy conduct
 data.psd.kap = 0.8;    units.psd.kap = '-';        label.psd.kap = 'allocation fraction to soma';
 data.psd.kap_R = 0.95; units.psd.kap_R = '-';      label.psd.kap_R = 'reproduction efficiency';
 data.psd.p_M = 18;     units.psd.p_M = 'J/d.cm^3'; label.psd.p_M = 'vol-spec som maint';   
-data.psd.p_T = 0;      units.psd.p_T = 'J/d.cm^2'; label.psd.p_T = 'surf-spec som maint';
 data.psd.k_J = 0.002;  units.psd.k_J = '1/d';      label.psd.k_J = 'maturity maint rate coefficient';
 data.psd.kap_G = 0.8;  units.psd.kap_G = '-';      label.psd.kap_G = 'growth efficiency'; 
 
 % set weights
 weight.psd = setweights(data.psd, []);
+weight.psd.v     = 0.1 * weight.psd.v;
+weight.psd.kap   = 0.1 * weight.psd.kap;
+weight.psd.kap_R = 0.1 * weight.psd.kap_R;
+weight.psd.p_M   = 0.1 * weight.psd.p_M;
+weight.psd.k_J   = 0.1 * weight.psd.k_J;
+weight.psd.kap_G = 0.1 * weight.psd.kap_G;
+
 weight.psd.kap_G = 200 * weight.psd.kap_G;   % more weight to kap_G

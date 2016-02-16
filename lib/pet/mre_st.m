@@ -2,7 +2,7 @@
 % calculates the mean absolute relative error
 
 %%
-function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
+function [merr, rerr, prdInfo] = mre_st2(func, par, data, auxData, weights)
   % created: 2001/09/07 by Bas Kooijman; 
   % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques, 2015/07/30 by Starrlight Augustine
   
@@ -37,9 +37,9 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   
   rerr      = zeros(nst, 2);  % prepare output
   
-  for i = 1:nst   % first we remove independant variables from uni-variate data sets
+  for i = 1:nst   % first we remove independent variables from uni-variate data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var = getfield(data, fieldsInCells{1}{:});   % scaler, vecotr or matrix with data in field nm{i}
+    var = getfield(data, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
     k = size(var, 2);
     if k >= 2
       data = setfield(data, fieldsInCells{1}{:}, var(:,2));
@@ -51,8 +51,23 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
     var    = getfield(data, fieldsInCells{1}{:}); 
     prdVar = getfield(prdData, fieldsInCells{1}{:}); 
     w      = getfield(weights, fieldsInCells{1}{:});
-    rerr(i,1) = sum(abs(prdVar - var) .* w ./ max(1e-3, abs(var)), 1)/ sum(max(1e-6, w));
+    meanval = abs(mean(var));
+    diff = abs(prdVar - var);
+    
+    if sum(diff) > 0 && meanval > 0
+      if sum(w) ~= 0
+        rerr(i,1) = sum(w .* abs(prdVar - var)/ meanval, 1)/ sum(w);
+      else
+        rerr(i,1) = sum(abs(prdVar - var)/ meanval, 1);
+      end
+    else
+      rerr(i,1) = 0;
+    end
     rerr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
   end
     
   merr = sum(prod(rerr,2))/ sum(rerr(:,2));
+  
+  
+  
+  

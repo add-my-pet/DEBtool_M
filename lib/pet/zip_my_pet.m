@@ -15,16 +15,19 @@ function zip_my_pet(my_pet, basefolder)
   %
   % Input
   %
-  % my_pet: string with name of species
+  % * my_pet: string with name of species
   %
-  % basefolder : String that specifies the root of the paths 
+  % * basefolder : String that specifies the root of the paths 
   %              for the files to zip (optional)
   %              Default folder:  '.\'
   %
-  % Output zip files in the current folder  
+  % Output 
+  %
+  % * zip files in the current folder  
  
   %% Remarks
-  % compress all my_pet file
+  % compress all my_pet files+
+  % See also zip_taxa
   
   %% Example of use
   % zip_my_pet('my_pet', basefolder)

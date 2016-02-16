@@ -14,6 +14,7 @@ function par = get_pars_4(data, fixed_par, chem_par)
   % Input
   %
   % * data: 4-vector with zero-variate data
+  %
   %    d_V: g/cm^3 specific density of structure
   %    W_b: g, wet weight at birth
   %    W_p: g, wet weight at puberty
