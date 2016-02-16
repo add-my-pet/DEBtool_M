@@ -108,9 +108,6 @@ for i = 1 : 5
     end  
 end
 
-    
-
-
 % checking the existence of psd in the data structure
 if sum(strcmp(dataFields, 'psd'))
   dataFields = dataFields(~strcmp(dataFields, 'psd'));
@@ -119,6 +116,29 @@ if sum(strcmp(dataFields, 'psd'))
 else
   fprintf(['In mydata_',speciesnm,'.m: The data structure does not include the pseudodata for the regression. \n']);
   psdexist = 0;
+end
+
+% checking the if any data or pseudodata set is zero
+for i = 1:length(dataFields)
+  if strcmp(dataFields{i}, 'psd')
+    for j = 1:length(psdFields)
+      if data.psd.(psdFields{j}) == 0
+        fprintf(['The data set/point ', dataFields{i}, ' is zero. This may cause problems in the estimation procedure through the standard weight setting and the computation of the loss function. \n']);
+      end
+    end
+  else
+    currentDataSet = data.(dataFields{i});
+    [~, nvar] = size(currentDataSet);
+    if nvar == 1 % zero-variate data
+      sumval = currentDataSet; 
+    else % uni-variate data
+      sumval = sum(currentDataSet(:,2));
+    end
+    if sumval == 0
+      fprintf(['The data set/point', dataFields{i}, ' is zero. This may cause problems in the estimation procedure through the standard weight setting and the computation of the loss function. \n']);
+    end
+  end
+
 end
 
 % checking the existence of temp in the auxData structure
