@@ -2,7 +2,7 @@
 % calculates the mean absolute relative error
 
 %%
-function [merr, rerr, prdInfo] = mre_st2(func, par, data, auxData, weights)
+function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   % created: 2001/09/07 by Bas Kooijman; 
   % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques, 2015/07/30 by Starrlight Augustine
   
