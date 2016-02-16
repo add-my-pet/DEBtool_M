@@ -2,7 +2,7 @@
 % calculates the mean absolute relative error
 
 %%
-function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
+function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights, covRulesnm)
   % created: 2001/09/07 by Bas Kooijman; 
   % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques, 2015/07/30 by Starrlight Augustine
   
@@ -29,7 +29,7 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
 
   %data      = rmfield_wtxt(data, 'psd');   % STA: this is because there is an assymetry is the output of mydata_my_pet and predict_my_pet
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
-  [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
+  [prdData, prdInfo] = feval(func, par, data, auxData, covRulesnm); % call predicted values for all of the data
   if prdInfo == 0 % no prediction from func
       merr = {}; rerr = {};
       return

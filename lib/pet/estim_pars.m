@@ -100,7 +100,7 @@ if ~strcmp(method, 'no')
 end
 
 % Results
-results_pets_2(par, metaPar, txtPar, data, auxData, metaData, txtData, weights, cov_rulesnm);
+results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights, cov_rulesnm);
 
 if filter
   if petsnumber == 1

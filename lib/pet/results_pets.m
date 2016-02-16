@@ -2,7 +2,7 @@
 % Computes model predictions and handles them
 
 %%
-function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
+function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights, covRulesnm)
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
@@ -46,13 +46,25 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
-  [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
-  if info == 0
+  if petsnumber == 1
+    [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE, covRulesnm); % WLS-method
+    if info == 0
       error(  'One parameter set did not pass the customized filters in the predict file')
+    end
+    metaPar.pet1.MRE = MRE; metaPar.pet1.RE = RE;
+  else
+    for i = 1:petsnumber
+      parSpec = feval(covRulesnm, par, i);
+      currentPet = sprintf('pet%d',i);
+      [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st(['predict_', pets{i}], parSpec, data.(currentPet), auxData.(currentPet), weightsMRE.(currentPet), covRulesnm);
+      if info == 0
+        error(  'One parameter set did not pass the customized filters in the predict file')
+      end
+    end
   end
-  metaPar.MRE = MRE; metaPar.RE = RE;
   data2plot = data;
 
+  
   if results_output == 2 % to avoid saving figures generated prior the current run
       close all
   end
@@ -88,7 +100,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     data2plot.(currentPet) = st;
   end
   
-  prdData = predict_pets(par, data2plot, auxData);
+  prdData = predict_pets(par, data2plot, auxData, covRulesnm);
   
   for i = 1:petsnumber
     if exist(['custom_results_', pets{i}, '.m'], 'file')
@@ -187,15 +199,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     end 
     if results_output < 2
-%       v2struct(par); 
       ci = num2str(i);
       fprintf([pets{i}, ' \n']); % print the species name
       fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
-      fprintf('MRE = %8.3f \n\n', MRE)
+      fprintf('MRE = %8.3f \n\n', metaPar.(currentPet).MRE)
       
       fprintf('\n');
-      currentPet = sprintf('pet%d',i);
-      printprd_st(data.(currentPet), txtData.(currentPet), prdData.(currentPet), RE);
+      printprd_st(data.(currentPet), txtData.(currentPet), prdData.(currentPet), metaPar.(currentPet).RE);
       
       free = par.free;  
       corePar = rmfield_wtxt(par,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
@@ -210,17 +220,30 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           free  = rmfield_wtxt(free, parFields{j});
         end
       end
+      corePar = feval(covRulesnm, corePar, i);
+      parFreenm = fields(free);
+      for j = 1:length(parFreenm)
+        if length(free.(parFreenm{j})) ~= 1
+          free.(parFreenm{j}) = free.(parFreenm{j})(i);
+        end
+      end
       corePar.free = free;
       printpar_st(corePar,coreTxtPar);
       fprintf('\n')
     end
     if results_output > 0
       filenm   = ['results_', pets{i}, '.mat'];
-      metaData = metaData.pet1;
+      metaData_sv = metaData;
+      metaData = metaData.(currentPet);
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+      metaData = metaData_sv;
     end
   end
   
+  if results_output > 0
+    filenm   = ['results_group.mat'];
+    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+  end
  
 end
 
@@ -241,4 +264,5 @@ function plotColours4AllSets = listOfPlotColours4UpTo13Sets
 
 end
 
-
+function par = cov_rules_1species(par, i)
+end
