@@ -2,11 +2,11 @@
 % Calculates least squares estimates using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, covRulesnm)
+function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
 % created 2015/08/26 by Goncalo Marques
 
 %% Syntax
-% [q, info] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm, covRulesnm)
+% [q, info] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm)
 
 %% Description
 % Calculates least squares estimates using Nelder Mead's simplex method.
@@ -20,7 +20,6 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
 % * auxData: structure with auxiliary data
 % * weights: structure with weights
 % * filternm: character string with name of user-defined filter function
-% * covRulesnm: character string with name of user-defined covariation rules function
 %  
 % Output
 % 
@@ -43,7 +42,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
   % prepare variable
   %   st: structure with dependent data values only
   st = data;
-  [nm nst] = fieldnmnst_st(st); % nst: number of data sets
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
     
   for i = 1:nst   % makes st only with dependent variables
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
@@ -118,7 +117,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
   % Set up a simplex near the initial guess.
   xin = qfreevec;    % Place input guess in the simplex
   v(:,1) = xin;
-  f = feval(func, q, data, auxData, covRulesnm);
+  f = feval(func, q, data, auxData);
   fv(:,1) = W' * (struct2vector(f, nm) - Y).^2;
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
@@ -135,7 +134,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
         y_test(j) = zero_term_delta / step_reducer;
       end
       q = parVec2Struct(q, y_test, mapVec2Struct);
-      [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);     
+      [f, f_test] = getPrediction(func, q, data, auxData, filternm);     
       if ~f_test 
         fprintf('The parameter set for the simplex construction is not realistic. \n');
         step_reducer = 2 * step_reducer;
@@ -162,8 +161,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
   % Iterate until the diameter of the simplex is less than tol_simplex
   %   AND the function values differ from the min by less than tol_fun,
   %   or the max function evaluations are exceeded. (Cannot use OR instead of AND.)
-  while func_evals < max_fun_evals & itercount < max_step_number
-    if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex & ...
+  while func_evals < max_fun_evals && itercount < max_step_number
+    if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex && ...
        max(abs(fv(1)-fv(two2np1))) <= tol_fun
       break
     end
@@ -175,7 +174,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
     xbar = sum(v(:,one2n), 2)/ n_par;
     xr = (1 + rho) * xbar - rho * v(:,np1);
     q = parVec2Struct(q, xr, mapVec2Struct);
-    [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
+    [f, f_test] = getPrediction(func, q, data, auxData, filternm);
     if ~f_test 
       fxr = fv(:,np1) + 1;
     else
@@ -187,7 +186,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
       % Calculate the expansion point
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
       q = parVec2Struct(q, xe, mapVec2Struct);
-      [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
+      [f, f_test] = getPrediction(func, q, data, auxData, filternm);
       if ~f_test
          fxe = fxr + 1;
       else
@@ -214,7 +213,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
             % Perform an outside contraction
             xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
             q = parVec2Struct(q, xc, mapVec2Struct);
-            [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
+            [f, f_test] = getPrediction(func, q, data, auxData, filternm);
             if ~f_test
               fxc = fxr + 1;
             else            
@@ -234,7 +233,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
             % Perform an inside contraction
             xcc = (1 - psi) * xbar + psi * v(:,np1);
             q = parVec2Struct(q, xcc, mapVec2Struct);
-            [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
+            [f, f_test] = getPrediction(func, q, data, auxData, filternm);
             if ~f_test
               fxcc = fv(:,np1) + 1;
             else
@@ -258,7 +257,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm, co
                while ~f_test
                   v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
                   q = parVec2Struct(q, v_test, mapVec2Struct);
-                  [f, f_test] = getPrediction(func, q, data, auxData, filternm, covRulesnm);
+                  [f, f_test] = getPrediction(func, q, data, auxData, filternm);
                   if ~f_test 
                      fprintf('The parameter set for the simplex shrinking is not realistic. \n');
                      step_reducer = 2 * step_reducer;
@@ -318,22 +317,23 @@ function q = parVec2Struct(q, vec, mapVec2Struct)
     q.(mapVec2Struct{i}{1})(mapVec2Struct{i}{2}) = vec(i);
   end
 
-function [f, pass] = getPrediction(func, q, data, auxData, filternm, covRulesnm)
+function [f, pass] = getPrediction(func, q, data, auxData, filternm)
 % Tests if prameter set q passes the filters (default and customized) and if yes returns predictions 
   f = {};
-  if strcmp(covRulesnm, 'cov_rules_1species')
+  if strcmp(cov_rules, '1species')
     pass = feval(filternm, q);
   else
-    pass = filter_multispecies(filternm, q, covRulesnm);
+    pass = filter_multispecies(filternm, q);
   end
   if pass
-    [f, pass] = feval(func, q, data, auxData, covRulesnm);
+    [f, pass] = feval(func, q, data, auxData);
   end
 
-function pass = filter_multispecies(filternm, q, covRulesnm)
+function pass = filter_multispecies(filternm, q)
 % Tests if prameter set q passes the filternm filters for multiple species
-  global pets
+  global pets cov_rules
   
+  covRulesnm = ['cov_rules_', cov_rules];
   petsnumber = length(pets);
   pass = 1;
   for i = 1:petsnumber

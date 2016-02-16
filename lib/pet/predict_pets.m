@@ -2,7 +2,7 @@
 % Catenates predictions from predict files
 
 %%
-function [prdData, info] = predict_pets(parGrp, data, auxData, covRulesnm)
+function [prdData, info] = predict_pets(parGrp, data, auxData)
 % created 2015/01/17 by Goncalo Marques, modified 2015/03/30 by Goncalo Marques
 % modified 2015/08/03 by Starrlight, modified 2015/08/26 by Goncalo Marques
 
@@ -24,11 +24,12 @@ function [prdData, info] = predict_pets(parGrp, data, auxData, covRulesnm)
 % * prdData: structure with predictions for several species
 % * info: scalar with combined success (1) or failure (0) of predictions
  
-global pets pseudodata_pets 
+global pets pseudodata_pets cov_rules
 
 info = 0;
 
 petsnumber = length(pets);
+covRulesnm = ['cov_rules_', cov_rules];
 
 % produce pars for species and predict
 for i = 1:petsnumber

@@ -2,7 +2,7 @@
 % Computes model predictions and handles them
 
 %%
-function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights, covRulesnm)
+function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
@@ -30,9 +30,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % writes to results_my_pet.mat an/or results_my_pet.html, 
 % plots to screen
 
-  global pets results_output pseudodata_pets 
+  global pets results_output cov_rules
   
   petsnumber = length(pets);
+
+  covRulesnm = ['cov_rules_', cov_rules];
   
   % get (mean) relative errors
   weightsMRE = weights;  % define a weights structure with weight 1 for every data point and 0 for the pseudodata 
@@ -47,7 +49,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   if petsnumber == 1
-    [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE, covRulesnm); % WLS-method
+    [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
     if info == 0
       error(  'One parameter set did not pass the customized filters in the predict file')
     end
@@ -56,7 +58,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     for i = 1:petsnumber
       parSpec = feval(covRulesnm, par, i);
       currentPet = sprintf('pet%d',i);
-      [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st(['predict_', pets{i}], parSpec, data.(currentPet), auxData.(currentPet), weightsMRE.(currentPet), covRulesnm);
+      [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st(['predict_', pets{i}], parSpec, data.(currentPet), auxData.(currentPet), weightsMRE.(currentPet));
       if info == 0
         error(  'One parameter set did not pass the customized filters in the predict file')
       end
@@ -100,7 +102,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     data2plot.(currentPet) = st;
   end
   
-  prdData = predict_pets(par, data2plot, auxData, covRulesnm);
+  prdData = predict_pets(par, data2plot, auxData);
   
   for i = 1:petsnumber
     if exist(['custom_results_', pets{i}, '.m'], 'file')
@@ -241,7 +243,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   if results_output > 0
-    filenm   = ['results_group.mat'];
+    filenm   = 'results_group.mat';
     save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
   end
  
