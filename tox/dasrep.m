@@ -11,7 +11,7 @@ function dX = dasrep(t, X)
   %% Output
   %  dX: derivatives of state variables
 
-  global C nc c0 cA ke kap kapR g kJ kM v Hb Hp
+  global C nc c0 cA ke kap kapR g kJ kM v Hb Hp f
   global Lb0
 
   %% unpack state vector
@@ -40,7 +40,7 @@ function dX = dasrep(t, X)
 
   rBs = kM * gs ./ (3 * (E + gs)); % von Bert growth rate
   dL = rBs .* (E .* Lms - L);    % change in length
-  dU = (1 - s) .* L.^2 - SC;     % change in time-surface U = M_E/{J_EAm}
+  dU = f * (1 - s) .* L.^2 - SC;     % change in time-surface U = M_E/{J_EAm}
   dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
 
   U0 = zeros(nc,1); % initiate scaled reserve of fresh egg

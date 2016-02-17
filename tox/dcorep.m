@@ -11,7 +11,7 @@ function dX = dcorep(t, X)
   %% Output
   %  dX: derivatives of state variables
 
-  global C nc c0 cC ke kap kapR g kJ kM v Hb Hp U0
+  global C nc c0 cC ke kap kapR g kJ kM v Hb Hp U0 f
 
   %% unpack state vector
   N = X(1:nc);        % cumulative number of offspring
@@ -32,7 +32,7 @@ function dX = dcorep(t, X)
 
   rB = kM * g ./ (3 * (E + g)); % von Bert growth rate
   dL = rB .* (E .* Lm - L);   % change in length
-  dU = L .^ 2 - SC;           % change in time-surface U = M_E/{J_EAm}
+  dU = f * L .^ 2 - SC;           % change in time-surface U = M_E/{J_EAm}
   dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
 
   R = ((1 - kap) * SC - kJ * Hp) .* kapRs ./ U0; % reprod rate in %/d

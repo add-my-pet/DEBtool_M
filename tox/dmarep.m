@@ -14,7 +14,7 @@ function dX = dmarep(t, X)
   %% Output
   %  dX: derivatives of state variables
 
-  global C nc c0 cM ke kap kapR g kJ kM v Hb Hp Lb0
+  global C nc c0 cM ke kap kapR g kJ kM v Hb Hp Lb0 f
 
   %% unpack state vector
   N = X(1:nc);        % cumulative number of offspring
@@ -37,7 +37,7 @@ function dX = dmarep(t, X)
 
   rBs = kMs * g ./ (3 * (E + g)); % von Bert growth rate
   dL = rBs .* (E .* Lms - L);   % change in length
-  dU = L .^2 - SC;              % change in time-surface U = M_E/{J_EAm}
+  dU = f * L .^2 - SC;              % change in time-surface U = M_E/{J_EAm}
   dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
 
   U0 = 0 * N; % initiate scaled reserve of fresh egg
