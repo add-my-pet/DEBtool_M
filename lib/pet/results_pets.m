@@ -243,8 +243,14 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   if results_output > 0
-    filenm   = 'results_group.mat';
-    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    if petsnumber > 1
+      filenm   = 'results_group.mat';
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    else
+      filenm   = ['results_', pets{i}, '.mat'];
+      metaData = metaData.pet1;
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    end
   end
  
 end
