@@ -38,8 +38,8 @@ function Nt = asrep(p, t, c)
   Hb = p(10); % d cm^2, scaled maturity at birth
   Hp = p(11); % d cm^2, scaled maturity at puberty
   L0 = p(12); % cm, initial body length
-
-  H0 = maturity(L0, 1, p(4:8), 0, p(9:11)); % initial scaled maturity
+  
+  H0 = maturity(L0, 1, [kap; kapR; g; kJ; kM; 0; v; Hb; Hp]); % initial scaled maturity, the value 0 is for LT
   U0 = L0^3/ v; % initial reserve at max value
   %% initialize state vector; catenate to avoid loops
   X0 = [zeros(nc,1);     % N: cumulative number of offspring

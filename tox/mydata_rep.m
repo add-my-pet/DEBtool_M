@@ -31,12 +31,39 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000; % Daphnia magna
      90.600  72.000  47.600  21.700  11.300   5.244;
      98.700  76.200  53.000  21.700  11.300   5.244];
 
-path(path,'../lib/regr/');
+% path(path,'../lib/regr/');
 
+nmregr_options('max_fun_evals',10)
 shregr2_options('plotnr',1);
 
- par = [1e-3 10.6 1e-1 14.7 .1 0.13 0.42 1; 1 1 1 1 0 0 0 0]';
- p = nmregr2('asrep',par,t,c,N);
+c0 = 1e-3;  % mM, No-Effect-Concentration (external, may be zero)
+cA = 10.6;  % mM, tolerance concentration
+ke = 1e-1;  % 1/d, elimination rate at L = Lm
+kap = 0.61; % -, fraction allocated to growth + som maint
+kap_R = 0.95;% -, fraction of reprod flux that is fixed into embryo reserve 
+g  = 3.6;  % -, energy investment ratio
+k_J = 0.002;  % 1/d, maturity maint rate coeff
+k_M = 0.33;  % 1/d, somatic maint rate coeff
+v  = 0.1584;  % cm/d, energy conductance
+U_Hb = 0.01379/ 315.611; % d cm^2, scaled maturity at birth
+U_Hp = 0.3211/ 315.611; % d cm^2, scaled maturity at puberty
+L0 = 0.016 * 1.2; % cm, initial body length
+
+ p = [
+     c0 1
+     cA 1
+     ke 1
+     kap 0
+     kap_R 0
+     g 1
+     k_J 0
+     k_M 1
+     v 0
+     U_Hb 0
+     U_Hp 0
+     L0 0];
+     
+ p = nmregr2('asrep',p,t,c,N);
  shregr2('asrep',p,t,c,N);
  [cov cor sd] = pregr2('asrep',p,t,c,N);
 
