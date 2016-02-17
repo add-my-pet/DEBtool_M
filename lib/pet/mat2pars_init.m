@@ -3,7 +3,7 @@
 
 %%
 function mat2pars_init(speciesnm, varargin)
-% created 2015/09/21 by  Goncalo Marques
+% created 2015/09/21 by  Goncalo Marques, modified 2016/02/17
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm) 
@@ -14,6 +14,7 @@ function mat2pars_init(speciesnm, varargin)
 % Input:
 %
 % * speciesnm: string with the species nama
+% * varargin: 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file
 
 %% Remarks
 % Keep in mind that the files will be saved in your local directory; use
