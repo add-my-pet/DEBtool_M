@@ -67,7 +67,7 @@ end
 function dtl = dget_tj_hep(vR, tl, f, sM, rB, li, g, k, vHp)
   l = tl(2); % -, scaled length
 
-  dl = rB * (li - l);
+  dl = rB * max(0, li - l);
   dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - rB * vR * (f * sM/ l - 1);
 
   dtl = [1; dl]/ dvR; % pack output

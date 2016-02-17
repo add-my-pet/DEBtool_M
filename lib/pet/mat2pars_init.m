@@ -2,7 +2,7 @@
 % writes a pars_init file from a .mat file
 
 %%
-function mat2pars_init(speciesnm)
+function mat2pars_init(speciesnm, varargin)
 % created 2015/09/21 by  Goncalo Marques
 
 %% Syntax
@@ -23,6 +23,17 @@ function mat2pars_init(speciesnm)
 
 %% Example of use
 % mat2pars_init(speciesnm)
+
+
+if nargin > 2
+  error('Too many inputs in mat2pars_init.');
+end
+
+if isempty(varargin) || varargin{1} ~= 1
+  fix = 0;  % free/fix parameters as in .mat file
+else
+  fix = 1;  % all parameters fixed 
+end
 
 matFile = ['results_', speciesnm, '.mat'];
 
@@ -65,7 +76,7 @@ fprintf(pars_init_id, '%%%% core primary parameters \n');
 for i = 1:length(EparFields)
   currentPar = EparFields{i};
   if isfield(par,currentPar)
-  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
   end
 end 
 
@@ -81,7 +92,7 @@ otherParFields = setdiff(parFields, chemParFields);
 
 for i = 1:length(otherParFields)
   currentPar = otherParFields{i};
-  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
 end
 
 fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
@@ -90,7 +101,7 @@ fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, fr
 for i = 1:length(chemParFields)
   currentPar = chemParFields{i};
   if par.(currentPar) ~= par_auto.(currentPar)
-    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar));
+    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
   end
 end
 
@@ -100,9 +111,13 @@ fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = fr
 fclose(pars_init_id);
 
 
-function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString)
+function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
   fprintf(file_id, ['par.', parName,' = ', num2str(parValue), ';  ']);
-  fprintf(file_id, ['free.', parName,' = ', num2str(freeValue), ';  ']);
+  if fix
+    fprintf(file_id, ['free.', parName,' = 0;  ']);
+  else
+    fprintf(file_id, ['free.', parName,' = ', num2str(freeValue), ';  ']);
+  end
   fprintf(file_id, ['units.', parName,' = ''', unitsString, ''';  ']);
   fprintf(file_id, ['label.', parName,' = ''', labelString, '''; \n']);
 
