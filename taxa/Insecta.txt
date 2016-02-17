@@ -1,4 +1,5 @@
 Thysanura
 Ephemeroptera
-Orthoptera
-Homoletabola
+Polyneoptera
+Paraneoptera
+Holometabola

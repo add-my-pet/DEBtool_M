@@ -1,4 +1,3 @@
-Hemiptera
 Diptera
 Lepidoptera
 Hymenoptera
