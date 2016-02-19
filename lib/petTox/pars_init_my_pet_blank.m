@@ -28,11 +28,11 @@ par.T_A = 6400;  free.T_A = 0;  units.T_A = 'K';  label.T_A = 'Arrhenius tempera
 par.T_ref = 293.15;  free.T_ref = 0;  units.T_ref = 'K';  label.T_ref = 'Reference temperature'; 
 par.f = 1;  free.f = 0;  units.f = '-';  label.f = 'scaled functional response for 0-var data'; 
 
-%% parameters which should ultimately go in pars_init_my_pet_mytox
-par.k_e = 0.1498;      free.k_e = 1;     units.k_e = '1/d';                   label.k_e  = 'k_e, elimination rate';
-par.c0 = 0.0001;  free.c0 = 1;   units.c0 = 'mMol/l';     label.c0  = 'no effect concentration (external)';
-par.cA = 0.0001;  free.cA = 1;   units.cA = 'mMol/l';     label.cA  = 'no effect concentration (external)';
-par.f_tN = 0.65;  free.f_tN = 1; units.f_tN = '-';  label.f_tN = 'scaled functional response for tN'; 
+% %% parameters which should ultimately go in pars_init_my_pet_mytox
+% par.k_e = 0.1498;      free.k_e = 1;     units.k_e = '1/d';                   label.k_e  = 'k_e, elimination rate';
+% par.c0 = 0.0001;  free.c0 = 1;   units.c0 = 'mMol/l';     label.c0  = 'no effect concentration (external)';
+% par.cA = 0.0001;  free.cA = 1;   units.cA = 'mMol/l';     label.cA  = 'no effect concentration (external)';
+% par.f_tN = 0.65;  free.f_tN = 1; units.f_tN = '-';  label.f_tN = 'scaled functional response for tN'; 
 
 
 
