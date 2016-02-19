@@ -28,16 +28,21 @@ function estim_pars
   %% Remarks
   % estim_options sets many options
   
-global pets pars_init_method method filter cov_rules
-
-% set data
-[data, auxData, metaData, txtData, weights] = mydata_pets;
+global pets toxs pars_init_method method filter cov_rules
 
 petsnumber = length(pets);
+toxsnumber = length(toxs);
+
+% get data
+[data, auxData, metaData, txtData, weights] = mydata_pets;
 
 if petsnumber == 1
   pars_initnm = ['pars_init_', pets{1}];
-  resultsnm = ['results_', pets{1}, '.mat'];
+  if toxsnumber == 0
+    resultsnm = ['results_', pets{1}, '.mat'];
+  else
+    resultsnm = ['results_', pets{1}, '_', toxs{1}, '.mat'];
+  end
 else
   pars_initnm = 'pars_init_group';
   resultsnm = 'results_group.mat';
@@ -45,21 +50,33 @@ end
 
 % set parameters
 if pars_init_method == 0
-  if petsnumber == 1
-    [par, metaPar, txtPar, flag] = get_pars(data.pet1, auxData.pet1, metaData.pet1);
-  else
+  if petsnumber ~= 1
     error('    For multispecies estimation get_pars cannot be used (pars_init_method cannot be 0)');
+  elseif toxsnumber ~= 0
+    error('    For estimation with toxicant get_pars cannot be used (pars_init_method cannot be 0)');
+  else
+    [par, metaPar, txtPar, flag] = get_pars(data.(pets{1}), auxData.(pets{1}), metaData.(pets{1}));
   end
 elseif pars_init_method == 1
-  load(resultsnm, 'par');
-  [par2, metaPar, txtPar] = feval(pars_initnm, metaData.pet1);
-  if length(fieldnames(par.free)) ~= length(fieldnames(par2.free))
-    fprintf('The number of parameters in pars.free in the pars_init and in the .mat file are not the same. \n');
-    return;
+  if toxsnumber == 0
+    load(resultsnm, 'par');
+    [par2, metaPar, txtPar] = feval(pars_initnm, metaData.pet1);
+    if length(fieldnames(par.free)) ~= length(fieldnames(par2.free))
+      fprintf('The number of parameters in pars.free in the pars_init and in the .mat file are not the same. \n');
+      return;
+    end
+    par.free = par2.free;
+  else
+    load(resultsnm, 'par', 'metaPar', 'txtPar');
   end
-  par.free = par2.free;
 elseif pars_init_method == 2
-  [par, metaPar, txtPar] = feval(pars_initnm, metaData.pet1);
+  if toxsnumber == 0
+    [par, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
+  else
+    [~, ~, metaDataAux, ~, ~] = feval(['mydata_', pets{1}]);   % This is a provisory way of getting metaData for pars_init
+    [par, metaPar, txtPar] = feval(pars_initnm, metaDataAux);
+    [par, metaPar, txtPar] = feval([pars_initnm, '_', toxs{1}], par, metaPar, txtPar);
+  end
 end
 
 if petsnumber == 1
