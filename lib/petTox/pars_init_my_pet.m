@@ -1,7 +1,7 @@
 %% pars_init_Daphnia_magna
 % sets (initial values for) parameters
 
-function [par, metaPar, txtPar] = pars_init_my_pet_blank(metaData)
+function [par, metaPar, txtPar] = pars_init_my_pet(metaData)
 
 metaPar.model = 'std'; 
 
