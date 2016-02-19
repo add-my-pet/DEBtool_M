@@ -39,7 +39,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   % get (mean) relative errors
   weightsMRE = weights;  % define a weights structure with weight 1 for every data point and 0 for the pseudodata 
   for k = 1:petsnumber
-    currentPet = ['pet',num2str(k)];
+    currentPet = pets{k};
     if isfield(weights.(currentPet), 'psd')
       psdSets = fields(weights.(currentPet).psd);
       for j = 1:length(psdSets)
@@ -53,7 +53,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     if info == 0
       error(  'One parameter set did not pass the customized filters in the predict file')
     end
-    metaPar.pet1.MRE = MRE; metaPar.pet1.RE = RE;
+    metaPar.(pets{1}).MRE = MRE; metaPar.(pets{1}).RE = RE;
   else
     for i = 1:petsnumber
       parSpec = feval(covRulesnm, par, i);
@@ -71,8 +71,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       close all
   end
   
+  univarX = {}; 
   for i = 1:petsnumber
-    currentPet = ['pet',num2str(i)];
+    currentPet = pets{i};
     st = data2plot.(currentPet); 
     [nm, nst] = fieldnmnst_st(st);
     for j = 1:nst  % replace univariate data by plot data 
@@ -81,22 +82,23 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       k = size(varData, 2);  
       if k == 2 
         auxDataFields = fields(auxData.(currentPet));
-        dataCode = fieldsInCells{1}{end};
+        dataCode = fieldsInCells{1}{:};
         univarAuxData = {};
         for ii = 1:length(auxDataFields) % add to univarAuxData all auxData for the data set that has length > 1
           if isfield(auxData.(currentPet).(auxDataFields{ii}), dataCode) && length(auxData.(currentPet).(auxDataFields{ii}).(dataCode)) > 1
             univarAuxData{end + 1} = auxDataFields{ii};
           end
         end
-        dataVec = st.(nm{j})(:,1); 
+        aux = getfield(st, fieldsInCells{1}{:});
+        dataVec = aux(:,1); 
         if isempty(univarAuxData) % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
           xAxis = linspace(min(dataVec), max(dataVec), 100)';
-          univarX.(dataCode) = 'dft'; % 'dft': default number of plotting points for the x-axis 
+          univarX = setfield(univarX, fieldsInCells{1}{:}, 'dft');
         else
           xAxis = dataVec;
-          univarX.(dataCode) = 'usr'; % 'usr': user defined number of plotting points for the x-axis 
+          univarX = setfield(univarX, fieldsInCells{1}{:}, 'usr');
         end
-        st.(nm{j}) = xAxis;
+        st = setfield(st, fieldsInCells{1}{:}, xAxis);
       end
     end
     data2plot.(currentPet) = st;
@@ -108,7 +110,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     if exist(['custom_results_', pets{i}, '.m'], 'file')
           feval(['custom_results_', pets{i}], par, metaPar, data.(currentPet), txtData.(currentPet), auxData.(currentPet));
     else
-      currentPet = ['pet', num2str(i)];
+      currentPet = pets{i};
       st = data.(currentPet); 
       [nm, nst] = fieldnmnst_st(st);
       counter = 0;
@@ -172,18 +174,24 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             set(gcf,'PaperPositionMode','manual');
             set(gcf,'PaperUnits','points'); 
             set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
-            xData = st.(nm{j})(:,1); 
-            yData = st.(nm{j})(:,2);
-            xPred = data2plot.(currentPet).(nm{j})(:,1); 
-            yPred = prdData.(currentPet).(nm{j});
-            if strcmp(univarX.(nm{j}), 'dft')
+            xData = var(:,1); 
+            yData = var(:,2);
+            aux = getfield(data2plot.(currentPet), fieldsInCells{1}{:});
+            xPred = aux(:,1);
+            yPred = getfield(prdData.(currentPet), fieldsInCells{1}{:});
+            if strcmp(getfield(univarX, fieldsInCells{1}{:}), 'dft')
               plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
-            elseif strcmp(univarX.(nm{j}), 'usr')
+            elseif strcmp(getfield(univarX, fieldsInCells{1}{:}), 'usr')
               plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',20, 'linestyle', 'none')
             end
-            xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
-            ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
-            title(txtData.(currentPet).bibkey.(nm{j}));
+            if length(fieldsInCells{1}) == 1
+              aux = txtData.(currentPet);
+            else
+              aux = txtData.(currentPet).(fieldsInCells{1}{1});
+            end
+            xlabel([aux.label.(fieldsInCells{1}{end}){1}, ', ', aux.units.(fieldsInCells{1}{end}){1}]);
+            ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
+            title(aux.bibkey.(fieldsInCells{1}{end}));
           end
         end
         if results_output == 2  % save graphs to .png
@@ -201,9 +209,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     end 
     if results_output < 2
-      ci = num2str(i);
-      fprintf([pets{i}, ' \n']); % print the species name
-      fprintf('COMPLETE = %3.1f \n', metaData.(['pet', ci]).COMPLETE)
+      fprintf([currentPet, ' \n']); % print the species name
+      if isfield(metaData.(currentPet), 'COMPLETE')
+        fprintf('COMPLETE = %3.1f \n', metaData.(currentPet).COMPLETE)
+      end
       fprintf('MRE = %8.3f \n\n', metaPar.(currentPet).MRE)
       
       fprintf('\n');
@@ -248,7 +257,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     else
       filenm   = ['results_', pets{i}, '.mat'];
-      metaData = metaData.pet1;
+      metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
+      metaPar = rmfield(metaPar, pets{1});
+      metaData = metaData.(pets{1});
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     end
   end
