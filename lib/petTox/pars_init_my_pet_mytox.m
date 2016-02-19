@@ -31,12 +31,12 @@ par.k_e = 0.1498;      free.k_e = 1;     units.k_e = '1/d';                   la
 
 %% MoA parameters
 par.c0 = 0.0001;  free.c0 = 1;   units.c0 = 'mMol/l';     label.c0  = 'no effect concentration (external)';
-par.cA = 0.0001;  free.cA = 1;   units.cA = 'mMol/l';     label.cA  = 'no effect concentration (external)';
+par.cA = 0.3991;  free.cA = 1;   units.cA = 'mMol/l';     label.cA  = 'no effect concentration (external)';
 
 % par.b_p_M = 20;     free.b_p_M = 1;      units.b_p_M = 'J/d.cm^3/';       label.b_p_M = 'b, killing rate of vol-spec somatic maint';
 
 %% parameters specific for the data sets
-par.f_tN = 0.65;  free.f_tN = 1; units.f_tN = '-';  label.f_tN = 'scaled functional response for tN'; 
+par.f_tN = 0.9;  free.f_tN = 1; units.f_tN = '-';  label.f_tN = 'scaled functional response for tN'; 
 
 
 %% Pack output:
