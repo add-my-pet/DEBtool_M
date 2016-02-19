@@ -73,8 +73,9 @@ UT_H0 = UH0/ TC_tN;
  % initial
 pars_UE0 = [V_Hb; g; k_J; k_M; v]; % compose parameter vector
 U_E0 = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve 
+UT_E0 = U_E0/ TC_tN;
   
-X0 = [0;UT_H0; L0; U_E0; 0]; % initial conditons
+X0 = [0;UT_H0; L0; UT_E0; 0]; % initial conditons
 
 [t, Xt] = ode23(@dharep, tN0(:,1), X0,[],par, cPar, tox.tN0, f_tN, U_E0, TC_tN); % integrate changes in state
 EN0 = Xt(:,1); % select cumulated number of offspring
@@ -142,7 +143,7 @@ EN5 = Xt(:,1); % select cumulated number of offspring
   rB = kT_M * c.g ./ (3 * (E + c.g)); % von Bert growth rate
   dL = rB .* (E .* c.L_m - L);   % change in length
   dU = f * L .^ 2 - SC;           % change in time-surface U = M_E/{J_EAm}
-  dconc = (kT_e * c.L_m .* (C - c) - 3 * dL .* conc) ./ L; % change in scaled int. conc
+  dconc = (kT_e * c.L_m .* (C - conc) - 3 * dL .* conc) ./ L; % change in scaled int. conc
 
   R = exp(-s) .* ((1 - p.kap) * SC - kT_J * p.E_Hp) * p.kap_R/ UT_0; % reprod rate in %/d
   R = (H > Hp) .* max(0,R); % make sure that R is non-negative
