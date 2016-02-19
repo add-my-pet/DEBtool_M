@@ -40,5 +40,9 @@ par.f_tN = 0.65;  free.f_tN = 1; units.f_tN = '-';  label.f_tN = 'scaled functio
 
 
 %% Pack output:
-txtPar.units = units; txtPar.label = label; par.free = free; 
+txtPar.units = units; txtPar.label = label; 
+freeNm = fieldnames(free);
+for i = 1:size(freeNm, 1)
+    par.free.(freeNm{i}) = free.(freeNm{i});
+end
 

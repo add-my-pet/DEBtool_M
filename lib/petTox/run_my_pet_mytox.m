@@ -1,6 +1,6 @@
 %% <../run_my_pet_mytox.m *run_my_pet_mytox*>
 
-clear all; 
+clear all; close all;
 %clc
 global pets toxs
 
