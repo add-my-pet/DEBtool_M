@@ -68,13 +68,13 @@ function [prdData, info] = predict_my_pet_mytox(par, data, auxData)
   % time-cumulated nb of eggs
   
 L0 = L0.tN0 * del_M; % initial structural length   
-UH0 = maturity(L0, f, [kap; kapR; g; kJ; kM; 0; v; Hb; Hp]); % initial scaled maturity
+UH0 = maturity(L0, f, [kap; kap_R; g; k_J; k_M; 0; v; E_Hb/ p_Am; E_Hp/ p_Am]); % initial scaled maturity
 UT_H0 = UH0/ TC_tN;
  % initial
 pars_UE0 = [V_Hb; g; k_J; k_M; v]; % compose parameter vector
 U_E0 = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve 
   
-X0 = [0;UT_H0; L0; UT_E0; 0]; % initial conditons
+X0 = [0;UT_H0; L0; U_E0; 0]; % initial conditons
 
 [t, Xt] = ode23(@dharep, tN0(:,1), X0,[],par, cPar, tox.tN0, f_tN, U_E0, TC_tN); % integrate changes in state
 EN0 = Xt(:,1); % select cumulated number of offspring

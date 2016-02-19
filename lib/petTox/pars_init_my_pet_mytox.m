@@ -2,7 +2,7 @@
 % sets (initial values for) parameters
 
 %%
-function [par, metaPar, txtPar] = pars_init_my_pet_mytox(par, txtPar)
+function [par, metaPar, txtPar] = pars_init_my_pet_mytox(par, metaPar, txtPar)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2016/02/16
   
   %% Syntax
