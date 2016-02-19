@@ -39,7 +39,7 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   
   %% Example of use
   %  get_tj_hex([.5, .1, .01, .05, .95, 0.8, 0.9])
-  
+
   % unpack pars
   g   = p(1); % energy investment ratio
   k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
@@ -50,27 +50,25 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   kap = p(6); % -, allocation fraction to soma of pupa
   kapV = p(7);% -, conversion effeciency from larval reserve to larval structure, back to imago reserve
   
-  if ~exist('f', 'var')
-    f = 1;
-  elseif isempty(f)
+  if ~exist('f', 'var') || isempty(f)
     f = 1;
   end
   
   % from birth to pupation
   [tb, lb, info] = get_tb([ g k vHb], f); % scaled age and length at birth
   rj = (f/ lb - 1)/ (f/ g + 1);           % scaled specific growth rate of larva
-  vRj = sj * (1 - lb/ g)/ (1 - lb);       % scaled reprod buffer density at pupation
-  tj = fzero(@fnget_tj_hex, 1, [], f, g, lb, k, vHb, vRj, rj); % scaled time from birth at pupation
-  lj = lb * exp(tj * rj);                 % scaled length at pubation
+  vRj = sj * (1 + lb/ g)/ (1 - lb);       % scaled reprod buffer density at pupation
+  tj = fzero(@fnget_tj_hex, 1, [], f, g, lb, k, vHb, vRj, rj); % scaled time since birth at pupation
+  lj = lb * exp(tj * rj/ 3);              % scaled length at pubation
   tj = tb + tj;                           % -, scaled age at pupation
   
   % from pupation to emergence
-  [vH tluE] = ode45(@dget_tj_hex, [1e-10; vHe], [0; 0; lj^3 * (kap * kapV + f/ g)], [], g, k);
-  te = tj + tluE(end,1); % -, scaled age at emergence 
-  le = tluE(end,2);      % -, scaled length at emergence
-  uEe = tluE(end,3);     % -, scaled reserve at emergence
+  options = odeset('Events', @emergence);
+  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 1e4], [0; lj^3 * (kap * kapV + f/ g); 0], options, g, k, vHe);
+  te = tj + te;     % -, scaled age at emergence 
+  le = luEvH_e(1);  % -, scaled length at emergence
+  uEe = luEvH_e(2); % -, scaled reserve at emergence
 
-  
 end
 
 %% subfunctions
@@ -80,12 +78,18 @@ function F = fnget_tj_hex(tj, f, g, lb, k, vHb, vRj, rj)
   F = vRj - f/ g * (g + lb)/ (f - lb) * (1 - ert) + tj * k * vHb * ert/ lb^3;
 end
 
-function dluE = dget_tj_hex(vH, tluE, g, k)
-  l = tluE(2); l2 = l * l; l3 = l * l2; l4 = l * l3; uE = tluE(3);
+function [value,isterminal,direction] = emergence(t, luEvH, g, k, vHe)
+ value = vHe - luEvH(3); 
+ isterminal = 1;
+ direction = 0;
+end
+
+function dluEvH = dget_tj_hex(t, luEvH, g, k, vHe)
+  l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; uE = luEvH(2); vH = luEvH(3);
 
   dl = (g * uE - l4)/ (uE + l3)/ 3;
   duE = - uE * l2 * (g + l)/ (uE + l3);
   dvH = - duE - k * vH;
 
-  dluE = [1; dl; duE]/ dvH; % pack output
+  dluEvH = [dl; duE; dvH]; % pack output
 end
