@@ -39,7 +39,6 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000; % Daphnia magna
 nmregr_options('max_fun_evals',100)
 shregr2_options('plotnr',1);
 
-f = 0.65; % scaled functional response
 c0 = 1e-4;  % mM, No-Effect-Concentration (external, may be zero)
 cA = 10.6*0.4;  % mM, tolerance concentration
 ke = 1e-1;  % 1/d, elimination rate at L = Lm
@@ -52,6 +51,8 @@ v  = 0.1584;  % cm/d, energy conductance
 U_Hb = 0.01379/ 315.611; % d cm^2, scaled maturity at birth
 U_Hp = 0.3211/ 315.611; % d cm^2, scaled maturity at puberty
 L0 = 0.016; % cm, initial body length
+f = 0.65; % scaled functional response
+
 
  p = [
      c0 1

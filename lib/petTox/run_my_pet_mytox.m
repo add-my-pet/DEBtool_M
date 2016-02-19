@@ -2,11 +2,11 @@
 
 clear all; 
 %clc
-global pets toxs
+global pets %toxs
 
 % species names
-pets = {'my_pet'};
-toxs = {'mytox'};
+pets = {'my_pet_mytox'};
+% toxs = {'mytox'};
 % check_my_pet(pets); % check pet-files for required fields
 
 % See estim_options for more options
