@@ -67,33 +67,33 @@ function [prdData, info] = predict_my_pet_mytox(par, data, auxData)
   
   % time-cumulated nb of eggs
   
-L0 = L0.tN0 * del_M; % initial structural length   
-UH0 = maturity(L0, f, [kap; kap_R; g; k_J; k_M; 0; v; E_Hb/ p_Am; E_Hp/ p_Am]); % initial scaled maturity
-UT_H0 = UH0/ TC_tN;
- % initial
-pars_UE0 = [V_Hb; g; k_J; k_M; v]; % compose parameter vector
-U_E0 = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve 
-UT_E0 = U_E0/ TC_tN;
+  L0 = L0.tN0 * del_M; % initial structural length   
+  UH0 = maturity(L0, f, [kap; kap_R; g; k_J; k_M; 0; v; E_Hb/ p_Am; E_Hp/ p_Am]); % initial scaled maturity
+  UT_H0 = UH0/ TC_tN;
+  % initial
+  pars_UE0 = [V_Hb; g; k_J; k_M; v]; % compose parameter vector
+  U_E0 = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve 
+  UT_E0 = U_E0/ TC_tN;
   
-X0 = [0;UT_H0; L0; UT_E0; 0]; % initial conditons
+  X0 = [0;UT_H0; L0; UT_E0; 0]; % initial conditons
 
-[t, Xt] = ode23(@dharep, tN0(:,1), X0,[],par, cPar, tox.tN0, f_tN, U_E0, TC_tN); % integrate changes in state
-EN0 = Xt(:,1); % select cumulated number of offspring
+  [t, Xt] = ode23(@dharep, tN0(:,1), X0,[],par, cPar, tox.tN0, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN0 = Xt(:,1); % select cumulated number of offspring
+  
+  [t, Xt] = ode23(@dharep, tN1(:,1), X0,[],par, cPar, tox.tN1, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN1 = Xt(:,1); % select cumulated number of offspring
+  
+  [t, Xt] = ode23(@dharep, tN2(:,1), X0,[],par, cPar, tox.tN2, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN2 = Xt(:,1); % select cumulated number of offspring
+  
+  [t, Xt] = ode23(@dharep, tN3(:,1), X0,[],par, cPar, tox.tN3, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN3 = Xt(:,1); % select cumulated number of offspring
+  
+  [t, Xt] = ode23(@dharep, tN4(:,1), X0,[],par, cPar, tox.tN4, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN4 = Xt(:,1); % select cumulated number of offspring
 
-[t, Xt] = ode23(@dharep, tN1(:,1), X0,[],par, cPar, tox.tN1, f_tN, U_E0, TC_tN); % integrate changes in state
-EN1 = Xt(:,1); % select cumulated number of offspring
-
-[t, Xt] = ode23(@dharep, tN2(:,1), X0,[],par, cPar, tox.tN2, f_tN, U_E0, TC_tN); % integrate changes in state
-EN2 = Xt(:,1); % select cumulated number of offspring
-
-[t, Xt] = ode23(@dharep, tN3(:,1), X0,[],par, cPar, tox.tN3, f_tN, U_E0, TC_tN); % integrate changes in state
-EN3 = Xt(:,1); % select cumulated number of offspring
-
-[t, Xt] = ode23(@dharep, tN4(:,1), X0,[],par, cPar, tox.tN4, f_tN, U_E0, TC_tN); % integrate changes in state
-EN4 = Xt(:,1); % select cumulated number of offspring
-
-[t, Xt] = ode23(@dharep, tN5(:,1), X0,[],par, cPar, tox.tN5, f_tN, U_E0, TC_tN); % integrate changes in state
-EN5 = Xt(:,1); % select cumulated number of offspring
+  [t, Xt] = ode23(@dharep, tN5(:,1), X0,[],par, cPar, tox.tN5, f_tN, U_E0, TC_tN); % integrate changes in state
+  EN5 = Xt(:,1); % select cumulated number of offspring
 
 
   % pack to output
@@ -104,6 +104,8 @@ EN5 = Xt(:,1); % select cumulated number of offspring
   prdData.tN3 = EN3;
   prdData.tN4 = EN4;
   prdData.tN5 = EN5;
+  
+  info = 1;
 
   
   
@@ -146,6 +148,7 @@ EN5 = Xt(:,1); % select cumulated number of offspring
   dconc = (kT_e * c.L_m .* (C - conc) - 3 * dL .* conc) ./ L; % change in scaled int. conc
 
   R = exp(-s) .* ((1 - p.kap) * SC - kT_J * p.E_Hp) * p.kap_R/ UT_0; % reprod rate in %/d
+  Hp = p.E_Hp/ c.p_Am;
   R = (H > Hp) .* max(0,R); % make sure that R is non-negative
   dH = (1 - p.kap) * SC - kT_J * H; % change in scaled maturity H = M_H/ {J_EAm}
   dX = [R; dH; dL; dU; dconc]; % catenate derivatives in output
