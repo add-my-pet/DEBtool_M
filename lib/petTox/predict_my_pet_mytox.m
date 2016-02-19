@@ -39,7 +39,9 @@ function [prdData, info] = predict_my_pet_mytox(par, data, auxData)
     
   % customized filters for allowable parameters of the standard DEB model (std)
   % for other models consult the appropriate filter function.
-  filterChecks = k * v_Hp >= f_tN^3 || ~reach_birth(g, k, v_Hb, f_tN);         % constraint required for reaching puberty, birth with f_tN
+  tox_pars = [k_e, c0, cA, f_tN];
+  filterChecks = sum(tox_pars < 0) > 0 || ...   % non-negativity constraint
+                 k * v_Hp >= f_tN^3 || ~reach_birth(g, k, v_Hb, f_tN);    % constraint required for reaching puberty, birth with f_tN
   
   if filterChecks  
     info = 0;  prdData = {};     return;
