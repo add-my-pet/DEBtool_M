@@ -38,7 +38,7 @@ end
 fprintf('\nParameters \n');
 free = par.free;                    % copy substructure
 parpl = rmfield_wtxt(par, 'free');  % remove substructure free from par
-[nm nst] = fieldnmnst_st(parpl);    % get number of parameter fields
+[nm, nst] = fieldnmnst_st(parpl);    % get number of parameter fields
 for j = 1:nst % scan parameter fields
   str = [nm{j}, ', ', txtPar.units.(nm{j}), ' %3.4g %d \n']; 
   fprintf(str, parpl.(nm{j}), free.(nm{j}));

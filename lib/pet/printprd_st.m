@@ -23,8 +23,7 @@ function printprd_st(data, txtData, prdData, RE)
   % Data values are printed first, followed by prediction and relative error
   % The relative error of pseudo date are set to zero, irrespective of the diffference between value and prediction
     
-  [nm nst] = fieldnmnst_st(data);
-  dtsets = fieldnames(data);
+  [nm, nst] = fieldnmnst_st(data);
 
   fprintf('data and predictions (relative error) \n');
   for j = 1:nst
@@ -46,7 +45,12 @@ function printprd_st(data, txtData, prdData, RE)
         fprintf(str, data.(nm{j}), prdData.(nm{j}), RE(j));
       end
     else
-      str = ['see figure (%3.4g) ', dtsets{j}, ', ', txtData.label.(nm{j}){1}, ' vs. ', txtData.label.(nm{j}){2}, '\n'];
+      if length(fieldsInCells{1}) == 1
+        aux = txtData;
+      else
+        aux = txtData.(fieldsInCells{1}{1});
+      end
+      str = ['see figure (%3.4g) ', fieldsInCells{1}{end}, ', ', aux.label.(fieldsInCells{1}{end}){1}, ' vs. ', aux.label.(fieldsInCells{1}{end}){2}, '\n'];
       fprintf(str, RE(j));
     end
   end
