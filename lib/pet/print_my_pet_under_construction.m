@@ -73,12 +73,28 @@ txt_date_mod_1 =  '';
 
 end  
 
-% default parameters for model std after Marques et al 2015 - 
-if strcmp(metaPar.model,'abj')
-    fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+% default parameters for model std after Marques et al 2015 -
+
+switch metaPar.model
+    
+    case 'abj'
+        
+    fields_std = {'T_A'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hj'; 'E_Hp'; 'h_a'; 's_G'};
-else
-fields_std = {'T_A';'z'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+
+    case 'hex'
+        
+     fields_std = {'T_A'; 'F_m'; 'kap_X'; 'kap_P'; 'kap_V'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+    'k_J'; 'E_G'; 'E_Hb'; 'E_He'; 'h_a'; 's_G'};
+        
+    case 'abp'
+        
+     fields_std = {'T_A';'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+    'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};
+
+    otherwise
+        
+     fields_std = {'T_A'; 'F_m'; 'kap_X'; 'kap_P'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
     'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};
 end
 
@@ -126,9 +142,11 @@ par_std   = rmfield_wtxt(par_std, 'z');
 par_std.p_Am = par.z * par.p_M/ par.kap;
 label_std.p_Am = 'max spec assimilation rate';
 units_std.p_Am = 'J/d.cm^2';
+par_std   = rmfield_wtxt(par_std, 'z');
 
-fields_std = {'T_A';'F_m'; 'kap_X'; 'kap_P'; 'p_Am'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
-    'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};  % overwrite the original fields_std
+
+% fields_std = {'T_A';'F_m'; 'kap_X'; 'kap_P'; 'p_Am'; 'v'; 'kap'; 'kap_R'; 'p_M'; 'p_T'; ...
+%     'k_J'; 'E_G'; 'E_Hb'; 'E_Hp'; 'h_a'; 's_G'};  % overwrite the original fields_std
 
 col_par.T_A  = '#FFC6A5'; 
 col_par.F_m = '#CEEFBD';  col_par.kap_X = '#CEEFBD'; col_par.kap_P = '#CEEFBD';  col_par.p_Am = '#CEEFBD'; 
@@ -137,89 +155,15 @@ col_par.p_M = '#FFFF9C';  col_par.p_T = '#FFFF9C';  col_par.k_J = '#FFFF9C';
 col_par.E_G = '#FFFFC6'; 
 col_par.E_Hb = '#94D6E7';  col_par.E_Hp = '#94D6E7'; 
 col_par.h_a = '#BDC6DE';  col_par.s_G = '#BDC6DE'; 
-% col_par = {... % colours for primary parameters
-%     '#FFC6A5'; '#F7BDDE'; '#DEBDDE'; '#CEEFBD'; '#DEF3BD'; '#FFFF9C'; '#FFFFC6'; '#94D6E7'; '#BDC6DE'; 
-%     '#C6E7DE'; '#C6EFF7'; '#F7BDDE'; '#FFFFFF'; '#F7BDDE'; '#FFFFFF'};
-
-%%
-% make structure with label, units and values of statistics
-% statistics we would like to see on the web:
-
-% if strcmp(metaPar.model,'abj')
-%     fields_stat = {'c_T'; ...
-%     's_M'; 's_H'; 's_s'; ...'E_0'; 'W_0';'del_Ub'; ...
-%     'a_b'; 'a_j'; 'a_p'; 'a_99'; ...
-%     'W_b'; 'W_j';'W_p'; 'W_i'; 'L_b'; 'L_j'; 'L_p'; 'L_i'; 'R_i'; ...
-%     'del_Wb'; 'del_Wp'; 'del_V'; 'r_B'; ...
-%     'E_m'; 't_starve'; 't_E'; 'xi_W_E'; ...
-%     'eb_ming'; 'eb_minh'; 'ep_min'; ...
-%     'VO_b'; 'VO_j'; 'VO_p'; 'VO_i'; ...
-%     'p_t_b'; 'p_t_j'; 'p_t_p'; 'p_t_i'; ...
-%     'RQ_b'; 'RQ_j'; 'RQ_p'; 'RQ_i'};
-% [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model);
-% elseif strcmp(metaPar.model,'ssj') % not correct but ok for now
-% fields_stat = {'c_T'; ...
-%     's_H'; 's_s'; ...
-%     'E_0'; 'W_0';'del_Ub'; ...
-%     'a_b'; 'a_p'; 'a_99'; ...
-%     'W_b'; 'W_p'; 'W_i'; 'L_b';'L_p'; 'L_i'; 'R_i'; ...
-%     'del_Wb'; 'del_Wp'; 'del_V'; 'r_B'; ...
-%     'E_m'; 't_starve'; 't_E'; 'xi_W_E'; ...
-%     'eb_ming'; 'eb_minh'; 'ep_min'; ...
-%     'VO_b'; 'VO_p'; 'VO_i'; ...
-%     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
-%     'RQ_b'; 'RQ_p'; 'RQ_i'};    
-% [stat, txt_stat] = statistics_ssj(par, metaData.T_typical, 1, metaPar.model);
-% else % std, stx, stf ...
-% fields_stat = {'c_T'; ...
-%     's_H'; 's_s'; ...
-%     'E_0'; 'W_0';'del_Ub'; ...
-%     'a_b'; 'a_p'; 'a_99'; ...
-%     'W_b'; 'W_p'; 'W_i'; 'L_b';'L_p'; 'L_i'; 'R_i';  ...
-%     'del_Wb'; 'del_Wp'; 'del_V'; 'r_B'; ...
-%     'E_m'; 't_starve'; 't_E'; 'xi_W_E'; ...
-%     'eb_ming'; 'eb_minh'; 'ep_min'; ...
-%     'VO_b'; 'VO_p'; 'VO_i'; ...
-%     'p_t_b'; 'p_t_p'; 'p_t_i'; ...
-%     'RQ_b'; 'RQ_p'; 'RQ_i'};
-% [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model);
-% end
-% [fields, nst] = fieldnmnst_st(stat); 
-% for  i = 1:length(fields_stat)
-% k = find(strcmp(fields_stat{i},fields));
-% eval(['stat_std.',fields_stat{i},' = stat.',fields{k},';']);
-% eval(['units_stat.',fields_stat{i},' = txt_stat.units.',fields{k},';']);
-% eval(['label_stat.',fields_stat{i},' = txt_stat.label.',fields{k},';']);
-% end 
-% 
-% col_stat.s_H = '#F7BDDE'; col_stat.s_s = '#F7BDDE';
-% col_stat.c_T = '#FFC6A5';
-% col_stat.E_0 = '#FFFFFF'; col_stat.W_0 = '#FFFFFF'; col_stat.del_Ub = '#FFFFFF'; 
-% col_stat.a_b = '#C6E7DE'; col_stat.a_p = '#C6E7DE'; col_stat.a_99 = '#C6E7DE';
-% col_stat.W_b = '#CEEFBD'; col_stat.W_p = '#CEEFBD'; col_stat.W_i = '#CEEFBD';
-% col_stat.L_b = '#DEF3BD'; col_stat.L_p = '#DEF3BD'; col_stat.L_i = '#DEF3BD';
-% col_stat.R_i = '#FFFFC6'; 
-% col_stat.del_Wb = '#FFFF9C';  col_stat.del_Wp = '#FFFF9C';  col_stat.del_V = '#FFFF9C'; col_stat.r_B = '#FFFF9C'; 
-% col_stat.E_m = '#FFC6A5';  col_stat.t_starve = '#FFC6A5';  col_stat.t_E = '#FFC6A5';  col_stat.xi_W_E = '#FFC6A5'; 
-% col_stat.eb_ming = '#94D6E7'; col_stat.eb_minh = '#94D6E7'; col_stat.ep_min = '#94D6E7';
-% col_stat.VO_b = '#FFFFFF'; col_stat.VO_p = '#FFFFFF'; col_stat.VO_i = '#FFFFFF';
-% col_stat.p_t_b = '#FFFFC6'; col_stat.p_t_p = '#FFFFC6'; col_stat.p_t_i = '#FFFFC6'; 
-% col_stat.RQ_b = '#FFFF9C'; col_stat.RQ_p = '#FFFF9C'; col_stat.RQ_i = '#FFFF9C';
-% 
 % 
 if strcmp(metaPar.model,'abj')
-    col_stat.s_M = '#F7BDDE'; 
-    description.E_Hj  = 'maturity at metamorphosis';
     col_par.E_Hj = col_par.E_Hb;
-    col_stat.a_j = col_stat.a_b;  col_stat.L_j = col_stat.L_b;  col_stat.W_j = col_stat.W_b; 
-    col_stat.VO_j = col_stat.VO_b;  col_stat.p_t_j = col_stat.p_t_b; col_stat.RQ_j = col_stat.RQ_b;
 end
-% 
-% % colours for statistics
-% %     '#FFC6A5'; '#FFFFFF'; '#C6E7DE'; '#CEEFBD'; '#CEEFBD';
-% %     '#DEF3BD'; '#FFFFC6'; '#BDC6DE'; '#C6B5DE'; '#DEBDDE';
-% %     '#F7BDDE'; '#C6E7DE'; '#FFFFC6'; '#FFC6A5'; '#FFFFC6'; 
-% %     '#F7BDDE'; '#BDC6DE'; '#FFFFC6'; '#FFFFFF'
+
+if strcmp(metaPar.model,'hex')
+    col_par.E_He = col_par.E_Hp;
+    col_par.kap_V = col_par.kap_R;
+end
 
 chem_out = { ...
 % temperature  #FFC6A5    
@@ -281,12 +225,7 @@ fprintf(oid, '<TABLE CELLSPACING=60><TR VALIGN=TOP><TD>\n');
 fprintf(oid, '      <TABLE>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Properties temperature corrected to %g deg. C (f = %g) </TH></TR>\n', metaData.T_typical - 273.15, 1);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
-fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">This table is under construction for model ssj </TH></TR>\n', metaData.T_typical - 273.15, 1);
-%   for i = 1:  size(fields_stat,1)
-%     fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%s</TD><TD>%s</TD></TR>\n',...
-%        eval(['col_stat.',fields_stat{i}]), fields_stat{i}, eval(['stat_std.',fields_stat{i}]), ...
-%        eval(['units_stat.',fields_stat{i}]), eval(['label_stat.',fields_stat{i}]));
-%   end
+fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">This table is under construction for model %s </TH></TR>\n', metaPar.model);
 fprintf(oid, '    </TABLE>\n');    
 % ----------------------------------------------------------------------
 
@@ -295,7 +234,7 @@ fprintf(oid, '    </TD><TD>\n');
 
 %% primary parameters tables:
    
-fprintf(oid, '    <TABLE>\n');
+fprintf(oid, '    <TABLE>\n'); 
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Primary parameters at reference temperature (%g deg. C)</TH></TR>\n', K2C(par.T_ref));
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
   for i = 1:  size(fields_std,1)
