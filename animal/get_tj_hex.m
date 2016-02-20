@@ -56,15 +56,23 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   
   % from birth to pupation
   [tb, lb, info] = get_tb([ g k vHb], f); % scaled age and length at birth
+%   if info == 0
+%      rj = []; vRj = []; tj = []; lj = []; te = []; le = []; uEe = []; info = 0; return;
+%   end
   rj = (f/ lb - 1)/ (f/ g + 1);           % scaled specific growth rate of larva
   vRj = sj * (1 + lb/ g)/ (1 - lb);       % scaled reprod buffer density at pupation
   tj = fzero(@fnget_tj_hex, 1, [], f, g, lb, k, vHb, vRj, rj); % scaled time since birth at pupation
   lj = lb * exp(tj * rj/ 3);              % scaled length at pubation
   tj = tb + tj;                           % -, scaled age at pupation
   
-  % from pupation to emergence
+  % from pupation to emergence 
+  uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
+%  [e_jmin l_jmin] = get_eb_min_R ([g, k, vHe]);  % -, scaled reserve density and length such that maturation ceases at emergence
+%   if uEj < e_jmin * l_jmin^3/ g
+%      te = []; le = []; uEe = []; info = 0; return;
+%   end
   options = odeset('Events', @emergence);
-  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 1e4], [0; lj^3 * (kap * kapV + f/ g); 0], options, g, k, vHe);
+  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 1e4], [0; uEj; 0], options, g, k, vHe);
   te = tj + te;     % -, scaled age at emergence 
   le = luEvH_e(1);  % -, scaled length at emergence
   uEe = luEvH_e(2); % -, scaled reserve at emergence
