@@ -58,7 +58,7 @@ function [x taxa] = pie_Animalia (n)
       for i = 1:n
         y(i) = length(select(TAXA{i}));
       end
-      x(1) = sum(y(1:5)); taxa{1} = 'evertebrates';
+      x(1) = sum(y(1:5)); taxa{1} = 'acraniates';
       x(2) = sum(y(6:11)); taxa{2} = 'fish';
       x(3) = sum(y(12:13)) - y(14); taxa{3} = 'amph + rept';
       x(4) = y(14); taxa{4} = 'birds';
