@@ -14,12 +14,12 @@ function [x taxa] = pie_Animalia (n)
 %
 % Input:
 %
-% * optional scalar with number of taxa: 3, 6
+% * optional scalar with number of pie-pieses (2 till 8)
 %
 % Output:
 % 
-% * x: 6-vector containing species counts in taxa
-% * taxa: 6-vector with names of taxa
+% * x: n-vector containing species counts in taxa
+% * taxa: n-vector with names of taxa
 
 %% Remarks
 % sum(x) = total number of animal species in the add_my_pet collection
@@ -101,6 +101,10 @@ function [x taxa] = pie_Animalia (n)
       x(8) = y(17); taxa{8} = 'mammals';
     otherwise
       taxa = {'Radiata'; 'Chaetognatha'; 'Gnathifera'; 'Platytrochozoa'; 'Ecdysozoa'; 'Deuterostomata'};    
+      n = length(taxa); x = zeros(n, 1);
+      for i = 1:n
+        x(i) = length(select(taxa{i}));
+      end
   end
   
   pie3s(x, 'Bevel', 'Elliptical', 'Labels', taxa);
