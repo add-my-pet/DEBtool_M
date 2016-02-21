@@ -6,17 +6,17 @@ function [x taxa] = pie_Animalia (n)
 %% created 2016/02/21 by Bas Kooijman
 
 %% Syntax
-% x = <../pie_Animalia.m *pie_Animalia*> 
+% [x taxa] = <../pie_Animalia.m *pie_Animalia*> (n)
 
 %% Description
 % The kingdom Animalia can be partitioned into various taxa. 
-% The number of species in the add_my_pet collection are counted for these entries and the result is presented in a pie
+% The number of species in the add_my_pet collection are counted for these taxa and the result is presented in a pie
 %
 % Input:
 %
-% * optional scalar with number of pie-pieces (2 till 8)
+% * n: optional scalar with number of pie-pieces (2 till 8)
 %
-% Output:
+% Output (apart from figure):
 % 
 % * x: n-vector containing species counts in taxa
 % * taxa: n-vector with names of taxa
@@ -25,7 +25,7 @@ function [x taxa] = pie_Animalia (n)
 % sum(x) = total number of animal species in the add_my_pet collection
 
 %% Example of use
-% pie_Animalia
+% pie_Animalia; or [n taxa] = pie_Animalia(6);
 
   if ~exist('n', 'var')
       n = 7;

@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>pie_Animalia</h1><!--introduction--><p>counts number of entries in Animalia and presents a pie of it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/21 by Bas Kooijman</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>created 2016/02/21 by Bas Kooijman<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>x = <a href="../pie_Animalia.m"><b>pie_Animalia</b></a></p><h2>Description<a name="4"></a></h2><p>The kingdom Animalia can be partitioned into various taxa. The number of species in the add_my_pet collection are counted for these entries and the result is presented in a pie</p><p>Input:</p><div><ul><li>optional scalar with number of pie-pieces (2 till 8)</li></ul></div><p>Output:</p><div><ul><li>x: n-vector containing species counts in taxa</li><li>taxa: n-vector with names of taxa</li></ul></div><h2>Remarks<a name="5"></a></h2><p>sum(x) = total number of animal species in the add_my_pet collection</p><h2>Example of use<a name="6"></a></h2><p>pie_Animalia</p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>pie_Animalia</h1><!--introduction--><p>counts number of entries in Animalia and presents a pie of it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/21 by Bas Kooijman</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>created 2016/02/21 by Bas Kooijman<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>[x taxa] = <a href="../pie_Animalia.m"><b>pie_Animalia</b></a> (n)</p><h2>Description<a name="4"></a></h2><p>The kingdom Animalia can be partitioned into various taxa. The number of species in the add_my_pet collection are counted for these taxa and the result is presented in a pie</p><p>Input:</p><div><ul><li>n: optional scalar with number of pie-pieces (2 till 8)</li></ul></div><p>Output (apart from figure):</p><div><ul><li>x: n-vector containing species counts in taxa</li><li>taxa: n-vector with names of taxa</li></ul></div><h2>Remarks<a name="5"></a></h2><p>sum(x) = total number of animal species in the add_my_pet collection</p><h2>Example of use<a name="6"></a></h2><p>pie_Animalia; or [n taxa] = pie_Animalia(6);</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% pie_Animalia
@@ -66,17 +66,17 @@ function [x taxa] = pie_Animalia (n)
 %% created 2016/02/21 by Bas Kooijman
 
 %% Syntax
-% x = <../pie_Animalia.m *pie_Animalia*> 
+% [x taxa] = <../pie_Animalia.m *pie_Animalia*> (n)
 
 %% Description
 % The kingdom Animalia can be partitioned into various taxa. 
-% The number of species in the add_my_pet collection are counted for these entries and the result is presented in a pie
+% The number of species in the add_my_pet collection are counted for these taxa and the result is presented in a pie
 %
 % Input:
 %
-% * optional scalar with number of pie-pieces (2 till 8)
+% * n: optional scalar with number of pie-pieces (2 till 8)
 %
-% Output:
+% Output (apart from figure):
 % 
 % * x: n-vector containing species counts in taxa
 % * taxa: n-vector with names of taxa
@@ -85,7 +85,7 @@ function [x taxa] = pie_Animalia (n)
 % sum(x) = total number of animal species in the add_my_pet collection
 
 %% Example of use
-% pie_Animalia
+% pie_Animalia; or [n taxa] = pie_Animalia(6);
 
   if ~exist('n', 'var')
       n = 7;
