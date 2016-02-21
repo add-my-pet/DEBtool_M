@@ -9,7 +9,7 @@ function [x taxa] = pie_Animalia (n)
 % x = <../pie_Animalia.m *pie_Animalia*> 
 
 %% Description
-% The kingdom Animalia can be partitioned into 6 taxa. 
+% The kingdom Animalia can be partitioned into various taxa. 
 % The number of species in the add_my_pet collection are counted for these entries and the result is presented in a pie
 %
 % Input:
