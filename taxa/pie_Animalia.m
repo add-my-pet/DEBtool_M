@@ -14,7 +14,7 @@ function [x taxa] = pie_Animalia (n)
 %
 % Input:
 %
-% * optional scalar with number of pie-pieses (2 till 8)
+% * optional scalar with number of pie-pieces (2 till 8)
 %
 % Output:
 % 
@@ -33,11 +33,12 @@ function [x taxa] = pie_Animalia (n)
   
   switch n
     case 2
-      taxa = {'Radiata'; 'Bilateria'};    
+      taxa = {'Animalia'; 'Vertebrata'};    
       n = length(taxa); x = zeros(n, 1);
       for i = 1:n
         x(i) = length(select(taxa{i}));
       end
+      x(1) = x(1) - x(2); taxa{1} = 'evertebrates';     
     case 3
       taxa = {'Radiata'; 'Protostomata'; 'Deuterostomata'};
       n = length(taxa); x = zeros(n, 1);
