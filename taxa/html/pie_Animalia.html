@@ -130,7 +130,7 @@ function [x taxa] = pie_Animalia (n)
         y(i) = length(select(TAXA{i}));
       end
       x(1) = sum(y(1:2)); taxa{1} = 'rad + proto';
-      x(2) = sum(y(3:5));  taxa{2} = 'non-vert deut';
+      x(2) = sum(y(3:5));  taxa{2} = 'acraniate deut';
       x(3) = sum(y(6:11)); taxa{3} = 'fish';
       x(4) = sum(y(12:13)) - y(14); taxa{4} = 'amph + rept';
       x(5) = y(14); taxa{5} = 'birds';
@@ -142,7 +142,7 @@ function [x taxa] = pie_Animalia (n)
         y(i) = length(select(TAXA{i}));
       end
       x(1:2) = y(1:2); taxa(1:2) = TAXA(1:2);
-      x(3) = sum(y(3:5));  taxa{3} = 'non-vert deut';
+      x(3) = sum(y(3:5));  taxa{3} = 'acraniate deut';
       x(4) = sum(y(6:11)); taxa{4} = 'fish';
       x(5) = sum(y(12:13)) - y(14); taxa{5} = 'amph + rept';
       x(6) = y(14); taxa{6} = 'birds';
@@ -155,7 +155,7 @@ function [x taxa] = pie_Animalia (n)
       end
       x(1) = sum(y(1:2)); taxa{1} = 'rad + chaeto';
       x(2:3) = y(3:4); taxa(2:3) = TAXA(3:4);
-      x(4) = sum(y(5:7));  taxa{4} = 'non-vert deut';
+      x(4) = sum(y(5:7));  taxa{4} = 'acraniate deut';
       x(5) = sum(y(8:13)); taxa{5} = 'fish';
       x(6) = sum(y(14:15)) - y(16); taxa{6} = 'amph + rept';
       x(7) = y(16); taxa{7} = 'birds';
