@@ -14,7 +14,7 @@ function [x taxa] = pie_Animalia (n)
 %
 % Input:
 %
-% * n: optional scalar with number of pie-pieces (2 till 8)
+% * n: optional scalar with number of pie-pieces (2 till 8). Default n = 7.
 %
 % Output (apart from figure):
 % 
@@ -109,5 +109,9 @@ function [x taxa] = pie_Animalia (n)
   end
   
   pie3s(x, 'Bevel', 'Elliptical', 'Labels', taxa);
+
+  if ~(sum(x) == length(select('Animalia')))
+     fprintf('Warning: taxa specification needs updating')
+  end
 end
 
