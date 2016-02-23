@@ -60,7 +60,7 @@ if pars_init_method == 0
 elseif pars_init_method == 1
   if toxsnumber == 0
     load(resultsnm, 'par');
-    [par2, metaPar, txtPar] = feval(pars_initnm, metaData.pet1);
+    [par2, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
     if length(fieldnames(par.free)) ~= length(fieldnames(par2.free))
       fprintf('The number of parameters in pars.free in the pars_init and in the .mat file are not the same. \n');
       return;
