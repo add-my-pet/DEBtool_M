@@ -43,10 +43,10 @@ function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
   
   par = rmfield_wtxt(par, 'free');                       
   parInit = rmfield_wtxt(parInit, 'free');   
-  infoPar = isequal(par, parInit);  % isempty(comp_struct()) -> isequal()
+  infoPar = isequaln(par, parInit);  % isempty(comp_struct()) -> isequal()
  
   metaPar = rmfield_wtxt(metaPar, 'MRE');
   metaPar = rmfield_wtxt(metaPar, 'RE');
-  infoMetaPar = isequal(metaPar, metaParInit); 
+  infoMetaPar = isequaln(metaPar, metaParInit); 
 
-  infoTxtPar = isequal(txtPar, txtParInit); 
+  infoTxtPar = isequaln(txtPar, txtParInit); 
