@@ -248,7 +248,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     else
       filenm   = ['results_', pets{i}, '.mat'];
-      metaData = metaData.pet1;
+      metaPar.MRE = metaPar.pet1.MRE;  metaPar.RE = metaPar.pet1.RE; 
+      metaPar = rmfield(metaPar, 'pet1');
+      metaData = metaData.pet1;      
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
     end
   end
