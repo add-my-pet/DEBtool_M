@@ -24,10 +24,10 @@ function xy =  surv (z,z0)
   y = (n:-1:1)/n; 
   y = reshape([y;y], 2*n, 1);
   x = reshape([z,z]',2*n, 1);
-  if exist('z0')==1
+  if exist('z0','var')
     xy = [[z0;x], [y;0]];   % for random variables on (z0, infty)
   else
     xy =[x, [y(2:2*n);0]]; % for random variables on (-infty, infty)
   end
-
+  
   %% plot(xy(:,1), xy(:,2),'g'); %% this is how you plot the survivor function
