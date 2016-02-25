@@ -26,13 +26,13 @@ function [taxon, s, v] = select_taxon (list)
 % taxon is 'Animalia', and v = 1, if no selection has been made and OK is selected
 
 %% Example of use
-% select_taxon
+% select_taxon or select_taxon(list_taxa('Insecta'))
 
 if ~exist('list', 'var')
-  list = list_taxa;
+  list = list_taxa; 
 end
 
 n = length(list); i = 1:n;
 i = i(strcmp(list, 'Animalia'));
-[s, v] = listdlg('PromptString', 'Select a taxon', 'ListString', list_taxa, 'Selectionmode', 'single', 'InitialValue', i);
+[s, v] = listdlg('PromptString', 'Select a taxon', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i);
 taxon = list(s);
