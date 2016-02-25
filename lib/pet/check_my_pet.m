@@ -345,21 +345,28 @@ else
   factsFields = {};
 end
 
-if isfield(metaData, 'bibkey')
-  factsBibkeys = fields(metaData.bibkey);
+% checking the existence of discussion points
+if isfield(metaData, 'discussion')
+  discussionFields = fields(metaData.discussion);
 else
-  factsBibkeys = {};
+  discussionFields = {};
+end
+
+if isfield(metaData, 'bibkey')
+  factsDiscussionBibkeys = fields(metaData.bibkey);
+else
+  factsDiscussionBibkeys = {};
 end
 
 % checking the existence of bibkeys in the txtData structure
 if sum(strcmp(txtDataFields, 'bibkey'))
-  bibkeyFields = [fields(txtData.bibkey); factsBibkeys];
-  referencedFields = [dataFields; factsFields];
+  bibkeyFields = [fields(txtData.bibkey); factsDiscussionBibkeys];
+  referencedFields = [dataFields; factsFields; discussionFields];
 
   if length(bibkeyFields) > length(referencedFields)
     for i = 1:length(bibkeyFields)
       if sum(strcmp(referencedFields, bibkeyFields(i))) == 0
-        fprintf(['In mydata_',speciesnm,'.m: There is a bibkey defined for ', bibkeyFields{i}, ' but there is no corresponding data or fact. \n']);
+        fprintf(['In mydata_',speciesnm,'.m: There is a bibkey defined for ', bibkeyFields{i}, ' but there is no corresponding data, fact or discussion point. \n']);
       end
     end
   else
