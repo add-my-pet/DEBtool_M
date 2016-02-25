@@ -291,7 +291,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
    [fv,j] = sort(fv);
    v = v(:,j);
    itercount = itercount + 1;
-   if report == 1 && mod(itercount, 10) == 0
+   if report == 1
      fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
 	     '-', num2str(max(fv)), ' ', how, '\n']);
    end  
