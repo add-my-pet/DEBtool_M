@@ -47,7 +47,7 @@ function estim_options (key, val)
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0)
  
-  global method filter pars_init_method pseudodata_pets results_output
+  global method filter cov_rules pars_init_method pseudodata_pets results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
@@ -57,6 +57,7 @@ function estim_options (key, val)
 	
     case 'default'
       filter = 1;
+      cov_rules = '1species';
       pars_init_method  = 0;
       pseudodata_pets = 0;
       results_output = 0;
@@ -76,6 +77,19 @@ function estim_options (key, val)
         filter = val;
       end
 
+    case 'cov_rules'
+      if exist('val','var') == 0
+        if numel(cov_rules) ~= 0
+          fprintf(['cov_rules = ', cov_rules,' \n']);  
+        else
+          fprintf('cov_rules = unknown \n');
+        end
+        fprintf('1species - no trasformation \n');
+        fprintf('basic - standard body-size scaling relationships \n');
+      else
+        cov_rules = val;
+      end
+      
     case 'pars_init_method'
       if exist('val','var') == 0
         if numel(pars_init_method) ~= 0
@@ -137,6 +151,11 @@ function estim_options (key, val)
       else
         fprintf('filter = unknown \n');
       end
+      if numel(cov_rules) ~= 0
+        fprintf(['cov_rules = ', cov_rules,' \n']);
+      else
+        fprintf('cov_rules = unknown \n');
+      end
       if numel(pars_init_method) ~= 0
         fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
       else
@@ -174,6 +193,11 @@ function estim_options (key, val)
           fprintf(['filter = ', num2str(filter),' \n']);
         else
           fprintf('filter = unknown \n');
+        end
+        if numel(cov_rules) ~= 0
+          fprintf(['cov_rules = ', cov_rules,' \n']);
+        else
+          fprintf('cov_rules = unknown \n');
         end
         if numel(pars_init_method) ~= 0
           fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
