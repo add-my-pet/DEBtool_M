@@ -20,7 +20,7 @@ function marker = select_marker(marker)
 % * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
 
 %% Remarks
-% Type Esc when done
+% Press Esc when done
 
 %% Example of use
 % marker = select_marker;
@@ -34,28 +34,28 @@ function marker = select_marker(marker)
     T = 'o'; MS = 12; LW = 4; MEC = 'b'; MFC = 'r'; 
   end
   
-  HFig_marker = figure('Position', [360, 500, 450, 285]);
+  HFig_marker = figure('Position', [300, 700, 400, 200]);
 
   % Components
   HType = uicontrol('Style','pushbutton',...
            'String', 'Type',...
-           'Position',[315,220,70,15], ...
+           'Position',[315,150,70,25], ...
            'Callback', @Type_Callback);
   HMS   = uicontrol('Style','pushbutton',...
            'String', 'Size', ...
-           'Position',[315,180,70,25], ...
+           'Position',[315,120,70,25], ...
            'Callback', @MS_Callback);
   HLW   = uicontrol('Style','pushbutton',...
            'String', 'Line Width', ...
-           'Position',[315,135,70,25], ...
+           'Position',[315,90,70,25], ...
            'Callback', @LW_Callback);    
   HMEC  = uicontrol('Style','pushbutton', ...
            'String','Egde Color',...
-           'Position',[325,90,60,15], ...
+           'Position',[315,60,70,25], ...
            'Callback', @MEC_Callback);
   HMFC  = uicontrol('Style','pushbutton', ...
            'String','Face Color',...
-           'Position',[325,40,60,15], ...
+           'Position',[315,30,70,25], ...
            'Callback', @MFC_Callback);
    
   align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
@@ -73,36 +73,29 @@ end
     function C = Type_Callback(source, eventdata) 
       global T MS LW MEC MFC 
       list = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
-      n = length(list); i = 1:n;
-      i = i(strcmp(list, 'o'));
+      i = 1:length(list); i = i(strcmp(list, T));
       T = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
       T = T{1}; 
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MS_Callback(source, eventdata) 
       global T MS LW MEC MFC 
-      list = {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'};
-      n = length(list); i = 1:n;
-      i = i(strcmp(list, '12'));
-      MS = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
-      MS = str2num(MS{1}); 
+      list = {num2str((1:25)')};
+      MS = listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', MS);
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
-    function C = LW_Callback(h, str) 
+    function C = LW_Callback(source, eventdata) 
       global T MS LW MEC MFC 
-      list = {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'};
-      n = length(list); i = 1:n;
-      i = i(strcmp(list, '4'));
-      LW = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
-      LW = str2num(LW{1}); 
+      list = {num2str((1:20)')};
+      LW = listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', LW);
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
-    function C = MEC_Callback(source, HMarker) 
+    function C = MEC_Callback(source, eventdata) 
       global T MS LW MEC MFC 
       MEC = uisetcolor(HMarker, 'Set MarkerEdge Color');
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
-    function C = MFC_Callback(source, HMarker) 
+    function C = MFC_Callback(source, eventdata) 
       global T MS LW MEC MFC
       MFC = uisetcolor(HMarker, 'Set MarkerFace Color');
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
