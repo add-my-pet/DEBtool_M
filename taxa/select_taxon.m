@@ -6,7 +6,7 @@ function [taxon, s, v] = select_taxon (list)
 %% created 2016/02/25 by Bas Kooijman
 
 %% Syntax
-% [s, v] = <../select_taxon.m *select_taxon*> (list)
+% [taxon, s, v] = <../select_taxon.m *select_taxon*> (list)
 
 %% Description
 % select a taxon from a list of all possibilities
@@ -17,7 +17,7 @@ function [taxon, s, v] = select_taxon (list)
 %
 % Output: 
 % 
-% * taxon: cell with name of taxon
+% * taxon: string with name of taxon
 % * s: index of taxon in the list
 % * v: 0 when no selection is made, or 1 when a selection is made
 
@@ -35,4 +35,4 @@ end
 n = length(list); i = 1:n;
 i = i(strcmp(list, 'Animalia'));
 [s, v] = listdlg('PromptString', 'Select a taxon', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i);
-taxon = list(s);
+taxon = list{s};
