@@ -1,4 +1,4 @@
-%% get_treeview_taxa_js
+%% treeview_taxa_js
 % write treeview_taxa.js that is called by treeview_taxa.html
 
 %%
