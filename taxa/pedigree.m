@@ -13,7 +13,7 @@ function tree = pedigree(taxon)
 %
 % Input:
 %
-% * character string with name of taxon
+% * optional character string with name of taxon (default 'Animalia')
 %
 % Output:
 % 
@@ -22,16 +22,21 @@ function tree = pedigree(taxon)
 %% Remarks
 % The root is Animalia. 
 % If chosen as taxon, an tree of all species in the collection results.
+% New lines are written with char(1), tabs with char(9).
 % The classification follows that of Wikipedia
 
 %% Example of use
-% tree  = pedigree('Animalia')
+% tree  = pedigree or tree = pedigree('Mollusca')
 
   WD = pwd;                 % store current path
   taxa = which('pedigree'); % locate DEBtool_M/taxa/
   taxa = taxa(1:end - 10);  % path to DEBtool_M/taxa/
   cd(taxa)                  % goto taxa
 
+  if ~exist('taxon', 'var')
+    taxon = 'Animalia';
+  end
+  
   try
     tree = perl('pedigree.pl', taxon); 
   catch
