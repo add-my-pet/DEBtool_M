@@ -25,7 +25,7 @@ function marker = select_marker(marker)
 %% Example of use
 % marker = select_marker;
 
-  global T MS LW MEC MFC 
+  global T MS LW MEC MFC HMarker
   
   if exist('marker', 'var')
     % unpack marker
@@ -91,12 +91,12 @@ end
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MEC_Callback(source, eventdata) 
-      global T MS LW MEC MFC 
+      global T MS LW MEC MFC HMarker
       MEC = uisetcolor(HMarker, 'Set MarkerEdge Color');
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MFC_Callback(source, eventdata) 
-      global T MS LW MEC MFC
+      global T MS LW MEC MFC HMarker
       MFC = uisetcolor(HMarker, 'Set MarkerFace Color');
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
