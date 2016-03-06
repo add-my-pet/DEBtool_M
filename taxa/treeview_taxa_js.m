@@ -14,7 +14,7 @@ function treeview_taxa_js (pedigree)
 % Input:
 %
 % * character string with pedigree (default pedigree('Animalia'))
-
+%
 %% Example of use
 % treeview_taxa_js(pedigree('Animalia'))
 
