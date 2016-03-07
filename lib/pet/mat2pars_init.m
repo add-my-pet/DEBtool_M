@@ -86,7 +86,7 @@ fprintf(pars_init_id, '\n%%%% other parameters \n');
 parFields = setdiff(parFields, EparFields);
 
 % separate chemical parameters from other
-pos = [];
+% pos = [];
 par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
 chemParFields = fields(par_auto);
 otherParFields = setdiff(parFields, chemParFields);

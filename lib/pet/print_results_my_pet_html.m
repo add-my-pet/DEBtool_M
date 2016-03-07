@@ -65,6 +65,7 @@ txt_date_mod_1 =  '';
 
 end  
 
+% remove the underscore in the species name
 speciesprintnm = strrep(metaData.species, '_', ' ');
 
 oid = fopen(['results_', metaData.species, '.html'], 'w+'); % open file for reading and writing, delete existing content
@@ -74,10 +75,6 @@ fprintf(oid, '%s\n' ,'  <HEAD>');
 fprintf(oid,['    <TITLE>add-my-pet: results ', speciesprintnm, '</TITLE>\n']);
 fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
 fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
-
-% % ----- calls the javascript function (found in subfolder sys):
-% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="../sys/boxmodal.js"></script>');
-% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="entries.js"></script>'); % java functions specific for the entries of 
 
 % ------ calls the cascading style sheet (found in subfolder css):
 fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collectionstyle.css">'); 
@@ -96,7 +93,7 @@ fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/w
 fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction#Goodness_of_fit_criterion" >MRE</a>',' = %8.3f \n'],metaPar.MRE);   
 fprintf(oid,'</p> \n');     % close the paragraph
 
-[data, auxData, metaData, txtData, weights] = feval(['mydata_',metaData.species]); 
+[data, auxData, metaData, txtData] = feval(['mydata_',metaData.species]); 
 prdData = feval(['predict_',metaData.species], par, data, auxData);
 
 % appends new field to prd_data with predictions for the pseudo data:
@@ -112,12 +109,12 @@ psTxtData.units = txtData.units.psd;
 psTxtData.label = txtData.label.psd;
 
 % remove pseudodata:
-data    = rmfield_wtxt(data, 'psd');
+data        = rmfield_wtxt(data, 'psd');
 prdData    = rmfield_wtxt(prdData, 'psd');
 txtData    = rmfield_wtxt(txtData, 'psd');
 
-%-----------------------------------------------------------
-% make table for zero-variate data set:
+
+%%  make table for zero-variate data set:
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="7"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Zero-variate_data" >Zero-variate</a> data</TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b></TD><TD><b>Predicted</b></TD><TD><b>(RE)</b></TD><TD><b>Unit</b></TD><TD><b>Description</b></TD><TD><b>Reference</b></TD></TR>\n');
@@ -132,9 +129,9 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b
     re    = metaPar.RE(j); 
     unit  = txtData.units.(nm{j});
     des   = txtData.label.(nm{j});
-    n = iscell(txtData.bibkey.(nm{j})); 
-      if n
-      n = length(txtData.bibkey.(nm{j}));
+    n = iscell(txtData.bibkey.(nm{j}));  % if 1 then there are several references for this data
+      if n % if there are several references
+      n = length(txtData.bibkey.(nm{j})); % number of references
       REF = [];
         for i = 1:n
         ref = txtData.bibkey.(nm{j}){i};
@@ -153,73 +150,64 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b
   end
 fprintf(oid, '    <TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TF></TR>\n');
 fprintf(oid, '    </TABLE>\n');  
-%%
-% make a nice table for uni-variate data set:
+
+%% print table with uni-variate data :
 if isempty(metaData.data_1) == 0
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="6"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Univariate_data" >Uni-variate</a> data </TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Dataset</b></TD><TD><b>Figure</b></TD><TD><b>(RE)</b></TD><TD><b>Independent variable</b></TD><TD><b>Dependent variable</b></TD><TD><b>Reference</b></TD></TR>\n');  
-unidta = []; 
-fignum = 0;
-
+ 
+% select the positions of univariate data 
+unidta = [];
    for j = 1:nst
     eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set 
         if k >1 
         unidta = [unidta;j]; 
         end
    end
-
-FIGNUM = zeros(length(unidta),1);    
+nbUni = length(unidta); 
+% number of each figure in the absense of grouped plots
+% in this case there is the same amount of figures as grouped plots
+ID = (1:nbUni)';    
    
- switch isfield(metaData,'grp')
-    
-    case 0      
-        
-    for j = 1:length(unidta)
-        fignum = fignum + 1;
-        FIGNUM(j) = fignum;
-    end   
-        
-    otherwise
-        
-        nbGrpPlots = length(metaData.grp.sets); 
-        figID = zeros(length(unidta),nbGrpPlots);
-       
-            for j = 1:length(unidta)
-                Val = zeros(1,nbGrpPlots);
-                for t = 1:nbGrpPlots
-                 Val(1,t)  = sum(strcmp(nm{unidta(j)},metaData.grp.sets{t}));
+ if isfield(metaData,'grp')
+     
+     i_pos = ID; % get id. for the original postion
+     % number of grouped plots :
+     nbGrpPlots = length(metaData.grp.sets);  
+     
+     ID = ID + nbGrpPlots;
+           
+     uniDataNames = [];
+     % makes a cell array with names of all uni variate data sets:
+     for i = 1:nbUni
+     uniDataNames{i} = nm{unidta(i)};
+     end
+          
+            for j = 1:nbGrpPlots % for each grouped plot
+            name =  metaData.grp.sets{j}';             
+            % select first name of dataset in the first grouped plot
+                for i = 1: length(name)
+                i_id = i_pos(strcmp(uniDataNames,name{i}));
+                ID(i_id) = j;
+                ID((1:nbUni > i_id)' & ID > j) = ID ((1:nbUni > i_id)' & ID > j) - 1; 
                 end
-                figID(j,:) = Val;
+            % postion of the first data in the first set in the grouped plot                
             end
+            
+ end
+ 
+% print out columns in the univariate data set table:
+     for j = 1: nbUni % for each univariate data set
+        label  = nm{unidta(j)}; % "Data set"
+        re     = metaPar.RE(unidta(j)); % "relative error"
+        ivar   = txtData.label.(nm{unidta(j)}){1}; % independant variable
+        dvar   = txtData.label.(nm{unidta(j)}){2}; % dependant variable
 
-            FIGNUM(1) = 1;
-            for i = 1 : length(figID) - 1
-                
-                if sum(figID(i+1,:)) == 0
-                    FIGNUM(i+1) = FIGNUM(i) + 1;
-                else
-                    if isequal(figID(i+1,:), figID(i,:))
-                 FIGNUM(i+1) = FIGNUM(i);
-                    else
-                 FIGNUM(i+1) = FIGNUM(i) + 1;
-                    end  
-                end                                 
-            end
-                 
- end 
-             
-
-     for j = 1: length(unidta)
-        label  = nm{unidta(j)};
-        re     = metaPar.RE(unidta(j)); 
-        ivar   = txtData.label.(nm{unidta(j)}){1};
-        dvar   = txtData.label.(nm{unidta(j)}){2};
-
-        if FIGNUM(j) < 10
-        fig   = ['see <A href = "results_',metaData.species,'_0',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        if ID(j) < 10
+        fig   = ['see <A href = "results_',metaData.species,'_0',num2str(ID(j)),'.png"> Fig. ',num2str(ID(j)),'</A>'];
         else
-        fig   = ['see <A href = "results_',metaData.species,'_',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        fig   = ['see <A href = "results_',metaData.species,'_',num2str(ID(j)),'.png"> Fig. ',num2str(ID(j)),'</A>'];
         end        
       n = iscell(txtData.bibkey.(nm{unidta(j)}));
       if n
@@ -243,8 +231,7 @@ FIGNUM = zeros(length(unidta),1);
  fprintf(oid, '    </TABLE>\n'); 
 end
  
-%%
-% make table for pseudo-data:
+%% Print table with pseudo-data:
 [nm, nst] = fieldnmnst_st(pseudo);
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="5"> Pseudo-data </TH></TR>\n');
@@ -314,7 +301,6 @@ fprintf(oid, '<H3 style="clear:both" class="pet">Bibliography</H3>\n');
 fprintf(oid,'</ul> \n');     % open the unordered list   
 fprintf(oid, '<p>\n');
 fprintf(oid, ['<A class="link" href = "bib_',metaData.species,'.bib" target = "_blank">Bibtex files with references for this entry </A> <BR> \n']);
-% fprintf(oid, 'A PDF of all of the references of the add-my-pet collection can be consulted <A target="_blank" href="../../add_my_pet_bibliography.pdf">here</A>\n');
 fprintf(oid, '</p>\n' );
   
 %% Authors and last data of modification
@@ -326,3 +312,8 @@ fprintf(oid,['    <H3 ALIGN="CENTER">', txt_author, ', ', txt_date, ...
 fprintf(oid, '  </BODY>\n');
 fprintf(oid, '  </HTML>\n');
 fclose(oid);
+
+
+
+
+
