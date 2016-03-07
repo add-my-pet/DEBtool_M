@@ -318,6 +318,7 @@ function q = parVec2Struct(q, vec, mapVec2Struct)
   end
 
 function [f, pass] = getPrediction(func, q, data, auxData, filternm)
+  global cov_rules
 % Tests if prameter set q passes the filters (default and customized) and if yes returns predictions 
   f = {};
   if strcmp(cov_rules, '1species')
@@ -330,7 +331,7 @@ function [f, pass] = getPrediction(func, q, data, auxData, filternm)
   end
 
 function pass = filter_multispecies(filternm, q)
-% Tests if prameter set q passes the filternm filters for multiple species
+% Tests if parameter set q passes the filternm filters for multiple species
   global pets cov_rules
   
   covRulesnm = ['cov_rules_', cov_rules];

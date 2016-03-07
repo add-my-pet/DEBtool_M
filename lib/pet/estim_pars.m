@@ -126,7 +126,7 @@ if filter
     feval(['warning_', metaPar.model], par);
   else
     for i = 1:length(pets)
-      feval(['warning_', metaPar.model], feval(cov_rulesnm, par,i));
+      feval(['warning_', metaPar.model], feval(covRulesnm, par,i));
     end
   end
 end

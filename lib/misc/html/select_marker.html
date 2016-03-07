@@ -1,0 +1,172 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>select_marker</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-01"><meta name="DC.source" content="select_marker.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>select_marker</h1><!--introduction--><p>graphical user interface for setting marker</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/26 by Bas Kooijman</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>created 2016/02/26 by Bas Kooijman<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>marker = <a href="../select_marker.m"><b>select_marker</b></a> (marker)</p><h2>Description<a name="4"></a></h2><p>Selects type, size, linewidth, edge color and face color of a marker</p><p>Input:</p><div><ul><li>marker: optional 5-vector of cells with type, size, linewidth, edge color and face color of a marker</li></ul></div><p>Output:</p><div><ul><li>marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Press Esc when done</p><h2>Example of use<a name="6"></a></h2><p>marker = select_marker;</p><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% select_marker
+% graphical user interface for setting marker
+
+%%
+function marker = select_marker(marker)
+%% created 2016/02/26 by Bas Kooijman
+
+%% Syntax
+% marker = <../select_marker.m *select_marker*> (marker)
+
+%% Description
+% Selects type, size, linewidth, edge color and face color of a marker
+%
+% Input:
+%
+% * marker: optional 5-vector of cells with type, size, linewidth, edge color and face color of a marker
+%
+% Output: 
+% 
+% * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
+
+%% Remarks
+% Press Esc when done
+
+%% Example of use
+% marker = select_marker;
+
+  global T MS LW MEC MFC 
+  
+  if exist('marker', 'var')
+    % unpack marker
+    T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};
+  else % assign default marker specification
+    T = 'o'; MS = 12; LW = 4; MEC = 'b'; MFC = 'r'; 
+  end
+  
+  HFig_marker = figure('Position', [300, 700, 400, 200]);
+
+  % Components
+  HType = uicontrol('Style','pushbutton',...
+           'String', 'Type',...
+           'Position',[315,150,70,25], ...
+           'Callback', @Type_Callback);
+  HMS   = uicontrol('Style','pushbutton',...
+           'String', 'Size', ...
+           'Position',[315,120,70,25], ...
+           'Callback', @MS_Callback);
+  HLW   = uicontrol('Style','pushbutton',...
+           'String', 'Line Width', ...
+           'Position',[315,90,70,25], ...
+           'Callback', @LW_Callback);    
+  HMEC  = uicontrol('Style','pushbutton', ...
+           'String','Egde Color',...
+           'Position',[315,60,70,25], ...
+           'Callback', @MEC_Callback);
+  HMFC  = uicontrol('Style','pushbutton', ...
+           'String','Face Color',...
+           'Position',[315,30,70,25], ...
+           'Callback', @MFC_Callback);
+   
+  align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
+      
+    
+  plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
+  axis('off');
+  pause
+ 
+  close (HFig_marker)
+  marker = {T; MS; LW; MEC; MFC}; % pack marker
+end
+
+%% subfunctions
+    function C = Type_Callback(source, eventdata) 
+      global T MS LW MEC MFC 
+      list = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
+      n = length(list); i = 1:n;
+      i = i(strcmp(list, 'o'));
+      T = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
+      T = T{1}; 
+      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+    end
+    function C = MS_Callback(source, eventdata) 
+      global T MS LW MEC MFC 
+      list = {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'};
+      n = length(list); i = 1:n;
+      i = i(strcmp(list, '12'));
+      MS = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
+      MS = str2num(MS{1}); 
+      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+    end
+    function C = LW_Callback(h, str) 
+      global T MS LW MEC MFC 
+      list = {'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'};
+      n = length(list); i = 1:n;
+      i = i(strcmp(list, '4'));
+      LW = list(listdlg('PromptString', 'Select Type', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i));
+      LW = str2num(LW{1}); 
+      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+    end
+    function C = MEC_Callback(source, HMarker) 
+      global T MS LW MEC MFC 
+      MEC = uisetcolor(HMarker, 'Set MarkerEdge Color');
+      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+    end
+    function C = MFC_Callback(source, HMarker) 
+      global T MS LW MEC MFC
+      MFC = uisetcolor(HMarker, 'Set MarkerFace Color');
+      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+    end
+
+##### SOURCE END #####
+--></body></html>
