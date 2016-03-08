@@ -20,7 +20,7 @@ function marker = select_marker(marker)
 % * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
 %
 %% Remarks
-% Press Esc when done
+% Press any key when done
 
 %% Example of use
 % marker = select_marker;

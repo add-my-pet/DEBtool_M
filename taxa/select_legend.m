@@ -24,7 +24,7 @@ function legend = select_legend(legend)
 
 %% Remarks
 % Complete marker specs edit by pressing Esc.
-% Press Esc when done with editing ledend specs.
+% Press any key  when done with editing ledend specs.
 
 %% Example of use
 % legend = select_legend;
