@@ -13,8 +13,8 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 %
 % Input:
 %
-% * legend: (n,2)-matrix with with marker (5-vector of cells), taxon (string)
-% * pos: optional 2-vector with position of lower-left corner of legend
+% * legend: (n,2)-cell matrix with with marker (5-vector of cells), taxon (string)
+% * pos: optional 2-vector with position of lower-left corner of legend within box
 % * space: optinal 2-vector with space between marker and taxon (horizontal) space between marker and marker (vertical)
 % * txt: optional character string with title above legend figure
 % * i_legend: optional integer with highlighter (from 1 till n)
@@ -27,7 +27,8 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % create legend with select_legend 
 
 %% Example of use
-% shlegend(select_legend)
+% shlegend(select_legend) or 
+%   legend = select_legend; shlegend(legend, [], [], 'example');
 
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];

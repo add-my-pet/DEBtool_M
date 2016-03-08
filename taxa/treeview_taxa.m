@@ -20,7 +20,7 @@ function treeview_taxa (pedigree)
 
   WD = pwd;                      % store current path
   taxa = which('treeview_taxa'); % locate DEBtool_M/taxa/
-  taxa = taxa(1:end - 10);       % path to DEBtool_M/taxa/
+  taxa = taxa(1:end - 15);       % path to DEBtool_M/taxa/
   cd(taxa)                       % goto taxa
 
   try
@@ -51,14 +51,15 @@ function treeview_taxa (pedigree)
     % build tree
     nl = strfind(pedigree, char(10)); node = pedigree(1:nl-1); pedigree(1:nl) = [];
     fprintf(fid_tv, ['foldersTree = gFld("<b>', node, '</b>", "treeview_taxa.html")\n']);
+    code = '';
 
     while length(pedigree) > 3
       nl = strfind(pedigree, char(10)); node = pedigree(1:nl-1); pedigree(1:nl) = [];
       level = max(strfind(node, char(9))); node(1:level) = []; L = ['L', num2str(level)]; Lnew = ['L', num2str(1 + level)];
       if level == 1
-        fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node,'", "treeview_taxa.html?pic=', node, '.png"))\n']);
+        fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node,'", "treeview_taxa.html?pic=', code, '../../entries/img/', node, '.jpg', code, '"))\n']);
       elseif isempty(strfind(node, '_')) && isempty(strfind(node, ' ')) 
-        fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node,'", "treeview_taxa.html?pic=', node, '.png"))\n']);
+        fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node,'", "treeview_taxa.html?pic=', code, '../../entries/img/', node, '.jpg', code, '"))\n']);
       else
         fprintf(fid_tv, ['insDoc(', L, ', gLnk("S", "', node, '", "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/i_results_', node, '.html"))\n']); 
       end
