@@ -153,7 +153,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
               txt = metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})}; 
-              title(txt); shlegend(legend, [], [], txt);
+              title(txt); 
+              if n_sets2plot > 1
+                   shlegend(legend, [], [], txt);
+              end
               
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
               figure; counter = counter + 1;
