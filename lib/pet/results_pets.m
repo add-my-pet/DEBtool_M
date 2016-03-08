@@ -136,6 +136,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
               set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              legend = cell(0,2);
               for ii = 1: n_sets2plot
                 xData = st.(sets2plot{ii})(:,1); 
                 yData = st.(sets2plot{ii})(:,2);
@@ -146,11 +147,14 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',20)
                 else
                   plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
+                  legend = [legend; {{'.', 20, 4, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
                 end
                 xlabel([txtData.(currentPet).label.(nm{j}){1}, ', ', txtData.(currentPet).units.(nm{j}){1}]);
                 ylabel([txtData.(currentPet).label.(nm{j}){2}, ', ', txtData.(currentPet).units.(nm{j}){2}]);
               end
-              title(metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})});
+              txt = metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})}; 
+              title(txt); shlegend(legend, [], [], txt);
+              
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
               figure; counter = counter + 1;
               set(gca,'Fontsize',12); 
