@@ -42,7 +42,7 @@ function legend = select_legend(legend)
   i_legend = size(legend_local,1); % default index of active item
   x = 30; y = 10; % lower-left corner of button block
   dx = 60;        % width of button
-  HFig_legend = figure('Position', [500, 800, 8*dx, dx]); % initiate fig with buttons
+  HFig_legend = figure('Position', [500, 400, 8*dx, dx]); % initiate fig with buttons
   
   % Component
   Hnr     = uicontrol('Style','pushbutton',...

@@ -34,7 +34,7 @@ function marker = select_marker(marker)
     T = 'o'; MS = 12; LW = 4; MEC = 'b'; MFC = 'r'; 
   end
   
-  HFig_marker = figure('Position', [300, 700, 400, 200]);
+  HFig_marker = figure('Position', [300, 300, 400, 200]);
 
   % Components
   HType = uicontrol('Style','pushbutton',...
