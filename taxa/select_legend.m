@@ -111,7 +111,7 @@ end
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = down_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       if i_legend < size(legend_local,1)
         legend_local([i_legend, i_legend+1],:) = legend_local([i_legend+1, i_legend],:);
         i_legend = i_legend + 1; 
@@ -119,15 +119,16 @@ end
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = insert_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       N = (1:size(legend_local,1))'; % index-vector of legend items
       item = {{'.', 12, 4, [0 0 0], [0 0 0]}, 'Animalia'}; % default marker, taxon
       legend_local = [legend_local(N<i_legend,:); item; legend_local(N>=i_legend,:)];
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = remove_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       n = size(legend_local,1); N = (1:n)'; 
       legend_local = legend_local(~(N==i_legend),:);
+      i_legend = max(1, i_legend - 1);
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
