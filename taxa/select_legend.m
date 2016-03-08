@@ -3,7 +3,7 @@
 
 %%
 function legend = select_legend(legend)
-%% created 2016/02/28 by Bas Kooijman
+%% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
 
 %% Syntax
 % legend = <../select_legend.m *select_legend*> (legend)
@@ -23,8 +23,7 @@ function legend = select_legend(legend)
 % * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
 
 %% Remarks
-% Complete marker specs edit by pressing Esc.
-% Press any key  when done with editing ledend specs.
+% Press any key when done
 
 %% Example of use
 % legend = select_legend;
@@ -73,8 +72,13 @@ function legend = select_legend(legend)
            'String','x',...
            'Position',[x+6*dx,y,.9*dx,.5*dx], ...
            'Callback', @remove_Callback);
-        
+%   OK       = uicontrol('Style','pushbutton', ...
+%            'String','OK',...
+%            'Position',[x+7*dx,y,.9*dx,.5*dx], ...
+%            'Callback', 'uiresume(gcbf)');
+
   Hlegend = shlegend(legend_local,[],[],'',i_legend);
+  %uiwait(gcf)
   pause
  
   close (HFig_legend); close(Hlegend);

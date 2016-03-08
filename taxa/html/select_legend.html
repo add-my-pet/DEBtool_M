@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>select_marker</h1><!--introduction--><p>graphical user interface for setting marker</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/28 by Bas Kooijman</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>created 2016/02/28 by Bas Kooijman<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>legend = <a href="../select_legend.m"><b>select_legend</b></a> (legend)</p><h2>Description<a name="4"></a></h2><p>Select or edit a legend; the active item is indicated and can be changed with button #. Edit maker specs with button marker and taxon name with button taxon. Edit the sequence with buttons v and ^, insert with &gt;, remove with x. The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.</p><p>Input:</p><div><ul><li>legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><p>Output:</p><div><ul><li>legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Complete marker specs edit by pressing Esc. Press any key  when done with editing ledend specs.</p><h2>Example of use<a name="6"></a></h2><p>legend = select_legend;</p><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
+  </style></head><body><div class="content"><h1>select_marker</h1><!--introduction--><p>graphical user interface for setting marker</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>legend = <a href="../select_legend.m"><b>select_legend</b></a> (legend)</p><h2>Description<a name="4"></a></h2><p>Select or edit a legend; the active item is indicated and can be changed with button #. Edit maker specs with button marker and taxon name with button taxon. Edit the sequence with buttons v and ^, insert with &gt;, remove with x. The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.</p><p>Input:</p><div><ul><li>legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><p>Output:</p><div><ul><li>legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Press any key when done</p><h2>Example of use<a name="6"></a></h2><p>legend = select_legend;</p><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% select_marker
@@ -63,7 +63,7 @@ span.syscmd { color:#B28C00 }
 
 %%
 function legend = select_legend(legend)
-%% created 2016/02/28 by Bas Kooijman
+%% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
 
 %% Syntax
 % legend = <../select_legend.m *select_legend*> (legend)
@@ -83,8 +83,7 @@ function legend = select_legend(legend)
 % * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
 
 %% Remarks
-% Complete marker specs edit by pressing Esc.
-% Press any key  when done with editing ledend specs.
+% Press any key when done
 
 %% Example of use
 % legend = select_legend;
@@ -102,7 +101,7 @@ function legend = select_legend(legend)
   i_legend = size(legend_local,1); % default index of active item
   x = 30; y = 10; % lower-left corner of button block
   dx = 60;        % width of button
-  HFig_legend = figure('Position', [500, 800, 8*dx, dx]); % initiate fig with buttons
+  HFig_legend = figure('Position', [500, 400, 8*dx, dx]); % initiate fig with buttons
   
   % Component
   Hnr     = uicontrol('Style','pushbutton',...
@@ -133,8 +132,13 @@ function legend = select_legend(legend)
            'String','x',...
            'Position',[x+6*dx,y,.9*dx,.5*dx], ...
            'Callback', @remove_Callback);
-        
+%   OK       = uicontrol('Style','pushbutton', ...
+%            'String','OK',...
+%            'Position',[x+7*dx,y,.9*dx,.5*dx], ...
+%            'Callback', 'uiresume(gcbf)');
+
   Hlegend = shlegend(legend_local,[],[],'',i_legend);
+  %uiwait(gcf)
   pause
  
   close (HFig_legend); close(Hlegend);
