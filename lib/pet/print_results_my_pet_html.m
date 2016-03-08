@@ -183,7 +183,7 @@ ID = (1:nbUni)';
      end
           
             for j = 1:nbGrpPlots % scan grouped plots
-              set =  metaData.grp.sets{j}'; % cell-string with nanes of datasets in grp j  
+              set =  metaData.grp.sets{j}'; % cell-string with names of datasets in grp j  
               ID_j = i_pos(strcmp(uniDataNames,set{1})); % ID of grp j
                 for i = 2: length(set) % scan datasets in grp j
                   i_id = i_pos(strcmp(uniDataNames,set{i})); % index of dataset i of grp j in univar-datasets
