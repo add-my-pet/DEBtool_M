@@ -175,24 +175,22 @@ ID = (1:nbUni)';
      i_pos = ID; % get id. for the original postion
      % number of grouped plots :
      nbGrpPlots = length(metaData.grp.sets);  
-     
-     ID = ID + nbGrpPlots;
-           
+                
      uniDataNames = [];
      % makes a cell array with names of all uni variate data sets:
      for i = 1:nbUni
-     uniDataNames{i} = nm{unidta(i)};
+       uniDataNames{i} = nm{unidta(i)};
      end
           
-            for j = 1:nbGrpPlots % for each grouped plot
-            name =  metaData.grp.sets{j}';             
-            % select first name of dataset in the first grouped plot
-                for i = 1: length(name)
-                i_id = i_pos(strcmp(uniDataNames,name{i}));
-                ID(i_id) = j;
-                ID((1:nbUni > i_id)' & ID > j) = ID ((1:nbUni > i_id)' & ID > j) - 1; 
+            for j = 1:nbGrpPlots % scan grouped plots
+              set =  metaData.grp.sets{j}'; % cell-string with nanes of datasets in grp j  
+              ID_j = i_pos(strcmp(uniDataNames,set{1})); % ID of grp j
+                for i = 2: length(set) % scan datasets in grp j
+                  i_id = i_pos(strcmp(uniDataNames,set{i})); % index of dataset i of grp j in univar-datasets
+                  ID(i_id) = ID_j; % set ID of dataset to grp ID
+                  ID((1:nbUni > i_id)' & ID > ID_j) = ID ((1:nbUni > i_id)' & ID > ID_j) - 1; 
                 end
-            % postion of the first data in the first set in the grouped plot                
+              % postion of the first data in the first set in the grouped plot                
             end
             
  end
