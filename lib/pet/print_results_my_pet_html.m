@@ -187,8 +187,8 @@ ID = (1:n_uniData)';   % fig number = index of uniData
        sel(:,j) = sel(:,j) + strcmp(uniDataNames,set_j{i})'; % add tot grp plot members 
      end
    end
-   sel_tot = sum(sel,2) == 1;                  % boleans with grp plot members in uniData in any grp
-   sel = sel == 1;                             % boleans with grp plot members in uniData in grp 1,2,..
+   sel_tot = sum(sel,2) == 1;                  % booleans with grp plot members in uniData in any grp
+   sel = sel == 1;                             % booleans with grp plot members in uniData in grp 1,2,..
    
    j_grp = (1:n_GrpPlots)';                    % compose grp id's
    ID = zeros(n_uniData,1); ID(1) = 1;         % initiate fig id
