@@ -155,7 +155,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               txt = metaData.(currentPet).grp.comment{strcmp(grpSet1st, nm{j})}; 
               title(txt); 
               if n_sets2plot > 1
-                   shlegend(legend, [], [], txt);
+                   %shlegend(legend, [], [], txt);
               end
               
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
