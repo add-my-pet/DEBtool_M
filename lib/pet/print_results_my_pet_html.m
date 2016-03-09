@@ -187,15 +187,20 @@ ID = (1:n_uniData)';   % fig number = index of uniData
        sel(:,j) = sel(:,j) + strcmp(uniDataNames,set_j{i})'; % add tot grp plot members 
      end
    end
-   sel_tot = sum(sel,2) == 1;                  % booleans with grp plot members in uniData in any grp
+   sel_tot = sum(sel,2) == 1;                  % booleans with grp plot members in uniData in any grp plot
    sel = sel == 1;                             % booleans with grp plot members in uniData in grp 1,2,..
    
    j_grp = (1:n_GrpPlots)';                    % compose grp id's
-   ID = zeros(n_uniData,1); ID(1) = 1;         % initiate fig id
-   for i = 2:n_uniData                         % scan uniData
+   ID = zeros(n_uniData,1);                    % initiate fig id
+   if sel_tot(1)                               % first unidata set is member of grp plots
+     ID(sel(:,j_grp(sel(1,:)))) = 1;           % set all members of that grp
+   else                                        % first unidataset not a member of any grp plot
+     ID(1) = 1;                                % 
+   end
+   for i = 2:n_uniData                         % scan other uniData sets
      if sel_tot(i) && ID(i) == 0               % new member of grp data
        ID(sel(:,j_grp(sel(i,:)))) = ID(i - 1) + 1; % set all members of that grp
-     elseif ID(i) == 0;                        % not a member of any grp data
+     elseif ID(i) == 0                        % not a member of any grp data
        ID(i) = ID(i - 1) + 1;                  % increase fig id counter
      end
    end
