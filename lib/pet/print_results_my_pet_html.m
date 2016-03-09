@@ -179,7 +179,7 @@ ID = (1:n_uniData)';   % fig number = index of uniData
    
    % fill selection-matrix to identify grp plot members
    % it assumes that all univariate datasets occur in exactly 1 figure
-   % sequence of data-sets in grp plots don't need to match sequence in uniData 
+   % sequence of data-sets in grp plots doesn't need to match sequence in uniData 
    sel = zeros(n_uniData,n_GrpPlots);          % initiate selection grp plot members
    for j = 1:n_GrpPlots                        % scan grouped plots
      set_j =  metaData.grp.sets{j}';           % cell-string with names of datasets in grp j  
