@@ -57,8 +57,6 @@
   <!-- the <HEAD> section that are needed for your site.      -->
   <!------------------------------------------------------------>
   <SCRIPT>
-  // Note that this script is not related with the tree itself.  
-  // It is just used for this example.
   function getQueryString(index) {
     var paramExpressions;
     var param
@@ -72,7 +70,7 @@
     }
     return ""
   }
-  </SCRIPT>>
+  </SCRIPT>
 
 
   <!------------------------------------------------------------>
@@ -168,7 +166,7 @@
          picURL = getQueryString(0)
          if (picURL.length > 0)
            // document.write("<img src=http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/img/" + picURL +  " WIDTH = 200><br><br>");
-           document.write("<img src=img/" + picURL +  " WIDTH = 200><br><br>");
+           document.write("<img src=../../entries/img/" + picURL +  " WIDTH = 200><br><br>");
         </SCRIPT>
 
        </TD>
