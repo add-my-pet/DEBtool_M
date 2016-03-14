@@ -1,27 +1,40 @@
+%% nmmin
+% Find min of a function using Nelder Mead's simplex method
+
+%%
 function [q, info] = nmmin(func, p,  varargin)
   %  created: 2001/08/20 by Bas Kooijman; modified 2009/09/29
-  %
+
+  %% Syntax
+  % [q, info] = <../nmmin.m *nmmin*> (func, p,  varargin)
+
   %% Description
-  %  find min using Nelder Mead's simplex method
+  % Find min using Nelder Mead's simplex method
   %
-  %% Input
-  %  func: string with name of user-defined function
+  % Input:
+  %
+  % * func: string with name of user-defined function
+  %
   %     f = func (p, xyw) with
   %       p: k-vector with parameters; xyw: (n,c)-matrix; f: n-vector
   %       [f1, f2, ...] = func (p, x1, x2, ...) with  p: k-vector  and
   %       xi: fixed parameters; fi: scalar function to be minimized
-  %  p: (k,2) matrix with
+  %
+  % * p: (k,2) matrix with
+  %
   %     p(:,1) initial guesses for parameter values
   %     p(:,2) binaries with yes or no iteration (optional)
-  %  xi (read as x1, x2, .. ): matrix with fixed parameters
   %
-  %% Output
-  %  q: matrix like p, but parameters for which f's are minimal
-  %  info: 1 if convergence has been successful; 0 otherwise
+  % * xi (read as x1, x2, .. ): matrix with fixed parameters
   %
-  %% Remarsk
-  %  calls user-defined function 'func'
-  %  set options with 'nmregr_options'
+  % Output:
+  %
+  % * q: matrix like p, but parameters for which f's are minimal
+  % * info: 1 if convergence has been successful; 0 otherwise
+  
+  %% Remarks
+  % Calls user-defined function 'func';
+  % set options with 'nmregr_options'
 
   global n;
   global report max_step_nr max_fun_evals tol_simplex tol_fun;
@@ -61,7 +74,7 @@ function [q, info] = nmmin(func, p,  varargin)
     return; % no parameters to iterate
   end
   
-  %% set options if necessary
+  % set options if necessary
   if exist('max_step_nr','var')==0 
     nmregr_options('max_step_nr', 200*n);
   end

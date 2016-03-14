@@ -1,0 +1,115 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>efnfourier</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-12"><meta name="DC.source" content="efnfourier.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>efnfourier</h1><!--introduction--><p>Finds all local extremes of fnfourier(t,p) within one period.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[ty_min, ty_max , info] = <a href="../efnfourier.m"><b>efnfourier</b></a>(ty)</p><h2>Description<a name="4"></a></h2><p>Finds all local extremes of fnfourier(t,p) within one period. It does so by getting prior estimates using rspline1 applied to the derivatives of the Fourier series, followed by a Newton Raphson procedure.</p><p>Input:</p><div><ul><li>ty: (r,2)-matrix with parameters (fourier coefficients); r&gt;3</li></ul></div><p>Output:</p><div><ul><li>ty_min: (n_min,2)-matrix with (t,y)-values of local minima</li><li>ty_max: (n_max,2)-matrix with (t,y)-values of local maxima</li><li>info: 1 = successful, 0 if not</li></ul></div><h2>Remarks<a name="5"></a></h2><p>cf <a href="../html/fnfourier.html"><b>fnfourier</b></a></p><h2>Example of use<a name="6"></a></h2><p>see <a href="mydata_smooth.m"><b>mydata_smooth</b></a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% efnfourier
+% Finds all local extremes of fnfourier(t,p) within one period.
+
+%%
+function [ty_min, ty_max , info] = efnfourier(ty)
+  %  created at 2007/03/30 by Bas Kooijman
+  
+  %% Syntax
+  % [ty_min, ty_max , info] = <../efnfourier.m *efnfourier*>(ty)
+
+  %% Description
+  % Finds all local extremes of fnfourier(t,p) within one period. 
+  % It does so by getting prior estimates using rspline1 applied to the derivatives of the Fourier series, 
+  % followed by a Newton Raphson procedure. 
+  %
+  % Input:
+  %
+  % * ty: (r,2)-matrix with parameters (fourier coefficients); r>3
+  %
+  % Output:
+  %
+  % * ty_min: (n_min,2)-matrix with (t,y)-values of local minima
+  % * ty_max: (n_max,2)-matrix with (t,y)-values of local maxima
+  % * info: 1 = successful, 0 if not
+  
+  %% Remarks
+  % cf <../html/fnfourier.html *fnfourier*>
+  
+  %% Example of use 
+  % see <mydata_smooth.m *mydata_smooth*>. 
+  
+  t = linspace(0,ty(1,1),100)';
+  t = rspline1([t, dfnfourier(t,ty)]);
+  nt = length(t);
+  info = 1;
+  for i = 1:nt
+      % Newton Raphson loop to make preliminary estimates more precise
+      j = 1; % initiate counter
+      f = 1; % make sure to start nr-procedure
+      while f^2 > 1e-10 & j < 10
+          f = dfnfourier(t(i), ty);
+          df = ddfnfourier(t(i), ty);
+          t(i) = t(i) - f/ df;
+          j = j + 1;
+      end
+      if j == 10;
+          info = 0;
+          fprintf('no convergence\n');
+      end
+  end
+  ddt = ddfnfourier(t, ty); t = [t, fnfourier(t,ty)];
+  ty_min = t; ty_min(ddt < 0,:) = [];
+  ty_max = t; ty_max(ddt > 0,:) = [];
+##### SOURCE END #####
+--></body></html>

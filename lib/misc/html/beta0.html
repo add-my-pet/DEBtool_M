@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>beta0</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-05"><meta name="DC.source" content="beta0.m"><style type="text/css">
+      --><title>beta0</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-13"><meta name="DC.source" content="beta0.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,8 +55,8 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>beta0</h1><!--introduction--><p>particular incomplete beta function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>f = <a href="../beta.m"><b>beta0</b></a> (x0,x1)</p><h2>Description<a name="4"></a></h2><pre>particular incomplete beta function:
- B_x1(4/3,0) - B_x0(4/3,0) = \int_x0^x1 t^(4/3-1) (1-t)^(-1) dt</pre><h2>Remarks<a name="5"></a></h2><p>See also <a href="../lib/misc/beta_34_0"><b>beta_34_0</b></a></p><h2>Example of use<a name="6"></a></h2><p>beta0(0.1, 0.2)</p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>beta0</h1><!--introduction--><p>particular incomplete beta function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>f = <a href="../beta0.m"><b>beta0</b></a> (x0,x1)</p><h2>Description<a name="4"></a></h2><pre>particular incomplete beta function:
+ B_x1(4/3,0) - B_x0(4/3,0) = \int_x0^x1 t^(4/3-1) (1-t)^(-1) dt</pre><p>Input</p><div><ul><li>x0: scalar with lower boundary for integration</li><li>x1: scalar with uper boundary for integration</li></ul></div><p>Output</p><div><ul><li>f: scalar with particular incomple beta function</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="../lib/misc/beta_34_0"><b>beta_34_0</b></a></p><h2>Example of use<a name="6"></a></h2><p>beta0(0.1, 0.2)</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% beta0
@@ -67,12 +67,12 @@ function f = beta0 (x0,x1)
   %  created 2000/08/16 by Bas Kooijman; modified 2011/04/10
   
   %% Syntax
-  % f = <../beta.m *beta0*> (x0,x1)
+  % f = <../beta0.m *beta0*> (x0,x1)
   
   %% Description
   %  particular incomplete beta function:
   %   B_x1(4/3,0) - B_x0(4/3,0) = \int_x0^x1 t^(4/3-1) (1-t)^(-1) dt
-  
+  %
   % Input
   %
   % * x0: scalar with lower boundary for integration
@@ -88,7 +88,7 @@ function f = beta0 (x0,x1)
   %% Example of use
   % beta0(0.1, 0.2)
   
-  if x0 < 0 || x0 >= 1 || x1 < 0 || x1 >= 1
+  if x0 < 0 | x0 >= 1 | x1 < 0 | x1 >= 1
     fprintf('Warning from beta0: argument values outside (0,1) \n');
     f = [];
     return;

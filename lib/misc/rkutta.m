@@ -1,33 +1,46 @@
+%% rkutta
+% Runge Kutta 5 integration of a set of ode's
+
+%%
 function  [tx, xt] = rkutta (fn, x0, tmax, dt)
   %  Created: 2000/10/07 by Bas Kooijman; modified 2009/09/29
-  %
+
+  %% Syntax
+  % [tx, xt] = <../rkutta.m *rkutta*> (fn, x0, tmax, dt)
+  
   %% Description
-  %  Runge Kutta 5 integration of a set of ode's specified by 'fn' with fixed or dynamic step size.
-  %  Integrates user-defined system of ODE according to the Runge Kutta 5
-  %  Method: Press et al 1992 Numerical Recipes in C, Cambridge UP, p 716
+  % Runge Kutta 5 integration of a set of ode's specified by 'fn' with fixed or dynamic step size.
+  % Integrates user-defined system of ODE according to the Runge Kutta 5
+  % Method: Press et al 1992 Numerical Recipes in C, Cambridge UP, p 716
   %
-  %% Input
-  %    fn: string, for user-defined function of structure dx = fn (x, t)
+  % Input:
+  %
+  % * fn: string, for user-defined function of structure dx = fn (x, t)
+  %
   %        dx, x are column vectors of equal lengths, t is a scalar
-  %    x0: column vector, value of vector x at t=0
-  %    tmax: scalar, max value of t, starting from t = 0
+  %
+  % * x0: column vector, value of vector x at t=0
+  %
+  % * tmax: scalar, max value of t, starting from t = 0
+  %
   %      if tmax = Inf or if not specified:
   %      integration continues till fn(x)/x'*dt*fn(x)/x < norm
-  %    dt: scalar, fixed step size; If not specified: step size control 
   %
-  %% Output
-  %    xt: matrix with times and x(t) values starting with t=0 and x0
+  % * dt: scalar, fixed step size; If not specified: step size control 
   %
+  % Output:
+  %
+  % * xt: matrix with times and x(t) values starting with t=0 and x0
+  
   %% Remarks
-  %  Requires: user-defined function 'fn' 
-  %
+  % Requires: user-defined function 'fn' 
+  
   %% Example of an user definition of function:
-  %  function dx = monod(x, t)
+  % Function dx = monod(x, t)
   %  dx = - 0.5 * x/ (0.1 + x);
   %% Example of use
-  %  rkutta("monod",1,10) or rkutta("monod",1,10,.01). 
+  % rkutta("monod",1,10) or rkutta("monod",1,10,.01). 
   
-  %% Code
   rkutta_imax = 10000; % max integration steps if stepsize adaptable
   rkutta_accuracy = 1e-10; % accuracy of integration if stepsize is adapt.
   rkutta_norm = 5e-3; % norm for criterion if integration period is Inf

@@ -1,22 +1,39 @@
+%% ifnfourier
+% integrates a function that is speciefied in fourier terms
+
+%%
 function f = ifnfourier(t, p)
   %  Created by Bas Kooijman, 2007/03/30
-  %
+  
+  %% Syntax
+  % f = <../ifnfourier.m *ifnfourier*>(t, p)
+
   %% Description
-  %  works similar to fnfourier but gives a single n-vector with integrated values of the Fourier series. 
-  %  The first element is zero by definition. 
+  % Works similar to fnfourier but gives a single n-vector with integrated values of the Fourier series. 
+  % The first element is zero by definition. 
   %
-  %% Input
-  %  t: (nt,1)-vector with time points
-  %  p: (n+1,2)-matrix with parameters
+  % Input:
   %
-  %% Output
-  %  f: (nt,1)-vector with integrated function values, f(1)=0
+  % * t: (nt,1)-vector with time points
+  % * p: (n+1,2)-matrix with parameters
+  %
+  %       - p(1,:): period, mean level
+  %       - p(2:n+1,:): fourier coefficients for cosinus, sinus
+  %
+  % Output:
+  %
+  % * f: (nt,1)-vector with integrated function values, f(1)=0
   %
   %% Remarks
-  %  cf fnfourier 
-  %
+  % Input-output structure similar to <../html/spline.html *spline*>;
+  % cf <../html/dfnfourier.html *dfnfourier*> for derivative;
+  %    <../html/ifnfourier.html *ifnfourier*> for integration;
+  %    <../html/rfnfourier.html *rfnfourier*> for roots;
+  %    <../html/get_fnfourier.html *get_fnfourier*>for parameters;
+  %    <../html/efnfourier.html *efnfourier*> for local extremes.
+  
   %% Example of use 
-  %  see mydata_smooth
+  % see <mydata_smooth.m *mydata_smooth*>. 
 
 n = size(p,1);   % number of fourier terms +1
 period = p(1,1); % period of periodic function

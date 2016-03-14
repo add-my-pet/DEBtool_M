@@ -1,17 +1,26 @@
+%% ricatti
+% Solves matrix S from 0 = A + S B' + B
+
+%%
 function S = ricatti(A,B)
   %  created by Bas Kooijman at 2005/06/22; modified 2009/09/29
-  %
+
+  %% Syntax
+  % S = <../ricatti.m *ricatti*> (A,B)
+
   %% Description
   %  Given square matrices A and B, the function solves matrix S from 0 = A + S B' + B S 
   %
-  %% Input
-  %  A: (n,n)-matrix with cov d/dt X
-  %  B: (n,n)-matrix with jacobian of d/dt X
-  %  If d/dt X = f, and f(X^*) = 0, the jacobian is defined as d/dX f'(X^*). 
+  % Input:
   %
-  %% Output
-  %  S: (n,n)-matrix with solution of 0 = A + S B' + B S
+  % * A: (n,n)-matrix with cov d/dt X
+  % * B: (n,n)-matrix with jacobian of d/dt X
+  % * If d/dt X = f, and f(X^*) = 0, the jacobian is defined as d/dX f'(X^*). 
   %
+  % Output:
+  %
+  % * S: (n,n)-matrix with solution of 0 = A + S B' + B S
+  
   %% Example of use
   %  A = [2 1; 1 4]; B = [.1 .6; .5 .8]; ricatti(a,b). 
     
@@ -26,7 +35,7 @@ function S = ricatti(A,B)
   S = reshape(S, n, n);
 end
 
-%% subfunction
+% subfunction
 
 function f = fnricatti(S, A, B, n)
   % called from ricatti

@@ -1,17 +1,25 @@
+%% beta_43_0
+% particular incomplete beta function
+
+%%
 function B = beta_43_0(x)
   % created 2000/08/16 by Bas Kooijman, modified 2013/10/02
-  %
+
+  %% Syntax
+  % f = <../beta_43_0.m *beta_43_0*> (x)
+
   %% Description
   %  particular incomplete beta function 
   %    B_x(4/3,0) = \int_0^x t^(4/3-1) (1-t)^(-1) dt
-
   %
-  %% Input
-  %  x: scalar with argument
+  % Input:
   %
-  %% Output
-  %  incomplete beta function with parameters 4/3, 0
+  % * x: scalar with argument
   %
+  % Output:
+  %
+  % * B: incomplete beta function with parameters 4/3, 0
+  
   %% Remarks
   %  n = 0:100;
   %  B = .75 * x^(4/3) * (gamma(7/3)/ gamma(4/3)) * ...
@@ -19,7 +27,7 @@ function B = beta_43_0(x)
   %  beta_43_0(x1) - beta_43_0(x0) = beta0(x0,x1)
   %    where beta0 is in DEBtool_M/animal, which is much faster and more accurate
   %    beta_43_0 is just meant for testing beta0
-  %
+  
   %% Example of use
   %  beta_43_0(.2)
 

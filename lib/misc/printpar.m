@@ -3,16 +3,17 @@
 
 %%
 function printpar(varargin)
-  %  created by Bas Kooijman, modified 2009/02/18, 2010/08/05
+  % created by Bas Kooijman, modified 2009/02/18, 2010/08/05
   
-  %% Syntax <../printpar.m *printpar*>(varargin)
+  %% Syntax 
+  % <../printpar.m *printpar*>(varargin)
   
   %% Description
-  %  Print parameter names, values and standard deviations to screen. 
-  %  The names of the parameters should be collected in a (r,c)-matrix, while the values and the (optional) standard deviations are r-vectors. 
-  %  Text for a header is also optional. 
+  % Print parameter names, values and standard deviations to screen. 
+  % The names of the parameters should be collected in a (r,c)-matrix, while the values and the (optional) standard deviations are r-vectors. 
+  % Text for a header is also optional. 
   %
-  % Input
+  % Input:
   %
   % * fid: optional integer for file-identification, see fopen
   % * nm: n-vector with text for parameter values (cells)

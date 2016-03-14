@@ -3,13 +3,13 @@
 
 %%
 function x = roots3(a, k)
-  %  created at 2002/05/22 by Bas Kooijman, modified 2013/01/20
+  % created at 2002/05/22 by Bas Kooijman, modified 2013/01/20
   
   %% Syntax
   % x = <../roots3.m *roots3*> (a, k) 
 
   %% Description
-  %  calculates roots of a_3 x^3 + a_2 x^2 + a_1 x + a_0 = 0
+  % Calculates roots of a_3 x^3 + a_2 x^2 + a_1 x + a_0 = 0
   %
   % Input:
   %
@@ -30,7 +30,7 @@ function x = roots3(a, k)
   % The comparison tolerance for equality/sign/imaginarity of roots is set by tol in this function
   
   %% Example of use
-  %  roots3([2 6 1 3]) or roots3([2 6 1 3],1)
+  % roots3([2 6 1 3]) or roots3([2 6 1 3],1)
 
   % Code
   if exist('k','var') == 0

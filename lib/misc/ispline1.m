@@ -1,26 +1,40 @@
+%% ispline1
+% integral over a first-order spline
+
+%%
 function Y = ispline1(x, knots, Dy1, Dyk)
-  %  created at 2007/03/29 by Bas Kooijman
-  %
+  % created at 2007/03/29 by Bas Kooijman
+
+  %% Syntax
+  % y = <../ispline1.m *ispline1*> (x, knots, Dy1, Dyk)
+
   %% Description
-  %  calculates interal over a first-order spline
-  %  works similar to spline1 but gives a single n-vector with integrated values of the cubic spline. 
-  %  The first element is zero by definition. 
+  % Calculates integral over a first-order spline;
+  % works similar to spline1 but gives a single n-vector with integrated values of the cubic spline. 
+  % The first element is zero by definition. 
   %
-  %% Input
-  %  x: n-vector with abcissa; must be ascending; n > 1
-  %  knots: (r,2)-matrix with coordinates of knots;
+  % Input:
+  %
+  % * x: n-vector with abcissa; must be ascending; n > 1
+  % * knots: (r,2)-matrix with coordinates of knots;
   %         knots(:,1) must be ascending
-  %  Dy1: scalar with first derivative at first knot (optional)
+  % * Dy1: optional scalar with first derivative at first knot;
   %       empty means: no specification and second derivative equals 0
-  %  Dyk: scalar with first derivative at last knot (optional)
+  % * Dyk: optional scalar with first derivative at last knot;
   %       empty means: no specification and second derivative equals 0
   %
-  %% Output
-  %  Y: n-vector with integrated spline values
+  % Output:
+  %
+  % * Y: n-vector with integrated spline values;
   %     Y(1) = 0 by definition
-  %
+  
+  %% Remarks
+  % cf <../html/islpine1.html *spline1*> for first order spline;
+  %    <../html/rspline1.html *rspline1*> for roots;
+  %    <../html/espline1.html *espline1*> for local extremes.
+
   %% Example of use
-  %  see mydata_smooth
+  % see <../mydata_smooth.m *mydata_smooth*>
 
   x = x(:); nx = length(x); nk = size(knots,1); Y = zeros(nx,1);
 
@@ -32,7 +46,7 @@ function Y = ispline1(x, knots, Dy1, Dyk)
   end
 
   [y, dy, ind] = spline1(x, knots, Dy1, Dyk);
-  %% cumulative integration between knot abcissa
+  % cumulative integration between knot abcissa
   cs = cumsum([0;(knots(2:nk,1) - knots(1:nk-1,1)) .* ...
       (knots(2:nk,2) + knots(1:nk-1,2))/ 2]);
   for i = 2:nx

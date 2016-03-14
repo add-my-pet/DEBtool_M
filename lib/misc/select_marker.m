@@ -3,7 +3,7 @@
 
 %%
 function marker = select_marker(marker)
-%% created 2016/02/26 by Bas Kooijman
+% created 2016/02/26 by Bas Kooijman
 
 %% Syntax
 % marker = <../select_marker.m *select_marker*> (marker)
@@ -20,12 +20,12 @@ function marker = select_marker(marker)
 % * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
 %
 %% Remarks
-% Press Esc when done
+% Finds application in <../../../taxa/html/select_legend.html *select_legend*>.
 
 %% Example of use
 % marker = select_marker;
 
-  global T MS LW MEC MFC HMarker
+  global T MS LW MEC MFC Hmarker
   
   if exist('marker', 'var')
     % unpack marker
@@ -61,7 +61,7 @@ function marker = select_marker(marker)
   align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
       
     
-  plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
+  Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
   axis('off');
   pause
  
@@ -91,12 +91,12 @@ end
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MEC_Callback(source, eventdata) 
-      global T MS LW MEC MFC HMarker
+      global T MS LW MEC MFC Hmarker
       MEC = uisetcolor(HMarker, 'Set MarkerEdge Color');
-      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+      Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MFC_Callback(source, eventdata) 
-      global T MS LW MEC MFC HMarker
+      global T MS LW MEC MFC Hmarker
       MFC = uisetcolor(HMarker, 'Set MarkerFace Color');
-      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+      Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end

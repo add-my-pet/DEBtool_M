@@ -1,28 +1,36 @@
+%% find_r
+%
+
+%%
 function [r, info] = find_r (m_E, k_E, j_EM, y_EV)
   %  created: 2004/08/13 by Bas Kooijman
-  %
+  
+  %% Syntax
+  % [r, info] = <../find_r.m *find_r0*> (m_E, k_E, j_EM, y_EV)
+
   %% Description
-  %  The function obtains the specific growth rate for a V1-morph with 2 reserves and 1 structure. 
-  %  This function is obsolate and will be removed in the future; see
-  %  DEBtool/alga/sgr. 
-  %  see p169 of DEB-book \cite{Kooy2000}
+  % The function obtains the specific growth rate for a V1-morph with 2 reserves and 1 structure. 
+  % This function is obsolate and will be removed in the future; see DEBtool/alga/sgr. 
+  % See p169 of DEB-book \cite{Kooy2000}
   %
-  %% Input
-  %  m_E:  2-vector with mol/mol, reserve densities
-  %  k_E:  2-vector with 1/time, reserve turnover rates
-  %  j_EM: 2 vector with mol/time.mol, spec maintenance fluxes
-  %  y_EV: 2 vector with mol/mol, yields of reserve on structure
+  % Input:
   %
-  %% Output
-  %  r:    scalar with 1/time, spec growth rate
+  % * m_E:  2-vector with mol/mol, reserve densities
+  % * k_E:  2-vector with 1/time, reserve turnover rates
+  % * j_EM: 2 vector with mol/time.mol, spec maintenance fluxes
+  % * y_EV: 2 vector with mol/mol, yields of reserve on structure
   %
+  % Output:
+  %
+  % * r: scalar with 1/time, spec growth rate
+  
   %% Remarks
   %  called from fig_5_4, fig_5_5
-  %
+  
   %% Example of use
-  %  find_r([1 .3],[.8 .01], [.02 .03], [1.4 1.3])
+  % find_r([1 .3],[.8 .01], [.02 .03], [1.4 1.3])
 
-  %% check consistency of parameters
+  % check consistency of parameters
   if k_E(1) < 0 | k_E(2) < 0 | ...
 	j_EM(1) < 0 | j_EM(2) < 0 | ...
 	y_EV(1) < 0 | y_EV(2) < 0 
@@ -43,7 +51,7 @@ function [r, info] = find_r (m_E, k_E, j_EM, y_EV)
     r = r - f/ df; % new step in NR-procedure
     i = i + 1;
     if i > 20
-      %% no convergence
+      % no convergence
       r = 0; info = 3;
       break
     end

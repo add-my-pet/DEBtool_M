@@ -1,26 +1,35 @@
+%% ispline1
+% integral over a cubic spline
+
+%%
 function Y = ispline(x, knots, Dy1, Dyk)
   %  created at 2002/05/24 by Bas Kooijman; modified 2006/08/11
-  %
+
+  %% Syntax
+  % y = <../ispline.m *ispline*> (x, knots, Dy1, Dyk)
+  
   %% Description
-  %  calculates interal over a cubic spline
-  %  works similar to spline but gives a single n-vector with integrated values of the cubic spline. 
-  %  The first element is zero by definition. 
+  % Calculates integral over a cubic spline;
+  %  works similar to <../html/spline.html *spline*> but gives a single n-vector with integrated values of the cubic spline. 
+  % The first element is zero by definition. 
   %
-  %% Input
-  %  x: n-vector with ordinates; must be ascending; n>1
-  %  knots: (r,2)-matrix with coordinates of knots;
+  % Input:
+  %
+  % * x: n-vector with ordinates; must be ascending; n>1
+  % * knots: (r,2)-matrix with coordinates of knots;
   %         knots(:,1) must be ascending
-  %  Dy1: scalar with first derivative at first knot (optional)
+  % * Dy1: optional scalar with first derivative at first knot;
   %       empty means: no specification and second derivative equals 0
-  %  Dyk: scalar with first derivative at last knot (optional)
+  % * Dyk: optional scalar with first derivative at last knot;
   %       empty means: no specification and second derivative equals 0
   %
-  %% Output
-  %  Y: n-vector with integrated spline values
-  %     Y(1) = 0 by definition
+  % Output:
   %
+  % * Y: n-vector with integrated spline values;
+  %   Y(1) = 0 by definition
+  
   %% Example of use
-  %  see mydata_smooth
+  % see <../mydata_smooth.m *mydata_smooth*>
 
   x = x(:); nx = length(x); nk = size(knots,1);
 
@@ -41,24 +50,24 @@ function Y = ispline(x, knots, Dy1, Dyk)
   xpk = xk(1:nk-1) .* xk(2:nk); xsk = xk(1:nk-1) + xk(2:nk); 
   Dk = knots(2:nk,:) - knots(1:nk-1,:); D = Dk(:,2) ./ Dk(:,1);
 
-  %% compute first three derivatives at knots %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% first two for each clamping case, then third derivative %%%%%%%%%%%%%%%
+  % %% compute first three derivatives at knots %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% first two for each clamping case, then third derivative %%%%%%%%%%%%%%%
   
   if isempty(Dy1) & isempty(Dyk) % natural cubic spline
-    %% second derivatives at knots
+    % second derivatives at knots
     C = zeros(nk-2,nk-4);
     C = [2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C, Dk(1:nk-2,1)];
     C = wrap(C',nk-2,nk-2);
     E = 6 * (D(2:nk-1) - D(1:nk-2));
     DDy = [0; C\E; 0];
 
-    %% first derivatives at knots
+    % first derivatives at knots
     Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
     Dy = [Dy; D(nk-1) + DDy(nk-1) * Dk(nk-1,1)/ 6];
     DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
 
   elseif ~isempty(Dy1) & isempty(Dyk) % left clamp
-    %% second derivatives at knots
+    % second derivatives at knots
     C = zeros(nk-2,nk-3);
     C = [Dk(1:nk-2,1), 2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C];
     C = wrap(C',nk-2,nk-1);
@@ -66,13 +75,13 @@ function Y = ispline(x, knots, Dy1, Dyk)
     E = 6 * (D(2:nk-1) - D(1:nk-2)); E = [6 * (D(1) - Dy1); E];
     DDy = [C\E; 0];
 
-    %% first derivatives at knots
+    % first derivatives at knots
     Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
     Dy = [Dy; D(nk-1) + DDy(nk-1) * Dk(nk-1,1)/ 6];
     DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
 
   elseif isempty(Dy1) & ~isemty(Dyk) % right clamp
-    %% second derivatives at knots
+    % second derivatives at knots
     C = zeros(nk-2,nk-3);
     C = [2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C, Dk(1:nk-2,1)];
     C = wrap(C',nk-2,nk-1);
@@ -80,13 +89,13 @@ function Y = ispline(x, knots, Dy1, Dyk)
     E = 6 * (D(2:nk-1) - D(1:nk-2)); E = [E; 6 * (Dyk - D(nk-1))];
     DDy = [0; C\E];
 
-    %% first derivatives at knots
+    % first derivatives at knots
     Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
     Dy = [Dy; Dyk];
     DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
 
   else % left & right clamp
-    %% second derivatives at knots
+    % second derivatives at knots
     C = zeros(nk-2,nk-2);
     C = [Dk(1:nk-2,1), 2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C];
     C = wrap(C',nk-2,nk);
@@ -96,7 +105,7 @@ function Y = ispline(x, knots, Dy1, Dyk)
     E = [6 * (D(1) - Dy1); E; 6 * (Dyk - D(nk-1))];
     DDy = C\E;
     
-    %% first derivatives at knots
+    % first derivatives at knots
     Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
     Dy = [Dy; Dyk];
     DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
@@ -105,10 +114,10 @@ function Y = ispline(x, knots, Dy1, Dyk)
 
   DDDk = [DDy(2:nk) - DDy(1:nk-1); 0];
 
-  %% third derivatives at knots
+  % %% third derivatives at knots
   DDD = [DDDk(1:nk-1) ./ Dk(:,1);0];
 
-  %% start integration procedure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% start integration procedure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
   Y = zeros(nx,1); % initiate output
   b = x(1); % set upper integration boundary (initiation)

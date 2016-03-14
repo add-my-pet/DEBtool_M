@@ -1,23 +1,32 @@
+%% espline
+% finds all local extremes of a cubic spline
+
+%%
 function [xy_min, xy_max , info] = espline(xy, Dy1, Dyk)
-  %  created at 2007/04/01 by Bas Kooijman
-  %
+  % created at 2007/04/01 by Bas Kooijman
+  
+  %% Syntax
+  % [xy_min, xy_max , info] = <../espline.m *espline*> (xy, Dy1, Dyk)
+
   %% Description
-  %  The function espline finds all local extremes of a cubic spline. 
-  %  It does so by getting prior estimates using rspline1 applied to the derivatives of the spline, followed by a Newton Raphson procedure.
+  % The function espline finds all local extremes of a cubic spline. 
+  % It does so by getting prior estimates using rspline1 applied to the derivatives of the spline, followed by a Newton Raphson procedure.
   %
-  %% Input
-  %  xy: (r,2)-matrix with knots (r>3)
+  % Input:
   %
-  %% Output
-  %  xy_min: (n_min,2)-matrix with (x,y)-values of local minima
-  %  xy_max: (n_max,2)-matrix with (x,y)-values of local maxima
-  %  info: 1 = successful, 0 if not
+  % * xy: (r,2)-matrix with knots (r>3)
   %
+  % Output:
+  %
+  % * xy_min: (n_min,2)-matrix with (x,y)-values of local minima
+  % * xy_max: (n_max,2)-matrix with (x,y)-values of local maxima
+  % * info: 1 = successful, 0 if not
+  
   %% Remarks
-  %  cf spline
-  %
+  % cf <spline.html *spline*>
+  
   %% Example of use
-  %  see mydata_smooth
+  % See <../mydata_smooth.m *mydata_smooth*>
   
   n = size(xy,1); 
   if n < 4
@@ -25,10 +34,10 @@ function [xy_min, xy_max , info] = espline(xy, Dy1, Dyk)
     xy_min = []; xy_max = []; info = 0; return
   end
   
-  if exist('Dy1') == 0 % make sure that left clamp is specified
+  if ~exist('Dy1','var') % make sure that left clamp is specified
     Dy1 = []; % no left clamp; second derivative at first knot is zero
   end
-  if exist('Dyk') == 0 % make sure that right clamp is specified
+  if ~exist('Dyk','var') % make sure that right clamp is specified
     Dyk = []; % no right clamp; second derivative at last knot is zero
   end
   
@@ -38,7 +47,7 @@ function [xy_min, xy_max , info] = espline(xy, Dy1, Dyk)
   nx = length(x);
   info = 1;
   for i = 1:nx
-      %% Newton Raphson loop to make preliminary estimates more precise
+      % Newton Raphson loop to make preliminary estimates more precise
       j = 1; % initiate counter
       dy = 1; % make sure to start nr-procedure
       while dy^2 > 1e-10 & j < 10

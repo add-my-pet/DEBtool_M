@@ -1,0 +1,131 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>spline1</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="spline1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>spline1</h1><!--introduction--><p>Calculates ordinates and first derivatives of a first order spline</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[y, dy, index] <a href="../spline1.m"><b>spline1</b></a>(x, knots, Dy1, Dyk)</p><h2>Description<a name="4"></a></h2><p>First order splines connect knots by straight lines, and is linear outside the knots. Calculates the ordinates and the first derivatives of a first order spline, given abcissa and knot coordinates. The spline is interpolating.</p><p>Input:</p><div><ul><li>x: n-vector with abcissa values</li><li>knots: (nk,2)-matrix with coordinates of knots; we must have nk &gt; 3;         knots(:,1) must be ascending</li><li>Dy1: scalar with first derivative at first knot (optional);       empty means: zero</li><li>Dyk: scalar with first derivative at last knot (optional);       empty means: zero</li></ul></div><p>Ouput:</p><div><ul><li>y: n-vector with spline values (ordinates)</li><li>dy: n-vector with derivatives</li><li>index: n-vector with indices of first knot-abcissa smaller than x</li></ul></div><h2>Remarks<a name="5"></a></h2><p>cf <a href="../html/islpine1.html"><b>ispline1</b></a> for integration;    <a href="../html/rspline1.html"><b>rspline1</b></a> for roots;    <a href="../html/espline1.html"><b>espline1</b></a> for local extremes.</p><h2>Example of use<a name="6"></a></h2><p>x = (1:10)'; y = 3*(x+.1*rand(10,1)).^2; [Y, dY] = spline1([x,y],k); iY = ispline1(x,k); rspline1(k,5). See <a href="../mydata_smooth.m"><b>mydata_smooth</b></a> for further illustration.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% spline1
+% Calculates ordinates and first derivatives of a first order spline
+
+%%
+function [y, dy, index] = spline1(x, knots, Dy1, Dyk)
+  %  created at 2007/03/29 by Bas Kooijman; modified 2009/09/29
+  
+  %% Syntax
+  % [y, dy, index] <../spline1.m *spline1*>(x, knots, Dy1, Dyk)
+
+  %% Description
+  % First order splines connect knots by straight lines, and is linear outside the knots.
+  % Calculates the ordinates and the first derivatives of a first order spline, given abcissa and knot coordinates. 
+  % The spline is interpolating. 
+  %
+  % Input:
+  %
+  % * x: n-vector with abcissa values
+  % * knots: (nk,2)-matrix with coordinates of knots; we must have nk > 3; 
+  %         knots(:,1) must be ascending
+  % * Dy1: scalar with first derivative at first knot (optional); 
+  %       empty means: zero
+  % * Dyk: scalar with first derivative at last knot (optional); 
+  %       empty means: zero
+  %
+  % Ouput:
+  %
+  % * y: n-vector with spline values (ordinates)
+  % * dy: n-vector with derivatives
+  % * index: n-vector with indices of first knot-abcissa smaller than x
+  
+  %% Remarks
+  % cf <../html/islpine1.html *ispline1*> for integration;
+  %    <../html/rspline1.html *rspline1*> for roots;
+  %    <../html/espline1.html *espline1*> for local extremes.
+  
+  %% Example of use
+  % x = (1:10)'; y = 3*(x+.1*rand(10,1)).^2; [Y, dY] = spline1([x,y],k); iY = ispline1(x,k); rspline1(k,5). 
+  % See <../mydata_smooth.m *mydata_smooth*> for further illustration. 
+
+  x = x(:); nx = length(x); nk = size(knots,1);
+  y = zeros(nx,1); dy = y; index = zeros(nx,1); % initiate output
+  
+  if exist('Dy1','var') == 0 % make sure that left clamp is specified
+    Dy1 = 0;
+  end
+  if exist('Dyk','var') == 0 % make sure that right clamp is specified
+    Dyk = 0; 
+  end
+
+  % derivatives right of knot-abcissa
+  Dy =[(knots(2:nk,2) - knots(1:nk-1,2)) ./ ...
+       (knots(2:nk,1) - knots(1:nk-1,1)); Dyk];
+  for i = 1:nx % loop across abcissa values
+    j = 1;
+    while x(i) > knots(min(nk,j),1) && j <= nk
+      j = j + 1;
+    end
+    j = j - 1;
+    if j == 0      
+      y(i) = knots(1,2) - Dy1 * (knots(1,1) - x(i));
+      dy(i) = Dy1;
+    else
+      y(i) = knots(j,2) - Dy(j) * (knots(j,1) - x(i));
+      dy(i) = Dy(j);
+    end
+    index(i) = j;
+  end
+
+##### SOURCE END #####
+--></body></html>

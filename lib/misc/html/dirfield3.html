@@ -1,0 +1,104 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>dirfield3</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="dirfield3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>dirfield3</h1><!--introduction--><p>Direction field for a user-defined set of ode's for 2 variables.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>f = <a href="../dirfield3.m"><b>dirfield3</b></a> (nm, x, y, z, d)</p><h2>Description<a name="4"></a></h2><p>The direction field for a user-defined set of ode's for 3 variables.</p><p>Input:</p><div><ul><li>nm: name of user-defined function for [dx, dy, dz];      required structure: dxyz = nm(xyz)</li><li>x: nx-vector of values for x-variable</li><li>y: ny-vector of values for y-variable</li><li>z: nz-vector of values for z-variable</li><li>d: scalar with multiplier for [dx, dy, dz]</li></ul></div><p>Output:</p><div><ul><li>f: (nx*ny*nz, 6)- matrix with       (xi, yj, zk,  xi+ d * dxi, yj + d * dyi, zk + d * dzk)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>see <a href="dirfield.m"><b>dirfield</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% dirfield3
+% Direction field for a user-defined set of ode's for 2 variables. 
+
+
+%%
+function f = dirfield3(nm, x, y, z, d)
+  % created by Bas Kooijman 2000/01/30
+  
+  %% Syntax
+  % f = <../dirfield3.m *dirfield3*> (nm, x, y, z, d)
+
+  %% Description
+  % The direction field for a user-defined set of ode's for 3 variables. 
+  %
+  % Input:
+  %
+  % * nm: name of user-defined function for [dx, dy, dz];
+  %      required structure: dxyz = nm(xyz)
+  % * x: nx-vector of values for x-variable
+  % * y: ny-vector of values for y-variable
+  % * z: nz-vector of values for z-variable
+  % * d: scalar with multiplier for [dx, dy, dz]
+  %
+  % Output:
+  %
+  % * f: (nx*ny*nz, 6)- matrix with
+  %       (xi, yj, zk,  xi+ d * dxi, yj + d * dyi, zk + d * dzk)
+  
+  %% Remarks
+  % see <dirfield.m *dirfield*>
+
+  nx = length(x); ny = length(y); nz = length(z); f = zeros(nx * ny * nz,6);
+  
+  for i = 1:nx
+    for j = 1:ny
+      for k = 1:nz
+        eval(['dxyz = d * ', nm, '([x(i); y(j); z(k)]);']);
+        f(k + nz * (j - 1) + nz * ny * (i - 1),:) = ...
+	    [x(i), y(j), z(k), dxyz(1), dxyz(2), dxyz(3)];
+      end
+    end
+  end
+##### SOURCE END #####
+--></body></html>

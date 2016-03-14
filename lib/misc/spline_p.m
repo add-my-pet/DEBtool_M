@@ -1,42 +1,49 @@
+%% spline_p
+% gives values and 1st, 2nd, 3rth derivatives of a periodic cubic spline
+
+%%
 function [y dy ddy dddy] = spline_p(x, knots)
   %  created at 2009/03/18 by Bas Kooijman
-  %
+  
+  %% Syntax
+  % [y dy ddy dddy] <../spline_p.m *spline_p*>(x, knots)
+
   %% Description
-  %  Cubic splines are piece-wise cubic polynomials between knots, 
+  % Cubic splines are piece-wise cubic polynomials between knots, 
   %   and linear outside the knots, such that the spline is differentiable everywhere. 
-  %  Natural cubic splines have a second derivative equal to zero at the first and last knot; 
+  % Natural cubic splines have a second derivative equal to zero at the first and last knot; 
   %   the first derivative is differentable everywhere, the second derivative is continuous, 
   %   and the third derivative is piecewise constant and not continuous. 
-  %  Left and/or right clamped cubic splines have a prescribed first derivative at the first and/or last knot; 
+  % Left and/or right clamped cubic splines have a prescribed first derivative at the first and/or last knot; 
   %   the second derivative at these knots is (generally) not equal to zero, while it is outside the knot-range.
-  %  Calculates the ordinates and the first three derivatives of a cubic spline, given abcissa and knot coordinates. 
-  %  The spline is interpolating, see knot for obtaining knot coordinates of a smoothing spline. 
-  %  The natural cubic spline is selected by default, but it can optionally be clamped left and/or right. 
+  % Calculates the ordinates and the first three derivatives of a periodic cubic spline, given abcissa and knot coordinates. 
+  % The spline is interpolating, see knot for obtaining knot coordinates of a smoothing spline. 
+  % The natural cubic spline is selected by default, but it can optionally be clamped left and/or right. 
   %
-  %% Input
-  %  x: n-vector with ordinates
-  %  knots: (nk,2)-matrix with coordinates of knots; we must have nk > 3
+  % Input:
+  %
+  % * x: n-vector with ordinates
+  % * knots: (nk,2)-matrix with coordinates of knots; we must have nk > 3;
   %         knots(:,1) must be ascending
-  %   the period starts and ends at knot(1,1), knot(1,end)
-  %   knot(1,2) = dy(x(1))/ dy; assumption y(1) = y(end)
+  % * the period starts and ends at knot(1,1), knot(1,end)
+  % * knot(1,2) = dy(x(1))/ dy; assumption y(1) = y(end)
   %
-  %% Output
-  %  y: n-vector with spline values: y(x)
-  %  dy: n-vector with first derivatives of spline
-  %  ddy: n-vector with second derivatives of spline
-  %  dddy; n-vector with third derivatives of spline
+  % Output:
   %
+  % * y: n-vector with spline values: y(x)
+  % * dy: n-vector with first derivatives of spline
+  % * ddy: n-vector with second derivatives of spline
+  % * dddy; n-vector with third derivatives of spline
+  
   %% Remarks
-  %  See ispline for integration, rspline for roots, espline for local extremes. 
-  %
-  %% Example of use 
-  %  x = (1:10)'; y = 3*(x+.1*rand(10,1)).^2;: k = knot(0.5+[0 2 5 7]',[x,y]); 
-  %  [Y, dY, ddY, dddY] = spline(x,k); iY = ispline(x,k); rspline(k,5)
-  %% Example of the use of clamps
-  %  Y = spline(x,k,0) (left clamp); Y = spline(x,k,[],0) (right clamp); Y = spline(x,k,0,0) (left and right clamp); 
-  %  See mydata_spline and mydata_smooth for further illustrations. 
+  % cf <../html/islpine.html *spline*> for non-periodic splines;
+  %    <../html/islpine.html *spline*> for integration;
+  %    <../html/rspline.html *rspline*> for roots;
+  %    <../html/espline.html *espline*> for local extremes.
 
-  %% Code
+  %% Example of use 
+  % See <../mydata_spline.m *mydata_spline*> and <../mydata_smooth.m *mydata_smooth*>
+  
   x = x(:); nx = length(x); nk = size(knots,1);
   if nk < 4
     fprintf('number of knots must be at least 4\n');
@@ -46,12 +53,12 @@ function [y dy ddy dddy] = spline_p(x, knots)
   period = knots(nk,1) - knots(1,1);
   x = knots(1,1) + mod(x - knots(1,1), period);
   
-  %% between which knots are the required x-values?
+  % between which knots are the required x-values?
   ix = sum((x(:,ones(1,nk)) >= knots(:,ones(1,nx))')')'; % indices
   Dk = knots(2:nk,:) - knots(1:nk-1,:); D = Dk(:,2) ./ Dk(:,1);
 
     % left & right clamp
-    %% second derivatives at knots
+    % second derivatives at knots
     C = zeros(nk-2,nk-2);
     C = [Dk(1:nk-2,1), 2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C];
     C = wrap(C',nk-2,nk);
@@ -61,17 +68,17 @@ function [y dy ddy dddy] = spline_p(x, knots)
     E = [6 * (D(1) - Dy1); E; 6 * (Dyk - D(nk-1))];
     DDy = C\E;
    
-    %% first derivatives at knots
+    % first derivatives at knots
     Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
     Dy = [Dy; Dyk];
     DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
 
   DDDk = [DDy(2:nk) - DDy(1:nk-1); 0];
 
-  %% third derivatives at knots plus leading zero
+  % third derivatives at knots plus leading zero
   DDDy = [0;DDDk(1:nk-1) ./ Dk(:,1);0]; 
 
-  %% compute y dy ddy dddy at required x-values %%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % compute y dy ddy dddy at required x-values %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   dddy = DDDy(1 + ix); %% third derivatives at x-values
   ddy = x; dy = x; y = x; % initiate output

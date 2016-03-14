@@ -1,23 +1,32 @@
+%% knot
+% calculates knot-coordinates of cubic spline from knot-abcissa and data points
+
+%%
 function [xy, info] = knot(x, data, Dy1, Dyk)
   %  Created: 2002/05/25 by  Bas Kooijman, modified 2006/08/11
-  %
+  
+  %% Syntax
+  % [xy, info] <../knot.m *knot*> (x, data, Dy1, Dyk)
+
   %% Description
-  %  calculates knot-coordinates of cubic spline from knot-abcissa and
+  % Calculates knot-coordinates of cubic spline from knot-abcissa and
   %    data points according to weighted least squared criterium
   %
-  %% Input
-  %  x: n-vector with knot-abcissa (n>3)
-  %  data: (r,2) or (r,3)-matrix data points and weight coefficients (r>3)
-  %  Dy1: scalar with first derivative at first knot (optional)
+  % Input
+  %
+  % * x: n-vector with knot-abcissa (n>3)
+  % * data: (r,2) or (r,3)-matrix data points and weight coefficients (r>3)
+  % * Dy1: scalar with first derivative at first knot (optional);
   %       empty means: no specification and second derivative equals 0
-  %  Dyk: scalar with first derivative at last knot (optional)
+  % * Dyk: scalar with first derivative at last knot (optional);
   %       empty means: no specification and second derivative equals 0
   %
-  %% Output
-  %  xy: (n,2)-matrix with knot-coordinates
+  % Output
   %
+  % * xy: (n,2)-matrix with knot-coordinates
+  
   %% Remarks
-  %  See knot_p for the periodic spline. 
+  % See <../html/knot_p.html *knot_p*> for the periodic spline. 
 
 
   global X DY1 DYk % transfer to fnknot
@@ -46,3 +55,13 @@ function [xy, info] = knot(x, data, Dy1, Dyk)
   end
   
   nrregr_options('report',1);
+end
+
+% %% subfunction
+
+function f = fnknot(y, data)
+  % created at 2002/05/26 by Bas Kooijman
+  % subroutine for 'knot' to find smoothing spline ordinates
+  global X DY1 DYk
+  f = spline(data(:,1),[X,y],DY1, DYk);
+end

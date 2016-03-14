@@ -1,40 +1,50 @@
+%% comp_struct
+% check two structures for differences
+
+%%
 function [df, match, er1, er2] = comp_struct(s1,s2,prt,pse,tol,n1,n2,wbf)
-% check two structures for differences - i.e. see if strucutre s1 == structure s2
-% function [match, er1, er2, erc, erv] = comp_struct(s1,s2,prt,pse,tol,n1,n2,wbf)
+% created by Michael Arant 2013/05/27, modified 2013/08/22
+
+%% Syntax
+% [df, match, er1, er2] = <../comp_struct.m *comp_struct*>(s1,s2,prt,pse,tol,n1,n2,wbf)  
+
+%% Description
+% check two structures for differences - i.e. see if structure s1 == structure s2
 %
-% inputs  8 - 7 optional
-% s1      structure one                              class structure
-% s2      structure two                              class structure - optional
-% prt     print test results (0 / 1 / 2 / 3)         class integer - optional
-% pse     pause flag (0 / 1 / 2)                     class integer - optional
-% tol     tol default tolerance (real numbers)       class integer - optional
-% n1      first structure name (variable name)       class char - optional
-% n2      second structure name (variable name)      class char - optional
-% wbf     waitbar flag (0 / 1) default is 1          class integer - optional
+% Input:  
 %
-% outputs 4 - 4 optional
-% df      mis-matched fields with contents           class cell - optional
-% match   matching fields                            class cell - optional
-% er1     non-matching fields for structure one      class cell - optional
-% er2     non-matching fields for structure two      class cell - optional
+% * s1      structure one                              class structure
+% * s2      structure two                              class structure - optional
+% * prt     print test results (0 / 1 / 2 / 3)         class integer - optional
 %
-% prt:
-%	0 --> no print
-%	1 --> summary
-%	2 --> print erros
-%	3 --> print errors and matches
-% pse:
-%	1 --> pause for major erros
-%	2 --> pause for all errors
+%	  - 0: no print
+%	  - 1: summary
+%	  - 2: print erros
+%	  - 3: print errors and matches
 %
-% example:	[match, er1, er2] = comp_struct(data1,data2,1,1,1e-6,'data1','data2')
-% michael arant - may 27, 2013
+% * pse     pause flag (0 / 1 / 2)                     class integer - optional
 %
-% updated - aug 22, 2013
+%	  - 1: pause for major erros
+%	  - 2: pause for all errors
 %
-% hint:
+% * tol     tol default tolerance (real numbers)       class integer - optional
+% * n1      first structure name (variable name)       class char - optional
+% * n2      second structure name (variable name)      class char - optional
+% * wbf     waitbar flag (0 / 1) default is 1          class integer - optional
+%
+% Output:
+%
+% * df      mis-matched fields with contents           class cell - optional
+% * match   matching fields                            class cell - optional
+% * er1     non-matching fields for structure one      class cell - optional
+% * er2     non-matching fields for structure two      class cell - optional
+
+%% Remark:
 % passing just one structure causes the program to copy the structure
 % and compare the two.  This is an easy way to list the structure
+
+%% Example of use
+% [match, er1, er2] = comp_struct(data1,data2,1,1,1e-6,'data1','data2')
 
 if nargin < 1; help comp_struct; error('I / O error'); end
 if nargin < 2; s2 = s1; prt = 3; end
@@ -142,9 +152,7 @@ if prt
 	fprintf('\n\n\n\n\n');
 end
 
-
-
-%% recursive loop
+% recursive loop
 function [match, er1, er2] = comp_struct_loop(s1,s2,prt,pse,tol,n1,n2,wbf)
 
 % init outputs

@@ -1,0 +1,197 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>select_legend</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="select_legend.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>select_legend</h1><!--introduction--><p>graphical user interface for setting legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>legend = <a href="../select_legend.m"><b>select_legend</b></a> (legend)</p><h2>Description<a name="4"></a></h2><p>Select or edit a legend; the active item is indicated and can be changed with button #. Edit maker specs with button marker and taxon name with button taxon. Edit the sequence with buttons v and ^, insert with &gt;, remove with x. The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.</p><p>Input:</p><div><ul><li>legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><p>Output:</p><div><ul><li>legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Press any key when done</p><h2>Example of use<a name="6"></a></h2><p>legend = select_legend;</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% select_legend
+% graphical user interface for setting legend
+
+%%
+function legend = select_legend(legend)
+% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
+
+%% Syntax
+% legend = <../select_legend.m *select_legend*> (legend)
+
+%% Description
+% Select or edit a legend; the active item is indicated and can be changed with button #. 
+% Edit maker specs with button marker and taxon name with button taxon.
+% Edit the sequence with buttons v and ^, insert with >, remove with x. 
+% The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.
+%
+% Input:
+%
+% * legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)
+%
+% Output: 
+% 
+% * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
+
+%% Remarks
+% Press any key when done
+
+%% Example of use
+% legend = select_legend;
+
+  global legend_local i_legend Hlegend
+  
+  if ~exist('legend', 'var')
+    legend_local = {{'.', 10, 2, [0 0 0], [0 0 0]}, 'Animalia'; ...
+                    {'o', 10, 2, [1 0 0], [1 0 0]}, 'Chordata'; ...
+                    {'v', 10, 2, [0 0 1], [0 0 1]}, 'Aves';};
+  else
+    legend_local = legend;
+  end
+
+  i_legend = size(legend_local,1); % default index of active item
+  x = 30; y = 10; % lower-left corner of button block
+  dx = 60;        % width of button
+  HFig_legend = figure('Position', [500, 400, 8*dx, dx]); % initiate fig with buttons
+  
+  % Component
+  Hnr     = uicontrol('Style','pushbutton',...
+           'String', '#',...
+           'Position',[x,y,.9*dx,.5*dx], ...
+           'Callback', @nr_Callback);
+  Hmarker = uicontrol('Style','pushbutton',...
+           'String', 'marker',...
+           'Position',[x+dx,y,.9*dx,.5*dx], ...
+           'Callback', @marker_Callback);
+  Htaxon   = uicontrol('Style','pushbutton',...
+           'String', 'taxon', ...
+           'Position',[x+2*dx,y, .9*dx,.5*dx], ...
+           'Callback', @taxon_Callback);
+  Hup   = uicontrol('Style','pushbutton',...
+           'String', '^', ...
+           'Position',[x+3*dx,y,.9*dx,.5*dx], ...
+           'Callback', @up_Callback);    
+  Hdown  = uicontrol('Style','pushbutton', ...
+           'String','v',...
+           'Position',[x+4*dx,y,.9*dx,.5*dx], ...
+           'Callback', @down_Callback);
+  Hinsert  = uicontrol('Style','pushbutton', ...
+           'String','<',...
+           'Position',[x+5*dx,y,.9*dx,.5*dx], ...
+           'Callback', @insert_Callback);
+  Hremove  = uicontrol('Style','pushbutton', ...
+           'String','x',...
+           'Position',[x+6*dx,y,.9*dx,.5*dx], ...
+           'Callback', @remove_Callback);
+%   OK       = uicontrol('Style','pushbutton', ...
+%            'String','OK',...
+%            'Position',[x+7*dx,y,.9*dx,.5*dx], ...
+%            'Callback', 'uiresume(gcbf)');
+
+  Hlegend = shlegend(legend_local,[],[],'',i_legend);
+  %uiwait(gcf)
+  pause
+ 
+  close (HFig_legend); close(Hlegend);
+  legend = legend_local; % export to output
+end
+
+% %%% subfunctions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    function C = nr_Callback(source, eventdata) 
+      global legend_local i_legend Hlegend
+      list = {num2str((1:size(legend_local,1))')};
+      i_legend = listdlg('PromptString', 'Select #', 'ListString', list, 'Selectionmode', 'single', 'InitialValue', i_legend);
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = marker_Callback(source, eventdata) 
+      global legend_local  i_legend Hlegend
+      legend_local(i_legend,1) = {select_marker(legend_local{i_legend,1})}; 
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = taxon_Callback(source, eventdata) 
+      global legend_local  i_legend Hlegend
+      legend_local(i_legend,2) = {select_taxon};
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = up_Callback(source, eventdata) 
+      global legend_local  i_legend Hlegend
+      if i_legend > 1
+        legend_local([i_legend-1, i_legend],:) = legend_local([i_legend, i_legend-1],:);
+        i_legend = i_legend - 1; 
+     end
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = down_Callback(source, eventdata) 
+      global legend_local i_legend Hlegend
+      if i_legend < size(legend_local,1)
+        legend_local([i_legend, i_legend+1],:) = legend_local([i_legend+1, i_legend],:);
+        i_legend = i_legend + 1; 
+      end
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = insert_Callback(source, eventdata) 
+      global legend_local i_legend Hlegend
+      N = (1:size(legend_local,1))'; % index-vector of legend items
+      item = {{'.', 12, 4, [0 0 0], [0 0 0]}, 'Animalia'}; % default marker, taxon
+      legend_local = [legend_local(N<i_legend,:); item; legend_local(N>=i_legend,:)];
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+    function C = remove_Callback(source, eventdata) 
+      global legend_local i_legend Hlegend
+      n = size(legend_local,1); N = (1:n)'; 
+      legend_local = legend_local(~(N==i_legend),:);
+      i_legend = max(1, i_legend - 1);
+      close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
+    end
+##### SOURCE END #####
+--></body></html>
