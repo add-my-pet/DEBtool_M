@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>shloglogstar</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="shloglogstar.m"><style type="text/css">
+      --><title>surv_count</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="surv_count.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,84 +55,57 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>shloglogstar</h1><!--introduction--><p>plots star with slopes in multiples of 1/3</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shloglogstar.m"><b>shloglogstar</b></a> (p, r, color)</p><h2>Description<a name="4"></a></h2><p>Plots star with slopes in multiples of 1/3</p><p>Input:</p><div><ul><li>p: (1,2)-matrix with coordinates of star centre</li><li>r: (2,2)-matrix with plot ranges for x,y values</li></ul></div><pre>  r(1,i)&lt;p(i)&lt;r(2,i) for i = 1,2</pre><div><ul><li>color: specification of color</li></ul></div><h2>Example of use<a name="5"></a></h2><p>see <a href="shstar.html"><b>shstar</b></a></p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>surv_count</h1><!--introduction--><p>Obtains Monte Carlo counts for the number of surviving subjects from specified numbers of subjects</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>N = <a href="../surv_count.m"><b>surv_count</b></a> (n,S)</p><h2>Description<a name="4"></a></h2><p>Obtains Monte Carlo counts for the number of surviving subjects,    from specified numbers of subjects (for each of nc conditions) and survivor probabilities (for each condition and nt time points).</p><p>Input</p><div><ul><li>S: (r,c)-matrix with survivor probabilities</li></ul></div><pre>    interpretation: obs. times across rows, conditions across cols</pre><div><ul><li>n: scalar, or (1,c)-matrix with number of test subjects</li></ul></div><p>Output:</p><div><ul><li>N: (r,c)-matrix with number of surviving subjects</li></ul></div><h2>Example of use<a name="5"></a></h2><p>using function fomort of tox: surv_count(10, fomort([1e-6 .1 1 .1], [0:7]',[0:2:10]'))</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
-%% shloglogstar
-% plots star with slopes in multiples of 1/3
+%% surv_count
+% Obtains Monte Carlo counts for the number of surviving subjects from specified numbers of subjects 
 
 %%
-function shloglogstar(p, r, color)
-  % created 2000/10/23 by Bas Kooijman, modified 2009/02/05
+function N = surv_count(n,S)
+  % created 2005/10/26 by Bas Kooijman
   
   %% Syntax
-  % <../shloglogstar.m *shloglogstar*> (p, r, color)
+  % N = <../surv_count.m *surv_count*> (n,S) 
 
   %% Description
-  % Plots star with slopes in multiples of 1/3
+  % Obtains Monte Carlo counts for the number of surviving subjects, 
+  %    from specified numbers of subjects (for each of nc conditions) and survivor probabilities (for each condition and nt time points). 
   %
-  % Input:
+  % Input
   %
-  % * p: (1,2)-matrix with coordinates of star centre
-  % * r: (2,2)-matrix with plot ranges for x,y values
+  % * S: (r,c)-matrix with survivor probabilities
   %
-  %    r(1,i)<p(i)<r(2,i) for i = 1,2
+  %      interpretation: obs. times across rows, conditions across cols
   %
-  % * color: specification of color
+  % * n: scalar, or (1,c)-matrix with number of test subjects
+  %
+  % Output:
+  %
+  % * N: (r,c)-matrix with number of surviving subjects
   
   %% Example of use
-  % see <shstar.html *shstar*>
-
-  if (p(1) < r(1,1)) || (p(1) > r(2,1)) || (p(2) < r(1,2)) || ...
-	 (p(2) > r(2,2)) || (r(1,1) > r(2,1)) || (r(1,2) > r(2,2))
-    return;
+  % using function fomort of tox: surv_count(10, fomort([1e-6 .1 1 .1], [0:7]',[0:2:10]')) 
+  
+  F = 1 - S; [nr nc] = size(F);
+  nn = length(n);
+  if nn == 1 % generate equal numbers of initial subjects
+    n = n(ones(1,nc));
+  elseif nn ~= nc % numbers of subjects should match numbers of concentrations
+    printf('sizes do not match \n');
+    N = [];
+    return
   end
-
-  hold on;
-
-  p = log10 (p);
-  r = log10 (r);
-
-  for i = 1:5
-    t = tan([i; -i]/4);
-    x_r = [r([2; 2], 1), p(2) + t*(r(2, 1) - p(1))];  % edge right
-    x_d = [p(1) + (r(1, 2) - p(2))./t, r([1; 1], 2)]; % edge down
-    x_u = [p(1) + (r(2, 2) - p(2))./t, r([2; 2], 2)]; % edge up
-    x_l = [r([1; 1], 1), p(2) + t*(r(1, 1) - p(1))];  % edge left
-    if x_r(1,2) > r(2,2)            % u, positive angles
-      if x_d(1,1) < r(1,1)          % u,l
-	    x0 = [x_u(1,:); x_l(1,:)];
-      else                          % u,d
-	    x0 = [x_u(1,:); x_d(1,:)];
-      end  
-    else                            % r
-      if x_d(1,1) < r(1,1)          % r,l	
-        x0 = [x_r(1,:); x_l(1,:)];
-      else                          % r,d
-	    x0 = [x_r(1,:); x_d(1,:)];
-      end
+  
+  N = zeros(nr + 1, nc); % initiate counting of deaths
+  for j = 1:nc % concentrations
+    for i = 1:n(j) % number of subjects
+      rnd = rand(1); % random probability
+      index = 1 + sum(rnd > F(:,j)); % determine cell in counts
+      N(index,j) = N(index,j) + 1; % add dead subject to cell
     end
-    if x_r(2,2) < r(1,2)            % d, negative angles
-      if x_u(2,1) < r(1,1)          % d,l
-	    x1 = [x_d(2,:); x_l(2,:)];
-      else                          % d,u
-	    x1 = [x_d(2,:); x_u(2,:)];
-      end
-    else                            % r
-      if x_u(2,1) < r(1,1)          % r,l	
-        x1 = [x_r(2,:); x_l(2,:)];
-      else                          % r,u
-	    x1 = [x_r(2,:); x_u(2,:)];
-      end
-    end
-    % x0 = 10.^x0; x1 = 10.^x1;
-    % loglog(x0(:,1), x0(:,2), color, x1(:,1), x1(:, 2), color); 
-    plot(x0(:,1), x0(:,2), color, x1(:,1), x1(:, 2), color);
   end
-
-  % p = 10.^p;
-  % r = 10.^r;
-  % loglog(p([1; 1]), r(:,2), color, r(:,1), p([2; 2]), color);
-  plot(p([1; 1]), r(:,2), color, r(:,1), p([2; 2]), color);
+  N = n(ones(nr+1,1),:) - cumsum(N,1); % convert death to survivors
+  N(nr+1,:) = [];
 ##### SOURCE END #####
 --></body></html>

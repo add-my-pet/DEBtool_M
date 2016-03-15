@@ -1,21 +1,30 @@
+%% surv_chi
+% calculates the survivor probability of the Chi-square distribution
+
+%%
 function F = surv_chi (nu, x)
-  %  created 2002/04/09 by Bas Kooijman
-  %
+  % created 2002/04/09 by Bas Kooijman
+  
+  %% Syntax
+  % F = <../surv_chi.m *surv_chi*> (nu, x)
+
   %% Description
-  %  calculates the survivor probability of the Chi-square distribution
+  % Calculates the survivor probability of the Chi-square distribution
   %
-  %% Input
-  %  nu: scalar with parameter (degrees of freedom)
-  %  x: vector with argument values
+  % Input:
   %
-  %% Output
-  %  F: vector with survivor probabilities
+  % * nu: scalar with parameter (degrees of freedom)
+  % * x: vector with argument values
   %
+  % Output
+  %
+  % * F: vector with survivor probabilities
+  
   %% Remarks
-  %   cf survi_chi the inverse survivor probability of the Chi-square distribution
-  %
+  % cf survi_chi the inverse survivor probability of the Chi-square distribution
+  
   %% Example of use
-  %  surv_chi(2,[3 4 6.5])
+  % surv_chi(2,[3 4 6.5])
 
   
   x = reshape(x, length(x), 1);

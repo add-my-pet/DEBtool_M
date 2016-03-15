@@ -1,22 +1,32 @@
+%% surv_count
+% Obtains Monte Carlo counts for the number of surviving subjects from specified numbers of subjects 
+
+%%
 function N = surv_count(n,S)
-  %  created 2005/10/26 by Bas Kooijman
-  %
+  % created 2005/10/26 by Bas Kooijman
+  
+  %% Syntax
+  % N = <../surv_count.m *surv_count*> (n,S) 
+
   %% Description
-  %  Obtains Monte Carlo counts for the number of surviving subjects, 
+  % Obtains Monte Carlo counts for the number of surviving subjects, 
   %    from specified numbers of subjects (for each of nc conditions) and survivor probabilities (for each condition and nt time points). 
   %
-  %% Input
-  %  S: (r,c)-matrix with survivor probabilities
+  % Input
+  %
+  % * S: (r,c)-matrix with survivor probabilities
+  %
   %      interpretation: obs. times across rows, conditions across cols
-  %  n: scalar, or (1,c)-matrix with number of test subjects
   %
-  %% Output
-  %  N: (r,c)-matrix with number of surviving subjects
+  % * n: scalar, or (1,c)-matrix with number of test subjects
   %
-  %% Example of use
-  %  using function fomort of tox: surv_count(10, fomort([1e-6 .1 1 .1], [0:7]',[0:2:10]')) 
+  % Output:
+  %
+  % * N: (r,c)-matrix with number of surviving subjects
   
-  %% Code
+  %% Example of use
+  % using function fomort of tox: surv_count(10, fomort([1e-6 .1 1 .1], [0:7]',[0:2:10]')) 
+  
   F = 1 - S; [nr nc] = size(F);
   nn = length(n);
   if nn == 1 % generate equal numbers of initial subjects

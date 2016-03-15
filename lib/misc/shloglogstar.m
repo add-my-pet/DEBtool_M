@@ -15,7 +15,9 @@ function shloglogstar(p, r, color)
   %
   % * p: (1,2)-matrix with coordinates of star centre
   % * r: (2,2)-matrix with plot ranges for x,y values
+  %
   %    r(1,i)<p(i)<r(2,i) for i = 1,2
+  %
   % * color: specification of color
   
   %% Example of use
