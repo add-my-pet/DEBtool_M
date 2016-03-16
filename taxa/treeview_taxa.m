@@ -20,7 +20,7 @@ function treeview_taxa (pedigree)
 
   WD = pwd;                      % store current path
   taxa = which('treeview_taxa'); % locate DEBtool_M/taxa/
-  taxa = taxa(1:end - 10);       % path to DEBtool_M/taxa/
+  taxa = taxa(1:end - 15);       % path to DEBtool_M/taxa/
   cd(taxa)                       % goto taxa
 
   try
