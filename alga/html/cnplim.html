@@ -1,0 +1,159 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>cnplim</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-17"><meta name="DC.source" content="cnplim.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>cnplim</h1><!--introduction--><p>simultaneous C, N, P limitation in a batch-culture</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>f = <a href="../cnplim.m"><b>cnplim</b></a> (p, t, NP)</p><h2>Description<a name="4"></a></h2><p>Simultaneous C, N, P limitation in a batch-culture     C is consumed as CO2 only, while CO2 exchanges with HCO3     maintenance costs are assummed to be negligibly small.</p><p>Input:</p><div><ul><li>p: parameter vector:</li></ul></div><pre>   p(1)=K_C; mM, saturation constant for CO2 (C)
+   p(2)=K_N; mM, saturation constant for nitrate (N)
+   p(3)=K_P; mM, saturation constant for phosphate (P)
+   p(4)=j_Cm; mM/(mol*h), max spec CO2 uptake rate
+   p(5)=j_Nm; mM/(mol*h), max spec N
+   p(6)=j_Pm; mM/(mol*h), max spec P
+   p(7)=k_E; 1/h, reserve turnover rate
+   p(8)= kap_C; -, recovery fraction for rejected C-reserves
+   p(9)= kap_N; -, recovery fraction for rejected N-reserves
+   p(10)=kap_P; -, recovery fraction for rejected P-reserves
+   p(11)=yC_EV; mol/mol, yield for C-reserve on structure
+   p(12)=yN_EV; mol/mol, yield for N-reserve on structure
+   p(13)=yP_EV; mol/mol, yield for P-reserve on structure
+   p(14)=k_BC; 1/h, transformation from B (bicarbonate) to C
+   p(15)=k_CB; 1/h, transformation from C (CO2) to B
+   p(16)=B_0; mM, initial bicarbonate concentration
+   p(17)=C_0; mM, initial CO2 concentration
+   p(18)=m_C0; mol/mol, initial C-reserve density
+   p(19)=m_N0; mol/mol, initial N-reserve density
+   p(20)=m_P0; mol/mol, initial P-reserve density
+   p(21)=Biomm0; mM, initial structure concentration</pre><div><ul><li>t: (nt)-vector with time</li><li>NP: (NP,2)-matrix with initial nitrate, phosphate concentrations</li></ul></div><p>Output:</p><p>% f: biomass</p><h2>Remarks<a name="5"></a></h2><p>Calls for dcnplim; see mydata_cnplim for an application. Apply this function with nmregr2 for parameter estimation,     or pregr2 for parameter statistics, or shregr2 for plotting</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% cnplim
+% simultaneous C, N, P limitation in a batch-culture
+
+%%
+function f = cnplim(p, t, NP)
+  %  created 2002/02/11 by Bas Kooijman
+  
+  %% Syntax
+  % f = <../cnplim.m *cnplim*> (p, t, NP)
+
+  %% Description
+  % Simultaneous C, N, P limitation in a batch-culture
+  %     C is consumed as CO2 only, while CO2 exchanges with HCO3
+  %     maintenance costs are assummed to be negligibly small.
+  %
+  % Input:
+  %
+  % * p: parameter vector:
+  %
+  %     p(1)=K_C; mM, saturation constant for CO2 (C)
+  %     p(2)=K_N; mM, saturation constant for nitrate (N)
+  %     p(3)=K_P; mM, saturation constant for phosphate (P)
+  %     p(4)=j_Cm; mM/(mol*h), max spec CO2 uptake rate
+  %     p(5)=j_Nm; mM/(mol*h), max spec N 
+  %     p(6)=j_Pm; mM/(mol*h), max spec P
+  %     p(7)=k_E; 1/h, reserve turnover rate
+  %     p(8)= kap_C; -, recovery fraction for rejected C-reserves
+  %     p(9)= kap_N; -, recovery fraction for rejected N-reserves
+  %     p(10)=kap_P; -, recovery fraction for rejected P-reserves
+  %     p(11)=yC_EV; mol/mol, yield for C-reserve on structure
+  %     p(12)=yN_EV; mol/mol, yield for N-reserve on structure
+  %     p(13)=yP_EV; mol/mol, yield for P-reserve on structure
+  %     p(14)=k_BC; 1/h, transformation from B (bicarbonate) to C
+  %     p(15)=k_CB; 1/h, transformation from C (CO2) to B
+  %     p(16)=B_0; mM, initial bicarbonate concentration
+  %     p(17)=C_0; mM, initial CO2 concentration
+  %     p(18)=m_C0; mol/mol, initial C-reserve density
+  %     p(19)=m_N0; mol/mol, initial N-reserve density
+  %     p(20)=m_P0; mol/mol, initial P-reserve density
+  %     p(21)=Biomm0; mM, initial structure concentration
+  %
+  % * t: (nt)-vector with time
+  % * NP: (NP,2)-matrix with initial nitrate, phosphate concentrations
+  %
+  % Output:
+  %
+  % % f: biomass
+  
+  %% Remarks
+  % Calls for dcnplim; see mydata_cnplim for an application.
+  % Apply this function with nmregr2 for parameter estimation,
+  %     or pregr2 for parameter statistics, or shregr2 for plotting
+
+  %  State vector:
+  %  Xt: C = Xt(1);  N = Xt(2);  P = Xt(3); m_C = Xt(4); m_N = Xt(5);
+  %      m_P = Xt(6); X = Xt(7); B = Xt(8);
+
+  global K_C K_N K_P j_Cm j_Nm j_Pm k_E yC_EV yN_EV yP_EV k_BC k_CB
+  global kap_C kap_N kap_P
+ 
+  % global B C N P m_C m_N m_P X B r;
+
+  % unpack p
+  K_C = p(1); K_N = p(2); K_P = p(3); j_Cm = p(4); j_Nm = p(5); j_Pm = p(6);
+  k_E = p(7); kap_C = p(8); kap_N = p(9); kap_P = p(10);
+  yC_EV = p(11); yN_EV = p(12); yP_EV = p(13); k_BC = p(14); k_CB = p(15);
+  B_0 = p(16); C_0 = p(17); m_C0 = p(18); m_N0 = p(19); m_P0 = p(20); Biomm0 = p(21);
+  
+  m_C0 = j_Cm/k_E; m_N0 = j_Nm/k_E; m_P0 = j_Pm/k_E;
+
+  [nNP k] = size(NP);
+  
+  for i = 1:nNP
+    Xt0 = [B_0 C_0 NP(i,1) NP(i,2) m_C0 m_N0 m_P0 Biomm0];
+    Xt = ode23s ('dcnplim', t, Xt0);
+    f(:,i)=Xt(:,8);
+  end
+##### SOURCE END #####
+--></body></html>

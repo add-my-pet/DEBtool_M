@@ -3,8 +3,9 @@ function f = findm (m)
   %  called from shbatch to find first guess for res densities
   %   when dilution by growth is not taken into account
   %   prepares for findrm, which has narrow attraction domain
+  
   global kT_E y_EN_V y_EP_V jT_EN_Am jT_EP_Am jT_EN_M jT_EP_M ...
-      X_N X_P K_N K_P kap_EN kap_EP;
+      X_N X_P K_N K_P kap_EN kap_EP
     
   m_EN = m(1); m_EP = m(2);
   a = (m_EN.*kT_E - jT_EN_M)/y_EN_V;

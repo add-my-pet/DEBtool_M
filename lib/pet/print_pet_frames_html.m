@@ -38,31 +38,31 @@ if speciesprintnm_en(1)>='a' && speciesprintnm_en(1)<='z'
 end
 % ------------------------------------------------------------
 
-%%% read and write i_my_pet
-oid = fopen(['i_', metaData.species, '.html'], 'w+'); % % open file for writing, delete existing content
-  fprintf(oid, '%s\n' ,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">');
-  fprintf(oid, '%s\n' ,'<HTML>');
-  fprintf(oid, '%s\n' ,'  <HEAD>');
-  fprintf(oid,['    <TITLE>add-my-pet: ', speciesprintnm, '</TITLE>\n']);
-  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
-  fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
-  fprintf(oid, '%s\n' , ' </HEAD>'); 
-% ---------------------------------------------------------------------
-fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 cols="150,*">\n');
-fprintf(oid, ['<FRAME SRC="i_left_',metaData.species,'.html" NAME="left">\n']);
-fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 rows="100,*">\n');
-fprintf(oid, ['<FRAME SRC="i_top_',metaData.species,'.html" NAME="top">\n']);
-fprintf(oid, ['<FRAME SRC="',metaData.species,'.html" NAME="main">\n']);
-fprintf(oid, '</FRAMESET>\n');
-fprintf(oid, '  </FRAMESET>\n');
-fprintf(oid, '<NOFRAMES>\n');
-fprintf(oid, '  <BODY>\n');    
-fprintf(oid, ['<A HREF=',metaData.species,'.html"></A>']);    
-fprintf(oid, '  </BODY>\n');
-% ---------- close i_my_pet.html ------------------------   
-fprintf(oid, '  </NOFRAMES>\n');
-fprintf(oid, '  </HTML>\n');
-fclose(oid);
+% %%% read and write i_my_pet
+% oid = fopen(['i_', metaData.species, '.html'], 'w+'); % % open file for writing, delete existing content
+%   fprintf(oid, '%s\n' ,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+%   fprintf(oid, '%s\n' ,'<HTML>');
+%   fprintf(oid, '%s\n' ,'  <HEAD>');
+%   fprintf(oid,['    <TITLE>add-my-pet: ', speciesprintnm, '</TITLE>\n']);
+%   fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+%   fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+%   fprintf(oid, '%s\n' , ' </HEAD>'); 
+% % ---------------------------------------------------------------------
+% fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 cols="150,*">\n');
+% fprintf(oid, ['<FRAME SRC="i_left_',metaData.species,'.html" NAME="left">\n']);
+% fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 rows="100,*">\n');
+% fprintf(oid, ['<FRAME SRC="i_top_',metaData.species,'.html" NAME="top">\n']);
+% fprintf(oid, ['<FRAME SRC="',metaData.species,'.html" NAME="main">\n']);
+% fprintf(oid, '</FRAMESET>\n');
+% fprintf(oid, '  </FRAMESET>\n');
+% fprintf(oid, '<NOFRAMES>\n');
+% fprintf(oid, '  <BODY>\n');    
+% fprintf(oid, ['<A HREF=',metaData.species,'.html"></A>']);    
+% fprintf(oid, '  </BODY>\n');
+% % ---------- close i_my_pet.html ------------------------   
+% fprintf(oid, '  </NOFRAMES>\n');
+% fprintf(oid, '  </HTML>\n');
+% fclose(oid);
 
 %%% read and write i_results_my_pet
 oid = fopen(['i_results_', metaData.species, '.html'], 'w+'); % % open file for writing, delete existing content
@@ -138,17 +138,17 @@ fprintf(oid, '<DIV ALIGN=CENTER VALIGN="top">\n');
 fprintf(oid, '<TABLE>\n');
 fprintf(oid, ['<TR> <TD style="text-align:center"> <A  class="link" TARGET="_top"  HREF="i_results_',metaData.species,'.html" >  Predictions <BR> & <BR> Data</A></TD></TR>\n']);
 fprintf(oid, '<TR> <TD> &nbsp;  </TD> </TR>\n');
-fprintf(oid, ['<TR> <TD style="text-align:center" > <A  class="link" TARGET="_top"  HREF="i_',metaData.species,'.html"> Properties <BR> & <BR> Parameters </A></TD></TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center" > <A  class="link" TARGET="main"  HREF="',metaData.species,'.html"> Parameters </A></TD></TR>\n']);
+fprintf(oid, '<TR> <TD> &nbsp;  </TD> </TR>\n');
+fprintf(oid, ['<TR> <TD style="text-align:center" > <A  class="link" TARGET="main"  HREF="',metaData.species,'_stat.html"> Properties </A></TD></TR>\n']);
 fprintf(oid, '<TR> <TD> &nbsp;  </TD> </TR>\n');
 fprintf(oid, '<TR> <TD> &nbsp;</TD> </TR>\n');
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/mydata_',metaData.species,'.m" target = "_blank">mydata</A>  </TD></TR>\n']);
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/predict_',metaData.species,'.m" target = "_blank">predict</A> </TD> </TR>\n']);
-fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/pars_init_',metaData.species,'.m" target = "_blank">pars_init</A> </TD> </TR>\n']);
-% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/run_',metaData.species,'.m" target = "_blank">run</A> </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/mydata_',metaData.species,'.m" target = "main">mydata</A>  </TD></TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/predict_',metaData.species,'.m" target = "main">predict</A> </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries/',metaData.species,'/pars_init_',metaData.species,'.m" target = "main">pars_init</A> </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"> &nbsp; </TD> </TR>\n']);
 fprintf(oid, ['<TR> <TD style="text-align:center"><A HREF="../entries_zip/',metaData.species,'_zip.zip" TARGET="_top" onMouseOver="window.status=']);
 fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/folder.png" WIDTH="110px"  BORDER="0" ALT="DOWNLOAD ZIPPED FOLDER with files"> </A></TD> </TR>\n']);
-% fprintf(oid, ['<TR> <TD style="text-align:center"><A class="link" href = "../entries_zip/',metaData.species,'_zip.zip" target = "_blank"> All files  </A>  </TR> \n']);
 fprintf(oid, '</TABLE>\n');
 fprintf(oid, '</DIV>\n');
 

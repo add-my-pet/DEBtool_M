@@ -1,17 +1,29 @@
+%% dmcn
+% ode's for change in reserve densities (carbohydrates & nitrate)
+
+%%
 function dXt = dmcn (t, Xt)
   %  created: 2007/01/19 by Bas Kooijman
+  
+  %% Syntax
+  % dXt = <../dmcn.m *dmcn*> (t,Xt)
+
+  %% Description
+  % ode's for change in reserve densities (carbohydrates & nitrate)
   %
-  %% Input
-  %  t: scalar with time
-  %  Xt: 2-vector with reserve densities: carbohydrates & nitrate
+  % Input:
   %
-  %% Output
-  %  dXt: 2-vector with change in reserve densities
+  % * t: scalar with time
+  % * Xt: 2-vector with reserve densities: carbohydrates & nitrate
+  %
+  % Output:
+  %
+  % * dXt: 2-vector with change in reserve densities
   %    given Light(t), DIC(t), DIN(t); see p170-171 of DEB-book
   
   global tL tC tN y_EC_V y_EN_V ...
       j_EC_M j_EN_M j_EC_Am j_EN_Am z_C ...
-      k_E kap_EC kap_EN;
+      k_E kap_EC kap_EN
   
   %  unpack Xt
   m_EC = Xt(1); m_EN = Xt(2); % mol per mol of structure

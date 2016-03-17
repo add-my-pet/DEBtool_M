@@ -60,6 +60,8 @@ function cPar = parscomp_st(p)
 
 if isfield(p,'p_Am') == 0
   p_Am = p.z * p.p_M/ p.kap;        % J/d.cm^2, {p_Am} spec assimilation flux
+else
+  p_Am = p.p_Am;
 end
 
 % %               X         V          E         P

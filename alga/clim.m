@@ -1,23 +1,32 @@
+%% clim
+% C-limited algal growth
+
+%%
 function f = clim(p, tOD)
-  %  created 2002/02/11 by Bas Kooijman, modified 2011/04/12
-  %
+  % created 2002/02/11 by Bas Kooijman, modified 2011/04/12
+  
+  %% Syntax
+  % f = <../clim.m *clim*> (p, tOD)
+
   %% Description
-  %  Algal growth is assumed to be carbon limited
+  % Algal growth is assumed to be carbon limited
   %   the CO2 pool is exchanging with a HCO3 pool that is not available
   %   to the algae; algal mass is measured in Optical Densities.
   %
-  %% Input
-  %  p: (9,k) matrix with parameters values in p(:,1) (see below)
-  %  tOD: (tn,2) matrix with exposure times
+  % Input:
   %
-  %% Output
-  %  f: (nt, 1) matrix with Optical Densities
+  % * p: (9,k) matrix with parameters values in p(:,1) (see below)
+  % * tOD: (tn,2) matrix with exposure times
   %
+  % Output:
+  %
+  % * f: (nt, 1) matrix with Optical Densities
+  
   %% Remarks
-  %  uses routine dclim for integration
-  %
+  % Uses routine dclim for integration
+  
   %% Example of use
-  %  see mydata_clim
+  % see <mydata_clim.m *mydata_clim*>
  
   global K yEV kC kE k0 kCB kBC;
 

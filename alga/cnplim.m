@@ -1,16 +1,22 @@
+%% cnplim
+% simultaneous C, N, P limitation in a batch-culture
+
+%%
 function f = cnplim(p, t, NP)
   %  created 2002/02/11 by Bas Kooijman
-  %
+  
+  %% Syntax
+  % f = <../cnplim.m *cnplim*> (p, t, NP)
+
   %% Description
-  %  simultaneous C, N, P limitation in a batch-culture
+  % Simultaneous C, N, P limitation in a batch-culture
   %     C is consumed as CO2 only, while CO2 exchanges with HCO3
-  %     maintenance costs are assummed to be negligibly small
-  %  apply this function with nmregr2 for parameter estimation,
-  %     or pregr2 for parameter statistics, or shregr2 for plotting
-  %  calls for dcnplim; see mydata_cnplim for an application
+  %     maintenance costs are assummed to be negligibly small.
   %
-  %% Input
-  %% p: parameter vector:
+  % Input:
+  %
+  % * p: parameter vector:
+  %
   %     p(1)=K_C; mM, saturation constant for CO2 (C)
   %     p(2)=K_N; mM, saturation constant for nitrate (N)
   %     p(3)=K_P; mM, saturation constant for phosphate (P)
@@ -32,18 +38,25 @@ function f = cnplim(p, t, NP)
   %     p(19)=m_N0; mol/mol, initial N-reserve density
   %     p(20)=m_P0; mol/mol, initial P-reserve density
   %     p(21)=Biomm0; mM, initial structure concentration
-  %  t: (nt)-vector with time
-  %  NP: (NP,2)-matrix with initial nitrate, phosphate concentrations
   %
-  %% Output
-  %  f: biomass
+  % * t: (nt)-vector with time
+  % * NP: (NP,2)-matrix with initial nitrate, phosphate concentrations
   %
-  %%  State vector:
+  % Output:
+  %
+  % % f: biomass
+  
+  %% Remarks
+  % Calls for dcnplim; see mydata_cnplim for an application.
+  % Apply this function with nmregr2 for parameter estimation,
+  %     or pregr2 for parameter statistics, or shregr2 for plotting
+
+  %  State vector:
   %  Xt: C = Xt(1);  N = Xt(2);  P = Xt(3); m_C = Xt(4); m_N = Xt(5);
   %      m_P = Xt(6); X = Xt(7); B = Xt(8);
 
-  global K_C K_N K_P j_Cm j_Nm j_Pm k_E yC_EV yN_EV yP_EV k_BC k_CB;
-  global kap_C kap_N kap_P;
+  global K_C K_N K_P j_Cm j_Nm j_Pm k_E yC_EV yN_EV yP_EV k_BC k_CB
+  global kap_C kap_N kap_P
  
   % global B C N P m_C m_N m_P X B r;
 

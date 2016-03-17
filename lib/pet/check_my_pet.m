@@ -69,7 +69,7 @@ end
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-bibNotToCheck = {'Kooy2010', 'LikaKear2011'};    % list of bib references that does not need to have an explicit reference
+bibNotToCheck = {'Kooy2010', 'LikaKear2011', 'Wiki'};    % list of bib references that does not need to have an explicit reference
 
 if exist(['mydata_', speciesnm], 'file')~=2
   error(['    There is no mydata_', speciesnm,' file']);
@@ -372,7 +372,9 @@ if sum(strcmp(txtDataFields, 'bibkey'))
   else
     for i = 1:length(referencedFields)
       if sum(strcmp(referencedFields(i), bibkeyFields)) == 0
-        fprintf(['In mydata_',speciesnm,'.m: There is no bibkey defined for data point/set or fact ', referencedFields{i}, '. \n']);
+        if sum(strcmp(referencedFields(i), discussionFields)) == 0
+          fprintf(['In mydata_',speciesnm,'.m: There is no bibkey defined for data point/set or fact ', referencedFields{i}, '. \n']);
+        end
       end
     end
   end
@@ -487,7 +489,7 @@ end
 % checking the existence of metapar fields
 EparFields = get_parfields(metaPar.model);
 
-if isempty(EparFields)
+if isempty(EparFields) && ~strcmp(metaPar.model, 'ntm')
   error(['    In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models']);
 end
 

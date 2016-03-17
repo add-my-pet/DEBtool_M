@@ -3,7 +3,7 @@
 
 %%
 function print_results_my_pet_html(metaData, metaPar, par)
-% created 2015/04/11 by Starrlight & Goncalo Marques; modified 2015/08/23 Starrlight 
+% created 2015/04/11 by Starrlight & Goncalo Marques; modified 2015/08/23 Starrlight; modified 2016/03/09 Bas Kooijman  
 
 %% Syntax
 % <../print_results_my_pet_html.m *print_results_my_pet_html*> (metaData, metaPar, par)
@@ -18,8 +18,7 @@ function print_results_my_pet_html(metaData, metaPar, par)
 % * par
 
 %% Remarks
-% Keep in mind that this function is specifically designed for creating the
-% webpage of add-my-pet -
+% Keep in mind that this function is specifically designed for creating the webpage of add-my-pet -
 
 %% Example of use
 % load('results_my_pet.mat');
@@ -27,7 +26,7 @@ function print_results_my_pet_html(metaData, metaPar, par)
 
 % v2struct(metadata); v2struct(metapar); 
 
-n_author = length(metaData.author);
+n_author = length(metaData.author); % number of authors
 
 switch n_author
     
@@ -65,19 +64,15 @@ txt_date_mod_1 =  '';
 
 end  
 
-speciesprintnm = strrep(metaData.species, '_', ' ');
+% remove the underscore in the species name
 
 oid = fopen(['results_', metaData.species, '.html'], 'w+'); % open file for reading and writing, delete existing content
 fprintf(oid, '%s\n' ,'<!DOCTYPE html>');
 fprintf(oid, '%s\n' ,'<HTML>');
 fprintf(oid, '%s\n' ,'  <HEAD>');
-fprintf(oid,['    <TITLE>add-my-pet: results ', speciesprintnm, '</TITLE>\n']);
+fprintf(oid,['    <TITLE>add-my-pet: results ', strrep(metaData.species, '_', ' '), '</TITLE>\n']);
 fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
 fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
-
-% % ----- calls the javascript function (found in subfolder sys):
-% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="../sys/boxmodal.js"></script>');
-% fprintf(oid, '%s\n' ,'<script type="text/javascript" src="entries.js"></script>'); % java functions specific for the entries of 
 
 % ------ calls the cascading style sheet (found in subfolder css):
 fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collectionstyle.css">'); 
@@ -96,13 +91,13 @@ fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/w
 fprintf(oid,['<a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction#Goodness_of_fit_criterion" >MRE</a>',' = %8.3f \n'],metaPar.MRE);   
 fprintf(oid,'</p> \n');     % close the paragraph
 
-[data, auxData, metaData, txtData, weights] = feval(['mydata_',metaData.species]); 
+[data, auxData, metaData, txtData] = feval(['mydata_',metaData.species]); 
 prdData = feval(['predict_',metaData.species], par, data, auxData);
 
-% appends new field to prd_data with predictions for the pseudo data:
+% appends new field to prdData with predictions for the pseudo data:
 % (the reason is that the predicted values for the pseudo data are not
-% returned by predict_my_pet and this has to do with compatibility with the
-% multimetadata.species parameter estimation):
+%   returned by predict_my_pet and this has to do with compatibility with the
+%   multimetadata.species parameter estimation):
 prdData = predict_pseudodata(par, data, prdData);
 
 % make structure for 'real' and predicted pseudodata:
@@ -112,12 +107,12 @@ psTxtData.units = txtData.units.psd;
 psTxtData.label = txtData.label.psd;
 
 % remove pseudodata:
-data    = rmfield_wtxt(data, 'psd');
+data        = rmfield_wtxt(data, 'psd');
 prdData    = rmfield_wtxt(prdData, 'psd');
 txtData    = rmfield_wtxt(txtData, 'psd');
 
-%-----------------------------------------------------------
-% make table for zero-variate data set:
+
+%%  make table for zero-variate data set:
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="7"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Zero-variate_data" >Zero-variate</a> data</TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b></TD><TD><b>Predicted</b></TD><TD><b>(RE)</b></TD><TD><b>Unit</b></TD><TD><b>Description</b></TD><TD><b>Reference</b></TD></TR>\n');
@@ -132,9 +127,9 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b
     re    = metaPar.RE(j); 
     unit  = txtData.units.(nm{j});
     des   = txtData.label.(nm{j});
-    n = iscell(txtData.bibkey.(nm{j})); 
-      if n
-      n = length(txtData.bibkey.(nm{j}));
+    n = iscell(txtData.bibkey.(nm{j}));  % if 1 then there are several references for this data
+      if n % if there are several references
+      n = length(txtData.bibkey.(nm{j})); % number of references
       REF = [];
         for i = 1:n
         ref = txtData.bibkey.(nm{j}){i};
@@ -153,80 +148,83 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Data</b></TD><TD><b>Observed</b
   end
 fprintf(oid, '    <TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TF></TR>\n');
 fprintf(oid, '    </TABLE>\n');  
-%%
-% make a nice table for uni-variate data set:
+
+%% print table with uni-variate data :
 if isempty(metaData.data_1) == 0
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="6"><a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Univariate_data" >Uni-variate</a> data </TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TD><b>Dataset</b></TD><TD><b>Figure</b></TD><TD><b>(RE)</b></TD><TD><b>Independent variable</b></TD><TD><b>Dependent variable</b></TD><TD><b>Reference</b></TD></TR>\n');  
-unidta = []; 
-fignum = 0;
-
-   for j = 1:nst
+ 
+% select the positions of univariate data 
+uniData = [];
+  for j = 1:nst
     eval(['[aux, k] = size(data.', nm{j}, ');']) % number of data points per set 
-        if k >1 
-        unidta = [unidta;j]; 
-        end
-   end
-
-FIGNUM = zeros(length(unidta),1);    
+    if k >1 
+      uniData = [uniData;j]; 
+    end
+  end
+n_uniData = length(uniData); 
+% number of each figure in the absense of grouped plots
+% in this case there is the same amount of figures as grouped plots
+ID = (1:n_uniData)';   % fig number = index of uniData 
    
- switch isfield(metaData,'grp')
-    
-    case 0      
-        
-    for j = 1:length(unidta)
-        fignum = fignum + 1;
-        FIGNUM(j) = fignum;
-    end   
-        
-    otherwise
-        
-        nbGrpPlots = length(metaData.grp.sets); 
-        figID = zeros(length(unidta),nbGrpPlots);
-       
-            for j = 1:length(unidta)
-                Val = zeros(1,nbGrpPlots);
-                for t = 1:nbGrpPlots
-                 Val(1,t)  = sum(strcmp(nm{unidta(j)},metaData.grp.sets{t}));
-                end
-                figID(j,:) = Val;
-            end
-
-            FIGNUM(1) = 1;
-            for i = 1 : length(figID) - 1
+ if isfield(metaData,'grp')
+     
+   n_GrpPlots = length(metaData.grp.sets);  % number of grouped plots
                 
-                if sum(figID(i+1,:)) == 0
-                    FIGNUM(i+1) = FIGNUM(i) + 1;
-                else
-                    if isequal(figID(i+1,:), figID(i,:))
-                 FIGNUM(i+1) = FIGNUM(i);
-                    else
-                 FIGNUM(i+1) = FIGNUM(i) + 1;
-                    end  
-                end                                 
-            end
-                 
- end 
-             
+   uniDataNames = cell(0);  % initiate cell array with names of all uni variate data sets:
+   for i = 1:n_uniData
+     uniDataNames{i} = nm{uniData(i)};
+   end
+   
+   % fill selection-matrix to identify grp plot members
+   % it assumes that all univariate datasets occur in exactly 1 figure
+   % sequence of data-sets in grp plots doesn't need to match sequence in uniData 
+   sel = zeros(n_uniData,n_GrpPlots);          % initiate selection grp plot members
+   for j = 1:n_GrpPlots                        % scan grouped plots
+     set_j =  metaData.grp.sets{j}';           % cell-string with names of datasets in grp j  
+     for i = 1: length(set_j)                  % scan datasets in grp j
+       sel(:,j) = sel(:,j) + strcmp(uniDataNames,set_j{i})'; % add tot grp plot members 
+     end
+   end
+   sel_tot = sum(sel,2) == 1;                  % booleans with grp plot members in uniData in any grp plot
+   sel = sel == 1;                             % booleans with grp plot members in uniData in grp 1,2,..
+   
+   j_grp = (1:n_GrpPlots)';                    % compose grp id's
+   ID = zeros(n_uniData,1);                    % initiate fig id
+   if sel_tot(1)                               % first unidata set is member of grp plots
+     ID(sel(:,j_grp(sel(1,:)))) = 1;           % set all members of that grp
+   else                                        % first unidataset not a member of any grp plot
+     ID(1) = 1;                                % 
+   end
+   for i = 2:n_uniData                         % scan other uniData sets
+     if sel_tot(i) && ID(i) == 0               % new member of grp data
+       ID(sel(:,j_grp(sel(i,:)))) = ID(i - 1) + 1; % set all members of that grp
+     elseif ID(i) == 0                        % not a member of any grp data
+       ID(i) = ID(i - 1) + 1;                  % increase fig id counter
+     end
+   end
+               
+ end
+ 
+% print out columns in the univariate data set table:
+     for j = 1: n_uniData % for each univariate data set
+        label  = nm{uniData(j)}; % "Data set"
+        re     = metaPar.RE(uniData(j)); % "relative error"
+        ivar   = txtData.label.(nm{uniData(j)}){1}; % independant variable
+        dvar   = txtData.label.(nm{uniData(j)}){2}; % dependant variable
 
-     for j = 1: length(unidta)
-        label  = nm{unidta(j)};
-        re     = metaPar.RE(unidta(j)); 
-        ivar   = txtData.label.(nm{unidta(j)}){1};
-        dvar   = txtData.label.(nm{unidta(j)}){2};
-
-        if FIGNUM(j) < 10
-        fig   = ['see <A href = "results_',metaData.species,'_0',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        if ID(j) < 10
+        fig   = ['see <A href = "results_',metaData.species,'_0',num2str(ID(j)),'.png"> Fig. ',num2str(ID(j)),'</A>'];
         else
-        fig   = ['see <A href = "results_',metaData.species,'_',num2str(FIGNUM(j)),'.png"> Fig. ',num2str(FIGNUM(j)),'</A>'];
+        fig   = ['see <A href = "results_',metaData.species,'_',num2str(ID(j)),'.png"> Fig. ',num2str(ID(j)),'</A>'];
         end        
-      n = iscell(txtData.bibkey.(nm{unidta(j)}));
+      n = iscell(txtData.bibkey.(nm{uniData(j)}));
       if n
-      n = length(txtData.bibkey.(nm{unidta(j)}));
+      n = length(txtData.bibkey.(nm{uniData(j)}));
       REF = [];
         for i = 1:n
-        ref = txtData.bibkey.(nm{unidta(j)}){i};
+        ref = txtData.bibkey.(nm{uniData(j)}){i};
           if i == 1
           REF = [REF,' ',ref];
           else
@@ -234,7 +232,7 @@ FIGNUM = zeros(length(unidta),1);
           end
         end
       else
-      REF = txtData.bibkey.(nm{unidta(j)});    
+      REF = txtData.bibkey.(nm{uniData(j)});    
       end
       fprintf(oid, '    <TR > <TD>%s</TD> <TD>%s</TD> <TD>(%3.4g)</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD></TR>\n',...
       label, fig, re, ivar, dvar, REF);        
@@ -243,12 +241,11 @@ FIGNUM = zeros(length(unidta),1);
  fprintf(oid, '    </TABLE>\n'); 
 end
  
-%%
-% make table for pseudo-data:
+%% Print table with pseudo-data:
 [nm, nst] = fieldnmnst_st(pseudo);
 fprintf(oid, '      <TABLE id="t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="5"> Pseudo-data </TH></TR>\n');
-fprintf(oid, ['    <TR BGCOLOR = "#FFE7C6"><TD><B>Data</B></TD><TD><B>Generalised animal</B></TD><TD><B>',speciesprintnm,'</B></TD><TD><B>Unit</B></TD><TD><B>Description</B></TD></TR>\n']);
+fprintf(oid, ['    <TR BGCOLOR = "#FFE7C6"><TD><B>Data</B></TD><TD><B>Generalised animal</B></TD><TD><B>',strrep(metaData.species, '_', ' '),'</B></TD><TD><B>Unit</B></TD><TD><B>Description</B></TD></TR>\n']);
   for j = 1:nst
        name = nm{j};
        dta   = pseudo.(nm{j});
@@ -314,7 +311,6 @@ fprintf(oid, '<H3 style="clear:both" class="pet">Bibliography</H3>\n');
 fprintf(oid,'</ul> \n');     % open the unordered list   
 fprintf(oid, '<p>\n');
 fprintf(oid, ['<A class="link" href = "bib_',metaData.species,'.bib" target = "_blank">Bibtex files with references for this entry </A> <BR> \n']);
-% fprintf(oid, 'A PDF of all of the references of the add-my-pet collection can be consulted <A target="_blank" href="../../add_my_pet_bibliography.pdf">here</A>\n');
 fprintf(oid, '</p>\n' );
   
 %% Authors and last data of modification
@@ -326,3 +322,8 @@ fprintf(oid,['    <H3 ALIGN="CENTER">', txt_author, ', ', txt_date, ...
 fprintf(oid, '  </BODY>\n');
 fprintf(oid, '  </HTML>\n');
 fclose(oid);
+
+
+
+
+

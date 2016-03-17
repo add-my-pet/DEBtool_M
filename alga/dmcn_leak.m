@@ -1,17 +1,30 @@
+%% dmcn_leak
+% ode's for change in reserve densities (carbohydrates & nitrate)
+
+%%
 function dXt = dmcn_leak (t,Xt)
   %  created: 2007/01/20 by Bas Kooijman
+
+  %% Syntax
+  % dXt = <../dmcn_leak.m *dmcn_leak*> (t,Xt)
+
+  %% Description
+  % Ode's for change in reserve densities (carbohydrates & nitrate)
+  %  given Light(t), DIC(t), DIN(t)
   %
-  %% Input
-  %  t: scalar with time
-  %  Xt: 2-vector with reserve densities: carbohydrates & nitrate
+  % Input:
   %
-  %% Ouput
-  %  dXt: 2-vector with change in reserve densities
+  % * t: scalar with time
+  % * Xt: 2-vector with reserve densities: carbohydrates & nitrate
+  %
+  % Ouput:
+  %
+  % * dXt: 2-vector with change in reserve densities
   %    given Light(t), DIC(t), DIN(t); see p170-171 of DEB-book
   
   global tL tC tN y_EC_V y_EN_V ...
       j_EC_M j_EN_M j_EC_Am j_EC_AM j_EN_Am j_EN_AM z_C ...
-      k_E kap_EC kap_EN;
+      k_E kap_EC kap_EN
   
   %  unpack Xt
   m_EC = Xt(1); m_EN = Xt(2); % mol per mol of structure
