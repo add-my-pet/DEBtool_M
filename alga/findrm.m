@@ -1,8 +1,9 @@
 function f = findrm (rm)
   % created: 2000/09/21 by Bas Kooijman
-  % called from shbatch to find growth rate and res dens;
+  % called from shbatch to find growth rate and res dens
+  
   global kT_E y_EN_V y_EP_V jT_EN_Am jT_EP_Am jT_EN_M jT_EP_M ...
-      X_N X_P K_N K_P kap_EN kap_EP;
+      X_N X_P K_N K_P kap_EN kap_EP
     
   r = rm(1); m_EN = rm(2); m_EP = rm(3);
   a = (m_EN.*(kT_E - r) - jT_EN_M)/y_EN_V;

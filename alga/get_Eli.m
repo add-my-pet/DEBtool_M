@@ -1,23 +1,32 @@
+%%
+%
+
+%%
 function [El1 El2 El3 ld info] = get_Eli(p, f, ld0)
   %  created at 2014/10/11 by Bas Kooijman
-  %
+  
+  %% Syntax
+  % [El1 El2 El3 ld info] = <../get_Eli.m *get_Eli*> (p, f, ld0)
+
   %% Description
-  %  Obtains mean scaled length^i at constant food density. 
+  % Obtains mean scaled length^i at constant food density. 
   %
-  %% Input
-  %  p: 3-vector with parameters: g, k, v_H^d 
-  %  f: optional scalar with scaled functional responses (default 1)
-  %  ld0: optional scalar with scaled length at division
+  % Input:
+  %
+  % * p: 3-vector with parameters: g, k, v_H^d 
+  % * f: optional scalar with scaled functional responses (default 1)
+  % * ld0: optional scalar with scaled length at division
   %  
-  %% Output
-  %  El1: scalar with mean scaled length
-  %  El2: scalar with mean scaled squared length
-  %  El3: scalar with mean scaled cubed length
-  %  ld: scalar with scaled length at division
-  %  info: indicator equals 1 if successful, 0 otherwise
+  % Output:
   %
+  % * El1: scalar with mean scaled length
+  % * El2: scalar with mean scaled squared length
+  % * El3: scalar with mean scaled cubed length
+  % * ld: scalar with scaled length at division
+  % * info: indicator equals 1 if successful, 0 otherwise
+  
   %% Example of use
-  %    get_EL([.5, .1, .2], 1)
+  % get_EL([.5, .1, .2], 1)
   
   %% Code
   % unpack pars

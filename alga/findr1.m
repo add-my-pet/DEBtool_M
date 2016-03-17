@@ -1,7 +1,9 @@
 function r =findr1 (m)
   % created: 2000/10/03 by Bas Kooijman
   % called from dchem to find growth rate; see p169 of DEB-book
-  global m_EN m_EP kT_E y_EN_V y_EP_V jT_EN_M jT_EP_M;
+  
+  global m_EN m_EP kT_E y_EN_V y_EP_V jT_EN_M jT_EP_M
+  
    m_EN = m(1); m_EP = m(2);
    i=0; j = 0; ni = 20; norm = 1e-6; F = 1;
    r = 1/(1/((m_EN*kT_E - jT_EN_M)/y_EN_V) + ...

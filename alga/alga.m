@@ -49,7 +49,7 @@
 
 pars_alga;
 
-%% batch reactor
+% batch reactor
 shbatch;  % excreted reserves are NOT available for assimilation
 fprintf('hit a key to proceed \n');
 pause;
@@ -58,7 +58,7 @@ shbatch1; % excreted reserves are available for assimilation
 fprintf('hit a key to proceed \n');
 pause;
 
-%% chemostat
+% chemostat
 shchem;   % excreted reserves are NOT available for assimilation
 fprintf('hit a key to proceed \n');
 pause;
@@ -68,7 +68,7 @@ fprintf('hit a key to proceed \n');
 pause;
 
 shcycle;  % two nutrients concentrations cycle in time
-%% parameters are specified in pars_cycle
+% parameters are specified in pars_cycle
 
 
 
