@@ -489,7 +489,7 @@ end
 % checking the existence of metapar fields
 EparFields = get_parfields(metaPar.model);
 
-if isempty(EparFields)
+if isempty(EparFields) && ~strcmp(metaPar.model, 'ntm')
   error(['    In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models']);
 end
 
