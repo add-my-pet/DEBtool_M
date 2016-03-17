@@ -22,7 +22,7 @@ function tree = pedigree(taxon)
 %% Remarks
 % The root is Animalia. 
 % If chosen as taxon, an tree of all species in the collection results.
-% New lines are written with char(1), tabs with char(9).
+% New lines are written with char(10), tabs with char(9).
 % The classification follows that of Wikipedia
 
 %% Example of use
