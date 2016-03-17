@@ -1,9 +1,16 @@
+%% shmcn
+% Sets parameters and produces figs for V1-morphs with 1 structure and C and N reserves
+
+%%
 function shmcn(j)
   %  created: 2007/01/19 by Bas Kooijman, modified 2009/09/21
-  %
+  
+  %% Syntax
+  % <../shmcn.m *shmcn*> (j) 
+
   %% Description
-  %  Sets parameters and produces plots; mcn does the computation
-  %  V1-morphs with 1 structure and C and N reserves
+  % Sets parameters and produces plots; mcn does the computation
+  % V1-morphs with 1 structure and C and N reserves
   %  Light, DIC and DIN are specified as forcing spline functions (plot 1)
   %  reserve densities for C and N are obtained by integration    (plot 2)
   %  excreted reserve fluxes are obtained from reserve densities  (plot 3)
@@ -12,17 +19,18 @@ function shmcn(j)
   %    as overheads of assimilation, maintenance and growth
   %    in case of shrinking other products might be produced as well
   % 
-  %% Input
-  %  j: optional scalar with plot number
-  %  if specified, other plots will be suppresssed
+  % Input:
   %
-  %% Output
-  %  plots
+  % * j: optional scalar with plot number;
+  %    if specified, other plots will be suppresssed
   %
+  % Output:
+  %
+  % * plots
+  
   %% Example of use
-  %  shmcn_lm
+  % shmcn
 
-  %% Code
   %  set parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   p = [0.2; % -, z_C weight coefficient for DIC relative to light
        0.5; % mol/mol.h, j_EC_Am max spec C-assimilation

@@ -1,42 +1,53 @@
+%% sar2_psri
+% obtains specific assimilation rate of carbohydrates for oxygenic photosynthesis and flux of captured, but not-processed, photons
+
+%%
 function [j_HCO j_L_ info] = sar2_psri(j_L, X_C, X_O, r, p, n_V, j_H)
   % created 2011/07/09 by Bas Kooijman, modifoed 2011/07/18
-  %
+  
+  %% Syntax
+  % [j_HCO j_L_ info] = <../sar2_psri.m *sar2_psri*> (j_L, X_C, X_O, r, p, n_V, j_H)
+
   %% Description
-  %  The function obtains the specific assimilation rate of carbohydrates for oxygenic photosynthesis and the flux of captured, 
+  % The function obtains the specific assimilation rate of carbohydrates for oxygenic photosynthesis and the flux of captured, 
   %    but not processed photons, which fuel fluorescense. 
-  %  It accounts for photo-synthesis, photo-respiration and photo-inhibition. 
-  %  Photons and carbon dioxide, as well as photons and dioxygen, are treated as parallelly processed complemantary compounds, 
+  % It accounts for photo-synthesis, photo-respiration and photo-inhibition. 
+  % Photons and carbon dioxide, as well as photons and dioxygen, are treated as parallelly processed complemantary compounds, 
   %    while carbon dioxide and dioxygen are substitutable compounds. 
-  %  Photo-inhbition occurs when photons bind to a photon-SU complex; 
+  % Photo-inhbition occurs when photons bind to a photon-SU complex; 
   %  recovery from this situation occurs when one of the photons is released. 
-  %  The intracellular concentration of carbon dioxide and dioxygen is affected by growth and maintenance. 
-  %  Maintenance is fuelled by corbohydrates only, in terms of O2 and CO2. 
-  %  The stoichiometry of the growth process assumes NO3 as complementary compound.
+  % The intracellular concentration of carbon dioxide and dioxygen is affected by growth and maintenance. 
+  % Maintenance is fuelled by corbohydrates only, in terms of O2 and CO2. 
+  % The stoichiometry of the growth process assumes NO3 as complementary compound.
   %
-  %% Input
-  %  j_L, X_C, X_O, X_N: scalars with light flux (times absorption eff.), CO2, O2 and nitrogen concentrations
-  %  r: scalar with initial estimate for r
-  %  p: 10-vector with parameters
-  %     affinity for carbon dioxide (dm^3/d.mol V)
-  %     affinity for dioxygen (dm^3/d.mol V)
-  %     maximum net specific carbon fixation (1/d)
-  %     maximum net specific photo respiration (1/d)
-  %     rate of carbon dioxide exchnage with environment (1/d)
-  %     rate of dioxygen exchnage with environment (1/d)
-  %     inhibition repair rate (1/d)
-  %     specific maintenance for carbohydrate (mol/d.mol)
-  %     yield of structure on hydrocarbon (mol/mol)
-  %     volume-specific mass of structure, mol/cm^3
-  %  n_V: 4-vector with chemical indices of structure; n_V(1) = 1
-  %  j_H: optional scalar with initial estimate for j_H
+  % Input:
   %
-  %% Output
-  %  j_HCO: 3-vector with spec assimilation fluxes of CH2O, CO2, O2
-  %  j_L_: salar with non-processed photons that are captured by the antenna
-  %  info: scalar with numerical failure (0) or success (1)
+  % * j_L, X_C, X_O, X_N: scalars with light flux (times absorption eff.), CO2, O2 and nitrogen concentrations
+  % * r: scalar with initial estimate for r
+  % * p: 10-vector with parameters
   %
-  %% An example of use
-  %  see mydata_sar_psri
+  %    -1  affinity for carbon dioxide (dm^3/d.mol V)
+  %    -2  affinity for dioxygen (dm^3/d.mol V)
+  %    -3  maximum net specific carbon fixation (1/d)
+  %    -4  maximum net specific photo respiration (1/d)
+  %    -5  rate of carbon dioxide exchnage with environment (1/d)
+  %    -6  rate of dioxygen exchnage with environment (1/d)
+  %    -7  inhibition repair rate (1/d)
+  %    -8  specific maintenance for carbohydrate (mol/d.mol)
+  %    -9  yield of structure on hydrocarbon (mol/mol)
+  %    -10 volume-specific mass of structure, mol/cm^3
+  %
+  % * n_V: 4-vector with chemical indices of structure; n_V(1) = 1
+  % * j_H: optional scalar with initial estimate for j_H
+  %
+  % Output:
+  %
+  % * j_HCO: 3-vector with spec assimilation fluxes of CH2O, CO2, O2
+  % * j_L_: salar with non-processed photons that are captured by the antenna
+  % * info: scalar with numerical failure (0) or success (1)
+  
+  %% Example of use
+  % see <../mydata_sar_psri.m *mydata_sar_psri*>
 
   b_C      = p( 1); % dm^3/d.mol V, affinity for CO2
   b_O      = p( 2); % dm^3/d.mol V, affinity for O2
