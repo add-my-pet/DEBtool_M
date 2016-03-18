@@ -1,29 +1,41 @@
+%% sgr1
+% specific growth rate for V1 morph with 1 reserve, allowing for shrinking
+
+%%
 function [r, jEM, jVM, jER, info] = ...
       sgr1 (m_E, k_E, j_EM, y_EV, j_VM, a, r0)
   %  created: 2007/09/26 by Bas Kooijman, modified 2009/09/21
-  %
+  
+  %% Syntax
+  % [r, jEM, jVM, jER, info] = <../sgr1.m *sgr1*> (m_E, k_E, j_EM, y_EV, j_VM, a, r0) 
+
   %% Description
-  %  pecific growth rate for V1 morph with 1 reserve, allowing for shrinking
+  % Specific growth rate for V1 morph with 1 reserve, allowing for shrinking.
   %
-  %% Input
-  %  m_E:  scalar with mol/mol, reserve density
-  %  k_E:  scalar with 1/time, reserve turnover rate
-  %  j_EM: scalar with mol/time.mol, spec maintenance flux if from reserve
-  %  y_EV: scalar with mol/mol, yield of reserve on structure
-  %  j_VM: optional scalar with mol/time.mol, spec maintenance flux
+  % Input:
+  %
+  % * m_E:  scalar with mol/mol, reserve density
+  % * k_E:  scalar with 1/time, reserve turnover rate
+  % * j_EM: scalar with mol/time.mol, spec maintenance flux if from reserve
+  % * y_EV: scalar with mol/mol, yield of reserve on structure
+  % * j_VM: optional scalar with mol/time.mol, spec maintenance flux;
   %        if from structure (default j_EM/ y_EV)
-  %  a: optional scalar with preference (default 0)
-  %  r0: optional scalar with initial estimate for r (default 0)
+  % * a: optional scalar with preference (default 0)
+  % * r0: optional scalar with initial estimate for r (default 0)
   %
-  %% Output
-  %  r:    scalar with 1/time, spec growth rate
-  %  jEM: scalar with mol/time.mol, spec maintenance flux for reserve
-  %  jVM: scalar with mol/time.mol, spec maintenance flux for structure
-  %  jER: scalar with mol/time.mol, rejected flux of reserve
-  %  info: scalar with numerical failure (0) or success (1)
+  % Output:
   %
-  %  Remarks
-  %  cf sgr2, sgr3 and sgr4 for specific growth rate with 2, 3 and 4 reserves
+  % * r:    scalar with 1/time, spec growth rate
+  % * jEM: scalar with mol/time.mol, spec maintenance flux for reserve
+  % * jVM: scalar with mol/time.mol, spec maintenance flux for structure
+  % * jER: scalar with mol/time.mol, rejected flux of reserve
+  % * info: scalar with numerical failure (0) or success (1)
+  
+  %% Remarks
+  % cf <sgr2.html *sgr2*>, <sgr3.html *sgr3*> and <sgr4.html *sgr4*> for specific growth rate with 2, 3 and 4 reserves
+  
+  %% Example of use
+  % see <../mydata_sgr.m *mydata_sgr.m*>
 
   jER = 0; % included for consistency with sgr2
   

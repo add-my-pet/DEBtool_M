@@ -1,0 +1,196 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shmcn</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-17"><meta name="DC.source" content="shmcn.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shmcn</h1><!--introduction--><p>Sets parameters and produces figs for V1-morphs with 1 structure and C and N reserves</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shmcn.m"><b>shmcn</b></a> (j)</p><h2>Description<a name="4"></a></h2><p>Sets parameters and produces plots; mcn does the computation V1-morphs with 1 structure and C and N reserves  Light, DIC and DIN are specified as forcing spline functions (plot 1)  reserve densities for C and N are obtained by integration    (plot 2)  excreted reserve fluxes are obtained from reserve densities  (plot 3)  specific growth rates are obtained from reserve densities    (plot 4)  notice that apart from excreted reserves, other products are produced    as overheads of assimilation, maintenance and growth    in case of shrinking other products might be produced as well</p><p>Input:</p><div><ul><li>j: optional scalar with plot number;    if specified, other plots will be suppresssed</li></ul></div><p>Output:</p><div><ul><li>plots</li></ul></div><h2>Example of use<a name="5"></a></h2><p>shmcn</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shmcn
+% Sets parameters and produces figs for V1-morphs with 1 structure and C and N reserves
+
+%%
+function shmcn(j)
+  %  created: 2007/01/19 by Bas Kooijman, modified 2009/09/21
+  
+  %% Syntax
+  % <../shmcn.m *shmcn*> (j) 
+
+  %% Description
+  % Sets parameters and produces plots; mcn does the computation
+  % V1-morphs with 1 structure and C and N reserves
+  %  Light, DIC and DIN are specified as forcing spline functions (plot 1)
+  %  reserve densities for C and N are obtained by integration    (plot 2)
+  %  excreted reserve fluxes are obtained from reserve densities  (plot 3)
+  %  specific growth rates are obtained from reserve densities    (plot 4)
+  %  notice that apart from excreted reserves, other products are produced
+  %    as overheads of assimilation, maintenance and growth
+  %    in case of shrinking other products might be produced as well
+  % 
+  % Input:
+  %
+  % * j: optional scalar with plot number;
+  %    if specified, other plots will be suppresssed
+  %
+  % Output:
+  %
+  % * plots
+  
+  %% Example of use
+  % shmcn
+
+  %  set parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  p = [0.2; % -, z_C weight coefficient for DIC relative to light
+       0.5; % mol/mol.h, j_EC_Am max spec C-assimilation
+       0.1; % mol/mol.h, j_EN_Am max spec N-assimilation
+       1.2; % mol/mol, y_EC_V yield of C-reserve on structure
+       0.2; % mol/mol, y_EN_V yield of N-reserve on structure
+       0.01;% mol/mol.h, j_EC_M spec maint flux paid from C-reserve
+       0.002;% mol/mol.h, j_EN_M spec maint flux paid from N-reserve
+       0.1; % 1/h, k_E reserve turnover rate
+       0.8; % -, kap_EC fraction of rejected C-reserve to C-reserve
+       0.9];% -, kap_EN fraction of rejected N-reserve to N-reserve
+  t = (0:96)'; % h, time points for evaluation
+  te = 12 * (0:8)'; % h, time-knots for splines
+    tLCN = [te, wrap([5 .2],9,1), ...     % light as multiple of half sat flux
+       wrap([8 7 6 5 4 3 0 4 6],9,1), ... % DIC as multiple of half sat conc 
+       wrap([.1 3 .3 1],9,1)];            % DIN as multiple of half sat conc
+  %  in this schedule the algae migrate to the deep at night to get N
+  mcn0 = [2.5;0.5]; % mol/mol, initial reserve densities for C and N
+  mcn0 = [1;0.5]; % mol/mol, initial reserve densities for C and N
+    
+  tmrj = mcn(t,p,tLCN,mcn0); % get time trajectories %%%%%%%%%%%%%%%%%%%%%%%%%
+
+  clf; % start plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if exist('j','var') == 1 % single-plot mode
+ 
+    switch j
+  
+    case 1; clf;
+    tL = [t,spline(t,tLCN(:,[1 2]))];
+    tC = [t,spline(t,tLCN(:,[1 3]))];
+    tN = [t,spline(t,tLCN(:,[1 4]))];
+    plot (tL(:,1), tL(:,2), '-g', ...
+          tC(:,1), tC(:,2), '-r', ...
+          tN(:,1), tN(:,2), '-b');
+    legend('light', 'DIC', 'DIN');
+    xlabel('time, h');
+    ylabel('scaled conc,flux');
+  
+    case 2; clf;
+    plot(tmrj(:,1), tmrj(:,2), '-r', ...
+         tmrj(:,1), tmrj(:,3), '-b');
+    legend('C-reserve', 'N-reserve');
+    xlabel('time, h');
+    ylabel('reserve density, mol/mol');
+  
+    case 3; clf; 
+    plot(tmrj(:,1), tmrj(:,5), '-r', ...
+         tmrj(:,1), tmrj(:,6), '-b');
+    legend('C-reserve', 'N-reserve');
+    xlabel('time, h');
+    ylabel('excretion, mol/mol.h');
+
+    case 4; clf;
+    plot(tmrj(:,1),tmrj(:,4),'-g');
+    xlabel('time, h');
+    ylabel('spec growth rate, 1/h');
+    legend('C-reserve', 'N-reserve');
+    xlabel('m_N/m_C');
+    ylabel('excretion, mol/mol.h');
+ 
+    otherwise
+    return;
+    end
+  
+  else % multi-plot mode
+  
+    subplot(2,2,1);
+    tL = [t,spline(t,tLCN(:,[1 2]))];
+    tC = [t,spline(t,tLCN(:,[1 3]))];
+    tN = [t,spline(t,tLCN(:,[1 4]))];
+    plot (tL(:,1), tL(:,2),'-g', ...
+      tC(:,1), tC(:,2), '-r', ...
+      tN(:,1), tN(:,2), '-b');
+    legend('light', 'DIC', 'DIN');
+    xlabel('time, h');
+    ylabel('scaled conc,flux');
+  
+    subplot(2,2,2);
+    plot(tmrj(:,1), tmrj(:,2), '-r', ...
+       tmrj(:,1), tmrj(:,3), '-b');
+    legend('C-reserve', 'N-reserve');
+    xlabel('time, h');
+    ylabel('reserve density, mol/mol');
+ 
+    subplot(2,2,3);
+    plot(tmrj(:,1), tmrj(:,5), '-r', ...
+       tmrj(:,1), tmrj(:,6), '-b');
+    legend('C-reserve', 'N-reserve');
+    xlabel('time, h');
+    ylabel('excretion, mol/mol.h');
+
+    subplot(2,2,4);
+    plot(tmrj(:,1),tmrj(:,4),'-g');
+    xlabel('time, h');
+    ylabel('spec growth rate, 1/h');
+    legend('C-reserve', 'N-reserve');
+    xlabel('m_N/m_C');
+    ylabel('excretion, mol/mol.h');
+  
+  end 
+
+##### SOURCE END #####
+--></body></html>

@@ -387,7 +387,7 @@ if sum(strcmp(fields(metaData), 'biblist'))
   biblistFields = fields(metaData.biblist);
   for i = 1:length(bibNotToCheck)
       biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck{i}));    % bibNotToCheck defined at the beginning of mydata section
-  end
+  end  
   bibkeyMarker = length(fields(txtData.bibkey));
   for i = 1:length(bibkeyFields)
     if i > bibkeyMarker
@@ -413,24 +413,14 @@ if sum(strcmp(fields(metaData), 'biblist'))
     end
   end
   
-  listbibUsed = {};
-  for i = 1:length(bibkeyFields)
-    if i > bibkeyMarker
-      bib = metaData.bibkey.(bibkeyFields{i});
-    else
-      bib = txtData.bibkey.(bibkeyFields{i});
-    end
-    if iscell(bib)
-      listbibUsed = [listbibUsed, bib];
-    else
-      listbibUsed(length(listbibUsed) + 1) = {bib};
-    end
-  end
+  mydataText = fileread(['mydata_', speciesnm, '.m']);
   for i = 1:length(biblistFields)
-    if ~sum(strcmp(biblistFields(i), listbibUsed))
-      fprintf(['In mydata_',speciesnm,'.m: The reference ', biblistFields{i}, ' in biblist is not used for any data point/set. \n']);
+    nmAppearances = length(strfind(mydataText, biblistFields{i}));
+    if nmAppearances == 1
+      fprintf(['In mydata_',speciesnm,'.m: The reference ', biblistFields{i}, ' in biblist is not used in mydata. \n']);
     end
   end
+
 else
   fprintf(['In mydata_',speciesnm,'.m: The metaData structure does not include the biblist. \n']);
 end
