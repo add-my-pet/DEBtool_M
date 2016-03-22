@@ -222,12 +222,32 @@ elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
   [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
 end
 
+%%
+pointNumber = pointNumber + 1;
+
+% check url
+mydataText = fileread(['mydata_', speciesnm, '.m']);
+expression = 'url{\S*}';
+urls = regexp(mydataText,expression,'match');
+if isempty(urls)
+  fprintf('\n%d. There are no urls in mydata to check.\n\n', pointNumber);  
+else
+  fprintf('\n%d. Check the following list of urls found in mydata:\n\n', pointNumber);
+  for i = 1:length(urls)
+    if strcmp(urls{i}(end-1),'}')
+      fprintf('%s\n', urls{i}(5:end-2));
+    else
+      fprintf('%s\n', urls{i}(5:end-1));
+    end
+  end
+end
+
+pause
 
 %%
 pointNumber = pointNumber + 1;
 
 % check bibliography
-
 fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
  
 print_bib_my_pet(metaData.species,metaData.biblist)
