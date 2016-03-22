@@ -1,0 +1,156 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shtime_plant</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-18"><meta name="DC.source" content="shtime_plant.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shtime_plant</h1><!--introduction--><p>time_plots for 'plant'</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shtime_plant.m"><b>shtime_plant</b></a> (j)</p><h2>Description<a name="4"></a></h2><p>time_plots for 'plant'</p><p>Input:</p><div><ul><li>j: optional scalar with plot number (default all)</li></ul></div><h2>Remark<a name="5"></a></h2><p>First run pars_plant; See <a href="plant.hmtl"><b>plant</b></a>;</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shtime_plant
+% time_plots for 'plant'
+
+%%
+function shtime_plant(j)
+  % created: 2000/09/26 by Bas Kooijman, modified 2009/01/05
+  
+  %% Syntax
+  % <../shtime_plant.m *shtime_plant*> (j) 
+
+  %% Description
+  % time_plots for 'plant'
+  %
+  % Input:
+  %
+  % * j: optional scalar with plot number (default all)
+  
+  %% Remark
+  % First run pars_plant; See <plant.hmtl *plant*>;
+  
+  global X T_1 T_A T_L T_H T_AL T_AH n_N_ENR n_N_ER;
+  global M_VSd M_VSm M_VRd M_VRm M_VSb M_VRb M_VSp M_ER0;
+  global k_C k_O k_ECS k_ENS k_ES k_ECR k_ENR k_ER rho_NO;
+  global J_L_K K_C K_O K_NH K_NO K_H;
+  global j_L_Am j_C_Am j_O_Am j_NH_Am j_NO_Am;
+  global y_ES_CH_NO y_CH_ES_NO y_ER_CH_NO y_CH_ER_NO y_ER_CH_NH;
+  global y_VS_ES y_ES_VS y_VR_ER y_ER_VR y_ES_ER y_ER_ES;
+  global y_ES_ENS y_ENS_ES y_ER_ENR y_ENR_ER y_ENS_ENR y_ECR_ECS;
+  global kap_ECS kap_ECR kap_ENS kap_ENR kap_SS;
+  global kap_SR kap_RS kap_TS kap_TR;
+  global j_ES_MS j_ER_MR j_ES_JS j_PS_MS j_PR_MR y_PS_VS y_PR_VR;
+ 
+  tmax = 500; % select time period
+  
+% State vector:
+%   M = [M_PS, M_VS, M_ECS, M_ENS, M_ES, M_PR, M_VR, M_ECR, M_ENR, M_ER]
+  M0 = [0; 1e-4; 1e-4; 1e-4; 1e-4; 0; 1e-4; 1e-4; 1e-4; 10]; % initial value
+  
+  [t Mt]  = ode45(@flux_plant, [0; tmax], M0); % integrate
+  
+  if ~exist ('j','var') % single plot mode
+     switch j
+      case 1
+        plot (t, Mt(:,2), 'g', t, -Mt(:,7), 'r', [0, tmax], [0, 0], 'k');
+        xlabel('time, d'); ylabel('structures, mol'); 
+      case 2
+        plot (t, Mt(:,1), 'g', t, -Mt(:,6), 'r', [0, tmax], [0, 0], 'k');
+        xlabel('time, d'); ylabel('products, mol');
+      case 3
+        plot (t, Mt(:,3), 'k', t, Mt(:,4), 'b', t, Mt(:,5), 'r', ...
+	       t,-Mt(:,8), 'k', t,-Mt(:,9), 'b', t,-Mt(:,10), 'r', ...
+	      [0, tmax], [0, 0], 'k');
+        xlabel('time, d'); ylabel('reserves, mol');
+      case 4
+        m_ECR = Mt(:,8)./Mt(:,7); m_ENR = Mt(:,9)./Mt(:,7);
+        m_ER = Mt(:,10)./Mt(:,7); m_ERm = max([m_ECR',m_ENR']);
+    
+        plot (t, Mt(:,3)./Mt(:,2), 'k', t, Mt(:,4)./Mt(:,2), 'b', ...
+          t, Mt(:,5)./Mt(:,2), 'r', t, -m_ECR, 'k', t, -m_ENR, 'b', ... 
+          t,-min(m_ER,m_ERm), 'r', ...
+	       [0, tmax], [0, 0], 'k');
+        xlabel('time'); ylabel('reserve densities, mol/mol');
+      otherwise
+        return;
+    end
+   
+  else % multiple plot mode
+    % multiplot (2, 2);
+    subplot (2, 2, 1);
+    plot (t, Mt(:,2), 'g', t, -Mt(:,7), 'r', [0, tmax], [0, 0], 'k');
+    xlabel('time, d'); ylabel('structures, mol'); 
+
+    subplot (2, 2, 2);
+    plot (t, Mt(:,1), 'g', t, -Mt(:,6), 'r', [0, tmax], [0, 0], 'k');
+    xlabel('time, d'); ylabel('products, mol');
+
+    subplot (2, 2, 3);
+    plot (t, Mt(:,3), 'k', t, Mt(:,4), 'b', t, Mt(:,5), 'r', ...
+   	t,-Mt(:,8), 'k', t,-Mt(:,9), 'b', t,-Mt(:,10), 'r', ...
+	  [0, tmax], [0, 0], 'k');
+    xlabel('time, d'); ylabel('reserves, mol');
+
+    subplot (2, 2, 4);
+    m_ECR = Mt(:,8)./Mt(:,7); m_ENR = Mt(:,9)./Mt(:,7);
+    m_ER = Mt(:,10)./Mt(:,7); m_ERm = max([m_ECR',m_ENR']);
+    
+    plot (t, Mt(:,3)./Mt(:,2), 'k', t, Mt(:,4)./Mt(:,2), 'b', ...
+       t, Mt(:,5)./Mt(:,2), 'r', t, -m_ECR, 'k', t, -m_ENR, 'b', ... 
+       t,-min(m_ER,m_ERm), 'r', ...
+	  [0, tmax], [0, 0], 'k');
+    xlabel('time'); ylabel('reserve densities, mol/mol');
+     
+    % multiplot(0,0);
+  end
+##### SOURCE END #####
+--></body></html>

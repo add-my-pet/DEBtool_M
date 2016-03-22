@@ -1,6 +1,23 @@
+%% shtime_plant
+% time_plots for 'plant'
+
+%%
 function shtime_plant(j)
-  %% created: 2000/09/26 by Bas Kooijman, modofied 2009/01/05
-  %% time_plots for 'plant'
+  % created: 2000/09/26 by Bas Kooijman, modified 2009/01/05
+  
+  %% Syntax
+  % <../shtime_plant.m *shtime_plant*> (j) 
+
+  %% Description
+  % time_plots for 'plant'
+  %
+  % Input:
+  %
+  % * j: optional scalar with plot number (default all)
+  
+  %% Remark
+  % First run pars_plant; See <plant.hmtl *plant*>;
+  
   global X T_1 T_A T_L T_H T_AL T_AH n_N_ENR n_N_ER;
   global M_VSd M_VSm M_VRd M_VRm M_VSb M_VRb M_VSp M_ER0;
   global k_C k_O k_ECS k_ENS k_ES k_ECR k_ENR k_ER rho_NO;
@@ -15,13 +32,13 @@ function shtime_plant(j)
  
   tmax = 500; % select time period
   
-%% State vector:
-%%   M = [M_PS, M_VS, M_ECS, M_ENS, M_ES, M_PR, M_VR, M_ECR, M_ENR, M_ER]
+% State vector:
+%   M = [M_PS, M_VS, M_ECS, M_ENS, M_ES, M_PR, M_VR, M_ECR, M_ENR, M_ER]
   M0 = [0; 1e-4; 1e-4; 1e-4; 1e-4; 0; 1e-4; 1e-4; 1e-4; 10]; % initial value
   
   [t Mt]  = ode45(@flux_plant, [0; tmax], M0); % integrate
   
-  if exist ('j') == 1 % single plot mode
+  if ~exist ('j','var') % single plot mode
      switch j
       case 1
         plot (t, Mt(:,2), 'g', t, -Mt(:,7), 'r', [0, tmax], [0, 0], 'k');
