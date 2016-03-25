@@ -1,11 +1,51 @@
-function dvar = diso_221(t, var, tXT, p)
+%% diso_221
 % ode's for iso_221
-% t: scalar time since birth
-% var: 13-vector with states:
-%   cM_X1, cM_X2, M_E1, M_E2, M_H, max_M_H, M_V, max_M_V, cM_ER1, cM_ER2, q, h, S
-% tXT: (n,3)-matrix with time, X1, X2, T
-% p: 36-vector with par values (see below)
-% dvar: 11-vector with d/dt var
+
+%%
+function dvar = diso_221(t, var, tXT, p)
+
+  %% Syntax
+  % dvar =  <../diso_221.m *diso_221*> (t, var, tXT, p)
+  
+  %% Description
+  % ode's for iso_221
+  %
+  % Input:
+  %
+  % * t: scalar time since birth
+  % * var: 13-vector with states:
+  %     cM_X1, cM_X2, M_E1, M_E2, M_H, max_M_H, M_V, max_M_V, cM_ER1, cM_ER2, q, h, S
+  % * tXT: (n,3)-matrix with time, X1, X2, T
+  % p: 36-vector with par values (see below)
+  %
+  %    M_X1      = p( 1); M_X2      = p( 2); % mol, size of food particle of type i
+  %    F_X1m     = p( 3); F_X2m     = p( 4); % dm^2/d.cm^2, {F_Xim} spec searching rates
+  %   %y_P1X1    = p( 5); y_P2X2    = p( 6); % mol/mol, yield of feaces i on food i
+  %    y_E1X1    = p( 7); y_E2X1    = p( 8); % mol/mol, yield of reserve Ei on food X1
+  %    y_E1X2    = p( 9); y_E2X2    = p(10); % mol/mol, yield of reserve Ei on food X2
+  %    J_X1Am    = p(11); J_X2Am    = p(12); % mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+  %    v         = p(13); kap       = p(14); % cm/d, energy conductance, 
+  %                                          % -, allocation fraction to soma
+  %    mu_E1     = p(15); mu_E2     = p(16); % J/mol, chemical potential of reserve i
+  %    mu_V      = p(17); j_E1M     = p(18); % J/mol, chemical potenial of structure
+  %                                          % mol/d.mol, specific som maint costs
+  %    J_E1T     = p(19); MV        = p(20); % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
+  %                                          % mol/cm^3, [M_V] density of structure
+  %    k_J       = p(21); k1_J      = p(22); % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
+  %    rho1      = p(23); del_V     = p(24); % -, preference for reserve 1 to be used for som maint
+  %                                          % -, threshold for death by shrinking
+  %    y_VE1     = p(25); y_VE2     = p(26); % mol/mol, yield of structure on reserve i 
+  %    kap_E1    = p(27); kap_E2    = p(28); % -, fraction of rejected mobilised flux that is returned to reserve
+  %    kap_R1    = p(29); kap_R2    = p(30); % -, reproduction efficiency for reserve i
+  %    E_Hb      = p(31); E_Hp      = p(32); % J, maturity thresholds at birth, puberty
+  %    T_A       = p(33); h_H       = p(34); % K, Arrhenius temperature
+  %                                          % 1/d, hazerd due to rejuvenation
+  %    h_a       = p(35); s_G       = p(36); % 1/d^2, ageing acceleration
+  %                                          % -, Gompertz stress coefficient
+  %
+  % Output:
+  %
+  % * dvar: 13-vector with d/dt var
 
 % unpack parameters
 M_X1      = p( 1); M_X2      = p( 2); % mol, size of food particle of type i

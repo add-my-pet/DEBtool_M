@@ -1,0 +1,160 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>iso_221_var</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-22"><meta name="DC.source" content="iso_221_var.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>iso_221_var</h1><!--introduction--><p>fluxes with 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[var flux] = <a href="../iso_221_var.m"><b>iso_221_var</b></a> (tXT, var_0, p, n_O, n_M, r0)</p><h2>Description<a name="4"></a></h2><p>Obtains fluxes in case of 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth</p><p>Input:</p><div><ul><li>tXT: (n,4)-matrix of time, food densities, temperature</li></ul></div><pre>      assumption: tXT(1,1) = 0: time that applies to vars_0</pre><div><ul><li>var_0: 13-vector with values of state variables at t = 0; see under var</li><li>p: vector of parameters (see diso_221)</li><li>n_O: (4,7)-matrix with chemical indices for organics X1, X2, V, E1, E2, P1, P2</li><li>n_M: (4,4)-matrix with chemical indices for minerals C, H, O, N</li><li>r0: optional scalar with initial estimate for spec growth rate r</li></ul></div><p>Output:</p><div><ul><li>var: (n,13)-matrix with variables</li></ul></div><pre>      1      2     3       4      5        6   7        8      9      10  11 12 13
+  cM_X1  cM_X2  M_E1    M_E2    E_H  max_E_H M_V  max_M_V cM_ER1  cM_ER2   q  h  S
+  cum food eaten, reserves, (max)structure, (max)maturity , cumulative, allocation to reprod, acell, hazard, surv prob</pre><div><ul><li>flux: (n,20)-matrix with fluxes</li></ul></div><pre>   f1, f2: func responses
+   J_X1A, J_X2A: food eaten
+   J_E1A, J_E2A: assimilation
+   J_EC1, J_EC2: mobilisation
+   J_EM1, J_EM2: somatic maintenance
+   J_VG: growth
+   J_E1J, J_E2J: maturity maintenance
+   J_E1R, J_E2R: maturation
+   R: reproduction rate
+   J_C, J_H, J_O, J_N: fluxes of  CO2, H20, O2, NH3</pre><h2>Remarks<a name="5"></a></h2><p>see <a href="iso_221.html"><b>iso_221</b></a> for fixed stoichiometry; model is presented in comment for 5.2.7 of DEB3</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% iso_221_var
+% fluxes with 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
+
+%%
+function [var flux] = iso_221_var(tXT, var_0, p, n_O, n_M, r0)
+  % created 2012/03/05 by Bas Kooijman
+
+  %% Syntax
+  % [var flux] = <../iso_221_var.m *iso_221_var*> (tXT, var_0, p, n_O, n_M, r0)
+  
+  %% Description
+  % Obtains fluxes in case of 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
+  %
+  % Input:
+  %
+  % * tXT: (n,4)-matrix of time, food densities, temperature
+  %
+  %        assumption: tXT(1,1) = 0: time that applies to vars_0
+  %
+  % * var_0: 13-vector with values of state variables at t = 0; see under var
+  % * p: vector of parameters (see diso_221)
+  % * n_O: (4,7)-matrix with chemical indices for organics X1, X2, V, E1, E2, P1, P2
+  % * n_M: (4,4)-matrix with chemical indices for minerals C, H, O, N
+  % * r0: optional scalar with initial estimate for spec growth rate r
+  %
+  % Output:
+  %
+  % * var: (n,13)-matrix with variables
+  %
+  %        1      2     3       4      5        6   7        8      9      10  11 12 13
+  %    cM_X1  cM_X2  M_E1    M_E2    E_H  max_E_H M_V  max_M_V cM_ER1  cM_ER2   q  h  S
+  %    cum food eaten, reserves, (max)structure, (max)maturity , cumulative, allocation to reprod, acell, hazard, surv prob
+  %
+  % * flux: (n,20)-matrix with fluxes
+  %
+  %     f1, f2: func responses
+  %     J_X1A, J_X2A: food eaten
+  %     J_E1A, J_E2A: assimilation
+  %     J_EC1, J_EC2: mobilisation
+  %     J_EM1, J_EM2: somatic maintenance
+  %     J_VG: growth
+  %     J_E1J, J_E2J: maturity maintenance
+  %     J_E1R, J_E2R: maturation
+  %     R: reproduction rate
+  %     J_C, J_H, J_O, J_N: fluxes of  CO2, H20, O2, NH3
+
+  %% Remarks
+  % see <iso_221.html *iso_221*> for fixed stoichiometry;
+  % model is presented in comment for 5.2.7 of DEB3
+
+  % unpack some parameters, see diso_211_var for a full list
+  M_X1      = p( 1); M_X2      = p( 2); % mol, size of food particle of type i
+  F_X1m     = p( 3); F_X2m     = p( 4); % dm^2/d.cm^2, {F_Xim} spec searching rates
+  y_E1X1    = p( 7); y_E2X1    = p( 8); % mol/mol, yield of reserve Ei on food X1
+  y_E1X2    = p( 9); y_E2X2    = p(10); % mol/mol, yield of reserve Ei on food X2
+  J_X1Am    = p(11); J_X2Am    = p(12); % mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+  v         = p(13);                    % cm/d, energy conductance, 
+  MV        = p(20);                    % mol/cm^3, [M_V] density of structure
+  E_Hb      = p(29);                    % J, maturity at birth
+
+  % get variables
+  [t var] = ode45(@diso_221_var, tXT(:,1), var_0, [], tXT, p);
+
+  % unpack some variables
+  M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 
+  m_E1 = M_E1 ./ M_V; m_E2 = M_E2 ./ M_V;
+
+  % get fluxes
+  X1 = tXT(:,2); X2 = tXT(:,3);   % M, food densities
+  J_E1Am_X1 = y_E1X1 * J_X1Am; J_E1Am_X2 = y_E1X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1 
+  J_E2Am_X1 = y_E2X1 * J_X1Am; J_E2Am_X2 = y_E2X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
+  m_E1m = max(J_E1Am_X1/ v/ MV, J_E1Am_X2/ v/ MV);
+  m_E2m = max(J_E2Am_X1/ v/ MV, J_E2Am_X2/ v/ MV);
+  s1 = max(0, 1 - m_E1/ m_E1m); s2 = max(0, 1 - m_E2/ m_E2m);
+  rho_X1X2 = s1 * max(0, M_X1/ M_X2 * y_E1X1/ y_E1X2 - 1) + s2 * max(0, M_X1/ M_X2 * y_E2X1/ y_E2X2 - 1);
+  rho_X2X1 = s1 * max(0, M_X2/ M_X1 * y_E1X2/ y_E1X1 - 1) + s2 * max(0, M_X2/ M_X1 * y_E2X2/ y_E2X1 - 1);
+  h_X1Am = J_X1Am/ M_X1; h_X2Am = J_X2Am/ M_X2;
+  alpha_X1 = h_X1Am + F_X1m * X1 + F_X2m * rho_X2X1 .* X2; 
+  alpha_X2 = h_X2Am + F_X2m * X2 + F_X1m * rho_X1X2 .* X1;
+  beta_X1 = F_X1m * X1 .* (1 - rho_X1X2); beta_X2 = F_X2m * X2 .* (1 - rho_X2X1);
+  f1 = (alpha_X2 * F_X1m .* X1 - beta_X1 * F_X2m .* X2) ./ (alpha_X1 .* alpha_X2 - beta_X1 .* beta_X2);
+  f2 = (alpha_X1 * F_X2m .* X2 - beta_X2 * F_X1m .* X1) ./ (alpha_X1 .* alpha_X2 - beta_X1 .* beta_X2);
+  f1 = f1 .* (E_H > E_Hb); f2 = f2 .* (E_H > E_Hb); % -, no feeding in embryo
+
+  % more quantities are planned in future releases, such as respiration, which involves n_O and n_M
+  flux = [f1, f2, s1, s2, rho_X1X2, rho_X2X1]; 
+                
+##### SOURCE END #####
+--></body></html>

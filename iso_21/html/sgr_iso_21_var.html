@@ -1,0 +1,149 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>sgr_iso_21_var</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-22"><meta name="DC.source" content="sgr_iso_21_var.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>sgr_iso_21_var</h1><!--introduction--><p>specific growth rate for isomorph with 2 reserves</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = <a href="../sgr_iso_21_var.m"><b>sgr_iso_21_var</b></a> (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap)</p><h2>Description<a name="4"></a></h2><p>specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry Growth investment has a fixed stoichiometry for the anabolic part, but a variable one for the catabolic part (= overheads)</p><p>Input&plusmn;</p><div><ul><li>m_E1, m_E2:   mol/mol,   scalars with reserve density</li><li>j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve</li><li>mu_E1, mu_E2, mu_V:  -,  scalars with chem potential for reserve 1, 2, structure</li><li>k_E:  1/d,               scalar with reserve turnover rate v/ L</li><li>kap_G: -,                scalar with growth efficienvy</li><li>kap: -,                  scalar with allocation fraction to soma</li></ul></div><p>Output:</p><div><ul><li>r: 1/d,                  scalar with spec growth rate</li><li>j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux</li><li>j_E1C, j_E2C: mol/d.mol, scalars with mobilised flux of reserves</li><li>j_E1P, j_E2P: mol/d.mol, scalars with rejected flux of reserves mode: -,                   scalar for case indicator (1,2,3,4)</li></ul></div><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% sgr_iso_21_var
+% specific growth rate for isomorph with 2 reserves 
+
+%%
+function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
+    sgr_iso_21_var (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap)
+  % created: 2012/03/07 by Bas Kooijman
+  
+  %% Syntax
+  % [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = <../sgr_iso_21_var.m *sgr_iso_21_var*> (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap) 
+
+  %% Description
+  % specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry
+  % Growth investment has a fixed stoichiometry for the anabolic part, but a variable one for the catabolic part (= overheads)
+  %
+  % Input±
+  %
+  % * m_E1, m_E2:   mol/mol,   scalars with reserve density
+  % * j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve
+  % * mu_E1, mu_E2, mu_V:  -,  scalars with chem potential for reserve 1, 2, structure
+  % * k_E:  1/d,               scalar with reserve turnover rate v/ L
+  % * kap_G: -,                scalar with growth efficienvy
+  % * kap: -,                  scalar with allocation fraction to soma
+  %
+  % Output:
+  %
+  % * r: 1/d,                  scalar with spec growth rate
+  % * j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux
+  % * j_E1C, j_E2C: mol/d.mol, scalars with mobilised flux of reserves
+  % * j_E1P, j_E2P: mol/d.mol, scalars with rejected flux of reserves
+  % mode: -,                   scalar for case indicator (1,2,3,4)
+
+j_E1C = k_E * m_E1; j_E2C = kap * k_E * m_E2; % mol/d.mol mobilisation rates if r = 0
+if kap * j_E2C < j_E1S && kap * j_E1C < j_E1S * (1 - kap * j_E2C/j_E2S)
+  mode = 4;
+else
+  r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate if mode = 1
+  j_E1C = (k_E - r) * m_E1; j_E2C = (k_E - r) * m_E2; % mol/d.mol mobilisation rates if mode = 1
+  j_E1G = kap * j_E1C; j_E2G = kap * j_E2C - j_E2S;   % mol/d.mol growth alloactions if mode = 1
+  if kap_G * mu_E2 * j_E2G > (1 - kap_G) * mu_E1 * j_E1G && kap * j_E2C > j_E2S
+    mode = 1;
+  else 
+    mm = mu_E1 * m_E1 + mu_E2 * m_E2;
+    r = (kap * mm * k_E - mu_E2 * j_E2S)/ (kap * mm + mu_V/ kap_G); % 1/d, specific growth rate if mode = 2
+    j_E2C =  (k_E - r) * m_E2;       % mol/d.mol, specific mobilisation rates
+    if kap * j_E2C > j_E2S
+       mode = 2;
+    else
+       mode = 3;
+    end
+  end
+end
+
+switch mode
+  case 2; % reserve 2 can fuel all somatic maintenance, but reserve 1 pays part of growth overhead
+    j_E1_S = 0;
+    j_E2_S = j_E2S;
+    mm = mu_E1 * m_E1 + mu_E2 * m_E2;
+    r = (kap * mm * k_E - mu_E2 * j_E2S)/ (kap * mm + mu_V/ kap_G); % 1/d, specific growth rate
+    j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;       % mol/d.mol, specific mobilisation rates
+    j_E1P = 0; j_E2P = 0;                                       % mol/d.mol, specific rejection flux
+          
+  case  3;  % case 3: reserve 1 can fuel all somatic maintenance and pays all growth overhead
+    mm = m_E1 + m_E2 * j_E1S/ j_E2S;
+    r = (mm * kap * k_E - j_E1S)/ (mm * kap + mu_V/ kap_G/ mu_E1); % 1/d, specific growth rate
+    j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;     % mol/d.mol, specific mobilisation rates
+    j_E2_S = kap * j_E2C;
+    j_E1_S = j_E1S * (1 - j_E2_S/ j_E2S);
+    j_E1P = 0; j_E2P = 0;
+    
+  case  4; % structure pays part of somatic maintenance
+    mm = m_E1/ j_E1S + m_E2/ j_E2S; jmu = j_E1S * mu_E1/ mu_V;
+    r = - jmu * (1 - kap * k_E* mm)/ (1 + kap * jmu * mm);  % 1/d, specific growth rate
+    j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;   % mol/d.mol, specific mobilisation rates
+    j_E2_S = kap * j_E2C;
+    j_E1_S = kap * j_E1C;
+    j_E1P = 0; j_E2P = 0;                                   % mol/d.mol, specific rejection flux
+      
+  otherwise
+    mode  = 1; % case 1: reserve 2 fuels all maintenance and growth overheads
+    r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate
+    j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;        % mol/d.mol, specific mobilisation rates
+    j_E2_S = min(kap * j_E2C, j_E2S); j_E1_S = min(kap * j_E1C, j_E1S * (1 - j_E2_S/ j_E2S)); % mol/d.mol specific som maint rates
+    j_E2G = kap * j_E2C - j_E2_S;  % mol/d.mol, specific growth rate
+    j_E1P = 0; j_E2P = j_E2G - r * (1/ kap_G - 1)* mu_V/ mu_E2;  % mol/d.mol, specific rejection flux
+end
+    
+##### SOURCE END #####
+--></body></html>
