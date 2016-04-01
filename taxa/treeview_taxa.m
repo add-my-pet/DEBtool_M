@@ -2,18 +2,18 @@
 % write treeview_taxa.js that is called by treeview_taxa.html
 
 %%
-function treeview_taxa (pedigree)
+function treeview_taxa (pedigree_taxa)
 % created 2016/03/06 by Bas Kooijman
 
 %% Syntax
-% <../treeview_taxa.m *treeview_taxa*> (pedigree) 
+% <../treeview_taxa.m *treeview_taxa*> (pedigree_taxa) 
 
 %% Description
 % Clears and creates file treeview_taxa.js in DEBtool_M/taxa and writes java code to it
 %
 % Input:
 %
-% * character string with pedigree
+% * pedigree_taxa: character string with pedigree of a taxon
 %
 %% Example of use
 % treeview_taxa(pedigree('Animalia')); open treeview_taxa.html to see the result
@@ -49,30 +49,27 @@ function treeview_taxa (pedigree)
     fprintf(fid_tv, 'HIGHLIGHT = 1\n\n');  % 0: Do not highlight the selected node; 1: Highlight the selected node
   
     % build tree
-    nl = strfind(pedigree, char(10)); node = pedigree(1:nl-1); pedigree(1:nl) = [];
+    nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
     fprintf(fid_tv, ['foldersTree = gFld("<b>', node, '</b>", "treeview_taxa.html")\n']);
 
-    while length(pedigree) > 3
-      nl = strfind(pedigree, char(10)); node = pedigree(1:nl-1); pedigree(1:nl) = [];
+    while length(pedigree_taxa) > 3
+      nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
       level = max(strfind(node, char(9))); node(1:level) = []; L = ['L', num2str(level)]; Lnew = ['L', num2str(1 + level)];
       if level == 1
-        %fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
-        fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", ""))\n']);
+        fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
+        %fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", ""))\n']);
       elseif isempty(strfind(node, '_')) && isempty(strfind(node, ' ')) 
-        %fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
-        fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", ""))\n']);
+        fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
+        %fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", ""))\n']);
       else
         fprintf(fid_tv, ['insDoc(', L, ', gLnk("S", "', node, '", "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/i_results_', node, '.html"))\n']); 
       end
-   end
+    end
  
-  fclose(fid_tv);
+    fclose(fid_tv);
   
   catch
     disp('An error occured during writing file treeview_taxa.js')
   end
   
-
   cd(WD)                    % goto original path
-
-
