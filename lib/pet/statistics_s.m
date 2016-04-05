@@ -1,4 +1,4 @@
-%% statistics_std
+%% statistics_s
 % Computes implied properties of s-model (std, stf, stx, ssj, sbp)
 
 function [stat, txt_stat] = statistics_s(par, T, fStat, model) %% T_ref from metapar or input like T?
@@ -17,7 +17,7 @@ function [stat, txt_stat] = statistics_s(par, T, fStat, model) %% T_ref from met
 %
 % * par :  structure with primary parameters at reference temperature
 % * T:     scalar with temperature in Kelvin
-% * fStat:     scalar (between 0 and 1) scaled functional response
+% * fStat: scalar (between 0 and 1) scaled functional response
 % * model: 3 letter string with model key
 % NOTA : fStat is used to not be confused with  par.f
 
