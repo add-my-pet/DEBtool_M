@@ -29,7 +29,6 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   %% Remarks
   % uses dget_lx
 
-  %% Code
   % unpack pars
   g   = p(1); % -, energy investment ratio
   k   = p(2); % -, k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
@@ -44,7 +43,7 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   end
   [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
   info =1;
-  l(1) = []; lb= l(1); lx = l(2); lp = l(3); li = f - lT;
+  l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
   tb = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
   %tb = 3 * lb/ g;
   tx = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));

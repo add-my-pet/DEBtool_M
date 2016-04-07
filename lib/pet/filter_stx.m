@@ -39,11 +39,29 @@ function [filter, flag] = filter_stx(p)
     flag = 1;
     return;
   end
-  
+
+  % compute and unpack cpar (compound parameters)
+  c = parscomp_st(p);
+
+  if c.kap_G >= 1 % growth efficiency
+    flag = 3;    
+    return;
+  end
+
   if p.E_Hb >= p.E_Hx || p.E_Hx >= p.E_Hp % maturity at birth, puberty
     flag = 4;
     return;
   end
-  
+
+  if c.k * c.v_Hx >= p.f^3 % constraint required for reaching puberty
+    flag = 5;    
+    return;
+  end
+
+  if c.k * c.v_Hp >= p.f^3 % constraint required for reaching puberty
+    flag = 5;    
+    return;
+  end
+
   [filter, flag] = filter_stf(p);
   
