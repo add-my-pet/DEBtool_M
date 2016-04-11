@@ -116,8 +116,6 @@ pause
 
 pointNumber = pointNumber + 1;
 
-pause
-
 % compare values in pars_init with values in the .mat
 fprintf('\n%d. Comparison of parameters in pars_init with .mat file:\n\n', pointNumber);
 
