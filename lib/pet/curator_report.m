@@ -85,7 +85,7 @@ end
 
 fprintf('\nCheck the consistency between metaData and data.\n');
 fprintf('Check that the labels for each data type are used and consistent with the contents.\n');
-fprintf('Contact the web administrator with any new labels that should be added to the table (http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/manual/index_data.html)\n');
+fprintf('Contact the web administrator with any new labels that should be added to the table (http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction)\n');
 
 pause
 
