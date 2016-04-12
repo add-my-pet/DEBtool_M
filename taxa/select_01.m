@@ -6,7 +6,7 @@ function [sel taxa_src] = select_01(taxon_src, taxon)
 % created 2016/04/12 by Bas Kooijman
 
 %% Syntax
-% sel = <select_01.m *select_01*>(taxon_src, taxon)
+% [sel taxa_src] = <select_01.m *select_01*>(taxon_src, taxon)
 
 %% Description
 % Finds booleans for occurences of members of taxon among members of taxon_src
@@ -20,6 +20,10 @@ function [sel taxa_src] = select_01(taxon_src, taxon)
 %
 % * sel: n-vector with booleans
 % * taxa_scr: n-vector with names of members of taxon_src
+
+%% Remarks
+% The names of members of taxon can be found by
+% [sel nm] = select_01(taxon_src, taxon); nm(sel)
 
 %% Example of use
 % sel = select_01('Animalia', 'Aves')
