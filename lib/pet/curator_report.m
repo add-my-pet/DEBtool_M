@@ -224,18 +224,21 @@ fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my
 print_bib_my_pet(metaData.species,metaData.biblist)
 
 % save figures
+% global pets
+% pets = {speciesnm};
+% 
+% estim_options('default');
+% estim_options('pars_init_method', 0);
+% estim_options('results_output', 2);
+% 
+% load(['results_', speciesnm, '.mat']);
+% clear data auxData metaData txtData weights
+% [data.pet1, auxData.pet1, metaData.pet1, txtData.pet1, weights.pet1] = feval(['mydata_', speciesnm]);
+% results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
 
-global pets
-pets = {speciesnm};
-
-estim_options('default');
-estim_options('pars_init_method', 0);
-estim_options('results_output', 2);
-
-load(['results_', speciesnm, '.mat']);
-clear data auxData metaData txtData weights
-[data.pet1, auxData.pet1, metaData.pet1, txtData.pet1, weights.pet1] = feval(['mydata_', speciesnm]);
-results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+pause; pointNumber = pointNumber + 1;
+% check if the parameter set was obtained after continuation from .mat 
+fprintf('\n%d. Please after the curation process execute the run file with estim_option, results_output=2 \n\n', pointNumber);
 
 
 pause; pointNumber = pointNumber + 1;
@@ -271,5 +274,5 @@ if autoEst
 
 end
 
-
+% 
 
