@@ -46,7 +46,7 @@ end
 width = 1 + width * 0.5;
 height = n * .45; 
 
-Hlegend = figure('Position', [300, 400, 21 * width, 150 * height]);
+Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 
 plot([0 width width 0 0], [0 0 height height 0], 'k')
 %set(Hlegend, 'FontSize', 15, 'Box', 'off')
