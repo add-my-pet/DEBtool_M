@@ -273,9 +273,7 @@ label.Kb_min = 'food density where growth, maturation cease at birth';   units.K
 label.eb_ming = 'scaled func. resp. such that growth ceases at birth';   units.eb_ming = '-'; stat.eb_ming  = eb_min(1);
 label.eb_minh = 'scaled func. resp. such that maturation ceases at birth';   units.eb_minh = '-'; stat.eb_minh  = eb_min(2);
 % label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
-
 %%
-
 % example % food intake and clearance rates :
 % p_Xb  = p_Am * f * L_b^2/ kap_X;    % J/d, food intake at birth
 % J_XAb = f * J_X_Am * L_b^2;         % mol/d, food intake at birth
@@ -295,7 +293,6 @@ for i = 1:length(mat_ind)
   eval(['label.J_XA', stri, ' = ''food intake ',    labeli, ''';  units.J_XA', stri, ' = ''mol/d''; stat.J_XA', stri, ' = J_XA', stri, '; temp.J_XA', stri, ' = T;']); 
   eval(['label.CR_', stri,  ' = ''clearance rate ', labeli, ''';  units.CR_',  stri, ' = ''1/d'';   stat.CR_',  stri, ' = CR_',  stri, '; temp.CR_',  stri, ' = T;']); 
 end
-
 %%
 
 del_Wb = W_b/ W_i;     % -, birth weight as fraction of maximum weight
@@ -391,6 +388,24 @@ for i = 1:length(mat_ind)
   eval(['label.SDA_', stri, ' = ''specific dynamic action ',     labeli, ''';  units.SDA_', stri, ' = ''mol O/ mol X''; stat.SDA_', stri, ' = SDA_', stri, '; temp.SDA_', stri, ' = T;']); 
   eval(['label.VO_',  stri, ' = ''dioxygen use per dry weight ', labeli, ''';  units.VO_',  stri, ' = ''L/g.h'';        stat.VO_',  stri, ' = VO_',  stri, '; temp.VO_',  stri, ' = T;']); 
   eval(['label.p_t_', stri, ' = ''heat dissipation ',            labeli, ''';  units.p_t_', stri, ' = ''J/d'';          stat.p_t_', stri, ' = p_t_', stri, '; temp.p_t_', stri, ' = T;']); 
+end
+%% Energy fluxes at standard life stages
+std_life_stages ={'b', 'p', 'i'}
+for i =1:length(std_life_stages)
+    stri = std_life_stages{i}
+    labeli = std_life_stages{i};
+        %temperature corrections
+    eval(['pACSJGRD_', stri, ' = pACSJGRD_', stri, ' * TC']); 
+
+    eval(['pS_', stri, ' = pACSJGRD_', stri, '(:,3)'';']);  % som maint power
+    eval(['pJ_', stri, ' = pACSJGRD_', stri, '(:,4)'';']);  % mat maint power
+    eval(['pG_', stri, ' = pACSJGRD_', stri, '(:,5)'';']);  % growth  power
+    eval(['pR_', stri, ' = pACSJGRD_', stri, '(:,6)'';']);  % maturation/reprod power
+
+    eval(['label.pS_',  stri, ' = ''som maintenance power ',     labeli, ''';  units.pS_',  stri, ' = ''J/d''; stat.pS_',  stri, ' = pS_',  stri, '; temp.pS_',  stri, ' = T;']);  
+    eval(['label.pJ_',  stri, ' = ''mat maintenance power ',     labeli, ''';  units.pJ_',  stri, ' = ''J/d''; stat.pJ_',  stri, ' = pJ_',  stri, '; temp.pJ_',  stri, ' = T;']);  
+    eval(['label.pG_',  stri, ' = ''growth power ',              labeli, ''';  units.pG_',  stri, ' = ''J/d''; stat.pG_',  stri, ' = pG_',  stri, '; temp.pG_',  stri, ' = T;']);  
+    eval(['label.pR_',  stri, ' = ''maturation/reprod power ',   labeli, ''';  units.pR_',  stri, ' = ''J/d''; stat.pR_',  stri, ' = pR_',  stri, '; temp.pR_',  stri, ' = T;']);  
 end
 %%
 % indices 
