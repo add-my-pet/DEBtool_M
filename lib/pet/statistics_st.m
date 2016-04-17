@@ -512,11 +512,15 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     stat.Wd_s = Wd_s; units.Wd_s = 'g';    label.Wd_s = 'dry weight at start acceleration';
     stat.a_s = a_s;   units.a_s = 'd';     label.a_s = 'age at start acceleration';
   end
+  
+  if strcmp(model, 'hex')
+    l_p = l_b; t_p = t_b; E_Hp = E_Hb; U_Hp = U_Hb; V_Hp = V_Hb; u_Hp = u_Hb; v_Hp = v_Hb;
+  end
         
   % metamorphosis
   switch model
     case {'abj', 'asj', 'abp', 'hep', 'hex'}
-      L_j = L_m * l_j; M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Wwj; a_j = t_j/ k_M/ TC; 
+      L_j = L_m * l_j; M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; a_j = t_j/ k_M/ TC; 
       stat.l_j = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at metamorphosis';
       stat.L_j = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at metamorphosis';
       stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at metamorphosis';
@@ -540,7 +544,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   % emergence
   switch model
     case {'hep', 'hex'}
-      L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Wwe; a_e = t_e/ k_M/ TC; 
+      L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
       stat.l_e = l_e;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
       stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
       stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
@@ -664,7 +668,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp]; 
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
     case 'hex' % birth and pubert coincide; ultimate is here mapped to pupation
-      pars_power = [kap; kap_V; g; k_J; k_M; s_j; v; U_Hb; U_He]; 
+      pars_power = [kap; kap_V; kap_R; g; k_J; k_M; s_j; v; U_Hb; U_He]; 
       p_ACSJGRD = p_ref * scaled_power_hex([L_b + 1e-6; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e);
   end
   stat.p_Ab = p_ACSJGRD(1,1); units.p_Ab = 'J/d'; label.p_Ab = 'assimilation at birth';    

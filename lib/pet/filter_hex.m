@@ -66,7 +66,7 @@ function [filter, flag] = filter_hex(p)
     return;
   end
 
-  if c.s_j >= 1 % fraction of max [E_R] for pupation
+  if p.s_j >= 1 % fraction of max [E_R] for pupation
     flag = 5;    
     return;
   end

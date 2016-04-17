@@ -20,7 +20,7 @@ function [H, a, info] = maturity_hex(L, f, p, lb, lj, le)
   %
   % * L: n-vector with length 
   % * f: scalar with (constant) scaled functional response
-  % * p: 9-vector with parameters: kap kapV g kJ kM sj v Hb He
+  % * p: 10-vector with parameters: kap kapV kapR g kJ kM sj v Hb He
   % * lb: scaled length at birth at f
   % * lj: scaled length at pupation at f
   % * le: scaled length at emergence at f
@@ -42,15 +42,16 @@ function [H, a, info] = maturity_hex(L, f, p, lb, lj, le)
   % [H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])
  
   % unpack parameters
-  kap = p(1); % -, fraction allocated to growth + som maint
-  kapV = p(2);% -, conversion efficiency from larval reserve to larval structure, back to imago reserve
-  g  = p(3);  % -, energy investment ratio
-  kJ = p(4);  % 1/d, maturity maint rate coeff
-  kM = p(5);  % 1/d, somatic maint rate coeff
-  sj = p(6);  % -, [E_R] as fraction of max at pupation
-  v  = p(7);  % cm/d, energy conductance
-  Hb = p(8);  % d cm^2, scaled maturity at birth = puberty
-  He = p(9);  % d cm^2, scaled maturity at emergence
+  kap  = p(1);  % -, fraction allocated to growth + som maint
+  kapV = p(2);  % -, conversion efficiency from larval reserve to larval structure, back to imago reserve
+  kapR = p(3);  % -, reproduction efficiency from reserve to eggs
+  g    = p(4);  % -, energy investment ratio
+  kJ   = p(5);  % 1/d, maturity maint rate coeff
+  kM   = p(6);  % 1/d, somatic maint rate coeff
+  sj   = p(7);  % -, [E_R] as fraction of max at pupation
+  v    = p(8);  % cm/d, energy conductance
+  Hb   = p(9);  % d cm^2, scaled maturity at birth
+  He   = p(10); % d cm^2, scaled maturity at emergence
     
   if exist('f','var') == 0
     f = 1; % abundant food
@@ -58,10 +59,10 @@ function [H, a, info] = maturity_hex(L, f, p, lb, lj, le)
   
 
   % split L in 
-  Lm = v/ kM/ g; Lj = Lm * lj; Le = L_m * le; Lb = Lm * lb; k = kJ/ kM; 
+  Lm = v/ kM/ g; Lj = Lm * lj; Le = Lm * le; Lb = Lm * lb; k = kJ/ kM; 
   nL = length(L); L_pre = L(1);
   if nL > 1
-    for i = 2:n
+    for i = 2:nL
       if L(i) > L(i-1)
         L_pre = [L_pre; L(i)];
       end
@@ -71,7 +72,6 @@ function [H, a, info] = maturity_hex(L, f, p, lb, lj, le)
 
   
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
-  uHj = Hj * g^2 * kM^3/ (v^2); vHj = uHj/ (1 - kap);
   uHe = He * g^2 * kM^3/ (v^2); vHe = uHe/ (1 - kap);
   
   
@@ -115,7 +115,7 @@ function dtEH = dget_teh_hexe(l, tEH, k, g, kap, f, uHb, lb)
     duE =  - uE * (g/ l - r);
     duH = (1 - kap) * uE * (g/ l - r) - k * uH;
   else % V1-morphic larva 
-    rj = (g * uE/ lb - l3 * lT/ lb - l3)/ (uE + l3); % scaled exponential growth rate between b and j
+    rj = (g * uE/ lb - l3)/ (uE + l3); % scaled exponential growth rate between b and j
     dl = l * rj/ 3;
     duE = f * l^3/ lb - uE * (g/ lb - rj);
     duH = 0;

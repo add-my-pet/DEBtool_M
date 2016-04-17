@@ -17,7 +17,7 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
   %
   % * L: n-vector with lengths
   % * f: scalar with (constant) scaled functional response
-  % * p: 10-vector with parameters: kap kapR g kJ kM LT v UHb UHj UHe
+  % * p: 10-vector with parameters: kap kapV kapR g kJ kM sj v UHb UHe
   % * lb: scalar with scaled length at birth for f; if not existent: NaN
   % * lj: scalar with scaled length at pupation for f; if not existent: NaN
   % * le: scalar with scaled length at emergence for f; if not existent: NaN  
@@ -37,37 +37,36 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
 
   % unpack parameters
   kap  = p(1);  % -, fraction allocated to growth + som maint
-  kapV = p(2);  % -, conversion effeciency from larval reserve to larval structure, back to imago reserve
-  g    = p(3);  % -, energy investment ratio
-  kJ   = p(4);  % 1/d, maturity maint rate coeff
-  kM   = p(5);  % 1/d, somatic maint rate coeff
-  sj   = p(6);  % -, [E_R] as fraction of max at pupation
-  v    = p(7);  % cm/d, energy conductance
-  U_Hb = p(8);  % d cm^2, scaled maturity at birth
-  U_He = p(9); % d cm^2, scaled maturity at emergence
+  kapV = p(2);  % -, conversion efficiency from larval reserve to larval structure, back to imago reserve
+  kapR = p(3);  % -, reproduction efficiency from reserve to eggs
+  g    = p(4);  % -, energy investment ratio
+  kJ   = p(5);  % 1/d, maturity maint rate coeff
+  kM   = p(6);  % 1/d, somatic maint rate coeff
+  sj   = p(7);  % -, [E_R] as fraction of max at pupation
+  v    = p(8);  % cm/d, energy conductance
+  U_Hb = p(9);  % d cm^2, scaled maturity at birth
+  U_He = p(10); % d cm^2, scaled maturity at emergence
 
   Lm = v/ kM/ g; k = kJ/ kM;
-  L = L(:); l = L/ Lm; lT = LT/ Lm; lp = lb;
+  L = L(:); l = L/ Lm; lp = lb;
 
   if isnan(lb) && isnan(lp) % adult stage cannot be reached
-    lT = 0 * l;
     assim = 0 * l;
     kapR = 0 * l;
     sM = 1 + 0 * l;
   else % adult stage can be reached
-    lT = (l > lb) .* lT;
     assim = (l > lb);
     kapR = kapR * (l > lp);
     sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
 
-  H = maturity_hex(L, f, p, l_b, l_j, l_e);  % scaled maturities E_H/ {p_Am}
+  H = maturity_hex(L, f, p, lb, lj, le);  % scaled maturities E_H/ {p_Am}
   uH = H *  g^2 * kM^3/ v^2;
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
   pA = assim * f .* sM .* l.^2;              % assim
-  pC = l.^2 .* ((g + lT) .* sM + l )/ (1 + g/ f);   % mobilisation
-  pS = kap * l.^2 .* (l + lT);               % somatic  maint
+  pC = l.^2 .* (g .* sM + l )/ (1 + g/ f);   % mobilisation
+  pS = kap * l.^3;                           % somatic  maint
   pJ = k * uH;                               % maturity maint
   pG = kap * pC - pS;                        % growth
   pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
