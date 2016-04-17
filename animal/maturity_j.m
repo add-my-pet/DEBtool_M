@@ -44,7 +44,7 @@ function [H, a, info] = maturity_j(L, f, p)
   Hp = p(10); % d cm^2, scaled maturity at puberty
   % kapR is not used, but kept for consistency with iget_pars_r, reprod_rate
     
-  if exist('F','var') == 0
+  if exist('f','var') == 0
     f = 1; % abundant food
   end
 

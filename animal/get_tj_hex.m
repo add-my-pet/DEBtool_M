@@ -48,7 +48,7 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   sj  = p(5); % [E_R^j]/ [E_R^ref] scaled reprod buffer density at pupation
   %  [E_R^ref] = (1 - kap) [E_m] g (k_E + k_M)/ (k_E - g k_M) is max reprod buffer density
   kap = p(6); % -, allocation fraction to soma of pupa
-  kapV = p(7);% -, conversion effeciency from larval reserve to larval structure, back to imago reserve
+  kapV = p(7);% -, conversion efficiency from larval reserve to larval structure, back to imago reserve
   
   if ~exist('f', 'var') || isempty(f)
     f = 1;
@@ -65,12 +65,10 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   lj = lb * exp(tj * rj/ 3);              % scaled length at pubation
   tj = tb + tj;                           % -, scaled age at pupation
   
-  % from pupation to emergence 
+  % from pupation to emergence; 
+  % instantaneous conversion from larval structure to pupal reserve
   uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
-%  [e_jmin l_jmin] = get_eb_min_R ([g, k, vHe]);  % -, scaled reserve density and length such that maturation ceases at emergence
-%   if uEj < e_jmin * l_jmin^3/ g
-%      te = []; le = []; uEe = []; info = 0; return;
-%   end
+
   options = odeset('Events', @emergence);
   [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 1e4], [0; uEj; 0], options, g, k, vHe);
   te = tj + te;     % -, scaled age at emergence 
