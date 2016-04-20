@@ -2,7 +2,7 @@
 % Gets scaled powers as function of length in case of model hex
 
 %%
-function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
+function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le, tj)
   % created 2016/04/16 by Bas Kooijman
   
   %% Syntax
@@ -17,10 +17,11 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
   %
   % * L: n-vector with lengths
   % * f: scalar with (constant) scaled functional response
-  % * p: 10-vector with parameters: kap kapV kapR g kJ kM sj v UHb UHe
+  % * p: 9-vector with parameters: kap kapV kapR g kJ kM v UHb UHe
   % * lb: scalar with scaled length at birth for f; if not existent: NaN
   % * lj: scalar with scaled length at pupation for f; if not existent: NaN
   % * le: scalar with scaled length at emergence for f; if not existent: NaN  
+  % * tj: scalar with scaled age at pupation for f
   %
   % Output
   %
@@ -42,10 +43,9 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
   g    = p(4);  % -, energy investment ratio
   kJ   = p(5);  % 1/d, maturity maint rate coeff
   kM   = p(6);  % 1/d, somatic maint rate coeff
-  sj   = p(7);  % -, [E_R] as fraction of max at pupation
-  v    = p(8);  % cm/d, energy conductance
-  U_Hb = p(9);  % d cm^2, scaled maturity at birth
-  U_He = p(10); % d cm^2, scaled maturity at emergence
+  v    = p(7);  % cm/d, energy conductance
+  U_Hb = p(8);  % d cm^2, scaled maturity at birth
+  U_He = p(9);  % d cm^2, scaled maturity at emergence
 
   Lm = v/ kM/ g; k = kJ/ kM;
   L = L(:); l = L/ Lm; lp = lb;
@@ -59,9 +59,10 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le)
     kapR = kapR * (l > lp);
     sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
-
-  H = maturity_hex(L, f, p, lb, lj, le);  % scaled maturities E_H/ {p_Am}
-  uH = H *  g^2 * kM^3/ v^2;
+  
+  pars_maturity_hex = [kap kapV g kJ kM v U_Hb U_He];  
+  H = maturity_hex(L, f, pars_maturity_hex, lb, lj, le);  % scaled maturities E_H/ {p_Am}
+  uH = ones(length(L),1) .* H * g^2 * kM^3/ v^2;
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
   pA = assim * f .* sM .* l.^2;              % assim

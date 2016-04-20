@@ -668,8 +668,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp]; 
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
     case 'hex' % birth and pubert coincide; ultimate is here mapped to pupation
-      pars_power = [kap; kap_V; kap_R; g; k_J; k_M; s_j; v; U_Hb; U_He]; 
-      p_ACSJGRD = p_ref * scaled_power_hex([L_b + 1e-6; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e);
+      pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 
+      p_ACSJGRD = p_ref * scaled_power_hex([L_b + 1e-6; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);
   end
   stat.p_Ab = p_ACSJGRD(1,1); units.p_Ab = 'J/d'; label.p_Ab = 'assimilation at birth';    
   stat.p_Sb = p_ACSJGRD(1,3); units.p_Sb = 'J/d'; label.p_Sb = 'somatic maintenance at birth';    
