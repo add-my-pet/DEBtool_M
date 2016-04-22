@@ -162,7 +162,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     T = C2K(20);
   end
  
-  if ~exist('fStat', 'var') || isempty(f) % overwrite f in par
+  if ~exist('f', 'var') || isempty(f) % overwrite f in par
     par.f = 1;
   else
     par.f = f; 
@@ -186,10 +186,10 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.T = K2C(T); units.T = 'C'; label.T = 'body temperature';
   pars_T = T_A;
   if exist('T_L','var') && exist('T_AL','var')
-    pars_T = [TA; T_L; T_AL];
+    pars_T = [T_A; T_L; T_AL];
   end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
-    pars_T = [T_L; T_H; T_AL; T_AH]; 
+    pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
   TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
   stat.c_T = TC; units.c_T = '-'; label.c_T = 'Temperature Correction factor';
@@ -353,9 +353,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_ts = [g; k; l_T; v_Hb; v_Hs]; % S1/S2 transition
       [t_s t_bb l_s l_bb] = get_tp(pars_ts, f, l_b); 
       % S2/S3 transition to no-feeding; t_sj is primary parameter
+      L_s = L_m * l_s;
       [t eLH] = ode45 (@dget_eLH, [0; t_sj], [1; L_s; E_Hs], [], kap, TC * v, g, L_m, TC * k_J, E_m);
       L_j = eLH(end,2);  l_j = L_j/ L_m; 
       E_Hj = eLH(end,3);                 % J, maturity at S3/juv transition
+      M_Hj = E_Hj/ mu_E;                 % mol, maturity at S3/juv transition
       U_Hj = E_Hj/ p_Am;                 % cm^2 d, scaled maturity at S3/juv transition
       u_Hj = U_Hj * g^2 * k_M^3/ v^2;    % -, scaled maturity at S3/juv transition
       V_Hj = U_Hj/ (1 - kap);            % cm^2 d, scaled maturity at S3/juv transition
@@ -395,13 +397,20 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_ts: invalid parameter value combination for t_p \n')
       end
       s_M = l_j/ l_s;
+    case 'abp'
+      pars_tj = [g; k; l_T; v_Hb; v_Hp; v_Hp + 1e-6];
+      [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj(pars_tj, f);
+      if info ~= 1              
+        fprintf('warning in get_tj: invalid parameter value combination for t_p \n')
+      end  
+      l_i = l_p + 1e-6; s_M = l_p/ l_b;
     case 'hep'
       v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj_hep: invalid parameter value combination for t_p \n')
       end  
-      s_M = l_j/ l_b; 
+      s_M = l_p/ l_b; 
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -486,14 +495,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % start/end strinking
   if strcmp(model, 'ssj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Wws; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';    label.l_s = 'scaled structural length at start strinking';
     stat.L_s = L_s;   units.L_s = 'cm';   label.L_s = 'structural length at start strinking';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol'; label.M_Vs = 'structural mass at start strinking';
     stat.Ww_s = Ww_s; units.Ww_s = 'g';   label.Ww_s = 'wet weight at start strinking';
     stat.Wd_s = Wd_s; units.Wd_s = 'g';   label.Wd_s = 'dry weight at start strinking';
     stat.a_s = a_s;   units.a_s = 'd';    label.a_s = 'age at start strinking';
-    M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Wwj; 
+    M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; 
     stat.l_s = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at end strinking';
     stat.L_s = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at end strinking';
     stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at end strinking';
@@ -543,7 +552,15 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % emergence
   switch model
-    case {'hep', 'hex'}
+    case 'hep' % acceleration between a and p; emergence at j
+      L_e = L_m * l_j; M_Ve = M_V * L_e^3; Ww_e = L_e^3 * (1 + f * w); Wd_e = d_V * Ww_e; a_e = t_j/ k_M/ TC; 
+      stat.l_e = l_j;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
+      stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
+      stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
+      stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
+      stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
+      stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
+    case 'hex'
       L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
       stat.l_e = l_e;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
       stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
@@ -551,7 +568,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
       stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
       stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
-  end
+ end
   
   % ultimate
   L_i = L_m * l_i; M_Vi = M_V * L_i^3; Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
@@ -659,13 +676,13 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p); 
     case {'abj', 'abp'}
-      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];  
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
     case 'asj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_s([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_s, l_j, l_p); 
     case 'hep' 
-      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp]; 
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6]; 
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
     case 'hex' % birth and pubert coincide; ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>maturity_s</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="maturity_s.m"><style type="text/css">
+      --><title>maturity_s</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="maturity_s.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -121,7 +121,7 @@ function [H, a, info] = maturity_s(L, f, p)
   Lp = Lm * lp; % cm, structural length at pubert
     
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh_s, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj, ls);
+  [l_out, teh] = ode45(@dget_teh_s, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj);
   teh(1:2,:) = []; 
   H = teh(:,3) * v^2/ g^2/ kM^3;
   H(L >= Lp) = Hp;
@@ -131,7 +131,7 @@ end
 
 % subfunctions
 
-function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj, ls)
+function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj)
   % l: scalar with scaled length  l = L g k_M/ v
   % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
   %   tau = a k_M; scaled age
@@ -140,7 +140,7 @@ function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj,
   % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
   % called by maturity_s
   
-  t = tEH(1); % scaled age
+  %t = tEH(1); % scaled age
   uE = max(1e-10,tEH(2)); % scaled reserve
   uH = tEH(3); % scaled maturity
   l2 = l * l; l3 = l2 * l;

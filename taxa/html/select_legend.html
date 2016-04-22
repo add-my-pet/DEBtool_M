@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>select_marker</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-08"><meta name="DC.source" content="select_legend.m"><style type="text/css">
+      --><title>select_marker</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="select_legend.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -171,7 +171,7 @@ end
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = down_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       if i_legend < size(legend_local,1)
         legend_local([i_legend, i_legend+1],:) = legend_local([i_legend+1, i_legend],:);
         i_legend = i_legend + 1; 
@@ -179,16 +179,17 @@ end
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = insert_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       N = (1:size(legend_local,1))'; % index-vector of legend items
       item = {{'.', 12, 4, [0 0 0], [0 0 0]}, 'Animalia'}; % default marker, taxon
       legend_local = [legend_local(N<i_legend,:); item; legend_local(N>=i_legend,:)];
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
     function C = remove_Callback(source, eventdata) 
-      global legend_local  i_legend Hlegend
+      global legend_local i_legend Hlegend
       n = size(legend_local,1); N = (1:n)'; 
       legend_local = legend_local(~(N==i_legend),:);
+      i_legend = max(1, i_legend - 1);
       close(Hlegend); Hlegend = shlegend(legend_local,[],[],'',i_legend);
     end
 ##### SOURCE END #####

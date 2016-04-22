@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>lineage</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="clade.m"><style type="text/css">
+      --><title>legend_RSED</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="legend_RSED.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,71 +55,38 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>lineage</h1><!--introduction--><p>gets all species that are closest related to specified taxa</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>members = <a href="../clade.m"><b>clade</b></a> (taxa)</p><h2>Description<a name="4"></a></h2><p>gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa</p><p>Input:</p><div><ul><li>cell string with names of taxa</li></ul></div><p>Output:</p><div><ul><li>cell string with all species in the add_my_pet collection that belong to that taxon</li><li>character string with the name of the lowest taxon all taxa belong</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The root is Animalia. If this is the lowest common taxon, the output contains all species in the collection. If the input cell string has length 1, clade is similar to <a href="select.html"><b>select</b></a>. The classification follows that of Wikipedia.</p><h2>Example of use<a name="6"></a></h2><p>members  = clade({'Gorilla', 'Tupaia'})</p><p class="footer"><br>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">legend_RSED</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2>legend_RSED<a name="1"></a></h2><p>specification of reference legend</p><h2>Syntax<a name="3"></a></h2><p>legend = <a href="legend_RSED.m"><b>legend_RSED</b></a></p><h2>Description<a name="4"></a></h2><p>Specifies a reference legend</p><p>Output</p><div><ul><li>legend: (8,2) cell matix with marker, taxon pairs</li></ul></div><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
-%% lineage
-% gets all species that are closest related to specified taxa
+%% legend_RSED
+% specification of reference legend 
 
-%%
-function [members, taxon] = clade(taxa)
-% created 2015/09/18 by Bas Kooijman
-
-%% Syntax
-% members = <../clade.m *clade*> (taxa) 
-
-%% Description
-% gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa
 %
-% Input:
-%
-% * cell string with names of taxa
-%
-% Output:
-% 
-% * cell string with all species in the add_my_pet collection that belong to that taxon
-% * character string with the name of the lowest taxon all taxa belong
+function legend = legend_RSED
+% created at 2016/04/12 by Bas Kooijman
 
-%% Remarks
-% The root is Animalia. 
-% If this is the lowest common taxon, the output contains all species in the collection.
-% If the input cell string has length 1, clade is similar to <select.html *select*>.
-% The classification follows that of Wikipedia.
+  %% Syntax
+  % legend = <legend_RSED.m *legend_RSED*>
 
-%% Example of use
-% members  = clade({'Gorilla', 'Tupaia'})
+  %% Description
+  % Specifies a reference legend
+  %
+  % Output
+  %
+  % * legend: (8,2) cell matix with marker, taxon pairs
 
-
-  n = length(taxa);
-  
-  for i = 1:n % obtain lineages for all taxa called lin1, lin2, ..
-    lin = lineage(taxa{i});
-    if ~isequal('Animalia', lin{1})
-      fprintf([taxa{i}, ' is not recognized \n']);
-      members = []; taxon = []; return
-    end
-    eval(['lin', num2str(i), ' = lin;']);
-  end
-  
-  if n == 1 % nothing to compare with
-    taxon = taxa{1};
-  else      % n > 1
-    true = 1; j = 0; % initiate selection process
-    while true
-      j = j + 1; % step down the lineage
-      taxon = lin1{j};
-      for i = 2 : n % step through taxa
-        eval(['true = isequal(taxon, lin', num2str(i), '{j});']);
-        if ~true
-          break
-        end
-      end
-    end
-    taxon = lin1{j-1};
-  end 
-  
-  members = select(taxon); 
-
+  % type, size, linewidth, edge color and face color of a marker, taxon
+  legend = {...
+    {'o', 8, 3, [0 0 1], [0 0 1]}, 'Radiata'; ...
+    {'o', 8, 3, [0 0 0], [0 0 0]}, 'Chaetognatha'; ...
+    {'o', 8, 3, [1 0 1], [1 0 1]}, 'Spiralia'; ...
+    {'o', 8, 3, [1 0 0], [1 0 0]}, 'Ecdysozoa'; ....
+    {'o', 8, 3, [0 1 0], [1 1 0]}, 'Chondrichthyes'; ....
+    {'o', 8, 3, [0 1 0], [1 0 1]}, 'Actinopterygii'; ....
+    {'o', 8, 3, [0 1 0], [0 0 0]}, 'Mammalia'; ....
+    {'o', 8, 3, [0 1 0], [1 0 0]}, 'Tetrapoda'; ....
+    {'o', 8, 3, [0 1 0], [0 1 0]}, 'Deuterostomata'; ....
+  };
 end
 
 

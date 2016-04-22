@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-15"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
+      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,9 +55,9 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>statistics_st</h1><!--introduction--><p>Computes implied properties of DEB models</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[stat txtStat] = <a href="statistics_st.m"><b>statistics_st</b></a>(model, par, T, f)</p><h2>Description<a name="4"></a></h2><p>Computes quantites that depend on parameters, temperature and food level. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex.</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>f:     optional scalar scaled functional response; default 1</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, labels and models</li></ul></div><pre>   - f: scaled function response (set by input); all
+  </style></head><body><div class="content"><h1>statistics_st</h1><!--introduction--><p>Computes implied properties of DEB models</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunction</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[stat txtStat] = <a href="statistics_st.m"><b>statistics_st</b></a>(model, par, T, f)</p><h2>Description<a name="4"></a></h2><p>Computes quantites that depend on parameters, temperature and food level. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex.</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>f:     optional scalar scaled functional response; default 1</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, labels and models</li></ul></div><pre>   - f: scaled function response (set by input); all
    - T: absolute temperature (set by input); all
-   - TC: temperature correction factor; all</pre><pre>   - w_X, w_E, w_V, w_P, w_O: molecular weights; all</pre><pre>   - p_Am: specific max appimilation flux; all
+   - TC: temperature correction factor; all</pre><pre>   - w_X, w_E, w_V, w_P: molecular weights; all</pre><pre>   - p_Am: specific max appimilation flux; all
    - L_m: maximum structural length; all
    - k_M: maintenance rate coefficient; all
    - k: maintenance ratio; all
@@ -68,13 +68,19 @@ span.syscmd { color:#B28C00 }
    - M_V: volume-specific mass of structure; all
    - w: contribution of ash free dry mass of reserve to total ash free dry biomass; all
    - g: energy investment ratio; all
+   - y_E_X, y_X_E: yield of food on reserve; all if kap_X exists
    - y_V_E, y_E_V, yield of structure on reserve; all
+   - p_Xm: max spec feeding power; all if kap_P exists
+   - J_X_Am: max surface-spec feeding flux; all if kap_X exists
+   - y_P_X, y_X_P: yield of food on faeces; all if kap_P exists
+   - y_P_E: yield of faeces on reserve; all if kap_P and kap_P exist
+   - eta_XA, eta_PA, eta_VG: mass-power couplers for organics; all if kap_P and kap_P exist
    - kap_G: growth efficiency; all
    - t_E: maximum reserve residence time; all</pre><pre>   - s_M: acceleration factor; all
    - s_s: supply stress; all
    - s_Hbp: precociality coefficient; all
    - r_j: exponential growth rate; all a- and h-models
-   - r_B: von Bertalannfy growth rate; all s-models</pre><pre>   - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
+   - r_B: von Bertalannfy growth rate; all s- and a-models</pre><pre>   - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
    - E_0: energy investment in egg/foetus; all
    - M_E0: reserve invested in egg/foetus; all
    - Ww_0: initial wet weight; all except stf, stx
@@ -117,26 +123,19 @@ span.syscmd { color:#B28C00 }
    - dWd_m: growth in dry wet at max; all</pre><pre>   - N_i: life-time reproductive output; all
    - R_i: ultimate reproduction rate: all except hep, hex
    - GSI: gonado-somatic index for spawning once per yr: all except hep, hex</pre><pre>   - K: half saturation coefficient; all if F_m exists
-   - CR_b: max clearance rate at birth; all  if F_m exists
-   - CR_p: max clearance rate at puberty; all if F_m exists
-   - CR_i: max ultimate clearance rate; all if F_m exists
+   - F_mb: max searching rate at birth; all  if F_m exists
+   - F_mp: max searching rate at puberty; all if F_m exists
+   - F_mi: max ultimate searching rate; all if F_m exists
    - J_Xb: food intake at birth; all if kap_X exists
    - J_Xp: food intake at puberty; all if kap_X exists
    - J_Xi: ultimate food intake; all if kap_X exists
-   - y_E_X, y_X_E: yield of food on reserve; all if kap_X exists
-   - p_Xm: max spec feeding power; all if kap_P exists
-   - J_X_Am: max surface-spec feeding flux; all if kap_X exists
-   - y_P_X, y_X_P: yield of food on faeces; all if kap_P exists
-   - y_P_E: yield of faeces on reserve; all if kap_P and kap_P exist
-   - eta_XA, eta_PA, eta_VG, eta_O: mass-power couplers for organics; all if kap_P and kap_P exist
-   - eb_ming: scaled func. resp. such that growth ceases at birth; all
-   - eb_minh = scaled func. resp. such that maturation ceases at birth; all
+   - eb_min_G: scaled func. resp. such that growth ceases at birth; all
+   - eb_min_R: scaled func. resp. such that maturation ceases at birth; all
    - ep_min: scaled func. resp. such that growth ceases at puberty; all
-   - t_starve: maximum survival time when starved; all</pre><pre>   - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
+   - t_starve: maximum survival time when starved; all</pre><pre>   - p_A*, p_S*, p_J*, p_G*, p_R* : energy fluxes at b, p, i ; all
+   - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
    - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
-   - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all</pre><pre>   - p_MGJR: matrix of energy fluxes; all
-     rows: birth, puberty, ultimate; all
-     cols: somatic maintenance, growth, maturity maintenance, maturation/reproduction; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Weights exclude possible contribution of the reproduction buffer. For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('species.mat'); [stat, txtStat] = statistics(metaPar.model, par); printstat_st(txtStat, stat)</p><p class="footer"><br>
+   - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Weights exclude possible contribution of the reproduction buffer. Temperature-dependent quantities are directly corrected for body temperature For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% statistics_st
@@ -172,7 +171,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - T: absolute temperature (set by input); all
 %     - TC: temperature correction factor; all
 %
-%     - w_X, w_E, w_V, w_P, w_O: molecular weights; all
+%     - w_X, w_E, w_V, w_P: molecular weights; all
 %
 %     - p_Am: specific max appimilation flux; all
 %     - L_m: maximum structural length; all 
@@ -185,7 +184,13 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - M_V: volume-specific mass of structure; all
 %     - w: contribution of ash free dry mass of reserve to total ash free dry biomass; all
 %     - g: energy investment ratio; all
+%     - y_E_X, y_X_E: yield of food on reserve; all if kap_X exists
 %     - y_V_E, y_E_V, yield of structure on reserve; all
+%     - p_Xm: max spec feeding power; all if kap_P exists
+%     - J_X_Am: max surface-spec feeding flux; all if kap_X exists
+%     - y_P_X, y_X_P: yield of food on faeces; all if kap_P exists
+%     - y_P_E: yield of faeces on reserve; all if kap_P and kap_P exist
+%     - eta_XA, eta_PA, eta_VG: mass-power couplers for organics; all if kap_P and kap_P exist
 %     - kap_G: growth efficiency; all
 %     - t_E: maximum reserve residence time; all
 %
@@ -193,7 +198,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - s_s: supply stress; all
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
-%     - r_B: von Bertalannfy growth rate; all s-models
+%     - r_B: von Bertalannfy growth rate; all s- and a-models
 %
 %     - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
 %     - E_0: energy investment in egg/foetus; all
@@ -254,30 +259,22 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - GSI: gonado-somatic index for spawning once per yr: all except hep, hex
 %
 %     - K: half saturation coefficient; all if F_m exists
-%     - CR_b: max clearance rate at birth; all  if F_m exists
-%     - CR_p: max clearance rate at puberty; all if F_m exists
-%     - CR_i: max ultimate clearance rate; all if F_m exists
+%     - F_mb: max searching rate at birth; all  if F_m exists
+%     - F_mp: max searching rate at puberty; all if F_m exists
+%     - F_mi: max ultimate searching rate; all if F_m exists
 %     - J_Xb: food intake at birth; all if kap_X exists
 %     - J_Xp: food intake at puberty; all if kap_X exists
 %     - J_Xi: ultimate food intake; all if kap_X exists
-%     - y_E_X, y_X_E: yield of food on reserve; all if kap_X exists
-%     - p_Xm: max spec feeding power; all if kap_P exists
-%     - J_X_Am: max surface-spec feeding flux; all if kap_X exists
-%     - y_P_X, y_X_P: yield of food on faeces; all if kap_P exists
-%     - y_P_E: yield of faeces on reserve; all if kap_P and kap_P exist
-%     - eta_XA, eta_PA, eta_VG, eta_O: mass-power couplers for organics; all if kap_P and kap_P exist
-%     - eb_ming: scaled func. resp. such that growth ceases at birth; all
-%     - eb_minh = scaled func. resp. such that maturation ceases at birth; all
+%     - eb_min_G: scaled func. resp. such that growth ceases at birth; all
+%     - eb_min_R: scaled func. resp. such that maturation ceases at birth; all
 %     - ep_min: scaled func. resp. such that growth ceases at puberty; all
 %     - t_starve: maximum survival time when starved; all
 %
+%     - p_A*, p_S*, p_J*, p_G*, p_R* : energy fluxes at b, p, i ; all
 %     - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
 %     - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
 %     - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all
 %
-%     - p_MGJR: matrix of energy fluxes; all
-%       rows: birth, puberty, ultimate; all 
-%       cols: somatic maintenance, growth, maturity maintenance, maturation/reproduction; all
 %
 % * txtStat: structure with units, labels for stat
 
@@ -287,11 +284,13 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
 % Weights exclude possible contribution of the reproduction buffer.
+% Temperature-dependent quantities are directly corrected for body temperature
 % For required model-specific fields, see get_parfields.
 
 %% Example of use
-% load('species.mat'); [stat, txtStat] = statistics(metaPar.model, par); printstat_st(txtStat, stat)
+% load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)
 
+  
   choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'};
   if ~any(strcmp(model,choices))
     fprintf('warning statistics_st: invalid model key \n')
@@ -299,11 +298,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     return;
   end    
      
-  if ~exist('T', 'var') || istempty(T)
+  if ~exist('T', 'var') || isempty(T)
     T = C2K(20);
   end
  
-  if ~exist('fStat', 'var') || istempty(f) % overwrite f in par
+  if ~exist('fStat', 'var') || isempty(f) % overwrite f in par
     par.f = 1;
   else
     par.f = f; 
@@ -315,29 +314,29 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   if ~pass 
     stat = []; txtStat = [];
     print_filterflag(flag);
-    error(' The parameter set is not realistic');
+    error('The parameter set is not realistic');
   end
 
   % extract parameters and compute compound parameters
   cPar = parscomp_st(par);
   vars_pull(cPar); vars_pull(par);
 
-  % initiate output
+  % initiate output with f, T, TC
   stat.f = f; units.f = '-'; label.f = 'scaled functional response'; 
   stat.T = K2C(T); units.T = 'C'; label.T = 'body temperature';
   pars_T = T_A;
   if exist('T_L','var') && exist('T_AL','var')
-    pars_T = [TA; T_L; T_AL];
+    pars_T = [T_A; T_L; T_AL];
   end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
-    pars_T = [T_L; T_H; T_AL; T_AH]; 
+    pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
   TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
-  stat.TC = TC; units.TC = '-'; label.TC = 'Temperature Correction factor';
+  stat.c_T = TC; units.c_T = '-'; label.c_T = 'Temperature Correction factor';
   
   % compound parameters as computed by parscomp_st (not depending on f)
-  stat.p_Am = p_Am; units.p_Am = 'J/d.cm^2'; label.p_Am = '{p_Am}, spec assimilation flux';
-  stat.w_O = w_O; units.w_O = 'g/mol'; label.w_O = 'molecular weights for water-free organics';
+  % conditional additions are copied from those in parscomp_st
+  stat.p_Am = p_Am; units.p_Am = 'J/d.cm^2'; label.p_Am = '{p_Am}, spec assimilation flux'; % primary parameter, not a compound one
   stat.w_X = w_X; units.w_X = 'g/mol'; label.w_X = 'molecular weight for water-free food';
   stat.w_V = w_V; units.w_V = 'g/mol'; label.w_V = 'molecular weight for water-free structure';
   stat.w_E = w_E; units.w_E = 'g/mol'; label.w_E = 'molecular weight for water-free reserve';
@@ -348,38 +347,37 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.k_M = k_M; units.k_M = '1/d'; label.k_M = 'somatic maintenance rate coefficient';
   stat.k = k; units.k = '-'; label.k = 'maintenance ratio';
   stat.E_m = E_m; units.E_m = 'J/cm^3'; label.E_m = '[E_m], reserve capacity'; 
-  stat.m_Em = m_Em; units.m_Em = 'mol/mol'; label.m_E = 'reserve capacity';
+  stat.m_Em = m_Em; units.m_Em = 'mol/mol'; label.m_Em = 'reserve capacity';
   stat.g = g; units.g = '-'; label.g = 'energy investment ratio';
   stat.L_m = L_m; units.L_m = 'cm'; label.L_m = 'maximum structural length';
   stat.L_T= L_T; units.L_T = 'cm'; label.L_T = 'heating length (also applies to osmotic work)';
   stat.l_T = l_T; units.l_T = '-'; label.l_T = 'scaled heating length';
   stat.w = w; units.w = '-'; label.w = '\omega, contribution of ash free dry mass of reserve to total ash free dry biomass';
   stat.J_E_Am = J_E_Am; units.J_E_Am = 'mol/d.cm^2'; label.J_E_Am = '{J_EAm}, max surface-spec assimilation flux';
-  if exists('kap_X', 'var')
+  if exist('kap_X', 'var')
     stat.y_E_X = y_E_X; units.y_E_X = 'mol/mol'; label.y_E_X = 'yield of reserve on food';
     stat.y_X_E = y_X_E; units.y_X_E = 'mol/mol'; label.y_X_E = 'yield of food on reserve';
     stat.p_Xm = p_Xm;   units.p_Xm = 'J/d.cm^2'; label.p_Xm = 'max spec feeding power';
     stat.J_X_Am = J_X_Am; units.J_X_Am = 'mol/d.cm^2'; label.J_X_Am = '{J_XAm}, max surface-spec feeding flux';
   end
-  if exists('kap_P', 'var')
+  if exist('kap_P', 'var')
     stat.y_P_X = y_P_X; units.y_P_X = 'mol/mol'; label.y_P_X = 'yield of faeces on food'; 
     stat.y_X_P = y_X_P; units.y_X_P = 'mol/mol'; label.y_X_P = 'yield of food on faeces';
   end
-  if exists('kap_X', 'var') && exists('kap_P', 'var')
+  if exist('kap_X', 'var') && exist('kap_P', 'var')
     stat.y_P_E = y_P_E; units.y_P_E = 'mol/mol'; label.y_P_E = 'yield of faeces on reserve';
     stat.eta_XA = eta_XA; units.eta_XA = 'mol/J'; label.eta_XA = 'mass-power couplers for food on assimilation';
     stat.eta_PA = eta_PA; units.eta_PA = 'mol/J'; label.eta_PA = 'mass-power couplers for product on assimlation';
     stat.eta_VG = eta_VG; units.eta_VG = 'mol/J'; label.eta_VG = 'mass-power couplers for structure on growth';
-    stat.eta_O = eta_O; units.eta_O = 'mol/J'; label.eta_O = 'mass-power couplers for organics';
   end
   stat.J_E_M = J_E_M; units.J_E_M = 'mol/d.cm^3'; label.J_E_M = '[J_EM], vol-spec somatic  maint costs';
   stat.J_E_T = J_E_T; units.J_E_T = 'mol/d.cm^2'; label.J_E_T = '{J_ET}, surface-spec somatic  maint costs';
   stat.j_E_M = j_E_M; units.j_E_M = 'mol/d.mol'; label.j_E_M = 'mass-spec somatic  maint costs';
   stat.j_E_J = j_E_J; units.j_E_J = 'mol/d.mol'; label.j_E_J = 'mass-spec maturity maint costs';
-  stat.kap_G = kap_G; units.kap_G = '-'; label.kap_G = 'growth efficiency';
+  stat.kap_G = kap_G; units.kap_G = '-'; label.kap_G = '\kappa_G, growth efficiency';
   stat.E_V = E_V; units.E_V = 'J/cm^3'; label.E_V = '[E_V], volume-specific energy of structure';
-  if exists('F_m', 'var')
-    stat.K = K; units.K = 'c-mol X/l'; label.K = 'half-saturation coefficient';
+  if exist('F_m', 'var')
+    stat.K = K; units.K = 'mol X/l'; label.K = 'half-saturation coefficient';
   end
   % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
   par_names = fields(par);   % extract field names for parameters
@@ -396,7 +394,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   % 
   for i = 1:length(mat_index)
-    switch mat_ind{i}
+    switch mat_index{i}
       case 'h'
         stat.M_Hh = M_Hh; units.M_Hh = 'mol'; label.M_Hh = 'maturity level at hatch';
         stat.U_Hh = U_Hh; units.U_Hh = 'cm^2.d'; label.U_Hh = 'scaled maturity level at hatch';
@@ -416,7 +414,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         stat.u_Hx = u_Hx; units.u_Hx = '-'; label.u_Hx = 'scaled maturity level at weaning/fletching';
         stat.v_Hx = v_Hx; units.v_Hx = '-'; label.v_Hx = 'scaled maturity level at weaning/fletching';
       case 's'
-        if strcomp(model, 'ssj')
+        if strcmp(model, 'ssj')
           stat.M_Hs = M_Hs; units.M_Hs = 'mol'; label.M_Hs = 'maturity level at S1/S2 transition';
           stat.U_Hs = U_Hs; units.U_Hs = 'cm^2.d'; label.U_Hs = 'scaled maturity level at S1/S2 transition';
           stat.V_Hs = V_Hs; units.V_Hs = 'cm^2.d'; label.V_Hs = 'scaled maturity level at S1/S2 transition';
@@ -452,7 +450,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 
   % other compound parameters (not depending on f)
   t_E      = L_m/ v/ TC;    % d, maximum reserve residence time
-  stat.t_E  = t_E; units.t_E  = 'd';  label.t_E = 'maximum reserve residence time';                      
+  stat.t_E = t_E; units.t_E  = 'd';  label.t_E = 'maximum reserve residence time';                      
   t_starve = E_m/ p_M/ TC;  % d, max survival time when starved  
   stat.t_starve  = t_starve; units.t_starve = 'd'; label.t_starve = 'maximum survival time when starved';               
 
@@ -495,9 +493,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_ts = [g; k; l_T; v_Hb; v_Hs]; % S1/S2 transition
       [t_s t_bb l_s l_bb] = get_tp(pars_ts, f, l_b); 
       % S2/S3 transition to no-feeding; t_sj is primary parameter
+      L_s = L_m * l_s;
       [t eLH] = ode45 (@dget_eLH, [0; t_sj], [1; L_s; E_Hs], [], kap, TC * v, g, L_m, TC * k_J, E_m);
       L_j = eLH(end,2);  l_j = L_j/ L_m; 
       E_Hj = eLH(end,3);                 % J, maturity at S3/juv transition
+      M_Hj = E_Hj/ mu_E;                 % mol, maturity at S3/juv transition
       U_Hj = E_Hj/ p_Am;                 % cm^2 d, scaled maturity at S3/juv transition
       u_Hj = U_Hj * g^2 * k_M^3/ v^2;    % -, scaled maturity at S3/juv transition
       V_Hj = U_Hj/ (1 - kap);            % cm^2 d, scaled maturity at S3/juv transition
@@ -537,13 +537,20 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_ts: invalid parameter value combination for t_p \n')
       end
       s_M = l_j/ l_s;
+    case 'abp'
+      pars_tj = [g; k; l_T; v_Hb; v_Hp; v_Hp + 1e-6];
+      [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj(pars_tj, f);
+      if info ~= 1              
+        fprintf('warning in get_tj: invalid parameter value combination for t_p \n')
+      end  
+      l_i = l_p + 1e-6; s_M = l_p/ l_b;
     case 'hep'
       v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj_hep: invalid parameter value combination for t_p \n')
       end  
-      s_M = l_j/ l_b; 
+      s_M = l_p/ l_b; 
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -555,8 +562,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % life cycle statistics
   stat.s_M = s_M;   units.s_M = '-';           label.s_M = 'acceleration factor'; 
-  s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3;
-  stat.s_s = s_s;   units.s_s = '-';           label.s_s = 'supply stress'; 
   if exist('rho_j', 'var')
     r_j = rho_j * k_M * TC;
     stat.r_j = r_j; units.r_j = '1/d';         label.r_j = 'exponential growth rate'; 
@@ -614,13 +619,15 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   
   % birth
-  L_b = L_m * l_b; M_Vb = M_V * L_b^3; Ww_b = L_b^3 * (1 + f * w); Wd_b = d_V * Ww_b; 
+  L_b = L_m * l_b; 
+  M_Vb = M_V * L_b^3; M_Eb = f * E_m * L_b^3/ mu_E; 
+  Ww_b = L_b^3 * (1 + f * w); Wd_b = d_V * Ww_b; 
   a_b = t_b/ k_M/ TC; del_Ub = M_Eb/ M_E0; % -, fraction of reserve left at birth
   g_Hb = E_Hb/ L_b^3/ (1 - kap)/ E_m; 
   stat.l_b = l_b;   units.l_b = '-';      label.l_b = 'scaled structural length at birth';
   stat.L_b = L_b;   units.L_b = 'cm';     label.L_b = 'structural length at birth';
   stat.M_Vb = M_Vb; units.M_Vb = 'mol';   label.M_Vb = 'structural mass at birth';
-  stat.del_Ub = del_Ub; units.del_Ub = '-'; label.del_Ub = 'fraction of reserve left at hatch';
+  stat.del_Ub = del_Ub; units.del_Ub = '-'; label.del_Ub = 'fraction of reserve left at birth';
   stat.Ww_b = Ww_b; units.Ww_b = 'g';     label.Ww_b = 'wet weight at birth';
   stat.Wd_b = Wd_b; units.Wd_b = 'g';     label.Wd_b = 'dry weight at birth';
   stat.a_b = a_b;   units.a_b = 'd';      label.a_b = 'age at birth';
@@ -628,14 +635,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % start/end strinking
   if strcmp(model, 'ssj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Wws; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';    label.l_s = 'scaled structural length at start strinking';
     stat.L_s = L_s;   units.L_s = 'cm';   label.L_s = 'structural length at start strinking';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol'; label.M_Vs = 'structural mass at start strinking';
     stat.Ww_s = Ww_s; units.Ww_s = 'g';   label.Ww_s = 'wet weight at start strinking';
     stat.Wd_s = Wd_s; units.Wd_s = 'g';   label.Wd_s = 'dry weight at start strinking';
     stat.a_s = a_s;   units.a_s = 'd';    label.a_s = 'age at start strinking';
-    M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Wwj; 
+    M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; 
     stat.l_s = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at end strinking';
     stat.L_s = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at end strinking';
     stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at end strinking';
@@ -646,7 +653,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % start acceleration
   if strcmp(model, 'asj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Wws; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';     label.l_s = 'scaled structural length at start acceleration';
     stat.L_s = L_s;   units.L_s = 'cm';    label.L_s = 'structural length at start acceleration';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol';  label.M_Vs = 'structural mass at start acceleration';
@@ -654,11 +661,15 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     stat.Wd_s = Wd_s; units.Wd_s = 'g';    label.Wd_s = 'dry weight at start acceleration';
     stat.a_s = a_s;   units.a_s = 'd';     label.a_s = 'age at start acceleration';
   end
+  
+  if strcmp(model, 'hex')
+    l_p = l_b; t_p = t_b; E_Hp = E_Hb; U_Hp = U_Hb; V_Hp = V_Hb; u_Hp = u_Hb; v_Hp = v_Hb;
+  end
         
   % metamorphosis
   switch model
-    case {abj, asj, abp, hep, hex}
-      L_j = L_m * l_j; M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Wwj; a_j = t_j/ k_M/ TC; 
+    case {'abj', 'asj', 'abp', 'hep', 'hex'}
+      L_j = L_m * l_j; M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; a_j = t_j/ k_M/ TC; 
       stat.l_j = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at metamorphosis';
       stat.L_j = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at metamorphosis';
       stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at metamorphosis';
@@ -668,7 +679,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   
   % puberty
-  L_p = L_m * l_p; M_Vp = M_V * L_p^3; Ww_p = L_p^3 * (1 + w * f); Wd_p = d_V * Wwp; a_p = t_p/ k_M/ TC; 
+  L_p = L_m * l_p; M_Vp = M_V * L_p^3; Ww_p = L_p^3 * (1 + w * f); Wd_p = d_V * Ww_p; a_p = t_p/ k_M/ TC; 
   g_Hp = E_Hp/ L_p^3/ (1 - kap)/ E_m; s_Hbp = g_Hb/ g_Hp;
   stat.l_p = l_p;      units.l_p = '-';     label.l_p = 'scaled structural length at puberty';
   stat.L_p = L_p;      units.L_p = 'cm';    label.L_p = 'structural length at puberty';
@@ -681,28 +692,38 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % emergence
   switch model
-    case {hep, hex}
-      L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Wwe; a_e = t_e/ k_M/ TC; 
+    case 'hep' % acceleration between a and p; emergence at j
+      L_e = L_m * l_j; M_Ve = M_V * L_e^3; Ww_e = L_e^3 * (1 + f * w); Wd_e = d_V * Ww_e; a_e = t_j/ k_M/ TC; 
+      stat.l_e = l_j;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
+      stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
+      stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
+      stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
+      stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
+      stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
+    case 'hex'
+      L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
       stat.l_e = l_e;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
       stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
       stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
       stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
       stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
       stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
-  end
+ end
   
   % ultimate
-  L_i = L_m * l_i; M_Vi = M_V * L_i^3; Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Wwi;
+  L_i = L_m * l_i; M_Vi = M_V * L_i^3; Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
   if strcmp(model, 'hep') || strcmp(model, 'hex')
     Ww_i = Ww_e; Wd_i = Wd_e;
   end
-  del_Wb = W_b/ W_i; del_Wp = W_p/ W_i; 
+  del_Wb = Ww_b/ Ww_i; del_Wp = Ww_p/ Ww_i; 
+  s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3;
+  stat.s_s = s_s;      units.s_s = '-';     label.s_s = 'supply stress'; 
   stat.l_i = l_i;      units.l_i = '-';     label.l_i = 'ultimate scaled structural length';
   stat.L_i = L_i;      units.L_i = 'cm';    label.L_i = 'ultimate structural length';
   stat.M_Vi = M_Vi;    units.M_Vi = 'mol';  label.M_Vi = 'ultimate structural mass';
   stat.Ww_i = Ww_i;    units.Ww_i = 'g';    label.Ww_i = 'ultimate wet weight';
   stat.Wd_i = Wd_i;    units.Wd_i = 'g';    label.Wd_i = 'ultimate dry weight';
-  xi_WE = (mu_V + mu_E * m_Em * f)/ (f * w);  % kJ/g, whole-body energy density (no reprod buffer) 
+  xi_WE = 1e-3 * (mu_V + mu_E * m_Em * f)/ (f * w);  % kJ/g, whole-body energy density (no reprod buffer) 
   stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = '<E + E_V>, whole-body energy density (no reprod buffer)';   
   stat.del_Wb  = del_Wb; units.del_Wb = '-'; label.del_Wb   = 'birth weight as fraction of maximum weight';         
   stat.del_Wp  = del_Wp; units.del_Wp = '-'; label.del_Wp   = 'puberty weight as fraction of maximum weight';      
@@ -757,121 +778,93 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.N_i = N_i;  units.N_i = '#';    label.N_i = 'life time reproductive output';  
  
   % feeding 
-
-
-% min and max possible egg sizes as determined by the maternal effect rule (e = f)
-
-[eb_min, lb_min, uE0_min, info_eb_min] = get_eb_min([g; k; v_Hb]); %#ok<*ASGLU> % growth, maturation cease at birth
-M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
-% if sum(info_eb_min) ~= 2
-%     fprintf('Warning: no convergence for eb_min\n')
-% end
-
-% ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
-% if length(ep_min) > 1
-%    ep_min = max(ep_min);
-% end
-% M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
-
-label.M_E0_min_b = 'egg mass whereby growth ceases at birth';   units.M_E0_min_b = 'mol';  stat.M_E0_min_b = M_E0_min_b;
-% label.M_E0_min_p = 'egg mass whereby growth ceases at puberty'; units.M_E0_min_p = 'mol';  stat.M_E0_min_p = M_E0_min_p;
-
-% food densities for which growth/maturation ceases at a given life-stage
-Kb_min = K * eb_min ./ (1 - eb_min);          % growth, maturation cease at birth
-% Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
-
-label.Kb_min = 'food density where growth, maturation cease at birth';   units.Kb_min = 'mol/l'; stat.Kb_min  = Kb_min;
-% label.Kp_min = 'food density where growth, maturation cease at puberty'; units.Kp_min = 'mol/l'; stat.Kp_min  = Kp_min;
-
-label.eb_ming = 'scaled func. resp. such that growth ceases at birth';   units.eb_ming = '-'; stat.eb_ming  = eb_min(1);
-label.eb_minh = 'scaled func. resp. such that maturation ceases at birth';   units.eb_minh = '-'; stat.eb_minh  = eb_min(2);
-% label.ep_min = 'scaled func. resp. such that maturation and growth ceases at puberty';   units.ep_min = '-'; stat.ep_min  = ep_min;
-
-%%
-
-% example % food intake and clearance rates :
-% p_Xb  = p_Am * f * L_b^2/ kap_X;    % J/d, food intake at birth
-% J_XAb = f * J_X_Am * L_b^2;         % mol/d, food intake at birth
-% CR_b  = F_m * L_b^2;                % l/d, clearance rate at birth 
-
-for i = 1:length(mat_ind)
-  stri = mat_ind{i};
-  labeli = mat_label{i};
-  eval(['p_X',  stri, ' = p_Am * f * L_', stri, '^2/ kap_X;']); % J/d, food intake
-  eval(['J_XA', stri, ' = f * J_X_Am * L_', stri, '^2;']);      % mol/d, food intake
-  eval(['CR_',  stri, ' = s_M * F_m * L_', stri, '^2;']);       % l/d, clearance rate
-  
-  %temperature corrections
-  eval(['p_X', stri, ' = p_X', stri, ' * TC;  J_XA', stri, ' = J_XA', stri, ' * TC;  CR_', stri, ' = CR_', stri, ' * TC;']); 
-  
-  eval(['label.p_X', stri,  ' = ''food intake ',    labeli, ''';  units.p_X',  stri, ' = ''J/d'';   stat.p_X',  stri, ' = p_X',  stri, '; temp.p_X',  stri, ' = T;']); 
-  eval(['label.J_XA', stri, ' = ''food intake ',    labeli, ''';  units.J_XA', stri, ' = ''mol/d''; stat.J_XA', stri, ' = J_XA', stri, '; temp.J_XA', stri, ' = T;']); 
-  eval(['label.CR_', stri,  ' = ''clearance rate ', labeli, ''';  units.CR_',  stri, ' = ''1/d'';   stat.CR_',  stri, ' = CR_',  stri, '; temp.CR_',  stri, ' = T;']); 
-end
-
-%%
-
- 
-  % compose parameter vectors used as input for DEBtool routines:
-  pars_pow = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  % scaled_power
-
-% mass fluxes for L = L_i = s_M (f L_m - L_T)
-
- mu_Or = [mu_X; mu_V; mu_E; mu_P]; % J/mol, chemical potentials for organics
-
- mu_M = [mu_C; mu_H; mu_O; mu_N];  % chemical potential of minerals
-
-% eta_O = [...   %%% pag. 141
-%     -3/2, 0, 0;
-%     0,    0, 1/2;
-%     1,   -1, -1;
-%     1/2,  0,  0];
-
-p_ref = p_Am * L_m^2;        % max assimilation power at max size
-
-pACSJGRD_b = p_ref * scaled_power(L_b+1e-6, f, pars_pow, l_b, l_p); % powers
-
-for i = 1:length(mat_ind)
-  if mat_ind{i} ~= 'b'
-    stri = mat_ind{i};
-    labeli = mat_label{i};
-    eval(['pACSJGRD_', stri, ' = p_ref * scaled_power(L_', stri, ', f, pars_pow, l_b, l_p);']);  % assimilation, dissipation, growth power
+  if ~strcmp(model, 'stf') || ~strcmp(model, 'stx') %  egg
+    % min possible egg sizes as determined by the maternal effect rule (e = f)
+    [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
+    if info ~= 1
+      fprintf('warning in get_eb_min: no convergence \n')
+    end
+    M_E0_min = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
+    stat.M_E0_min_G = M_E0_min(1); units.M_E0_min_G = 'mol'; label.M_E0_min_G = 'egg mass whereby growth ceases at birth';   
+    stat.M_E0_min_R = M_E0_min(2); units.M_E0_min_R = 'mol'; label.M_E0_min_R = 'egg mass whereby maturation ceases at birth';
+    stat.eb_min_G = eb_min(1); units.eb_min_G = '-'; label.eb_min_G = 'scaled reserve density whereby growth ceases at birth';   
+    stat.eb_min_R = eb_min(2); units.eb_min_R = '-'; label.eb_min_R = 'scaled reserve density whereby maturation ceases at birth';    
   end
+  if strcmp(model(1), 's')
+    ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
+    stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+  end
+  if exist('kap_X', 'var') && exist('kap_P', 'var')
+    p_Xb = TC * f * p_Xm * L_b^2; J_Xb = TC * f * J_X_Am * L_b^2; F_mb = F_m * L_b^2;       
+    stat.p_Xb = p_Xb; units.p_Xb = 'J/d'; label.p_Xb = 'food intake at birth';    
+    stat.J_Xb = J_Xb; units.J_Xb = 'mol/d'; label.J_Xb = 'food intake at birth';    
+    stat.F_mb = F_mb; units.F_mb = 'l/d'; label.F_mb = 'max searching rate at birth';    
+    p_Xp = TC * f * p_Xm * L_p^2; J_Xp = TC * f * J_X_Am * L_p^2; F_mp = F_m * L_p^2;         
+    stat.p_Xp = p_Xp; units.p_Xp = 'J/d'; label.p_Xp = 'food intake at puberty';    
+    stat.J_Xp = J_Xp; units.J_Xp = 'mol/d'; label.J_Xp = 'food intake at puberty';    
+    stat.F_mp = F_mp; units.F_mp = 'l/d'; label.F_mp = 'max searching rate at puberty';    
+    p_Xi = TC * f * p_Xm * L_i^2; J_Xi = TC * f * J_X_Am * L_i^2; F_mi = F_m * L_i^2;
+    stat.p_Xi = p_Xi; units.p_Xi = 'J/d'; label.p_Xi = 'ultimate food intake';    
+    stat.J_Xi = J_Xi; units.J_Xi = 'mol/d'; label.J_Xi = 'ultimate food intake';
+    stat.F_mi = F_mi; units.F_mi = 'l/d'; label.F_mi = 'max ultimate searching rate';    
+  end
+
+  % powers
+  p_ref = TC * p_Am * L_m^2;        % J/d, max assimilation power at max size
+  switch model
+    case {'std', 'stf', 'stx', 'ssj', 'sbp'}
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
+      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p); 
+    case {'abj', 'abp'}
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
+      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
+    case 'asj'
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];  
+      p_ACSJGRD = p_ref * scaled_power_s([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_s, l_j, l_p); 
+    case 'hep' 
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6]; 
+      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
+    case 'hex' % birth and pubert coincide; ultimate is here mapped to pupation
+      pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 
+      p_ACSJGRD = p_ref * scaled_power_hex([L_b + 1e-6; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);
+  end
+  stat.p_Ab = p_ACSJGRD(1,1); units.p_Ab = 'J/d'; label.p_Ab = 'assimilation at birth';    
+  stat.p_Sb = p_ACSJGRD(1,3); units.p_Sb = 'J/d'; label.p_Sb = 'somatic maintenance at birth';    
+  stat.p_Jb = p_ACSJGRD(1,4); units.p_Jb = 'J/d'; label.p_Jb = 'maturity maintenance at birth';    
+  stat.p_Gb = p_ACSJGRD(1,5); units.p_Gb = 'J/d'; label.p_Gb = 'growth at birth';    
+  stat.p_Rb = p_ACSJGRD(1,6); units.p_Rb = 'J/d'; label.p_Rb = 'maturation at birth';    
+  stat.p_Ap = p_ACSJGRD(2,1); units.p_Ap = 'J/d'; label.p_Ap = 'assimilation at puberty';    
+  stat.p_Sp = p_ACSJGRD(2,3); units.p_Sp = 'J/d'; label.p_Sp = 'somatic maintenance at puberty';    
+  stat.p_Jp = p_ACSJGRD(2,4); units.p_Jp = 'J/d'; label.p_Jp = 'maturity maintenance at puberty';    
+  stat.p_Gp = p_ACSJGRD(2,5); units.p_Gp = 'J/d'; label.p_Gp = 'growth at puberty';    
+  stat.p_Rp = p_ACSJGRD(2,6); units.p_Rp = 'J/d'; label.p_Rp = 'reproduction at puberty';    
+  stat.p_Ai = p_ACSJGRD(3,1); units.p_Ai = 'J/d'; label.p_Ai = 'ultimate assimilation';    
+  stat.p_Si = p_ACSJGRD(3,3); units.p_Si = 'J/d'; label.p_Si = 'ultimate somatic maintenance';    
+  stat.p_Ji = p_ACSJGRD(3,4); units.p_Ji = 'J/d'; label.p_Ji = 'ultimate maturity maintenance';    
+  stat.p_Gi = p_ACSJGRD(3,5); units.p_Gi = 'J/d'; label.p_Gi = 'ultimate growth';    
+  stat.p_Ri = p_ACSJGRD(3,6); units.p_Ri = 'J/d'; label.p_Ri = 'ultimate reproduction';    
+
+  % mass fluxes (respiration)
+  X_gas = T_ref/ T/ 24.4;       % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
+  p_ADG = p_ACSJGRD(:,[1 7 5]); % J/d, assimilation, dissipation, growth powers
+  J_O = eta_O * p_ADG'; J_M = - (n_M\n_O) * J_O; % rows: CHON, cols: bpi
+  stat.J_Cb = J_M(1,1); units.J_Cb = 'mol/d'; label.J_Cb = 'CO2 flux at birth';    
+  stat.J_Cp = J_M(1,2); units.J_Cp = 'mol/d'; label.J_Cp = 'CO2 flux at puberty';    
+  stat.J_Ci = J_M(1,3); units.J_Ci = 'mol/d'; label.J_Ci = 'ultimate CO2 flux';    
+  stat.J_Ob = -J_M(3,1); units.J_Ob = 'mol/d'; label.J_Ob = 'O2 flux at birth';    
+  stat.J_Op = -J_M(3,2); units.J_Op = 'mol/d'; label.J_Op = 'O2 flux at puberty';    
+  stat.J_Oi = -J_M(3,3); units.J_Oi = 'mol/d'; label.J_Oi = 'ultimate O2 flux';    
+  stat.J_Nb = J_M(4,1); units.J_Nb = 'mol/d'; label.J_Nb = 'N-waste flux at birth';    
+  stat.J_Np = J_M(4,2); units.J_Np = 'mol/d'; label.J_Np = 'N-waste flux at puberty';    
+  stat.J_Ni = J_M(4,3); units.J_Ni = 'mol/d'; label.J_Ni = 'ultimate N-waste flux';    
+
+  % packing
+  txtStat.units = units;
+  txtStat.label = label;
+
 end
 
-X_gas = T_ref/ T/ 24.4;  % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
-
-for i = 1:length(mat_ind)
-  stri = mat_ind{i};
-  labeli = mat_label{i};
-  eval(['pADG_', stri, ' = pACSJGRD_', stri, '(:,[1 7 5])'';']);  % assimilation, dissipation, growth power
-  eval(['J_O = eta_O * diag(pADG_', stri, ');']);                 % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
-  J_M = - (n_M\n_O) * J_O;                                        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
-  eval(['RQ_', stri, ' = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3));']); % mol C/ mol O, resp quotient
-  eval(['UQ_', stri, ' = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3));']); % mol N/ mol O, urin quotient
-  eval(['WQ_', stri, ' = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3));']); % mol H/ mol O, water quotient
-  eval(['SDA_', stri, ' = J_M(3,1)/ J_O(1,1);']);                 % mol O/mol X, specific dynamic action
-  eval(['VO_', stri,  ' = J_M(3,2)/ W_', stri, '/ 24/ X_gas;']);  % L/g.h, dioxygen use per gram max dry weight, <J_OD>
-  eval(['p_t_', stri, ' = sum(- J_O'' * mu_Or - J_M'' * mu_M);']); % J/d, dissipating heat
-
-  %temperature corrections
-  eval(['VO_', stri, ' = VO_', stri, ' * TC; p_t_', stri, ' = p_t_', stri, ' * TC;']); 
-  
-  eval(['label.RQ_',  stri, ' = ''respiration quotient ',        labeli, ''';  units.RQ_',  stri, ' = ''mol C/ mol O''; stat.RQ_',  stri, ' = RQ_',  stri, '; temp.RQ_',  stri, ' = T;']);  
-  eval(['label.UQ_',  stri, ' = ''urination quotient ',          labeli, ''';  units.UQ_',  stri, ' = ''mol N/ mol O''; stat.UQ_',  stri, ' = UQ_',  stri, '; temp.UQ_',  stri, ' = T;']); 
-  eval(['label.WQ_',  stri, ' = ''watering quotient ',           labeli, ''';  units.WQ_',  stri, ' = ''mol H/ mol O''; stat.WQ_',  stri, ' = WQ_',  stri, '; temp.WQ_',  stri, ' = T;']); 
-  eval(['label.SDA_', stri, ' = ''specific dynamic action ',     labeli, ''';  units.SDA_', stri, ' = ''mol O/ mol X''; stat.SDA_', stri, ' = SDA_', stri, '; temp.SDA_', stri, ' = T;']); 
-  eval(['label.VO_',  stri, ' = ''dioxygen use per dry weight ', labeli, ''';  units.VO_',  stri, ' = ''L/g.h'';        stat.VO_',  stri, ' = VO_',  stri, '; temp.VO_',  stri, ' = T;']); 
-  eval(['label.p_t_', stri, ' = ''heat dissipation ',            labeli, ''';  units.p_t_', stri, ' = ''J/d'';          stat.p_t_', stri, ' = p_t_', stri, '; temp.p_t_', stri, ' = T;']); 
-end
-
-% packing
-txtStat.units = units;
-txtStat.label = label;
-
-end
-
-% %% subfunction
+%% subfunction
 
 function deLH = dget_eLH(t, eLH, kap, v, g, Lm, kJ, Em)
   % growth while f = 0

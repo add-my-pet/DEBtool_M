@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>select</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-09-18"><meta name="DC.source" content="select.m"><style type="text/css">
+      --><title>select</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="select.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>select</h1><!--introduction--><p>gets list of species that belongs to a taxon</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>species = <a href="../select.m"><b>select</b></a> (taxon)</p><h2>Description<a name="4"></a></h2><p>gets all species in the add_my_pet collection that belong to a particular taxon.</p><p>Input:</p><div><ul><li>character string with name of taxon</li></ul></div><p>Output:</p><div><ul><li>cell string with all species in the add_my_pet collection that belong to that taxon</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The root is Animalia. If chosen as taxon, an ordered list of all species in the collection results. The classification follows that of Wikipedia</p><h2>Example of use<a name="6"></a></h2><p>species  = select('Animalia')</p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>select</h1><!--introduction--><p>gets list of species that belongs to a taxon</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>species = <a href="../select.m"><b>select</b></a> (taxon)</p><h2>Description<a name="4"></a></h2><p>gets all species in the add_my_pet collection that belong to a particular taxon.</p><p>Input:</p><div><ul><li>taxon: optional character string with name of taxon (default: 'Animalia')</li></ul></div><p>Output:</p><div><ul><li>cell string with all species in the add_my_pet collection that belong to that taxon</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The root is Animalia. If chosen as taxon, an ordered list of all species in the collection results. The classification follows that of Wikipedia</p><h2>Example of use<a name="6"></a></h2><p>species  = select('Animalia')</p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% select
@@ -64,7 +64,7 @@ span.syscmd { color:#B28C00 }
 %%
 function species = select(taxon)
 % created 2015/09/18 by Bernd Brandt
-
+% modified 2015/10/07 by Dina Lika
 %% Syntax
 % species = <../select.m *select*> (taxon) 
 
@@ -73,7 +73,7 @@ function species = select(taxon)
 %
 % Input:
 %
-% * character string with name of taxon
+% * taxon: optional character string with name of taxon (default: 'Animalia')
 %
 % Output:
 % 
@@ -87,8 +87,23 @@ function species = select(taxon)
 %% Example of use
 % species  = select('Animalia')
 
-  species = textscan(perl('select.pl', taxon), '%s'); 
-  species = species{1};
+  if ~exist('taxon', 'var')
+    taxon = 'Animalia';
+  end
+  
+  WD = pwd;                % store current path
+  taxa = which('select');  % locate DEBtool_M/taxa/
+  taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/
+  cd(taxa)                 % goto taxa
+  
+  try
+    species = textscan(perl('select.pl', taxon), '%s'); 
+    species = species{1};
+  catch
+    disp('Name of taxon is not recognized')
+  end
+  
+  cd(WD)                   % goto original path
 end
 
 
