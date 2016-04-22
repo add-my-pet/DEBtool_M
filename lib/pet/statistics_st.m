@@ -158,11 +158,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     return;
   end    
      
-  if ~exist('T', 'var') || istempty(T)
+  if ~exist('T', 'var') || isempty(T)
     T = C2K(20);
   end
  
-  if ~exist('fStat', 'var') || istempty(f) % overwrite f in par
+  if ~exist('fStat', 'var') || isempty(f) % overwrite f in par
     par.f = 1;
   else
     par.f = f; 
@@ -274,7 +274,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         stat.u_Hx = u_Hx; units.u_Hx = '-'; label.u_Hx = 'scaled maturity level at weaning/fletching';
         stat.v_Hx = v_Hx; units.v_Hx = '-'; label.v_Hx = 'scaled maturity level at weaning/fletching';
       case 's'
-        if strcomp(model, 'ssj')
+        if strcmp(model, 'ssj')
           stat.M_Hs = M_Hs; units.M_Hs = 'mol'; label.M_Hs = 'maturity level at S1/S2 transition';
           stat.U_Hs = U_Hs; units.U_Hs = 'cm^2.d'; label.U_Hs = 'scaled maturity level at S1/S2 transition';
           stat.V_Hs = V_Hs; units.V_Hs = 'cm^2.d'; label.V_Hs = 'scaled maturity level at S1/S2 transition';
@@ -504,7 +504,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % start acceleration
   if strcmp(model, 'asj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Wws; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';     label.l_s = 'scaled structural length at start acceleration';
     stat.L_s = L_s;   units.L_s = 'cm';    label.L_s = 'structural length at start acceleration';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol';  label.M_Vs = 'structural mass at start acceleration';
