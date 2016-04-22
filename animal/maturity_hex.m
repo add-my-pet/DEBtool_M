@@ -57,7 +57,7 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   end
   
 
-  % split L in 
+  % split L in L_pre and L_post
   Lm = v/ kM/ g; Lj = Lm * lj; Le = Lm * le; Lb = Lm * lb; k = kJ/ kM; kE = v/ Lb; sM = Lj/Lb;         
   nL = length(L); L_pre = L(1);
   if nL > 1
@@ -69,10 +69,8 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   end
   nL_pre = length(L_pre); L_post = L; L_post(1:nL_pre) = []; nL_post = length(L_post);
 
-  uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
-  uHe = He * g^2 * kM^3/ (v^2); vHe = uHe/ (1 - kap);
-  
-  
+  % embro and larva
+  uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);  
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
   [l_out, teh] = ode45(@dget_teh_hex, [1e-6; L_pre(1)/ 2; L_pre]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, lb);
   teh(1:2,:) = []; 
@@ -80,9 +78,10 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   H(L >= Lb) = Hb;
   % a = teh(:,1)/ kM;
   
+  % pupa and imago
   if nL_post > 0
     v_j = v * sM;                            % cm/d, energy conductance of imago
-    aVEH_0 = [0; Lj^3; f * Lj^3; 0];         % state at start pupation (before spinning)
+    aVEH_0 = [0; Lj^3; f * Lj^3/ v_j; 0];    % state at start pupation (before spinning)
     [L_out, aVEH] = ode45(@dget_aVEH, [1e-6; L_post(1)/ 2; L_post], aVEH_0, [], g, kJ, kM, kE, v_j, kap, kapV);
     aVEH(1:2,:) = []; H = aVEH(:,4); 
   end
