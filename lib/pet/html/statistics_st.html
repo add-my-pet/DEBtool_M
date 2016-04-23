@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
+      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-23"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -135,7 +135,7 @@ span.syscmd { color:#B28C00 }
    - t_starve: maximum survival time when starved; all</pre><pre>   - p_A*, p_S*, p_J*, p_G*, p_R* : energy fluxes at b, p, i ; all
    - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
    - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
-   - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Weights exclude possible contribution of the reproduction buffer. Temperature-dependent quantities are directly corrected for body temperature For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
+   - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Body weights exclude possible contribution of the reproduction buffer. Temperature-dependent quantities are directly corrected for body temperature For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% statistics_st
@@ -283,7 +283,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense.
 % Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
-% Weights exclude possible contribution of the reproduction buffer.
+% Body weights exclude possible contribution of the reproduction buffer.
 % Temperature-dependent quantities are directly corrected for body temperature
 % For required model-specific fields, see get_parfields.
 
@@ -302,7 +302,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     T = C2K(20);
   end
  
-  if ~exist('fStat', 'var') || isempty(f) % overwrite f in par
+  if ~exist('f', 'var') || isempty(f) % overwrite f in par
     par.f = 1;
   else
     par.f = f; 
