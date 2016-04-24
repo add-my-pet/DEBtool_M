@@ -1,5 +1,5 @@
 %% legend_RSED
-% specification of reference legend 
+% specification of reference legend for all animals
 
 %
 function legend = legend_RSED
@@ -9,11 +9,11 @@ function legend = legend_RSED
   % legend = <legend_RSED.m *legend_RSED*>
 
   %% Description
-  % Specifies a reference legend
+  % Specifies a reference legend for all animals
   %
   % Output
   %
-  % * legend: (8,2) cell matix with marker, taxon pairs
+  % * legend: (9,2) cell matrix with (marker, taxon)-pairs
 
   % type, size, linewidth, edge color and face color of a marker, taxon
   legend = {...

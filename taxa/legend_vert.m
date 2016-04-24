@@ -3,17 +3,17 @@
 
 %
 function legend = legend_vert
-% created at 2016/04/12 by Bas Kooijman
+% created at 2016/04/24 by Bas Kooijman
 
   %% Syntax
-  % legend = <legend_RSED.m *legend_vert*>
+  % legend = <legend_vert.m *legend_vert*>
 
   %% Description
   % Specifies a legend for vertebrates
   %
   % Output
   %
-  % * legend: (8,2) cell matix with marker, taxon pairs
+  % * legend: (11,2) cell matrix with (marker, taxon)-pairs
 
   % type, size, linewidth, edge color and face color of a marker, taxon
   legend = {...

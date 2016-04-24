@@ -13,7 +13,7 @@ function legend = legend_fish
   %
   % Output
   %
-  % * legend: (7,2) cell matix with marker, taxon pairs
+  % * legend: (7,2) cell matrix with (marker, taxon)-pairs
 
   % type, size, linewidth, edge color and face color of a marker, taxon
   legend = {...
