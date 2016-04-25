@@ -387,25 +387,32 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       end
       s_M = l_j/ l_s;
     case 'abp'
-      pars_tj = [g; k; l_T; v_Hb; v_Hp; v_Hp + 1e-6];
+      E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
+      stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
+      stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
+      stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
+      stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
+      stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
+      pars_tj = [g; k; l_T; v_Hb; v_Hj; v_Hp];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj: invalid parameter value combination for t_p \n')
       end  
-      l_i = l_p + 1e-6; s_M = l_p/ l_b;
-    case 'hep'
+      s_M = l_p/ l_b; l_i = l_p + 1e-6;
+   case 'hep'
       v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj_hep: invalid parameter value combination for t_p \n')
       end  
-      s_M = l_p/ l_b; 
-      stat.E_Hj = E_Hp-1e-8; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
-      stat.M_Hj = M_Hp-1e-8; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
-      stat.U_Hj = U_Hp-1e-8; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
-      stat.V_Hj = V_Hp-1e-8; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
-      stat.u_Hj = u_Hp-1e-8; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
-      stat.v_Hj = v_Hp-1e-8; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
+      s_M = l_p/ l_b; E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
+      stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
+      stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
+      stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
+      stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
+      stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -657,12 +664,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
       stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
     case {'abj', 'asj', 'abp', 'hep'} 
-     [ep_min info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
-     if info ~= 1
-       fprintf('warning in get_ep_min_j: no convergence \n')
-     end
-     stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
-    case hex
+      [ep_min info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+      if info ~= 1
+        fprintf('warning in get_ep_min_j: no convergence \n')
+      end
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+    case 'hex'
       stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'scaled reserve density whereby maturation ceases at puberty';    
   end
   if exist('kap_X', 'var') && exist('kap_P', 'var')

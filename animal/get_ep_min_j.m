@@ -36,26 +36,14 @@ function [ep, info] = get_ep_min_j(p)
   [eb, lb, uE0, info] = get_eb_min([g, k, vHb]);
   eb = min(eb);
   
-  if fnget_ep_min_j(eb, p) > 0 
-    [l_j, l_p, l_b] = get_lj(p, 1); ep_0 = p(3) + l_p * l_b/ l_j;
-    [ep, fval, info] = fzero(@fnget_ep_min_j, ep_0, [], p);
-    if ep <= 0 || ep >= 1
-      info = 0;
-    end
-  else
-    ep = eb;
-    info = 2;
+  [l_j, l_p, l_b] = get_lj(p, 1); 
+  c = p(6)/ (l_j/ l_b)^3; ep_0 = (sqrt(p(3)^2 + 4 * c) - p(3))/ 2;
+  nmregr_options('report',0);
+  par = [ep_0 1; [p(:), zeros(6,1)]];
+  par = nmregr('fnget_ep_min_j', par, zeros(1,2)); ep = par(1,1);
+  if ep <= 0 || ep >= 1
+    info = 0;
   end
   
-end
-
-% %% subfunction
-
-function F = fnget_ep_min_j(f, p) % F = 0 if l_i = l_p
-  [l_j, l_p, l_b] = get_lj(p, f);
-  F = f * (f - p(3))^2 * (l_j/ l_b)^3 - p(2) * p(6);
-  if isempty(F) % no solution from get_lj
-    F = 1/f;
-  end
 end
 
