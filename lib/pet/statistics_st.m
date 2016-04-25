@@ -103,17 +103,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - h_W: Weibull aging rate; all
 %     - h_G: Gompertz aging rate; all
 %
-%     - dL_b: growth in structural length at birth; all
-%     - dWw_b: growth in wet wet at birth; all
-%     - dWd_b: growth in dry weight at birth; all
-%     - dWw_p: growth in wet wet at puberty; all
-%     - dWd_p: growth in dry wet at puberty; all
-%     - dL_m: growth in structural length at max; all
-%     - dWw_m: growth in wet wet at max; all
-%     - dWd_m: growth in dry weight at max; all
-%     - dWw_m: growth in wet wet at max; all
-%     - dWd_m: growth in dry wet at max; all
-%
 %     - N_i: life-time reproductive output; all
 %     - R_i: ultimate reproduction rate: all except hep, hex
 %     - GSI: gonado-somatic index for spawning once per yr: all except hep, hex
@@ -659,6 +648,9 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   if strcmp(model(1), 's')
     ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
     stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+  elseif strcmp(model(1), 'a')
+ %   ep_min  = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+ %   stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
   end
   if exist('kap_X', 'var') && exist('kap_P', 'var')
     p_Xb = TC * f * p_Xm * L_b^2; J_Xb = TC * f * J_X_Am * L_b^2; F_mb = F_m * L_b^2;       
