@@ -400,6 +400,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_tj_hep: invalid parameter value combination for t_p \n')
       end  
       s_M = l_p/ l_b; 
+      stat.E_Hj = E_Hp-1e-8; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
+      stat.M_Hj = M_Hp-1e-8; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
+      stat.U_Hj = U_Hp-1e-8; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
+      stat.V_Hj = V_Hp-1e-8; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
+      stat.u_Hj = u_Hp-1e-8; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
+      stat.v_Hj = v_Hp-1e-8; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -407,12 +413,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
       end
       l_i = l_e; s_M = l_j/ l_b;
-      stat.E_Hp = E_Hb; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; % is not a parameter of hex
-      stat.M_Hp = M_Hb; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty';
-      stat.U_Hp = U_Hb; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty';
-      stat.V_Hp = V_Hb; units.V_Hp = 'cm^2.d'; label.V_Hp = 'scaled maturity level at puberty';
-      stat.u_Hp = u_Hb; units.u_Hp = '-'; label.u_Hp = 'scaled maturity level at puberty';
-      stat.v_Hp = v_Hb; units.v_Hp = '-'; label.v_Hp = 'scaled maturity level at puberty';
+      stat.E_Hp = E_Hb+1e-8; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; % is not a parameter of hex
+      stat.M_Hp = M_Hb+1e-8; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty';
+      stat.U_Hp = U_Hb+1e-8; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty';
+      stat.V_Hp = V_Hb+1e-8; units.V_Hp = 'cm^2.d'; label.V_Hp = 'scaled maturity level at puberty';
+      stat.u_Hp = u_Hb+1e-8; units.u_Hp = '-'; label.u_Hp = 'scaled maturity level at puberty';
+      stat.v_Hp = v_Hb+1e-8; units.v_Hp = '-'; label.v_Hp = 'scaled maturity level at puberty';
   end
   
   % life cycle statistics
@@ -632,25 +638,32 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   stat.N_i = N_i;  units.N_i = '#';    label.N_i = 'life time reproductive output';  
  
-  % feeding 
-  if ~strcmp(model, 'stf') || ~strcmp(model, 'stx') %  egg
-    % min possible egg sizes as determined by the maternal effect rule (e = f)
-    [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
-    if info ~= 1
-      fprintf('warning in get_eb_min: no convergence \n')
-    end
-    M_E0_min = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
-    stat.M_E0_min_G = M_E0_min(1); units.M_E0_min_G = 'mol'; label.M_E0_min_G = 'egg mass whereby growth ceases at birth';   
-    stat.M_E0_min_R = M_E0_min(2); units.M_E0_min_R = 'mol'; label.M_E0_min_R = 'egg mass whereby maturation ceases at birth';
-    stat.eb_min_G = eb_min(1); units.eb_min_G = '-'; label.eb_min_G = 'scaled reserve density whereby growth ceases at birth';   
-    stat.eb_min_R = eb_min(2); units.eb_min_R = '-'; label.eb_min_R = 'scaled reserve density whereby maturation ceases at birth';    
+  % feeding: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex
+  switch model
+    case {'std', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'} %  egg (not foetus)
+      % min possible egg sizes as determined by the maternal effect rule (e = f)
+      [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
+      if info ~= 1
+        fprintf('warning in get_eb_min: no convergence \n')
+      end
+      M_E0_min = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
+      stat.M_E0_min_G = M_E0_min(1); units.M_E0_min_G = 'mol'; label.M_E0_min_G = 'egg mass whereby growth ceases at birth';   
+      stat.M_E0_min_R = M_E0_min(2); units.M_E0_min_R = 'mol'; label.M_E0_min_R = 'egg mass whereby maturation ceases at birth';
+      stat.eb_min_G = eb_min(1); units.eb_min_G = '-'; label.eb_min_G = 'scaled reserve density whereby growth ceases at birth';   
+      stat.eb_min_R = eb_min(2); units.eb_min_R = '-'; label.eb_min_R = 'scaled reserve density whereby maturation ceases at birth';    
   end
-  if strcmp(model(1), 's')
-    ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
-    stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
-  elseif strcmp(model(1), 'a')
- %   ep_min  = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
- %   stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+  switch model
+    case {'std', 'stf', 'stx', 'ssj', 'sbp'}
+      ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+    case {'abj', 'asj', 'abp', 'hep'} 
+     [ep_min info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+     if info ~= 1
+       fprintf('warning in get_ep_min_j: no convergence \n')
+     end
+     stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+    case hex
+      stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'scaled reserve density whereby maturation ceases at puberty';    
   end
   if exist('kap_X', 'var') && exist('kap_P', 'var')
     p_Xb = TC * f * p_Xm * L_b^2; J_Xb = TC * f * J_X_Am * L_b^2; F_mb = F_m * L_b^2;       
