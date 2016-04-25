@@ -418,6 +418,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
       end
       l_i = l_e; s_M = l_j/ l_b;
+      stat.E_Hp = E_Hb; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; % is not a parameter of hex
+      stat.M_Hp = M_Hb; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty';
+      stat.U_Hp = U_Hb; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty';
+      stat.V_Hp = V_Hb; units.V_Hp = 'cm^2.d'; label.V_Hp = 'scaled maturity level at puberty';
+      stat.u_Hp = u_Hb; units.u_Hp = '-'; label.u_Hp = 'scaled maturity level at puberty';
+      stat.v_Hp = v_Hb; units.v_Hp = '-'; label.v_Hp = 'scaled maturity level at puberty';
   end
   
   % life cycle statistics
