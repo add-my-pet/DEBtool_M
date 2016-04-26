@@ -31,19 +31,38 @@ function [ep, info] = get_ep_min_j(p)
 
   %% Example of use
   % get_ep_min_j([.1 1 0 .001 0.01 .1])
+    
+  info = 1;
+  % find initial value
+  [l_j, l_p, l_b] = get_lj(p, 1); s_M = l_j/ l_b;
+  c = p(6)/ s_M^3; ep_0 = (sqrt(p(3)^2 + 4 * c) - p(3))/ 2;  
   
-  g = p(1); k = p(2); vHb = p(4);
-  [eb, lb, uE0, info] = get_eb_min([g, k, vHb]);
-  eb = min(eb);
-  
-  [l_j, l_p, l_b] = get_lj(p, 1); 
-  c = p(6)/ (l_j/ l_b)^3; ep_0 = (sqrt(p(3)^2 + 4 * c) - p(3))/ 2;
-  nmregr_options('report',0);
-  par = [ep_0 1; [p(:), zeros(6,1)]];
-  par = nmregr('fnget_ep_min_j', par, zeros(1,2)); ep = par(1,1);
-  if ep <= 0 || ep >= 1
+  % bisection method with boundary set by get_lj
+  ep_range = [0 1]; i = 1; n = 50;
+  while (ep_range(2) - ep_range(1)) > 1e-5 && i < n
+    F = fnget_ep_min_j(ep_0, p);
+    if isempty(F) || F < 0
+      ep_range(1) = ep_0;
+      ep_0 = (ep_0 + ep_range(2))/2;
+    else
+      ep_range(2) = ep_0;
+      ep_0 = (ep_0 + ep_range(1))/2;
+    end
+    i = i + 1;
+  end
+  ep = sum(ep_range)/2;
+    
+  if F > 1e-2
+    fprintf(['Warning from get_ep_min_j: loss function is ', num2str(F), '\n'])
+  end
+  if i >= n
     info = 0;
   end
   
 end
 
+% subfunction
+function F = fnget_ep_min_j(f, p)
+  [l_j, l_p, l_b] = get_lj(p, f);
+  F = f * (f - p(3))^2 * (l_j/ l_b)^3 - p(2) * p(6);
+end
