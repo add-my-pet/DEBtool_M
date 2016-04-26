@@ -3,7 +3,9 @@
 
 %%
 function [ep, info] = get_ep_min_j(p)
-  % created 2015/09/16 by Bas Kooijman, Dina Lika; modified 2015/10/23 by Goncalo Marques
+  % created 2015/09/16 by Bas Kooijman, Dina Lika; 
+  % modified 2015/10/23 by Goncalo Marques; 
+  % modified 2016/04/26 by Bas Kooijman
   
   %% Syntax
   % [ep, info] = <..get_ep_min_j.m *get_ep_min_j*> (p)
@@ -11,7 +13,6 @@ function [ep, info] = get_ep_min_j(p)
   %% Description
   % Obtains the scaled reserve at birth for growth and maturation ceases at puberty in case of acceleration. 
   % It can be seen as the lower viable scaled reserve density for reproduction. Cf get_eb_min.
-  % In the case the eb minimum already causes reproduction to exist, it returns ep = eb and info = 2. 
   %
   % Input
   %
@@ -33,29 +34,23 @@ function [ep, info] = get_ep_min_j(p)
   % get_ep_min_j([.1 1 0 .001 0.01 .1])
     
   info = 1;
-  % find initial value
-  [l_j, l_p, l_b] = get_lj(p, 1); s_M = l_j/ l_b;
-  c = p(6)/ s_M^3; ep_0 = (sqrt(p(3)^2 + 4 * c) - p(3))/ 2;  
   
-  % bisection method with boundary set by get_lj
-  ep_range = [0 1]; i = 1; n = 50;
-  while (ep_range(2) - ep_range(1)) > 1e-5 && i < n
-    F = fnget_ep_min_j(ep_0, p);
-    if isempty(F) || F < 0
-      ep_range(1) = ep_0;
-      ep_0 = (ep_0 + ep_range(2))/2;
-    else
-      ep_range(2) = ep_0;
-      ep_0 = (ep_0 + ep_range(1))/2;
+  % bisection method with lower boundary set by get_lj
+  ep_range = [0 1]; ep = 0.5;    % set initial value
+  while (ep_range(2) - ep_range(1)) > 1e-5
+    F = fnget_ep_min_j(ep, p);   % get loss function
+    if isempty(F) || F < 0       % lower boundary
+      ep_range(1) = ep;
+      ep = (ep + ep_range(2))/2; % set new value
+    else                         % upper boundary
+      ep_range(2) = ep;       
+      ep = (ep + ep_range(1))/2; % set new value
     end
-    i = i + 1;
   end
   ep = sum(ep_range)/2;
     
-  if F > 1e-2
+  if F > 0.05
     fprintf(['Warning from get_ep_min_j: loss function is ', num2str(F), '\n'])
-  end
-  if i >= n
     info = 0;
   end
   
