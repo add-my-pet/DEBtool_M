@@ -35,9 +35,11 @@ function [ep, info] = get_ep_min_j(p)
     
   info = 1;
   
-  % bisection method with lower boundary set by get_lj
+  % bisection method with lower boundary set by get_lj:
+  %   F(ep) is empty for low ep, then monotonically increasing from a negative value for F
+  %   The range for which F is negative is VERY small
   ep_range = [0 1]; ep = 0.5;    % set initial value
-  while (ep_range(2) - ep_range(1)) > 1e-5
+  for i = 1:16 % range-width becomes 2^-16 = 1.5e-5
     F = fnget_ep_min_j(ep, p);   % get loss function
     if isempty(F) || F < 0       % lower boundary
       ep_range(1) = ep;
@@ -47,7 +49,7 @@ function [ep, info] = get_ep_min_j(p)
       ep = (ep + ep_range(1))/2; % set new value
     end
   end
-  ep = sum(ep_range)/2;
+  ep = sum(ep_range)/2;          % select mid-range as result
     
   if F > 0.05
     fprintf(['Warning from get_ep_min_j: loss function is ', num2str(F), '\n'])
