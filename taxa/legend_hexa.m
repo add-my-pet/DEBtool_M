@@ -13,7 +13,7 @@ function legend = legend_hexa
   %
   % Output
   %
-  % * legend: (7,2) cell matrix with (marker, taxon)-pairs
+  % * legend: (10,2) cell matrix with (marker, taxon)-pairs
 
   % type, size, linewidth, edge color and face color of a marker, taxon
   legend = {...
