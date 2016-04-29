@@ -54,7 +54,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - kap_G: growth efficiency; all
 %     - t_E: maximum reserve residence time; all
 %
-%     - s_M: acceleration factor; all
+%     - s_M, sM_min: acceleration factor; but sM_min not for hex
 %     - s_s: supply stress; all
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
@@ -429,7 +429,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   
   % life cycle statistics
-  stat.s_M = s_M;   units.s_M = '-';           label.s_M = 'acceleration factor'; 
+  stat.s_M = s_M;   units.s_M = '-';           label.s_M = 'acceleration factor at f=1'; 
   if exist('rho_j', 'var')
     r_j = rho_j * k_M * TC;
     stat.r_j = r_j; units.r_j = '1/d';         label.r_j = 'exponential growth rate'; 
@@ -663,12 +663,21 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     case {'std', 'stf', 'stx', 'ssj', 'sbp'}
       ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
       stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
-    case {'abj', 'asj', 'abp', 'hep'} 
-      [ep_min info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+      stat.sM_min = 1; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
+    case {'abj', 'abp', 'hep'} 
+      [ep_min, sM_min, info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
       if info ~= 1
         fprintf('warning in get_ep_min_j: no convergence \n')
       end
       stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+      stat.sM_min = sM_min; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
+    case 'asj'
+      [ep_min, sM_min, info] = get_ep_min_s([g; k; l_T; v_Hb; v_Hs; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+      if info ~= 1
+        fprintf('warning in get_ep_min_s: no convergence \n')
+      end
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+      stat.sM_min = sM_min; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
     case 'hex'
       stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'scaled reserve density whereby maturation ceases at puberty';    
   end

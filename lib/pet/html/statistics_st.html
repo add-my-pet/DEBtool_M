@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-23"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
+      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-29"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -76,7 +76,7 @@ span.syscmd { color:#B28C00 }
    - y_P_E: yield of faeces on reserve; all if kap_P and kap_P exist
    - eta_XA, eta_PA, eta_VG: mass-power couplers for organics; all if kap_P and kap_P exist
    - kap_G: growth efficiency; all
-   - t_E: maximum reserve residence time; all</pre><pre>   - s_M: acceleration factor; all
+   - t_E: maximum reserve residence time; all</pre><pre>   - s_M, sM_min: acceleration factor; but sM_min not for hex
    - s_s: supply stress; all
    - s_Hbp: precociality coefficient; all
    - r_j: exponential growth rate; all a- and h-models
@@ -111,16 +111,7 @@ span.syscmd { color:#B28C00 }
    - S_b: survival probability at birth; all
    - S_p: survival probability at puberty; all
    - h_W: Weibull aging rate; all
-   - h_G: Gompertz aging rate; all</pre><pre>   - dL_b: growth in structural length at birth; all
-   - dWw_b: growth in wet wet at birth; all
-   - dWd_b: growth in dry weight at birth; all
-   - dWw_p: growth in wet wet at puberty; all
-   - dWd_p: growth in dry wet at puberty; all
-   - dL_m: growth in structural length at max; all
-   - dWw_m: growth in wet wet at max; all
-   - dWd_m: growth in dry weight at max; all
-   - dWw_m: growth in wet wet at max; all
-   - dWd_m: growth in dry wet at max; all</pre><pre>   - N_i: life-time reproductive output; all
+   - h_G: Gompertz aging rate; all</pre><pre>   - N_i: life-time reproductive output; all
    - R_i: ultimate reproduction rate: all except hep, hex
    - GSI: gonado-somatic index for spawning once per yr: all except hep, hex</pre><pre>   - K: half saturation coefficient; all if F_m exists
    - F_mb: max searching rate at birth; all  if F_m exists
@@ -194,7 +185,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - kap_G: growth efficiency; all
 %     - t_E: maximum reserve residence time; all
 %
-%     - s_M: acceleration factor; all
+%     - s_M, sM_min: acceleration factor; but sM_min not for hex
 %     - s_s: supply stress; all
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
@@ -242,17 +233,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - S_p: survival probability at puberty; all
 %     - h_W: Weibull aging rate; all
 %     - h_G: Gompertz aging rate; all
-%
-%     - dL_b: growth in structural length at birth; all
-%     - dWw_b: growth in wet wet at birth; all
-%     - dWd_b: growth in dry weight at birth; all
-%     - dWw_p: growth in wet wet at puberty; all
-%     - dWd_p: growth in dry wet at puberty; all
-%     - dL_m: growth in structural length at max; all
-%     - dWw_m: growth in wet wet at max; all
-%     - dWd_m: growth in dry weight at max; all
-%     - dWw_m: growth in wet wet at max; all
-%     - dWd_m: growth in dry wet at max; all
 %
 %     - N_i: life-time reproductive output; all
 %     - R_i: ultimate reproduction rate: all except hep, hex
@@ -538,19 +518,32 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       end
       s_M = l_j/ l_s;
     case 'abp'
-      pars_tj = [g; k; l_T; v_Hb; v_Hp; v_Hp + 1e-6];
+      E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
+      stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
+      stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
+      stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
+      stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
+      stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
+      pars_tj = [g; k; l_T; v_Hb; v_Hj; v_Hp];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj: invalid parameter value combination for t_p \n')
       end  
-      l_i = l_p + 1e-6; s_M = l_p/ l_b;
-    case 'hep'
+      s_M = l_p/ l_b; l_i = l_p + 1e-6;
+   case 'hep'
       v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
       [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj_hep: invalid parameter value combination for t_p \n')
       end  
-      s_M = l_p/ l_b; 
+      s_M = l_p/ l_b; E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; % is not a parameter of hep
+      stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis';
+      stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis';
+      stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis';
+      stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis';
+      stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis';
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -558,10 +551,16 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
       end
       l_i = l_e; s_M = l_j/ l_b;
+      stat.E_Hp = E_Hb+1e-8; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; % is not a parameter of hex
+      stat.M_Hp = M_Hb+1e-8; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty';
+      stat.U_Hp = U_Hb+1e-8; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty';
+      stat.V_Hp = V_Hb+1e-8; units.V_Hp = 'cm^2.d'; label.V_Hp = 'scaled maturity level at puberty';
+      stat.u_Hp = u_Hb+1e-8; units.u_Hp = '-'; label.u_Hp = 'scaled maturity level at puberty';
+      stat.v_Hp = v_Hb+1e-8; units.v_Hp = '-'; label.v_Hp = 'scaled maturity level at puberty';
   end
   
   % life cycle statistics
-  stat.s_M = s_M;   units.s_M = '-';           label.s_M = 'acceleration factor'; 
+  stat.s_M = s_M;   units.s_M = '-';           label.s_M = 'acceleration factor at f=1'; 
   if exist('rho_j', 'var')
     r_j = rho_j * k_M * TC;
     stat.r_j = r_j; units.r_j = '1/d';         label.r_j = 'exponential growth rate'; 
@@ -777,22 +776,41 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   stat.N_i = N_i;  units.N_i = '#';    label.N_i = 'life time reproductive output';  
  
-  % feeding 
-  if ~strcmp(model, 'stf') || ~strcmp(model, 'stx') %  egg
-    % min possible egg sizes as determined by the maternal effect rule (e = f)
-    [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
-    if info ~= 1
-      fprintf('warning in get_eb_min: no convergence \n')
-    end
-    M_E0_min = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
-    stat.M_E0_min_G = M_E0_min(1); units.M_E0_min_G = 'mol'; label.M_E0_min_G = 'egg mass whereby growth ceases at birth';   
-    stat.M_E0_min_R = M_E0_min(2); units.M_E0_min_R = 'mol'; label.M_E0_min_R = 'egg mass whereby maturation ceases at birth';
-    stat.eb_min_G = eb_min(1); units.eb_min_G = '-'; label.eb_min_G = 'scaled reserve density whereby growth ceases at birth';   
-    stat.eb_min_R = eb_min(2); units.eb_min_R = '-'; label.eb_min_R = 'scaled reserve density whereby maturation ceases at birth';    
+  % feeding: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex
+  switch model
+    case {'std', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'} %  egg (not foetus)
+      % min possible egg sizes as determined by the maternal effect rule (e = f)
+      [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
+      if info ~= 1
+        fprintf('warning in get_eb_min: no convergence \n')
+      end
+      M_E0_min = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
+      stat.M_E0_min_G = M_E0_min(1); units.M_E0_min_G = 'mol'; label.M_E0_min_G = 'egg mass whereby growth ceases at birth';   
+      stat.M_E0_min_R = M_E0_min(2); units.M_E0_min_R = 'mol'; label.M_E0_min_R = 'egg mass whereby maturation ceases at birth';
+      stat.eb_min_G = eb_min(1); units.eb_min_G = '-'; label.eb_min_G = 'scaled reserve density whereby growth ceases at birth';   
+      stat.eb_min_R = eb_min(2); units.eb_min_R = '-'; label.eb_min_R = 'scaled reserve density whereby maturation ceases at birth';    
   end
-  if strcmp(model(1), 's')
-    ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
-    stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+  switch model
+    case {'std', 'stf', 'stx', 'ssj', 'sbp'}
+      ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty';    
+      stat.sM_min = 1; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
+    case {'abj', 'abp', 'hep'} 
+      [ep_min, sM_min, info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+      if info ~= 1
+        fprintf('warning in get_ep_min_j: no convergence \n')
+      end
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+      stat.sM_min = sM_min; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
+    case 'asj'
+      [ep_min, sM_min, info] = get_ep_min_s([g; k; l_T; v_Hb; v_Hs; v_Hj; v_Hp]); % growth and maturation cease at puberty   
+      if info ~= 1
+        fprintf('warning in get_ep_min_s: no convergence \n')
+      end
+      stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
+      stat.sM_min = sM_min; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
+    case 'hex'
+      stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'scaled reserve density whereby maturation ceases at puberty';    
   end
   if exist('kap_X', 'var') && exist('kap_P', 'var')
     p_Xb = TC * f * p_Xm * L_b^2; J_Xb = TC * f * J_X_Am * L_b^2; F_mb = F_m * L_b^2;       
