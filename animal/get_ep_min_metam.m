@@ -24,7 +24,7 @@ function [ep info] = get_ep_min_metam(p)
   
   %% Remarks
   % The theory behind get_ep_min is discussed in 
-  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010b.html the comments for DEB3>.
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html the comments for DEB3>.
   % See <get_ep_min.html *get_ep_min*> for without acceletaton
   % See <get_eb_min.html *get_eb_min*> for minimum e at birth.
 

@@ -24,7 +24,7 @@ function [ep, sM, info] = get_ep_min_s(p)
   
   %% Remarks
   % The theory behind get_ep_min is discussed in 
-  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010b.html the comments for DEB3>.
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html the comments for DEB3>.
   % See <get_ep_min.html *get_ep_min*> for without acceleration
   % See <get_eb_min.html *get_eb_min*> for minimum e at birth.
   % Solves f for which k v_Hp = f (f - lT) s_M^3 with s_M = l_j/ l_s

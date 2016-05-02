@@ -679,7 +679,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; 
       stat.sM_min = sM_min; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty';    
     case 'hex'
-      stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'scaled reserve density whereby maturation ceases at puberty';    
+      stat.ep_min = eb_min(2); units.ep_min = '-'; label.ep_min= 'minimum scaled functional response to reach pupation';    
+      stat.sM_min = 1; units.sM_min = '-'; label.sM_min = 'acceleration factor at ep_min';    
   end
   if exist('kap_X', 'var') && exist('kap_P', 'var')
     p_Xb = TC * f * p_Xm * L_b^2; J_Xb = TC * f * J_X_Am * L_b^2; F_mb = F_m * L_b^2;       
