@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>birth_pie</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="birth_pie_foetus.m"><style type="text/css">
+      --><title>birth_pie</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-05-03"><meta name="DC.source" content="birth_pie_foetus.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,18 +55,18 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>birth_pie</h1><!--introduction--><p>Plots pie diagram for the cumulative energy investment at birth for foetus</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[EMJHG info] = <a href="../birth_pie_foetus.m"><b>birth_pie_foetus</b></a> (p, eb)</p><h2>Description<a name="4"></a></h2><p>Shell around <a href="../get_EMJHG_foetus.m"><b>get_EMJHG_foetus</b></a> to draw pies.  Plots pie diagrams for the cumulative energy investment at birth for  Foetal development. See section 4.3.3 of the comments on the DEB-book.  The pie pieces are also given numerically as fractions in the output, which sum to 1.  Investments that are fully dissipated are drawn exploded. If the growth efficiency is specified, cumulative allocation to growth is splitted into that to growth overhead and structure.</p><p>Input</p><div><ul><li>p: 4 or 5-vector with parameters: g, k, vHb, kap, kap_G</li></ul></div><div><ul><li>eb: optional n-vector with scaled reserve densities at birth (default: 1)</li></ul></div><p>Output</p><div><ul><li>EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth    reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth    if p(5) is specified, growth if splitted in dissipated and fixed in structure</li></ul></div><div><ul><li>info: n-vector with 1's success and 0's otherwise for uE0 and tau_b-computations</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="birth_pie.html"><b>birth_pie</b></a> for egg development.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_birth_pie.m"><b>mydata_birth_pie</b></a></p><p class="footer"><br>
+  </style></head><body><div class="content"><h1>birth_pie</h1><!--introduction--><p>Plots pie diagram for the cumulative energy investment at birth for foetus</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[Hfig EMJHG info] = <a href="../birth_pie_foetus.m"><b>birth_pie_foetus</b></a> (p, eb)</p><h2>Description<a name="4"></a></h2><p>Shell around <a href="../get_EMJHG_foetus.m"><b>get_EMJHG_foetus</b></a> to draw pies.  Plots pie diagrams for the cumulative energy investment at birth for  Foetal development. See section 4.3.3 of the comments on the DEB-book.  The pie pieces are also given numerically as fractions in the output, which sum to 1.  Investments that are fully dissipated are drawn exploded. If the growth efficiency is specified, cumulative allocation to growth is splitted into that to growth overhead and structure.</p><p>Input</p><div><ul><li>p: 4 or 5-vector with parameters: g, k, vHb, kap, kap_G</li></ul></div><div><ul><li>eb: optional n-vector with scaled reserve densities at birth (default: 1)</li></ul></div><p>Output</p><div><ul><li>Hfig: scalar with figure handle</li><li>EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth    reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth    if p(5) is specified, growth if splitted in dissipated and fixed in structure</li></ul></div><div><ul><li>info: n-vector with 1's success and 0's otherwise for uE0 and tau_b-computations</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="birth_pie.html"><b>birth_pie</b></a> for egg development.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_birth_pie.m"><b>mydata_birth_pie</b></a></p><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% birth_pie
 % Plots pie diagram for the cumulative energy investment at birth for foetus
 
 %%
-function [EMJHG info] = birth_pie_foetus(p, eb)
-  % created at 2011/01/19 by Bas Kooijman
+function [Hfig EMJHG info] = birth_pie_foetus(p, eb)
+  % created at 2011/01/19 by Bas Kooijman; modified 2016/05/03
   
   %% Syntax
-  % [EMJHG info] = <../birth_pie_foetus.m *birth_pie_foetus*> (p, eb)
+  % [Hfig EMJHG info] = <../birth_pie_foetus.m *birth_pie_foetus*> (p, eb)
 
   %% Description
   % Shell around <../get_EMJHG_foetus.m *get_EMJHG_foetus*> to draw pies.
@@ -83,6 +83,7 @@ function [EMJHG info] = birth_pie_foetus(p, eb)
   %
   % Output
   %
+  % * Hfig: scalar with figure handle
   % * EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth
   %    reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
   %    if p(5) is specified, growth if splitted in dissipated and fixed in structure
@@ -106,19 +107,21 @@ function [EMJHG info] = birth_pie_foetus(p, eb)
     pie_txt = {'reserve', 'som maint', 'mat maint', 'maturity', 'growth'};
     pie_color = [1 1 .8; 1 0 0; 1 0 1; 0 0 1; 0 1 0];
     for i = 1:n
-      figure
+      Hfig = figure;
       colormap(pie_color);
-      pie(EMJHG(i,:),[0 1 1 1 0], pie_txt);
-      title(['foetus e_b = ', num2str(eb(i))])  
+      set(gca, 'FontSize', 15, 'Box', 'on')
+      pie3s(EMJHG(i,:), 'Explode', [0 1 1 1 0], 'Labels', pie_txt, 'Bevel', 'Elliptical');
+      title(['cum. investment in foetus, e_b = ', num2str(eb(i))])  
     end
   else
     pie_txt = {'reserve', 'som maint', 'mat maint', 'maturity', 'growth overhead', 'structure'};
     pie_color = [1 1 .8; 1 0 0; 1 0 1; 0 0 1; 0 1 0; .8 1 .8];
     for i = 1:n
-      figure
+      Hfig = figure;
       colormap(pie_color);
-      pie(EMJHG(i,:),[0 1 1 1 1 0], pie_txt);
-      title(['foetus e_b = ', num2str(eb(i))])
+      set(gca, 'FontSize', 15, 'Box', 'on')
+      pie3s(EMJHG(i,:), 'Explode', [0 1 1 1 1 0], 'Labels', pie_txt, 'Bevel', 'Elliptical');
+      title(['cum. investment in foetus, e_b = ', num2str(eb(i))])
     end
   end
 
