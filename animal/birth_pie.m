@@ -47,8 +47,9 @@ function [EMJHG info] = birth_pie(p, eb)
     for i = 1:n
       figure
       colormap(pie_color);
-      pie(EMJHG(i,:),[0 1 1 1 0], pie_txt);
-      title(['e_b = ', num2str(eb(i))])  
+      set(gca, 'FontSize', 15, 'Box', 'on')
+      pie3s(EMJHG(i,:), 'Explode', [0 1 1 1 0], 'Labels', pie_txt, 'Bevel', 'Elliptical');
+      title(['cum. investment at birth, e_b = ', num2str(eb(i))])  
     end
   else
     pie_txt = {'reserve', 'som maint', 'mat maint', 'maturity', 'growth overhead', 'structure'};
@@ -56,7 +57,8 @@ function [EMJHG info] = birth_pie(p, eb)
     for i = 1:n
       figure
       colormap(pie_color);
-      pie(EMJHG(i,:),[0 1 1 1 1 0], pie_txt);
-      title(['e_b = ', num2str(eb(i))])
+      set(gca, 'FontSize', 15, 'Box', 'on')
+      pie3s(EMJHG(i,:), 'Explode', [0 1 1 1 1 0], 'Labels', pie_txt, 'Bevel', 'Elliptical');
+      title(['cum. investment at birth, e_b = ', num2str(eb(i))])
     end
   end

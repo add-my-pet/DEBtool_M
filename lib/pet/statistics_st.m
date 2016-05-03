@@ -360,7 +360,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_tp = [g; k; l_T; v_Hj; v_Hp]; % puberty 
       [t_p t_jj l_p l_jj info] = get_tp(pars_tp, f, l_j); % -, scaled length at birth at f
       if info ~= 1              
-        fprintf('warning in get_tp_foetus: invalid parameter value combination for t_p \n')
+        fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
       end
       l_i = f - l_T; s_M = 1;
       rho_B = 1/ 3/ (1 + f/ g);
