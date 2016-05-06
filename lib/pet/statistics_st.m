@@ -703,24 +703,24 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     case {'std', 'stf', 'stx', 'ssj'}
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p); 
-    case 'sbp'
+    case 'sbp' % no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p); 
+      p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
+    case 'abp'% no growth, no kappa rule after p
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
+      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
       p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
     case 'abj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
-    case 'abp'
-      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
-      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
-      p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
     case 'asj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_s([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_s, l_j, l_p); 
     case 'hep' 
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6]; 
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
-    case 'hex' % birth and pubert coincide; ultimate is here mapped to pupation
+    case 'hex' % birth and puberty coincide; ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 
       p_ACSJGRD = p_ref * scaled_power_hex([L_b; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);
   end
