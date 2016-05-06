@@ -39,7 +39,7 @@ else
   space_MT = space(1); space_MM = spece(2);
 end
   
-n = length(legend); width = 0;
+n = size(legend,1); width = 0;
 for i = 1:n
   width = max(width, length(legend{i,2}));
 end
