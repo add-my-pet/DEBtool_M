@@ -1,9 +1,9 @@
-%% select_marker
-% graphical user interface for setting marker
+%% select_legend
+% graphical user interface for setting legend
 
 %%
 function legend = select_legend(legend)
-%% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
+% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
 
 %% Syntax
 % legend = <../select_legend.m *select_legend*> (legend)
@@ -23,7 +23,8 @@ function legend = select_legend(legend)
 % * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
 
 %% Remarks
-% Press any key when done
+% Press any key when done.
+% Calls <../../lib/misc/html/select_marker.html *select_marker*> to edit markers.
 
 %% Example of use
 % legend = select_legend;

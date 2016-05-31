@@ -3,8 +3,8 @@
 
 %%
 function [ts, tj, tp, tb, ls, lj, lp, lb, li, rj, rB, info] = get_ts(p, f, lb0)
-  %  created at 2011/07/21 by Bas Kooijman
-  %  modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  % created at 2011/07/21 by Bas Kooijman
+  % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
   
   %% Syntax
   % [ts, tj, tp, tb, ls, lj, lp, lb, li, rj, rB, info] = <../get_ts.m *get_ts*> (p, f, lb0)

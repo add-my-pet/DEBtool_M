@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>select_marker</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="select_legend.m"><style type="text/css">
+      --><title>select_legend</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-05-08"><meta name="DC.source" content="select_legend.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,15 +55,15 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>select_marker</h1><!--introduction--><p>graphical user interface for setting marker</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika<a name="2"></a></h2><h2>Syntax<a name="3"></a></h2><p>legend = <a href="../select_legend.m"><b>select_legend</b></a> (legend)</p><h2>Description<a name="4"></a></h2><p>Select or edit a legend; the active item is indicated and can be changed with button #. Edit maker specs with button marker and taxon name with button taxon. Edit the sequence with buttons v and ^, insert with &gt;, remove with x. The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.</p><p>Input:</p><div><ul><li>legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><p>Output:</p><div><ul><li>legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Press any key when done</p><h2>Example of use<a name="6"></a></h2><p>legend = select_legend;</p><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
+  </style></head><body><div class="content"><h1>select_legend</h1><!--introduction--><p>graphical user interface for setting legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>legend = <a href="../select_legend.m"><b>select_legend</b></a> (legend)</p><h2>Description<a name="4"></a></h2><p>Select or edit a legend; the active item is indicated and can be changed with button #. Edit maker specs with button marker and taxon name with button taxon. Edit the sequence with buttons v and ^, insert with &gt;, remove with x. The sequence matters if taxa are not mutually exclusive and some markers will be plotted on top of each other.</p><p>Input:</p><div><ul><li>legend: optional (n,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><p>Output:</p><div><ul><li>legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Press any key when done. Calls <a href="../../lib/misc/html/select_marker.html"><b>select_marker</b></a> to edit markers.</p><h2>Example of use<a name="6"></a></h2><p>legend = select_legend;</p><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
-%% select_marker
-% graphical user interface for setting marker
+%% select_legend
+% graphical user interface for setting legend
 
 %%
 function legend = select_legend(legend)
-%% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
+% created 2016/02/28 by Bas Kooijman; modified 2016/03/08 by Dina Lika
 
 %% Syntax
 % legend = <../select_legend.m *select_legend*> (legend)
@@ -83,7 +83,8 @@ function legend = select_legend(legend)
 % * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
 
 %% Remarks
-% Press any key when done
+% Press any key when done.
+% Calls <../../lib/misc/html/select_marker.html *select_marker*> to edit markers.
 
 %% Example of use
 % legend = select_legend;
@@ -91,9 +92,11 @@ function legend = select_legend(legend)
   global legend_local i_legend Hlegend
   
   if ~exist('legend', 'var')
-    legend_local = {{'.', 10, 2, [0 0 0], [0 0 0]}, 'Animalia'; ...
-                    {'o', 10, 2, [1 0 0], [1 0 0]}, 'Chordata'; ...
-                    {'v', 10, 2, [0 0 1], [0 0 1]}, 'Aves';};
+    legend_local = { ...
+        {'v', 10, 2, [0 0 1], [0 0 1]}, 'Aves'; ...
+        {'o', 10, 2, [1 0 0], [1 0 0]}, 'Chordata'; ...
+        {'.', 10, 2, [0 0 0], [0 0 0]}, 'Animalia'; ...
+        };
   else
     legend_local = legend;
   end

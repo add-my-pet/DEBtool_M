@@ -3,10 +3,10 @@
 
 %%
 function [d_V info] = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12
   
   %% Syntax
-  % d_V = <../get_d_V.m *get_d_V*>
+  % [d_V info] = <../get_d_V.m *get_d_V*> (phylum, class)
   
   %% Description
   % Sets specific density d_V according to taxonomic classification
@@ -14,7 +14,7 @@ function [d_V info] = get_d_V(phylum, class)
   % Input
   %
   % * phylum: name of animal phylum (one of 36 possibilities)
-  % * class: name of class, only used for molluscs and chordates
+  % * class: name of class, only used for molluscs, arthropods and chordates
   %  
   % Output
   %
@@ -22,16 +22,15 @@ function [d_V info] = get_d_V(phylum, class)
   %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
-  % d_V has units g/cm^3 and refers to dry mass.
   % Since the specific density of wet mass is taken to be 1 g/cm^3,
-  % it can also be considered as a dry/wet mass ratio
+  %   d_V can also be considered as a dry/wet mass ratio
   % Check spelling if info = 0
   
 info = 1;
 switch phylum
     case 'Porifera'
         d_V = 0.11;
-    case {'Ctenophora', 'Cnidaria'}
+    case {'Ctenophora', 'Cnidaria'}                  % Radiata
         d_V = 0.01;
     case 'Gastrotricha'                              % Platyzoa
         d_V = 0.05;
@@ -56,11 +55,16 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case {'Tardigrada', 'Priapulida', 'Nematoda'} % Ecdysozoa
+    case {'Tardigrada', 'Priapulida', 'Nematoda'}   % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
-        d_V = 0.17;
-    case 'Echinodermata'                                % deuterostomata
+        switch class
+            case 'Insecta'
+               d_V = 0.17; % 0.27 is possibly better
+            otherwise
+               d_V = 0.17;
+        end
+    case 'Echinodermata'                           % Deuterostomata
         d_V = 0.09;
     case 'Hemichordata'
         d_V = 0.07;
@@ -80,10 +84,10 @@ switch phylum
               d_V = 0.045;
             case 'Thaliacea'
               d_V = 0.08;
-            otherwise % Ascidiacea
+            case 'Ascidiacea'
               d_V = 0.06;
         end 
-    case 'my_pet_phylum'
+    case 'my_pet_phylum' % demo mydata_my_pet
         d_V = 0.1;
     otherwise
         fprintf('warning from get_d_V: taxon could not be identified: d_V = 0.1 g/cm^3\n')
