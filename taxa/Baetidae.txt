@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 Cloeon
-=======
-Cloeon
->>>>>>> origin/master

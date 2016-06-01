@@ -2,8 +2,4 @@ Perna
 Mytilus
 Brachidontes
 Mytilaster
-<<<<<<< HEAD
 Septifer
-=======
-Septifer
->>>>>>> origin/master

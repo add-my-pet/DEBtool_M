@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 Septifer_virgatus
-=======
-Septifer_virgatus
->>>>>>> origin/master

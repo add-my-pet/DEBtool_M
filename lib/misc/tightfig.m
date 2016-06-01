@@ -44,7 +44,7 @@ function hfig = tightfig(hfig)
     end
     
     % ensure very tiny border so outer box always appears
-    ti(ti < 0.1) = 0.15;
+    ti(ti < 0.1) = 0.11;
     
     % we will check if any 3d axes are zoomed, to do this we will check if
     % they are not being viewed in any of the 2d directions
