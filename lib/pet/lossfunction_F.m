@@ -1,16 +1,16 @@
-%% lossfunction_E
+%% lossfunction_F
 % loss function 
 
 %%
-function [lf] = lossfunction_E(data, meanData, prdData, meanPrdData, weights)
+function [lf] = lossfunction_F(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/06/06 by Goncalo Marques
   
   %% Syntax 
-  % [lf] = <../lossfunction_E.m *lossfunction_E*>(func, par, data, auxData, weights, psdtrue)
+  % [lf] = <../lossfunction_F.m *lossfunction_F*>(func, par, data, auxData, weights, psdtrue)
   
   %% Description
   % Calculates the loss function
-  %   w' (d - f)^2 / mean_d^2
+  %   w' (d - f)^2/ (mean_d^2 + mean_f^2)
   %
   % Input
   %
@@ -24,5 +24,5 @@ function [lf] = lossfunction_E(data, meanData, prdData, meanPrdData, weights)
   %
   % * lf: loss function value
 
-  lf = weights' * ((data - prdData)./ meanData).^2;
+  lf = weights' * ((data - prdData).^2 ./ (meanData.^2 + meanPrdData.^2));
   
