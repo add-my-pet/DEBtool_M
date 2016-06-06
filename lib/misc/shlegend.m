@@ -39,14 +39,14 @@ else
   space_MT = space(1); space_MM = spece(2);
 end
   
-n = length(legend); width = 0;
+n = size(legend,1); width = 0;
 for i = 1:n
   width = max(width, length(legend{i,2}));
 end
 width = 1 + width * 0.5;
 height = n * .45; 
 
-Hlegend = figure('Position', [300, 400, 21 * width, 150 * height]);
+Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 
 plot([0 width width 0 0], [0 0 height height 0], 'k')
 %set(Hlegend, 'FontSize', 15, 'Box', 'off')

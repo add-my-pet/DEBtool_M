@@ -23,7 +23,8 @@ function legend = select_legend(legend)
 % * legend: (m,2)-matrix with markers (5-vector of cells) and taxa (string)
 
 %% Remarks
-% Press any key when done. 
+% Press any key when done.
+% Calls <../../lib/misc/html/select_marker.html *select_marker*> to edit markers.
 
 %% Example of use
 % legend = select_legend;
@@ -31,9 +32,11 @@ function legend = select_legend(legend)
   global legend_local i_legend Hlegend
   
   if ~exist('legend', 'var')
-    legend_local = {{'.', 10, 2, [0 0 0], [0 0 0]}, 'Animalia'; ...
-                    {'o', 10, 2, [1 0 0], [1 0 0]}, 'Chordata'; ...
-                    {'v', 10, 2, [0 0 1], [0 0 1]}, 'Aves';};
+    legend_local = { ...
+        {'v', 10, 2, [0 0 1], [0 0 1]}, 'Aves'; ...
+        {'o', 10, 2, [1 0 0], [1 0 0]}, 'Chordata'; ...
+        {'.', 10, 2, [0 0 0], [0 0 0]}, 'Animalia'; ...
+        };
   else
     legend_local = legend;
   end

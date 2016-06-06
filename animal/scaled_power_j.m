@@ -29,7 +29,7 @@ function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
   % Similar to <scaled_power.html *scaled_power*> for metabolic acceleration between birth and metamorphosis.
   % The maturity value relates to the one for which f has been constant.
   % Powers can become negative for shrinking of structure or maturity.
-  % See function <scaled_power_j.html *scaled_power*> for no metabolic acceleration.
+  % See function <scaled_power.html *scaled_power*> for no metabolic acceleration.
   
   %% Example of use
   % See <../statistics.m *statistics*>

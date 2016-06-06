@@ -6,82 +6,40 @@ function print_my_pet_html(metaData, metaPar, par, txtPar)
 % created 2015/04/11 by Starrlight
 % modified 2015/07/27 by starrlight
 % modified 2015/08/06 by Dina
-% modified 2015/08/25 by Starrlight
+% modified 2016/03/30 by Starrlight
 
 %% Syntax
 % <../print_my_pet_html.m *print_my_pet_html*> (metaData, metaPar, par, txtPar) 
 
 %% Description
-% Read and writes my_pet.html. This pages contains a list of implied model
-% properties and parameters values of my_pet.
+% Read and writes my_pet.html. This pages contains a list of all of the parameter values of my_pet.
 %
 % Input:
 %
 % * metaData: structure
+% * metaPar: structure
 % * par: structure
-% * stat: structure
-
-
-%% Remarks
-% Keep in mind that the files will be saved in your local directory; use
-% the cd command BEFORE running this function to save files in the desired
-% place.
+% * txtPar: structure
 
 %% Example of use
 % load('results_my_pet.mat');
-% print_my_pet_html(metaData)
+% print_my_pet_html(metaData, metaPar, par, txtPar)
 
-v2struct(metaData); 
-n_author = length(author);
-
-switch n_author
-    
-    case 1
-    txt_author = author{1};
-
-    case 2
-    txt_author = [author{1}, ', ', author{2}];
-
-    otherwise    
-    txt_author = [author{1}, ', et al.'];
-
-end
-
-txt_date = [num2str(date_acc(1)), '/', num2str(date_acc(2)), '/', num2str(date_acc(3))]; 
-
-% !!!!!!!!!!!!!!! We need to adapt this part of the code
-% because it is possible that exist('author_mod_2', 'var') == 1 etc. ...
-
-if exist('author_mod_1', 'var') == 1 && exist('date_mod_1', 'var') == 1
-n_author_mod_1 = length(author_mod_1);
-
-    switch n_author_mod_1
-      case 1
-      txt_author_mod_1 = author_mod_1{1};
-      case 2
-      txt_author_mod_1 = [author_mod_1{1}, ', ', author_mod_1{2}];
-      otherwise    
-      txt_author_mod_1 = [author_mod_1{1}, ', et al.'];
-    end
-
-txt_date_mod_1 = [num2str(date_mod_1(1)), '/', num2str(date_mod_1(2)), '/', num2str(date_mod_1(3))]; 
-
-else
-    
-txt_author_mod_1 = '';
-txt_date_mod_1 =  '';
-
-end  
+vars_pull(metaData); 
 
 % field names for all parameters:
-par = rmfield_wtxt(par, 'free');
-parFields = fields(par);
+par = rmfield_wtxt(par, 'free'); % remove the structure free
+parFields = fields(par); % returns cell array with name of each field
 
 % default parameters for model:
-[coreParFields] = get_parfields(metaPar.model);
+[coreParFields] = get_parfields(metaPar.model); % returns cell array with names of parameters of the typified model
 
 % temperature parameters
-tempParFields = {'T_A', 'T_ref'};
+% might be that one day we should  make this more robust by letting the
+% code check if other temperature parameters are used such as T_AH at the
+% moment those will apear in the table  'parameters specific for this
+% entry' - 
+tempParFields = {'T_A', 'T_ref'}; 
 
 % get chemical parameters fields (standard ones)
 par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
@@ -103,15 +61,17 @@ fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DE
   
 % ------ calls the cascading style sheet (found in subfolder css):
 fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collectionstyle.css">'); 
-  
 fprintf(oid, '%s\n' , ' </HEAD>');
+
+% open up the body of the html :
 fprintf(oid, '%s\n\n','  <BODY>');
 
-%% print out text before the tables
-fprintf(oid, ['<H2>Paramters values for this entry</H2>']);
+% Print out text before the tables:
+fprintf(oid, '<H2>Parameter values for this entry</H2>');
 fprintf(oid, ['<H2>Model: <a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Typified_models" >&nbsp;', metaPar.model,' &nbsp;</a></H2>']);
-  
-%% print table with primary parameters :
+% ----------------------------------------  
+
+% Print table with primary parameters:
 fprintf(oid, '    <TABLE id = "t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Primary parameters at reference temperature (%g deg. C)</TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
@@ -121,8 +81,9 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> uni
        txtPar.units.(coreParFields{i}), txtPar.label.(coreParFields{i}));
   end
 fprintf(oid, '    </TABLE>\n'); 
+% ----------------------------------------
 
-%% print table with parameters which are specific for the entry:
+% Print table with parameters which are specific for the entry:
 fprintf(oid, '    <TABLE id = "t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="4">Parameters specific for this entry at reference temperature (%g deg. C)</TH></TR>\n', par.T_ref - 273.15);
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> units</TH><TH> description</TH></TR>\n');
@@ -132,8 +93,9 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> uni
        txtPar.units.(otherParFields{i}), txtPar.label.(otherParFields{i}));
   end
 fprintf(oid, '    </TABLE>\n'); 
+% ----------------------------------------
 
-%% print table with parameters which relate to temperature correction:
+% print table with parameters which relate to temperature correction:
 % please keep in mind that these are only T_A and T_ref, other parameters
 % related to temperature correction will appear in the 'other parameters'
 % table unless code further up is changed.
@@ -146,8 +108,9 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> uni
        txtPar.units.(tempParFields{i}), txtPar.label.(tempParFields{i}));
   end
 fprintf(oid, '    </TABLE>\n');
+% ----------------------------------------
 
-%% print table with chemical potentials and specific densities:
+% print table with chemical potentials and specific densities:
 fprintf(oid, '    <TABLE id = "t01">\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH colspan="5">Chemical parameters</TH></TR>\n');
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH></TH><TH>Food</TH><TH> Structure</TH><TH> Reserve</TH><TH> Faeces</TH></TR>\n');
@@ -156,8 +119,9 @@ fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%g</TD> <TD>%g
 fprintf(oid, '    <TR BGCOLOR = "%s"> <TD>%s</TD> <TD>%g</TD> <TD>%g</TD> <TD>%g</TD><TD>%g</TD></TR>\n',...
 '#FFFFFF',  'Specific density for dry weight (g/cm^3)', par.d_X, par.d_V, par.d_E, par.d_P);
 fprintf(oid, '    </TABLE>\n');
+% ----------------------------------------
 
-%% Print table with chemical indices
+% Print table with chemical indices
 fprintf(oid, '    <TABLE id = "t01">\n');
 % --------------- organic chemical indices --------------------------------
 fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH></TH><TH></TH><TH>Food</TH><TH> Structure</TH><TH> Reserve</TH><TH> Faeces</TH></TR>\n');
@@ -180,13 +144,14 @@ fprintf(oid, '    <TR BGCOLOR = "%s"><TD BGCOLOR = "#FFE7C6">%s</TD> <TD>%g</TD>
 fprintf(oid, '    <TR BGCOLOR = "%s"><TD BGCOLOR = "#FFE7C6">%s</TD> <TD>%g</TD> <TD>%g</TD><TD>%g</TD><TD>%g</TD></TR>\n',...
 '#FFFFFF','Nitrogen', par.n_NC, par.n_NH, par.n_NO, par.n_NN);
 fprintf(oid, '    </TABLE>\n');
+% ----------------------------------------
 
-%% close the file
+% Close the file
 fprintf(oid, '  </BODY>\n');
 fprintf(oid, '  </HTML>\n');
 fclose(oid);
 
 
 
-
+% options.showCode = false; publish('print_my_pet', options);
 

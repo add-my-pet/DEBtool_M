@@ -3,7 +3,7 @@
 
 %%
 function marker = select_marker(marker)
-% created 2016/02/26 by Bas Kooijman
+% created 2016/02/26 by Bas Kooijman; modified 2016/03/08 by Dina Lika
 
 %% Syntax
 % marker = <../select_marker.m *select_marker*> (marker)
@@ -69,7 +69,8 @@ function marker = select_marker(marker)
   marker = {T; MS; LW; MEC; MFC}; % pack marker
 end
 
-%% subfunctions
+% %%%% subfunctions  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     function C = Type_Callback(source, eventdata) 
       global T MS LW MEC MFC 
       list = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};

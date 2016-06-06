@@ -61,7 +61,7 @@ function [H, a, info] = maturity_s(L, f, p)
   Lp = Lm * lp; % cm, structural length at pubert
     
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh_s, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj, ls);
+  [l_out, teh] = ode45(@dget_teh_s, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj);
   teh(1:2,:) = []; 
   H = teh(:,3) * v^2/ g^2/ kM^3;
   H(L >= Lp) = Hp;
@@ -71,7 +71,7 @@ end
 
 % subfunctions
 
-function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj, ls)
+function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj)
   % l: scalar with scaled length  l = L g k_M/ v
   % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
   %   tau = a k_M; scaled age
@@ -80,7 +80,7 @@ function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, lj,
   % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
   % called by maturity_s
   
-  t = tEH(1); % scaled age
+  %t = tEH(1); % scaled age
   uE = max(1e-10,tEH(2)); % scaled reserve
   uH = tEH(3); % scaled maturity
   l2 = l * l; l3 = l2 * l;

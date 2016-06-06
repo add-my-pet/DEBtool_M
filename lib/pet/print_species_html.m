@@ -29,7 +29,7 @@ if speciesprintnm_en(1)>='a' && speciesprintnm_en(1)<='z'
   speciesprintnm_en(1)=char(speciesprintnm_en(1)-32);
 end
 
-n_data_0 = size(data_0,1); n_data_1 = size(data_1,1); 
+n_data_0 = length(data_0); n_data_1 = length(data_1); 
   
   fprintf(fidSpec, '      <TR>\n');
   fprintf(fidSpec,['        <TD>', phylum, '</TD>  <TD>', metaData.class, '</TD> <TD>', order, '</TD> <TD>', family, '</TD> ']);

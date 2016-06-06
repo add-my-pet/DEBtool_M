@@ -1,7 +1,5 @@
 %% nrregr_options
 % Sets options for function 'nrregr' one by one.
-%% nrregr_options
-% Sets options for function nrregr
 
 %%
 function nrregr_options (key, val)

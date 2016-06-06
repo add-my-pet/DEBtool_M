@@ -18,8 +18,8 @@ function pACSJGRD = scaled_power(L, f, p, lb, lp)
   % * L: n-vector with lengths
   % * f: scalar with (constant) scaled functional response
   % * p: 9-vector with parameters: kap kapR g kJ kM LT v UHb UHp
-  % * lb: scalar with scaled length at birth for F; if not existent: NaN
-  % * lp: scalar with scaled length at puberty for F; if not existent: NaN  
+  % * lb: scalar with scaled length at birth for f; if not existent: NaN
+  % * lp: scalar with scaled length at puberty for f; if not existent: NaN  
   %
   % Output
   %

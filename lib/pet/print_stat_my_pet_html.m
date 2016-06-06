@@ -1,32 +1,26 @@
 %% print_stat_my_pet_html
-% Creates my_pet.html 
+% Creates my_pet_stat.html 
 
 %%
 function print_stat_my_pet_html(metaData, metaPar, par)
-% created 2016/03/07 by Starrlight
+% created 2016/03/30 by Starrlight
 
 %% Syntax
-% <../print_stat_my_pet_html.m *print_my_pet_html*> (metaData, metaPar, par) 
+% <../print_stat_my_pet_html.m *print_stat_my_pet_html*> (metaData, metaPar, par) 
 
 %% Description
-% Read and writes my_pet.html. This pages contains a list of implied model
-% properties and parameters values of my_pet.
+% Read and writes my_pet_stat.html. This pages contains a list of implied model
+% properties of my_pet.
 %
 % Input:
 %
 % * metaData: structure
+% * metaPar: structure
 % * par: structure
-% * stat: structure
-
-
-%% Remarks
-% Keep in mind that the files will be saved in your local directory; use
-% the cd command BEFORE running this function to save files in the desired
-% place.
 
 %% Example of use
 % load('results_my_pet.mat');
-% print_stat_my_pet_html(metaData)
+% print_stat_my_pet_html(metaData, metaPar, par)
 
 % colours for statistics
 %     '#FFC6A5'; '#FFFFFF'; '#C6E7DE'; '#CEEFBD'; '#CEEFBD';
@@ -48,18 +42,16 @@ fprintf(oid, '%s\n' ,'<link rel="stylesheet" type="text/css" href="../css/collec
 fprintf(oid, '%s\n' , ' </HEAD>');
 fprintf(oid, '%s\n\n','  <BODY>');
   
-%% print out text before the tables
+% print out text before the tables
 fprintf(oid, '<H2>Implied properties for this entry</H2>');
 fprintf(oid, ['<H2>Model: <a class="link" target = "_blank" href="http://www.debtheory.org/wiki/index.php?title=Typified_models" >&nbsp;', metaPar.model,' &nbsp;</a></H2>']);
   
    
-%% Print table with properties of the species :
-   
+% Print table with properties of the species :  
 if strcmp(metaPar.model,'ssj') || strcmp(metaPar.model,'asj') || strcmp(metaPar.model,'abp') || strcmp(metaPar.model,'sbp') || strcmp(metaPar.model,'hep') || strcmp(metaPar.model,'hex')
 fprintf(oid, '<H3>This page is still under construction - thank you for your patience</H3>');
 % ------------------------------------------------------------------------
 else
-    
 % make structure with label, units and values of statistics
 % statistics we would like to see on the web:
 
@@ -134,8 +126,6 @@ fprintf(oid, '    <TR BGCOLOR = "#FFE7C6"><TH>symbol</TH><TH> value</TH><TH> uni
 fprintf(oid, '    </TABLE>\n'); 
 end
   
-
-
 fprintf(oid, '  </BODY>\n');
 fprintf(oid, '  </HTML>\n');
 fclose(oid);

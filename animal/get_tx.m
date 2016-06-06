@@ -2,11 +2,11 @@
 % gets scaled age and length at puberty, weaning, birth for foetal development.
 
 %%
-function [tp tx tb lp lx lb] = get_tx(p, f)
+function [tp tx tb lp lx lb info] = get_tx(p, f)
   % created 2012/08/18 by Bas Kooijman, modified 2014/07/22
-  
+  % last modified by Dina Lika 2016/03/21
   %% Syntax
-  % [tp tx tb lp lx lb] = <../get_tx.m *get_tx*> (p, f)
+  % [tp tx tb lp lx lb info] = <../get_tx.m *get_tx*> (p, f)
   
   %% Description
   % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
@@ -24,11 +24,11 @@ function [tp tx tb lp lx lb] = get_tx(p, f)
   %
   % * tp, tx, tb: scalars with scaled age at puberty, weaning, birth
   % * lp, lx, lb: scalers with scaled length at puberty, weaning, birth
+  % * info: indicator equals 1 if successful, 0 otherwise
   %
   %% Remarks
   % uses dget_lx
 
-  %% Code
   % unpack pars
   g   = p(1); % -, energy investment ratio
   k   = p(2); % -, k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
@@ -42,11 +42,18 @@ function [tp tx tb lp lx lb] = get_tx(p, f)
     sF = 1e10;  % fast development
   end
   [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
-  l(1) = []; lb= l(1); lx = l(2); lp = l(3); li = f - lT;
+  info =1;
+  l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
   tb = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
   %tb = 3 * lb/ g;
   tx = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
   tp = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
+  if isreal(tb) == 0 || isreal(tx) == 0 || isreal(tp) == 0 % tb, tx and tp must be real and positive
+    info = 0;
+  elseif tb < 0 || tx < 0 || tp < 0
+    info = 0;
+  end
+
 end
 
 % subfuction

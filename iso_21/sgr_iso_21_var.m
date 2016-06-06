@@ -1,21 +1,34 @@
+%% sgr_iso_21_var
+% specific growth rate for isomorph with 2 reserves 
+
+%%
 function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
     sgr_iso_21_var (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap)
-%        [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
-%   sgr_iso_21_var (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, kap_G, kap, k_E)
-% specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry
-% created: 2012/03/07 by Bas Kooijman
-%
-% m_E1, m_E2:   mol/mol,   scalars with reserve density
-% j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve
-% mu_E1, mu_E2, mu_V:  -,  scalars with chem potential for reserve 1, 2, structure
-% k_E:  1/d,               scalar with reserve turnover rate v/ L
-% kap: -,                  scalar with allocation fraction to soma
-% kap_G: -,                scalar with growth efficienvy
-% r: 1/d,                  scalar with spec growth rate
-% j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux
-% j_E1C, j_E2C: mol/d.mol, scalars with mobilised flux of reserves
-% j_E1P, j_E2P: mol/d.mol, scalars with rejected flux of reserves
-% mode: -,                 scalar for case indicator (1,2,3,4)
+  % created: 2012/03/07 by Bas Kooijman
+  
+  %% Syntax
+  % [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = <../sgr_iso_21_var.m *sgr_iso_21_var*> (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap) 
+
+  %% Description
+  % specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry
+  % Growth investment has a fixed stoichiometry for the anabolic part, but a variable one for the catabolic part (= overheads)
+  %
+  % Input±
+  %
+  % * m_E1, m_E2:   mol/mol,   scalars with reserve density
+  % * j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve
+  % * mu_E1, mu_E2, mu_V:  -,  scalars with chem potential for reserve 1, 2, structure
+  % * k_E:  1/d,               scalar with reserve turnover rate v/ L
+  % * kap_G: -,                scalar with growth efficienvy
+  % * kap: -,                  scalar with allocation fraction to soma
+  %
+  % Output:
+  %
+  % * r: 1/d,                  scalar with spec growth rate
+  % * j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux
+  % * j_E1C, j_E2C: mol/d.mol, scalars with mobilised flux of reserves
+  % * j_E1P, j_E2P: mol/d.mol, scalars with rejected flux of reserves
+  % mode: -,                   scalar for case indicator (1,2,3,4)
 
 j_E1C = k_E * m_E1; j_E2C = kap * k_E * m_E2; % mol/d.mol mobilisation rates if r = 0
 if kap * j_E2C < j_E1S && kap * j_E1C < j_E1S * (1 - kap * j_E2C/j_E2S)

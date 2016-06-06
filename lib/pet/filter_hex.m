@@ -4,7 +4,7 @@
 %%
 function [filter, flag] = filter_hex(p)
 % created 2015/06/04 by Goncalo Marques; modified 2015/06/19, 2015/07/29 by Goncalo Marques
-% modified 2015/08/03 by starrlight
+% modified 2015/08/03 by Starrlight Augustine, 2016/04/14 by Bas Kooijman
 
 %% Syntax
 % [filter flag] = <../filter_hex.m *filter_hex*> (par)
@@ -28,6 +28,7 @@ function [filter, flag] = filter_hex(p)
 %     2: some kappa is larger than 1
 %     3: growth efficiency is larger than 1
 %     4: birth cannot be reached
+%     5: emergence cannot be reached
 
 %% Remarks
 %  The theory behind boundaries is discussed in 
@@ -61,7 +62,12 @@ function [filter, flag] = filter_hex(p)
   end
 
   if ~reach_birth(c.g, c.k, c.v_Hb, p.f) % constraint required for reaching birth
-    flag = 6;    
+    flag = 4;    
+    return;
+  end
+
+  if p.s_j >= 1 % fraction of max [E_R] for pupation
+    flag = 5;    
     return;
   end
 

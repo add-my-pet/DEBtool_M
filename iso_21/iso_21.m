@@ -1,46 +1,61 @@
+%% iso_21
+% gets length and age at birth, intitial reserves of the 21-model
+
+%%
 function [L_b a_b M_E10 M_E20 info] = iso_21(m_E1b, m_E2b, p)
-% [L_b a_b M_E10 M_E20 info] = iso_21(m_E1b, m_E2b, p)
-% created 2011/08/06 by Bas Kooijman
-%
-% m_E1b: scalar with reserve density 1 at birth (mol/mol)
-% m_E2b: scalar with reserve density 2 at birth (mol/mol)
-% p: 14-vector with parameters
-% L_b: scalar with length at birth (cm)
-% a_b: scalar with age at birth (d)
-% M_E10: scalar with initial reserve 1 (mol)
-% M_E20: scalar with initial reserve 2 (mol)
-% info: indicator for failure (0) or success (1)
-%
-% requires fniso_21, diso_21 (see below) and gr_iso_21
+  % created 2011/08/06 by Bas Kooijman
+  
+  %% Syntax
+  % [L_b a_b M_E10 M_E20 info] = <../iso_21.m *iso_21*> (m_E1b, m_E2b, p)
+  
+  %% Description
+  % gets length and age at birth, intitial reserves of the 21-model
+  
+  % Input:
+  %
+  % * m_E1b: scalar with reserve density 1 at birth (mol/mol)
+  % * m_E2b: scalar with reserve density 2 at birth (mol/mol)
+  % * p: 14-vector with parameters
+  %
+  % Output:
+  %
+  % * L_b: scalar with length at birth (cm)
+  % * a_b: scalar with age at birth (d)
+  % * M_E10: scalar with initial reserve 1 (mol)
+  % * M_E20: scalar with initial reserve 2 (mol)
+  % * info: indicator for failure (0) or success (1)
+  
+  %% Remarks
+  % requires fniso_21, diso_21 (see below) and gr_iso_21
 
-% unpack some parameters, see diso_21 for a full list
-v         = p(1);  % cm/d, energy conductance
-kap       = p(2);  % -, allocation fraction to soma
-mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
-mu_V      = p(5);  % J/mol, chemical potenial of structure
-j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-MV        = p(7);  % mol/cm^3, [M_V] density of structure                
-y_VE1     = p(10); % mol/mol, yield of structure on reserve 1
-y_VE2     = p(11); % mol/mol, yield of structure on reserve 2 
-E_Hb      = p(14); % J, maturity threshold at birth
+  % unpack some parameters, see diso_21 for a full list
+  v         = p(1);  % cm/d, energy conductance
+  kap       = p(2);  % -, allocation fraction to soma
+  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
+  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
+  mu_V      = p(5);  % J/mol, chemical potenial of structure
+  j_E1M     = p(6);  % mol/d.mol, specific som maint costs
+  MV        = p(7);  % mol/cm^3, [M_V] density of structure                
+  y_VE1     = p(10); % mol/mol, yield of structure on reserve 1
+  y_VE2     = p(11); % mol/mol, yield of structure on reserve 2 
+  E_Hb      = p(14); % J, maturity threshold at birth
 
-% initial guess for M_E0 given m_Eb
-kap_G = mu_V/ (mu_E1 * y_VE1 + mu_E2 * y_VE2); % -, growth efficiency
-E_G = MV * mu_V/ kap_G;            % J/cm^3, [E_G] spec cost for structure
-V_b = E_Hb * kap/ E_G/ (1 - kap);  % cm, initial guess for length at birth
-M_Vb = MV * V_b;                   % mol,initial guess for mass at birth
-a_b = V_b^(1/3) * 3/ v;            % d, initial gues for age at birth
-M_E10 = M_Vb * (m_E1b + 1/ y_VE1/ kap); % mol, initial guess for initial reserve 1
-j_E2M = j_E1M * mu_E1/ mu_E2;      % mol/d.mol, spec som maint for 2
-M_E20 = M_Vb * (m_E2b + (1/ y_VE2 + j_E2M * a_b)/ kap); % mol, initial guess for initial reserve 2
+  % initial guess for M_E0 given m_Eb
+  kap_G = mu_V/ (mu_E1 * y_VE1 + mu_E2 * y_VE2); % -, growth efficiency
+  E_G = MV * mu_V/ kap_G;            % J/cm^3, [E_G] spec cost for structure
+  V_b = E_Hb * kap/ E_G/ (1 - kap);  % cm, initial guess for length at birth
+  M_Vb = MV * V_b;                   % mol,initial guess for mass at birth
+  a_b = V_b^(1/3) * 3/ v;            % d, initial gues for age at birth
+  M_E10 = M_Vb * (m_E1b + 1/ y_VE1/ kap); % mol, initial guess for initial reserve 1
+  j_E2M = j_E1M * mu_E1/ mu_E2;      % mol/d.mol, spec som maint for 2
+  M_E20 = M_Vb * (m_E2b + (1/ y_VE2 + j_E2M * a_b)/ kap); % mol, initial guess for initial reserve 2
 
-[M_E0 fn info] = fsolve(@fniso_21, [M_E10; M_E20], [], m_E1b, m_E2b, p);
+  [M_E0 fn info] = fsolve(@fniso_21, [M_E10; M_E20], [], m_E1b, m_E2b, p);
 
-[F L_b a_b] = fniso_21(M_E0, m_E1b, m_E2b, p);
-M_E10 = M_E0(1); M_E20 = M_E0(2);
+  [F L_b a_b] = fniso_21(M_E0, m_E1b, m_E2b, p);
+  M_E10 = M_E0(1); M_E20 = M_E0(2);
 
-%% subfunction fniso_21
+% subfunction fniso_21
 
 function [F L_b a_b] = fniso_21(M_E0, m_E1b, m_E2b, p)
 % for use by fsolve in iso_21: F = 0 if M_E0 are such that m_Eb are specified values
@@ -90,7 +105,7 @@ F = [m_E1b; m_E2b] - LEa(end,[2 3])';% mol/mol, norm function set to zero
 L_b = LEa(end,1); % cm, length at birth
 a_b = LEa(end,4); % d, age at birth
 
-%% subfunction diso_21
+% subfunction diso_21
 
 function dLEa = diso_21(E_H, LEa, p)
 % ode's for iso_21:

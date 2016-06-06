@@ -85,11 +85,36 @@ end
 
 fprintf('\nCheck the consistency between metaData and data.\n');
 fprintf('Check that the labels for each data type are used and consistent with the contents.\n');
-fprintf('Contact the web administrator with any new labels that should be added to the table (http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/manual/index_data.html)\n');
+fprintf('Contact the web administrator with any new labels that should be added to the table (http://www.debtheory.org/wiki/index.php?title=Add-my-pet_Introduction)\n');
+
+pause
+
+% ---------------------------------------
 
 pointNumber = pointNumber + 1;
 
+% check url
+mydataText = fileread(['mydata_', speciesnm, '.m']);
+expression = 'url{\S*}';
+urls = regexp(mydataText,expression,'match');
+if isempty(urls)
+  fprintf('\n%d. There are no urls in mydata to check.\n\n', pointNumber);  
+else
+  fprintf('\n%d. Check the following list of urls found in mydata:\n\n', pointNumber);
+  for i = 1:length(urls)
+    if strcmp(urls{i}(end-1),'}')
+      fprintf('%s\n', urls{i}(5:end-2));
+    else
+      fprintf('%s\n', urls{i}(5:end-1));
+    end
+  end
+end
+
 pause
+
+
+
+pointNumber = pointNumber + 1;
 
 % compare values in pars_init with values in the .mat
 fprintf('\n%d. Comparison of parameters in pars_init with .mat file:\n\n', pointNumber);
@@ -170,8 +195,53 @@ fprintf('\nCheck if the values above are reasonable and if there is enough data 
 
 pointNumber = pointNumber + 1;
 
-pause
+pause; pointNumber = pointNumber + 1;
 
+% check implied properties 
+fprintf('\n%d. Check implied model properties and parameter values of my_pet. Creates my_pet.html.\n\n', pointNumber);
+prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
+
+if prnt
+  if strcmp(metaPar.model,'ssj')
+    print_my_pet_under_construction(metaData, metaPar, par, txtPar)
+  else
+    print_my_pet_html(metaData, metaPar, par, txtPar)
+  end
+elseif strcmp(metaPar.model,'std')
+  [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
+elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
+  [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
+end
+
+
+
+%%
+pointNumber = pointNumber + 1;
+
+% check bibliography
+fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
+ 
+print_bib_my_pet(metaData.species,metaData.biblist)
+
+% save figures
+% global pets
+% pets = {speciesnm};
+% 
+% estim_options('default');
+% estim_options('pars_init_method', 0);
+% estim_options('results_output', 2);
+% 
+% load(['results_', speciesnm, '.mat']);
+% clear data auxData metaData txtData weights
+% [data.pet1, auxData.pet1, metaData.pet1, txtData.pet1, weights.pet1] = feval(['mydata_', speciesnm]);
+% results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+
+pause; pointNumber = pointNumber + 1;
+% check if the parameter set was obtained after continuation from .mat 
+fprintf('\n%d. Please after the curation process execute the run file with estim_option, results_output=2 \n\n', pointNumber);
+
+
+pause; pointNumber = pointNumber + 1;
 % check if the parameter set was obtained after continuation from .mat 
 fprintf('\n%d. Check if the parameter set was obtained after continuation from .mat.\n\n', pointNumber);
 
@@ -204,49 +274,5 @@ if autoEst
 
 end
 
-pointNumber = pointNumber + 1;
-
-% check implied properties 
-fprintf('\n%d. Check implied model properties and parameter values of my_pet. Creates my_pet.html.\n\n', pointNumber);
-prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
-
-if prnt
-  if strcmp(metaPar.model,'ssj')
-    print_my_pet_under_construction(metaData, metaPar, par, txtPar)
-  else
-    print_my_pet_html(metaData, metaPar, par, txtPar)
-  end
-elseif strcmp(metaPar.model,'std')
-  [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
-elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
-  [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
-end
-
-
-%%
-pointNumber = pointNumber + 1;
-
-% check bibliography
-
-fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
- 
-print_bib_my_pet(metaData.species,metaData.biblist)
-
-% save figures
-
-global pets
-pets = {speciesnm};
-
-estim_options('default');
-estim_options('pars_init_method', 0);
-estim_options('results_output', 2);
-
-load(['results_', speciesnm, '.mat']);
-clear data auxData metaData txtData weights
-[data.pet1, auxData.pet1, metaData.pet1, txtData.pet1, weights.pet1] = feval(['mydata_', speciesnm]);
-results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
-
-
-
-
+% 
 

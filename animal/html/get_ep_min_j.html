@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_ep_min_j</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-30"><meta name="DC.source" content="get_ep_min_j.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_ep_min_j</h1><!--introduction--><p>Gets scaled reserve density at which maturation ceases at puberty in case of acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[ep, sM, info] = <a href="..get_ep_min_j.m"><b>get_ep_min_j</b></a> (p)</p><h2>Description<a name="4"></a></h2><p>Obtains the scaled reserve at birth for growth and maturation ceases at puberty in case of acceleration. It can be seen as the lower viable scaled reserve density for reproduction. Cf get_eb_min.</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g k lT v_H^b v_H^j v_H^p (cf <a href="get_lj.html"><b>get_lj</b></a>)</li></ul></div><p>Output</p><div><ul><li>ep: scalar with e_p such that growth and maturation cease at puberty</li><li>sM: scalar with acceleration factor s_M at ep</li><li>info: scalar 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The theory behind get_ep_min is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html">the comments for DEB3</a>. See <a href="get_ep_min.html"><b>get_ep_min</b></a> for without acceleration See <a href="get_eb_min.html"><b>get_eb_min</b></a> for minimum e at birth. Solves f for which k v_Hp = f (f - lT) s_M^3 with s_M = l_j/ l_b</p><h2>Example of use<a name="6"></a></h2><p>get_ep_min_j([.1 1 0 .001 0.01 .1])</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_ep_min_j
+% Gets scaled reserve density at which maturation ceases at puberty in case of acceleration
+
+%%
+function [ep, sM, info] = get_ep_min_j(p)
+  % created 2015/09/16 by Bas Kooijman, Dina Lika; 
+  % modified 2015/10/23 by Goncalo Marques; 
+  % modified 2016/04/26 by Bas Kooijman
+  
+  %% Syntax
+  % [ep, sM, info] = <..get_ep_min_j.m *get_ep_min_j*> (p)
+  
+  %% Description
+  % Obtains the scaled reserve at birth for growth and maturation ceases at puberty in case of acceleration. 
+  % It can be seen as the lower viable scaled reserve density for reproduction. Cf get_eb_min.
+  %
+  % Input
+  %
+  % * p: 6-vector with parameters: g k lT v_H^b v_H^j v_H^p (cf <get_lj.html *get_lj*>)
+  %  
+  % Output
+  %
+  % * ep: scalar with e_p such that growth and maturation cease at puberty
+  % * sM: scalar with acceleration factor s_M at ep
+  % * info: scalar 1 for success, 0 otherwise
+  
+  %% Remarks
+  % The theory behind get_ep_min is discussed in 
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.html the comments for DEB3>.
+  % See <get_ep_min.html *get_ep_min*> for without acceleration
+  % See <get_eb_min.html *get_eb_min*> for minimum e at birth.
+  % Solves f for which k v_Hp = f (f - lT) s_M^3 with s_M = l_j/ l_b
+
+  %% Example of use
+  % get_ep_min_j([.1 1 0 .001 0.01 .1])
+    
+  info = 1;
+  
+  % bisection method with lower boundary set by get_lj:
+  %   F(ep) is empty for low ep, then monotonically increasing from a negative value for F
+  %   The range for which F is negative is VERY small
+  ep_range = [0 1]; sM_range = [0 1]; ep = 0.5;    % set initial value
+  for i = 1:16 % range-width becomes 2^-16 = 1.5e-5
+    [F sM] = fnget_ep_min_j(ep, p);   % get loss function
+    if isempty(F) || F < 0       % lower boundary
+      ep_range(1) = ep;
+      if ~isempty(sM)
+          sM_range(1) = sM;
+      end
+      ep = (ep + ep_range(2))/2; % set new value
+    else                         % upper boundary
+      ep_range(2) = ep; sM_range(2) = sM;      
+      ep = (ep + ep_range(1))/2; % set new value
+    end
+  end
+  
+  ep = sum(ep_range)/2;          % select mid-range as result
+  if sM_range(1) == 0
+    sM = sM_range(2);
+  else
+    sM = sum(sM_range)/2;        % select mid-range as result
+  end
+    
+  if F > 0.05
+    fprintf(['Warning from get_ep_min_j: loss function is ', num2str(F), '\n'])
+    info = 0;
+  end
+  
+end
+
+% subfunction
+function [F s_M] = fnget_ep_min_j(f, p)
+  [l_j, l_p, l_b] = get_lj(p, f); s_M = l_j/ l_b;
+  F = f * (f - p(3))^2 * s_M^3 - p(2) * p(6);
+end
+##### SOURCE END #####
+--></body></html>

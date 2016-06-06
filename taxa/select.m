@@ -13,7 +13,7 @@ function species = select(taxon)
 %
 % Input:
 %
-% * character string with name of taxon
+% * taxon: optional character string with name of taxon (default: 'Animalia')
 %
 % Output:
 % 
@@ -27,6 +27,10 @@ function species = select(taxon)
 %% Example of use
 % species  = select('Animalia')
 
+  if ~exist('taxon', 'var')
+    taxon = 'Animalia';
+  end
+  
   WD = pwd;                % store current path
   taxa = which('select');  % locate DEBtool_M/taxa/
   taxa = taxa(1:end - 8);  % path to DEBtool_M/taxa/

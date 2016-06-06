@@ -1,24 +1,40 @@
+%% sgr_iso_21
+% specific growth rate for isomorph with 2 reserves
+
+%%
 function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
     sgr_iso_21 (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)
-%        [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
-%   sgr_iso_21 (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)
-% specific growth rate for isomorph with 2 reserves, allowing for shrinking
-% see gr_iso_21 for growth rate d/dt L (for embryo case)
-% created: 2011/05/03 by Bas Kooijman, modified 2011/08/05
-%
-% m_E1, m_E2:   mol/mol,   scalars with reserve density
-% j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve
-% y_VE1, y_VE2: mol/mol,   scalars with yield of structure on reserve
-% mu_EV:        -,         scalar with mu_E1/ mu_V (mu_E1 j_E1S = mu_E2 j_E2S)
-% k_E:  1/d,               scalar with reserve turnover rate v/ L
-% kap: -,                  scalar with allocation fraction to soma
-% rho1: -,                 scalar with preference (default 0)
-% r0: 1/d,                 optional scalar with initial estimate for r 
-%                          if empty or undefined 0, else previous result is used
-% r: 1/d,                  scalar with spec growth rate
-% j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux
-% j_E1C, j_E2C: mol/d.mol, scalars with rejected flux of reserve from growth SUs
-% info: -,                 scalar with numerical failure (0) or success (1)
+  % created: 2011/05/03 by Bas Kooijman, modified 2011/08/05
+
+  %% Syntax
+  % [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = <../sgr_iso_21_var.m *sgr_iso_21*> (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)
+
+  %% Description
+  % specific growth rate for isomorph with 2 reserves, allowing for shrinking
+  %
+  % Input:
+  %
+  % * m_E1, m_E2:   mol/mol,   scalars with reserve density
+  % * j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve
+  % * y_VE1, y_VE2: mol/mol,   scalars with yield of structure on reserve
+  % * mu_EV:        -,         scalar with mu_E1/ mu_V (mu_E1 j_E1S = mu_E2 j_E2S)
+  % * k_E:  1/d,               scalar with reserve turnover rate v/ L
+  % * kap: -,                  scalar with allocation fraction to soma
+  % * rho1: -,                 scalar with preference (default 0)
+  % * r0: 1/d,                 optional scalar with initial estimate for r 
+  %
+  %                            if empty or undefined 0, else previous result is used
+  %
+  % Output
+  %
+  % * r: 1/d,                  scalar with spec growth rate
+  % * j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux
+  % * j_E1C, j_E2C: mol/d.mol, scalars with rejected flux of reserve from growth SUs
+  % * info: -,                 scalar with numerical failure (0) or success (1)
+
+  %% Remarks
+  % see <gr_iso_21.html *gr_iso_21*> for growth rate d/dt L (for embryo case);
+  % see <sgr_iso_21_var.html *sgr_iso_21_var*> for variable stoichiometry
 
   persistent r % 1/d, specific growth rate
   
