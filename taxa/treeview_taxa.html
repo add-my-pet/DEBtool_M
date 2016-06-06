@@ -1,0 +1,188 @@
+<HTML>
+
+<!--------------------------------------------------------------->
+<!-- Copyright (c) 2006 by Conor O'Mahony.                     -->
+<!-- For enquiries, please email GubuSoft@GubuSoft.com.        -->
+<!-- Please keep all copyright notices below.                  -->
+<!-- Original author of TreeView script is Marcelino Martins.  -->
+<!--------------------------------------------------------------->
+<!-- This document includes the TreeView script.  The TreeView -->
+<!-- script can be found at http://www.TreeView.net.  The      -->
+<!-- script is Copyright (c) 2006 by Conor O'Mahony.           -->
+<!--------------------------------------------------------------->
+<!-- Instructions:                                             -->
+<!-- Follow the steps labeled SECTION1, SECTION2, and so on    -->
+<!-- in this file.                                             -->
+<!--------------------------------------------------------------->
+
+ <HEAD>
+
+  <TITLE>TreeView of add_my_pet entries</TITLE>
+
+
+  <!------------------------------------------------------------>
+  <!-- SECTION 1:                                             -->
+  <!-- If you want, edit the styles for the remainder if the  -->
+  <!-- document.                                              -->
+  <!------------------------------------------------------------>
+  <STYLE>
+
+   /*                                                          */
+   /* Styles for the tree.                                     */
+   /*                                                          */
+   SPAN.TreeviewSpanArea A {
+     font-size: 10pt; 
+     font-family: verdana,helvetica; 
+     text-decoration: none;
+     color: black;}
+   SPAN.TreeviewSpanArea A:hover {
+     color: '#820082';}
+
+   /*                                                          */
+   /* Styles for the remainder of the document.                */
+   /*                                                          */
+   BODY {
+     background-color: white;}
+   TD {
+     font-size: 10pt; 
+     font-family: verdana,helvetica;}
+
+  </STYLE>
+
+
+  <!------------------------------------------------------------>
+  <!-- SECTION 2:                                             -->
+  <!-- Replace everything (HTML, JavaScript, etc.) from here  -->
+  <!-- until the beginning of SECTION 3 with the pieces of    -->
+  <!-- the <HEAD> section that are needed for your site.      -->
+  <!------------------------------------------------------------>
+  <SCRIPT>
+  function getQueryString(index) {
+    var paramExpressions;
+    var param
+    var val
+    paramExpressions = window.location.search.substr(1).split("&");
+    if (index < paramExpressions.length) {
+      param = paramExpressions[index]; 
+      if (param.length > 0) {
+        return eval(unescape(param));
+      }
+    }
+    return ""
+  }
+  </SCRIPT>
+
+
+  <!------------------------------------------------------------>
+  <!-- SECTION 3:                                             -->
+  <!-- Code for browser detection. DO NOT REMOVE.             -->
+  <!------------------------------------------------------------>
+  <SCRIPT src="ua.js"></SCRIPT>
+
+  <!-- Infrastructure code for the TreeView. DO NOT REMOVE.   -->
+  <SCRIPT src="ftiens4.js"></SCRIPT>
+
+  <!-- Scripts that define the tree. DO NOT REMOVE.           -->
+  <SCRIPT src="treeview_taxa.js"></SCRIPT>
+
+ </HEAD>
+
+
+ <!------------------------------------------------------------->
+ <!-- SECTION 4:                                              -->
+ <!-- Change the <BODY> tag for use with your site.           -->
+ <!------------------------------------------------------------->
+ <BODY bgcolor="white" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0"  onResize="if (navigator.family == 'nn4') window.location.reload()">
+
+
+ <!----- ------------------------------------------------------->
+ <!-- SECTION 5:                                              -->
+ <!-- The main body of the page, including the table          -->
+ <!-- structure that contains the tree and the contents.      -->
+ <!---- -------------------------------------------------------->
+ <TABLE cellpadding="0" cellspacing="0" border="0" width="772">
+  <TR>
+   <TD width="178" valign="top">
+
+    <TABLE cellpadding="4" cellspacing="0" border="0" width="100%">
+     <TR>
+      <TD bgcolor="#ECECD9">
+
+        <TABLE cellspacing="0" cellpadding="2" border="0" width="100%">
+         <TR>
+          <TD bgcolor="white">
+
+
+ <!------------------------------------------------------------->
+ <!-- SECTION 6:                                              -->
+ <!-- Build the tree.                                         -->
+ <!------------------------------------------------------------->
+
+ <!------------------------------------------------------------->
+ <!-- IMPORTANT NOTICE:                                       -->
+ <!-- Removing the following link will prevent this script    -->
+ <!-- from working.  Unless you purchase the registered       -->
+ <!-- version of TreeView, you must include this link.        -->
+ <!-- If you make any unauthorized changes to the following   -->
+ <!-- code, you will violate the user agreement.  If you want -->
+ <!-- to remove the link, see the online FAQ for instructions -->
+ <!-- on how to obtain a version without the link.            -->
+ <!------------------------------------------------------------->
+ <TABLE border=0>
+    <TR>
+      <TD>
+        <FONT size=-2><A style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank>Javascript Tree Menu</A>
+        </FONT>
+      </TD>
+   </TR>
+</TABLE>
+
+
+ <SPAN class=TreeviewSpanArea>
+  <SCRIPT>initializeDocument()</SCRIPT>
+  <NOSCRIPT>
+   A tree for site navigation will open here if you enable JavaScript in your browser.
+  </NOSCRIPT>
+ </SPAN>
+
+
+ <!------------------------------------------------------------->
+ <!-- SECTION 7:                                              -->
+ <!-- And now we have the continuation of the body of the     -->
+ <!-- page, after the tree.  Replace this entire section with -->
+ <!-- your site's HTML.                                       -->
+ <!------------------------------------------------------------->
+          </TD>
+         </TR>
+        </TABLE>
+
+       </TD>
+      </TR>
+     </TABLE>
+
+    </TD>
+    <TD bgcolor="white" valign="top">
+
+    <TABLE cellpadding="10" cellspacing="0" border="0" width="100%">
+      <TR>
+       <TD>
+
+        <SCRIPT>
+         // Link tree nodes to pictures
+         var picURL
+         picURL = getQueryString(0)
+         if (picURL.length > 0)
+           document.write("<img src=/thb/deb/deblab/add_my_pet/entries/img/" + picURL + " WIDTH = 400><br><br>");
+        </SCRIPT>
+
+       </TD>
+      </TR>
+    </TABLE>
+
+    </TD>
+   </TR>
+  </TABLE>
+
+ </BODY>
+
+</HTML>

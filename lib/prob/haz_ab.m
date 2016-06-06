@@ -1,12 +1,30 @@
+%% haz_AB
+% Computes hazard for 2-mixtures of toxicants
+
+%%
 function h = haz_AB(t, x) % specifies hazard rate
-  %  h = haz_AB(t,x), where dummy variable x is not used
-  %  compounds A,B substitutable for effects and NEC
-  %  t: (n,1)-matrix with times
-  %  par: (9,1)-matrix with parameters
+
+  %% Syntax
+  % h = <../haz_AB.m *haz_AB*> (t, x)
+
+  %% Description
+  % Computes hazard for 2-mixtures of compounds A,B that are substitutable for effects and NEC
+  %
+  % Input:
+  %
+  % * t: (n,1)-matrix with times
+  % * x: dummy variable that is not used
+  %  
+  % Output:
+  %
+  % * h: (n,1)-matrix with hazard rates
+  
+  %% Remarks
+  % Requires global par: (9,1)-matrix with parameters
   
   global par
   
-  %% unpack par
+  % unpack par
   cA = par(1); % mM, external conc for compound A
   cB = par(2); % mM, external conc for compound B
   kA = par(3); % 1/d, elimination rate for A

@@ -1,29 +1,41 @@
+%% fnfourier
+% calculates the ordinates of a function that is specified by fourier terms
+
+%%
 function f = fnfourier(t, p)
-  %  Created by Bas Kooijman, 2007/03/30
-  %
+  % Created by Bas Kooijman, 2007/03/30
+  
+  %% Syntax
+  % f = <../fnfourier.m *fnfourier*>(t, p)
+
   %% Description
-  %  Fourier series are defined as weighted sum of cosinus and sinus functions plus an additive coefficient (= mean function value). 
-  %  They are periodic, so the function value and the derivatives at the start and the end of a period are equal.
-  %  Function fnfourier calculates the ordinates, dfnfourier the derivatives and ddfnfourier the second derivatives. 
-  %  These functions all have the same input/output structure. 
+  % Fourier series are defined as weighted sum of cosinus and sinus functions plus an additive coefficient (= mean function value). 
+  % They are periodic, so the function value and the derivatives at the start and the end of a period are equal.
+  % Function fnfourier calculates the ordinates, dfnfourier the derivatives and ddfnfourier the second derivatives. 
+  % These functions all have the same input/output structure. 
   %
-  %% Input
-  %  t: (nt,1)-vector with time points
-  %  p: (n+1,2)-matrix with parameters
+  % Input:
   %
-  %% Output
-  %  f: (nt,1)-vector with function values
-  %  input-output structure similar to spline
+  % * t: (nt,1)-vector with time points
+  % * p: (n+1,2)-matrix with parameters
+  %
+  %       - p(1,:): period, mean level
+  %       - p(2:n+1,:): fourier coefficients for cosinus, sinus
+  %
+  % Output:
+  %
+  % * f: (nt,1)-vector with function values
   %
   %% Remarks
-  %  cf dfnfourier for derivative
-  %     ifnfourier for integration
-  %     rfnfourier for roots
-  %     get_fnfourier for parameters
-  %  See ifnfourier for integration, rfnfourier for roots, efnfourier for local extremes.
-  %
+  % Input-output structure similar to <../html/spline.html *spline*>;
+  % cf <../html/dfnfourier.html *dfnfourier*> for derivative;
+  %    <../html/ifnfourier.html *ifnfourier*> for integration;
+  %    <../html/rfnfourier.html *rfnfourier*> for roots;
+  %    <../html/get_fnfourier.html *get_fnfourier*> for parameters;
+  %    <../html/efnfourier.html *efnfourier*> for local extremes.
+  
   %% Example of use 
-  %  see mydata_smooth. 
+  % see <mydata_smooth.m *mydata_smooth*>. 
 
 n = size(p,1);   % number of fourier terms +1
 period = p(1,1); % period of periodic function

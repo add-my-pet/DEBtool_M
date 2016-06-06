@@ -1,14 +1,27 @@
+%% shloglogstar
+% plots star with slopes in multiples of 1/3
+
+%%
 function shloglogstar(p, r, color)
-  %  created 2000/10/23 by Bas Kooijman, modified 2009/02/05
-  %
+  % created 2000/10/23 by Bas Kooijman, modified 2009/02/05
+  
+  %% Syntax
+  % <../shloglogstar.m *shloglogstar*> (p, r, color)
+
   %% Description
-  %  plot star with slopes in multiples of 1/3
-  %  coordinates of star centre: 1,2-matrix
-  %  plot ranges for x,y values: 2,2-matrix
-  %   r(1,i)<p(i)<r(2,i) for i = 1,2
+  % Plots star with slopes in multiples of 1/3
   %
+  % Input:
+  %
+  % * p: (1,2)-matrix with coordinates of star centre
+  % * r: (2,2)-matrix with plot ranges for x,y values
+  %
+  %    r(1,i)<p(i)<r(2,i) for i = 1,2
+  %
+  % * color: specification of color
+  
   %% Example of use
-  %  see shstar
+  % see <shstar.html *shstar*>
 
   if (p(1) < r(1,1)) || (p(1) > r(2,1)) || (p(2) < r(1,2)) || ...
 	 (p(2) > r(2,2)) || (r(1,1) > r(2,1)) || (r(1,2) > r(2,2))
@@ -52,12 +65,12 @@ function shloglogstar(p, r, color)
 	    x1 = [x_r(2,:); x_u(2,:)];
       end
     end
-    %% x0 = 10.^x0; x1 = 10.^x1;
-    %% loglog(x0(:,1), x0(:,2), color, x1(:,1), x1(:, 2), color); 
+    % x0 = 10.^x0; x1 = 10.^x1;
+    % loglog(x0(:,1), x0(:,2), color, x1(:,1), x1(:, 2), color); 
     plot(x0(:,1), x0(:,2), color, x1(:,1), x1(:, 2), color);
   end
 
   % p = 10.^p;
   % r = 10.^r;
-  %% loglog(p([1; 1]), r(:,2), color, r(:,1), p([2; 2]), color);
+  % loglog(p([1; 1]), r(:,2), color, r(:,1), p([2; 2]), color);
   plot(p([1; 1]), r(:,2), color, r(:,1), p([2; 2]), color);

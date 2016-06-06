@@ -1,21 +1,36 @@
+%% espline1
+% Finds all local extremes of first order spline
+
+%%
 function [x_min, x_max, i_min, i_max] = espline1(xy, Dy1, Dyk)
-  %
+  %  created at 2007/03/29 by Bas Kooijman; modified 2009/09/29
+
+  %% Syntax
+  % [x_min, x_max, i_min, i_max] <../espline1.m *espline1*>(xy, Dy1, Dyk)
+
   %% Description
   %  The function espline finds all local extremes of spline1. 
   %
-  %% Input
-  %  xy: (k,2)-matrix with point coordinates; k > 2
-  %  DY1: optional scalar with derivative at first point
-  %  DYk: optional scalar with derivative at last point
+  % Input:
   %
-  %% Output
-  %  x_min: (w,2)-matrix with x-values for which y has a local minimum
-  %  x_max: (v,2)-matrix with x-values for which y has a local maximum
-  %  i_min: (w,1)-vector with indices of local minima
-  %  i_max: (v,1)-vector with indices of local maxima
+  % * xy: (k,2)-matrix with point coordinates; k > 2
+  % * DY1: optional scalar with derivative at first point
+  % * DYk: optional scalar with derivative at last point
   %
+  % Output:
+  %
+  % * x_min: (w,2)-matrix with x-values for which y has a local minimum
+  % * x_max: (v,2)-matrix with x-values for which y has a local maximum
+  % * i_min: (w,1)-vector with indices of local minima
+  % * i_max: (v,1)-vector with indices of local maxima
+  
+  %% Remarks
+  % cf <../html/slpine1.html *spline1*> for first order spline;
+  %    <../html/rspline1.html *rspline1*> for roots;
+  %    <../html/espline1.html *espline1*> for local extremes.
+
   %% Example of use
-  %  see mydata_smooth
+  % See <../mydata_smooth.m *mydata_smooth*>
 
 [xy i_xy] = unique(xy,'rows');
 x = xy(:,1); y = xy(:,2); k = length(x);

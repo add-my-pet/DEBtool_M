@@ -19,11 +19,19 @@ function [data, auxData, metaData, txtData, weights] = mydata_pets
   % * metaData: catenated metadata structure
   % * weights: catenated weights structure
 
-global pets pseudodata_pets
+global pets toxs pseudodata_pets
 
 for i = 1:length(pets)             % calls species mydata functions
-  currentPet = sprintf('pet%d',i);
-  [data.(currentPet), auxData.(currentPet), metaData.(currentPet), txtData.(currentPet), weights.(currentPet)] = feval(['mydata_', pets{i}]);
+  currentPet = pets{i};
+  toxsnumber = length(toxs);
+  if toxsnumber == 0
+    [data.(currentPet), auxData.(currentPet), metaData.(currentPet), txtData.(currentPet), weights.(currentPet)] = feval(['mydata_', pets{i}]);
+  else
+    for j = 1:toxsnumber
+      currentTox = toxs{j};
+      [data.(currentPet).(currentTox), auxData.(currentPet).(currentTox), metaData.(currentPet).(currentTox), txtData.(currentPet).(currentTox), weights.(currentPet).(currentTox)] = feval(['mydata_', currentPet, '_', currentTox]);
+    end
+  end
 end 
 
 if pseudodata_pets == 1

@@ -1,0 +1,206 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>treeview_taxa</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-06"><meta name="DC.source" content="treeview_taxa.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>treeview_taxa</h1><!--introduction--><p>write treeview_taxa.js that is called by treeview_taxa.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> treeview_taxa (pedigree_taxa)
+</pre><pre class="codeinput"><span class="comment">% created 2016/03/06 by Bas Kooijman</span>
+</pre><h2>Syntax<a name="3"></a></h2><p><a href="../treeview_taxa.m"><b>treeview_taxa</b></a> (pedigree_taxa)</p><h2>Description<a name="4"></a></h2><p>Clears and creates file treeview_taxa.js in DEBtool_M/taxa and writes java code to it</p><p>Input:</p><div><ul><li>pedigree_taxa: character string with pedigree of a taxon</li></ul></div><h2>Example of use<a name="5"></a></h2><p>treeview_taxa(pedigree('Animalia')); open treeview_taxa.html to see the result</p><pre class="codeinput">  WD = pwd;                      <span class="comment">% store current path</span>
+  taxa = which(<span class="string">'treeview_taxa'</span>); <span class="comment">% locate DEBtool_M/taxa/</span>
+  taxa = taxa(1:end - 15);       <span class="comment">% path to DEBtool_M/taxa/</span>
+  cd(taxa)                       <span class="comment">% goto taxa</span>
+
+  <span class="keyword">try</span>
+    fid_tv = fopen(<span class="string">'treeview_taxa.js'</span>, <span class="string">'w+'</span>); <span class="comment">% open file for writing, delete existing content</span>
+
+    <span class="comment">% write header</span>
+    fprintf(fid_tv, <span class="string">'//\n'</span>);
+    fprintf(fid_tv, <span class="string">'// Copyright (c) 2006 by Conor O''''Mahony.\n'</span>);
+    fprintf(fid_tv, <span class="string">'// For enquiries, please email GubuSoft@GubuSoft.com\n'</span>);
+    fprintf(fid_tv, <span class="string">'// Please keep all copyright notices below.\n'</span>);
+    fprintf(fid_tv, <span class="string">'// Original author of TreeView script is Marcelino Martins.\n'</span>);
+    fprintf(fid_tv, <span class="string">'// This document includes the TreeView script.\n'</span>);
+    fprintf(fid_tv, <span class="string">'// The TreeView script can be found at http://www.TreeView.net.\n'</span>);
+    fprintf(fid_tv, <span class="string">'// The script is Copyright (c) 2006 by Conor O''''Mahony.\n'</span>);
+    fprintf(fid_tv, <span class="string">'//\n'</span>);
+    fprintf(fid_tv, <span class="string">'// You can find general instructions for this file at www.treeview.net.\n'</span>);
+    fprintf(fid_tv, <span class="string">'//\n\n'</span>);
+
+    <span class="comment">% write specs</span>
+    fprintf(fid_tv, <span class="string">'USETEXTLINKS = 1\n'</span>); <span class="comment">% 0: The icon is the only link to a destination; 1: Both the icon and the text are links to the destination</span>
+    fprintf(fid_tv, <span class="string">'STARTALLOPEN = 0\n'</span>); <span class="comment">% 0: Expand only the root node. Do not open other folders; 1: Expand all folders, showing every node in the tree.</span>
+    fprintf(fid_tv, <span class="string">'USEFRAMES = 0\n'</span>);    <span class="comment">% 0: Use TreeView in a frame-less layout; 1: Use TreeView in a frame-based layout where the tree is in its own frame</span>
+    fprintf(fid_tv, <span class="string">'USEICONS = 0\n'</span>);     <span class="comment">% 0: Do not display the icons; 1: Display the icons</span>
+    fprintf(fid_tv, <span class="string">'WRAPTEXT = 1\n'</span>);     <span class="comment">% 0: The text portion of a node will appear on one line only; 1: The text portion of a node will wrap to always be visible</span>
+    fprintf(fid_tv, <span class="string">'PRESERVESTATE = 1\n'</span>);<span class="comment">% 0: Do not store the state of the tree across page loads; 1: Store the state of the tree in cookies, and use that state on next visit</span>
+    fprintf(fid_tv, <span class="string">'HIGHLIGHT = 1\n\n'</span>);  <span class="comment">% 0: Do not highlight the selected node; 1: Highlight the selected node</span>
+
+    <span class="comment">% build tree</span>
+    nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
+    fprintf(fid_tv, [<span class="string">'foldersTree = gFld("&lt;b&gt;'</span>, node, <span class="string">'&lt;/b&gt;", "treeview_taxa.html")\n'</span>]);
+
+    <span class="keyword">while</span> length(pedigree_taxa) &gt; 3
+      nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
+      level = max(strfind(node, char(9))); node(1:level) = []; L = [<span class="string">'L'</span>, num2str(level)]; Lnew = [<span class="string">'L'</span>, num2str(1 + level)];
+      <span class="keyword">if</span> level == 1
+        fprintf(fid_tv, [<span class="string">'L2 = insFld(foldersTree, gFld("'</span>, node, <span class="string">'", "treeview_taxa.html?pic='</span>, <span class="string">'%%22'</span>, node, <span class="string">'%%2Ejpg'</span>, <span class="string">'%%22"))\n'</span>]);
+        <span class="comment">%fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", ""))\n']);</span>
+      <span class="keyword">elseif</span> isempty(strfind(node, <span class="string">'_'</span>)) &amp;&amp; isempty(strfind(node, <span class="string">' '</span>))
+        fprintf(fid_tv, [Lnew, <span class="string">' = insFld('</span>, L, <span class="string">', gFld("'</span>, node, <span class="string">'", "treeview_taxa.html?pic='</span>, <span class="string">'%%22'</span>, node, <span class="string">'%%2Ejpg'</span>, <span class="string">'%%22"))\n'</span>]);
+        <span class="comment">%fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", ""))\n']);</span>
+      <span class="keyword">else</span>
+        fprintf(fid_tv, [<span class="string">'insDoc('</span>, L, <span class="string">', gLnk("S", "'</span>, node, <span class="string">'", "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/i_results_'</span>, node, <span class="string">'.html"))\n'</span>]);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    fclose(fid_tv);
+
+  <span class="keyword">catch</span>
+    disp(<span class="string">'An error occured during writing file treeview_taxa.js'</span>)
+  <span class="keyword">end</span>
+
+  cd(WD)                    <span class="comment">% goto original path</span>
+</pre><pre class="codeoutput">An error occured during writing file treeview_taxa.js
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% treeview_taxa
+% write treeview_taxa.js that is called by treeview_taxa.html
+
+%%
+function treeview_taxa (pedigree_taxa)
+% created 2016/03/06 by Bas Kooijman
+
+%% Syntax
+% <../treeview_taxa.m *treeview_taxa*> (pedigree_taxa) 
+
+%% Description
+% Clears and creates file treeview_taxa.js in DEBtool_M/taxa and writes java code to it
+%
+% Input:
+%
+% * pedigree_taxa: character string with pedigree of a taxon
+%
+%% Example of use
+% treeview_taxa(pedigree('Animalia')); open treeview_taxa.html to see the result
+
+  WD = pwd;                      % store current path
+  taxa = which('treeview_taxa'); % locate DEBtool_M/taxa/
+  taxa = taxa(1:end - 15);       % path to DEBtool_M/taxa/
+  cd(taxa)                       % goto taxa
+
+  try
+    fid_tv = fopen('treeview_taxa.js', 'w+'); % open file for writing, delete existing content
+
+    % write header
+    fprintf(fid_tv, '//\n');
+    fprintf(fid_tv, '// Copyright (c) 2006 by Conor O''''Mahony.\n');
+    fprintf(fid_tv, '// For enquiries, please email GubuSoft@GubuSoft.com\n');
+    fprintf(fid_tv, '// Please keep all copyright notices below.\n');
+    fprintf(fid_tv, '// Original author of TreeView script is Marcelino Martins.\n');
+    fprintf(fid_tv, '// This document includes the TreeView script.\n');
+    fprintf(fid_tv, '// The TreeView script can be found at http://www.TreeView.net.\n');
+    fprintf(fid_tv, '// The script is Copyright (c) 2006 by Conor O''''Mahony.\n');
+    fprintf(fid_tv, '//\n');
+    fprintf(fid_tv, '// You can find general instructions for this file at www.treeview.net.\n');
+    fprintf(fid_tv, '//\n\n');
+  
+    % write specs
+    fprintf(fid_tv, 'USETEXTLINKS = 1\n'); % 0: The icon is the only link to a destination; 1: Both the icon and the text are links to the destination
+    fprintf(fid_tv, 'STARTALLOPEN = 0\n'); % 0: Expand only the root node. Do not open other folders; 1: Expand all folders, showing every node in the tree. 
+    fprintf(fid_tv, 'USEFRAMES = 0\n');    % 0: Use TreeView in a frame-less layout; 1: Use TreeView in a frame-based layout where the tree is in its own frame
+    fprintf(fid_tv, 'USEICONS = 0\n');     % 0: Do not display the icons; 1: Display the icons
+    fprintf(fid_tv, 'WRAPTEXT = 1\n');     % 0: The text portion of a node will appear on one line only; 1: The text portion of a node will wrap to always be visible 
+    fprintf(fid_tv, 'PRESERVESTATE = 1\n');% 0: Do not store the state of the tree across page loads; 1: Store the state of the tree in cookies, and use that state on next visit
+    fprintf(fid_tv, 'HIGHLIGHT = 1\n\n');  % 0: Do not highlight the selected node; 1: Highlight the selected node
+  
+    % build tree
+    nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
+    fprintf(fid_tv, ['foldersTree = gFld("<b>', node, '</b>", "treeview_taxa.html")\n']);
+
+    while length(pedigree_taxa) > 3
+      nl = strfind(pedigree_taxa, char(10)); node = pedigree_taxa(1:nl-1); pedigree_taxa(1:nl) = [];
+      level = max(strfind(node, char(9))); node(1:level) = []; L = ['L', num2str(level)]; Lnew = ['L', num2str(1 + level)];
+      if level == 1
+        fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
+        %fprintf(fid_tv, ['L2 = insFld(foldersTree, gFld("', node, '", ""))\n']);
+      elseif isempty(strfind(node, '_')) && isempty(strfind(node, ' ')) 
+        fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", "treeview_taxa.html?pic=', '%%22', node, '%%2Ejpg', '%%22"))\n']);
+        %fprintf(fid_tv, [Lnew, ' = insFld(', L, ', gFld("', node, '", ""))\n']);
+      else
+        fprintf(fid_tv, ['insDoc(', L, ', gLnk("S", "', node, '", "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/i_results_', node, '.html"))\n']); 
+      end
+    end
+ 
+    fclose(fid_tv);
+  
+  catch
+    disp('An error occured during writing file treeview_taxa.js')
+  end
+  
+  cd(WD)                    % goto original path
+
+##### SOURCE END #####
+--></body></html>

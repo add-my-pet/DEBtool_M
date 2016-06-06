@@ -9,7 +9,10 @@ function [members, taxon] = clade(taxa)
 % members = <../clade.m *clade*> (taxa) 
 
 %% Description
-% gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa
+% gets all species in the add_my_pet collection that belong to the lowest common taxon of a group of taxa.
+% To find this taxon, the lineages of all members of input taxa are obtained, 
+% then the taxon of lowest rank is found that is shared by all members of input taxa 
+% and all members of this taxon in the add_my_pet collection are selected.
 %
 % Input:
 %

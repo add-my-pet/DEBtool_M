@@ -1,5 +1,8 @@
+clear all; clc
+
 %  Created at 2002/02/15 by Bas Kooijman
-% Toxic effects on reproduction; five modes of action
+% modified 2016/02/17 by starrlight
+% Toxic effects /on reproduction; five modes of action
 %   asrep: assimilation capacity
 %   marep: maintenance costs
 %   grrep: growth costs
@@ -31,14 +34,44 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000; % Daphnia magna
      90.600  72.000  47.600  21.700  11.300   5.244;
      98.700  76.200  53.000  21.700  11.300   5.244];
 
-path(path,'../lib/regr/');
+% path(path,'../lib/regr/');
 
+nmregr_options('max_fun_evals',100)
 shregr2_options('plotnr',1);
 
- par = [1e-3 10.6 1e-1 14.7 .1 0.13 0.42 1; 1 1 1 1 0 0 0 0]';
- p = nmregr2('asrep',par,t,c,N);
- shregr2('asrep',p,t,c,N);
- [cov cor sd] = pregr2('asrep',p,t,c,N);
+c0 = 1e-4;  % mM, No-Effect-Concentration (external, may be zero)
+cA = 10.6*0.4;  % mM, tolerance concentration
+ke = 1e-1;  % 1/d, elimination rate at L = Lm
+kap = 0.61; % -, fraction allocated to growth + som maint
+kap_R = 0.95;% -, fraction of reprod flux that is fixed into embryo reserve 
+g  = 3.6;  % -, energy investment ratio
+k_J = 0.002;  % 1/d, maturity maint rate coeff
+k_M = 0.33;  % 1/d, somatic maint rate coeff
+v  = 0.1584;  % cm/d, energy conductance
+U_Hb = 0.01379/ 315.611; % d cm^2, scaled maturity at birth
+U_Hp = 0.3211/ 315.611; % d cm^2, scaled maturity at puberty
+L0 = 0.016; % cm, initial body length
+f = 0.65; % scaled functional response
+
+
+ p = [
+     c0 1
+     cA 1
+     ke 1
+     kap 0
+     kap_R 0
+     g 0
+     k_J 0
+     k_M 0
+     v 0
+     U_Hb 0
+     U_Hp 0
+     L0 0
+     f 0];
+     
+% p = nmregr2('asrep',p,t,c,N);
+%  shregr2('asrep',p,t,c,N);
+%  [cov cor sd] = pregr2('asrep',p,t,c,N);
 
 % par = [1e-6 0.87 0.33 14.04 .1 0.13 0.42 1; 0 1 1 0 0 0 0 0]';
 % p = nmregr2('marep',par,t,c,N);
@@ -46,18 +79,18 @@ shregr2_options('plotnr',1);
 % [cov cor sd] = pregr2('marep',p,t,c,N);
 
 % par = [1e-6 2.27 1e-6 14.14 .1 0.13 0.42 1; 0 1 1 0 0 0 0 0]';
-% p = nmregr2('grrep',par,t,c,N);
+% p = nmregr2('grrep',p,t,c,N);
 % shregr2('grrep',p,t,c,N);
 % [cov cor sd] = pregr2('grrep',p,t,c,N);
 
 % par = [1e-6 1e-6 1e-6 14.4 .1 0.13 0.42 1; 1 1 1 1 0 0 0 0]';
-% p = nmregr2('corep',par,t,c,N);
+% p = nmregr2('corep',p,t,c,N);
 % shregr2('corep',p,t,c,N);
 % [cov cor sd] = pregr2('corep',p,t,c,N);
 
 % par = [1e-6 1e-6 1e-6 14.4 .1 0.13 0.42 1; 1 1 1 1 0 0 0 0]';
-% p = nmregr2('harep',par,t,c,N);
-% shregr2('harep',p,t,c,N);
-% [cov cor sd] = pregr2('harep',p,t,c,N);
+p = nmregr2('harep',p,t,c,N);
+shregr2('harep',p,t,c,N);
+[cov cor sd] = pregr2('harep',p,t,c,N);
 
 [p(:,1) sd]

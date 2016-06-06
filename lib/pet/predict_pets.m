@@ -24,7 +24,7 @@ function [prdData, info] = predict_pets(parGrp, data, auxData)
 % * prdData: structure with predictions for several species
 % * info: scalar with combined success (1) or failure (0) of predictions
  
-global pets pseudodata_pets cov_rules
+global pets toxs pseudodata_pets cov_rules
 
 info = 0;
 
@@ -35,10 +35,21 @@ covRulesnm = ['cov_rules_', cov_rules];
 for i = 1:petsnumber
  % for the case with no zoom factor transformation
   par = feval(covRulesnm, parGrp, i);
-  currentPet = sprintf('pet%d',i);
-  [prdData.(currentPet), info] = feval(['predict_', pets{i}], par, data.(currentPet), auxData.(currentPet));
-  if ~info
-    return;
+  currentPet = pets{i};
+  toxsnumber = length(toxs);
+  if toxsnumber == 0
+    [prdData.(currentPet), info] = feval(['predict_', pets{i}], par, data.(currentPet), auxData.(currentPet));
+    if ~info
+      return;
+    end
+  else
+    for j = 1:toxsnumber
+      currentTox = toxs{j};
+      [prdData.(currentPet).(currentTox), info] = feval(['predict_', currentPet, '_', currentTox], par, data.(currentPet).(currentTox), auxData.(currentPet).(currentTox));
+      if ~info
+        return;
+      end
+    end
   end
   
   % predict pseudodata

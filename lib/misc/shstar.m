@@ -1,17 +1,30 @@
+%% shstar
+% plots star with slopes in multiples of 1/3
+
+%%
 function shstar(p, r, color)
-  %  created 2000/10/23 by Bas Kooijman, modified 2009/09/29
-  %
+  % created 2000/10/23 by Bas Kooijman, modified 2009/09/29
+  
+  %% Syntax
+  % <../shstar.m *shstar*> (p, r, color)
+
   %% Description
-  %  plot star with slopes in multiples of 1/3
-  %  coordinates of star centre: 1,2-matrix
-  %  plot ranges for x,y values: 2,2-matrix
-  %   r(1,i)<p(i)<r(2,i) for i = 1,2
+  % Plots star with slopes in multiples of 1/3
   %
+  % Input:
+  %
+  % * p: (1,2)-matrix with coordinates of star centre
+  % * r: (2,2)-matrix with plot ranges for x,y values
+  %
+  %    r(1,i)<p(i)<r(2,i) for i = 1,2
+  %
+  % * color: specification of color
+  
   %% Remarks
-  %  shloglogstar uses log-transformed x and y axes. 
-  %
+  % <shloglogstar.html *shloglogstar*> uses log-transformed x and y axes; finds application is allometry 
+  
   %% Example of use
-  %  shstar([2 6],[0 0; 10 10],'m')
+  % shstar([2 6],[0 0; 10 10],'m')
 
   if (p(1) < r(1,1)) || (p(1) > r(2,1)) || (p(2) < r(1,2)) || ...
 	(p(2) > r(2,2)) || (r(1,1) > r(2,1)) || (r(1,2) > r(2,2))

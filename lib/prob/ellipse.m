@@ -1,19 +1,30 @@
+%% ellipse
+% Calculates the empirical survivor probabilities from a number of random trials
+
+%%
 function xy = ellipse(mu,sig,h,n)
   %  created 2005/10/01 by Bas Kooijman; modified 2008/08/08
+
+  %% Syntax
+  % xy = <../ellipse.m *ellipse*> (mu,sig,h,n)
+  
+  %% Description
+  % Calculates the empirical survivor probabilities from a number of random trials
   %
-  %% Input
-  %  mu: (1,2)-vector with coordinates of center
-  %  sig: (2,2)-matrix with var-cov (must be symmetric, with pos diag)
-  %  h: scalar with height of isocline of bivariate normal density
+  % Input:
+  %
+  % * mu: (1,2)-vector with coordinates of center
+  % * sig: (2,2)-matrix with var-cov (must be symmetric, with pos diag)
+  % * h: scalar with height of isocline of bivariate normal density
   %     as fraction of maximum height at center
-  %  n: scalar with number of points. Optional; default value 100
+  % * n: scalar with number of points. Optional; default value 100
   %
-  %% Output
-  %  xy: (n,2)-matrix with x,y coordinates of points on ellipse
+  % Output:
+  %
+  % * xy: (n,2)-matrix with x,y coordinates of points on ellipse
   %   i.e. solutions of h = (xy - mu) sig^-1 (xy - mu)^T
   %   coordinates of the last point equal that of the first
 
-  %% Code
   if sig(1,1) < 0 | sig(2,2) < 0
     fprintf('No positive diagonal elements in cov matrix \n');
     xy = [];

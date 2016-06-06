@@ -3,7 +3,7 @@
 
 %%
 function [x taxa] = pie_Animalia (n)
-%% created 2016/02/21 by Bas Kooijman
+% created 2016/02/21 by Bas Kooijman
 
 %% Syntax
 % [x taxa] = <../pie_Animalia.m *pie_Animalia*> (n)

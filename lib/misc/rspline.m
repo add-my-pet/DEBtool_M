@@ -1,25 +1,34 @@
+%% rspline
+% Calculates real roots x of cubic spline(x) = y, given y
+
+%%
 function [x, info] = rspline(knots, Dy1, Dyk, y)
-  %  recreated at 2007/04/01 by Bas Kooijman, modified 2009/10/25
-  %
+  %  created at 2007/04/01 by Bas Kooijman, modified 2009/10/25
+  
+  %% Syntax
+  % [x, info] = <../rspline.m *rspline*> (knots, Dy1, Dyk, y)
+
   %% Description
-  %  Calculates real roots x of cubic spline(x) = y, given y
-  %  It does so by getting prior estimates using rspline1, followed by a Newton Raphson procedure. 
+  % Calculates real roots x of cubic spline(x) = y, given y
+  % It does so by getting prior estimates using rspline1, followed by a Newton Raphson procedure. 
   %
-  %% Input
-  %  knots: (r,2)-matrix with coordinates of knots; r>3
+  % Input:
+  %
+  % * knots: (r,2)-matrix with coordinates of knots; r>3;
   %         knots(:,1) must be ascending
-  %  Dy1: scalar with first derivative at first knot (optional)
+  % * Dy1: scalar with first derivative at first knot (optional);
   %       empty means: no specification and second derivative equals 0
-  %  Dyk: scalar with first derivative at last knot (optional)
+  % * Dyk: scalar with first derivative at last knot (optional);
   %       empty means: no specification and second derivative equals 0
-  %  y: scalar with spline value (optional, default is 0)
+  % % y: scalar with spline value (optional, default is 0)
   %
-  %% Output
-  %  x: vector with real roots (maximum length 3 * r - 1)
-  %  info: 1 if successsful, 0 if not
+  % Output:
   %
+  % % x: vector with real roots (maximum length 3 * r - 1)
+  % % info: 1 if successsful, 0 if not
+  
   %% Example of application
-  %  see mydata_smooth
+  % See <../mydata_smooth.m *mydata_smooth*>
   
   if exist('y','var') == 0
     y = 0;

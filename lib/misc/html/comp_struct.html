@@ -1,0 +1,350 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>comp_struct</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="comp_struct.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>comp_struct</h1><!--introduction--><p>check two structures for differences</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark:</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[df, match, er1, er2] = <a href="../comp_struct.m"><b>comp_struct</b></a>(s1,s2,prt,pse,tol,n1,n2,wbf)</p><h2>Description<a name="4"></a></h2><p>check two structures for differences - i.e. see if structure s1 == structure s2</p><p>Input:</p><div><ul><li>s1      structure one                              class structure</li><li>s2      structure two                              class structure - optional</li><li>prt     print test results (0 / 1 / 2 / 3)         class integer - optional</li></ul></div><h2>Remark:<a name="5"></a></h2><p>passing just one structure causes the program to copy the structure and compare the two.  This is an easy way to list the structure</p><h2>Example of use<a name="6"></a></h2><p>[match, er1, er2] = comp_struct(data1,data2,1,1,1e-6,'data1','data2')</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% comp_struct
+% check two structures for differences
+
+%%
+function [df, match, er1, er2] = comp_struct(s1,s2,prt,pse,tol,n1,n2,wbf)
+% created by Michael Arant 2013/05/27, modified 2013/08/22
+
+%% Syntax
+% [df, match, er1, er2] = <../comp_struct.m *comp_struct*>(s1,s2,prt,pse,tol,n1,n2,wbf)  
+
+%% Description
+% check two structures for differences - i.e. see if structure s1 == structure s2
+%
+% Input:  
+%
+% * s1      structure one                              class structure
+% * s2      structure two                              class structure - optional
+% * prt     print test results (0 / 1 / 2 / 3)         class integer - optional
+%
+%	  - 0: no print
+%	  - 1: summary
+%	  - 2: print erros
+%	  - 3: print errors and matches
+%
+% * pse     pause flag (0 / 1 / 2)                     class integer - optional
+%
+%	  - 1: pause for major erros
+%	  - 2: pause for all errors
+%
+% * tol     tol default tolerance (real numbers)       class integer - optional
+% * n1      first structure name (variable name)       class char - optional
+% * n2      second structure name (variable name)      class char - optional
+% * wbf     waitbar flag (0 / 1) default is 1          class integer - optional
+%
+% Output:
+%
+% * df      mis-matched fields with contents           class cell - optional
+% * match   matching fields                            class cell - optional
+% * er1     non-matching fields for structure one      class cell - optional
+% * er2     non-matching fields for structure two      class cell - optional
+
+%% Remark:
+% passing just one structure causes the program to copy the structure
+% and compare the two.  This is an easy way to list the structure
+
+%% Example of use
+% [match, er1, er2] = comp_struct(data1,data2,1,1,1e-6,'data1','data2')
+
+if nargin < 1; help comp_struct; error('I / O error'); end
+if nargin < 2; s2 = s1; prt = 3; end
+if nargin < 3 || isempty(prt); prt = 1; end
+if nargin < 4 || isempty(pse); pse = 0; elseif pse ~= 1 && prt == 0; pse = 0; end
+if nargin < 5 || isempty(tol); tol = 1e-6; end
+if nargin < 6 || isempty(s1); n1 = 's1'; end
+if nargin < 7 || isempty(s2); n2 = 's2'; end
+if nargin < 8 || isempty(wbf); wbf = 1; end
+if pse > prt, pse = prt; end
+
+% solve
+[match, er1, er2] = comp_struct_loop(s1,s2,prt,pse,tol,n1,n2,wbf);
+
+% populate the error values
+eval([char(n1) ' = s1;']);
+eval([char(n2) ' = s2;']);
+
+% size outputs
+ner1 = numel(er1); ner2 = numel(er2);
+% check that same number of errors were listed in each cell
+if ner1 ~= ner2
+	error(char('Something went very wrong in capturing errors.', ...
+		'If possible, please email the two structures to moarant@gmail.com'));
+else
+	n = ner1;
+end
+
+% populate the error list
+df = cell(n,3);
+% loop the error lists
+for ii = 1:n
+	% capture the error text list
+	temp1 = er1{ii}; temp2 = er2{ii};
+	
+	% see if the second structure exists
+	if isempty(regexp(temp2,'is missing', 'once'))
+		% record text error
+		df{ii,1} = temp2;
+		% see if matching structure 1 is missing (struture 2 listed as unique)
+		if isempty(regexp(temp2,'is unique', 'once'))
+			% unique to structure 2 - record value
+			junk = regexp(temp2,' ','once');
+			df{ii,3} = eval(temp2(1:junk-1));
+		else
+			% exists in 1 and 2 - evaluate types
+			junk = regexp(temp2,' ','once'); temp2(junk:end) = [];
+			junk = strfind(temp2,'.'); trash = temp2(junk+1:end); temp2(junk:end) = [];
+			% if trash is empty, the field is a sub structure - list sub fields
+			if isempty(trash)
+				df{ii,3} = eval(['fieldnames(' temp2 ')'])';
+			else
+				% if numel(temp2) is > 1, then this is an indexed field
+				% list the number if indexes and the type
+				if (numel(eval(temp2)) - 1)
+					df{ii,3} = sprintf('%s(#%g).%s is class %s', ...
+						temp2,numel(eval(temp2)),trash,class(eval([temp2 '.' trash])));
+				else
+					% list the contents of the field
+					df{ii,3} = eval([temp2 '.' trash]);
+				end
+			end
+		end
+	end
+	if isempty(regexp(temp1,'is missing', 'once'))
+		% record text error
+		df{ii,1} = temp1;
+		% see if matching structure 1 is missing (struture 2 listed as unique)
+		if isempty(regexp(temp1,'is unique', 'once'))
+			% unique to structure 2 - record value
+			junk = regexp(temp1,' ','once');
+			df{ii,2} = eval([temp1(1:junk-1)]);
+		else
+			% exists in 1 and 2 - evaluate types
+			junk = regexp(temp1,' ','once'); temp1(junk:end) = [];
+			junk = strfind(temp1,'.'); trash = temp1(junk+1:end); temp1(junk:end) = [];
+			% if trash is empty, the field is a sub structure - list sub fields
+			if isempty(trash)
+				df{ii,2} = eval(['fieldnames(' temp1 ')'])';
+			else
+				% if numel(temp2) is > 1, then this is an indexed field
+				% list the number if indexes and the type
+				if (numel(eval(temp1)) - 1)
+					df{ii,2} = sprintf('%s(#%g).%s is class %s', ...
+						temp1,numel(eval(temp1)),trash,class(eval([temp1 '.' trash])));
+				else
+					% list the contents of the field
+					df{ii,2} = eval([temp1 '.' trash]);
+				end
+			end
+		end
+	end
+end
+
+% optional text output
+if prt
+	fprintf('\n Error table\n');
+	for ii = 1:n
+		fprintf('\n%s    \n',df{ii,1});
+		fprintf('Structure 1:  ');
+		if isempty(df{ii,2}); fprintf('\n'); else; disp(df{ii,2}); end
+		fprintf('Structure 2:  ');
+		if isempty(df{ii,3}); fprintf('\n'); else; disp(df{ii,3}); end	
+	end
+	fprintf('\n\n\n\n\n');
+end
+
+% recursive loop
+function [match, er1, er2] = comp_struct_loop(s1,s2,prt,pse,tol,n1,n2,wbf)
+
+% init outputs
+match = {}; er1 = {}; er2 = {}; 
+
+% test to see if both are structures
+if isstruct(s1) && isstruct(s2)
+	% both structures - get the field names for each structure
+	fn1 = fieldnames(s1);
+	fn2 = fieldnames(s2);
+	% missing fields? get the common fields
+	temp1 = ismember(fn1,fn2);
+	temp2 = ismember(fn2,fn1);
+	% missing fields in set 1
+	for ii = find(~temp2)'
+		er1{end+1} = sprintf('%s is missing field %s',n1,fn2{ii});
+		er2{end+1} = sprintf('%s.%s is unique',n2,fn2{ii});
+% 		er2{end+1} = s2.(fn2{ii});
+		if prt > 1; fprintf('%s\n',er1{end}); end; if pse; pause; end
+	end
+	% missing fields in set 2
+	for ii = find(~temp1)'
+		er2{end+1} = sprintf('%s is missing field %s',n2,fn1{ii});
+		er1{end+1} = sprintf('%s.%s is unique',n1,fn1{ii});
+% 		er1{end+1} = s1.(fn1{ii});
+		if prt > 1; fprintf('%s\n',er2{end}); end; if pse; pause; end
+	end
+	% index sizes match?  i.e. do both structures have the same # of indexes?
+	inda = numel(s1); indb = numel(s2); inder = inda-indb;
+	if inder < 0
+		% struct 1 is smaller
+		for ii = inda+1:indb
+			er1{end+1} = sprintf('%s(%g) is missing',n1,ii);
+			er2{end+1} = sprintf('%s(%g) is unique',n2,ii);
+			if prt > 1; fprintf('%s\n',er1{end}); end; if pse; pause; end
+		end
+	elseif inder > 0
+		% index 2 is smaller
+		for ii = indb+1:inda
+			er2{end+1} = sprintf('%s(%g) is missing',n2,ii);
+			er1{end+1} = sprintf('%s(%g) is unique',n1,ii);
+			if prt > 1; fprintf('%s\n',er2{end}); end; if pse; pause; end
+		end
+	end
+	% get common fields
+	fn = fn1(temp1); fnn = numel(fn); 
+	% loop through structure 1 and match to structure 2
+	ind = min([inda indb]); cnt = 0; 
+	if wbf; wb = waitbar(0,'Comparing ....'); end
+	for ii = 1:ind
+		% loop each index
+		for jj = 1:fnn
+			% loop common field names
+			if wbf; cnt = cnt + 1; waitbar(cnt/(ind*fnn),wb); drawnow; end
+			% add index and field name to the structure name
+			n1p = sprintf('%s(%g).%s',n1,ii,fn{jj});
+			n2p = sprintf('%s(%g).%s',n2,ii,fn{jj});
+			% recurse - run the program again on the sub-set of the structure
+			[m e1 e2] = comp_struct_loop(s1(ii).(fn{jj}),s2(ii).(fn{jj}),prt,pse, ...
+				tol,n1p,n2p,wbf);
+			% add the sub-set (field name) results to the total results
+			match = [match m']; 
+			if ~isempty(e1) || ~isempty(e2)
+				er1 = [er1 e1']; er2 = [er2 e2'];
+			end
+		end
+	end
+	if wbf;	close(wb); end
+else
+	% both are non-structures - compare
+	% get the varable class and test
+	c1 = class(s1); c2 = class(s2);
+	if strcmp(c1,c2);
+		% both are the same class
+		if isequal(s1,s2)
+			% results are equal
+			match{end+1} = sprintf('%s and %s match',n1,n2);
+			if prt == 3; fprintf('%s\n',match{end}); end
+		else
+			% same class but not equal
+			% calculate error if type is single or double
+			% test for function type match if function handle
+			switch c1
+				case {'single', 'double'}, 
+					if numel(s1) ~= numel(s2) || size(s1,1) ~= size(s2,1)
+						er = 1;
+					else
+						er = norm(s1-s2);
+					end
+				case {'function_handle'},
+					s1f = functions(s1); s2f = functions(s2);
+					if strcmp(s1f.function,s2f.function)
+						% same function with different values - record deviation and exit
+						er = 0;
+						er1{end+1} = sprintf('%s and %s are both %s but have different values', ...
+							n1,n2,char(s1));
+						er2{end+1} = er1{end};
+						if prt > 1; fprintf('%s\n',er1{end}); end;
+						if pse > 1; pause; end
+					else
+						er = 1;
+					end
+				otherwise, er = 1;
+			end
+			% test error - error will be 0 (no error) or 1 (error) for all
+			% classes except double and single.  double and single are the 
+			% actual error which is tested against the tolerance
+			% this was done for cases where structures are run on different 
+			% platforms and numerical precision errors are observed
+			if er > tol
+				% sets do not match
+				er1{end+1} = sprintf('%s and %s do not match',n1,n2);
+				er2{end+1} = sprintf('%s and %s do not match',n2,n1);
+				if prt > 1; fprintf('%s\n',er1{end}); end;
+				if pse > 1; pause; end
+			else
+				% sets are a tolerance match
+				match{end+1} = sprintf('%s and %s are tolerance match',n1,n2);
+				if prt > 2; fprintf('%s\n',match{end}); end
+			end
+		end
+	else
+		% fields are different classes
+		er1{end+1} = sprintf('%s is class %s, %s is class %s',n1,c1,n2,c2);
+		er2{end+1} = sprintf('%s is class %s, %s is class %s',n2,c2,n1,c1);
+		if prt > 1; fprintf('%s\n',er1{end}); end
+		if pse; pause; end
+	end
+end
+
+% transpose outputs
+match = match'; er1 = er1'; er2 = er2';
+
+##### SOURCE END #####
+--></body></html>

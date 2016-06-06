@@ -1,0 +1,117 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ellipse</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-15"><meta name="DC.source" content="ellipse.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>ellipse</h1><!--introduction--><p>Calculates the empirical survivor probabilities from a number of random trials</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">val = 1 + r * [1, -1]; % eigenvalues of corr-matrix</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>xy = <a href="../ellipse.m"><b>ellipse</b></a> (mu,sig,h,n)</p><h2>Description<a name="4"></a></h2><p>Calculates the empirical survivor probabilities from a number of random trials</p><p>Input:</p><div><ul><li>mu: (1,2)-vector with coordinates of center</li><li>sig: (2,2)-matrix with var-cov (must be symmetric, with pos diag)</li><li>h: scalar with height of isocline of bivariate normal density     as fraction of maximum height at center</li><li>n: scalar with number of points. Optional; default value 100</li></ul></div><p>Output:</p><div><ul><li>xy: (n,2)-matrix with x,y coordinates of points on ellipse   i.e. solutions of h = (xy - mu) sig^-1 (xy - mu)^T   coordinates of the last point equal that of the first</li></ul></div><h2>val = 1 + r * [1, -1]; % eigenvalues of corr-matrix<a name="5"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% ellipse
+% Calculates the empirical survivor probabilities from a number of random trials
+
+%%
+function xy = ellipse(mu,sig,h,n)
+  %  created 2005/10/01 by Bas Kooijman; modified 2008/08/08
+
+  %% Syntax
+  % xy = <../ellipse.m *ellipse*> (mu,sig,h,n)
+  
+  %% Description
+  % Calculates the empirical survivor probabilities from a number of random trials
+  %
+  % Input:
+  %
+  % * mu: (1,2)-vector with coordinates of center
+  % * sig: (2,2)-matrix with var-cov (must be symmetric, with pos diag)
+  % * h: scalar with height of isocline of bivariate normal density
+  %     as fraction of maximum height at center
+  % * n: scalar with number of points. Optional; default value 100
+  %
+  % Output:
+  %
+  % * xy: (n,2)-matrix with x,y coordinates of points on ellipse
+  %   i.e. solutions of h = (xy - mu) sig^-1 (xy - mu)^T
+  %   coordinates of the last point equal that of the first
+
+  if sig(1,1) < 0 | sig(2,2) < 0
+    fprintf('No positive diagonal elements in cov matrix \n');
+    xy = [];
+    return
+  end
+  
+  r = sig(1,2)/ sqrt(sig(1,1) * sig(2,2)); % corr coeff
+  if r < -1 | r > 1 | abs(sig(1,2) - sig(2,1)) > 1e-3
+    fprintf('No proper cov matrix \n');
+    xy = [];
+    return
+  end
+
+  if exist('n') == 0
+    n = 100;
+  end
+  
+  %% val = 1 + r * [1, -1]; % eigenvalues of corr-matrix
+  [vec val] = eig(sig); % eigenvectors of corr-matrix
+  Sig = vec' * sig * vec; % rotated cov matrix along principal axes
+  c = - 2 * log(2 * pi * h * sqrt(1 - r^2));
+  sdX = sqrt(Sig(1, 1)/ c); sdY = sqrt(Sig(2, 2)/ c); 
+
+  phi = linspace(0, 2 * pi, n)'; % angles
+  xy = [sdX * cos(phi), sdY * sin(phi)]; % ellipse
+  xy = xy * vec'; % from principal components to original vars
+  xy = xy + mu(ones(n,1), :); % back translated ellipse
+
+##### SOURCE END #####
+--></body></html>

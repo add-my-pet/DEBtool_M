@@ -1,17 +1,30 @@
+%% int2equi
+% finds equilibrium of iso's using integration 
+
+%%
 function  [X, info] = int2equi (fn, X0)
   %  Created: 2000/10/07 by Bas Kooijman 
-  %
+  
+  %% Syntax
+  % [X, info] = <../int2equi.m *int2equi*> (fn, X0)
+
   %% Description
-  %  Integration of a set of ode's specified by 'fn' by 'rkutta'
+  % Finds equilibrium of iso's using integration of a set of ode's specified by 'fn' by 'rkutta'
   %    till equilibrium, but switch to 'newton' if derivetives are small
   %
-  %% Input
-  %    fn: string, for user-defined function of structure dX = fn (X)
-  %        dX, X are vectors of equal lengths
-  %    X0: vector, value of vector X at t=0
+  % Input:
   %
+  % * fn: string, for user-defined function of structure dX = fn (X)
+  %        dX, X are vectors of equal lengths
+  % * X0: vector with value of dependent variables  at t=0
+  %
+  % Output
+  %
+  % * X: vector with value of dependent variables  at equilibrium
+  % * info: scalar with 1 for success; 0 otherwise
+  
   %% Remarks
-  %  Requires: userdefined function 'fn'
+  % Requires: userdefined function 'fn'
   
   int2equi_imax = 5;   % max number of integration trials
   

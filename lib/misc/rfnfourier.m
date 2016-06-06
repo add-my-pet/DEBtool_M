@@ -1,18 +1,35 @@
+%% rfnfourier
+% calculates real roots t of fnfourier(t,p) = y on interval (0,period)
+
+%%
 function [t, info] = rfnfourier (ty, y)
   %  created at 2007/03/28 by Bas Kooijman; modified 2009/09/29
-  %
-  %% Decription
+  
+  %% Syntax
+  % f = <../rfnfourier.m *rfnfourier*>(t, p)
+
+  %% Description
   %  calculates real roots t of fnfourier(t,p) = y on interval (0,period)
   %
-  %% Input
-  %  ty: (r,2)-matrix with parameters; r>3
-  %  y: scalar with function value (optional, default is 0)
+  % Input:
   %
-  %% Output
-  %  x: vector with real roots
+  % * ty: (r,2)-matrix with parameters; r>3
+  % * y: scalar with function value (optional, default is 0)
   %
+  % Output:
+  %
+  % * x: vector with real roots
+  
   %% Remarks
-  %  cf fnfourier
+  % Input-output structure similar to <../html/spline.html *spline*>;
+  % cf <../html/dfnfourier.html *dfnfourier*> for derivative;
+  %    <../html/ifnfourier.html *ifnfourier*> for integration;
+  %    <../html/rfnfourier.html *rfnfourier*> for roots;
+  %    <../html/get_fnfourier.html *get_fnfourier*> for parameters;
+  %    <../html/efnfourier.html *efnfourier*> for local extremes.
+  
+  %% Example of use 
+  % see <mydata_smooth.m *mydata_smooth*>. 
   
   if exist('y','var') == 0
     y = 0;
@@ -25,7 +42,7 @@ function [t, info] = rfnfourier (ty, y)
   if isempty(t)
     return
   end
-  %% Newton Raphson loop to make preliminary estimates more precise
+  % Newton Raphson loop to make preliminary estimates more precise
   j = 1; % initiate counter
   f = 1; % make sure to start nr-procedure
   while f' * f > 1e-10 && j < 10

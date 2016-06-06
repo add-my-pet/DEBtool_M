@@ -1,20 +1,33 @@
+%% surv_f
+% Calculates survivor function of F-distribution
+
+%%
 function Q = surv_f(nu, F)
-  %  created 2005/10/02 by Bas Kooijman; modified 2008/08/08
-  %
+  % created 2005/10/02 by Bas Kooijman; modified 2008/08/08
+  
+  %% Syntax
+  % Q = <../surv_f.m *surv_f*> (nu, F)
+
   %% Description
   %  Calculates survivor function of F-distribution
   %
-  %% Input
-  %  nu: (2,1)-vector with degrees of freedom (integers)
-  %  F: (n,1)-vector of argument values
-  %% Output
-  %  Q: (n,1)-vector with survivor probabilities
+  % Input:
   %
-  %% Remarks
-  %  Abramowitz & Segun 1965, {946} 26.6.6-8
-  %  warning: does not work properly for v1 and v2 odd while v1 > 1 !!!!!
+  % * nu: (2,1)-vector with degrees of freedom (integers)
+  % * F: (n,1)-vector of argument values
+  %
+  % Output:
+  %
+  % * Q: (n,1)-vector with survivor probabilities
   
-  %% Code
+  %% Remarks
+  % Abramowitz & Segun 1965, {946} 26.6.6-8;
+  % Warning: does not work properly for v1 and v2 odd while v1 > 1 !!!!!
+  % This function is inverse to <survi_f.html *survi_f*>.
+
+  %% Example of use
+  % surv_f([3;2], [1 2 3])
+
   v1 = nu(1); v2 = nu(2); % degrees of freedom
   F = max(1e-8,F(:)); x = v2 ./ (v2 + v1 * F); nx = length(x); 
   if 0 == mod(v1, 2) % v1 even

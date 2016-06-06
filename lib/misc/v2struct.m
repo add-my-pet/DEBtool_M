@@ -1,6 +1,29 @@
 %% v2struct
-% v2struct Pack/Unpack Variables to/from a scalar structure.
+% Pack/Unpack Variables to/from a scalar structure.
+
+%%
 function varargout = v2struct(varargin)
+%    Inspired by the function: mmv2truct - D.C. Hanselman, University of Maine, Orono, ME
+%    04469 4/28/99, 9/29/99, renamed 10/19/99 Mastering MATLAB 5, Prentice Hall,
+%    ISBN 0-13-858366-8
+
+%% Syntax
+%    Pack
+%      S = v2struct
+%      S = v2struct(x,y,z,...)
+%      S = v2struct(fieldNames)
+%      S = v2struct(A,B,C,..., fieldNames)
+%      S = v2struct(x,..., nameOfStruct2Update, fieldNames)
+%      v2struct
+%      v2struct(x,y,z,...)
+%      v2struct(fieldNames)
+%      v2struct(A,B,C,..., fieldNames)
+%      v2struct(x,..., nameOfStruct2Update, fieldNames)
+%
+%    Unpack
+%      v2struct(S)
+%      [a,b,c,...] = v2struct(S)
+%      v2struct(S,fieldNames)
 
 %% Description
 %    v2struct has dual functionality in packing & unpacking variables into structures and
@@ -20,45 +43,36 @@ function varargout = v2struct(varargin)
 %    more. Moreover you could leave the function as it is and you could pass same inputs to
 %    multiple functions, each of which will use its designated arguments placed in the
 %    structure.
-%
-%% Syntax
-%    Pack
-%      S = v2struct
-%      S = v2struct(x,y,z,...)
-%      S = v2struct(fieldNames)
-%      S = v2struct(A,B,C,..., fieldNames)
-%      S = v2struct(x,..., nameOfStruct2Update, fieldNames)
-%      v2struct
-%      v2struct(x,y,z,...)
-%      v2struct(fieldNames)
-%      v2struct(A,B,C,..., fieldNames)
-%      v2struct(x,..., nameOfStruct2Update, fieldNames)
-%
-%    Unpack
-%      v2struct(S)
-%      [a,b,c,...] = v2struct(S)
-%      v2struct(S,fieldNames)
+
 %      [a,b,c,...] = v2struct(S,fieldNames)
 %
-%% Inputs & Outputs
-%    Pack - inputs
+% Input:
+%
+% * Pack - inputs
+%
 %      x,y,z,...           - any variable to pack. can be replaced by fieldNames below.
 %      nameOfStruct2Update - optional, name of structure to update if desired.
 %      fieldNames          - optional, cell array of strings, which must include a cell
 %                            with the string 'fieldNames' and must be the last input.
-%    Pack - outputs 
-%      S - the packed structure. If there is no output argument then a structure named
-%          Sv2struct would be created in the caller workspace.
+% * Unpack - inputs
 %
-%    Unpack - inputs
 %      S          - name of structure to be unpacked.
 %      fieldNames - optional, cell array of strings, which must include a cell with the
 %                   string 'fieldNames' and must be the last input.
-%    Unpack - outputs          
+%
+% Output:
+%
+% * Pack - outputs 
+%
+%      S - the packed structure. If there is no output argument then a structure named
+%          Sv2struct would be created in the caller workspace.
+%
+% * Unpack - outputs  
+%
 %      a,b,c,... - variables upacked from the structure.
 %                  if there are no output arguments then variables would be created in
 %                  the caller workspace with naming according to name of inputs.
-%
+
 %% Examples
 %  % see 'Usage example' section below for convenient presentation of these examples.
 %
@@ -164,7 +178,7 @@ function varargout = v2struct(varargin)
 %    1. run attached v2structDemo1.m file for on screen presentation of examples.
 %    2. run attached v2structDemo2.m file and read comments in file for a suggestion of
 %       how to use v2struct in managing input to other functions with improved usability.
-%
+
 %% Revision history
 %    2011-05-19, Adi N., Creation
 %    2011-05-29, Adi N., Update structure added, some documentation and demo function changes
@@ -179,11 +193,6 @@ function varargout = v2struct(varargin)
 %    2011-09-12, Adi N., Added easy packing of all variables in caller workspace (thanks 
 %                        to Vesa Lehtinen for the suggestion), fixed bug in warning
 %                        handling in packing case, edited comments.
-%
-%    Inspired by the function: mmv2truct - D.C. Hanselman, University of Maine, Orono, ME
-%    04469 4/28/99, 9/29/99, renamed 10/19/99 Mastering MATLAB 5, Prentice Hall,
-%    ISBN 0-13-858366-8
-
 
 % parse input for field names
 if isempty(varargin)

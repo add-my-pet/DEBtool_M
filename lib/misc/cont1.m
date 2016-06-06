@@ -1,19 +1,36 @@
+%% cont1
+% intervals of independent variable, for which dependent variable is smaller than a specified value
+
+%%
 function x = cont1 (xy, y)
   %  created at 2001/09/16 by Bas Kooijman; modified 2007/08/08 
+  
+  %% Syntax
+  % x = <../cont1.m *cont1*>(xy, y)
+  
+  %% Description
+  % Finds intervals of independent variable, for which dependent variable
+  % is smaller than a specified value by linear interpolation in a xy-table
   %
-  %% Input
-  %  xy: (nx,2)-matrix with xy-coordinates, ordered in x
-  %  y: scalar with y-value
+  % Input:
   %
-  %% Ouput
-  %  x: (r,2)-matrix with x-values that correspond value y
+  % * xy: (nx,2)-matrix with xy-coordinates, ordered in x
+  % * y: scalar with y-value
+  %
+  % Ouput:
+  %
+  % * x: (r,2)-matrix with x-values that correspond to value y
   %      using linear interpolation in the xy-table
-  %      x(:,1) have negative derivatives; x(:,2) positive ones
-  %      so each row of x represents the boundaries of the interval
-  %      for wich the variavle y is lower than the value y
+  
+  %% Remarks
+  % x(:,1) have negative derivatives; x(:,2) positive ones;
+  % so each row of x represents the boundaries of the interval
+  % for wich the variable y is lower than the value y
 
-  %% Code
-  [nx, k] = size(xy);
+  %% Example of use
+  % cont1([[1 2 3 4]',[5 3 1 6]'],2)
+
+  nx = size(xy, 1);
   
   if nx <= 2
     fprintf('nothing to interpolate/n');

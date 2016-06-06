@@ -1,0 +1,221 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ispline1</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="ispline.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>ispline1</h1><!--introduction--><p>integral over a cubic spline</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>y = <a href="../ispline.m"><b>ispline</b></a> (x, knots, Dy1, Dyk)</p><h2>Description<a name="4"></a></h2><p>Calculates integral over a cubic spline;  works similar to <a href="../html/spline.html"><b>spline</b></a> but gives a single n-vector with integrated values of the cubic spline. The first element is zero by definition.</p><p>Input:</p><div><ul><li>x: n-vector with ordinates; must be ascending; n&gt;1</li><li>knots: (r,2)-matrix with coordinates of knots;         knots(:,1) must be ascending</li><li>Dy1: optional scalar with first derivative at first knot;       empty means: no specification and second derivative equals 0</li><li>Dyk: optional scalar with first derivative at last knot;       empty means: no specification and second derivative equals 0</li></ul></div><p>Output:</p><div><ul><li>Y: n-vector with integrated spline values;   Y(1) = 0 by definition</li></ul></div><h2>Example of use<a name="5"></a></h2><p>see <a href="../mydata_smooth.m"><b>mydata_smooth</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% ispline1
+% integral over a cubic spline
+
+%%
+function Y = ispline(x, knots, Dy1, Dyk)
+  %  created at 2002/05/24 by Bas Kooijman; modified 2006/08/11
+
+  %% Syntax
+  % y = <../ispline.m *ispline*> (x, knots, Dy1, Dyk)
+  
+  %% Description
+  % Calculates integral over a cubic spline;
+  %  works similar to <../html/spline.html *spline*> but gives a single n-vector with integrated values of the cubic spline. 
+  % The first element is zero by definition. 
+  %
+  % Input:
+  %
+  % * x: n-vector with ordinates; must be ascending; n>1
+  % * knots: (r,2)-matrix with coordinates of knots;
+  %         knots(:,1) must be ascending
+  % * Dy1: optional scalar with first derivative at first knot;
+  %       empty means: no specification and second derivative equals 0
+  % * Dyk: optional scalar with first derivative at last knot;
+  %       empty means: no specification and second derivative equals 0
+  %
+  % Output:
+  %
+  % * Y: n-vector with integrated spline values;
+  %   Y(1) = 0 by definition
+  
+  %% Example of use
+  % see <../mydata_smooth.m *mydata_smooth*>
+
+  x = x(:); nx = length(x); nk = size(knots,1);
+
+  if nk < 4
+    printf('number of knots must be at least 4\n');
+    Y = []; return
+  end
+  
+  if exist('Dy1') == 0 % make sure that left clamp is specified
+    Dy1 = []; % no left clamp; second derivative at first knot is zero
+  end
+  if exist('Dyk') == 0 % make sure that right clamp is specified
+    Dyk = []; % no right clamp; second derivative at last knot is zero
+  end
+
+  xk = knots(:,1); yk = knots(:,2); % abbraviate names
+  x = [x;0]; % append extra element
+  xpk = xk(1:nk-1) .* xk(2:nk); xsk = xk(1:nk-1) + xk(2:nk); 
+  Dk = knots(2:nk,:) - knots(1:nk-1,:); D = Dk(:,2) ./ Dk(:,1);
+
+  % %% compute first three derivatives at knots %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % %% first two for each clamping case, then third derivative %%%%%%%%%%%%%%%
+  
+  if isempty(Dy1) & isempty(Dyk) % natural cubic spline
+    % second derivatives at knots
+    C = zeros(nk-2,nk-4);
+    C = [2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C, Dk(1:nk-2,1)];
+    C = wrap(C',nk-2,nk-2);
+    E = 6 * (D(2:nk-1) - D(1:nk-2));
+    DDy = [0; C\E; 0];
+
+    % first derivatives at knots
+    Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
+    Dy = [Dy; D(nk-1) + DDy(nk-1) * Dk(nk-1,1)/ 6];
+    DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
+
+  elseif ~isempty(Dy1) & isempty(Dyk) % left clamp
+    % second derivatives at knots
+    C = zeros(nk-2,nk-3);
+    C = [Dk(1:nk-2,1), 2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C];
+    C = wrap(C',nk-2,nk-1);
+    C = [[[2 1] .* Dk(1,1),zeros(1,nk-3)]; C];
+    E = 6 * (D(2:nk-1) - D(1:nk-2)); E = [6 * (D(1) - Dy1); E];
+    DDy = [C\E; 0];
+
+    % first derivatives at knots
+    Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
+    Dy = [Dy; D(nk-1) + DDy(nk-1) * Dk(nk-1,1)/ 6];
+    DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
+
+  elseif isempty(Dy1) & ~isemty(Dyk) % right clamp
+    % second derivatives at knots
+    C = zeros(nk-2,nk-3);
+    C = [2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C, Dk(1:nk-2,1)];
+    C = wrap(C',nk-2,nk-1);
+    C = [C; [zeros(1,nk-3), [1 2] * Dk(nk-1,1)]];
+    E = 6 * (D(2:nk-1) - D(1:nk-2)); E = [E; 6 * (Dyk - D(nk-1))];
+    DDy = [0; C\E];
+
+    % first derivatives at knots
+    Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
+    Dy = [Dy; Dyk];
+    DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
+
+  else % left & right clamp
+    % second derivatives at knots
+    C = zeros(nk-2,nk-2);
+    C = [Dk(1:nk-2,1), 2 * (Dk(1:nk-2,1) + Dk(2:nk-1,1)), Dk(2:nk-1,1), C];
+    C = wrap(C',nk-2,nk);
+    C = [[[2 1] .* Dk(1,1),zeros(1,nk-2)]; C; ...
+	 [zeros(1,nk-2), [1 2] * Dk(nk-1,1)]];
+    E = 6 * (D(2:nk-1) - D(1:nk-2));
+    E = [6 * (D(1) - Dy1); E; 6 * (Dyk - D(nk-1))];
+    DDy = C\E;
+    
+    % first derivatives at knots
+    Dy = D - (2 * DDy(1:nk-1) + DDy(2:nk))/ 6;
+    Dy = [Dy; Dyk];
+    DDk = [Dy(2:nk-1) - Dy(1:nk-2); 0; 0];
+
+  end
+
+  DDDk = [DDy(2:nk) - DDy(1:nk-1); 0];
+
+  % %% third derivatives at knots
+  DDD = [DDDk(1:nk-1) ./ Dk(:,1);0];
+
+  % %% start integration procedure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  Y = zeros(nx,1); % initiate output
+  b = x(1); % set upper integration boundary (initiation)
+  ba1 = 1; % set integration interval (initiation)
+  i = 2;  j = sum(b > xk); % initiate ordinate and knot counters
+  
+  while i <= nx | b < x(nx) % loop across required x-values
+    a = b; % set lower integration boundary to previous upper one
+    if j < nk
+      b = min(x(i),xk(j + 1)); % set upper integration boundary
+    else
+      b = x(i);
+    end
+    
+    ba1 = b - a; ba2 = (b^2 - a^2)/ 2;
+    ba3 = (b^3 - a^3)/ 3; ba4 = (b^4 - a^4)/ 4;
+
+    if j == 0 % first linear segment
+      Y(i) = Y(i) + ba1 * (yk(1) - xk(1) * Dy(1)) + ba2 * Dy(1);
+    elseif j == nk % last linear segment
+      Y(i) = Y(i) + ba1 * (yk(nk) - xk(nk) * Dy(nk)) + ba2 * Dy(nk);    
+    else % middle cubic polynomial segments
+      Y(i) = Y(i) + ba1 * (yk(j) + (a/ 2 + b/ 2 - xk(j)) * D(j)) + ...
+	  (xpk(j) * ba1 - xsk(j) * ba2 + ba3) * ...
+	  (2 * DDy(j) + DDy(j + 1) - xk(j) * DDD(j))/ 6 + ...
+	  (xpk(j) * ba2 - xsk(j) * ba3 + ba4) * DDD(j)/ 6;
+    end
+
+    if b == xk(min(nk,j+1)) & j < nk & i < nx
+      j = j + 1; % set knot counter
+      i = i + 1; % set ordinate counter
+    elseif b == x(i) | j == nk
+      i = i + 1; % set ordinate counter
+    else
+      j = j + 1; % set knot counter
+    end
+
+  end
+  Y = cumsum(Y); % cumulate surfaces between abcissa
+##### SOURCE END #####
+--></body></html>

@@ -88,7 +88,8 @@ function legend = select_legend(legend)
   legend = legend_local; % export to output
 end
 
-%% subfunctions
+% %%% subfunctions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     function C = nr_Callback(source, eventdata) 
       global legend_local i_legend Hlegend
       list = {num2str((1:size(legend_local,1))')};

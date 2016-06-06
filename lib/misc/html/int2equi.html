@@ -1,0 +1,122 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>int2equi</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-14"><meta name="DC.source" content="int2equi.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>int2equi</h1><!--introduction--><p>finds equilibrium of iso's using integration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[X, info] = <a href="../int2equi.m"><b>int2equi</b></a> (fn, X0)</p><h2>Description<a name="4"></a></h2><p>Finds equilibrium of iso's using integration of a set of ode's specified by 'fn' by 'rkutta'    till equilibrium, but switch to 'newton' if derivetives are small</p><p>Input:</p><div><ul><li>fn: string, for user-defined function of structure dX = fn (X)        dX, X are vectors of equal lengths</li><li>X0: vector with value of dependent variables  at t=0</li></ul></div><p>Output</p><div><ul><li>X: vector with value of dependent variables  at equilibrium</li><li>info: scalar with 1 for success; 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Requires: userdefined function 'fn'</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% int2equi
+% finds equilibrium of iso's using integration 
+
+%%
+function  [X, info] = int2equi (fn, X0)
+  %  Created: 2000/10/07 by Bas Kooijman 
+  
+  %% Syntax
+  % [X, info] = <../int2equi.m *int2equi*> (fn, X0)
+
+  %% Description
+  % Finds equilibrium of iso's using integration of a set of ode's specified by 'fn' by 'rkutta'
+  %    till equilibrium, but switch to 'newton' if derivetives are small
+  %
+  % Input:
+  %
+  % * fn: string, for user-defined function of structure dX = fn (X)
+  %        dX, X are vectors of equal lengths
+  % * X0: vector with value of dependent variables  at t=0
+  %
+  % Output
+  %
+  % * X: vector with value of dependent variables  at equilibrium
+  % * info: scalar with 1 for success; 0 otherwise
+  
+  %% Remarks
+  % Requires: userdefined function 'fn'
+  
+  int2equi_imax = 5;   % max number of integration trials
+  
+  i = 0; X0 = X0(:); X = X0; info = 0;
+  while i <= int2equi_imax     % start solve/integration procedure
+    [X, info] = newton(fn, X0, 50); % we first try to find value directly
+      if info == 1             % successfull stop
+        return;                % solution found 
+      end
+      i=i+1; % if direct search failed, we integrate and try again
+      if i == 1
+         int2equi_period = 100; % d, integration period before next Newton trial
+      else
+         int2equi_period = 50; % d, integration period before next Newton trial
+      end
+      
+      [t, X0] = rkutta (fn, X0, int2equi_period); % new start value in X0
+      X0 = X0(end,:)';
+      fprintf(['integration completed over a period of ', num2str(int2equi_period), ...
+          ' d for trial ', num2str(i+1), ' \n']);
+  end
+ 
+  if i >= int2equi_imax
+    fprintf(['warning: no convergence within ', num2str(int2equi_imax), ...
+        ' integration trials \n']);
+  else
+    info = 1; % successfull stop
+  end
+ 
+
+
+
+
+##### SOURCE END #####
+--></body></html>

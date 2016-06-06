@@ -1,24 +1,37 @@
+%% rspline1
+% real roots x of first-order spline(x) = y, given y
+
+%%
 function x = rspline1(knots, Dy1, Dyk, y)
-  %  created at 2007/03/28 by Bas Kooijman; modified 2011/08/15
-  %
+  % created at 2007/03/28 by Bas Kooijman; modified 2011/08/15
+  
+  %% Syntax
+  % x = <../rspline1.m *rspline1*> (x, knots, Dy1, Dyk)
+
   %% Description
-  %  calculates real roots x of first-order spline(x) = y, given y
-  %  It does so by getting prior estimates using rspline1, followed by a Newton Raphson procedure. 
+  % Calculates real roots x of first-order spline(x) = y, given y
   %
-  %% Input
-  %  knots: (r,2)-matrix with coordinates of knots; r>3
+  % Input:
+  %
+  % * knots: (r,2)-matrix with coordinates of knots; r>3;
   %         knots(:,1) must be ascending
-  %  Dy1: scalar with first derivative at first knot (optional)
+  % * Dy1: scalar with first derivative at first knot (optional);
   %       empty means: no specification and second derivative equals 0
-  %  Dyk: scalar with first derivative at last knot (optional)
+  % * Dyk: scalar with first derivative at last knot (optional);
   %       empty means: no specification and second derivative equals 0
-  %  y: scalar with function value (optional, default is 0)
+  % * y: scalar with function value (optional, default is 0)
   %
-  %% Output
-  %  x: vector with real roots 
+  % Output:
   %
+  % * x: vector with real roots 
+  
+  %% Remarks
+  % cf <../html/islpine1.html *spline1*> for first order spline;
+  %    <../html/islpine1.html *ispline1*> for integration;
+  %    <../html/espline1.html *espline1*> for local extremes.
+
   %% Example of use
-  %  see mydata_smooth
+  % See <../mydata_smooth.m *mydata_smooth*>
 
   nk  = size(knots,1);
   if exist('y','var') == 0

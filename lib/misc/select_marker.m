@@ -20,12 +20,12 @@ function marker = select_marker(marker)
 % * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
 %
 %% Remarks
-% Press OK when done
+% Finds application in <../../../taxa/html/select_legend.html *select_legend*>.
 
 %% Example of use
 % marker = select_marker;
 
-  global T MS LW MEC MFC HMarker
+  global T MS LW MEC MFC Hmarker
   
   if exist('marker', 'var')
     % unpack marker
@@ -34,40 +34,36 @@ function marker = select_marker(marker)
     T = 'o'; MS = 12; LW = 4; MEC = 'b'; MFC = 'r'; 
   end
   
-  HFig_marker = figure('Position', [300, 300, 400, 200]);
+  HFig_marker = figure('Position', [300, 700, 400, 200]);
 
   % Components
   HType = uicontrol('Style','pushbutton',...
            'String', 'Type',...
-           'Position',[315,160,70,25], ...
+           'Position',[315,150,70,25], ...
            'Callback', @Type_Callback);
   HMS   = uicontrol('Style','pushbutton',...
            'String', 'Size', ...
-           'Position',[315,130,70,25], ...
+           'Position',[315,120,70,25], ...
            'Callback', @MS_Callback);
   HLW   = uicontrol('Style','pushbutton',...
            'String', 'Line Width', ...
-           'Position',[315,100,70,25], ...
+           'Position',[315,90,70,25], ...
            'Callback', @LW_Callback);    
   HMEC  = uicontrol('Style','pushbutton', ...
            'String','Egde Color',...
-           'Position',[315,70,70,25], ...
+           'Position',[315,60,70,25], ...
            'Callback', @MEC_Callback);
   HMFC  = uicontrol('Style','pushbutton', ...
            'String','Face Color',...
-           'Position',[315,40,70,25], ...
-           'Callback', @MFC_Callback); 
-  OK    = uicontrol('Style','pushbutton', ...
-           'String','OK',...
-           'Position',[315,10,70,25], ...
-           'Callback', 'uiresume(gcbf)');
+           'Position',[315,30,70,25], ...
+           'Callback', @MFC_Callback);
    
   align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
       
     
-  plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
+  Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
   axis('off');
-  uiwait(gcf)
+  pause
  
   close (HFig_marker)
   marker = {T; MS; LW; MEC; MFC}; % pack marker
@@ -96,12 +92,12 @@ end
       plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MEC_Callback(source, eventdata) 
-      global T MS LW MEC MFC HMarker
+      global T MS LW MEC MFC Hmarker
       MEC = uisetcolor(HMarker, 'Set MarkerEdge Color');
-      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+      Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
     function C = MFC_Callback(source, eventdata) 
-      global T MS LW MEC MFC HMarker
+      global T MS LW MEC MFC Hmarker
       MFC = uisetcolor(HMarker, 'Set MarkerFace Color');
-      plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+      Hmarker = plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
     end
