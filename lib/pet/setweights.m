@@ -3,17 +3,16 @@
 
 %%
 function weight = setweights(data, weight) 
-% created 2015/01/16 by Goncalo Marques and Bas Kooijman; modified 2015/03/30, 2016/02/11 by Goncalo Marques
+% created 2015/01/16 by Goncalo Marques and Bas Kooijman; modified 2015/03/30, 2016/02/11, 2016/05/06 by Goncalo Marques
 
 %% Syntax
 % weight = <../setweights.m *setweights*> (data, weight)
 
 %% Description
 % computes weights for given data and adds it to the weight structure
-% for the zero-variate data y the weight will be 
-% min\left(100, \frac{1}{\max\left(10^-^6}, y\right ) ^2} \right)
+% for the zero-variate data y the weight will be 1
 % for the uni-variate data y the weight will be
-% \frac{1}{N \bar{y}^2\right )
+% \frac{1}{N}
 %
 % Inputs:
 %
@@ -37,11 +36,10 @@ for i = 1:numel(nm)
   [~, nvar] = size(data.(nm{i}));
   if ~isfield(weight, nm{i}); 
     if nvar == 1 % zero-variate data
-      weight.(nm{i}) = 1 ./ data.(nm{i}) .^ 2; 
+      weight.(nm{i}) = 1; 
     else % uni-variate data
       N = length(data.(nm{i}));
-      meanval = mean(data.(nm{i})(:,2));
-      weight.(nm{i}) = 1/ meanval^2 / N * ones(N, 1);
+      weight.(nm{i}) = 1 / N * ones(N, 1);
     end
   end
 end
