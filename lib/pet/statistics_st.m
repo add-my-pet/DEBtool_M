@@ -638,7 +638,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       N_i = kap_R * (1 - kap) * v_Rj * l_j^3/ u_E0; % # of eggs at j
     case 'hex' 
       E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reproduction buffer at pupation
-      N_i = 1e3 * kap_R * E_Rj/ E_0;       % #/d, ultimate reproduction rate at T
+      N_i = kap_R * E_Rj/ E_0;                   % #/d, ultimate reproduction rate at T
   end
   if exist('R_i','var')
     stat.R_i = R_i;  units.R_i = '1/d';  label.R_i = 'ultimate reproduction rate';  
