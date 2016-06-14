@@ -70,7 +70,7 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
   uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
 
   options = odeset('Events', @emergence);
-  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 1e4], [0; uEj; 0], options, g, k, vHe);
+  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; uEj; 0], options, g, k, vHe);
   te = tj + te;     % -, scaled age at emergence 
   le = luEvH_e(1);  % -, scaled length at emergence
   uEe = luEvH_e(2); % -, scaled reserve at emergence
@@ -91,7 +91,7 @@ function [value,isterminal,direction] = emergence(t, luEvH, g, k, vHe)
 end
 
 function dluEvH = dget_tj_hex(t, luEvH, g, k, vHe)
-  l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; uE = luEvH(2); vH = luEvH(3);
+  l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; uE = max(1e-6, luEvH(2)); vH = luEvH(3);
 
   dl = (g * uE - l4)/ (uE + l3)/ 3;
   duE = - uE * l2 * (g + l)/ (uE + l3);
