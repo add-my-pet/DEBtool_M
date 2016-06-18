@@ -3,7 +3,7 @@
 
 %%
 function mat2pars_init(speciesnm, varargin)
-% created 2015/09/21 by  Goncalo Marques, modified 2016/02/17
+% created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm) 
@@ -20,7 +20,6 @@ function mat2pars_init(speciesnm, varargin)
 % Keep in mind that the files will be saved in your local directory; use
 % the cd command BEFORE running this function to save files in the desired
 % place.
-% NOTE: This function is not yet finalised !
 
 %% Example of use
 % mat2pars_init(speciesnm)
@@ -113,13 +112,17 @@ fclose(pars_init_id);
 
 
 function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
-  fprintf(file_id, ['par.', parName,' = ', num2str(parValue), ';  ']);
+%   sprintf('%-*s', max_len, str)
+%   string = ['par.', parName,' = ', num2str(parValue), ';  '];
+%   if(lenght(string) < 
+  fprintf(file_id, '%-*s', 22, ['par.', parName,' = ', num2str(parValue), ';  ']);
+  fprintf(file_id, '%-*s', 10, ['free.', parName]);
   if fix
-    fprintf(file_id, ['free.', parName,' = 0;  ']);
+    fprintf(file_id, ' = 0;   ');
   else
-    fprintf(file_id, ['free.', parName,' = ', num2str(freeValue), ';  ']);
+    fprintf(file_id, [' = ', num2str(freeValue), ';   ']);
   end
-  fprintf(file_id, ['units.', parName,' = ''', unitsString, ''';  ']);
+  fprintf(file_id, '%-*s', 26, ['units.', parName,' = ''', unitsString, ''';  ']);
   fprintf(file_id, ['label.', parName,' = ''', labelString, '''; \n']);
 
 
