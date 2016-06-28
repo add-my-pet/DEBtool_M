@@ -39,7 +39,7 @@ for i = 1:numel(nm)
       weight.(nm{i}) = 1; 
     else % uni-variate data
       N = length(data.(nm{i}));
-      weight.(nm{i}) = 1 / N * ones(N, 1);
+      weight.(nm{i}) = ones(N, 1)/ N;
     end
   end
 end

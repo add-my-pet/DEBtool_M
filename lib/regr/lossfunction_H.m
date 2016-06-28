@@ -6,11 +6,11 @@ function [lf] = lossfunction_H(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/06/06 by Goncalo Marques
   
   %% Syntax 
-  % [lf] = <../lossfunction_F.m *lossfunction_F*>(func, par, data, auxData, weights, psdtrue)
+  % [lf] = <../lossfunction_H.m *lossfunction_H*>(func, par, data, auxData, weights, psdtrue)
   
   %% Description
   % Calculates the loss function
-  %   w' (d - f)^2/ (mean_d^2 + mean_f^2)
+  %   w' sqrt((d - f)^2/ (mean_d^2 + mean_f^2))
   %
   % Input
   %
