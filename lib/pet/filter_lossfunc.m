@@ -36,9 +36,6 @@ function [filter, flag] = filter_lossfunc(p)
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
     return;
-  elseif p.p_T < 0
-    flag = 1;
-    return;
   end
   
   filter = 1;
