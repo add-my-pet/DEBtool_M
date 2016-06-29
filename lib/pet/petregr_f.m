@@ -34,11 +34,12 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
 % The number of fields in data is variable
 
    
-   
+  global lossfunction
   global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
   % option settings
   info = 1; % initiate info setting
+  fileLossfunc = ['lossfunction_', lossfunction];
   
   % prepare variable
   %   st: structure with dependent data values only
@@ -105,7 +106,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
   v(:,1) = xin;
   f = feval(func, q, data, auxData);
   [P, meanP] = struct2vector(f, nm);
-  fv(:,1) = lossfunction(Y, meanY, P, meanP, W);
+  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -135,7 +136,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
     end  
     v(:,j+1) = y_test;
     [P, meanP] = struct2vector(f, nm);
-    fv(:,j+1) = lossfunction(Y, meanY, P, meanP, W);
+    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -177,7 +178,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
         fxr = fv(:,np1) + 1;
       else
         [P, meanP] = struct2vector(f, nm);
-        fxr = lossfunction(Y, meanY, P, meanP, W);
+        fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
       end
     end
     func_evals = func_evals + 1;
@@ -195,7 +196,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
           fxe = fv(:,np1) + 1;
         else
           [P, meanP] = struct2vector(f, nm);
-          fxe = lossfunction(Y, meanY, P, meanP, W);
+          fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
         end
       end
       func_evals = func_evals + 1;
@@ -228,7 +229,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
                 fxc = fv(:,np1) + 1;
               else
                 [P, meanP] = struct2vector(f, nm);
-                fxc = lossfunction(Y, meanY, P, meanP, W);
+                fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
               end
             end
             func_evals = func_evals + 1;
@@ -254,7 +255,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
                 fxcc = fv(:,np1) + 1;
               else
                 [P, meanP] = struct2vector(f, nm);
-                fxcc = lossfunction(Y, meanY, P, meanP, W);
+                fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
               end
             end
             func_evals = func_evals + 1;
@@ -289,7 +290,7 @@ function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
                end
                v(:,j) = v_test;
                [P, meanP] = struct2vector(f, nm);
-               fv(:,j) = lossfunction(Y, meanY, P, meanP, W);
+               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
             func_evals = func_evals + n_par;
          end
@@ -335,6 +336,3 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
     vec = [vec; aux];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
-  
-function lf = lossfunction(data, meanData, prdData, meanPrdData, weights)
-  lf = lossfunction_E(data, meanData, prdData, meanPrdData, weights);

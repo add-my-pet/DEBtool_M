@@ -21,6 +21,11 @@ function estim_options (key, val)
   %
   % * two inputs
   %
+  %   'lossfunction': 
+  %     E - scaling done with only data;
+  %     F - scaling done with data and predictions;
+  %     G - F/(1 - F);
+  %     H - G^(1/2);
   %   'filter': 1 - use filter (default); 0 - do not;
   %   'pars_init_method':
   %     0 - get initial estimates from automatized computation (default)
@@ -47,7 +52,8 @@ function estim_options (key, val)
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0)
  
-  global method filter cov_rules pars_init_method pseudodata_pets results_output
+  global method lossfunction 
+  global filter cov_rules pars_init_method pseudodata_pets results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
@@ -56,6 +62,7 @@ function estim_options (key, val)
   switch key
 	
     case 'default'
+      lossfunction = 'F';
       filter = 1;
       cov_rules = '1species';
       pars_init_method  = 0;
@@ -64,6 +71,21 @@ function estim_options (key, val)
       method = 'nm';
       nmregr_options('default');
 
+    case 'lossfunction'
+      if exist('val','var') == 0
+        if numel(lossfunction) ~= 0
+          fprintf(['lossfunction = ', lossfunction,' \n']);  
+        else
+          fprintf('lossfunction = unknown \n');
+        end
+        fprintf('E - scaling done with only data \n');
+        fprintf('F - scaling done with data and predictions \n');
+        fprintf('G - F/(1 - F) \n');
+        fprintf('H - G^(1/2) \n');
+      else
+        lossfunction = val;
+      end
+      
     case 'filter'
       if exist('val','var') == 0
         if numel(filter) ~= 0
@@ -146,6 +168,11 @@ function estim_options (key, val)
       end
 
     case 'inexistent'
+      if numel(lossfunction) ~= 0
+        fprintf(['lossfunction = ', lossfunction,' \n']);
+      else
+        fprintf('lossfunction = unknown \n');
+      end
       if numel(filter) ~= 0
         fprintf(['filter = ', num2str(filter),' \n']);
       else
@@ -189,6 +216,11 @@ function estim_options (key, val)
         end
       else
         fprintf(['key ', key, ' is unkown \n\n']);
+        if numel(lossfunction) ~= 0
+          fprintf(['lossfunction = ', lossfunction,' \n']);
+        else
+          fprintf('lossfunction = unknown \n');
+        end
         if numel(filter) ~= 0
           fprintf(['filter = ', num2str(filter),' \n']);
         else
