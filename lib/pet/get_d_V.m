@@ -86,6 +86,8 @@ switch phylum
               d_V = 0.08;
             case 'Ascidiacea'
               d_V = 0.06;
+            case 'Leptocardii'
+              d_V = 0.06;  
         end 
     case 'my_pet_phylum' % demo mydata_my_pet
         d_V = 0.1;
