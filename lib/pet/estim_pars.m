@@ -2,7 +2,7 @@
 % Estimates parameters
 
 %%
-function estim_pars
+function nsteps = estim_pars;
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 2015/03/31, 2015/07/30 by Goncalo Marques
   
@@ -108,7 +108,7 @@ if ~strcmp(method, 'no')
   if strcmp(method, 'nm')
     if petsnumber == 1
       if filter
-        par = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
+        [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
       else
         par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
       end
