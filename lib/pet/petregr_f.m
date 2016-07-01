@@ -2,7 +2,7 @@
 % Calculates least squares estimates using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info] = petregr_f(func, par, data, auxData, weights, filternm)
+function [q, info, func_evals] = petregr_f(func, par, data, auxData, weights, filternm)
 % created 2001/09/07 by Bas Kooijman; 
 % modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30, 2015/04/27, 2015/07/29, 2016/05/05 by Goncalo Marques
 
