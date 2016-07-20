@@ -3,8 +3,8 @@
 
 %%
 function xNoise = add_noise (x, cv, nr)
-   % created by Dina Lika 2016/06/29; 
-   % modified by Goncalo Marques 2016/07/16
+  % created by Dina Lika 2016/06/29; modified by Goncalo Marques 2016/07/16
+   
   %% Syntax 
   % <../add_noise.m *add_noise*>
   
@@ -13,7 +13,7 @@ function xNoise = add_noise (x, cv, nr)
   %
   % Input
   %
-  % * x: vector with data
+  % * x: scalar with data
   % * cv: scalar with coefficient of variation
   % * nr: scalar with number of samples to average over
   %  
@@ -32,5 +32,7 @@ function val = gen_lognormal(m, v, N)
   % Function that returns values from the log-normal distribution
   mu = log(m^2/ sqrt(v + m^2));
   sigma = sqrt(log(v/ m^2 + 1));
-  val = lognrnd(mu, sigma, N, 1);
+  norm0 = randn(N, 1);
+  normm = mu + norm0 * sigma;
+  val = exp(normm); 
 end
