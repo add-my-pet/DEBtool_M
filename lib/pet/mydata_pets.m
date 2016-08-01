@@ -3,7 +3,7 @@
 
 %%
 function [data, auxData, metaData, txtData, weights] = mydata_pets
-  % created by Gonçalo Marques at 2015/01/28
+  % created by Goncalo Marques at 2015/01/28
   
   %% Syntax
   % [data, auxData, metaData, txtData, weights] = <../mydata_pets.m *mydata_pets*>
@@ -34,16 +34,22 @@ for i = 1:length(pets)             % calls species mydata functions
   end
 end 
 
-if pseudodata_pets == 1
+if pseudodata_pets == 1 % same pseudodata for the group
   %% remove pseudodata from species struture
   data = rmpseudodata(data);
   txtData = rmpseudodata(txtData); 
   weights = rmpseudodata(weights);
 
-  %% set pseudodata and respective weights
-  [dataTemp, unitsTemp, labelTemp, weightTemp] = addpseudodata([], [], [], []);
-  data.psd = dataTemp.psd;
-  weights.psd = weightTemp.psd;
-  txtData.psd.units = unitsTemp.psd;
-  txtData.psd.label = labelTemp.psd;
+  %% set pseudodata and respective weights for the group
+  if exist('addpseudodata_group.m', 'file')
+      [dataG, unitsG, labelG, weightsG] = addpseudodata_group;
+  else
+      [dataG, unitsG, labelG, weightsG] = addpseudodata([], [], [], []);
+      fprintf('No addpseudodata_group.m found, only default pseudodata and weights are considered for the group \n')
+      
+  end
+  data.psd = dataG.psd;
+  weights.psd = weightsG.psd;
+  txtData.psd.units = unitsG.psd;
+  txtData.psd.label = labelG.psd;
 end
