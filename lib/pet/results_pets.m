@@ -57,7 +57,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   else
     for i = 1:petsnumber
       parSpec = feval(covRulesnm, par, i);
-      currentPet = sprintf('pet%d',i);
+      currentPet = pets{i};
       [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st(['predict_', pets{i}], parSpec, data.(currentPet), auxData.(currentPet), weightsMRE.(currentPet));
       if info == 0
         error(  'One parameter set did not pass the customized filters in the predict file')
