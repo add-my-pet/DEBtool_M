@@ -55,14 +55,22 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
     metaPar.(pets{1}).MRE = MRE; metaPar.(pets{1}).RE = RE;
   else
+    petsTemp = pets;
     for i = 1:petsnumber
       parSpec = feval(covRulesnm, par, i);
-      currentPet = pets{i};
-      [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st(['predict_', pets{i}], parSpec, data.(currentPet), auxData.(currentPet), weightsMRE.(currentPet));
+      currentPet = petsTemp{i};
+      pets = {petsTemp{i}}; % Creating temporary variables to compute MRE species by species
+      dataTemp.(currentPet) = data.(currentPet);
+      auxDataTemp.(currentPet) = auxData.(currentPet); 
+      weightsMRETemp.(currentPet) = weightsMRE.(currentPet);
+      [metaPar.(currentPet).MRE, metaPar.(currentPet).RE, info] = mre_st('predict_pets', parSpec, dataTemp, auxDataTemp, weightsMRETemp);
       if info == 0
         error(  'One parameter set did not pass the customized filters in the predict file')
       end
+      clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
     end
+    pets = petsTemp;
+    clear('petsTemp');
   end
   data2plot = data;
 

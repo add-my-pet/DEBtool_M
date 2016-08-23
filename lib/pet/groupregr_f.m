@@ -33,11 +33,12 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
 % The number of fields in data is variable
 
    
-   
+  global lossfunction
   global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
   % option settings
   info = 1; % initiate info setting
+  fileLossfunc = ['lossfunction_', lossfunction];
   
   % prepare variable
   %   st: structure with dependent data values only
@@ -55,7 +56,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
   
   % Y: vector with all dependent data
   % W: vector with all weights
-  Y = struct2vector(st, nm);
+  [Y, meanY] = struct2vector(st, nm);
   W = struct2vector(weights, nm);
   
   free = par.free; % free is here removed, and after iteration added again
@@ -118,7 +119,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
   xin = qfreevec;    % Place input guess in the simplex
   v(:,1) = xin;
   f = feval(func, q, data, auxData);
-  fv(:,1) = W' * (struct2vector(f, nm) - Y).^2;
+  [P, meanP] = struct2vector(f, nm);
+  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -141,7 +143,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
       end
     end  
     v(:,j+1) = y_test;
-    fv(:,j+1) = W' * (struct2vector(f, nm) - Y).^2;
+    [P, meanP] = struct2vector(f, nm);
+    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -178,7 +181,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
     if ~f_test 
       fxr = fv(:,np1) + 1;
     else
-      fxr = W' * (struct2vector(f, nm) - Y).^2;
+      [P, meanP] = struct2vector(f, nm);
+      fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
     end
     func_evals = func_evals + 1;
    
@@ -190,7 +194,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
       if ~f_test
          fxe = fxr + 1;
       else
-         fxe = W' * (struct2vector(f, nm) - Y).^2;
+        [P, meanP] = struct2vector(f, nm);
+        fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
       end
       func_evals = func_evals + 1;
       if fxe < fxr
@@ -217,7 +222,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
             if ~f_test
               fxc = fxr + 1;
             else            
-              fxc = W' * (struct2vector(f, nm) - Y).^2;
+              [P, meanP] = struct2vector(f, nm);
+              fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
             func_evals = func_evals + 1;
             
@@ -237,7 +243,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
             if ~f_test
               fxcc = fv(:,np1) + 1;
             else
-              fxcc = W' * (struct2vector(f, nm) - Y).^2;
+              [P, meanP] = struct2vector(f, nm);
+              fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
             func_evals = func_evals + 1;
             
@@ -264,7 +271,8 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
                   end
                end
                v(:,j) = v_test;
-               fv(:,j) = W' * (struct2vector(f, nm) - Y).^2;
+               [P, meanP] = struct2vector(f, nm);
+               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
             func_evals = func_evals + n_par;
          end
@@ -277,7 +285,9 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
       fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
 	     '-', num2str(max(fv)), ' ', how, '\n']);
     end  
-      
+    if(itercount == 49)
+      par
+    end
   end 
 
   q = parVec2Struct(q, v(:,1), mapVec2Struct);
@@ -302,13 +312,16 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
     info = 1;
   end
    
-function vec = struct2vector(struct, fieldNames)
+
+function [vec, meanVec] = struct2vector(struct, fieldNames)
 % Constructs vector from fields fielNames of structure struct
 % Used to transform prdData into vector for easy computation of loss function
-  vec = [];
+  vec = []; meanVec = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    vec = [vec; getfield(struct, fieldsInCells{1}{:})];
+    aux = getfield(struct, fieldsInCells{1}{:});
+    vec = [vec; aux];
+    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
 
 function q = parVec2Struct(q, vec, mapVec2Struct)
