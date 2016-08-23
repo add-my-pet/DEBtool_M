@@ -56,6 +56,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     metaPar.(pets{1}).MRE = MRE; metaPar.(pets{1}).RE = RE;
   else
     petsTemp = pets;
+    cov_rulesTemp = cov_rules;
+    cov_rules = '1species';
     for i = 1:petsnumber
       parSpec = feval(covRulesnm, par, i);
       currentPet = petsTemp{i};
@@ -70,7 +72,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
     end
     pets = petsTemp;
-    clear('petsTemp');
+    cov_rules = cov_rulesTemp;
+    clear('petsTemp', 'cov_rulesTemp');
   end
   data2plot = data;
 
