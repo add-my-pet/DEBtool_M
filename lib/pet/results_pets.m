@@ -50,10 +50,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   
   if petsnumber == 1
     [MRE, RE, info] = mre_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
+    [SMSE, SRE, info] = smse_st('predict_pets', par, data, auxData, weightsMRE); % WLS-method
     if info == 0
       error(  'One parameter set did not pass the customized filters in the predict file')
     end
     metaPar.(pets{1}).MRE = MRE; metaPar.(pets{1}).RE = RE;
+    metaPar.(pets{1}).SMSE = SMSE; metaPar.(pets{1}).SRE = SRE;
   else
     petsTemp = pets;
     cov_rulesTemp = cov_rules;
@@ -276,6 +278,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     else
       filenm   = ['results_', pets{i}, '.mat'];
       metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
+      metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SRE = metaPar.(pets{1}).SRE;
       metaPar = rmfield(metaPar, pets{1});
       metaData = metaData.(pets{1});
       save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');

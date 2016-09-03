@@ -24,5 +24,5 @@ function [lf] = lossfunction_J(data, meanData, prdData, meanPrdData, weights)
   %
   % * lf: loss function value
 
-  lf = weights' * ((data - prdData).^2 .*(1./ meanData.^2 + 1./ meanPrdData.^2);
+  lf = weights' * ((data - prdData).^2 .*(1./ meanData.^2 + 1./ meanPrdData.^2));
   
