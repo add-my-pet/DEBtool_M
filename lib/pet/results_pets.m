@@ -118,7 +118,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   prdData = predict_pets(par, data2plot, auxData);
-  
+  counter_fig = 0;
+
   for i = 1:petsnumber
     if exist(['custom_results_', pets{i}, '.m'], 'file')
           feval(['custom_results_', pets{i}], par, metaPar, data.(currentPet), txtData.(currentPet), auxData.(currentPet));
@@ -126,7 +127,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       currentPet = pets{i};
       st = data.(currentPet); 
       [nm, nst] = fieldnmnst_st(st);
-      counter = 0;
+      counter_filenm = 0;
       for j = 1:nst
         fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
         var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
@@ -145,7 +146,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               else
                 plotColours = plotColours4AllSets{4};
               end
-              figure; counter = counter + 1; 
+              figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
               hold on;
               set(gca,'Fontsize',12); 
               set(gcf,'PaperPositionMode','manual');
@@ -174,7 +175,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               end
               
             elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
-              figure; counter = counter + 1;
+              figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
               set(gca,'Fontsize',12); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
@@ -189,7 +190,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(txtData.(currentPet).bibkey.(nm{j}));
             end
           else
-            figure; counter = counter + 1; 
+            figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
             set(gca,'Fontsize',12); 
             set(gcf,'PaperPositionMode','manual');
             set(gcf,'PaperUnits','points'); 
@@ -215,14 +216,14 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end
         end
         if results_output == 2  % save graphs to .png
-          if counter > 0
+          if counter_filenm > 0
             graphnm = ['results_', pets{i}, '_'];
-            if counter < 10
-              figure(counter)  
-              eval(['print -dpng ', graphnm, '0', num2str(counter),'.png']);
+            if counter_fig < 10
+              figure(counter_fig)  
+              eval(['print -dpng ', graphnm, '0', num2str(counter_filenm),'.png']);
             else
-              figure(counter)  
-              eval(['print -dpng ', graphnm, num2str(counter), '.png']);
+              figure(counter_fig)  
+              eval(['print -dpng ', graphnm, num2str(counter_filenm), '.png']);
             end
           end
         end
