@@ -15,11 +15,11 @@ function [lf] = lossfunction_F2(data, meanData, prdData, meanPrdData, weights)
   %
   % Input
   %
-  % * data: vector with all data
-  % * meanData: vector with mean value of data per set (length of meanData should match length of data)
-  % * prdData: vectod with predictions
-  % * meanPrdData: vector with mean value of predictions per set (length of meanPrdData should match length of prdData)
-  % * weights: vector with weights for the data
+  % * data: n-vector with all data
+  % * meanData: n-vector with mean value of data per set 
+  % * prdData: n-vector with predictions
+  % * meanPrdData: n-vector with mean value of predictions per set 
+  % * weights: n-vector with weights for the data
   %  
   % Output
   %
