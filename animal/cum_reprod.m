@@ -4,7 +4,7 @@
 %%
 function [N, L, UE0, Lb, Lp, t_b, t_p, info] = cum_reprod(t, f, p, Lf)
   % created 2008/08/06 by Bas Kooijman
-  % modified Starrlight Augustine 2014/03/20, Bas Kooijman 2015/06/20
+  % modified Starrlight Augustine 2014/03/20, Bas Kooijman 2015/06/20, 2016/09/05
   
   %% Syntax
   % [N, L, UE0, Lb, Lp, t_b, t_p, info] = <../cum_reprod.m *cum_reprod*> (t, f, p, Lf)
@@ -106,9 +106,10 @@ function [N, L, UE0, Lb, Lp, t_b, t_p, info] = cum_reprod(t, f, p, Lf)
   end
  
   [tt LU] = ode45(@dcum_reprod, [-1e-10; t], [L0; UH0], [], f, g, v, kap, kJ, UHp, Lm, LT, t_p);
-  LU(1,:) = [];   
   if length(t) == 1
     LU = LU(end,:);
+  else
+    LU(1,:) = [];   
   end
   L = LU(:,1); UR = LU(:,2);
   [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);

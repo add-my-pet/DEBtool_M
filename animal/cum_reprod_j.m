@@ -113,19 +113,19 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
     t_b = t_p - (tp - tb)/ kM;
   end
  
-  [T LU] = ode45(@dcum_reprod_j, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
+  [tt LU] = ode45(@dcum_reprod_j, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
   if length(t) == 1
-    L = LU(end, 1); UR = LU(end, 2);
+    LU = LU(end, :);
   else
-    LU(1,:) = []; L = LU(:,1); UR = LU(:,2);
+    LU(1,:) = []; 
   end
-      
+  L = LU(:,1); UR = LU(:,2);
+  
   [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
   if info ~= 1 % return at failure for tp
     fprintf('UE0 could not be obtained in cum_reprod_j \n')
   end
   N = max(0, kapR * UR/ UE0); % convert to number of eggs
-  
 end
 
 % subfunctions

@@ -3,7 +3,7 @@
 
 %%
 function [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = cum_reprod_s(t, f, p, Lf)
-  % created 2014/02/22 by Starrlight Augustine and Bas Kooijman, modified 2014/03/20
+  % created 2014/02/22 by Starrlight Augustine and Bas Kooijman, modified 2014/03/20, 2016/09/05
   
   %% Syntax
   % [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = <../cum_reprod_s.m *cum_reprod_s*> (t, f, p, Lf)
@@ -126,14 +126,18 @@ function [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = cum_reprod_s(t,
     end
   end
  
-  [t LU] = ode45(@dcum_reprod_s, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Ls, Lj, Lm, LT, t_p);
-  LU(1,:) = []; L = LU(:,1); UR = LU(:,2);
+  [tt LU] = ode45(@dcum_reprod_s, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Ls, Lj, Lm, LT, t_p);
+  if length(t) == 1
+    LU = LU(end,:);
+  else
+    LU(1,:) = []; 
+  end
+  L = LU(:,1); UR = LU(:,2);
   [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
   if info ~= 1 % return at failure for tp
     fprintf('UE0 could not be obtained in cum_reprod_s \n')
   end
   N = max(0, kapR * UR/ UE0); % convert to number of eggs
-  
 end
 
 % subfunctions
