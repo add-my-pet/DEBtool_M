@@ -1,5 +1,2 @@
-<<<<<<< HEAD
 Somniosus
-=======
-Somniosus_microcephalus
->>>>>>> 68a69f09addfd3644accc8585b8915b2c90da1c8
+
