@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, modified 2016/09/21 by Starrlight
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -56,6 +56,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - s_M, sM_min: acceleration factor; but sM_min not for hex
 %     - s_s: supply stress; all
+%     - s_H: altriciality index; all except hex
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
@@ -557,6 +558,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.a_p = a_p;      units.a_p = 'd';     label.a_p = 'age at puberty';
   stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy outvestment ratio at puberty'; 
   stat.s_Hbp = s_Hbp;  units.s_Hbp = '-';   label.s_Hbp = 'precociality coefficient'; 
+  
+  if strcmp(model,'hex')== 0
+  % altriciality index:
+  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'altriciality index';
+  end
   
   % emergence
   switch model
