@@ -125,6 +125,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
 %     - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all
 %
+%     - RQ_b, RQ_p, RQ_i: respiration quotient; all
+%     - UQ_b, UQ_p, UQ_i: urination quotient; all
+%     - WQ_b, WQ_p, WQ_i: watering quatient; all
+%     - SDA_b, SDA_p, SDA_i: specific dynamic action; all
+%     - VO_b, VO_p, VO_i: dry-weight specific dioxygen use; all
+%     - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat
 %
 % * txtStat: structure with units, labels for stat
 
