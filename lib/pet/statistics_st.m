@@ -567,7 +567,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   if strcmp(model,'hex')== 0
   % altriciality index:
-  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'altriciality index';
+  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'log 10 altriciality index';
   end
   
   % emergence
