@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, modified 2016/09/21 by Starrlight
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -420,7 +420,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       if info ~= 1              
         fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
       end
-      l_i = l_e; s_M = l_j/ l_b;
+      l_i = l_j; s_M = l_j/ l_b; % notice that l_i is set to scaled length at pupation for hex
       stat.E_Hp = E_Hb+1e-8; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; % is not a parameter of hex
       stat.M_Hp = M_Hb+1e-8; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty';
       stat.U_Hp = U_Hb+1e-8; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty';
@@ -586,8 +586,10 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % ultimate
   L_i = L_m * l_i; M_Vi = M_V * L_i^3; Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
-  if strcmp(model, 'hep') || strcmp(model, 'hex')
-    Ww_i = Ww_e; Wd_i = Wd_e;
+  if strcmp(model, 'hep') 
+    Ww_i = Ww_e; Wd_i = Wd_e; 
+  elseif strcmp(model, 'hex')
+    Ww_i = Ww_j; Wd_i = Wd_j; % notice that Ww_i and Wd_i are set to wet weight at pupation for hex
   end
   del_Wb = Ww_b/ Ww_i; del_Wp = Ww_p/ Ww_i; 
   s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3;
@@ -759,6 +761,35 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.J_Nb = J_M(4,1); units.J_Nb = 'mol/d'; label.J_Nb = 'N-waste flux at birth';    
   stat.J_Np = J_M(4,2); units.J_Np = 'mol/d'; label.J_Np = 'N-waste flux at puberty';    
   stat.J_Ni = J_M(4,3); units.J_Ni = 'mol/d'; label.J_Ni = 'ultimate N-waste flux';    
+
+  % mass flux ratios and heat
+  % at birth
+  J_O = eta_O * diag(p_ADG(1,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+  J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+  stat.RQ_b = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); units.RQ_b = 'mol C/mol O'; label.RQ_b = 'resp quotient at birth';
+  stat.UQ_b = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); units.UQ_b = 'mol N/mol O'; label.UQ_b = 'urine quotient at birth';
+  stat.WQ_b = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_b = 'mol H/mol O'; label.WQ_b = 'water quotient at birth';
+  stat.SDA_b = J_M(3,1)/ J_O(1,1); units.SDA_b = 'mol O/mol X'; label.SDA_b = 'specific dynamic action at birth';
+  stat.VO_b = J_M(3,2)/ Wd_b/ 24/ X_gas; units.VO_b = 'L/g.h'; label.VO_b = 'dioxygen use per gram max dry weight, <J_OD> at birth';
+  stat.p_Tt_b = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_b = 'J/d'; label.p_Tt_b = 'dissipating heat at birth';
+  % at puberty
+  J_O = eta_O * diag(p_ADG(2,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+  J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+  stat.RQ_p = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); units.RQ_p = 'mol C/mol O'; label.RQ_p = 'resp quotient at puberty';
+  stat.UQ_p = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); units.UQ_p = 'mol N/mol O'; label.UQ_p = 'urine quotient at puberty';
+  stat.WQ_p = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_p = 'mol H/mol O'; label.WQ_p = 'water quotient at puberty';
+  stat.SDA_p = J_M(3,1)/ J_O(1,1); units.SDA_p = 'mol O/mol X'; label.SDA_p = 'specific dynamic action at puberty';
+  stat.VO_p = J_M(3,2)/ W_p/ 24/ X_gas; units.VO_p = 'L/g.h'; label.VO_p = 'dioxygen use per gram max dry weight, <J_OD> at puberty';
+  stat.p_Tt_p = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_p = 'J/d'; label.p_Tt_p = 'dissipating heat at puberty';
+  % at ultimate
+  J_O = eta_O * diag(p_ADG(3,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+  J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+  stat.RQ_i = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); units.RQ_i = 'mol C/mol O'; label.RQ_i = 'ultimate resp quotient';
+  stat.UQ_i = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); units.UQ_i = 'mol N/mol O'; label.UQ_i = 'ultimate urine quotient';
+  stat.WQ_i = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_i = 'mol H/mol O'; label.WQ_i = 'ultimate water quotient';
+  stat.SDA_i = J_M(3,1)/ J_O(1,1); units.SDA_i = 'mol O/mol X'; label.SDA_i = 'ultimate specific dynamic action';
+  stat.VO_i = J_M(3,2)/ W_i/ 24/ X_gas; units.VO_i = 'L/g.h'; label.VO_i = 'ultimate dioxygen use per gram max dry weight, <J_OD>';
+  stat.p_Tt_i = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_i = 'J/d'; label.p_Tt_i = 'ultimate dissipating heat';
 
   % packing
   txtStat.units = units;
