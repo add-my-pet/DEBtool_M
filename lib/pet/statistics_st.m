@@ -127,10 +127,10 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - RQ_b, RQ_p, RQ_i: respiration quotient; all
 %     - UQ_b, UQ_p, UQ_i: urination quotient; all
-%     - WQ_b, WQ_p, WQ_i: watering quatient; all
+%     - WQ_b, WQ_p, WQ_i: watering quotient; all
 %     - SDA_b, SDA_p, SDA_i: specific dynamic action; all
 %     - VO_b, VO_p, VO_i: dry-weight specific dioxygen use; all
-%     - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat
+%     - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat; all
 %
 % * txtStat: structure with units, labels for stat
 
