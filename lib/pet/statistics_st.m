@@ -763,6 +763,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.J_Ni = J_M(4,3); units.J_Ni = 'mol/d'; label.J_Ni = 'ultimate N-waste flux';    
 
   % mass flux ratios and heat
+  mu_O = [mu_X; mu_V; mu_E; mu_P];% J/mol, chemical potentials of organics
+  mu_M = [0; 0; 0; 0];            % J/mol, chemical potentials of minerals C: CO2, H: H2O, O: O2, N: NH3
   % at birth
   J_O = eta_O * diag(p_ADG(1,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
   J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
@@ -779,7 +781,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.UQ_p = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); units.UQ_p = 'mol N/mol O'; label.UQ_p = 'urine quotient at puberty';
   stat.WQ_p = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_p = 'mol H/mol O'; label.WQ_p = 'water quotient at puberty';
   stat.SDA_p = J_M(3,1)/ J_O(1,1); units.SDA_p = 'mol O/mol X'; label.SDA_p = 'specific dynamic action at puberty';
-  stat.VO_p = J_M(3,2)/ W_p/ 24/ X_gas; units.VO_p = 'L/g.h'; label.VO_p = 'dioxygen use per gram max dry weight, <J_OD> at puberty';
+  stat.VO_p = J_M(3,2)/ Wd_p/ 24/ X_gas; units.VO_p = 'L/g.h'; label.VO_p = 'dioxygen use per gram max dry weight, <J_OD> at puberty';
   stat.p_Tt_p = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_p = 'J/d'; label.p_Tt_p = 'dissipating heat at puberty';
   % at ultimate
   J_O = eta_O * diag(p_ADG(3,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
@@ -788,7 +790,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.UQ_i = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); units.UQ_i = 'mol N/mol O'; label.UQ_i = 'ultimate urine quotient';
   stat.WQ_i = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_i = 'mol H/mol O'; label.WQ_i = 'ultimate water quotient';
   stat.SDA_i = J_M(3,1)/ J_O(1,1); units.SDA_i = 'mol O/mol X'; label.SDA_i = 'ultimate specific dynamic action';
-  stat.VO_i = J_M(3,2)/ W_i/ 24/ X_gas; units.VO_i = 'L/g.h'; label.VO_i = 'ultimate dioxygen use per gram max dry weight, <J_OD>';
+  stat.VO_i = J_M(3,2)/ Wd_i/ 24/ X_gas; units.VO_i = 'L/g.h'; label.VO_i = 'ultimate dioxygen use per gram max dry weight, <J_OD>';
   stat.p_Tt_i = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_i = 'J/d'; label.p_Tt_i = 'ultimate dissipating heat';
 
   % packing
