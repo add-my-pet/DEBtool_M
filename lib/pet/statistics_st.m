@@ -33,7 +33,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - w_X, w_E, w_V, w_P: molecular weights; all
 %
-%     - p_Am: specific max appimilation flux; all
+%     - p_Am: specific max assimilation flux; all
 %     - L_m: maximum structural length; all 
 %     - k_M: maintenance rate coefficient; all
 %     - k: maintenance ratio; all
