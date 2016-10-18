@@ -48,8 +48,8 @@ height = n * .45;
 
 Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 
-plot([0 width width 0 0], [0 0 height height 0], 'k')
-%set(Hlegend, 'FontSize', 15, 'Box', 'off')
+plot([0 width width 0 0], [0 0 height height 0], 'w', 'LineStyle', 'none')
+%set(gca, 'FontSize', 35, 'Box', 'off')
 hold on
 
 for i = 1:n
