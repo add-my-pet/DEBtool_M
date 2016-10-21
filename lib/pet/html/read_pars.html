@@ -1,0 +1,190 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>read_pars</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-21"><meta name="DC.source" content="read_pars.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>read_pars</h1><!--introduction--><p>returns structure with values of core primary parameters for a given DEB model from allStat</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>par = <a href="../read_pars.m"><b>read_pars</b></a> (nm)</p><h2>Description<a name="4"></a></h2><p>Read in global allStat the core primary parameters as specified in  get_parfields for a specified entry</p><p>Input</p><div><ul><li>string with name of entry</li></ul></div><p>Output</p><div><ul><li>par: structure with core parameter values</li><li>model: string with model</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that allStat is available as global</p><h2>Example of use<a name="6"></a></h2><p>[par model] = read_pars('Daphnia_magna')</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% read_pars
+% returns structure with values of core primary parameters for a given DEB model from allStat
+
+%%
+function [par model] = read_pars(nm)
+% created 2016/10/21 by Bas Kooijman
+ 
+  %% Syntax 
+  % par = <../read_pars.m *read_pars*> (nm)
+
+  %% Description
+  % Read in global allStat the core primary parameters as specified in  get_parfields for a specified entry
+  %
+  % Input
+  %
+  % * string with name of entry 
+  %
+  % Output
+  %
+  % * par: structure with core parameter values
+  % * model: string with model
+  
+  %% Remarks
+  % Assumes that allStat is available as global
+
+  %% Example of use
+  % [par model] = read_pars('Daphnia_magna')
+  
+  global allStat
+  
+      model     = allStat.(nm).model;
+      
+      par.z     = allStat.(nm).z;      
+      par.F_m   = allStat.(nm).F_m;
+      par.kap_X = allStat.(nm).kap_X;
+      par.kap_P = allStat.(nm).kap_P;
+      par.v     = allStat.(nm).v;
+      par.kap   = allStat.(nm).kap;
+      par.kap_R = allStat.(nm).kap_R;
+      par.p_M   = allStat.(nm).p_M;
+      par.p_T   = allStat.(nm).p_T;
+      par.k_J   = allStat.(nm).k_J;
+      par.E_G   = allStat.(nm).E_G;
+      par.E_Hb  = allStat.(nm).E_Hb;
+      par.E_Hp  = allStat.(nm).E_Hp;
+      par.h_a   = allStat.(nm).h_a;
+      par.s_G   = allStat.(nm).s_G;
+      
+      par.n_CX  = allStat.(nm).n_CX;
+      par.n_CV  = allStat.(nm).n_CV;
+      par.n_CE  = allStat.(nm).n_CE;
+      par.n_CP  = allStat.(nm).n_CP;
+      par.n_HX  = allStat.(nm).n_HX;
+      par.n_HV  = allStat.(nm).n_HV;
+      par.n_HE  = allStat.(nm).n_HE;
+      par.n_HP  = allStat.(nm).n_HP;
+      par.n_OX  = allStat.(nm).n_OX;
+      par.n_OV  = allStat.(nm).n_OV;
+      par.n_OE  = allStat.(nm).n_OE;
+      par.n_OP  = allStat.(nm).n_OP;
+      par.n_NX  = allStat.(nm).n_NX;
+      par.n_NV  = allStat.(nm).n_NV;
+      par.n_NE  = allStat.(nm).n_NE;
+      par.n_NP  = allStat.(nm).n_NP;
+      
+      par.n_CC  = allStat.(nm).n_CC;
+      par.n_CH  = allStat.(nm).n_CH;
+      par.n_CO  = allStat.(nm).n_CO;
+      par.n_CN  = allStat.(nm).n_CN;
+      par.n_HC  = allStat.(nm).n_HC;
+      par.n_HH  = allStat.(nm).n_HH;
+      par.n_HO  = allStat.(nm).n_HO;
+      par.n_HN  = allStat.(nm).n_HN;
+      par.n_OC  = allStat.(nm).n_OC;
+      par.n_OH  = allStat.(nm).n_OH;
+      par.n_OO  = allStat.(nm).n_OO;
+      par.n_ON  = allStat.(nm).n_ON;
+      par.n_NC  = allStat.(nm).n_NC;
+      par.n_NH  = allStat.(nm).n_NH;
+      par.n_NO  = allStat.(nm).n_NO;
+      par.n_NN  = allStat.(nm).n_NN;
+      
+      par.d_E   = allStat.(nm).d_E;
+      par.d_V   = allStat.(nm).d_V;
+      par.mu_X  = allStat.(nm).mu_X;
+      par.mu_E  = allStat.(nm).mu_E;
+      par.mu_V  = allStat.(nm).mu_V;
+      par.mu_P  = allStat.(nm).mu_P;
+      
+      par.T_ref = allStat.(nm).T_ref;
+      par.T_A   = allStat.(nm).T_A;
+      if exist(allStat.(nm).T_L, 'var')
+        par.T_L = allStat.(nm).T_L;
+      end
+      if exist(allStat.(nm).T_AL, 'var')
+        par.T_AL = allStat.(nm).T_AL;
+      end
+      if exist(allStat.(nm).T_H, 'var')
+        par.T_H = allStat.(nm).T_H;
+      end
+      if exist(allStat.(nm).T_AH, 'var')
+        par.T_AH = allStat.(nm).T_AH;
+      end
+      
+      switch model
+        case 'stx'
+          par.E_Hx = allStat.(nm).E_Hx;
+          par.t_0  = allStat.(nm).t_0;
+        case 'ssj'
+          par.E_Hs = allStat.(nm).E_Hs;
+          par.t_sj = allStat.(nm).t_sj;
+          par.k_E  = allStat.(nm).k_E;
+        case 'abj' 
+          par.E_Hj = allStat.(nm).E_Hj;
+        case 'asj'
+          par.E_Hs = allStat.(nm).E_Hs;
+          par.E_Hj = allStat.(nm).E_Hj;
+        case 'hep'
+          par.E_Rj = allStat.(nm).E_Rj;
+        case 'hex'
+          par.s_j  = allStat.(nm).s_j;
+          par.E_He = allStat.(nm).E_He;
+      end
+  
+ 
+end
+  
+
+##### SOURCE END #####
+--></body></html>
