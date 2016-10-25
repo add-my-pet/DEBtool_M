@@ -3,7 +3,7 @@
 
 %%
 function [filter, flag] = filter_stx(p)
-% created 2015/08/24 by Goncalo Marques
+% created 2015/08/24 by Goncalo Marques, modified 2016/10/25 by Goncalo Marques
 
 %% Syntax
 % [filter, flag] = <../filter_stx.m *filter_stx*> (p)
@@ -50,16 +50,6 @@ function [filter, flag] = filter_stx(p)
 
   if p.E_Hb >= p.E_Hx || p.E_Hx >= p.E_Hp % maturity at birth, puberty
     flag = 4;
-    return;
-  end
-
-  if c.k * c.v_Hx >= p.f^3 % constraint required for reaching puberty
-    flag = 5;    
-    return;
-  end
-
-  if c.k * c.v_Hp >= p.f^3 % constraint required for reaching puberty
-    flag = 5;    
     return;
   end
 
