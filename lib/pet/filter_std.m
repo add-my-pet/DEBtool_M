@@ -4,7 +4,7 @@
 %%
 function [filter, flag] = filter_std(p)
 % created 2014/01/22 by Bas Kooijman; modified 2015/03/17, 2015/07/29 by Goncalo Marques
-% modified 2015/08/03 by starrlight
+% modified 2015/08/03 by starrlight, 2016/10/25 by Goncalo Marques
 
 %% Syntax
 % [filter, flag] = <../filter_std.m *filter_std*> (p)
@@ -71,7 +71,7 @@ function [filter, flag] = filter_std(p)
     return;
   end
 
-  if c.k * c.v_Hp >= p.f^3 % constraint required for reaching puberty
+  if c.k * c.v_Hp >= p.f * (p.f - c.l_T)^2 % constraint required for reaching puberty
     flag = 5;    
     return;
   end
