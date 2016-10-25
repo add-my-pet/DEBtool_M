@@ -234,7 +234,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       if isfield(metaData.(currentPet), 'COMPLETE')
         fprintf('COMPLETE = %3.1f \n', metaData.(currentPet).COMPLETE)
       end
-      fprintf('MRE = %8.3f \n\n', metaPar.(currentPet).MRE)
+      fprintf('MRE = %8.3f \n', metaPar.(currentPet).MRE)
+      fprintf('SMSE = %8.3f \n\n', metaPar.(currentPet).SMSE)
       
       fprintf('\n');
       printprd_st(data.(currentPet), txtData.(currentPet), prdData.(currentPet), metaPar.(currentPet).RE);
