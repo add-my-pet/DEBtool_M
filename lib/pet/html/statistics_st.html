@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-23"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
+      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-27"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -81,7 +81,9 @@ span.syscmd { color:#B28C00 }
    - s_H: altriciality index; all except hex
    - s_Hbp: precociality coefficient; all
    - r_j: exponential growth rate; all a- and h-models
-   - r_B: von Bertalannfy growth rate; all s- and a-models</pre><pre>   - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
+   - r_B: von Bertalannfy growth rate; all s- and a-models
+   - W_dWm: wet weight at max growth; all models
+   - dWm: max growth in wet weight; all models</pre><pre>   - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
    - E_0: energy investment in egg/foetus; all
    - M_E0: reserve invested in egg/foetus; all
    - Ww_0: initial wet weight; all except stf, stx
@@ -197,6 +199,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
+%     - W_dWm: wet weight at max growth; all models
+%     - dWm: max growth in wet weight; all models
 %
 %     - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
 %     - E_0: energy investment in egg/foetus; all
@@ -582,6 +586,48 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     r_B = rho_B * k_M * TC;
     stat.r_B = r_B;    units.r_B = '1/d';      label.r_B = 'von Bertalanffy growth rate'; 
   end  
+  % maximum growth
+  switch model
+    case {'std', 'stf', 'stx', 'ssj'}
+      L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+    case 'sbp'
+      L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      L_p = l_p * L_m;
+      if L_p < L_dWm
+        L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w);
+        dWm = TC * 3 * (1 + w) * L_dWm^2 * r_B * (L_m - L_T - L_dWm);
+      end
+    case {'abj', 'asj'}
+      L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      L_j = l_j * L_m;
+      if L_j > L_dWm
+        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
+        dWm = TC * W_dWm * r_j;
+      else
+        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      end
+    case 'abp'
+      L_p = l_p * L_m;
+      L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;      
+    case 'hep'
+      L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      L_p = l_p * L_m;
+      if L_p > L_dWm
+        L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
+        dWm = TC * W_dWm * r_j;
+      else
+        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      end
+    case 'hex'
+      L_j = L_m * l_j;
+      L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;
+  end
+  stat.W_dWm = W_dWm; units.W_dWm = 'g';  label.W_dWm = 'wet weight at maximum growth'; 
+  stat.dWm = dWm;     units.dWm = 'g/d';  label.dWm = 'maximum growth in wet weight'; 
 
   % life event statistics
   
@@ -704,7 +750,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   if strcmp(model,'hex')== 0
   % altriciality index:
-  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'altriciality index';
+  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'log 10 altriciality index';
   end
   
   % emergence

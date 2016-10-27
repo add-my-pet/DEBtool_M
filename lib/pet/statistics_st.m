@@ -60,6 +60,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - s_Hbp: precociality coefficient; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
+%     - W_dWm: wet weight at max growth; all models
+%     - dWm: max growth in wet weight; all models
 %
 %     - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
 %     - E_0: energy investment in egg/foetus; all
@@ -445,6 +447,48 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     r_B = rho_B * k_M * TC;
     stat.r_B = r_B;    units.r_B = '1/d';      label.r_B = 'von Bertalanffy growth rate'; 
   end  
+  % maximum growth
+  switch model
+    case {'std', 'stf', 'stx', 'ssj'}
+      L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+    case 'sbp'
+      L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      L_p = l_p * L_m;
+      if L_p < L_dWm
+        L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w);
+        dWm = TC * 3 * (1 + w) * L_dWm^2 * r_B * (L_m - L_T - L_dWm);
+      end
+    case {'abj', 'asj'}
+      L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      L_j = l_j * L_m;
+      if L_j > L_dWm
+        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
+        dWm = TC * W_dWm * r_j;
+      else
+        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      end
+    case 'abp'
+      L_p = l_p * L_m;
+      L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;      
+    case 'hep'
+      L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
+      L_p = l_p * L_m;
+      if L_p > L_dWm
+        L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
+        dWm = TC * W_dWm * r_j;
+      else
+        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      end
+    case 'hex'
+      L_j = L_m * l_j;
+      L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;
+  end
+  stat.W_dWm = W_dWm; units.W_dWm = 'g';  label.W_dWm = 'wet weight at maximum growth'; 
+  stat.dWm = dWm;     units.dWm = 'g/d';  label.dWm = 'maximum growth in wet weight'; 
 
   % life event statistics
   
