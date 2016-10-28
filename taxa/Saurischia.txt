@@ -1,3 +1,2 @@
-Archaeopterygidae
-Plateosauridae
-Tyrannosauridae
+Sauropodomorpha
+Theropoda
