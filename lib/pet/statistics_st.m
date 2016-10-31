@@ -76,7 +76,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - Wd_h: dry weight at hatch; all if E_Hh exists
 %     - del_Uh: fraction of reserve left at hatch; all if E_Hh exists
 %
-%     - a_b: age at birth; all
+%     - a_b: age at birth; all (called gestation for stf and stx)
+%     - t_birth: pregnancy; stf, stx
 %     - L_b: structural length at birth; all
 %     - M_Vb: structural mass at birth; all
 %     - Ww_b: wet weight at birth; all
@@ -549,10 +550,23 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.del_Ub = del_Ub; units.del_Ub = '-'; label.del_Ub = 'fraction of reserve left at birth';
   stat.Ww_b = Ww_b; units.Ww_b = 'g';     label.Ww_b = 'wet weight at birth';
   stat.Wd_b = Wd_b; units.Wd_b = 'g';     label.Wd_b = 'dry weight at birth';
-  stat.a_b = a_b;   units.a_b = 'd';      label.a_b = 'age at birth';
+  stat.a_b = a_b;   units.a_b = 'd';      
+  switch model
+    case {'stf', 'stx'} % foetus
+    label.a_b = 'gestation';
+    if exist('t_0','var')==0
+        t_0 = 0;
+    end
+    t_birth = t_0 + a_b;
+    stat.t_birth = t_birth; units.t_birth = 'd'; label.t_birth = 'pregancy'; 
+    otherwise
+  label.a_b = 'age at birth';
+  end
   stat.g_Hb = g_Hb; units.g_Hb = '-';     label.g_Hb = 'energy outvestment ratio at birth'; 
   
-  % start/end strinking
+  %
+  
+  % start/end shrinking
   if strcmp(model, 'ssj')
     L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';    label.l_s = 'scaled structural length at start strinking';
