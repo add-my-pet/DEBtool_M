@@ -27,7 +27,7 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   % in first column and 1 or 0 in the second column indicated whether or
   % not the data set was given weight zero
 
-  %data      = rmfield_wtxt(data, 'psd');   % STA: this is because there is an assymetry is the output of mydata_my_pet and predict_my_pet
+  data      = rmfield_wtxt(data, 'psd');   % STA: this is because there is an assymetry is the output of mydata_my_pet and predict_my_pet
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
   if prdInfo == 0 % no prediction from func
