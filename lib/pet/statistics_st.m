@@ -77,7 +77,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - del_Uh: fraction of reserve left at hatch; all if E_Hh exists
 %
 %     - a_b: age at birth; all (called gestation for stf and stx)
-%     - t_birth: pregnancy; stf, stx
+%     - t_g: gestation time; stf, stx
 %     - L_b: structural length at birth; all
 %     - M_Vb: structural mass at birth; all
 %     - Ww_b: wet weight at birth; all
@@ -557,8 +557,9 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     if exist('t_0','var')==0
         t_0 = 0;
     end
-    t_birth = t_0 + a_b;
-    stat.t_birth = t_birth; units.t_birth = 'd'; label.t_birth = 'pregancy'; 
+    t_g = t_0 + a_b; % gestation/incubation time. Note that t_0 is always given at T_body!
+
+    stat.t_g = t_g; units.t_g = 'd'; label.t_birth = 'gestation time'; 
     otherwise
   label.a_b = 'age at birth';
   end
