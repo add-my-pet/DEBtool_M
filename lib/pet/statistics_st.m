@@ -559,7 +559,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     end
     t_g = t_0 + a_b; % gestation/incubation time. Note that t_0 is always given at T_body!
 
-    stat.t_g = t_g; units.t_g = 'd'; label.t_birth = 'gestation time'; 
+    stat.t_g = t_g; units.t_g = 'd'; label.t_g = 'gestation time'; 
     otherwise
   label.a_b = 'age at birth';
   end
