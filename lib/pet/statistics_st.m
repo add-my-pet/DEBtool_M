@@ -680,7 +680,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty';     
   if exist('r_B', 'var')
     a_99   = a_p + log((1 - L_p/ L_i)/(1 - 0.99))/ r_B;
-    stat.a_99 = a_99;      units.a_99 = 'd';   label.a_99 = 'age at length 0.99 * L_i';
+    stat.a_99 = a_99;   units.a_99 = 'd';   label.a_99 = 'age at length 0.99 * L_i';
   end
 
   % reproduction
