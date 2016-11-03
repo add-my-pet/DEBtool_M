@@ -132,3 +132,7 @@ if filter
 end
 
 function par = cov_rules_1species(par, i)
+% cov_rules family of functions takes the parameters of the group and
+%   computes the parameters of each pet for the multispecies estimation
+% This is the simplest case (to be used when we have only one species) 
+%   where there is no transformation, i.e. it receives par and it returns par
