@@ -10,6 +10,7 @@ function [mserr, rserr, prdInfo] = mse_st(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the mean squared relative error, used in add_my_pet
+  %    (d_ij - p_ij)^2/ d_i^2
   %
   % Input
   %

@@ -2,14 +2,15 @@
 % calculates the symmetric mean squared relative error
 
 %%
-function [smserr, srserr, prdInfo] = smse_st(func, par, data, auxData, weights)
+function [smserr, sserr, prdInfo] = smse_st(func, par, data, auxData, weights)
   % created: 2016/09/03 by Goncalo Marques
   
   %% Syntax 
-  % [smserr, srserr] = <../smse_st.m *smse_st*>(func, par, data, auxData, weights)
+  % [smserr, sserr] = <../smse_st.m *smse_st*>(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the mean symmetric squared relative error, used in add_my_pet
+  %    (d_ij - p_ij)^2/ (d_i^2 + p_i^2)
   %
   % Input
   %
@@ -22,14 +23,14 @@ function [smserr, srserr, prdInfo] = smse_st(func, par, data, auxData, weights)
   % Output
   %
   % * smserr: scalar with symmetric mean squared relative error
-  % * rserr: (n-2) matrix with weighted symmetric relative squared error of 
+  % * sserr: (n-2) matrix with weighted symmetric relative squared error of 
   % each of data set in first column and 1 or 0 in the second column indicated 
   % whether or not the data set was given weight zero
 
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
   if prdInfo == 0 % no prediction from func
-    mserr = {}; rserr = {};
+    smserr = {}; sserr = {};
     return
   end
   
@@ -55,17 +56,17 @@ function [smserr, srserr, prdInfo] = smse_st(func, par, data, auxData, weights)
     
     if sum(diff) > 0 && meanVar > 0
       if sum(w) ~= 0
-        srserr(i,1) = sum(w .* abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1)/ sum(w);
+        sserr(i,1) = sum(w .* abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1)/ sum(w);
       else
-        srserr(i,1) = sum(abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1);
+        sserr(i,1) = sum(abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1);
       end
     else
-      srserr(i,1) = 0;
+      sserr(i,1) = 0;
     end
-    srserr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
+    sserr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
   end
     
-  smserr = sqrt(sum(prod(srserr,2))/ sum(srserr(:,2)));
+  smserr = sqrt(sum(prod(sserr,2))/ sum(sserr(:,2)));
   
   
   
