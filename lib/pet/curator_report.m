@@ -199,29 +199,22 @@ pause; pointNumber = pointNumber + 1;
 
 % check implied properties 
 fprintf('\n%d. Check implied model properties and parameter values of my_pet. Creates my_pet.html.\n\n', pointNumber);
-prnt = input('Enter: 0 to print on the screen or 1 to create my_pet.html: ');
+prnt = input('Enter: 1 to compute statistics else 0 ton continue: ');
 
 if prnt
-  if strcmp(metaPar.model,'ssj')
-    print_my_pet_under_construction(metaData, metaPar, par, txtPar)
-  else
-    print_my_pet_html(metaData, metaPar, par, txtPar)
-  end
-elseif strcmp(metaPar.model,'std')
-  [stat, txt_stat] = statistics_std(par, metaData.T_typical, 1, metaPar.model)
-elseif strcmp(metaPar.model,'abj') || strcmp(metaPar.model,'ssj')
-  [stat, txt_stat] = statistics_abj(par, metaData.T_typical, 1, metaPar.model)
+  [stat, txt_stat] = statistics_st(metaPar.model, par, metaData.T_typical, 1);
+  display(stat)
 end
 
 
 
-%%
-pointNumber = pointNumber + 1;
-
-% check bibliography
-fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
- 
-print_bib_my_pet(metaData.species,metaData.biblist)
+% %%
+% pointNumber = pointNumber + 1;
+% 
+% % check bibliography
+% fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
+%  
+% prt_bib_my_pet(metaData.species,metaData.biblist)
 
 % save figures
 % global pets
