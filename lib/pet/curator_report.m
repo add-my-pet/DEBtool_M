@@ -128,7 +128,7 @@ else
 end
 
 if infoMetaPar
-  fprintf('The metaPar is equal in pars_init and .mat.\n');
+  fprintf('The metaPar.model is equal in pars_init and .mat.\n');
 else
   fprintf('The metaPar is different in pars_init and .mat.\n');
 end

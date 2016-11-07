@@ -47,6 +47,8 @@ function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
  
   metaPar = rmfield_wtxt(metaPar, 'MRE');
   metaPar = rmfield_wtxt(metaPar, 'RE');
+  metaPar = rmfield_wtxt(metaPar, 'SMSE');
+  metaPar = rmfield_wtxt(metaPar, 'SSE'); 
   infoMetaPar = isequaln(metaPar, metaParInit); 
 
   infoTxtPar = isequaln(txtPar, txtParInit); 
