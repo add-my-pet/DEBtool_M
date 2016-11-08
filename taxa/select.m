@@ -4,7 +4,8 @@
 %%
 function species = select(taxon)
 % created 2015/09/18 by Bernd Brandt
-% modified 2015/10/07 by Dina Lika
+% modified 2015/10/07 by Dina Lika; 2016/11/08 by Bas Kooijman
+
 %% Syntax
 % species = <../select.m *select*> (taxon) 
 
@@ -44,5 +45,9 @@ function species = select(taxon)
   end
   
   cd(WD)                   % goto original path
+  
+  if ~0 == sum(cellfun(@isempty, strfind(species,'_')))
+    fprintf('Warning from select: not all cells are entry names\n')
+  end
 end
 
