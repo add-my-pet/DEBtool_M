@@ -216,7 +216,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   if exist('kap_X', 'var')
     stat.y_E_X = y_E_X; units.y_E_X = 'mol/mol'; label.y_E_X = 'yield of reserve on food';
     stat.y_X_E = y_X_E; units.y_X_E = 'mol/mol'; label.y_X_E = 'yield of food on reserve';
-    stat.p_Xm = p_Xm;   units.p_Xm = 'J/d.cm^2'; label.p_Xm = 'max spec feeding power';
+    stat.p_Xm = p_Xm;   units.p_Xm = 'J/d.cm^2'; label.p_Xm = '{p_Xm}, max spec feeding power';
     stat.J_X_Am = J_X_Am; units.J_X_Am = 'mol/d.cm^2'; label.J_X_Am = '{J_XAm}, max surface-spec feeding flux';
   end
   if exist('kap_P', 'var')
