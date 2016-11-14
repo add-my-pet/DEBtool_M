@@ -550,21 +550,15 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.del_Ub = del_Ub; units.del_Ub = '-'; label.del_Ub = 'fraction of reserve left at birth';
   stat.Ww_b = Ww_b; units.Ww_b = 'g';     label.Ww_b = 'wet weight at birth';
   stat.Wd_b = Wd_b; units.Wd_b = 'g';     label.Wd_b = 'dry weight at birth';
-  stat.a_b = a_b;   units.a_b = 'd';      
-  switch model
-    case {'stf', 'stx'} % foetus
-    label.a_b = 'gestation';
-    if exist('t_0','var')==0
+  stat.a_b = a_b;   units.a_b = 'd';    label.a_b = 'age at birth';    
+  stat.g_Hb = g_Hb; units.g_Hb = '-';  label.g_Hb = 'energy outvestment ratio at birth'; 
+  if strcmp(model, 'stf') || strcmp(model, 'stx') % foetus or budding
+        if exist('t_0','var')==0
         t_0 = 0;
-    end
+        end
     t_g = t_0 + a_b; % gestation/incubation time. Note that t_0 is always given at T_body!
-
     stat.t_g = t_g; units.t_g = 'd'; label.t_g = 'gestation time'; 
-    otherwise
-  label.a_b = 'age at birth';
-  end
-  stat.g_Hb = g_Hb; units.g_Hb = '-';     label.g_Hb = 'energy outvestment ratio at birth'; 
-  
+  end  
   %
   
   % start/end shrinking
