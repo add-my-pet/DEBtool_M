@@ -59,8 +59,8 @@ load(matFile);
 % open pars_init file
 pars_init_id = fopen(['pars_init_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
 
-fprintf(pars_init_id, ['%%%% pars_init_', speciesnm,'\n']);
-fprintf(pars_init_id, '%% sets (initial values for) parameters\n\n');
+% fprintf(pars_init_id, ['%%%% pars_init_', speciesnm,'\n']);
+% fprintf(pars_init_id, '%% sets (initial values for) parameters\n\n');
 fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', speciesnm,'(metaData)\n\n']);
 fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n\n']);
 
