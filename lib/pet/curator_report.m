@@ -214,7 +214,7 @@ pointNumber = pointNumber + 1;
 % check bibliography
 fprintf('\n%d. Generate a .bib. \n Then upload bib_my_pet.bib in References ''my_pet'' project in Overleaf.\n\n', pointNumber);
  
-prt_bib_my_pet(metaData.species,metaData.biblist)
+prt_my_pet_bib(metaData.species,metaData.biblist)
 
 % save figures
 % global pets
