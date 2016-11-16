@@ -59,8 +59,6 @@ load(matFile);
 % open pars_init file
 pars_init_id = fopen(['pars_init_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
 
-% fprintf(pars_init_id, ['%%%% pars_init_', speciesnm,'\n']);
-% fprintf(pars_init_id, '%% sets (initial values for) parameters\n\n');
 fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', speciesnm,'(metaData)\n\n']);
 fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n\n']);
 
@@ -71,7 +69,14 @@ parFields = fields(par);
 % checking the existence of metapar fields
 EparFields = get_parfields(metaPar.model);
 
-fprintf(pars_init_id, '%%%% core primary parameters \n');
+fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
+
+currentPar = 'T_ref';
+write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+
+parFields = setdiff(parFields, {currentPar});
+
+fprintf(pars_init_id, '\n%%%% core primary parameters \n');
 
 for i = 1:length(EparFields)
   currentPar = EparFields{i};
@@ -85,7 +90,6 @@ fprintf(pars_init_id, '\n%%%% other parameters \n');
 parFields = setdiff(parFields, EparFields);
 
 % separate chemical parameters from other
-% pos = [];
 par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
 chemParFields = fields(par_auto);
 otherParFields = setdiff(parFields, chemParFields);
@@ -112,9 +116,6 @@ fclose(pars_init_id);
 
 
 function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
-%   sprintf('%-*s', max_len, str)
-%   string = ['par.', parName,' = ', num2str(parValue), ';  '];
-%   if(lenght(string) < 
   fprintf(file_id, '%-*s', 22, ['par.', parName,' = ', num2str(parValue), ';  ']);
   fprintf(file_id, '%-*s', 10, ['free.', parName]);
   if fix
