@@ -27,7 +27,7 @@ function classification = lineage(taxon)
 % classification  = lineage('Gorilla_gorilla')
 
   WD = pwd;                        % store current path
-  taxa = which('lineage');  % locate DEBtool_M/taxa/
+  taxa = which('lineage');         % locate DEBtool_M/taxa/
   taxa = taxa(1:end - 9);          % path to DEBtool_M/taxa/
   cd(taxa)                         % goto taxa
 
