@@ -116,7 +116,14 @@ fclose(pars_init_id);
 
 
 function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
-  fprintf(file_id, '%-*s', 22, ['par.', parName,' = ', num2str(parValue), ';  ']);
+
+  if ~isempty(strfind(parName,'E_H'))
+    fprintf(file_id, ['par.', parName,' = %1.3e; '], parValue);
+  elseif ~isempty(strfind(parName,'h_a'))
+    fprintf(file_id, ['par.', parName,' = %1.3e;  '], parValue);
+  else    
+    fprintf(file_id, '%-*s', 22, ['par.', parName,' = ', num2str(parValue), ';  ']);
+  end
   fprintf(file_id, '%-*s', 10, ['free.', parName]);
   if fix
     fprintf(file_id, ' = 0;   ');
