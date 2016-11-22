@@ -36,7 +36,7 @@ function [eb lb info] = get_eb_min_R (p, lb0)
   g = p(1); k = p(2); vHb = p(3);
 
   if exist('lb0', 'var') == 0
-    lb0 = .5;
+    lb0 = .1;
   end    
 
   [lb f_val info] = fzero(@fnget_lb_min_R, lb0, [], g, k, vHb);
