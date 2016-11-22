@@ -38,8 +38,12 @@ function [eb lb info] = get_eb_min_R (p, lb0)
   if exist('lb0', 'var') == 0
     lb0 = .1;
   end    
-
-  [lb f_val info] = fzero(@fnget_lb_min_R, lb0, [], g, k, vHb);
+  
+  try
+    [lb f_val info] = fzero(@fnget_lb_min_R, lb0, [], g, k, vHb);
+  catch
+    [lb f_val info] = fzero(@fnget_lb_min_R, 0.1, [], g, k, vHb);
+  end
   lb2 = lb * lb; lb3 = lb2 * lb;
   eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb);
 end
