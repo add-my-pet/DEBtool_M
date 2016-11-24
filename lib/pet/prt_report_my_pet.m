@@ -17,8 +17,8 @@ function prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
 % * metaData: structure (output of <http://www.debtheory.org/wiki/index.php?title=Mydata_file *mydata_my_pet_par*> file)
 % * metaPar: structure (output of <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet_par*> file)
 % * par: structure (output of <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet_par*> file)
-% * T: scalar with temperature in Kelvin 
-% * f: scalar scaled functional response 
+% * T: optional scalar with temperature in Kelvin (default: T_typical)
+% * f: optional scalar scaled functional response (default: 1)
 % * destinationFolder : optional string with destination folder the files
 % are printed to (default: current folder)
 
@@ -34,16 +34,23 @@ if speciesprintnm_en(1)>='a' && speciesprintnm_en(1)<='z'
   speciesprintnm_en(1)=char(speciesprintnm_en(1)-32);
 end
 
+if exist('destinationFolder','var')
+  fileName = [destinationFolder, 'report_',metaData.species, '.html'];
+else
+  fileName = ['report_',metaData.species, '.html'];
+  if ~exist('f','var')
+    f = 1;
+    if ~exist('T','var')
+      T = metaData.T_typical;
+    end
+  end
+end
+
 [stat, txtStat] = statistics_st(metaPar.model, par, T, f);
 stat.z = par.z; txtStat.label.z = 'zoom factor'; txtStat.units.z = '-'; % add zoom factor to statistics which are to be printed 
 flds = fieldnmnst_st(stat); % fieldnames of all statistics
 % [webStatFields, webColStat] = get_statfields(metaPar.model); % which statistics in what order should be printed in the table
 
-if exist('destinationFolder','var')
-fileName = [destinationFolder, 'report_',metaData.species, '.html'];
-else
-fileName = ['report_',metaData.species, '.html'];    
-end
 oid = fopen(fileName, 'w+'); % % open file for writing, delete existing content
 
 fprintf(oid, '<!DOCTYPE html>\n');
