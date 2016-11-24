@@ -9,7 +9,7 @@ function [tR, tp, tx, tb, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR*>(p, f, lb0)
   
   %% Description
-  % Obtains scaled age and length at 1st brood, puberty, fletching, birth.
+  % Obtains scaled age and length at 1st brood, puberty, fledging, birth.
   % Food density is assumed to be constant.
   % Multiply the result with the somatic maintenance rate coefficient to arrive at ages. 
   %
@@ -60,7 +60,7 @@ function [tR, tp, tx, tb, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     rB = 1 / 3/ (1 + f/g);
     tp = tb + log((li - lb)/ (li - lp))/ rB;
     info = 1;
-  elseif f * (f - lT)^2 <= vHx * k % fletching is not reached
+  elseif f * (f - lT)^2 <= vHx * k % fledging is not reached
     [tb lb] = get_tb ([g, k, vHb], f, lb0); 
     tx = NaN; lx = NaN; % lx is never reached
     tp = NaN; lp = NaN; % lp is never reached
