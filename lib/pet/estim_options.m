@@ -21,7 +21,7 @@ function estim_options (key, val)
   %
   % * two inputs
   %
-  %   'lossfunction': 
+  %   'loss_function': 
   %     E - scaling done with only data;
   %     F - scaling done with data and predictions;
   %     G - F/(1 - F);
@@ -73,12 +73,12 @@ function estim_options (key, val)
       method = 'nm';
       nmregr_options('default');
 
-    case 'lossfunction'
+    case 'loss_function'
       if exist('val','var') == 0
         if numel(lossfunction) ~= 0
-          fprintf(['lossfunction = ', lossfunction,' \n']);  
+          fprintf(['loss_function = ', lossfunction,' \n']);  
         else
-          fprintf('lossfunction = unknown \n');
+          fprintf('loss_function = unknown \n');
         end
         fprintf('E - scaling done with only data \n');
         fprintf('F - scaling done with data and predictions \n');
@@ -171,9 +171,9 @@ function estim_options (key, val)
 
     case 'inexistent'
       if numel(lossfunction) ~= 0
-        fprintf(['lossfunction = ', lossfunction,' \n']);
+        fprintf(['loss_function = ', lossfunction,' \n']);
       else
-        fprintf('lossfunction = unknown \n');
+        fprintf('loss_function = unknown \n');
       end
       if numel(filter) ~= 0
         fprintf(['filter = ', num2str(filter),' \n']);
@@ -219,9 +219,9 @@ function estim_options (key, val)
       else
         fprintf(['key ', key, ' is unkown \n\n']);
         if numel(lossfunction) ~= 0
-          fprintf(['lossfunction = ', lossfunction,' \n']);
+          fprintf(['loss_function = ', lossfunction,' \n']);
         else
-          fprintf('lossfunction = unknown \n');
+          fprintf('loss_function = unknown \n');
         end
         if numel(filter) ~= 0
           fprintf(['filter = ', num2str(filter),' \n']);
