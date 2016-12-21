@@ -58,6 +58,8 @@ function estim_options (key, val)
   if exist('key','var') == 0
     key = 'inexistent';
   end
+  
+  availableMethodOptions = {'no', 'nm'};
     
   switch key
 	
@@ -155,7 +157,7 @@ function estim_options (key, val)
       end
             
     case 'method'
-      if exist('val','var') == 0
+      if exist('val','var') == 0 || ~any(ismember(availableMethodOptions, val))
         if numel(method) ~= 0
           fprintf(['method = ', method,' \n']);  
         else
