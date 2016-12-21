@@ -362,7 +362,7 @@ end
 if sum(strcmp(txtDataFields, 'bibkey'))
   bibkeyFields = [fields(txtData.bibkey); factsDiscussionBibkeys];
   referencedFields = [dataFields; factsFields; discussionFields];
-
+  
   if length(bibkeyFields) > length(referencedFields)
     for i = 1:length(bibkeyFields)
       if sum(strcmp(referencedFields, bibkeyFields(i))) == 0
@@ -385,7 +385,7 @@ end
 % checking the existence of bibkeys in the biblist structure
 if sum(strcmp(fields(metaData), 'biblist'))
   biblistFields = fields(metaData.biblist);
-  for i = 1:length(bibNotToCheck) % start at i = 2 to keep Wiki in the biblistFields
+  for i = 1:length(bibNotToCheck) 
       biblistFields = biblistFields(~strcmp(biblistFields, bibNotToCheck{i}));    % bibNotToCheck defined at the beginning of mydata section
   end  
   bibkeyMarker = length(fields(txtData.bibkey));
@@ -396,7 +396,7 @@ if sum(strcmp(fields(metaData), 'biblist'))
       bibkeynm = txtData.bibkey.(bibkeyFields{i});
     end
     if ~iscell(bibkeynm) 
-      if ~sum(strcmp(biblistFields, cellstr(bibkeynm)))
+      if ~sum(strcmp(biblistFields, cellstr(bibkeynm))) && ~any(strcmp(bibNotToCheck, cellstr(bibkeynm)))
         fprintf(['In mydata_',speciesnm,'.m: The bibkey ', bibkeynm, ' defined for ', bibkeyFields{i}, ' has no corresponding reference in biblist. \n']);
       end
     else
