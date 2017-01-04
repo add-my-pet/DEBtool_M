@@ -2,11 +2,11 @@
 % gets cumulative energy investment to endpoints at birth
 
 %%
-function [EMJHG info] = get_EMJHG(p, eb)
+function [EMJHG uE0 info] = get_EMJHG(p, eb)
   % created at 2011/01/19 by Bas Kooijman
   
   %% Syntax
-  % [EMJHG info] = <../get_EMJHG.m *get_EMJHG*> (p, eb)
+  % [EMJHG E0 info] = <../get_EMJHG.m *get_EMJHG*> (p, eb)
   
   %% Description
   % Gets cumulative energy investment to somatic and maturity maintenance, growth and maturation at birth
@@ -23,6 +23,7 @@ function [EMJHG info] = get_EMJHG(p, eb)
   %
   %    If p(5) is specified, growth is splitted in dissipated and fixed in structure
   %
+  % * uE0: n-vector with scaled initial reserve
   % * info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations
   
   %% Remark
@@ -45,11 +46,11 @@ function [EMJHG info] = get_EMJHG(p, eb)
   EMJHG = zeros(n,5); info = ones(n);
 
   for i = 1:n
-    [uE0, lb, info_ue0] = get_ue0(p, eb(i));
+    [uE0(i), lb, info_ue0] = get_ue0(p, eb(i));
     [tb lb info_tb] = get_tb(p, eb(i), lb);
-    [t ulhMJ] = ode45(@dget_ulhMJ, [0;tb], [uE0; 0; 0; 0; 0], [], g, kap, k);
+    [t ulhMJ] = ode45(@dget_ulhMJ, [0;tb], [uE0(i); 0; 0; 0; 0], [], g, kap, k);
     EMJHG(i, :) = [ulhMJ(end,[1 4 5]), vHb * (1 - kap), kap * lb^3];
-    EMJHG(i, :) = EMJHG(i, :)/sum(EMJHG(i, :));
+    EMJHG(i, :) = EMJHG(i, :)/ sum(EMJHG(i, :));
     info(i) = min(info_ue0, info_tb);
   end
 

@@ -2,15 +2,16 @@
 % gets cumulative energy investment to endpoints at birth for foetal development
 
 %%
-function [EMJHG info] = get_EMJHG_foetus(p, eb)
+function [EMJHG uE0 info] = get_EMJHG_foetus(p, eb)
   % created at 2011/01/19 by Bas Kooijman 
   
   %% Syntax
-  % [EMJHG info] = <../get_EMJHG_foetus.m *get_EMJHG_foetus*> (p, eb)
+  % [EMJHG E0 info] = <../get_EMJHG_foetus.m *get_EMJHG_foetus*> (p, eb)
   
   %% Description
   % Gets cumulative energy investment to somatic and maturity maintenance,
-  % growth and maturation at birth for foetal development
+  % growth and maturation at birth for foetal development.
+  % If p(5) is specified, growth is splitted in dissipated and fixed in structure
   %
   % Input
   %
@@ -20,10 +21,11 @@ function [EMJHG info] = get_EMJHG_foetus(p, eb)
   % Output
   %
   % * EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth
-  % * reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
   %
-  %    if p(5) is specified, growth is splitted in dissipated and fixed in structure
-  %     info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations
+  %    -  reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
+  %   
+  % * uE0: n-vector with total energy investment in foetus
+  % * info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations
   
   %% Remark
   % Called by <birth_pie_foetus.html *birth_pie_foetus*> for graphical presentation
@@ -45,10 +47,10 @@ function [EMJHG info] = get_EMJHG_foetus(p, eb)
   EMJHG = zeros(n,5); info = ones(n);
 
   for i = 1:n
-    [uE0, lb, tb, info(i)] = get_ue0_foetus(p, eb(i));
-    [t ulhMJ] = ode45(@dget_ulhMJ_foetus, [0;tb], [uE0; 0; 0; 0; 0], [], g, kap, k);
+    [uE0(i), lb, tb, info(i)] = get_ue0_foetus(p, eb(i));
+    [t ulhMJ] = ode45(@dget_ulhMJ_foetus, [0;tb], [uE0(i); 0; 0; 0; 0], [], g, kap, k);
     EMJHG(i, :) = [eb(i) * lb^3/ g, ulhMJ(end,[4 5]), vHb * (1 - kap), kap * lb^3];
-    EMJHG(i, :) = EMJHG(i, :)/sum(EMJHG(i, :));
+    EMJHG(i, :) = EMJHG(i, :)/ sum(EMJHG(i, :));
   end
 
   if exist('kap_G','var') == 1
