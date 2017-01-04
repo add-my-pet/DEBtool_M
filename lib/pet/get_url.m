@@ -3,13 +3,13 @@
 
 %%
 function url = get_url(my_pet, bibkey)
-  % created by Bas Kooijman at 2015/07/23
+  % created by Bas Kooijman at 2015/07/23, modified 2017/04/01
   
   %% Syntax
   % url = <../get_url.m *get_url*>(my_pet, bibkey)
 
   %% Description
-  % Extracts url from a bibkey in metadata.biblist in a mydata-file
+  % Extracts url from a bibkey in metaData.biblist in a mydata-file
   %
   % Input
   %
@@ -21,7 +21,7 @@ function url = get_url(my_pet, bibkey)
   % * character string with url 
 
   %% Remarks
-  % bibkey should be a field of metadata.biblist and contain http, else the result is empty.
+  % bibkey should be a field of metaData.biblist and contain http, else the result is empty.
   % If several http's exist in a bib-entry, only the first one is extracted
   
   
@@ -40,20 +40,20 @@ function url = get_url(my_pet, bibkey)
   end
 
   % run mydata_my_pet and fill metadata
-  eval(['[data, txt_data, metadata] = mydata_', my_pet, ';']);
+  eval(['[data, txt_data, metaData] = mydata_', my_pet, ';']);
 
   if ~exist('bibkey', 'var')
-    if isfield(metadata.biblist, 'Wiki') 
-      url = metadata.biblist.Wiki;
-    elseif isfield(metadata.biblist, 'wiki') 
-      url = metadata.biblist.wiki;
+    if isfield(metaData.biblist, 'Wiki') 
+      url = metaData.biblist.Wiki;
+    elseif isfield(metaData.biblist, 'wiki') 
+      url = metaData.biblist.wiki;
     else
       url = {};
       return
     end
   else
-    if isfield(metadata.biblist, bibkey)
-      url = eval(['metadata.biblist.', bibkey]);
+    if isfield(metaData.biblist, bibkey)
+      url = eval(['metaData.biblist.', bibkey]);
     else
       url = {};
       return
