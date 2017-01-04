@@ -1,4 +1,2 @@
-Balaenopteridae
-Phocoenidae
-Delphinidae
-Monodontidae
+Odontoceti
+Mysticeti
