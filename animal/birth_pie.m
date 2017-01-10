@@ -2,7 +2,7 @@
 % Plots pie diagram for the cumulative energy investment at birth
 
 %%
-function [Hfig EMJHG info] = birth_pie(p, eb)
+function [Hfig EMJHG ue0 info] = birth_pie(p, eb)
   % created at 2011/01/19 by Bas Kooijman; modified 2016/05/03, 2017/01/04
   
   %% Syntax

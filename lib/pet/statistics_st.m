@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -72,30 +72,38 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - a_h: age at hatch; all if E_Hh exists
 %     - L_h: structural length at hatch; all if E_Hh exists
 %     - M_Vh: structural mass at hatch; all if E_Hh exists
+%     - M_Eh: reserve mass at hatch; all if E_Hh exists
 %     - Ww_h: wet weight at hatch; all if E_Hh exists
 %     - Wd_h: dry weight at hatch; all if E_Hh exists
+%     - E_Wh: energy content at hatch; all if E_Hh exists
 %     - del_Uh: fraction of reserve left at hatch; all if E_Hh exists
 %
 %     - a_b: age at birth; all (called gestation for stf and stx)
 %     - t_g: gestation time; stf, stx
 %     - L_b: structural length at birth; all
 %     - M_Vb: structural mass at birth; all
+%     - M_Eb: reserve mass at birth; all
 %     - Ww_b: wet weight at birth; all
 %     - Wd_b: dry weight at birth; all
+%     - E_Wb: energy content at birth; all
 %     - del_Ub: fraction of reserve left at birth; all
 %     - g_Hb: energy outvestment ratio at birth; all
 %
 %     - a_p: age at puberty; all
 %     - L_p: structural length at puberty; all
 %     - M_Vp: structural mass at puberty; all
+%     - M_Ep: reserve mass at puberty; all
 %     - Ww_p: wet weight at puberty; all
 %     - Wd_p: dry weight at puberty; all
+%     - E_Wp: energy content at puberty; all
 %     - g_Hp: energy outvestment ratio at puberty; all
 %
 %     - L_i: ultimate structural length; all 
 %     - M_Vi: ultimate structural mass; all
+%     - M_Ei: ultimate reserve mass; all
 %     - Ww_i: ultimate structural weight; all
 %     - Wd_i: ultimate structural dry weight; all
+%     - E_Wi: ultimate energy content; all
 %     - del_V: fraction of max weight that is structure; all
 %     - xi_WE: whole-body energy density (no reprod buffer) 
 %     - del_Wb: birth weight as fraction of maximum weight       
@@ -522,26 +530,29 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   end
   
   % hatch
-  if any(strcmp(mat_index,'h'))     % hatching 
+  if any(strcmp(mat_index,'h'))       % hatching 
     [U_H aUL] = ode45(@dget_aul, [0; U_Hh; U_Hb], [0 U_E0 1e-10], [], kap, v, k_J, g, L_m);
-    t_h = aUL(2,1) * k_M;           % d, age at hatch at f and T
-    M_Eh = J_E_Am * aUL(end,2);     % mol, reserve at hatch at f
-    l_h = aUL(2,3)/L_m;             % cm, scaled structural length at f
-    L_h = L_m * l_h; M_Vh = M_V * L_h^3; Ww_h = L_h^3 + w_E * M_Eh/ d_E; Wd_h = d_V * L_h^3 + w_E * M_Eh; 
+    t_h = aUL(2,1) * k_M;             % d, age at hatch at f and T
+    M_Eh = J_E_Am * aUL(end,2);       % mol, reserve at hatch at f
+    l_h = aUL(2,3)/L_m;               % cm, scaled structural length at f
+    L_h = L_m * l_h; M_Vh = M_V * L_h^3; E_Wh = M_Vh * mu_V + M_Eh * mu_E; % J, energy content at hatch
+    Ww_h = L_h^3 + w_E * M_Eh/ d_E; Wd_h = d_V * L_h^3 + w_E * M_Eh; 
     a_h = t_h/ k_M/ TC; del_Uh = M_Eh/ M_E0; % -, fraction of reserve left at hatch
     stat.l_h = l_h;   units.l_h = '-';    label.l_h = 'scaled structural length at hatch';
     stat.L_h = L_h;   units.L_h = 'cm';   label.L_h = 'structural length at hatch';
     stat.M_Vh = M_Vh; units.M_Vh = 'mol'; label.M_Vh = 'structural mass at hatch';
+    stat.M_Eh = M_Eh; units.M_Eh = 'mol'; label.M_Eh = 'reserve mass at hatch';
     stat.del_Uh = del_Uh; units.del_Uh = '-'; label.del_Uh = 'fraction of reserve left at hatch';
     stat.Ww_h = Ww_h; units.Ww_h = 'g';   label.Ww_h = 'wet weight at hatch';
     stat.Wd_h = Wd_h; units.Wd_h = 'g';   label.Wd_h = 'dry weight at hatch';
+    stat.E_Wh = E_Wh; units.E_Wh = 'J';   label.E_Wh = 'energy content at hatch';
     stat.a_h = a_h; units.a_h = 'd';      label.a_h = 'age at hatch';
   end
   
   % birth
   L_b = L_m * l_b; 
   M_Vb = M_V * L_b^3; M_Eb = f * E_m * L_b^3/ mu_E; 
-  Ww_b = L_b^3 * (1 + f * w); Wd_b = d_V * Ww_b; 
+  Ww_b = L_b^3 * (1 + f * w); Wd_b = d_V * Ww_b; E_Wb = M_Vb * mu_V + M_Eb * mu_E;
   a_b = t_b/ k_M/ TC; del_Ub = M_Eb/ M_E0; % -, fraction of reserve left at birth
   g_Hb = E_Hb/ L_b^3/ (1 - kap)/ E_m; 
   stat.l_b = l_b;   units.l_b = '-';      label.l_b = 'scaled structural length at birth';
@@ -550,8 +561,9 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.del_Ub = del_Ub; units.del_Ub = '-'; label.del_Ub = 'fraction of reserve left at birth';
   stat.Ww_b = Ww_b; units.Ww_b = 'g';     label.Ww_b = 'wet weight at birth';
   stat.Wd_b = Wd_b; units.Wd_b = 'g';     label.Wd_b = 'dry weight at birth';
-  stat.a_b = a_b;   units.a_b = 'd';    label.a_b = 'age at birth';    
-  stat.g_Hb = g_Hb; units.g_Hb = '-';  label.g_Hb = 'energy outvestment ratio at birth'; 
+  stat.E_Wb = E_Wb; units.E_Wb = 'J';     label.E_Wb = 'energy content at birth';  
+  stat.a_b = a_b;   units.a_b = 'd';      label.a_b = 'age at birth';    
+  stat.g_Hb = g_Hb; units.g_Hb = '-';     label.g_Hb = 'energy outvestment ratio at birth'; 
   if strcmp(model, 'stf') || strcmp(model, 'stx') % foetus or budding
         if exist('t_0','var')==0
         t_0 = 0;
@@ -563,30 +575,39 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % start/end shrinking
   if strcmp(model, 'ssj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; M_Es = f * E_m * L_s^3/ mu_E; E_Ws = M_Vs * mu_V + M_Es * mu_E;
+    Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';    label.l_s = 'scaled structural length at start strinking';
     stat.L_s = L_s;   units.L_s = 'cm';   label.L_s = 'structural length at start strinking';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol'; label.M_Vs = 'structural mass at start strinking';
+    stat.M_Es = M_Es; units.M_Es = 'mol'; label.M_Es = 'reserve mass at start strinking';
     stat.Ww_s = Ww_s; units.Ww_s = 'g';   label.Ww_s = 'wet weight at start strinking';
     stat.Wd_s = Wd_s; units.Wd_s = 'g';   label.Wd_s = 'dry weight at start strinking';
+    stat.E_Ws = E_Ws; units.E_Ws = 'J';   label.E_Ws = 'energy content at start strinking';
     stat.a_s = a_s;   units.a_s = 'd';    label.a_s = 'age at start strinking';
-    M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; 
+    M_Vj = M_V * L_j^3; M_Ej = f * E_m * L_j^3/ mu_E; E_Wj = M_Vj * mu_V + M_Ej * mu_E;
+    Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; 
     stat.l_s = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at end strinking';
     stat.L_s = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at end strinking';
     stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at end strinking';
+    stat.M_Ej = M_Ej; units.M_Ej = 'mol'; label.M_Ej = 'reserve mass at end strinking';
     stat.Ww_j = Ww_j; units.Ww_j = 'g';   label.Ww_j = 'wet weight at end strinking';
     stat.Wd_j = Wd_j; units.Wd_j = 'g';   label.Wd_j = 'dry weight at end strinking';
+    stat.E_Wj = E_Wj; units.E_Wj = 'J';   label.E_Wj = 'energy content at end strinking';
     stat.a_j = a_s + t_sj; units.a_j = 'd'; label.a_j = 'age at end strinking';
   end
   
   % start acceleration
   if strcmp(model, 'asj')
-    L_s = L_m * l_s; M_Vs = M_V * L_s^3; Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
+    L_s = L_m * l_s; M_Vs = M_V * L_s^3; M_Es = f * E_m * L_s^3/ mu_E; E_Ws = M_Vs * mu_V + M_Es * mu_E;
+    Ww_s = L_s^3 * (1 + w * f); Wd_s = d_V * Ww_s; a_s = t_s/ k_M/ TC; 
     stat.l_s = l_s;   units.l_s = '-';     label.l_s = 'scaled structural length at start acceleration';
     stat.L_s = L_s;   units.L_s = 'cm';    label.L_s = 'structural length at start acceleration';
     stat.M_Vs = M_Vs; units.M_Vs = 'mol';  label.M_Vs = 'structural mass at start acceleration';
+    stat.M_Es = M_Es; units.M_Es = 'mol';  label.M_Es = 'reserve mass at start acceleration';
     stat.Ww_s = Ww_s; units.Ww_s = 'g';    label.Ww_s = 'wet weight at start acceleration';
     stat.Wd_s = Wd_s; units.Wd_s = 'g';    label.Wd_s = 'dry weight at start acceleration';
+    stat.E_Ws = E_Ws; units.E_Ws = 'J';    label.E_Ws = 'energy content at start acceleration';
     stat.a_s = a_s;   units.a_s = 'd';     label.a_s = 'age at start acceleration';
   end
   
@@ -597,23 +618,29 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   % metamorphosis
   switch model
     case {'abj', 'asj', 'abp', 'hep', 'hex'}
-      L_j = L_m * l_j; M_Vj = M_V * L_j^3; Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; a_j = t_j/ k_M/ TC; 
+      L_j = L_m * l_j; M_Vj = M_V * L_j^3; M_Ej = f * E_m * L_j^3/ mu_E; E_Wj = M_Vj * mu_V + M_Ej * mu_E;
+      Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; a_j = t_j/ k_M/ TC; 
       stat.l_j = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at metamorphosis';
       stat.L_j = L_j;   units.L_j = 'cm';   label.L_j = 'structural length at metamorphosis';
       stat.M_Vj = M_Vj; units.M_Vj = 'mol'; label.M_Vj = 'structural mass at metamorphosis';
+      stat.M_Ej = M_Vj; units.M_Ej = 'mol'; label.M_Ej = 'reserve mass at metamorphosis';
       stat.Ww_j = Ww_j; units.Ww_j = 'g';   label.Ww_j = 'wet weight at metamorphosis';
       stat.Wd_j = Wd_j; units.Wd_j = 'g';   label.Wd_j = 'dry weight at metamorphosis';
+      stat.E_Wj = E_Wj; units.E_Wj = 'J';   label.E_Wj = 'energy content at metamorphosis';
       stat.a_j = a_j;   units.a_j = 'd';    label.a_j = 'age at metamorphosis';
   end
   
   % puberty
-  L_p = L_m * l_p; M_Vp = M_V * L_p^3; Ww_p = L_p^3 * (1 + w * f); Wd_p = d_V * Ww_p; a_p = t_p/ k_M/ TC; 
+  L_p = L_m * l_p; M_Vp = M_V * L_p^3; M_Ep = f * E_m * L_p^3/ mu_E; E_Wp = M_Vp * mu_V + M_Ep * mu_E;
+  Ww_p = L_p^3 * (1 + w * f); Wd_p = d_V * Ww_p; a_p = t_p/ k_M/ TC; 
   g_Hp = E_Hp/ L_p^3/ (1 - kap)/ E_m; s_Hbp = g_Hb/ g_Hp;
   stat.l_p = l_p;      units.l_p = '-';     label.l_p = 'scaled structural length at puberty';
   stat.L_p = L_p;      units.L_p = 'cm';    label.L_p = 'structural length at puberty';
   stat.M_Vp = M_Vp;    units.M_Vp = 'mol';  label.M_Vp = 'structural mass at puberty';
+  stat.M_Ep = M_Ep;    units.M_Ep = 'mol';  label.M_Ep = 'reserve mass at puberty';
   stat.Ww_p = Ww_p;    units.Ww_p = 'g';    label.Ww_p = 'wet weight at puberty';
   stat.Wd_p = Wd_p;    units.Wd_p = 'g';    label.Wd_p = 'dry weight at puberty';
+  stat.E_Wp = E_Wp;    units.E_Wp = 'J';    label.E_Wp = 'energy content at puberty';
   stat.a_p = a_p;      units.a_p = 'd';     label.a_p = 'age at puberty';
   stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy outvestment ratio at puberty'; 
   stat.s_Hbp = s_Hbp;  units.s_Hbp = '-';   label.s_Hbp = 'precociality coefficient'; 
@@ -626,25 +653,32 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   % emergence
   switch model
     case 'hep' % acceleration between a and p; emergence at j
-      L_e = L_m * l_j; M_Ve = M_V * L_e^3; Ww_e = L_e^3 * (1 + f * w); Wd_e = d_V * Ww_e; a_e = t_j/ k_M/ TC; 
+      L_e = L_m * l_j; M_Ve = M_V * L_e^3; M_Ee = f * E_m * L_e^3/ mu_E; E_We = M_Ve * mu_V + M_Ee * mu_E;
+      Ww_e = L_e^3 * (1 + f * w); Wd_e = d_V * Ww_e; a_e = t_j/ k_M/ TC; 
       stat.l_e = l_j;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
       stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
       stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
+      stat.M_Ee = M_Ee; units.M_Ee = 'mol'; label.M_Ee = 'reserve mass at emergence';
       stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
       stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
+      stat.E_We = E_We; units.E_We = 'J';   label.E_We = 'energy content at emergence (excl rep buffer)';
       stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
     case 'hex'
-      L_e = L_m * l_e; M_Ve = M_V * L_e^3; Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
+      L_e = L_m * l_e; M_Ve = M_V * L_e^3; M_Ee = p_Am * u_Ee * v^2/ g^2/ k_M^3; E_We = M_Ve * mu_V + M_Ee * mu_E;
+      Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
       stat.l_e = l_e;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence';
       stat.L_e = L_e;   units.L_e = 'cm';   label.L_e = 'structural length at emergence';
       stat.M_Ve = M_Ve; units.M_Ve = 'mol'; label.M_Ve = 'structural mass at emergence';
+      stat.M_Ee = M_Ee; units.M_Ee = 'mol'; label.M_Ee = 'reserve mass at emergence';
       stat.Ww_e = Ww_e; units.Ww_e = 'g';   label.Ww_e = 'wet weight at emergence';
       stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence';
+      stat.E_We = E_We; units.E_We = 'J';   label.E_We = 'energy content at emergence (excl rep buffer)';
       stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence';
  end
   
   % ultimate
-  L_i = L_m * l_i; M_Vi = M_V * L_i^3; Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
+  L_i = L_m * l_i; M_Vi = M_V * L_i^3; M_Ei = f * E_m * L_i^3/ mu_E; E_Wi = M_Vi * mu_V + M_Ei * mu_E;
+  Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
   if strcmp(model, 'hep') 
     Ww_i = Ww_e; Wd_i = Wd_e; 
   elseif strcmp(model, 'hex')
@@ -656,8 +690,10 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.l_i = l_i;      units.l_i = '-';     label.l_i = 'ultimate scaled structural length';
   stat.L_i = L_i;      units.L_i = 'cm';    label.L_i = 'ultimate structural length';
   stat.M_Vi = M_Vi;    units.M_Vi = 'mol';  label.M_Vi = 'ultimate structural mass';
+  stat.M_Ei = M_Ei;    units.M_Ei = 'mol';  label.M_Ei = 'ultimate reserve mass';
   stat.Ww_i = Ww_i;    units.Ww_i = 'g';    label.Ww_i = 'ultimate wet weight';
   stat.Wd_i = Wd_i;    units.Wd_i = 'g';    label.Wd_i = 'ultimate dry weight';
+  stat.E_Wi = E_Wi;    units.E_Wi = 'J';    label.E_Wi = 'ultimate energy content';
   xi_WE = 1e-3 * (mu_V + mu_E * m_Em * f)/ (f * w);  % kJ/g, whole-body energy density (no reprod buffer) 
   stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = '<E + E_V>, whole-body energy density (no reprod buffer)';   
   stat.del_Wb  = del_Wb; units.del_Wb = '-'; label.del_Wb   = 'birth weight as fraction of maximum weight';         

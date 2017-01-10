@@ -10,6 +10,7 @@ function [EMJHG uE0 info] = get_EMJHG(p, eb)
   
   %% Description
   % Gets cumulative energy investment to somatic and maturity maintenance, growth and maturation at birth
+  % If p(5) is specified, growth is splitted in dissipated and fixed in structure
   %
   % Input
   %
@@ -19,9 +20,8 @@ function [EMJHG uE0 info] = get_EMJHG(p, eb)
   % Output
   %
   % * EMJHG: (n,5 or 6)-matrix with in the columns fractions of initial reserve at birth
-  %    reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
   %
-  %    If p(5) is specified, growth is splitted in dissipated and fixed in structure
+  %    - reserve left at birth, cumulatively allocated to som maint, mat maint, maturation, growth 
   %
   % * uE0: n-vector with scaled initial reserve
   % * info: n-vector with 1's for success and 0's otherwise for uE0 and tau_b-computations
