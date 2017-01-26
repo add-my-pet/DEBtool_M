@@ -22,10 +22,9 @@ function estim_options (key, val)
   % * two inputs
   %
   %   'loss_function': 
-  %     E - scaling done with only data;
-  %     F - scaling done with data and predictions;
-  %     G - F/(1 - F);
-  %     H - G^(1/2);
+  %     re - relative error (symmetric by addition);
+  %     sb - multiplicative symmetric bounded (default);
+  %     su - multiplicative symmetric unbounded;
   %   'filter': 1 - use filter (default); 0 - do not;
   %   'pars_init_method':
   %     0 - get initial estimates from automatized computation (default)
@@ -64,7 +63,7 @@ function estim_options (key, val)
   switch key
 	
     case 'default'
-      lossfunction = 'F';
+      lossfunction = 'sb';
       filter = 1;
       cov_rules = '1species';
       pars_init_method  = 0;
@@ -80,10 +79,8 @@ function estim_options (key, val)
         else
           fprintf('loss_function = unknown \n');
         end
-        fprintf('E - scaling done with only data \n');
-        fprintf('F - scaling done with data and predictions \n');
-        fprintf('G - F/(1 - F) \n');
-        fprintf('H - G^(1/2) \n');
+        fprintf('sb - multiplicative symmetric bounded \n');
+        fprintf('su - multiplicative symmetric unbounded \n');
       else
         lossfunction = val;
       end

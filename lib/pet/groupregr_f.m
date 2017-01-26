@@ -285,9 +285,6 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
       fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
 	     '-', num2str(max(fv)), ' ', how, '\n']);
     end  
-    if(itercount == 49)
-      par
-    end
   end 
 
   q = parVec2Struct(q, v(:,1), mapVec2Struct);
