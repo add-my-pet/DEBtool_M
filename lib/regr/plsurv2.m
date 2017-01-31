@@ -60,7 +60,7 @@ function [proflik, info] = plsurv2(func, p, t, y, Z, range)
   else
     par_nr = index(2 == p(:,2)); % index of parameter for prof likelihood
   end
-  if 1 != prod(size(par_nr))
+  if 1 ~= prod(size(par_nr))
     printf('codes for parameters are invalid\n');
     return
   end
