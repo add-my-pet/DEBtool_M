@@ -66,7 +66,7 @@ function estim_options (key, val)
       lossfunction = 'sb';
       filter = 1;
       cov_rules = '1species';
-      pars_init_method  = 0;
+      pars_init_method  = 2;
       pseudodata_pets = 0;
       results_output = 0;
       method = 'nm';
