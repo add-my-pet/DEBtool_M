@@ -1,4 +1,0 @@
-Gammarus_fossarum
-Gammarus_pseudolimnaeus
-Gammarus_pulex
-Gammarus_roeseli

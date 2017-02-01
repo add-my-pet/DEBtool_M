@@ -1,6 +1,0 @@
-Calidris_ferruginea
-Calidris_alpina
-Calidris_bairdii
-Calidris_minuta
-Calidris_minutilla
-Calidris_maritima

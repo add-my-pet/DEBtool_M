@@ -1,4 +1,0 @@
-Daphnia_cucullata
-Daphnia_hyalina
-Daphnia_magna
-Daphnia_pulex
