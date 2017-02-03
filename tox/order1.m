@@ -11,6 +11,6 @@ function f = order1 (p, t, c)
   t0 = -log(max(1e-8,1-c0./max(1e-8,c')))/k; % no-effect-time
   c1 = ones(1,max(size(c)));
   t1 = ones(max(size(t)),1);
-  f = (b/k)*max(0,t1*e.^(-k*t0) - e.^(-k*t)*c1).*(t1*c') - ...
+  f = (b/k)*max(0,t1*exp(-k*t0) - exp(-k*t)*c1).*(t1*c') - ...
       b*(t1*(max(0,c-c0)')).*max(0,t*c1 - t1*t0);
-  f = min(1,e.^f).* (e.^(-h*t)*c1);
+  f = min(1,exp(f)).* (exp(-h*t)*c1);

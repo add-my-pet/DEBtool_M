@@ -15,4 +15,6 @@ p = scsurv2('order1',p,t,c,N);
 [cov,cor,sd,dev]=psurv2('order1',p,t,c,N);
 [p, sd]
 shregr2_options('all_in_one',0);
+shregr2_options('Range', 1, [0 8.5]);
+shregr2_options('Range', 2, [0 100]);
 shsurv2('order1',p,t,c,N);
