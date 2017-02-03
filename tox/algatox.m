@@ -80,10 +80,10 @@ function f = algatox(p, t, c)
   m0 = kN/ kE; % initial reserve density
   for i = 1:nc % loop across concentrations
     ci = c(i); % current concentration
-    F = e^(-max(0,(c(i)-c0)/ cH)); % initial survival prob
+    F = exp(-max(0,(c(i)-c0)/ cH)); % initial survival prob
     %% initial state vector background, nutrient, reserve, living, dead, ghost
     Y0 = [B0, N0, m0, X0*F, X0*(1-F), 0]';
-    Y = ode23s('dalgatox', t, Y0); % integrate
+    [t Y] = ode23s('dalgatox', t, Y0); % integrate
     %% unpack state vector
     X = Y(:,4); Xd = Y(:,5); Xg = Y(:,6); % living, dead, ghost
     f(:,i) = w*X + wd*Xd + w0*Xg; % optical density

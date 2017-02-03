@@ -11,7 +11,6 @@ function shregr2_options (key, item, val)
     if ~exist('key', 'var')
       for i = 1:(r-1)
 	    txt = options(i,:);
-	    txt = txt(txt~=' ');
 	    if ~exist('txt', 'var')
 	      fprintf([options(i,:), ' : unkown \n']);
 	    else
@@ -41,7 +40,7 @@ function shregr2_options (key, item, val)
     switch key
 
       case 'default'
-        clear xtext ytext ztext plotnr Range all_in_one;
+        clear xtext ytext ztext plotnr all_in_one Range
 	
       case 'plotnr'
 	    plotnr = item;
