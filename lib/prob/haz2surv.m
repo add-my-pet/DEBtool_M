@@ -26,7 +26,7 @@ function S = haz2surv(fnm, t)
   %% Example of use 
   % see <../mydata_haz2surv.m *mydata_haz2surv*>
 
-  t = [0; t(:)]; % prepent zero for time points
+  t = [-1e-6; t(:)]; % prepent zero for time points
   eval(['[t, ch] = ode45(''', fnm, ''', t, 0);']); % cumulative hazard
   S = exp( - ch); S(1) = []; % survival probability
 

@@ -235,7 +235,7 @@ function [q, info] = nmsurv3(func, p, t, x, y, Z)
                q(index,1) = v(:,j);
                eval(['F = ', func, '(q(:,1), t, x, y);']);
                prob = F - [F(2:nt,:); zeros(1,nxy)]; % death probabilities
-               prob = reshape(prob,nty,1);
+               prob = reshape(prob,ntxy,1);
                d = 2 * (likmax - D' * log(max(1e-10,prob)));  
                fv(:,j) = d;
             end
