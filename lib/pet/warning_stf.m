@@ -7,7 +7,7 @@ function warning_stf(p)
 % 2015/08/03 by starrlight
 
 %% Syntax
-% <../warning_abj.m *warning_abj*> (p)
+% <../warning_stf.m *warning_stf*> (p)
 
 %% Description
 % Checks if parameter values are in the reasonable part of the parameter

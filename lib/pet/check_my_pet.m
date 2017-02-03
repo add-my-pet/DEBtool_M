@@ -60,7 +60,7 @@ end
 function check_my_pet_stnm(speciesnm)
 
 if ~isempty(strfind(speciesnm, ' '))
-  error('   The species name in input should not have spaces.\n The standard species name follow the form ''Genus_species' );
+  error('The species name in input should not have spaces.\n The standard species name follow the form ''Genus_species' );
 end
   
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,7 +203,7 @@ if sum(strcmp(txtDataFields, 'units'))
     if sum(strcmp(dataFields(i), unitsFields))
       unitsChecked = unitsChecked + strcmp(dataFields(i), unitsFields);
     else
-      error(['   In mydata_',speciesnm,'.m: There are no units defined for data point/set ', dataFields{i}, '. \n']);
+      error(['In mydata_',speciesnm,'.m: There are no units defined for data point/set ', dataFields{i}, '. \n']);
     end
   end
   
@@ -479,7 +479,7 @@ end
 % checking the existence of metapar fields
 EparFields = get_parfields(metaPar.model);
 
-if isempty(EparFields) && ~strcmp(metaPar.model, 'ntm')
+if isempty(EparFields) && ~strcmp(metaPar.model, 'nat')
   error(['    In pars_init_',speciesnm,'.m: The model ', metaPar.model, ' is not one of the predefined models']);
 end
 

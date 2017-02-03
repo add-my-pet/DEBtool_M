@@ -4,13 +4,13 @@
 %%
 function nsteps = estim_pars;
   % created 2015/02/10 by Goncalo Marques
-  % modified 2015/02/10 by Bas Kooijman, 2015/03/31, 2015/07/30 by Goncalo Marques
+  % modified 2015/02/10 by Bas Kooijman, 2015/03/31, 2015/07/30 by Goncalo Marques, 2017/02/03
   
   %% Syntax 
   % <../estim_pars.m *estim_pars*>
   
   %% Description
-  % Runs the entire estimation procedures
+  % Runs the entire estimation procedure
   %
   % * gets the parameters
   % * gets the data
@@ -27,6 +27,7 @@ function nsteps = estim_pars;
   
   %% Remarks
   % estim_options sets many options
+  % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
   
 global pets toxs pars_init_method method filter cov_rules
 
@@ -100,18 +101,17 @@ if filter
     pass = pass * passSpec;
   end
   if ~pass 
-    error('    The seed parameter set is not realistic.');
+    error('The seed parameter set is not realistic.');
   end
+else
+  filternm = 'filter_nat'; % this filter always gives a pass
+  pass = 1;
 end
 
 if ~strcmp(method, 'no')
   if strcmp(method, 'nm')
     if petsnumber == 1
-      if filter
-        [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
-      else
-        par = petregr('predict_pets', par, data, auxData, weights); % WLS estimate parameters using overwrite
-      end
+      [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
     else
       par = groupregr_f('predict_pets', par, data, auxData, weights, filternm); % WLS estimate parameters using overwrite
     end

@@ -3,7 +3,7 @@
 
 %%
 function [coreParFields, info] = get_parfields(model)
-% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques;
+% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 2017/02/03 by Bas Kooijman
  
   %% Syntax 
   % [coreParFields, info] = <../get_parfields.m *get_parfields*> (model)
@@ -14,12 +14,12 @@ function [coreParFields, info] = get_parfields(model)
   %
   % Input
   %
-  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'. 
+  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex', 'nat'. 
   %
   % Output
   %
   % * coreParFields: cell string with field names
-  % * info: scalar 1 for sucess, 0 for failure 
+  % * info: scalar 1 for success, 0 for failure 
   
   %% Remarks
   % check_my_pet is a macro for check_my_pet_stnm, which checks each species one by one
@@ -52,6 +52,9 @@ function [coreParFields, info] = get_parfields(model)
 
   case 'hex'
     coreParFields =  {'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};
+    
+  case 'nat'  
+    coreParFields =  {};
     
   otherwise
     coreParFields  = {}; 

@@ -33,9 +33,7 @@ function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, fil
 %   and uses a filter.
 % The number of fields in data is variable
 
-   
-  global lossfunction
-  global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
+  global lossfunction report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
   % option settings
   info = 1; % initiate info setting
@@ -72,7 +70,6 @@ function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, fil
   free = par.free; % free is here removed, and after iteration added again
   q = rmfield(par, 'free'); % copy input parameter matrix into output
   qvec = cell2mat(struct2cell(q));
-  info = 1; % convergence has been successful
   
   % set options if necessary
   if ~exist('max_step_number','var') || isempty(max_step_number)
