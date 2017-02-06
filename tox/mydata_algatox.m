@@ -71,7 +71,6 @@ p = nmregr2('algatox', pars, time, conc, OD) % estimate parameters
 [cov, cor, sd, ss] = pregr2('algatox', p, time, conc, OD);
 [p, sd] % show parameter values and standard deviations
 
-% shregr2('algatox', pars, time, conc, OD); % show results
 shregr2_options('Range', 1, [0.2 0.85]);
 shregr2_options('Range', 2, [0.2 0.55]);
 shregr2('algatox', p, time, conc, OD); % show results
