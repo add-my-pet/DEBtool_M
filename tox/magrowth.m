@@ -19,7 +19,8 @@ function Lt = magrowth(p, t, c)
   %% Example of use
   %  see mydata_growth
 
-  %% Code
+  % Code
+  
   global C nc c0 cM ke g kM v
 
   C = c; nc = size(C,1); % copy concentrations into dummy

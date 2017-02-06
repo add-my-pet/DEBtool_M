@@ -27,7 +27,7 @@ function dX = dmagrowth(t, X)
 
   Lms = v ./ (kMs * g);     % maximum length in stressed situation
   eg = E * g ./ (E + g);     % in DEB notation: e g/ (e + g)
-  SC = L .^ 2 * eg .* (1 + L./ (g * Lms));     % SC = J_EC/ {J_AEm}
+  SC = L .^ 2 .* eg .* (1 + L./ (g * Lms));     % SC = J_EC/ {J_AEm}
 
   rBs = kMs * g ./ (3 * (E + g)); % von Bert growth rate
   dL = rBs .* (E .* Lms - L);     % change in length
