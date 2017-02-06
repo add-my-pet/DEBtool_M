@@ -38,7 +38,7 @@ shregr2_options('xlabel', 'time, h');
 shregr2_options('zlabel', 'OD');
 
 % make plots
-% shregr2('algatox', pars, time, conc);
+shregr2('algatox', pars, time, conc);
 
 % set observations
 % Data from Prof. José Antonio Perales Vargas-Machuca
@@ -68,8 +68,8 @@ OD = [0.285	0.318	0.461	0.634	0.807;
 
 p = nmregr2('algatox', pars, time, conc, OD) % estimate parameters
 % get statistics for parameter estimates
-% [cov, cor, sd, ss] = pregr2('algatox', p, time, conc, OD);
-% [p, sd] % show parameter values and standard deviations
+[cov, cor, sd, ss] = pregr2('algatox', p, time, conc, OD);
+[p, sd] % show parameter values and standard deviations
 
 % shregr2('algatox', pars, time, conc, OD); % show results
 shregr2_options('Range', 1, [0.2 0.85]);

@@ -1,3 +1,5 @@
+
+
 % dieldrin concentrations
 c = [0 .32 5.6 10 18 32 56 100]';
 % exposure times
