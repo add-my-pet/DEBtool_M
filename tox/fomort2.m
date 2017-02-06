@@ -1,27 +1,36 @@
+%% fomort2
+% standard effect on survival of a binary mixture
+
+%%
 function S = fomort2 (p, t, c1 ,c2)
   %  created 2006/03/08 by Bas Kooijman, modified 2008/12/30
+  
+  %% Syntax
+  % S = <../fomort2 *fomort2*> (p, t, c1 ,c2)
+  
+  %% Description
+  % standard effects on survival: first-order-mortality. 
+  % First order toxico kinetics.
+  % Hazard rate linear in the internal conc
   %
-  %% Descriptiob
-  %  standard effects on survival: first-order-mortality
-  %   first order toxico kinetics
-  %   hazard rate linear in the internal conc
+  % Input
   %
-  %% Input
-  %  p: (8,1) matrix with parameters values
-  %  t: (nt,1) matrix with exposure times
-  %  c1: (nA,1) matrix with concentrations of toxic compound type 1
-  %  c2: (nB,1) matrix with concentrations of toxic compound type 2
+  % * p: (8,1) matrix with parameters values
+  % * t: (nt,1) matrix with exposure times
+  % * c1: (nA,1) matrix with concentrations of toxic compound type 1
+  % * c2: (nB,1) matrix with concentrations of toxic compound type 2
   %
-  %% Output
-  %  S: (nt,nA*nB) matrix with survival probabilities
+  % Output
   %
+  % * S: (nt,nA*nB) matrix with survival probabilities
+  
   %% Example of use
-  %n see mydata_fomort2
+  % see <../mydata_fomort2.m *mydata_fomort2*>
 
   global cA cB CA0 CB0 kA kB
 
   
-  %% unpack parameters
+  % unpack parameters
   h0 = p(1);  % 1/h, blank mortality prob rate (always >0)
   CA0 = p(2); % mM, No-Effect-Concentration for A (external, may be zero)
   CB0 = p(3); % mM, No-Effect-Concentration for B (external, may be zero)

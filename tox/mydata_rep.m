@@ -74,7 +74,7 @@ f = 0.65; % scaled functional response
 %  [cov cor sd] = pregr2('asrep',p,t,c,N);
 
 % par = [1e-6 0.87 0.33 14.04 .1 0.13 0.42 1; 0 1 1 0 0 0 0 0]';
-% p = nmregr2('marep',par,t,c,N);
+% p = nmregr2('marep',p,t,c,N);
 % shregr2('marep',p,t,c,N);
 % [cov cor sd] = pregr2('marep',p,t,c,N);
 

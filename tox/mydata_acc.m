@@ -14,7 +14,11 @@ shregr_options('ylabel', 'internal conc., mmol/g');
 shregr('acc', p, tc); % show fit
 
 [cov cor sd] = pregr('acc', p, tc); % calculate standard deviations
+
+
 [p(:,1), sd] %% show parameters and standard deviations
+
+
 
 % see mydata_acceli for the case where accumulation and elimination
 %   data are available

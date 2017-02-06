@@ -16,4 +16,6 @@ shregr_options('ylabel', 1, 'internal conc., mmol/g');
 shregr_options('ylabel', 2, 'internal conc., mmol/g');
 shregr('acceli', p, tc1, tc2);
 [cov, cor, sd] = pregr('acceli', par, tc1, tc2);
+
+
 [p, sd]

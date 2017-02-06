@@ -1,4 +1,5 @@
-%path(path,'../lib/regr'); % customise path to lib
+%% Demo script: standard effects on survival of a binary mixture
+
 
 %% set par values 
 h0 = .001;  % 1/h, blank mortality prob rate (always >0)
@@ -10,6 +11,7 @@ kA = 1;  % 1/h, elimination rate for A
 kB = 2;  % 1/h, elimination rate for B
 dAB = 0.001; % 1/(h*mM^2), interaction rate for A and B
 par = [h0; CA0; CB0; bA; bB; kA; kB; dAB];
+par_txt = {'h0 , 1/h'; 'CA0, mM'; 'CB0, mM';  'bA, 1/(h*mM)'; 'bB, 1/(h*mM)'; 'kA, 1/h'; 'kB, 1/h'; 'dAB, 1/(h*mM^2)'};
 
 t = [0:7]'; % set time points
 c1 = [0;1.1;2.1;3.1]; % set conc A
@@ -24,7 +26,6 @@ p = nmsurv3('fomort2',par,t,c1,c2,N); % back-estimate pars using nead-melder
 % p = scsurv3('fomort2',p,t,c1,c2,N); % back-estimate pars with scoring method
 
 [cor cov sd dev] = psurv3('fomort2',p,t,c1,c2,N);
-par_txt = {'h0'; 'CA0'; 'CB0'; 'bA'; 'bB'; 'kA'; 'kB'; 'dAB'};
 printpar(par_txt,p,sd)
 
 %% test if interaction rate dAB differs significantly from zero
@@ -44,5 +45,6 @@ parMCr = nmsurv3('fomort2r',p0,t,c1,c2,N);
 devr = dev3 ('fomort2r',parMCr,t,c1,c2,N);
 parMCi = nmsurv3('fomort2i',p0,t,c1,c2,N);
 devi = dev3('fomort2i',parMCi,t,c1,c2,N);
+
 [dev, devr, devi]
 [par(:,1), p0(:,1), parMCr(:,1), parMCi(:,1)]
