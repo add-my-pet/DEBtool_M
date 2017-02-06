@@ -52,6 +52,8 @@ function [proflik, info] = plsurv2(func, p, t, y, Z, range)
   % tny (matrix with numbers of survivors) and Range (2-vector with lower and upper boundary for target parameter) are defined properly: 
   % plsurv('function_name', pars, t, y, tny, Range). 
 
+  proflik = []; info = 0; % initiate output
+ 
   [np k] = size(p); % np is number of parameters
   index = 1:np; % indices of parameters
   if k <= 1
@@ -78,7 +80,7 @@ function [proflik, info] = plsurv2(func, p, t, y, Z, range)
   nbr1 = floor(npar * (p(par_nr,1) - range(1))/(range(2)- range(1)));
 
   if (nbr1<1) | (nbr1>npar) % check range relative to par value
-    printf('selected parameter not within range\n')
+    fprintf('selected parameter not within range\n')
     return
   end
   

@@ -38,8 +38,3 @@ shregr2_options('ylabel', 'compound, mug/l');
 shregr2_options('zlabel', 'fraction of surv fish');
 
 shsurv2('fomortph', p, t, c, N);
-
-% get profile likelihood for the NEC (parameter 2)
-% p = [p, [1 2 1 1]'];
-% proflik = plsurv2('fomort', p, t, c, N, [0 10]);
-% plot(proflik(:,1), proflik(:,2), 'r')
