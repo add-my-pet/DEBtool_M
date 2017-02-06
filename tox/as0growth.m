@@ -1,6 +1,12 @@
+%% as0growth
+
+%%
 function Lt = as0growth(p, t, c)
   %  created 2002/02/18 by Bas Kooijman; modified 2006/09/07, 2013/11/10
-  %
+  
+  %% Syntax
+  % Lt = <../as0growth.m *as0growth*>(p, t, c)
+  
   %% Description
   %  assimilation effects on growth of ectotherm: target is {J_EAm}
   %   slow first order toxico kinetics with dilution by growth
@@ -8,16 +14,18 @@ function Lt = as0growth(p, t, c)
   %   max assim rate linear in internal concentration
   %   abundant food, internal conc and reserve are hidden variables
   %
-  %% Input
-  %  p: 7-vector with parameters values (see below)
-  %  t: (nt,1) matrix with exposure times
-  %  c: (nc,1) matrix with concentrations of toxic compound
+  % Input
   %
-  %% Output
-  %  Lt: (nt,nc) matrix with lengths
+  % * p: 7-vector with parameters values (see below)
+  % * t: (nt,1) matrix with exposure times
+  % * c: (nc,1) matrix with concentrations of toxic compound
   %
+  % Output
+  %
+  % * Lt: (nt,nc) matrix with lengths
+  
   %% Example of use
-  %  see mydata_growth
+  % see <../mydata_growth.m *mydata_growth*>
 
   global C nc c0t cAt g kM v
 

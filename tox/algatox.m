@@ -1,8 +1,15 @@
+%% algatox
+% effects on alga growth
+
+%%
 function f = algatox(p, t, c)
   %  created 2002/02/05 by Bas Kooijman
-  %
+  
+  %% Syntax
+  % f = <../algatox.m *algatox*>(p, t, c)
+  
   %% Description
-  %  effects on alga growth:
+  % effects on alga growth:
   %   (1) partial killing of inoculum
   %   (2) killing during growth
   %   (3) increase of costs for growth
@@ -17,8 +24,10 @@ function f = algatox(p, t, c)
   %   the no-effect-conc for the three effects are taken to be the same
   %     might actually be different, however! 
   %
-  %% Input
-  %  p: (17,k) matrix with parameters values in p(:,1) (see below)
+  % Input:
+  %
+  % *  p: (17,k) matrix with parameters values in p(:,1) (see below)
+  %
   %     01 mM, background nutrient
   %     02 mM, initial nutrient conc
   %     03 mM, initial biomass
@@ -36,27 +45,29 @@ function f = algatox(p, t, c)
   %     15 mM, tolerance conc for initial mortality
   %     16 mM, tolerance concentration for costs of growth
   %     17 1/(mM*h), spec killing rate
-  %  t: (tn,1) matrix with exposure times
-  %  c: (cn,1) matrix with concentrations of toxic compound
   %
-  %% Outout
-  %  f: (nt,nc) matrix with Optical Densities
+  % * t: (tn,1) matrix with exposure times
+  % * c: (cn,1) matrix with concentrations of toxic compound
   %
+  % Outout
+  %
+  % * f: (nt,nc) matrix with Optical Densities
+  
   %% Remarks
-  %  uses routine dalgatox for integration
+  % uses routine dalgatox for integration
   %  Instantaneous equilibrium is assumed for the internal concentration.
   %  Growth is assumed to be nutrient limited, and the nutrient pool is exchanging with a pool that is not available to the algae. 
   %  Algal mass is measured in Optical Densities. The contribution of living biomass, dead biomass and ghost biomass might differ. 
   %  The toxic compound can tranfer living into dead biomass, the dead biomass decays to ghost biomass according to a first order process. 
   %  The no-effect-conc for the three effects are taken to be the same, but they might actually be different, however! 
-  %
+  
   %% Example of use
-  %  see mydata_algatox
+  % see <../mydata_algatox.m *mydata_algatox*>
  
 
   global K yEV kN kE k0 kNB kBN c0 cH cy b ci;
 
-  %% unpack parameter vector
+  % unpack parameter vector
   B0 = p(1);  % mM. background nutrient
   N0 = p(2);  % mM, initial nutrient conc
   X0 = p(3);  % mM, initial biomass
@@ -81,10 +92,10 @@ function f = algatox(p, t, c)
   for i = 1:nc % loop across concentrations
     ci = c(i); % current concentration
     F = exp(-max(0,(c(i)-c0)/ cH)); % initial survival prob
-    %% initial state vector background, nutrient, reserve, living, dead, ghost
+    % initial state vector background, nutrient, reserve, living, dead, ghost
     Y0 = [B0, N0, m0, X0*F, X0*(1-F), 0]';
     [t Y] = ode23s('dalgatox', t, Y0); % integrate
-    %% unpack state vector
+    % unpack state vector
     X = Y(:,4); Xd = Y(:,5); Xg = Y(:,6); % living, dead, ghost
     f(:,i) = w*X + wd*Xd + w0*Xg; % optical density
   end

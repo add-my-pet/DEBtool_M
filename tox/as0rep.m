@@ -1,6 +1,12 @@
+%% as0rep
+
+%%
 function Nt = as0rep(p, t, c)
   %  created 2002/01/18 by Bas Kooijman, modified 2009/02/05
-  %
+  
+  %% Syntax
+  % Nt = <../as0rep.m *as0rep*>(p, t, c)
+  
   %% Description
   %  assimilation effects on reproduction: target is {J_EAm}
   %   max assim rate linear in internal concentration
@@ -9,23 +15,25 @@ function Nt = as0rep(p, t, c)
   %   capacity of repoduction buffer equal to zero
   %   abundant food, internal conc, maturity, reserve are hidden variables
   % 
-  %% Input
-  %  p: 12-vector with parameters values (see below)
-  %  t: (nt,1) matrix with exposure times
-  %  c: (nc,1) matrix with concentrations of toxic compound
+  % Input
   %
-  %% Ouput
-  %  Nt: (nt,nc) matrix with cumulative number of offspring
+  % * p: 12-vector with parameters values (see below)
+  % * t: (nt,1) matrix with exposure times
+  % * c: (nc,1) matrix with concentrations of toxic compound
   %
+  % Ouput
+  %
+  % * Nt: (nt,nc) matrix with cumulative number of offspring
+  
   %% Example of use
-  %  see mydata_rep
+  % see <../mydata_rep.m *mydata_rep*>
 
   global C nc c0t cAt kap kapR g kJ kM v Hb Hp
   global Lb0
 
   C = c; nc = size(C,1); % copy concentrations into dummy
   
-  %% unpack parameters for easy reference
+  % unpack parameters for easy reference
   c0t = p(1); % mM.d, No-Effect-Concentration-time (external, may be zero)
   cAt = p(2); % mM.d, tolerance concentration-time
   ke = p(3);  % 1/d, elimination rate at L = Lm
@@ -38,12 +46,14 @@ function Nt = as0rep(p, t, c)
   Hb = p(10); % d cm^2, scaled maturity at birth
   Hp = p(11); % d cm^2, scaled maturity at puberty
   L0 = p(12); % cm, initial body length
-  %% parameter ke at position 3 is not used, but still present in input
-  %%   for compatibility reasons with asrep
+  
+  % parameter ke at position 3 is not used, but still present in input
+  %   for compatibility reasons with asrep
 
   H0 = maturity(L0, 1, p(4:8),0,p(9:11)); % initial scaled maturity
   U0 = L0^3/ v; % initial reserve at max value
-  %% initialize state vector; catenate to avoid loops
+  
+  % initialize state vector; catenate to avoid loops
   X0 = [zeros(nc,1);     % N: cumulative number of offspring
         H0 * ones(nc,1); % H: scaled maturity H = M_H/ {J_EAm}
         L0 * ones(nc,1); % L: length
@@ -54,7 +64,8 @@ function Nt = as0rep(p, t, c)
   Lb0 = Lb * ones(nc,1);
 
   nt = size(t,1);
-  %% Make sure that initial state vector corresponds to t = 0
+  
+  % Make sure that initial state vector corresponds to t = 0
   if t(1) == 0
     [t, Xt] = ode23('das0rep', t, X0); % integrate changes in state
     Nt = Xt(:,1:nc);
