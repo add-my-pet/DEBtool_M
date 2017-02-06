@@ -23,7 +23,7 @@ function Lt = asigrowth(p, t, c)
 
   C = c; nc = length(C); % copy concentrations into dummy
   
-  %% unpack parameters for easy reference
+  % unpack parameters for easy reference
   c0 = p(1);  % mM, No-Effect-Concentration (external, may be zero)
   cA = p(2);  % mM, tolerance concentration
   ke = p(3);  % 1/d, elimination rate at L = Lm
@@ -31,16 +31,15 @@ function Lt = asigrowth(p, t, c)
   kM = p(5);  % 1/d, somatic maint rate coeff
   v  = p(6);  % cm/d, energy conductance
   L0 = p(7);  % cm, initial body length
-  %% parameter ke at position 3 is not used, but still present in input
-  %%   for compatibility reasons with asgrowth
+  % parameter ke at position 3 is not used, but still present in input for compatibility reasons with asgrowth
    
   U0 = L0^3/ v; % initial reserve at max value
-  %% initialize state vector; catenate to avoid loops
+  % initialize state vector; catenate to avoid loops
   X0 = [L0 * ones(nc,1); %  L: initial length, 
         U0 * ones(nc,1)]; %  U: scaled reserve U = M_E/ {J_EAm}
 
   nt = length(t);
-  %% Make sure that initial state vector corresponds to t = 0
+  % Make sure that initial state vector corresponds to t = 0
   if t(1) == 0
     [t, Xt] = ode23('dasigrowth', t, X0); % integrate changes in state
     Lt = Xt(:,1:nc); % select lengths only

@@ -40,15 +40,9 @@ function Lt = asgrowth(p, t, c)
 
   nt = length(t);  
   %% Make sure that initial state vector corresponds to t = 0
-  if t(1) == 0
-    [t, Xt] = ode23('dasgrowth', t, X0); % integrate changes in state
-    Lt = Xt(:,1:nc); % select lengths only
-  elseif nt > 1
-    t = [0;t];
-    [t, Xt] = ode23('dasgrowth', t, X0); % integrate changes in state
-    Lt = Xt(2:nt+1,1:nc); % select lengths only; remove prepended zero
-  else
-    t = [0;t];
-    [t, Xt] = ode23('dasgrowth', t, X0); % integrate changes in state
-    Lt = Xt(end,1:nc); % select lengths only; remove prepended zero
-  end
+    [tt, Lt] = ode23('dasgrowth', [-1e-6, t], X0); % integrate changes in state
+    Lt(1,:) = []; Lt = Lt(:,1:nc);
+    if nt == 1
+      Lt = Lt(end,:);
+    end
+

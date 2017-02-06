@@ -40,8 +40,8 @@ function [q, info] = nrregr2(func, p, x, y, Z, W)
   %% Example of use
   % See <../mydata_regr2.m *mydata_regr2*>
 
-  global index nxy l;
-  global max_step_number max_step_size max_norm report;
+  global index nxy l n_pars
+  global max_step_number max_step_size max_norm report
 
   % set options, if necessary
   if numel(max_step_number) == 0 
@@ -72,6 +72,7 @@ function [q, info] = nrregr2(func, p, x, y, Z, W)
   if (l == 0)
     return; % no parameters to iterate
   end
+  n_pars = l;
 
   [nx, ny] = size(Z); % nx,ny is number of values of dependent variables
   nxy = nx * ny; % total number of data points

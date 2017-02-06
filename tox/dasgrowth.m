@@ -37,6 +37,6 @@ function dX = dasgrowth(t, X)
   rBs = kM * gs ./ (3 * (E + gs)); % von Bert growth rate
   dL = rBs .* (E .* Lms - L);   % change in length
   dU = (1 - s) .* L.^2 - SC;  % change in time-surface U = M_E/{J_EAm}
-  dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
+  dc = (ke * Lms .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
 
   dX = [dL; dU; dc]; % catenate derivatives in output
