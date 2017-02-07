@@ -20,7 +20,7 @@ function xmax = cummax_vec(x)
   % * xmax: n-vector with cumulative maxima of x
 
   %% Example 
-  % cummax([1 3 6 4 7 6])
+  % cummax_vec([1 3 6 4 7 6])
 
   n = length(x); xmax = x;
   for i = 2:n

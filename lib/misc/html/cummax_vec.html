@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>cummax_vec</h1><!--introduction--><p>cumulative maxima of a sequence of numbers</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>xmax = <a href="../cummax_vec.m"><b>cummax_vec</b></a>(x)</p><h2>Description<a name="4"></a></h2><p>computes cumulative maxima of a sequence of numbers</p><p>Input</p><div><ul><li>x: n-vector</li></ul></div><p>Output:</p><div><ul><li>xmax: n-vector with cumulative maxima of x</li></ul></div><h2>Example<a name="5"></a></h2><p>cummax([1 3 6 4 7 6])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>cummax_vec</h1><!--introduction--><p>cumulative maxima of a sequence of numbers</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>xmax = <a href="../cummax_vec.m"><b>cummax_vec</b></a>(x)</p><h2>Description<a name="4"></a></h2><p>computes cumulative maxima of a sequence of numbers</p><p>Input</p><div><ul><li>x: n-vector</li></ul></div><p>Output:</p><div><ul><li>xmax: n-vector with cumulative maxima of x</li></ul></div><h2>Example<a name="5"></a></h2><p>cummax_vec([1 3 6 4 7 6])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% cummax_vec
 % cumulative maxima of a sequence of numbers
@@ -90,7 +90,7 @@ function xmax = cummax_vec(x)
   % * xmax: n-vector with cumulative maxima of x
 
   %% Example 
-  % cummax([1 3 6 4 7 6])
+  % cummax_vec([1 3 6 4 7 6])
 
   n = length(x); xmax = x;
   for i = 2:n
