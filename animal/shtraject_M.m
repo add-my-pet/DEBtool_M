@@ -1,4 +1,6 @@
-%  created by Bas kooijman 2011/03/07
+%% shtraject_M
+%
+% created by Bas kooijman 2011/03/07
 %
 % mineral trajectories in the standard DEB model, stochastic version
 %   in scaled mineral fluxes j_M = J_M/ k_M.M_Vm with M_Vm = [M_V] L_m^3
@@ -11,7 +13,7 @@
 % organic & mineral fluxes
 % obtain organic fluxes
 % j_O = (j_X, j_V, j_E+j_ER, j_P)  j_* = J_*/ M_Vm.k_M
-% selected copy-paste from dtraject to get de dl j_ER
+% selected copy-paste from <dtraject.m *dtraject*> to get de dl j_ER
 
 l2 = l .* l; l3 = l .* l2;
 

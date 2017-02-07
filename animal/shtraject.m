@@ -1,3 +1,5 @@
+%% shtraject
+%
 % created by Bas kooijman at 2010/04/01, modified 2011/03/07
 %
 % Simulation of standard DEB model with stochastic searching
@@ -5,24 +7,26 @@
 %  handling and searching intervals only evaluate length at start interval
 %  for theory, see comments to DEB3 for 2.9
 %
-%  All variables and parameters are scaled down to dimensionless quantities. 
+% All variables and parameters are scaled down to dimensionless quantities. 
 %  Due to the stochastic nature of the searching process, death by shrinking and rejuvenation can occur, even at constant food density. 
 %  The stochastic nature becomes more important for low food density, large food particle size, small maximum body size (zoom factor). 
 %  The computation time depends on the parameter values and can be substantial for small food particle sizes. 
 %  The routine taject_M first runs traject and then computs and presents also the four mineral fluxes in 4 sub-plots in a second window.
-%  The theory is explained the <a href="/thb/research/bib/Kooy2010_c.pdf">comments for section 2.9 and 4.3.1</a>.
+%  The theory is explained the <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf *comments for section 2.9 and 4.3.1*>.
 %
-%  The script results in 2 figures with quantities as  function of scaled time since birth
+% The script results in 2 figures with quantities as  function of scaled time since birth
 %  Figure 1 with six sub-plots: 
-%    the reserve density, 
-%    the survival probability and length, 
-%    the maturity, the acceleration of aging, 
-%    the hazards due to ageing and rejuvenation, 
-%    the cumulative number of eaten food particles and of eggs.<br>
-%  The trajectories are shown in red after death by shrinking. 
+%
+% * the reserve density, 
+% * the survival probability and length, 
+% * the maturity, the acceleration of aging, 
+% * the hazards due to ageing and rejuvenation, 
+% * the cumulative number of eaten food particles and of eggs.
+%
+% The trajectories are shown in red after death by shrinking. 
 %  The (default) time period for the simulaton is from birth till two times the expected life span.
 %
-%  Figure 2 with four sub-plots
+% Figure 2 with four sub-plots :
 %   CO2, H2O, O2 and NH3 fluxes
 %
 % You can study the effect of parameter values by changing them.
@@ -123,13 +127,13 @@ f = Vars(:,2); e = Vars(:,3); l = Vars(:,4); vH = Vars(:,5);
 q = Vars(:,6); h = Vars(:,7); S = Vars(:,8);  N = Vars(:,9);
 
 % survival by shrinking, rejuvenation
-death = find(l < delX * cummax(l),1,'first'); % length > delX * max length
+death = find(l < delX * cummax_vec(l),1,'first'); % length > delX * max length
 if isempty(death)
   alive = t>-1; % must be booleans
 else
   alive = 1:length(l) < death; % once dead is dead forever
 end
-h_vH = sH * (cummax(vH) - vH); % hazard due to rejuvenation
+h_vH = sH * (cummax_vec(vH) - vH); % hazard due to rejuvenation
 
 % plotting
 close all

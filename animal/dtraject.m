@@ -1,3 +1,7 @@
+%% dtraject
+% ODE of DEB model including rejuvenation and shrinking
+
+%%
 function dvars = dtraject(t, vars, ...
     vHb, vHp, g, kapR1, kapG, lT, k, k1, ha, sG, sH, uE0, f)
 % called from traject and used in ode-solver
