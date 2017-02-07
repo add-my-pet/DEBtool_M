@@ -29,6 +29,8 @@ function [data, units, label, weight] = addpseudodata(data, units, label, weight
 % [data, units, label, weight] = addpseudodata([], [], [], []);
 % Will create the four structures data, units, label and weight with pseudodata information
 
+global loss_function
+
 % set pseudodata
 data.psd.v = 0.02;     units.psd.v = 'cm/d';       label.psd.v = 'energy conductance';
 data.psd.kap = 0.8;    units.psd.kap = '-';        label.psd.kap = 'allocation fraction to soma';
@@ -47,3 +49,9 @@ weight.psd.k_J   = 0.1 * weight.psd.k_J;
 weight.psd.kap_G = 0.1 * weight.psd.kap_G;
 
 weight.psd.kap_G = 200 * weight.psd.kap_G;   % more weight to kap_G
+
+if strcmp(loss_function, 'su')
+  weight.psd.v     = 10^(-4) * weight.psd.v;
+  weight.psd.p_M   = 10^(-4) * weight.psd.p_M;
+  weight.psd.k_J   = 10^(-4) * weight.psd.k_J;
+end
