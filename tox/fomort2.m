@@ -13,6 +13,9 @@ function S = fomort2 (p, t, c1 ,c2)
   % First order toxico kinetics.
   % Hazard rate linear in the internal conc
   %
+  % Fomort 2 was developed for <http://www.bio.vu.nl/thb/research/bib/BaasHout2007.html *Baas et al 2007*>. In that paper a full
+  % description can be found.
+  %
   % Input
   %
   % * p: (8,1) matrix with parameters values
