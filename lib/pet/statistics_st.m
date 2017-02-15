@@ -695,7 +695,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.Wd_i = Wd_i;    units.Wd_i = 'g';    label.Wd_i = 'ultimate dry weight';
   stat.E_Wi = E_Wi;    units.E_Wi = 'J';    label.E_Wi = 'ultimate energy content';
   xi_WE = 1e-3 * ((f * E_m + mu_V * M_V)/ (d_V + f * E_m * w_E/ mu_E));  % kJ/g dry weight, whole-body energy density (no reprod buffer) 
-  stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = '<E + E_V>, whole-body energy density of dry biomass (no reprod buffer)';   
+  stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = 'whole-body energy density of dry biomass (no reprod buffer)';   
   stat.del_Wb  = del_Wb; units.del_Wb = '-'; label.del_Wb   = 'birth weight as fraction of maximum weight';         
   stat.del_Wp  = del_Wp; units.del_Wp = '-'; label.del_Wp   = 'puberty weight as fraction of maximum weight';      
   del_V    = 1/(1 + f * w); % -, fraction of max weight that is structure
