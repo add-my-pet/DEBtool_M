@@ -3,7 +3,7 @@
 
 %%
 function [d_V info] = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12; 2017/02/16
   
   %% Syntax
   % [d_V info] = <../get_d_V.m *get_d_V*> (phylum, class)
@@ -29,7 +29,7 @@ function [d_V info] = get_d_V(phylum, class)
 info = 1;
 switch phylum
     case 'Porifera'
-        d_V = 0.11;
+        d_V = 0.0587; % ash-free dry
     case {'Ctenophora', 'Cnidaria'}                  % Radiata
         d_V = 0.01;
     case 'Gastrotricha'                              % Platyzoa
