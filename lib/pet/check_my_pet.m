@@ -131,8 +131,11 @@ for i = 1:length(dataFields)
     [~, nvar] = size(currentDataSet);
     if nvar == 1 % zero-variate data
       sumval = currentDataSet; 
-    else % uni-variate data
+    elseif nvar == 2 % uni-variate data
       sumval = sum(currentDataSet(:,2));
+    else % bi-variate data or more
+      sumval = sum(currentDataSet(:,2)); % Lack of plotting info in the next line
+      fprintf(['The data set', dataFields{i}, ' has more than 2 columns. For that reason it will not be plotted. \n']);
     end
     if sumval == 0
       fprintf(['The data set/point', dataFields{i}, ' is zero. This may cause problems in the estimation procedure through the standard weight setting and the computation of the loss function. \n']);
