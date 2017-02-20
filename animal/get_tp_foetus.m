@@ -3,7 +3,7 @@
 
 %%
 function [tp tb lp lb info] = get_tp_foetus(p, f, lb0)
-  % created at 2011/04/16 by Bas Kooijman, modified 2015/01/18
+  % created at 2011/04/16 by Bas Kooijman, modified 2015/01/18, 2017/02/20
   
   %% Syntax 
   % [tp tb lp lb info] = <../get_tp_foetus.m *get_tp_foetus*>(p, f, lb0)
@@ -61,7 +61,7 @@ function [tp tb lp lb info] = get_tp_foetus(p, f, lb0)
     rB = 1 / 3/ (1 + f/g);
     tp = tb + log((li - lb)/ (li - lp))/ rB;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
-    [tb lb] = get_tb_foetus (p); 
+    [tb lb] = get_tb_foetus ([g k vHb]); 
     tp = 1e20; % tau_p is never reached
     lp = 1;    % lp is nerver reached
   else % reproduction is possible
@@ -72,8 +72,8 @@ function [tp tb lp lb info] = get_tp_foetus(p, f, lb0)
     li = f - lT;
     irB = 3 * (1 + f/ g); % k_M/ r_B
     [tb lb] = get_tb_foetus ([g, k, vHb]); 
+    [lp lb info] = get_lp(p, f, lb);
     if length(lb0) ~= 2
-      [lp lb info] = get_lp(p, f, lb);
       tp = tb + irB * log((li - lb)/ (li - lp));
     else % lb0 = l and t for a juvenile
       tb = NaN;
