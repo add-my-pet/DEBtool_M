@@ -2,7 +2,7 @@
 % loss function 
 
 %%
-function [lf] = lossfunction_E(data, meanData, prdData, meanPrdData, weights)
+function [lf] = lossfunction_re(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/06/06 by Goncalo Marques
   
   %% Syntax 
