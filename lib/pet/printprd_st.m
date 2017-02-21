@@ -38,11 +38,11 @@ function printprd_st(data, txtData, prdData, RE)
         str = [nm{j}, ', ', tempUnit, ', ',  tempLabel];
         str = ['%3.4g %3.4g (%3.4g) ', str, '\n'];
         tempPrdData = getfield(prdData, fieldsInCells{1}{:});
-        fprintf(str, tempData, tempPrdData, RE(j));
+        fprintf(str, tempData, tempPrdData, RE(j,1));
       else
         str = [nm{j}, ', ', txtData.units.(nm{j}), ', ',  txtData.label.(nm{j})];
         str = ['%3.4g %3.4g (%3.4g) ', str, '\n'];
-        fprintf(str, data.(nm{j}), prdData.(nm{j}), RE(j));
+        fprintf(str, data.(nm{j}), prdData.(nm{j}), RE(j,1));
       end
     else
       if length(fieldsInCells{1}) == 1
@@ -51,6 +51,6 @@ function printprd_st(data, txtData, prdData, RE)
         aux = txtData.(fieldsInCells{1}{1});
       end
       str = ['see figure (%3.4g) ', fieldsInCells{1}{end}, ', ', aux.label.(fieldsInCells{1}{end}){1}, ' vs. ', aux.label.(fieldsInCells{1}{end}){2}, '\n'];
-      fprintf(str, RE(j));
+      fprintf(str, RE(j,1));
     end
   end
