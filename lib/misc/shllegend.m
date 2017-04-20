@@ -1,19 +1,19 @@
-%% shlegend
-% plots legend 
+%% shllegend
+% plots line legend 
 
 %%
-function Hlegend = shlegend(legend, pos, space, txt, i_legend)
-%% created 2016/02/28 by Bas Kooijman
+function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
+%% created 2017/04/20 by Bas Kooijman
 
 %% Syntax
-% Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend)
+% Hlegend = <../shllegend.m *shllegend*> (llegend, pos, space, txt, i_legend)
 
 %% Description
-% plots legend
+% plots line legend
 %
 % Input:
 %
-% * legend: (n,2)-cell matrix with with marker (5-vector of cells), item (string)
+% * llegend: (n,2)-cell matrix with with line (3-vector of cells), item (string)
 % * pos: optional 2-vector with position of lower-left corner of legend within box
 % * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical)
 % * txt: optional character string with title above legend figure
@@ -24,11 +24,11 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % * Hlegend: handle of figure
 
 %% Remarks
-% create legend with select_legend; press any key when done with select_legend 
+% create llegend with select_llegend; press any key when done with select_llegend
 
 %% Example of use
-% shlegend(select_legend) or 
-%   legend = select_legend; shlegend(legend, [], [], 'example'); 
+% shllegend(select_llegend) or 
+%   llegend = select_llegend; shllegend(llegend, [], [], 'example');
 
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
@@ -39,9 +39,9 @@ else
   space_MT = space(1); space_MM = space(2);
 end
   
-n = size(legend,1); width = 0;
+n = size(llegend,1); width = 0;
 for i = 1:n
-  width = max(width, length(legend{i,2}));
+  width = max(width, length(llegend{i,2}));
 end
 width = 1 + width * 0.5;
 height = n * .45; 
@@ -53,9 +53,9 @@ plot([0 width width 0 0], [0 0 height height 0], 'w', 'LineStyle', 'none')
 hold on
 
 for i = 1:n
-  marker = legend{n-i+1,1}; item = legend(n-i+1,2);
-  T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};  
-  plot(pos(1), pos(2), T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
+  line = llegend{n-i+1,1}; item = llegend(n-i+1,2);
+  T = line{1}; LW = line{2}; LC = line{3};   
+  plot(pos(1) + [-1 1]/2, pos(2)+ [0 0], T, 'LineWidth', LW, 'Color', LC); axis('off');
   text(space_MT + pos(1), pos(2), strrep(item, '_', '\_'), 'Interpreter', 'tex');
   if exist('i_legend', 'var') && i_legend == n-i+1
     text(pos(1) - 1.5, pos(2), '>');
