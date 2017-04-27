@@ -489,7 +489,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
         dWm = TC * W_dWm * r_j;
       elseif L_dWm > L_e
-        L_dWm = L_e; W_dWm = L_e^3 * (1 + w);  
+        L_dWm = L_e; W_dWm = L_dWm^3 * (1 + w);  
         dWm = TC * r_B * (s_M * L_m - L_e);  
       else
         dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
