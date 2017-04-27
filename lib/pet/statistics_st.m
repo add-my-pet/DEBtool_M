@@ -484,13 +484,13 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       dWm = TC * W_dWm * r_j;      
     case 'hep'
       L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
-      L_p = l_p * L_m;
+      L_p = l_p * L_m; L_j = l_j * L_m;
       if L_p > L_dWm
         L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
         dWm = TC * W_dWm * r_j;
-      elseif L_dWm > L_e % max growth after metam
-        L_dWm = L_e; W_dWm = L_dWm^3 * (1 + w);  
-        dWm = TC * r_B * (s_M * L_m - L_e);  
+      elseif L_dWm > L_j % max growth after metam
+        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w);  
+        dWm = TC * r_B * (s_M * L_m - L_j);  
       else % max growth somewhere during the adult phase of the larva
         dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
       end
