@@ -26,7 +26,7 @@ function print_txt_var(txt,x)
   end
   
   for i = 1:r_txt
-    fprintf('%s', txt{i});
+    fprintf('%s', [txt{i}, ' ']);
     fprintf('%10.6f', x(i,:));
     fprintf('\n');
   end
