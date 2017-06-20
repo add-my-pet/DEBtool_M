@@ -4,6 +4,7 @@
 %%
 function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf)
   % created 2008/08/06 by Bas Kooijman, modified Starrlight Augustine 2014/03/20
+  % modified by Dina Lika 2017/06/20
   
   %% Syntax
   % [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = <../cum_reprod_j.m *cum_reprod_j*> (t, f, p, Lf)
@@ -113,8 +114,9 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
     t_b = t_p - (tp - tb)/ kM;
   end
  
-  [tt LU] = ode45(@dcum_reprod_j, [-1e-10; t], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
-  if length(t) == 1
+  [t_sort, it, it_sort] = unique(t,'sorted'); % returns the unique values in t in sorted order
+  [tt LU] = ode45(@dcum_reprod_j, [-1e-10; t_sort], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
+  if length(t_sort) == 1
     LU = LU(end, :);
   else
     LU(1,:) = []; 
@@ -126,6 +128,8 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
     fprintf('UE0 could not be obtained in cum_reprod_j \n')
   end
   N = max(0, kapR * UR/ UE0); % convert to number of eggs
+  N = N(it_sort);  % reconstruct N
+  L = L(it_sort);  % reconstruct L
 end
 
 % subfunctions
