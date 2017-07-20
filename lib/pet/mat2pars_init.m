@@ -4,6 +4,7 @@
 %%
 function mat2pars_init(speciesnm, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
+% modified 2017/07/19 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm) 
@@ -13,23 +14,24 @@ function mat2pars_init(speciesnm, varargin)
 %
 % Input:
 %
-% * speciesnm: string with the species nama
+% * speciesnm: optional string with the species name (default pets{1})
 % * varargin: 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file
 
 %% Remarks
-% Keep in mind that the files will be saved in your local directory; use
-% the cd command BEFORE running this function to save files in the desired
-% place.
+% Keep in mind that the files will be saved in your local directory; 
+% use the cd command BEFORE running this function to save files in the desired place.
 
 %% Example of use
 % mat2pars_init(speciesnm)
 
+global pets
 
-if nargin > 2
-  error('Too many inputs in mat2pars_init.');
-end
-
-if isempty(varargin) || varargin{1} ~= 1
+if ~exist('speciesnm','var')
+  speciesnm = pets{1}; 
+  fix = 0;
+elseif nargin > 2
+  error('Too many inputs in mat2pars_init');
+elseif isempty(varargin) || varargin{1} ~= 1
   fix = 0;  % free/fix parameters as in .mat file
 else
   fix = 1;  % all parameters fixed 
