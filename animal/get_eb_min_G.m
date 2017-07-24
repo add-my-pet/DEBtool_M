@@ -1,5 +1,5 @@
 %% get_eb_min_G
-% get eb such that growth ceases at birth
+% scaled reserve for which growth ceases at birth
 
 %%
 function [eb lb info] = get_eb_min_G (p, lb0)
@@ -41,6 +41,10 @@ function [eb lb info] = get_eb_min_G (p, lb0)
 
   [lb f_val info] = fzero(@fnget_lb_min, lb0, [], g, k, vHb);
   eb = lb;
+  
+  if info ~= 1
+    fprintf('Warning from get_eb_min_G: no convergence for eb_min_G')
+  end
 end
 
 % subfunctions

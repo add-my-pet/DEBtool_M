@@ -1,9 +1,9 @@
 %% get_eb_min_R
-%
+% scaled reserve for which maturation ceases at birth
 
 %%
 function [eb lb info] = get_eb_min_R (p, lb0)
-  % created 2013/08/15 by Bas Kooijman
+  % created 2013/08/15 by Bas Kooijman; modified 2017/07/24
   
   %% Syntax
   % [eb lb info] = <../get_eb_min_R.m *get_eb_min_R*> (p, lb0)
@@ -37,12 +37,56 @@ function [eb lb info] = get_eb_min_R (p, lb0)
 
   if exist('lb0', 'var') == 0
     lb0 = .1;
-  end    
+  end 
   
-  try
-    [lb f_val info] = fzero(@fnget_lb_min_R, lb0, [], g, k, vHb);
-  catch
-    [lb f_val info] = fzero(@fnget_lb_min_R, 0.1, [], g, k, vHb);
+  f = fnget_lb_min_R(lb0, g, k, vHb); % loss function at lb0, which should be set to 0
+  dlb = 0.001;    % width of range [lb0 lb1] where lb must be
+  lb0_min = 1e-4; % lower boundary for lb0 (too small gives numerical errors)
+  if  f < 0 % lb is larger than lb0, find upper boundary
+    lb1 = lb0;
+    if lb1 >= 1
+      info = 0; lb = lb1; lb2 = lb * lb; lb3 = lb2 * lb; eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb); return
+    end
+    
+    while  f < 0 && lb1 < 1
+      lb0 = lb1; lb1 = min(1, lb1 + dlb);
+      f = fnget_lb_min_R(lb1, g, k, vHb);
+    end
+    
+    if f < 0 && lb1 == 1
+      fprintf('Warning from get_eb_min_R: l_b is larger than 1')
+      info = 0; lb = lb1; lb2 = lb * lb; lb3 = lb2 * lb; eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb); return
+    end
+  else % lb is smaller than lb0, find lower boundary
+    if lb0 <= lb0_min
+      info = 0; lb = lb0; lb2 = lb * lb; lb3 = lb2 * lb; eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb); return
+    end
+    
+    while  f > 0 && lb0 > lb0_min
+      lb1 = lb0; lb0 = max(lb0_min, lb1 - dlb);
+      f = fnget_lb_min_R(lb0, g, k, vHb);
+    end
+    if f > 0 && lb0 == lb0_min
+      fprintf(['Warning from get_eb_min_R: l_b is smaller than ', num2str(lb0_min), '\n'])
+      info = 0; lb = lb0; lb2 = lb * lb; lb3 = lb2 * lb; eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb); return
+    end
+  end
+  lb_range = [lb0; lb1];
+   
+  f = 1; i = 0; i_max = 20; % initiate 
+  while abs(f) > 5e-4 && i <= i_max
+    lb = sum(lb_range)/2; i = i + 1; info = 1;
+    f = fnget_lb_min_R(lb, g, k, vHb);
+    if f < 0
+      lb_range(1) = lb;
+    else
+      lb_range(2) = lb;
+    end
+  end
+  if i > i_max
+    info = 0;
+    fprintf(['Warning from get_eb_min_R: no convergence in ', num2str(i_max), ' steps \n']);
+    fprintf(['loss function ', num2str(f), '; l_b ', num2str(lb), '\n']);
   end
   lb2 = lb * lb; lb3 = lb2 * lb;
   eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb);
@@ -55,7 +99,7 @@ function fn = fnget_lb_min_R(lb, g, k, vHb)
   lb2 = lb * lb; lb3 = lb2 * lb;
   xb = (lb3 + g * lb2 - k * vHb)/ (lb3 + g * lb2);
   
-  [x y] = ode23s(@dydx, [1e-10; xb], 0, [], g, k, lb, xb);
+  [x y] = ode45(@dydx, [1e-10; xb], 0, [], g, k, lb, xb);
   fn = y(end) - g * xb * vHb/ lb3;
 end
 

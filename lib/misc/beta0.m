@@ -2,8 +2,8 @@
 % particular incomplete beta function
 
 %%
-function f = beta0 (x0,x1)
-  % created 2000/08/16 by Bas Kooijman; modified 2011/04/10
+function f = beta0 (x0, x1)
+  % created 2000/08/16 by Bas Kooijman; modified 2011/04/10, 2017/07/24
   
   %% Syntax
   % f = <../beta0.m *beta0*> (x0,x1)
@@ -15,7 +15,7 @@ function f = beta0 (x0,x1)
   % Input
   %
   % * x0: scalar with lower boundary for integration
-  % * x1: scalar with uper boundary for integration
+  % * x1: scalar with upper boundary for integration
   %
   % Output
   %
@@ -28,15 +28,22 @@ function f = beta0 (x0,x1)
   % beta0(0.1, 0.2)
   
   if x0 < 0 | x0 >= 1 | x1 < 0 | x1 >= 1
-    fprintf('Warning from beta0: argument values outside (0,1) \n');
+    fprintf(['Warning from beta0: argument values (', num2str(x0), ',', num2str(x1), ') outside (0,1) \n']);
     f = [];
+    dbstack
+    return;
+  elseif x0 > x1
+    fprintf(['Warning from beta0: lower boundary ', num2str(x0), ' lager than upper boundary ', num2str(x1), ' \n']);
+    f = [];
+    dbstack
     return;
   end
 
   n0 = length(x0); n1 = length(x1);
   if n0 ~= n1 && n0 ~= 1 && n1 ~= 1
-    fprintf('Warning from beta0: argument sizes do not match \n');
+    fprintf(['Warning from beta0: argument values (', num2str(x0), ',', num2str(x1), ') outside (0,1) \n']);
     f = [];
+    dbstack
     return;
   end
 
