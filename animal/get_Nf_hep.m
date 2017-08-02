@@ -1,4 +1,4 @@
-%% get_lN_hep
+%% get_Nf_hep
 % Gets number of eggs at emergence for hep model
 
 %%
@@ -6,16 +6,16 @@ function [N, f, info] = get_Nf_hep(lj, p)
   % created at 2016/02/13 by Bas Kooijman, 
   
   %% Syntax
-  % [N, f, info] = <../get_Nf_hep.m *get_Nf_hep*> (p, f)
+  % [N, f, info] = <../get_Nf_hep.m *get_Nf_hep*> (lj, p)
   
   %% Description
-  % Obtains number of eggs at emergence from structural length of imago for hep model for hep model ;
+  % Obtains number of eggs at emergence from structural length of imago for hep model
   % Food density is assumed to be constant.
   %
   % Input
   %
   % * lj: vector with scaled structural lengths of imago 
-  % * p: 7 with parameters: g, k, v_H^b, v_H^p, v_R^j, kap, kap_R  
+  % * p: 7-vector with parameters: g, k, v_H^b, v_H^p, v_R^j, kap, kap_R  
   %  
   % Output
   %
@@ -34,7 +34,7 @@ function [N, f, info] = get_Nf_hep(lj, p)
  for i = 1:n
     
      fi = fzero(@fnNf, 1, [], p, lj(i));
-     [tji, tp, tb, lji, lp, lb, li, rj, rB, Ni, infoi] = get_tj_hep(p, fi)
+     [tji, tp, tb, lji, lp, lb, li, rj, rB, Ni, infoi] = get_tj_hep(p, fi);
      N(i) = Ni;
      f(i) = fi;
      info(i) = infoi;
