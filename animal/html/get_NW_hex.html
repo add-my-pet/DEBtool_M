@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_NW_hex</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-07-31"><meta name="DC.source" content="get_NW_hex.m"><style type="text/css">
+      --><title>get_NW_hex</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-08-03"><meta name="DC.source" content="get_NW_hex.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -55,7 +55,7 @@ span.syscmd { color:#B28C00 }
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
 
-  </style></head><body><div class="content"><h1>get_NW_hex</h1><!--introduction--><p>Gets number of eggs at emergence for hex model from wet weight of imago</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunction</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[N, f, l_e, info] = <a href="../get_NW_hex.m"><b>get_NW_hex</b></a> (Ww, p)</p><h2>Description<a name="4"></a></h2><p>Obtains number of eggs at emergence from wet weight of imago for hex model Food density is assumed to be constant.</p><p>Input</p><div><ul><li>Ww: n-vector with scaled wet weights of imago in grams</li><li>pars_tj: 7-vector with parameters: g k v_Hb v_He s_j kap kap_V, see get_tj_hex</li><li>pars_aux: 6-vector with parameters: kap_R, E_m, L_m, w_E, mu_E, d_E</li></ul></div><p>Output</p><div><ul><li>N: n-vector with number of eggs at emergence</li><li>f: n-vector with functional response</li><li>le: n-vector with scaled structural length at emergence</li><li>info: n-vector with indicators equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>first finds f from Ww, then N and le from f.</pre><h2>Example of use<a name="6"></a></h2><pre>get_NW_hex([.5, .1, .01, .05, .2, 0.8, .95])</pre><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
+  </style></head><body><div class="content"><h1>get_NW_hex</h1><!--introduction--><p>Gets number of eggs at emergence for hex model from wet weight of imago</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunction</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[N, f, l_e, info] = <a href="../get_NW_hex.m"><b>get_NW_hex</b></a> (Ww, pars_tj, pars_aux)</p><h2>Description<a name="4"></a></h2><p>Obtains number of eggs at emergence from wet weight of imago for hex model Food density is assumed to be constant.</p><p>Input</p><div><ul><li>Ww: n-vector with scaled wet weights of imago in grams</li><li>pars_tj: 7-vector with parameters: g k v_Hb v_He s_j kap kap_V, see get_tj_hex</li><li>pars_aux: 6-vector with parameters: kap_R, E_m, L_m, w_E, mu_E, d_E</li></ul></div><p>Output</p><div><ul><li>N: n-vector with number of eggs at emergence</li><li>f: n-vector with functional response</li><li>le: n-vector with scaled structural length at emergence</li><li>info: n-vector with indicators equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>first finds f from Ww, then N and le from f.</pre><h2>Example of use<a name="6"></a></h2><pre>get_NW_hex([.5, .1, .01, .05, .2, 0.8, .95])</pre><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_NW_hex
@@ -66,7 +66,7 @@ function [N, f, le, info] = get_NW_hex(Ww, pars_tj, pars_aux)
   % created at 2017/07/31 by Bas Kooijman, 
   
   %% Syntax
-  % [N, f, l_e, info] = <../get_NW_hex.m *get_NW_hex*> (Ww, p)
+  % [N, f, l_e, info] = <../get_NW_hex.m *get_NW_hex*> (Ww, pars_tj, pars_aux)
   
   %% Description
   % Obtains number of eggs at emergence from wet weight of imago for hex model
@@ -111,7 +111,7 @@ function F = fnfW(f, pars_tj, pars_aux, Ww)
   E_m = pars_aux(2); L_m = pars_aux(3); w_E = pars_aux(4); mu_E = pars_aux(5); d_E = pars_aux(6);
   
   %Ww_0 = g * E_m * L_m^3 * get_ue0(pars_tj, f) * w_E/ mu_E/ d_E;         % g, initial wet weight
-  Ww_Rj = v_Rj * (1 - kap) * g * E_m * (L_m * l_j)^3 * w_E/ mu_E/ d_E;    % g, wet weight repod buffer at pupation
+  Ww_Rj = v_Rj * (1 - kap) * g * E_m * (L_m * l_j)^3 * w_E/ mu_E/ d_E;    % g, wet weight reprod buffer at pupation
   Ww_e = (L_m * l_e)^3 + Ww_Rj + u_Ee * g * E_m * L_m^3 * w_E/ mu_E/ d_E; % g, wet weight including reprod buffer
 
   F = Ww_e - Ww; % loss function

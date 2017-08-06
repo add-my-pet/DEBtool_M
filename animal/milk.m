@@ -22,7 +22,8 @@ function U_L = milk(f, p)
   %
   %        U_L = E_L/ {p_Am}: U_L = f int_0^(a_x - a_b) L^2(t) dt
   %
-  % * the amount of (scaled) energy that is required to produce this milk is U_E/ kalp_RL
+  % Remarks
+  % the amount of (scaled) energy that is required to produce this milk is U_E/ kap_RL
   
   %% Example of use
   % milk(1, [1; 2; 10; 3; .9])

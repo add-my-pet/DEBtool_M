@@ -3,7 +3,7 @@
 
 %%
 function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
-%% created 2017/04/20 by Bas Kooijman
+% created 2017/04/20 by Bas Kooijman
 
 %% Syntax
 % Hlegend = <../shllegend.m *shllegend*> (llegend, pos, space, txt, i_legend)
