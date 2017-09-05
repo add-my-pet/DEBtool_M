@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-05"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
+      --><title>statistics_st</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-08-22"><meta name="DC.source" content="statistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -117,7 +117,7 @@ span.syscmd { color:#B28C00 }
    - Wd_i: ultimate structural dry weight; all
    - E_Wi: ultimate energy content; all
    - del_V: fraction of max weight that is structure; all
-   - xi_WE: whole-body energy density (no reprod buffer)
+   - xi_WE: whole-body energy density of dry biomass (no reprod buffer)
    - del_Wb: birth weight as fraction of maximum weight
    - del_Wp: puberty weight as fraction of maximum weight</pre><pre>   - a_m: age at death; all
    - S_b: survival probability at birth; all
@@ -143,7 +143,7 @@ span.syscmd { color:#B28C00 }
    - WQ_b, WQ_p, WQ_i: watering quotient; all
    - SDA_b, SDA_p, SDA_i: specific dynamic action; all
    - VO_b, VO_p, VO_i: dry-weight specific dioxygen use; all
-   - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Body weights exclude possible contribution of the reproduction buffer. Temperature-dependent quantities are directly corrected for body temperature For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
+   - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat; all</pre><div><ul><li>txtStat: structure with units, labels for stat</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense. Fermentation is supposed not to occur and dioxygen availability is assumed to be unlimiting. Ages exclude initial delay of development, if it would exist. Body weights exclude possible contribution of the reproduction buffer. Temperature-dependent quantities are directly corrected for body temperature The output values are for females; males might have deviating parameters, which are frequently also available.</p><p>For required model-specific fields, see get_parfields.</p><h2>Example of use<a name="6"></a></h2><p>load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
       Published with MATLAB&reg; 7.14<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% statistics_st
@@ -253,7 +253,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - Wd_i: ultimate structural dry weight; all
 %     - E_Wi: ultimate energy content; all
 %     - del_V: fraction of max weight that is structure; all
-%     - xi_WE: whole-body energy density (no reprod buffer) 
+%     - xi_WE: whole-body energy density of dry biomass (no reprod buffer) 
 %     - del_Wb: birth weight as fraction of maximum weight       
 %     - del_Wp: puberty weight as fraction of maximum weight      
 %
@@ -296,10 +296,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %% Remarks
 % Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked!
 % Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense.
-% Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting.
+% Fermentation is supposed not to occur and dioxygen availability is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
 % Temperature-dependent quantities are directly corrected for body temperature
+% The output values are for females; males might have deviating parameters, which are frequently also available.
+%
 % For required model-specific fields, see get_parfields.
 
 %% Example of use
@@ -632,11 +634,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       dWm = TC * W_dWm * r_j;      
     case 'hep'
       L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
-      L_p = l_p * L_m;
+      L_p = l_p * L_m; L_j = l_j * L_m;
       if L_p > L_dWm
         L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
         dWm = TC * W_dWm * r_j;
-      else
+      elseif L_dWm > L_j % max growth after metam
+        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w);  
+        dWm = TC * r_B * (s_M * L_m - L_j);  
+      else % max growth somewhere during the adult phase of the larva
         dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
       end
     case 'hex'
@@ -682,9 +687,9 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     [U_H aUL] = ode45(@dget_aul, [0; U_Hh; U_Hb], [0 U_E0 1e-10], [], kap, v, k_J, g, L_m);
     t_h = aUL(2,1) * k_M;             % d, age at hatch at f and T
     M_Eh = J_E_Am * aUL(end,2);       % mol, reserve at hatch at f
-    E_Wh = M_Vh * mu_V + M_Eh * mu_E; % J, energy content at hatch
     l_h = aUL(2,3)/L_m;               % cm, scaled structural length at f
-    L_h = L_m * l_h; M_Vh = M_V * L_h^3; Ww_h = L_h^3 + w_E * M_Eh/ d_E; Wd_h = d_V * L_h^3 + w_E * M_Eh; 
+    L_h = L_m * l_h; M_Vh = M_V * L_h^3; E_Wh = M_Vh * mu_V + M_Eh * mu_E; % J, energy content at hatch
+    Ww_h = L_h^3 + w_E * M_Eh/ d_E; Wd_h = d_V * L_h^3 + w_E * M_Eh; 
     a_h = t_h/ k_M/ TC; del_Uh = M_Eh/ M_E0; % -, fraction of reserve left at hatch
     stat.l_h = l_h;   units.l_h = '-';    label.l_h = 'scaled structural length at hatch';
     stat.L_h = L_h;   units.L_h = 'cm';   label.L_h = 'structural length at hatch';
@@ -842,8 +847,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.Ww_i = Ww_i;    units.Ww_i = 'g';    label.Ww_i = 'ultimate wet weight';
   stat.Wd_i = Wd_i;    units.Wd_i = 'g';    label.Wd_i = 'ultimate dry weight';
   stat.E_Wi = E_Wi;    units.E_Wi = 'J';    label.E_Wi = 'ultimate energy content';
-  xi_WE = 1e-3 * (mu_V + mu_E * m_Em * f)/ (f * w);  % kJ/g, whole-body energy density (no reprod buffer) 
-  stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = '<E + E_V>, whole-body energy density (no reprod buffer)';   
+  xi_WE = 1e-3 * ((f * E_m + mu_V * M_V)/ (d_V + f * E_m * w_E/ mu_E));  % kJ/g dry weight, whole-body energy density (no reprod buffer) 
+  stat.xi_WE  = xi_WE; units.xi_WE  = 'kJ/ g'; label.xi_WE   = 'whole-body energy density of dry biomass (no reprod buffer)';   
   stat.del_Wb  = del_Wb; units.del_Wb = '-'; label.del_Wb   = 'birth weight as fraction of maximum weight';         
   stat.del_Wp  = del_Wp; units.del_Wp = '-'; label.del_Wp   = 'puberty weight as fraction of maximum weight';      
   del_V    = 1/(1 + f * w); % -, fraction of max weight that is structure

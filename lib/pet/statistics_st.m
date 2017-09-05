@@ -148,10 +148,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %% Remarks
 % Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked!
 % Buffer handling rules are species-specific, so ultimate reproduction rate Ri not always makes sense.
-% Fermentation is supposed not to occur and dioxygen availebility is assumed to be unlimiting.
+% Fermentation is supposed not to occur and dioxygen availability is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
 % Temperature-dependent quantities are directly corrected for body temperature
+% The output values are for females; males might have deviating parameters, which are frequently also available.
+%
 % For required model-specific fields, see get_parfields.
 
 %% Example of use
