@@ -1,5 +1,5 @@
 %% lossfunction_su
-% loss function 
+% loss function "symetric unbounded"
 
 %%
 function [lf] = lossfunction_su(data, meanData, prdData, meanPrdData, weights)

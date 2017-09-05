@@ -1,5 +1,5 @@
 %% lossfunction_sb
-% loss function 
+% loss function "symetric bounded"
 
 %%
 function [lf] = lossfunction_sb(data, meanData, prdData, meanPrdData, weights)
