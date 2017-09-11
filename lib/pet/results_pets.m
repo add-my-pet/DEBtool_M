@@ -118,6 +118,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   prdData = predict_pets(par, data2plot, auxData);
+  
+if results_output < 3
+    
   counter_fig = 0;
 
   for i = 1:petsnumber
@@ -273,6 +276,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
+end
+
   if results_output > 0
     if petsnumber > 1
       filenm   = 'results_group.mat';
