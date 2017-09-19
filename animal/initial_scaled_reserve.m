@@ -19,7 +19,7 @@ function [U0, Lb, info] = initial_scaled_reserve(f, p, Lb0)
   %
   % Output
   %
-  % * U0: n-vector with initial scaled reserve: M_E^0/ {J_EAm}
+  % * U0: n-vector with initial scaled reserve: M_E^0/ {J_EAm} or E^0/ {p_Am}
   % * Lb: n-vector with length at birth
   % * info: n-vector with 1's if successful, 0's otherwise
   
