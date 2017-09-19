@@ -102,7 +102,7 @@ for i = 1:length(otherParFields)
 end
 
 fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
-fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class);');
+fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
 
 for i = 1:length(chemParFields)
   currentPar = chemParFields{i};
