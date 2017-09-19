@@ -18,7 +18,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %
   % Input
   %
-  % * p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p 
+  % * p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p 
   %
   %     Last value is optional. If ommitted: outputs tp and lp are empty
   %
