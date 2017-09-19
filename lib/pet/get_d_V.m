@@ -31,7 +31,7 @@ switch phylum
     case 'Porifera'
         d_V = 0.0587; % ash-free dry
     case {'Ctenophora', 'Cnidaria'}                  % Radiata
-        d_V = 0.01;
+        d_V = 0.02;
     case 'Gastrotricha'                              % Platyzoa
         d_V = 0.05;
     case 'Rotifera'
