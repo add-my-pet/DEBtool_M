@@ -37,12 +37,13 @@ function zip_my_pet(my_pet, basefolder)
 
   filenm = [my_pet, '_zip'];   % name of generated zip file
 
-  % files to be included
+% files to be included
 %   list = {[ my_pet, '\mydata_', my_pet, '.m'], [ my_pet, '\predict_', my_pet, '.m'], ...
 %         [ my_pet, '\pars_init_', my_pet, '.m'], [ my_pet, '\run_', my_pet, '.m'], ...
 %         [ my_pet, '\results_', my_pet, '.mat']};
+%   and any csv files
 
-   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*_', my_pet, '.mat']};
+   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*_', my_pet, '.mat'], [ my_pet, '\*.csv']};
   
    if nargin == 1
           basefolder = '.'; % default path to the basefolder
