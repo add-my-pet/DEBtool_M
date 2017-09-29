@@ -3,13 +3,13 @@
 
 %%
 function zip_my_pet(my_pet, basefolder)
-  % created by Dina Lika 2015/08/07
+  % created by Dina Lika 2015/08/07, modified by Bas Kooijman 2017/09/29
 
   %% Syntax
   % <../zip_my_pet.m *zip_my_pet*>(my_pet)
   
   %% Description
-  % zips all my_pet .m and .mat files in folder "my_pet" 
+  % zips all my_pet .m and .csv files in folder "my_pet" 
   % If full path to the my_pet folder is not specified, 
   % the current folder is '.\' (one level up)
   %
@@ -23,11 +23,18 @@ function zip_my_pet(my_pet, basefolder)
   %
   % Output 
   %
-  % * zip files in the current folder  
+  % * zip files in the current folder:
+  % 
+  %   -- my_pet, '\mydata_', my_pet, '.m'
+  %   -- my_pet, '\predict_', my_pet, '.m'
+  %   -- my_pet, '\pars_init_', my_pet, '.m'
+  %   -- my_pet, '\run_', my_pet, '.m'
+  %   -- any csv files
+
  
   %% Remarks
-  % compress all my_pet files+
-  % See also zip_taxa
+  % compress all my_pet files
+  % See also zip_pets
   
   %% Example of use
   % zip_my_pet('my_pet', basefolder)
@@ -35,15 +42,13 @@ function zip_my_pet(my_pet, basefolder)
   
   narginchk(1,2);
 
-  filenm = [my_pet, '_zip'];   % name of generated zip file
+  WD = pwd;
+  cd([basefolder,'/',my_pet])
+    [data, auxData, metaData] = feval(['mydata_',my_pet]);
+    filenm = [my_pet, '_',  datestr(datenum(metaData.date_acc), 'yyyymmdd')];   % name of generated zip file
+  cd(WD)
 
-% files to be included
-%   list = {[ my_pet, '\mydata_', my_pet, '.m'], [ my_pet, '\predict_', my_pet, '.m'], ...
-%         [ my_pet, '\pars_init_', my_pet, '.m'], [ my_pet, '\run_', my_pet, '.m'], ...
-%         [ my_pet, '\results_', my_pet, '.mat']};
-%   and any csv files
-
-   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*_', my_pet, '.mat'], [ my_pet, '\*.csv']};
+   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*.csv']};
   
    if nargin == 1
           basefolder = '.'; % default path to the basefolder
