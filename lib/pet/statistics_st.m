@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -131,7 +131,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - ep_min: scaled func. resp. such that growth ceases at puberty; all
 %     - t_starve: maximum survival time when starved; all
 %
-%     - p_A*, p_S*, p_J*, p_G*, p_R* : energy fluxes at b, p, i ; all
+%     - p_A*, p_C*, p_S*, p_J*, p_G*, p_R*, p_D* : energy fluxes at b, p, i ; all
 %     - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
 %     - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
 %     - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all
@@ -141,7 +141,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - WQ_b, WQ_p, WQ_i: watering quotient; all
 %     - SDA_b, SDA_p, SDA_i: specific dynamic action; all
 %     - VO_b, VO_p, VO_i: dry-weight specific dioxygen use; all
-%     - p_Tt_b, p_Tt_p, p_Tt_i: dissipating heat; all
+%     - p_Tb, p_Tp, p_Ti: total heat; all
 %
 % * txtStat: structure with units, labels for stat
 
@@ -833,20 +833,26 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       p_ACSJGRD = p_ref * scaled_power_hex([L_b; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);
   end
   stat.p_Ab = p_ACSJGRD(1,1); units.p_Ab = 'J/d'; label.p_Ab = 'assimilation at birth';    
+  stat.p_Cb = p_ACSJGRD(1,2); units.p_Cb = 'J/d'; label.p_Cb = 'mobilisation at birth';    
   stat.p_Sb = p_ACSJGRD(1,3); units.p_Sb = 'J/d'; label.p_Sb = 'somatic maintenance at birth';    
   stat.p_Jb = p_ACSJGRD(1,4); units.p_Jb = 'J/d'; label.p_Jb = 'maturity maintenance at birth';    
   stat.p_Gb = p_ACSJGRD(1,5); units.p_Gb = 'J/d'; label.p_Gb = 'growth at birth';    
   stat.p_Rb = p_ACSJGRD(1,6); units.p_Rb = 'J/d'; label.p_Rb = 'maturation at birth';    
+  stat.p_Db = p_ACSJGRD(1,7); units.p_Db = 'J/d'; label.p_Db = 'dissipation at birth';    
   stat.p_Ap = p_ACSJGRD(2,1); units.p_Ap = 'J/d'; label.p_Ap = 'assimilation at puberty';    
+  stat.p_Cp = p_ACSJGRD(2,2); units.p_Cp = 'J/d'; label.p_Cp = 'mobilisation at puberty';    
   stat.p_Sp = p_ACSJGRD(2,3); units.p_Sp = 'J/d'; label.p_Sp = 'somatic maintenance at puberty';    
   stat.p_Jp = p_ACSJGRD(2,4); units.p_Jp = 'J/d'; label.p_Jp = 'maturity maintenance at puberty';    
   stat.p_Gp = p_ACSJGRD(2,5); units.p_Gp = 'J/d'; label.p_Gp = 'growth at puberty';    
   stat.p_Rp = p_ACSJGRD(2,6); units.p_Rp = 'J/d'; label.p_Rp = 'reproduction at puberty';    
+  stat.p_Dp = p_ACSJGRD(2,7); units.p_Dp = 'J/d'; label.p_Dp = 'dissipation at puberty';    
   stat.p_Ai = p_ACSJGRD(3,1); units.p_Ai = 'J/d'; label.p_Ai = 'ultimate assimilation';    
+  stat.p_Ci = p_ACSJGRD(3,2); units.p_Ci = 'J/d'; label.p_Ci = 'ultimate mobilisation';    
   stat.p_Si = p_ACSJGRD(3,3); units.p_Si = 'J/d'; label.p_Si = 'ultimate somatic maintenance';    
   stat.p_Ji = p_ACSJGRD(3,4); units.p_Ji = 'J/d'; label.p_Ji = 'ultimate maturity maintenance';    
   stat.p_Gi = p_ACSJGRD(3,5); units.p_Gi = 'J/d'; label.p_Gi = 'ultimate growth';    
   stat.p_Ri = p_ACSJGRD(3,6); units.p_Ri = 'J/d'; label.p_Ri = 'ultimate reproduction';    
+  stat.p_Di = p_ACSJGRD(3,7); units.p_Di = 'J/d'; label.p_Di = 'ultimate dissipation';    
 
   % mass fluxes (respiration)
   X_gas = T_ref/ T/ 24.4;       % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
@@ -873,7 +879,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.WQ_b = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_b = 'mol H/mol O'; label.WQ_b = 'water quotient at birth';
   stat.SDA_b = J_M(3,1)/ J_O(1,1); units.SDA_b = 'mol O/mol X'; label.SDA_b = 'specific dynamic action at birth';
   stat.VO_b = J_M(3,2)/ Wd_b/ 24/ X_gas; units.VO_b = 'L/g.h'; label.VO_b = 'dioxygen use per gram max dry weight, <J_OD> at birth';
-  stat.p_Tt_b = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_b = 'J/d'; label.p_Tt_b = 'dissipating heat at birth';
+  stat.p_Tb = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tb = 'J/d'; label.p_Tb = 'total heat at birth';
   % at puberty
   J_O = eta_O * diag(p_ADG(2,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
   J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
@@ -882,7 +888,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.WQ_p = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_p = 'mol H/mol O'; label.WQ_p = 'water quotient at puberty';
   stat.SDA_p = J_M(3,1)/ J_O(1,1); units.SDA_p = 'mol O/mol X'; label.SDA_p = 'specific dynamic action at puberty';
   stat.VO_p = J_M(3,2)/ Wd_p/ 24/ X_gas; units.VO_p = 'L/g.h'; label.VO_p = 'dioxygen use per gram max dry weight, <J_OD> at puberty';
-  stat.p_Tt_p = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_p = 'J/d'; label.p_Tt_p = 'dissipating heat at puberty';
+  stat.p_Tp = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tp = 'J/d'; label.p_Tp = 'total heat at puberty';
   % at ultimate
   J_O = eta_O * diag(p_ADG(3,:)); % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
   J_M = - (n_M\n_O) * J_O;        % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
@@ -891,7 +897,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.WQ_i = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); units.WQ_i = 'mol H/mol O'; label.WQ_i = 'ultimate water quotient';
   stat.SDA_i = J_M(3,1)/ J_O(1,1); units.SDA_i = 'mol O/mol X'; label.SDA_i = 'ultimate specific dynamic action';
   stat.VO_i = J_M(3,2)/ Wd_i/ 24/ X_gas; units.VO_i = 'L/g.h'; label.VO_i = 'ultimate dioxygen use per gram max dry weight, <J_OD>';
-  stat.p_Tt_i = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Tt_i = 'J/d'; label.p_Tt_i = 'ultimate dissipating heat';
+  stat.p_Ti = sum(- J_O' * mu_O - J_M' * mu_M); units.p_Ti = 'J/d'; label.p_Ti = 'ultimate total heat';
 
   % packing
   txtStat.units = units;
