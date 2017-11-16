@@ -41,7 +41,7 @@ function pie3s( varargin )
 
 
 % Check arguments
-error( nargchk( 1, inf, nargin ) );
+error( nargoutchk( 1, inf, nargin ) );
 
 % Strip off the axes if present
 if isa( varargin{1}, 'matlab.graphics.axis.Axes' ) ...
