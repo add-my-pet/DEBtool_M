@@ -99,7 +99,12 @@ L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic
 l_T     = L_T/ L_m;            % - , scaled heating length
 w       = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
-s_H     = p.E_Hb/ p.E_Hp;        % -, altriciality stress
+
+if isfield(p, 'E_Hp')
+  s_H     = p.E_Hb/ p.E_Hp;        % -, altriciality stress
+else
+  s_H = 1;
+end
 
 if isfield(p,'kap_X')
   y_E_X  = p.kap_X * p.mu_X/ p.mu_E;  % mol/mol, yield of reserve on food
