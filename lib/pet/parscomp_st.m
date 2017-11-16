@@ -5,7 +5,7 @@
 function cPar = parscomp_st(p)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
-  % modified 2015/08/03 by Starrlight
+  % modified 2015/08/03 by Starrlight, 2017/11/16 by Bas Kooijman
   
   %% Syntax
   % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
@@ -99,6 +99,7 @@ L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic
 l_T     = L_T/ L_m;            % - , scaled heating length
 w       = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
+s_H     = p.E_Hb/ p.E_Hp;        % -, altriciality stress
 
 if isfield(p,'kap_X')
   y_E_X  = p.kap_X * p.mu_X/ p.mu_E;  % mol/mol, yield of reserve on food
@@ -138,7 +139,7 @@ end
 % -------------------------------------------------------------------------
 % pack output:
 cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
-              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'w', w, ...
+              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'w', w, 's_H', s_H, ...
               'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_M', j_E_M, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
 
 % -------------------------------------------------------------------------
