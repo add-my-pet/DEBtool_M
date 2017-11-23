@@ -57,6 +57,7 @@ function cPar = parscomp_st(p)
   % * E_V: J/cm^3, [E_V], volume-specific energy of structure
   % * K: c-mol X/l, half-saturation coefficient
   % * M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*
+  % * s_H: -, maturity ratio E_Hb/ E_Hp
 
 if isfield(p,'p_Am') == 0
   p_Am = p.z * p.p_M/ p.kap;        % J/d.cm^2, {p_Am} spec assimilation flux
@@ -101,7 +102,7 @@ w       = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free 
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
 if isfield(p, 'E_Hp')
-  s_H     = p.E_Hb/ p.E_Hp;        % -, altriciality stress
+  s_H     = p.E_Hb/ p.E_Hp;        % -, maturity ratio
 else
   s_H = 1;
 end

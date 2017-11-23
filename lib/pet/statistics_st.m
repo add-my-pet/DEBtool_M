@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -56,8 +56,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - s_M, sM_min: acceleration factor; but sM_min not for hex
 %     - s_s: supply stress; all
-%     - s_H: altriciality index; all except hex
-%     - s_Hbp: precociality coefficient; all
+%     - s_Hbp: maturity ratio; all
+%     - s_HLbp: maturity density ratio; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
 %     - W_dWm: wet weight at max growth; all models
@@ -87,7 +87,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - Wd_b: dry weight at birth; all
 %     - E_Wb: energy content at birth; all
 %     - del_Ub: fraction of reserve left at birth; all
-%     - g_Hb: energy outvestment ratio at birth; all
+%     - g_Hb: energy divestment ratio at birth; all
 %
 %     - a_p: age at puberty; all
 %     - L_p: structural length at puberty; all
@@ -96,7 +96,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %     - Ww_p: wet weight at puberty; all
 %     - Wd_p: dry weight at puberty; all
 %     - E_Wp: energy content at puberty; all
-%     - g_Hp: energy outvestment ratio at puberty; all
+%     - g_Hp: energy divestment ratio at puberty; all
 %
 %     - L_i: ultimate structural length; all 
 %     - M_Vi: ultimate structural mass; all
@@ -638,7 +638,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   % puberty
   L_p = L_m * l_p; M_Vp = M_V * L_p^3; M_Ep = f * E_m * L_p^3/ mu_E; E_Wp = M_Vp * mu_V + M_Ep * mu_E;
   Ww_p = L_p^3 * (1 + w * f); Wd_p = d_V * Ww_p; a_p = t_p/ k_M/ TC; 
-  g_Hp = E_Hp/ L_p^3/ (1 - kap)/ E_m; s_Hbp = g_Hb/ g_Hp;
+  g_Hp = E_Hp/ L_p^3/ (1 - kap)/ E_m; 
+  if strcmp(model,'hex')== 0
+    stat.s_Hbp  = E_Hb/ E_Hp;                 units.s_Hbp  = '-'; label.s_Hbp  = 'maturity ratio';
+    stat.s_HLbp =  stat.s_Hbp * (L_p/ L_b)^3; units.s_HLbp = '-'; label.s_HLbp = 'maturity density ratio at f=1';
+  else
+    stat.s_Hbp = 1;                           units.s_Hbp  = '-'; label.s_Hbp  = 'maturity ratio';
+    stat.s_HLbp = 1;                          units.s_HLbp = '-'; label.s_HLbp = 'maturity density ratio at f=1';
+  end
   stat.l_p = l_p;      units.l_p = '-';     label.l_p = 'scaled structural length at puberty';
   stat.L_p = L_p;      units.L_p = 'cm';    label.L_p = 'structural length at puberty';
   stat.M_Vp = M_Vp;    units.M_Vp = 'mol';  label.M_Vp = 'structural mass at puberty';
@@ -647,13 +654,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.Wd_p = Wd_p;    units.Wd_p = 'g';    label.Wd_p = 'dry weight at puberty';
   stat.E_Wp = E_Wp;    units.E_Wp = 'J';    label.E_Wp = 'energy content at puberty';
   stat.a_p = a_p;      units.a_p = 'd';     label.a_p = 'age at puberty';
-  stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy outvestment ratio at puberty'; 
-  stat.s_Hbp = s_Hbp;  units.s_Hbp = '-';   label.s_Hbp = 'precociality coefficient'; 
+  stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy divestment ratio at puberty'; 
   
-  if strcmp(model,'hex')== 0
-  % altriciality index:
-  stat.s_H = log10(E_Hp/E_Hb); units.s_H = '-'; label.s_H =  'log 10 altriciality index';
-  end
   
   % emergence
   switch model
