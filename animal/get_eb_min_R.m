@@ -54,7 +54,7 @@ function [eb lb info] = get_eb_min_R (p, lb0)
     end
     
     if f < 0 && lb1 == 1
-      fprintf('Warning from get_eb_min_R: l_b is larger than 1')
+      fprintf('Warning from get_eb_min_R: l_b is larger than 1\n')
       info = 0; lb = lb1; lb2 = lb * lb; lb3 = lb2 * lb; eb = g * k * vHb/ (lb3 + g * lb2 - k * vHb); return
     end
   else % lb is smaller than lb0, find lower boundary
