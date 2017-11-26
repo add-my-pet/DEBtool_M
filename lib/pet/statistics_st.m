@@ -117,7 +117,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - N_i: life-time reproductive output; all
 %     - R_i: ultimate reproduction rate: all except hep, hex
-%     - GSI: gonado-somatic index for spawning once per yr: all except hep, hex
 %
 %     - K: half saturation coefficient; all if F_m exists
 %     - F_mb: max searching rate at birth; all  if F_m exists

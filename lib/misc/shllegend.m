@@ -33,6 +33,7 @@ function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
+
 if ~exist('space', 'var') || isempty(space)
   space_MT = 0.9; space_MM = 0.45;
 else
@@ -40,9 +41,11 @@ else
 end
   
 n = size(llegend,1); width = 0;
+
 for i = 1:n
   width = max(width, length(llegend{i,2}));
 end
+
 width = 1 + width * 0.5;
 height = n * .45; 
 
