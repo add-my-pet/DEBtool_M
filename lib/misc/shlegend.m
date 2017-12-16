@@ -3,7 +3,7 @@
 
 %%
 function Hlegend = shlegend(legend, pos, space, txt, i_legend)
-% created 2016/02/28 by Bas Kooijman
+% created 2016/02/28 by Bas Kooijman, modified 2017/12/16
 
 %% Syntax
 % Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend)
@@ -14,8 +14,8 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % Input:
 %
 % * legend: (n,2)-cell matrix with with marker (5-vector of cells), item (string)
-% * pos: optional 2-vector with position of lower-left corner of legend within box
-% * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical)
+% * pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)
+% * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45
 % * txt: optional character string with title above legend figure
 % * i_legend: optional integer with highlighter (from 1 till n)
 %
@@ -34,7 +34,7 @@ if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.9; space_MM = 0.45;
+  space_MT = 0.9; space_MM = 0.30;
 else
   space_MT = space(1); space_MM = space(2);
 end
@@ -44,7 +44,7 @@ for i = 1:n
   width = max(width, length(legend{i,2}));
 end
 width = 1 + width * 0.5;
-height = n * .45; 
+height = n * space_MM; 
 
 Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>shlegend</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-08-06"><meta name="DC.source" content="shlegend.m"><style type="text/css">
+      --><title>shlegend</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-12-16"><meta name="DC.source" content="shlegend.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,16 +55,25 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>shlegend</h1><!--introduction--><p>plots legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>Hlegend = <a href="../shlegend.m"><b>shlegend</b></a> (legend, pos, space, txt, i_legend)</p><h2>Description<a name="4"></a></h2><p>plots legend</p><p>Input:</p><div><ul><li>legend: (n,2)-cell matrix with with marker (5-vector of cells), item (string)</li><li>pos: optional 2-vector with position of lower-left corner of legend within box</li><li>space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical)</li><li>txt: optional character string with title above legend figure</li><li>i_legend: optional integer with highlighter (from 1 till n)</li></ul></div><p>Output:</p><div><ul><li>Hlegend: handle of figure</li></ul></div><h2>Remarks<a name="5"></a></h2><p>create legend with select_legend; press any key when done with select_legend</p><h2>Example of use<a name="6"></a></h2><p>shlegend(select_legend) or   legend = select_legend; shlegend(legend, [], [], 'example');</p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>shlegend</h1><!--introduction--><p>plots legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>Hlegend = <a href="../shlegend.m"><b>shlegend</b></a> (legend, pos, space, txt, i_legend)</p><h2 id="4">Description</h2><p>plots legend</p><p>Input:</p><div><ul><li>legend: (n,2)-cell matrix with with marker (5-vector of cells), item (string)</li><li>pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)</li><li>space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45</li><li>txt: optional character string with title above legend figure</li><li>i_legend: optional integer with highlighter (from 1 till n)</li></ul></div><p>Output:</p><div><ul><li>Hlegend: handle of figure</li></ul></div><h2 id="5">Remarks</h2><p>create legend with select_legend; press any key when done with select_legend</p><h2 id="6">Example of use</h2><p>shlegend(select_legend) or   legend = select_legend; shlegend(legend, [], [], 'example');</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% shlegend
 % plots legend 
 
 %%
 function Hlegend = shlegend(legend, pos, space, txt, i_legend)
-% created 2016/02/28 by Bas Kooijman
+% created 2016/02/28 by Bas Kooijman, modified 2017/12/16
 
 %% Syntax
 % Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend)
@@ -74,8 +84,8 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % Input:
 %
 % * legend: (n,2)-cell matrix with with marker (5-vector of cells), item (string)
-% * pos: optional 2-vector with position of lower-left corner of legend within box
-% * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical)
+% * pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)
+% * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45
 % * txt: optional character string with title above legend figure
 % * i_legend: optional integer with highlighter (from 1 till n)
 %
@@ -94,7 +104,7 @@ if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.9; space_MM = 0.45;
+  space_MT = 0.9; space_MM = 0.30;
 else
   space_MT = space(1); space_MM = space(2);
 end
@@ -104,7 +114,7 @@ for i = 1:n
   width = max(width, length(legend{i,2}));
 end
 width = 1 + width * 0.5;
-height = n * .45; 
+height = n * space_MM; 
 
 Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 
