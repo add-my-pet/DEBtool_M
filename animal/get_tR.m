@@ -69,7 +69,7 @@ function [tR, tp, tx, tb, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
     [tb, lb] = get_tb ([g, k, vHb] , f, lb0); 
     li = f - lT; irB = 3 * (1 + f/ g); % k_M/ r_B
-    [lx, lb] = get_lp([g, k, l_T, v_Hb, v_Hx], f, lb);
+    [lx, lb] = get_lp([g, k, lT, vHb, vHx], f, lb);
     tx = tb + irB * log((li - lb)/ (li - lx));
     tp = NaN; lp = NaN; 
     tR = NaN; lR = NaN; 
