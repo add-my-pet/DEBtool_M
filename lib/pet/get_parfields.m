@@ -28,6 +28,10 @@ function [coreParFields, info] = get_parfields(model)
   %% Example of use
   % [coreParFields, info] = get_parfields(metaPar.model)
   
+  if ~check_model(model)
+    fprintf(['warning from check_model: ', model, ' is not a typical model\n'])
+  end
+  
   info = 1;
   
   switch model
