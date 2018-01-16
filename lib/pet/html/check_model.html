@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>check_model</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-12"><meta name="DC.source" content="check_model.m"><style type="text/css">
+      --><title>check_model</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-14"><meta name="DC.source" content="check_model.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>check_model</h1><!--introduction--><p>checks for the existence of a typified model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[res models] = <a href="../check_model.m"><b>check_model</b></a> (model)</p><h2 id="4">Description</h2><p>checks if the name of a model is a typified mode</p><p>Input</p><div><ul><li>model: string with name of model</li></ul></div><p>Output</p><div><ul><li>res: boolean with true if model si a typified one, false if not</li><li>model: cell string with typified models</li></ul></div><h2 id="5">Example of use</h2><p>check_model('std')</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>check_model</h1><!--introduction--><p>checks for the existence of a typified model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[res models] = <a href="../check_model.m"><b>check_model</b></a> (model)</p><h2 id="4">Description</h2><p>checks if the name of a model is a typified mode</p><p>Input</p><div><ul><li>model: string with name of model</li></ul></div><p>Output</p><div><ul><li>res: boolean with true if model is a typified one, false if not</li><li>model: cell string with typified models</li></ul></div><h2 id="5">Remark</h2><p>function AmPtool/get_model_types reads model types from DEBwiki</p><h2 id="6">Example of use</h2><p>check_model('std')</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% check_model
 % checks for the existence of a typified model
@@ -87,9 +87,12 @@ function [res, models] = check_model(model)
   %
   % Output
   %
-  % * res: boolean with true if model si a typified one, false if not 
+  % * res: boolean with true if model is a typified one, false if not 
   % * model: cell string with typified models
 
+  %% Remark
+  % function AmPtool/get_model_types reads model types from DEBwiki
+  
   %% Example of use
   % check_model('std')
   

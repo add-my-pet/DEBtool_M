@@ -17,9 +17,12 @@ function [res, models] = check_model(model)
   %
   % Output
   %
-  % * res: boolean with true if model si a typified one, false if not 
+  % * res: boolean with true if model is a typified one, false if not 
   % * model: cell string with typified models
 
+  %% Remark
+  % function AmPtool/get_model_types reads model types from DEBwiki
+  
   %% Example of use
   % check_model('std')
   
