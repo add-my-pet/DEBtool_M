@@ -22,23 +22,33 @@ function estim_options (key, val)
   % * two inputs
   %
   %   'loss_function': 
-  %     re - relative error (symmetric by addition);
-  %     sb - multiplicative symmetric bounded (default);
-  %     su - multiplicative symmetric unbounded;
-  %   'filter': 1 - use filter (default); 0 - do not;
+  %     're' - relative error (symmetric by addition);
+  %     'sb' - multiplicative symmetric bounded (default);
+  %     'su' - multiplicative symmetric unbounded;
+  %
+  %   'filter': 
+  %     1 - use filter (default); 
+  %     0 - do not;
+  %
   %   'pars_init_method':
   %     0 - get initial estimates from automatized computation (default)
   %     1 - read initial estimates from .mat file (for continuation)
   %     2 - read initial estimates from pars_init file
+  %
   %   'pseudodata_pets': 
   %     0 - put pseudodata together with data (default) 
   %     1 - put it apart (only for multispecies estimation)
+  %
   %   'results_output':
   %     0 - prints results to screen (default)
   %     1 - prints results to screen, saves to .mat file
   %     2 - saves data to .mat file and graphs to .png files
   %     (prints results to screen using a customized results file when it exists)
-  %   'method': 'nm' - use Nelder-Mead method; 'no' - do not estimate;
+  %
+  %   'method': 
+  %     'nm' - use Nelder-Mead method; 
+  %     'no' - do not estimate;
+  %
   %   for other options see corresponding options file of the method (e.g. nmregr_options)
   %
   % Output
@@ -46,7 +56,8 @@ function estim_options (key, val)
   % * no output, but globals are set to values or values are printed to screen
   
   %% Remarks
-  % See <estim_pars.html *estim_pars*> for application of the option settings
+  % See <estim_pars.html *estim_pars*> for application of the option settings.
+  % Initial estimates are controlled by 'pars_init_method', but the fix-setting is always taken from the pars_init file
   
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0)

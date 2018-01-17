@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-08"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-17"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,33 +55,50 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2>Description<a name="4"></a></h2><p>Sets options for estimation one by one</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre class="language-matlab"><span class="string">'default'</span>: sets options <span class="string">at</span> <span class="string">default</span> <span class="string">values</span>
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre class="language-matlab"><span class="string">'default'</span>: sets options <span class="string">at</span> <span class="string">default</span> <span class="string">values</span>
 any <span class="string">other</span> <span class="string">key</span> <span class="string">(see below):</span> <span class="string">print</span> <span class="string">value</span> <span class="string">to</span> <span class="string">screen</span>
-</pre><div><ul><li>two inputs</li></ul></div><pre class="language-matlab"><span class="string">'filter'</span>: 1 - use filter (default); 0 - do not;
-<span class="string">'pars_init_method'</span>:
+</pre><div><ul><li>two inputs</li></ul></div><pre class="language-matlab"><span class="string">'loss_function'</span>:
+  <span class="string">'re'</span> - relative error (symmetric by addition);
+  <span class="string">'sb'</span> - multiplicative symmetric <span class="string">bounded</span> <span class="string">(default)</span>;
+  <span class="string">'su'</span> - multiplicative symmetric <span class="string">unbounded</span>;
+</pre><pre class="language-matlab"><span class="string">'filter'</span>:
+  1 - use filter (default);
+  0 - do not;
+</pre><pre class="language-matlab"><span class="string">'pars_init_method'</span>:
   0 - get initial <span class="string">estimates</span> <span class="string">from</span> <span class="string">automatized</span> <span class="string">computation</span> <span class="string">(default)</span>
   1 - read initial <span class="string">estimates</span> <span class="string">from</span> <span class="string">.mat</span> <span class="string">file</span> <span class="string">(for continuation)</span>
   2 - read initial <span class="string">estimates</span> <span class="string">from</span> <span class="string">pars_init</span> <span class="string">file</span>
-<span class="string">'pseudodata_pets'</span>:
+</pre><pre class="language-matlab"><span class="string">'pseudodata_pets'</span>:
   0 - put pseudodata <span class="string">together</span> <span class="string">with</span> <span class="string">data</span> <span class="string">(default)</span>
   1 - put it <span class="string">apart</span> <span class="string">(only for multispecies estimation)</span>
-<span class="string">'results_output'</span>:
+</pre><pre class="language-matlab"><span class="string">'results_output'</span>:
   0 - prints results <span class="string">to</span> <span class="string">screen</span> <span class="string">(default)</span>
-  1 - prints results <span class="string">to</span> <span class="string">screen</span>, saves <span class="string">to</span> <span class="string">.mat</span> <span class="string">file</span> <span class="string">and</span> <span class="string">writes</span> <span class="string">.html</span> <span class="string">file</span>
-  2 - saves to <span class="string">.mat</span> <span class="string">file</span> <span class="string">and</span> <span class="string">writes</span> <span class="string">.html</span> <span class="string">file</span>
-  3 - prints results <span class="string">to</span> <span class="string">screen</span> <span class="string">using</span> <span class="string">a</span> <span class="string">customized</span> <span class="string">results</span> <span class="string">file</span>
-<span class="string">'method'</span>: <span class="string">'nmregr'</span> - use Nelder-Mead method; <span class="string">'no'</span> - do not <span class="string">estimate</span>;
-<span class="keyword">for</span> other options <span class="string">see</span> <span class="string">corresponding</span> <span class="string">options</span> <span class="string">file</span> <span class="string">of</span> <span class="string">the</span> <span class="string">method</span> <span class="string">(e.g. nmregr_options)</span>
-</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings</p><h2>Example of use<a name="6"></a></h2><pre>estim_options('default'); estim_options('filter', 0)</pre><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+  1 - prints results <span class="string">to</span> <span class="string">screen</span>, saves <span class="string">to</span> <span class="string">.mat</span> <span class="string">file</span>
+  2 - saves data <span class="string">to</span> <span class="string">.mat</span> <span class="string">file</span> <span class="string">and</span> <span class="string">graphs</span> <span class="string">to</span> <span class="string">.png</span> <span class="string">files</span>
+  (prints results to screen using a customized results file when it exists)
+</pre><pre class="language-matlab"><span class="string">'method'</span>:
+  <span class="string">'nm'</span> - use Nelder-Mead method;
+  <span class="string">'no'</span> - do not <span class="string">estimate</span>;
+</pre><pre class="language-matlab"><span class="keyword">for</span> other options <span class="string">see</span> <span class="string">corresponding</span> <span class="string">options</span> <span class="string">file</span> <span class="string">of</span> <span class="string">the</span> <span class="string">method</span> <span class="string">(e.g. nmregr_options)</span>
+</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by 'pars_init_method', but the fix-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0)</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_options
 % Sets options for estim.pars
 
 %%
 function estim_options (key, val)
-  %  created at 2015/01/25 by Gonçalo Marques
+  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -98,20 +116,34 @@ function estim_options (key, val)
   %
   % * two inputs
   %
-  %   'filter': 1 - use filter (default); 0 - do not;
+  %   'loss_function': 
+  %     're' - relative error (symmetric by addition);
+  %     'sb' - multiplicative symmetric bounded (default);
+  %     'su' - multiplicative symmetric unbounded;
+  %
+  %   'filter': 
+  %     1 - use filter (default); 
+  %     0 - do not;
+  %
   %   'pars_init_method':
   %     0 - get initial estimates from automatized computation (default)
   %     1 - read initial estimates from .mat file (for continuation)
   %     2 - read initial estimates from pars_init file
+  %
   %   'pseudodata_pets': 
   %     0 - put pseudodata together with data (default) 
   %     1 - put it apart (only for multispecies estimation)
+  %
   %   'results_output':
   %     0 - prints results to screen (default)
-  %     1 - prints results to screen, saves to .mat file and writes .html file
-  %     2 - saves to .mat file and writes .html file
-  %     3 - prints results to screen using a customized results file
-  %   'method': 'nmregr' - use Nelder-Mead method; 'no' - do not estimate;
+  %     1 - prints results to screen, saves to .mat file
+  %     2 - saves data to .mat file and graphs to .png files
+  %     (prints results to screen using a customized results file when it exists)
+  %
+  %   'method': 
+  %     'nm' - use Nelder-Mead method; 
+  %     'no' - do not estimate;
+  %
   %   for other options see corresponding options file of the method (e.g. nmregr_options)
   %
   % Output
@@ -119,27 +151,46 @@ function estim_options (key, val)
   % * no output, but globals are set to values or values are printed to screen
   
   %% Remarks
-  % See <estim_pars.html *estim_pars*> for application of the option settings
+  % See <estim_pars.html *estim_pars*> for application of the option settings.
+  % Initial estimates are controlled by 'pars_init_method', but the fix-setting is always taken from the pars_init file
   
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0)
  
-  global method filter pars_init_method pseudodata_pets results_output
+  global method lossfunction 
+  global filter cov_rules pars_init_method pseudodata_pets results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
   end
+  
+  availableMethodOptions = {'no', 'nm'};
     
   switch key
 	
     case 'default'
+      lossfunction = 'sb';
       filter = 1;
-      pars_init_method  = 0;
+      cov_rules = '1species';
+      pars_init_method  = 2;
       pseudodata_pets = 0;
       results_output = 0;
-      method = 'nmregr';
+      method = 'nm';
       nmregr_options('default');
 
+    case 'loss_function'
+      if exist('val','var') == 0
+        if numel(lossfunction) ~= 0
+          fprintf(['loss_function = ', lossfunction,' \n']);  
+        else
+          fprintf('loss_function = unknown \n');
+        end
+        fprintf('sb - multiplicative symmetric bounded \n');
+        fprintf('su - multiplicative symmetric unbounded \n');
+      else
+        lossfunction = val;
+      end
+      
     case 'filter'
       if exist('val','var') == 0
         if numel(filter) ~= 0
@@ -153,6 +204,19 @@ function estim_options (key, val)
         filter = val;
       end
 
+    case 'cov_rules'
+      if exist('val','var') == 0
+        if numel(cov_rules) ~= 0
+          fprintf(['cov_rules = ', cov_rules,' \n']);  
+        else
+          fprintf('cov_rules = unknown \n');
+        end
+        fprintf('1species - no trasformation \n');
+        fprintf('basic - standard body-size scaling relationships \n');
+      else
+        cov_rules = val;
+      end
+      
     case 'pars_init_method'
       if exist('val','var') == 0
         if numel(pars_init_method) ~= 0
@@ -196,23 +260,33 @@ function estim_options (key, val)
       end
             
     case 'method'
-      if exist('val','var') == 0
+      if exist('val','var') == 0 || ~any(ismember(availableMethodOptions, val))
         if numel(method) ~= 0
           fprintf(['method = ', method,' \n']);  
         else
           fprintf('method = unknown \n');
         end	      
         fprintf('''no'' - do not estimate \n');
-        fprintf('''nmregr'' - use Nelder-Mead method \n');
+        fprintf('''nm'' - use Nelder-Mead method \n');
       else
         method = val;
       end
 
     case 'inexistent'
+      if numel(lossfunction) ~= 0
+        fprintf(['loss_function = ', lossfunction,' \n']);
+      else
+        fprintf('loss_function = unknown \n');
+      end
       if numel(filter) ~= 0
         fprintf(['filter = ', num2str(filter),' \n']);
       else
         fprintf('filter = unknown \n');
+      end
+      if numel(cov_rules) ~= 0
+        fprintf(['cov_rules = ', cov_rules,' \n']);
+      else
+        fprintf('cov_rules = unknown \n');
       end
       if numel(pars_init_method) ~= 0
         fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
@@ -231,24 +305,36 @@ function estim_options (key, val)
       end
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
-        eval([method, '_options;']);
+        if ~strcmp(method, 'no')
+          eval([method, 'regr_options;']);
+        end
       else
         fprintf('method = unknown \n');
       end
         
     otherwise % option 'other'
       if numel(method) ~= 0
-        if exist('val','var') == 0
-          eval([method, '_options(key);']);
+        if exist('val','var') == 0 && ~strcmp(method, 'no') 
+          eval([method, 'regr_options(key);']);
         else
-          eval([method, '_options(key, val);']);
+          eval([method, 'regr_options(key, val);']);
         end
       else
         fprintf(['key ', key, ' is unkown \n\n']);
+        if numel(lossfunction) ~= 0
+          fprintf(['loss_function = ', lossfunction,' \n']);
+        else
+          fprintf('loss_function = unknown \n');
+        end
         if numel(filter) ~= 0
           fprintf(['filter = ', num2str(filter),' \n']);
         else
           fprintf('filter = unknown \n');
+        end
+        if numel(cov_rules) ~= 0
+          fprintf(['cov_rules = ', cov_rules,' \n']);
+        else
+          fprintf('cov_rules = unknown \n');
         end
         if numel(pars_init_method) ~= 0
           fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
