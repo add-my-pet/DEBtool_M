@@ -2,22 +2,23 @@
 % graphical user interface for setting marker
 
 %%
-function marker = select_marker(marker)
-%% created 2016/02/26 by Bas Kooijman; modified 2016/03/08 by Dina Lika
+function marker = select_marker(marker, k)
+% created 2016/02/26 by Bas Kooijman; modified 2016/03/08 by Dina Lika, 2018/01/22 by Bas Kooijman
 
 %% Syntax
-% marker = <../select_marker.m *select_marker*> (marker)
+% marker = <../select_marker.m *select_marker*> (marker, k)
 
 %% Description
-% Selects type, size, linewidth, edge color and face color of a marker
+% Selects marker specification: type, size, linewidth and edge color and face color if k is absent or false
 %
 % Input:
 %
-% * marker: optional 5-vector of cells with type, size, linewidth, edge color and face color of a marker
+% * marker: optional 3 or 5-vector of cells with marker specs: type, size, linewidth, and edge color and face color 
+% * k: optional boolean for supressing color setting (default false)
 %
 % Output: 
 % 
-% * marker: 5-vector of cells with type, size, linewidth, edge color and face color of a marker
+% * marker: 3 or 5-vector of cells with marker specs: type, size, linewidth, and edge color and face color 
 %
 %% Remarks
 % Press OK when done
@@ -29,7 +30,11 @@ function marker = select_marker(marker)
   
   if exist('marker', 'var')
     % unpack marker
-    T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};
+    if length (marker) == 5
+      T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};
+    else
+      T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = [0 0 0]; MFC = [0 0 0];
+    end
   else % assign default marker specification
     T = 'o'; MS = 12; LW = 4; MEC = 'b'; MFC = 'r'; 
   end
@@ -49,6 +54,7 @@ function marker = select_marker(marker)
            'String', 'Line Width', ...
            'Position',[315,100,70,25], ...
            'Callback', @LW_Callback);    
+  if ~k
   HMEC  = uicontrol('Style','pushbutton', ...
            'String','Egde Color',...
            'Position',[315,70,70,25], ...
@@ -57,12 +63,17 @@ function marker = select_marker(marker)
            'String','Face Color',...
            'Position',[315,40,70,25], ...
            'Callback', @MFC_Callback); 
+  end
   OK    = uicontrol('Style','pushbutton', ...
            'String','OK',...
            'Position',[315,10,70,25], ...
            'Callback', 'uiresume(gcbf)');
    
-  align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
+  if k
+    align([HType,HMS,HLW],'Center','None');
+  else
+    align([HType,HMS,HLW,HMEC,HMFC],'Center','None');
+  end
       
     
   plot(0, 0, T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
@@ -70,7 +81,12 @@ function marker = select_marker(marker)
   uiwait(gcf)
  
   close (HFig_marker)
-  marker = {T; MS; LW; MEC; MFC}; % pack marker
+  
+  if k
+    marker = {T; MS; LW};           % pack marker
+  else
+    marker = {T; MS; LW; MEC; MFC}; % pack marker
+  end
 end
 
 %% subfunctions

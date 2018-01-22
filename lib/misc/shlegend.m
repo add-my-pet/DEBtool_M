@@ -54,7 +54,11 @@ hold on
 
 for i = 1:n
   marker = legend{n-i+1,1}; item = legend(n-i+1,2);
-  T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};  
+  if length(marker) == 5
+    T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};  
+  else
+    T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = [0 0 0]; MFC = [0 0 0];  
+  end
   plot(pos(1), pos(2), T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
   text(space_MT + pos(1), pos(2), strrep(item, '_', '\_'), 'Interpreter', 'tex');
   if exist('i_legend', 'var') && i_legend == n-i+1
