@@ -23,17 +23,15 @@ function Hcol = shcolor_lava(range, txt)
 %% Example
 % shcolor_lava
 
-close all
-
 if ~exist('range', 'var') || isempty(range)
   range = [0 1];
 end
 
 Hcol = figure('Position', [200, 200, 75, 900]);
-figure(Hcol)
+hold on
+
 plot([0 .5 .5 0 0], [0 0 1.1 1.1 0], 'w', 'LineStyle', 'none')
 
-hold on
   x = 0;
 for i = 1:100 % color strip
   plot(x + [0; 0], [i - 1; i]/ 100, 'Linewidth', 20, 'Color', color_lava((i-1)/100))
