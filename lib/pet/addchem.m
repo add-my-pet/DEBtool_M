@@ -4,7 +4,7 @@
 %%
 function [par, units, label, free] = addchem(par, units, label, free, phylum, class)
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/07/23
-  % last modified 2015/07/29
+  % last modified 2015/07/29, 2018/03/27
   
   %% Syntax
   % [par, units, label, free] = <../addchem.m *addchem*>(par, units, label, free, phylum, class)
@@ -32,16 +32,20 @@ function [par, units, label, free] = addchem(par, units, label, free, phylum, cl
   % * label: structure with the description of each parameter - each field is a
   % string
   % * free: structure with each field  being a 0 or 1 - this specifies
-  % whether the parameter is to be freed to not during estimation
+  % whether the parameter is to be freed, to not, during estimation
   
   %% Remark
-  % Calls get_d_V to set specific density of structure
+  % Calls get_d_V to set specific density of structure based on taxonomy
+  % Calls get_N_waste to set N-waste based on taxonomy
   % For a specific density of wet mass of 1 g/cm^3,
   % a specific density of d_E = d_V = 0.1 g/cm^3 means a dry-over-wet weight ratio of 0.1
   
-% specific densities
-%   set specific densites using the pet's taxonomy
+% specific densites based on taxonomy
 d_V = get_d_V(phylum, class); % see comments on section 3.2.1 of DEB3 
+
+% N-waste based on taxonomy
+[n_CN n_HN n_ON n_NN mu_N] = get_N_waste(phylum, class);
+
 par.d_X = d_V;     free.d_X = 0;  units.d_X = 'g/cm^3'; label.d_X = 'specific density of food'; 
 par.d_V = d_V;     free.d_V = 0;  units.d_V = 'g/cm^3'; label.d_V = 'specific density of structure'; 
 par.d_E = d_V;     free.d_E = 0;  units.d_E = 'g/cm^3'; label.d_E = 'specific density of reserve'; 
@@ -57,7 +61,7 @@ par.mu_P = 480000; free.mu_P = 0;  units.mu_P = 'J/ mol'; label.mu_P = 'chemical
 par.mu_C = 0;      free.mu_C = 0;  units.mu_C = 'J/ mol'; label.mu_C = 'chemical potential of CO2'; 
 par.mu_H = 0;      free.mu_H = 0;  units.mu_H = 'J/ mol'; label.mu_H = 'chemical potential of H2O'; 
 par.mu_O = 0;      free.mu_O = 0;  units.mu_O = 'J/ mol'; label.mu_O = 'chemical potential of O2'; 
-par.mu_N = 0;      free.mu_N = 0;  units.mu_N = 'J/ mol'; label.mu_N = 'chemical potential of NH3'; 
+par.mu_N = mu_N;   free.mu_N = 0;  units.mu_N = 'J/ mol'; label.mu_N = 'chemical potential of N-waste'; 
 
 % chemical indices for water-free organics from Kooy2010 Fig 4.15 (excluding contributions of H and O atoms from water)
 par.n_CX = 1;      free.n_CX = 0;  units.n_CX = '-'; label.n_CX = 'chem. index of carbon in food'; % C/C = 1 by definition
@@ -81,24 +85,24 @@ par.n_OP = 0.5;    free.n_OP = 0;  units.n_OP = '-'; label.n_OP = 'chem. index o
 par.n_NP = 0.15;   free.n_NP = 0;  units.n_NP = '-'; label.n_NP = 'chem. index of nitrogen in faeces';  
 
 % chemical indices for minerals from Kooy2010 
-par.n_CC = 1;   free.n_CC = 0;  units.n_CC = '-'; label.n_CC = 'chem. index of carbon in CO2'; 
-par.n_HC = 0;   free.n_HC = 0;  units.n_HC = '-'; label.n_HC = 'chem. index of hydrogen in CO2';
-par.n_OC = 2;   free.n_OC = 0;  units.n_OC = '-'; label.n_OC = 'chem. index of oxygen in CO2';
-par.n_NC = 0;   free.n_NC = 0;  units.n_NC = '-'; label.n_NC = 'chem. index of nitrogen in CO2';
+par.n_CC = 1;      free.n_CC = 0;  units.n_CC = '-'; label.n_CC = 'chem. index of carbon in CO2'; 
+par.n_HC = 0;      free.n_HC = 0;  units.n_HC = '-'; label.n_HC = 'chem. index of hydrogen in CO2';
+par.n_OC = 2;      free.n_OC = 0;  units.n_OC = '-'; label.n_OC = 'chem. index of oxygen in CO2';
+par.n_NC = 0;      free.n_NC = 0;  units.n_NC = '-'; label.n_NC = 'chem. index of nitrogen in CO2';
 %
-par.n_CH = 0;   free.n_CH = 0;  units.n_CH = '-'; label.n_CH = 'chem. index of carbon in H2O'; 
-par.n_HH = 2;   free.n_HH = 0;  units.n_HH = '-'; label.n_HH = 'chem. index of hydrogen in H2O';
-par.n_OH = 1;   free.n_OH = 0;  units.n_OH = '-'; label.n_OH = 'chem. index of oxygen in H2O';
-par.n_NH = 0;   free.n_NH = 0;  units.n_NH = '-'; label.n_NH = 'chem. index of nitrogen in H2O';
+par.n_CH = 0;      free.n_CH = 0;  units.n_CH = '-'; label.n_CH = 'chem. index of carbon in H2O'; 
+par.n_HH = 2;      free.n_HH = 0;  units.n_HH = '-'; label.n_HH = 'chem. index of hydrogen in H2O';
+par.n_OH = 1;      free.n_OH = 0;  units.n_OH = '-'; label.n_OH = 'chem. index of oxygen in H2O';
+par.n_NH = 0;      free.n_NH = 0;  units.n_NH = '-'; label.n_NH = 'chem. index of nitrogen in H2O';
 % 
-par.n_CO = 0;   free.n_CO = 0;  units.n_CO = '-'; label.n_CO = 'chem. index of carbon in O2';   
-par.n_HO = 0;   free.n_HO = 0;  units.n_HO = '-'; label.n_HO = 'chem. index of hydrogen in O2';
-par.n_OO = 2;   free.n_OO = 0;  units.n_OO = '-'; label.n_OO = 'chem. index of oxygen in O2';
-par.n_NO = 0;   free.n_NO = 0;  units.n_NO = '-'; label.n_NO = 'chem. index of nitrogen in O2';
+par.n_CO = 0;      free.n_CO = 0;  units.n_CO = '-'; label.n_CO = 'chem. index of carbon in O2';   
+par.n_HO = 0;      free.n_HO = 0;  units.n_HO = '-'; label.n_HO = 'chem. index of hydrogen in O2';
+par.n_OO = 2;      free.n_OO = 0;  units.n_OO = '-'; label.n_OO = 'chem. index of oxygen in O2';
+par.n_NO = 0;      free.n_NO = 0;  units.n_NO = '-'; label.n_NO = 'chem. index of nitrogen in O2';
 % 
-par.n_CN = 0;   free.n_CN = 0;  units.n_CN = '-'; label.n_CN = 'chem. index of carbon in NH3';    
-par.n_HN = 3;   free.n_HN = 0;  units.n_HN = '-'; label.n_HN = 'chem. index of hydrogen in NH3';
-par.n_ON = 0;   free.n_ON = 0;  units.n_ON = '-'; label.n_ON = 'chem. index of oxygen in NH3';
-par.n_NN = 1;   free.n_NN = 0;  units.n_NN = '-'; label.n_NN = 'chem. index of nitrogen in NH3';
+par.n_CN = n_CN;   free.n_CN = 0;  units.n_CN = '-'; label.n_CN = 'chem. index of carbon in N-waste';   % n_CN = 0 or 1 by definition
+par.n_HN = n_HN;   free.n_HN = 0;  units.n_HN = '-'; label.n_HN = 'chem. index of hydrogen in N-waste';
+par.n_ON = n_ON;   free.n_ON = 0;  units.n_ON = '-'; label.n_ON = 'chem. index of oxygen in N-waste';
+par.n_NN = n_NN;   free.n_NN = 0;  units.n_NN = '-'; label.n_NN = 'chem. index of nitrogen in N-waste';
 
 end
