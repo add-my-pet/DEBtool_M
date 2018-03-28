@@ -24,8 +24,8 @@ function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
   
   %% Remarks
   % Check spelling if info = 0
-  % Three possible N-wastes are delinieated: Ammonia, urea, uric acid, mixutures are ignorned
-  % Data from Wtithers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing
+  % Three possible N-wastes are delineated: Ammonia, urea, uric acid, mixtures are ignorned
+  % Data from Withers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing
   
 info = 1;
 switch phylum
@@ -43,45 +43,50 @@ switch phylum
         N_waste = 'ammonoletic';
     case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         N_waste = 'ammonoletic';
-    case 'Annelida' % terrestrial species are ureotelic
-        N_waste = 'ammonoletic';
+    case 'Annelida' % terrestrial species are ureotelic, aquatic ones ammonoletic
+        switch class
+            case 'Clitellata'
+                N_waste = 'ureotelic';
+            case 'otherwise'
+                N_waste = 'ammonoletic';
+        end
     case 'Sipuncula'
         N_waste = 'ammonoletic';
     case 'Mollusca' % terrestrial species are ureotelic
         N_waste = 'ammonoletic';
     case {'Tardigrada', 'Priapulida', 'Nematoda'}                % Ecdysozoa
         N_waste = 'ammonoletic';
-    case 'Arthropoda'
+    case 'Arthropoda' % terrestrial species are uricotelic, aquatic ones ammonoletic 
         switch class
             case {'Arachnida','Entognatha','Insecta'}
-               N_waste = 'uricotelic';
+                N_waste = 'uricotelic';
             otherwise
-               N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
         end
     case {'Echinodermata','Hemichordata'}                        % Deuterostomata
         N_waste = 'ammonoletic';
     case 'Chordata'
         switch class
             case {'Leptocardii','Appendicularia','Thaliacea','Ascidiacea'}
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case {'Myxini','Cephalaspidomorphi'}
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case 'Chondrichthyes'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
             case 'Actinopterygii'
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case 'Sarcopterygii'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
             case 'Amphibia'
-              N_waste = 'ureotelic'; % ammonoletic in water 
+                N_waste = 'ureotelic'; % ammonoletic in water 
             case 'Reptilia'
-              N_waste = 'uricotelic';
-              % crocs and aquatic snakes partly ammonoletic, 
-              % turtles and leguanas partly ureotelic
+                N_waste = 'uricotelic';
+                % crocs and aquatic snakes partly ammonoletic, 
+                % turtles and leguanas partly ureotelic
             case 'Aves'
-              N_waste = 'uricotelic';
+                N_waste = 'uricotelic';
             case 'Mammalia'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
         end
     case 'my_pet_phylum' % demo mydata_my_pet
         N_waste = 'ammonoletic';
@@ -92,10 +97,10 @@ end
 
 switch N_waste
     case 'ammonoletic'
-        n_CN = 0; n_HN = 3; n_ON = 0; n_NN = 1; % ammonia
+        n_CN = 0; n_HN = 3; n_ON = 0; n_NN = 1; % ammonia: H3N
         mu_N = 0;
     case 'ureotelic'
-        n_CN = 1; n_HN = 2; n_ON = 1; n_NN = 2; % urea
+        n_CN = 1; n_HN = 2; n_ON = 1; n_NN = 2; % urea: CH2ON2
         mu_N = 122e3;   % J/C-mol  synthesis from NH3, Withers page 119     
     case 'uricotelic'
         n_CN = 1; n_HN = 0.8; n_ON = 0.6; n_NN = 0.8; % uric acid: C5H4O3N4
