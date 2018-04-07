@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_N_waste</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-27"><meta name="DC.source" content="get_N_waste.m"><style type="text/css">
+      --><title>get_N_waste</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-04-07"><meta name="DC.source" content="get_N_waste.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,9 +66,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_N_waste</h1><!--introduction--><p>Gets chemical indices and chemical potential of N-waste from phylum, class</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[n_CN n_HN n_ON n_NN mu_N info] = <a href="../get_N_waste.m"><b>get_N_waste</b></a> (phylum, class)</p><h2 id="4">Description</h2><p>Sets chemical indices and chemical potential of N-waste according to taxonomic classification</p><p>Input</p><div><ul><li>phylum: name of animal phylum (one of 36 possibilities)</li><li>class: name of class, only used for molluscs, arthropods and chordates</li></ul></div><p>Output</p><pre>n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
-mu_N: scalat with chemical potential in J/C-mol
-info: 1 if taxon could be identified, 0 otherwise</pre><h2 id="5">Remarks</h2><p>Check spelling if info = 0 Three possible N-wastes are delinieated: Ammonia, urea, uric acid, mixutures are ignorned Data from Wtithers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_N_waste</h1><!--introduction--><p>Gets chemical indices and chemical potential of N-waste from phylum, class</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[n_CN n_HN n_ON n_NN mu_N info] = <a href="../get_N_waste.m"><b>get_N_waste</b></a> (phylum, class)</p><h2 id="4">Description</h2><p>Sets chemical indices and chemical potential of N-waste according to taxonomic classification</p><p>Input</p><div><ul><li>phylum: name of animal phylum (one of 36 possibilities)</li><li>class: name of class, only used for annelids, arthropods and chordates</li></ul></div><p>Output</p><pre>n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
+mu_N: scalar with chemical potential in J/C-mol
+info: 1 if taxon could be identified, 0 otherwise</pre><h2 id="5">Remarks</h2><p>Check spelling if info = 0 Three possible N-wastes are delineated: Ammonia, urea, uric acid, mixtures are ignorned Data from Withers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_N_waste
 % Gets chemical indices and chemical potential of N-waste from phylum, class
@@ -86,18 +86,18 @@ function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
   % Input
   %
   % * phylum: name of animal phylum (one of 36 possibilities)
-  % * class: name of class, only used for molluscs, arthropods and chordates
+  % * class: name of class, only used for annelids, arthropods and chordates
   %  
   % Output
   %
   %  n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
-  %  mu_N: scalat with chemical potential in J/C-mol
+  %  mu_N: scalar with chemical potential in J/C-mol
   %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
   % Check spelling if info = 0
-  % Three possible N-wastes are delinieated: Ammonia, urea, uric acid, mixutures are ignorned
-  % Data from Wtithers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing
+  % Three possible N-wastes are delineated: Ammonia, urea, uric acid, mixtures are ignorned
+  % Data from Withers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing
   
 info = 1;
 switch phylum
@@ -115,45 +115,50 @@ switch phylum
         N_waste = 'ammonoletic';
     case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         N_waste = 'ammonoletic';
-    case 'Annelida' % terrestrial species are ureotelic
-        N_waste = 'ammonoletic';
+    case 'Annelida' % terrestrial species are ureotelic, aquatic ones ammonoletic
+        switch class
+            case 'Clitellata'
+                N_waste = 'ureotelic';
+            case 'otherwise'
+                N_waste = 'ammonoletic';
+        end
     case 'Sipuncula'
         N_waste = 'ammonoletic';
     case 'Mollusca' % terrestrial species are ureotelic
         N_waste = 'ammonoletic';
     case {'Tardigrada', 'Priapulida', 'Nematoda'}                % Ecdysozoa
         N_waste = 'ammonoletic';
-    case 'Arthropoda'
+    case 'Arthropoda' % terrestrial species are uricotelic, aquatic ones ammonoletic 
         switch class
             case {'Arachnida','Entognatha','Insecta'}
-               N_waste = 'uricotelic';
+                N_waste = 'uricotelic';
             otherwise
-               N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
         end
     case {'Echinodermata','Hemichordata'}                        % Deuterostomata
         N_waste = 'ammonoletic';
     case 'Chordata'
         switch class
             case {'Leptocardii','Appendicularia','Thaliacea','Ascidiacea'}
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case {'Myxini','Cephalaspidomorphi'}
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case 'Chondrichthyes'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
             case 'Actinopterygii'
-              N_waste = 'ammonoletic';
+                N_waste = 'ammonoletic';
             case 'Sarcopterygii'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
             case 'Amphibia'
-              N_waste = 'ureotelic'; % ammonoletic in water 
+                N_waste = 'ureotelic'; % ammonoletic in water 
             case 'Reptilia'
-              N_waste = 'uricotelic';
-              % crocs and aquatic snakes partly ammonoletic, 
-              % turtles and leguanas partly ureotelic
+                N_waste = 'uricotelic';
+                % crocs and aquatic snakes partly ammonoletic, 
+                % turtles and leguanas partly ureotelic
             case 'Aves'
-              N_waste = 'uricotelic';
+                N_waste = 'uricotelic';
             case 'Mammalia'
-              N_waste = 'ureotelic';
+                N_waste = 'ureotelic';
         end
     case 'my_pet_phylum' % demo mydata_my_pet
         N_waste = 'ammonoletic';
@@ -164,10 +169,10 @@ end
 
 switch N_waste
     case 'ammonoletic'
-        n_CN = 0; n_HN = 3; n_ON = 0; n_NN = 1; % ammonia
+        n_CN = 0; n_HN = 3; n_ON = 0; n_NN = 1; % ammonia: H3N
         mu_N = 0;
     case 'ureotelic'
-        n_CN = 1; n_HN = 2; n_ON = 1; n_NN = 2; % urea
+        n_CN = 1; n_HN = 2; n_ON = 1; n_NN = 2; % urea: CH2ON2
         mu_N = 122e3;   % J/C-mol  synthesis from NH3, Withers page 119     
     case 'uricotelic'
         n_CN = 1; n_HN = 0.8; n_ON = 0.6; n_NN = 0.8; % uric acid: C5H4O3N4

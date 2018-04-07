@@ -14,12 +14,12 @@ function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
   % Input
   %
   % * phylum: name of animal phylum (one of 36 possibilities)
-  % * class: name of class, only used for molluscs, arthropods and chordates
+  % * class: name of class, only used for annelids, arthropods and chordates
   %  
   % Output
   %
   %  n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
-  %  mu_N: scalat with chemical potential in J/C-mol
+  %  mu_N: scalar with chemical potential in J/C-mol
   %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
