@@ -18,9 +18,9 @@ function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
   %  
   % Output
   %
-  %  n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
-  %  mu_N: scalar with chemical potential in J/C-mol
-  %  info: 1 if taxon could be identified, 0 otherwise
+  % * n_CN, n_HN, n_ON, n_NN: scalars with chemical indices
+  % * mu_N: scalar with chemical potential in J/C-mol
+  % * info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
   % Check spelling if info = 0
