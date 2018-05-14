@@ -47,7 +47,7 @@ switch phylum
         switch class
             case 'Clitellata'
                 N_waste = 'ureotelic';
-            case 'otherwise'
+            otherwise
                 N_waste = 'ammonoletic';
         end
     case 'Sipuncula'
