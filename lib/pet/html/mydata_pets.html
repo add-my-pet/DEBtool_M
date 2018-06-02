@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>mydata_pets</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-23"><meta name="DC.source" content="mydata_pets.m"><style type="text/css">
+      --><title>mydata_pets</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="mydata_pets.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,46 +55,73 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>mydata_pets</h1><!--introduction--><p>catenates mydata files for several species</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">remove pseudodata from species struture</a></li><li><a href="#6">set pseudodata and respective weights</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[data, txt_data, metadata] = <a href="../mydata_pets.m"><b>mydata_pets</b></a></p><h2>Description<a name="4"></a></h2><p>catenates mydata files for several species</p><p>Output</p><div><ul><li>data: caenated data structure</li><li>txt_data: catenated text for data</li><li>metadata: catenated metadata file</li></ul></div><h2>remove pseudodata from species struture<a name="5"></a></h2><h2>set pseudodata and respective weights<a name="6"></a></h2><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>mydata_pets</h1><!--introduction--><p>catenates mydata files for several species</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[data, auxData, metaData, txtData, weights] = <a href="../mydata_pets.m"><b>mydata_pets</b></a></p><h2 id="4">Description</h2><p>catenates mydata files for several species</p><p>Output</p><div><ul><li>data: catenated data structure</li><li>auxData: catenated auxiliary data structure</li><li>txtData: catenated text for data</li><li>metaData: catenated metadata structure</li><li>weights: catenated weights structure</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% mydata_pets
 % catenates mydata files for several species
 
 %%
-function [data, txt_data, metadata] = mydata_pets
-  % created by Gonçalo Marques at 2015/01/28
+function [data, auxData, metaData, txtData, weights] = mydata_pets
+  % created by Goncalo Marques at 2015/01/28
   
   %% Syntax
-  % [data, txt_data, metadata] = <../mydata_pets.m *mydata_pets*>
+  % [data, auxData, metaData, txtData, weights] = <../mydata_pets.m *mydata_pets*>
   
   %% Description
   % catenates mydata files for several species
   %
   % Output
   %
-  % * data: caenated data structure
-  % * txt_data: catenated text for data
-  % * metadata: catenated metadata file
+  % * data: catenated data structure
+  % * auxData: catenated auxiliary data structure
+  % * txtData: catenated text for data
+  % * metaData: catenated metadata structure
+  % * weights: catenated weights structure
 
-global pets pseudodata_pets
+global pets toxs pseudodata_pets
 
 for i = 1:length(pets)             % calls species mydata functions
-  ci = num2str(i); 
-  eval(['[data.pet', ci,', txt_data.pet', ci, ', metadata.pet', ci,'] = mydata_', pets{i},';']);
+  currentPet = pets{i};
+  toxsnumber = length(toxs);
+  if toxsnumber == 0
+    [data.(currentPet), auxData.(currentPet), metaData.(currentPet), txtData.(currentPet), weights.(currentPet)] = feval(['mydata_', pets{i}]);
+  else
+    for j = 1:toxsnumber
+      currentTox = toxs{j};
+      [data.(currentPet).(currentTox), auxData.(currentPet).(currentTox), metaData.(currentPet).(currentTox), txtData.(currentPet).(currentTox), weights.(currentPet).(currentTox)] = feval(['mydata_', currentPet, '_', currentTox]);
+    end
+  end
 end 
 
-if pseudodata_pets == 1
-  %% remove pseudodata from species struture
+if pseudodata_pets == 1 % same pseudodata for the group
+  % remove pseudodata from species structure
   data = rmpseudodata(data);
-  txt_data = rmpseudodata(txt_data);  
+  txtData = rmpseudodata(txtData); 
+  weights = rmpseudodata(weights);
 
-  %% set pseudodata and respective weights
-  [data.psduni, units, label, weight] = addpseudodata([], [], [], []);
-  data.psduni.weight = weight;
-  txt_data.psduni.units = units;
-  txt_data.psduni.label = label;
+  % set pseudodata and respective weights for the group
+  if exist('addpseudodata_group.m', 'file')
+      [dataG, unitsG, labelG, weightsG] = addpseudodata_group;
+  else
+      [dataG, unitsG, labelG, weightsG] = addpseudodata([], [], [], []);
+      fprintf('No addpseudodata_group.m found, only default pseudodata and weights are considered for the group \n')
+      
+  end
+  data.psd = dataG.psd;
+  weights.psd = weightsG.psd;
+  txtData.psd.units = unitsG.psd;
+  txtData.psd.label = labelG.psd;
 end
 
 ##### SOURCE END #####

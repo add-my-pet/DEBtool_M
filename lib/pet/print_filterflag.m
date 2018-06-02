@@ -16,17 +16,16 @@ function  print_filterflag(flag)
 % Input
 %
 % * flag: number with flag from filter
-%  
-%     0: parameters pass the filter
-%     1: some parameter is negative
-%     2: some kappa or f is larger than 1
-%     3: growth efficiency is larger than 1
-%     4: maturity levels do not increase during life cycle
-%     5: puberty cannot be reached
+%
+%      0: parameters pass the filter
+%      1: some parameter is negative
+%      2: some kappa or f is larger than 1
+%      3: growth efficiency is larger than 1
+%      4: maturity levels do not increase during life cycle
+%      5: puberty cannot be reached
 
 %% Remarks
-%  The theory behind boundaries is discussed in 
-%    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html LikaAugu2013>.
+% The theory behind boundaries is discussed in <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html *LikaAugu2013*>.
 
 
 switch flag

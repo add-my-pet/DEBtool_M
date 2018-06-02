@@ -3,7 +3,7 @@
 
 %%
 function [d_V info] = get_d_V(phylum, class)
-  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12; 2017/02/16
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12; 2017/02/16, 2018/05/25
   
   %% Syntax
   % [d_V info] = <../get_d_V.m *get_d_V*> (phylum, class)
@@ -27,6 +27,11 @@ function [d_V info] = get_d_V(phylum, class)
   % Check spelling if info = 0
   
 info = 1;
+
+if isempty(phylum) % this construct is necessary for multi-species estimation where pars_init is called with empty arguments in parPets2Grp
+  d_V = NaN; info = 0; return
+end
+
 switch phylum
     case 'Porifera'
         d_V = 0.0587; % ash-free dry

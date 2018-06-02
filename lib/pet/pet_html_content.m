@@ -34,15 +34,13 @@ function [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat, txt_
 
 
 %% Remarks
-% This function is not yet finalised- we still need to add a lot of row to
-% stat_html
+% This function is not yet finalised- we still need to add a lot of row to stat_html
 
 %% Example of use
-% load('results_my_pet.mat');
-% v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
-% [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
-% [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat,
-% txt_stat, T_ref) ;
+%   load('results_my_pet.mat');
+%   v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
+%   [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
+%   [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat, txt_stat, T_ref);
 
 v2struct(par); 
 
@@ -53,7 +51,7 @@ v2struct(cp);
 
 v2struct(stat); 
 
-%% primary parameters in energy-length-time format:
+% primary parameters in energy-length-time format:
 
 par_elt = { ...
 % temperature  #FFC6A5    
@@ -82,7 +80,7 @@ par_elt = { ...
 '#BDC6DE', 's_G',     s_G,     '-',        'Gompertz stress coefficient'    
 };
 
-%% biochemical parameters:
+% biochemical parameters:
 
 chem_out = { ...
 % temperature  #FFC6A5    
@@ -114,7 +112,7 @@ chem_out = { ...
 };
 
 
-%% statistics in energy time length framework
+% statistics in energy time length framework
 v2struct(stat);
 units = txt_stat.units;
 label = txt_stat.label;

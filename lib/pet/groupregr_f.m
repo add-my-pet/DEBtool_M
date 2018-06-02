@@ -1,37 +1,38 @@
 %% groupregr_f
-% Calculates least squares estimates using Nelder Mead's simplex method using a filter
+% Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
-% created 2015/08/26 by Goncalo Marques
+function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, filternm)
+% created 2015/08/26 by Goncalo Marques; modified 2018/05/22 by Bas Kooijman
 
 %% Syntax
-% [q, info] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm)
+% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm)
 
 %% Description
-% Calculates least squares estimates using Nelder Mead's simplex method.
+% Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
+% The filter gives always a pass in the case that no filter has been selected in <estim_options.html *estim_options*>.
 %
 % Input
 %
-% * func: character string with name of user-defined function;
+% * func: character string with name of user-defined function that specifies predictions, given parameters;
 %      see nrregr_st or nrregr  
-% * par: structure with parameters
+% * par: structure with parameters in the format as specified in pars_init_group
 % * data: structure with data
 % * auxData: structure with auxiliary data
 % * weights: structure with weights
-% * filternm: character string with name of user-defined filter function
+% * filternm: character or cell string with name of user-defined filter function
 %  
 % Output
 % 
-% * q: structure with parameters, result of the least squares estimates
+% * q: structure with parameters, result of minimization of the lossfunction
 % * info: 1 if convergence has been successful; 0 otherwise
+% * itercount: number if iterations
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.
-% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction
-%   and uses a filter.
-% The number of fields in data is variable
-
+% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction and uses a filter.
+% The number of fields in data is variable.
+% See <petregr_f.html *petregr_f*> for the single-species situation
    
   global lossfunction
   global report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
@@ -54,17 +55,17 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
     end
   end
   
-  % Y: vector with all dependent data
-  % W: vector with all weights
-  [Y, meanY] = struct2vector(st, nm);
-  W = struct2vector(weights, nm);
+  
+  % get weights and dependent data
+  [Y, meanY] = struct2vector(st, nm); % Y: vector with all dependent data
+  W = struct2vector(weights, nm);     % W: vector with all weights
   
   free = par.free; % free is here removed, and after iteration added again
   q = rmfield(par, 'free'); % copy input parameter matrix into output
   
   parnm = fieldnames(free);
   qfreevec = [];          % vector with free parameters
-  mapVec2Struct = {}; % cell vector with map to go from vector to structure
+  mapVec2Struct = {};     % cell vector with map to go from vector to structure
   for i = 1:length(parnm)
     currentFree = free.(parnm{i});
     lCurrentFree = length(currentFree);
@@ -288,7 +289,7 @@ function [q, info] = groupregr_f(func, par, data, auxData, weights, filternm)
   end 
 
   q = parVec2Struct(q, v(:,1), mapVec2Struct);
-  q.free = free; % add substructure free to q,
+  q.free = free; % add substructure free to q
 
   fval = min(fv); 
   if func_evals >= max_fun_evals
@@ -328,32 +329,32 @@ function q = parVec2Struct(q, vec, mapVec2Struct)
   end
 
 function [f, pass] = getPrediction(func, q, data, auxData, filternm)
-  global cov_rules
-% Tests if prameter set q passes the filters (default and customized) and if yes returns predictions 
-  f = {};
-  if strcmp(cov_rules, '1species')
-    pass = feval(filternm, q);
-  else
-    pass = filter_multispecies(filternm, q);
-  end
-  if pass
-    [f, pass] = feval(func, q, data, auxData);
-  end
-
-function pass = filter_multispecies(filternm, q)
-% Tests if parameter set q passes the filternm filters for multiple species
-  global pets cov_rules
+  % Tests if parameter set q passes the filters (default and customized) and if yes returns predictions
+  % func: 'predict_pets'
+  % q: structure with parameters in the parGrp format: first-level fields are parameters that can be vector-valued
+  % f: structure with predictions: first-level fields are pets
   
-  covRulesnm = ['cov_rules_', cov_rules];
-  petsnumber = length(pets);
-  pass = 1;
-  for i = 1:petsnumber
-    [pass, flag]  = feval(filternm, feval(covRulesnm, q, i));
+  global pets
+  
+  f = {};
+    
+  % check filters
+  parPets = parGrp2Pets(q);
+  n_pets = length(pets);
+  for i = 1:n_pets
+    if iscell(filternm)
+      pass  = feval(filternm{i}, parPets.(pets{i}));
+    else
+      pass  = feval(filternm, parPets.(pets{i}));
+    end
     if ~pass
       return;
     end
   end
 
-
+  % get predictions
+  if pass
+    [f, pass] = feval(func, q, data, auxData);
+  end
 
   

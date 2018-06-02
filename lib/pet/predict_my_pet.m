@@ -3,37 +3,33 @@
 
 %%
 function [prdData, info] = predict_my_pet(par, data, auxData)
-  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30; 
-  % last modified 2015/07/29
+% created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/30; 
+% last modified 2015/07/29
   
-  %% Syntax
-  % [prdData, info] = <../predict_my_pet.m *predict_my_pet*>(par, data, auxData)
+%% Syntax
+% [prdData, info] = <../predict_my_pet.m *predict_my_pet*>(par, data, auxData)
   
-  %% Description
-  % Obtains predictions, using parameters and data
-  %
-  % Input
-  %
-  % * par: structure with parameters (see below)
-  % * data: structure with data (not all elements are used)
-  % * auxData : structure with temp data and other potential environmental data
-  %  
-  % Output
-  %
-  % * prdData: structure with predicted values for data
-  % * info: identified for correct setting of predictions (see remarks)
+%% Description
+% Obtains predictions, using parameters and data
+%
+% Input
+%
+% * par: structure with parameters (see below)
+% * data: structure with data (not all elements are used)
+% * auxData : structure with temp data and other potential environmental data
+%  
+% Output
+%
+% * prdData: structure with predicted values for data
+% * info: identified for correct setting of predictions (see remarks)
   
-  %% Remarks
-  % Template for use in add_my_pet.
-  % The code calls <parscomp_st.html *parscomp_st*> in order to compute
-  % scaled quantities, compound parameters, molecular weights and compose
-  % matrixes of mass to energy couplers and chemical indices.
-  % With the use of filters, setting info = 0, prdData = {}, return, has the effect
-  % that the parameter-combination is not selected for finding the
-  % best-fitting combination; this setting acts as customized filter.
+%% Remarks
+% Template for use in add_my_pet.
+% The code calls <parscomp_st.html *parscomp_st*> in order to compute scaled quantities, compound parameters, molecular weights and compose matrices of mass to energy couplers and chemical indices.
+% With the use of filters, setting info = 0, prdData = {}, return, has the effect that the parameter-combination is not selected for finding the best-fitting combination; this setting acts as customized filter.
   
-  %% Example of a costumized filter
-  % See the lines just below unpacking
+%% Example of a costumized filter
+% See the lines just below unpacking
   
   % unpack par, data, auxData
   cPar = parscomp_st(par); vars_pull(par); 

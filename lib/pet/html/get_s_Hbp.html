@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_s_Hbp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-11-24"><meta name="DC.source" content="get_s_Hbp.m"><style type="text/css">
+      --><title>get_s_Hbp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="get_s_Hbp.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,9 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_s_Hbp</h1><!--introduction--><p>Gets maturity ratio from order and family for class Aves (birds)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[s_Hbp  score info] = <a href="../get_s_Hbp.m"><b>get_s_Hbp</b></a> (order, family)</p><h2 id="4">Description</h2><p>Sets maturity ratio at birth over puberty for birds according to taxonomic classification via the altricial-precocial score of Nice 1962:  1 altricial  2 semialtrical 2  3 semialtrical 1  4 semiprecocial  5 precocial 4  6 precocial 3  7 precocial 2  8 precocial 1</p><p>Input</p><div><ul><li>order: name of bird order</li><li>family: name of bird family</li></ul></div><p>Output</p><pre>s_Hbp: scalar with specific maturity ratio
-score: integer in range 1 till 8 of altricial-precocial score
-info: 1 if taxon could be identified, 0 otherwise</pre><h2 id="5">Remarks</h2><p>Check spelling if info = 0</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_s_Hbp</h1><!--introduction--><p>Gets maturity ratio from order and family for class Aves (birds)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[s_Hbp  score info] = <a href="../get_s_Hbp.m"><b>get_s_Hbp</b></a> (order, family)</p><h2 id="4">Description</h2><p>Sets maturity ratio at birth over puberty for birds according to taxonomic classification via the altricial-precocial score of Nice 1962:  1 altricial  2 semialtrical 2  3 semialtrical 1  4 semiprecocial  5 precocial 4  6 precocial 3  7 precocial 2  8 precocial 1</p><p>Input</p><div><ul><li>order: name of bird order</li><li>family: name of bird family</li></ul></div><p>Output</p><div><ul><li>s_Hbp: scalar with specific maturity ratio</li><li>score: integer in range 1 till 8 of altricial-precocial score</li><li>info: 1 if taxon could be identified, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>Check spelling if info = 0</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_s_Hbp
 % Gets maturity ratio from order and family for class Aves (birds)
@@ -99,9 +97,9 @@ function [s_Hbp,  score, info] = get_s_Hbp(order, family)
   %  
   % Output
   %
-  %  s_Hbp: scalar with specific maturity ratio
-  %  score: integer in range 1 till 8 of altricial-precocial score
-  %  info: 1 if taxon could be identified, 0 otherwise
+  % * s_Hbp: scalar with specific maturity ratio
+  % * score: integer in range 1 till 8 of altricial-precocial score
+  % * info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
   % Check spelling if info = 0

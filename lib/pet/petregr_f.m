@@ -1,16 +1,20 @@
 %% petregr_f
-% Calculates least squares estimates using Nelder Mead's simplex method using a filter
+% Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
 function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, filternm)
 % created 2001/09/07 by Bas Kooijman; 
-% modified 2015/01/29 by Goncalo Marques, 2015/03/21 by Bas Kooijman, 2015/03/30, 2015/04/27, 2015/07/29, 2016/05/05 by Goncalo Marques
+% modified 2015/01/29 by Goncalo Marques, 
+%   2015/03/21 by Bas Kooijman, 
+%   2015/03/30, 2015/04/27, 2015/07/29, 2016/05/05 by Goncalo Marques
+%   2018/05/23 by Bas Kooijman
 
 %% Syntax
-% [q, info] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
+% [q, info, itercount] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
 
 %% Description
-% Calculates least squares estimates using Nelder Mead's simplex method.
+% Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
+% The filter gives always a pass in the case that no filter has been selected in <estim_options.html *estim_options*>.
 %
 % Input
 %
@@ -26,12 +30,13 @@ function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, fil
 % 
 % * q: structure with parameters, result of the least squares estimates
 % * info: 1 if convergence has been successful; 0 otherwise
+% * itercount: nummber if iterations
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.
-% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction
-%   and uses a filter.
-% The number of fields in data is variable
+% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction and uses a filter.
+% The number of fields in data is variable.
+% See <groupregr_f.html *groupregr_f*> for the multi-species situation.
 
   global lossfunction report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
 
@@ -42,7 +47,7 @@ function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, fil
   % prepare variable
   %   st: structure with dependent data values only
   st = data;
-  [nm nst] = fieldnmnst_st(st); % nst: number of data sets
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
     
   for i = 1:nst   % makes st only with dependent variables
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');

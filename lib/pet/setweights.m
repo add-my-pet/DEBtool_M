@@ -9,10 +9,9 @@ function weight = setweights(data, weight)
 % weight = <../setweights.m *setweights*> (data, weight)
 
 %% Description
-% computes weights for given data and adds it to the weight structure
-% for the zero-variate data y the weight will be 1
-% for the uni-variate data y the weight will be
-% \frac{1}{N}
+% computes weights for given data and adds it to the weight structure:
+% for the zero-variate data y the weight will be 1,
+% for the uni-variate data y the weight will be 1/N
 %
 % Inputs:
 %

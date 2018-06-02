@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>warning_abj</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-08"><meta name="DC.source" content="warning_abj.m"><style type="text/css">
+      --><title>warning_abj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="warning_abj.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,19 +55,29 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>warning_abj</h1><!--introduction--><p>warns if parameter values are in the reasonable part of the parameter space of standard DEB model with acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../warning_abj.m"><b>warning_abj</b></a> (par, chem)</p><h2>Description<a name="4"></a></h2><p>Checks if parameter values are in the reasonable part of the parameter    space of standard DEB model with acceleration. Meant to be run after the estimation procedure</p><p>Input</p><div><ul><li>par: structure with parameters (see below)</li><li>chem: structure with biochemical parameters</li></ul></div><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>warning_abj</h1><!--introduction--><p>warns if parameter values are in the reasonable part of the parameter space of standard DEB model with acceleration</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../warning_abj.m"><b>warning_abj</b></a> (p)</p><h2 id="4">Description</h2><p>Checks if parameter values are in the reasonable part of the parameter    space of standard DEB model with acceleration. Meant to be run after the estimation procedure</p><p>Input</p><div><ul><li>p: structure with parameters (see below)</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %%  warning_abj
 % warns if parameter values are in the reasonable part of the parameter space of standard DEB model with acceleration
   
 %%
-function warning_abj(par, chem)
-% created 2015/02/09 by Goncalo Marques; modified 2015/02/26 by Goncalo Marques
+function warning_abj(p)
+% created 2015/02/09 by Goncalo Marques; modified 2015/02/26, 2015/07/29 by Goncalo Marques
+% 2015/08/03 by starrlight
 
 %% Syntax
-% <../warning_abj.m *warning_abj*> (par, chem)
+% <../warning_abj.m *warning_abj*> (p)
 
 %% Description
 % Checks if parameter values are in the reasonable part of the parameter
@@ -75,33 +86,33 @@ function warning_abj(par, chem)
 %
 % Input
 %
-% * par: structure with parameters (see below)
-% * chem: structure with biochemical parameters
-  
+% * p: structure with parameters (see below)
 
-  % unpack par, chem
-  v2struct(par); v2struct(chem);
+  c = parscomp_st(p);
 
-  cpar = parscomp_st(par, chem);
-  v2struct(cpar);
-
-  if kap_G >= mu_V / mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
-    fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
-  end
-
-  if kap_X >= mu_X / mu_E; % can only occur if y_XE > 1, meaning that CO2 is consumed
-    fprintf('kap_X >= mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
-  end
-
-  if exist('kap_P', 'var')
-    if kap_P >= mu_X / mu_P; % can only occur if y_XE > 1, meaning that CO2 is consumed
-      fprintf('kap_P >= mu_X / mu_P, which is not allowed if CO2 production occurs in association with assimilation. \n');
+  if isfield(p,'kap_P')
+    if p.kap_X + p.kap_P >= 1
+      fprintf('kap_X + kap_P > 1, which violates energy conservation. \n');
     end
   end
   
-  pars_tp = [g; k; l_T; v_Hb; v_Hp]; % compose parameter vector for get_tp
-  [t_p t_b l_p l_b] = get_tp(pars_tp, 1);
-  pars_tm = [g; l_T; h_a/ k_M^2; s_G];     % compose parameter vector
+  if c.kap_G >= p.mu_V / p.mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
+    fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
+  end
+
+  if p.kap_X >= p.mu_E / p.mu_X; % can only occur if y_XE > 1, meaning that CO2 is consumed
+    fprintf('kap_X > mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
+  end
+
+  if isfield(p,'kap_P')
+    if p.kap_X * p.mu_X / p.mu_E + p.kap_P * p.mu_X / p.mu_P >= 1 % can only occur if y_XE > 1, meaning that CO2 is consumed
+      fprintf('kap_X * mu_X / mu_E + kap_P * mu_X / mu_P > 1, which is not allowed if CO2 production occurs in association with assimilation. \n');
+    end
+  end
+  
+  pars_tj = [c.g; c.k; c.l_T; c.v_Hb; c.v_Hj; c.v_Hp];
+  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, r_j, r_B, info] = get_tj(pars_tj, p.f);
+  pars_tm = [c.g; c.l_T; p.h_a/ c.k_M^2; p.s_G];     % compose parameter vector
   t_m = get_tm_s(pars_tm, 1);              % -, scaled mean life span
 
   if t_m < t_p

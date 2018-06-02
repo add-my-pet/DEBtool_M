@@ -31,8 +31,7 @@ function [filter, flag] = filter_asj(p)
 %     6: birth cannot be reached
 
 %% Remarks
-%  The theory behind boundaries is discussed in 
-%    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html LikaAugu2013>.
+% The theory behind boundaries is discussed in <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html *8LikaAugu2013*>.
 
   filter = 0; flag = 0; % default setting of filter and flag
   

@@ -3,7 +3,7 @@
 
 %%
 function estim_options (key, val)
-  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques
+  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -16,54 +16,53 @@ function estim_options (key, val)
   % * no input: print values to screen
   % * one input:
   %
-  %   'default': sets options at default values
-  %   any other key (see below): print value to screen
+  %    'default': sets options at default values
+  %     any other key (see below): print value to screen
   %
   % * two inputs
   %
-  %   'loss_function': 
-  %     're' - relative error (symmetric by addition);
-  %     'sb' - multiplicative symmetric bounded (default);
-  %     'su' - multiplicative symmetric unbounded;
+  %    'loss_function': 
+  %      're' - relative error (symmetric by addition);
+  %      'sb' - multiplicative symmetric bounded (default);
+  %      'su' - multiplicative symmetric unbounded;
   %
-  %   'filter': 
-  %     1 - use filter (default); 
-  %     0 - do not;
+  %    'filter': 
+  %      1 - use filter (default); 
+  %      0 - do not;
   %
-  %   'pars_init_method':
-  %     0 - get initial estimates from automatized computation (default)
-  %     1 - read initial estimates from .mat file (for continuation)
-  %     2 - read initial estimates from pars_init file
+  %    'cov_rules': (only used for multispecies estimation)
+  %      no: multi-species estimation without links between parameters (default)
+  %      maturities: multi-species estimation with maturity levels that are proportional to cubed zoom factors
   %
-  %   'pseudodata_pets': 
-  %     0 - put pseudodata together with data (default) 
-  %     1 - put it apart (only for multispecies estimation)
+  %    'pars_init_method':
+  %      0 - get initial estimates from automatized computation (default)
+  %      1 - read initial estimates from .mat file (for continuation)
+  %      2 - read initial estimates from pars_init file
   %
-  %   'results_output':
-  %     0 - prints results to screen (default)
-  %     1 - prints results to screen, saves to .mat file
-  %     2 - saves data to .mat file and graphs to .png files
-  %     (prints results to screen using a customized results file when it exists)
+  %    'results_output':
+  %      0 - prints results to screen (default)
+  %      1 - prints results to screen, saves to .mat file
+  %      2 - saves data to .mat file and graphs to .png files
+  %          (prints results to screen using a customized results file when it exists)
   %
-  %   'method': 
-  %     'nm' - use Nelder-Mead method; 
-  %     'no' - do not estimate;
-  %
-  %   for other options see corresponding options file of the method (e.g. nmregr_options)
+  %    'method': 
+  %      'nm' - use Nelder-Mead method; 
+  %      'no' - do not estimate;
   %
   % Output
   %
   % * no output, but globals are set to values or values are printed to screen
-  
+  %
   %% Remarks
+  % For other options see corresponding options file of the minimazation  algorithm, e.g. <../../regr/html/nmregr_options.html *nmregr_options*>.
   % See <estim_pars.html *estim_pars*> for application of the option settings.
-  % Initial estimates are controlled by 'pars_init_method', but the fix-setting is always taken from the pars_init file
-  
+  % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
+  %
   %% Example of use
-  %  estim_options('default'); estim_options('filter', 0)
+  %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
  
   global method lossfunction 
-  global filter cov_rules pars_init_method pseudodata_pets results_output
+  global filter cov_rules pars_init_method results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
@@ -76,9 +75,8 @@ function estim_options (key, val)
     case 'default'
       lossfunction = 'sb';
       filter = 1;
-      cov_rules = '1species';
+      cov_rules = 'no';
       pars_init_method  = 2;
-      pseudodata_pets = 0;
       results_output = 0;
       method = 'nm';
       nmregr_options('default');
@@ -116,8 +114,8 @@ function estim_options (key, val)
         else
           fprintf('cov_rules = unknown \n');
         end
-        fprintf('1species - no trasformation \n');
-        fprintf('basic - standard body-size scaling relationships \n');
+        fprintf('no - no relationships between different parameters \n');
+        fprintf('maturities - maturity levels linked to zoom factor \n');
       else
         cov_rules = val;
       end
@@ -135,19 +133,6 @@ function estim_options (key, val)
         fprintf('3 - prints results using a customized results file \n');
       else
         pars_init_method = val;
-      end
-
-    case 'pseudodata_pets'
-      if exist('val','var') == 0
-        if numel(pseudodata_pets) ~= 0
-          fprintf(['pseudodata_pets = ', num2str(pseudodata_pets),' \n']);  
-        else
-          fprintf('pseudodata_pets = unknown \n');
-        end
-        fprintf('0 - put pseudodata together with data \n');
-        fprintf('1 - put it apart (for multispecies estimation) \n');
-     else
-        pseudodata_pets = val;
       end
 
     case 'results_output'
@@ -183,31 +168,31 @@ function estim_options (key, val)
       else
         fprintf('loss_function = unknown \n');
       end
+      
       if numel(filter) ~= 0
         fprintf(['filter = ', num2str(filter),' \n']);
       else
         fprintf('filter = unknown \n');
       end
+      
       if numel(cov_rules) ~= 0
         fprintf(['cov_rules = ', cov_rules,' \n']);
       else
         fprintf('cov_rules = unknown \n');
       end
+      
       if numel(pars_init_method) ~= 0
         fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
       else
         fprintf('pars_init_method = unknown \n');
       end
-      if numel(pseudodata_pets) ~= 0
-        fprintf(['pseudodata_pets = ', num2str(pseudodata_pets),' \n']);
-      else
-        fprintf('pseudodata_pets = unknown \n');
-      end
+            
       if numel(results_output) ~= 0
         fprintf(['results_output = ', num2str(results_output),' \n']);
       else
         fprintf('results_output = unknown \n');
       end
+      
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
         if ~strcmp(method, 'no')
@@ -231,26 +216,25 @@ function estim_options (key, val)
         else
           fprintf('loss_function = unknown \n');
         end
+        
         if numel(filter) ~= 0
           fprintf(['filter = ', num2str(filter),' \n']);
         else
           fprintf('filter = unknown \n');
         end
+        
         if numel(cov_rules) ~= 0
           fprintf(['cov_rules = ', cov_rules,' \n']);
         else
           fprintf('cov_rules = unknown \n');
         end
+        
         if numel(pars_init_method) ~= 0
           fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
         else
           fprintf('pars_init_method = unknown \n');
         end
-        if numel(pseudodata_pets) ~= 0
-          fprintf(['pseudodata_pets = ', num2str(pseudodata_pets),' \n']);
-        else
-          fprintf('pseudodata_pets = unknown \n');
-        end
+                        
         if numel(results_output) ~= 0
           fprintf(['results_output = ', num2str(results_output),' \n']);
         else

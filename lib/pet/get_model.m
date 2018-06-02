@@ -2,11 +2,11 @@
 % Gets model from phylum or class
 
 %%
-function [model info] = get_model(phylum, class, order)
+function [model, info] = get_model(phylum, class, order)
   % created 2017/01/04 by Bas Kooijman
   
   %% Syntax
-  % [model info] = <../get_model.m *get_model*> (phylum, class, order)
+  % [model, info] = <../get_model.m *get_model*> (phylum, class, order)
   
   %% Description
   % Sets model according to taxonomic classification
@@ -19,11 +19,11 @@ function [model info] = get_model(phylum, class, order)
   %  
   % Output
   %
-  %  model: string with name of typified model
-  %  info: 1 if taxon could be identified, 0 otherwise
+  % * model: string with name of typified model
+  % * info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
-  % A few taxa have a deviating model
+  % A few taxa have a deviating model.
   % Check spelling if info = 0
   
 info = 1;

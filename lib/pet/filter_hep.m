@@ -1,4 +1,4 @@
-%% filter_hex
+%% filter_hep
 % filters for allowable parameters of holometabolous insect DEB model
 
 %%
@@ -29,8 +29,7 @@ function [filter, flag] = filter_hep(p)
 %     4: birth cannot be reached
 
 %% Remarks
-%  The theory behind boundaries is discussed in 
-%    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html LikaAugu2013>.
+% The theory behind boundaries is discussed in <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html *LikaAugu2013*>.
 
   filter = 0; flag = 0; % default setting of filter and flag
   

@@ -15,26 +15,26 @@ function check_my_pet(speciesnms)
   %
   % Checking points for my_data:
   %
-  %   - existence of standard metaData fields
-  %   - existence of temp
-  %   - existence of pseudodata
-  %   - existence of weights
-  %   - existence of units (and number consistence with type of data)
-  %   - existence of labels (and number consistence with type of data)
-  %   - existence of bibkeys and the corresponding entries in biblist
+  %    - existence of standard metaData fields
+  %    - existence of temp
+  %    - existence of pseudodata
+  %    - existence of weights
+  %    - existence of units (and number consistence with type of data)
+  %    - existence of labels (and number consistence with type of data)
+  %    - existence of bibkeys and the corresponding entries in biblist
   %
   % Checking points for pars_init:
   %
-  %   - existence of standard metapar fields
-  %   - model is one of the predefined models
-  %   - existence of free 
-  %   - existence of units 
-  %   - existence of labels 
+  %    - existence of standard metapar fields
+  %    - model is one of the predefined models
+  %    - existence of free 
+  %    - existence of units 
+  %    - existence of labels 
   %
   % Checking points for predict:
   %
-  %   - existence of the same fields as in data
-  %   - length of prediction results matches the length of data
+  %    - existence of the same fields as in data
+  %    - length of prediction results matches the length of data
   %
   % Input
   %
@@ -47,10 +47,10 @@ function check_my_pet(speciesnms)
 
   %% Example of use
   % check_my_pet('my_pet') 
-
+  
 if iscell(speciesnms)
-  k = length(speciesnms);
-  for i = 1:k
+  n = length(speciesnms);
+  for i = 1:n
     check_my_pet_stnm(speciesnms{i});
   end
 else
@@ -58,6 +58,10 @@ else
 end
     
 function check_my_pet_stnm(speciesnm)
+
+global pets
+
+n_pets = length(pets);
 
 if ~isempty(strfind(speciesnm, ' '))
   error('The species name in input should not have spaces.\n The standard species name follow the form ''Genus_species' );
@@ -258,7 +262,7 @@ if sum(strcmp(txtDataFields, 'units'))
     end
   end
   
-  % finnaly check if there are extra unit fields without data
+  % finaly check if there are extra unit fields without data
   extraUnits = unitsFields(unitsChecked == 0);
   if ~isempty(extraUnits)
     for i = 1:length(extraUnits)
@@ -452,8 +456,7 @@ if isfield(metaData, 'grp')
     end
   end
 end
-
-
+    
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Checking the pars_init file
@@ -584,8 +587,6 @@ if ~pass
     print_filterflag(flag);
     error(['    In pars_init_',speciesnm,'.m: The seed parameter set did not pass the filter. Check previous warnings']);
 end
-
-
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

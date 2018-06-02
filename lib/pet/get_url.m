@@ -33,7 +33,7 @@ function url = get_url(my_pet, bibkey)
   file_name = ['mydata_', my_pet, '.m']; % name of mydata-file that serves as input
   
 
-  %% check that mydata actually exists
+  % check that mydata actually exists
   if exist(file_name, 'file') == 0
     fprintf([file_name, ' not found\n']);
     return

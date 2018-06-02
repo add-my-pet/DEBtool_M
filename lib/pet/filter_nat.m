@@ -22,9 +22,9 @@ function [filter, flag] = filter_nat(p)
 % * flag: 0: parameters pass the filter
 
 %% Remarks
-%  No checks if model "nat" or estim_options "no-filter" is specified
-%  In/output is similar to other filters 
-%  It still allows the user to specify a user-defined filter in the predict-file
+% No checks if model "nat" or estim_options "no-filter" is specified.
+% In/output is similar to other filters. 
+% It still allows the user to specify a user-defined filter in the predict-file.
 
   filter = 1; flag = 0; % default setting of filter and flag
   

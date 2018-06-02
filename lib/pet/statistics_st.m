@@ -150,10 +150,10 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % Fermentation is supposed not to occur and dioxygen availability is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
-% Temperature-dependent quantities are directly corrected for body temperature
+% Temperature-dependent quantities are presented for body temperature as specified by T_typical in the mydata-file.
 % The output values are for females; males might have deviating parameters, which are frequently also available.
 %
-% For required model-specific fields, see get_parfields.
+% For required model-specific fields, see <get_parfields.html *get_parfields*>.
 
 %% Example of use
 % load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)
@@ -906,7 +906,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 
 end
 
-%% subfunction
+% subfunction
 
 function deLH = dget_eLH(t, eLH, kap, v, g, Lm, kJ, Em)
   % growth while f = 0

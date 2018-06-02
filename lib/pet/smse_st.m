@@ -33,6 +33,8 @@ function [smserr, sserr, prdInfo] = smse_st(func, par, data, auxData, weights)
     smserr = {}; sserr = {};
     return
   end
+  prdData = predict_pseudodata(par, data, prdData); % add filed psd to prdData
+
   
   rserr      = zeros(nst, 2);  % prepare output
   

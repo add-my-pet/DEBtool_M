@@ -3,7 +3,7 @@
 
 %%
 function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
-  % created 2018/03/27 by Bas Kooijman
+  % created 2018/03/27 by Bas Kooijman, modified 2018/05/25
   
   %% Syntax
   % [n_CN n_HN n_ON n_NN mu_N info] = <../get_N_waste.m *get_N_waste*> (phylum, class)
@@ -28,6 +28,11 @@ function [n_CN n_HN n_ON n_NN mu_N info] = get_N_waste(phylum, class)
   % Data from Withers, P.C. (1992): Comparative Animal Physiology. Saunders College Publishing
   
 info = 1;
+
+if isempty(phylum) % this construct is necessary for multi-species estimation where pars_init is called with empty arguments in parPets2Grp
+  n_CN = NaN; n_HN = NaN; n_ON = NaN; n_NN = NaN; mu_N = NaN; info = 0; return
+end
+
 switch phylum
     case 'Porifera'
         N_waste = 'ammonoletic';

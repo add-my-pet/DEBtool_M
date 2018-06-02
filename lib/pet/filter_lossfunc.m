@@ -26,8 +26,7 @@ function [filter, flag] = filter_lossfunc(p)
 %     1: some parameter is negative
 
 %% Remarks
-%  The theory behind boundaries is discussed in 
-%    <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html LikaAugu2013>.
+% The theory behind boundaries is discussed in <http://www.bio.vu.nl/thb/research/bib/LikaAugu2013.html *LikaAugu2013*>.
 
   filter = 0; flag = 0; % default setting of filter and flag
   

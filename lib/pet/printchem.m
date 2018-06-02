@@ -1,3 +1,7 @@
+%% printchem
+% prints the chemical parameters of a species to screen
+
+%%
 function printchem(chem, txt_chem)
 % created 2015/07/25 by Bas Kooijman
 

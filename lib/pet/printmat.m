@@ -3,24 +3,24 @@
 
 %%
 function printmat(my_pet)
-  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
-  % modified 2015/04/20, 2015/08/03 by Goncalo Marques
+% created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
+% modified 2015/04/20, 2015/08/03 by Goncalo Marques
   
-  %% Syntax
-  % <../printmat.m *printmat*>(my_pet)
+%% Syntax
+% <../printmat.m *printmat*>(my_pet)
   
-  %% Description
-  % Loads results_my_pet.mat to present results
-  %
-  % Input
-  %
-  % * string with name of species
+%% Description
+% Loads results_my_pet.mat to present results
+%
+% Input
+%
+% * string with name of species
   
-  %% Remarks
-  % printmat calls mydata_my_pet, predict_my_pet and results_my_pet to present univariate data.
+%% Remarks
+% printmat calls mydata_my_pet, predict_my_pet and results_my_pet to present univariate data.
   
-  %% Example of use
-  % printmat('my_pet')
+%% Example of use
+% printmat('my_pet')
 
   global pets  
   

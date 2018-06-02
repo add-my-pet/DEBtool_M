@@ -27,9 +27,9 @@ function [s_Hbp,  score, info] = get_s_Hbp(order, family)
   %  
   % Output
   %
-  %  s_Hbp: scalar with specific maturity ratio
-  %  score: integer in range 1 till 8 of altricial-precocial score
-  %  info: 1 if taxon could be identified, 0 otherwise
+  % * s_Hbp: scalar with specific maturity ratio
+  % * score: integer in range 1 till 8 of altricial-precocial score
+  % * info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
   % Check spelling if info = 0

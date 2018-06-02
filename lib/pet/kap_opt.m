@@ -25,8 +25,8 @@ function [kap R_i] = kap_opt(model, par, T, f)
 % * R_i:   2-vector, optimal, actual max reprod rate (#/d)
 
 %% Remarks
-% uses reprod_rate_i to compute max reprod rate.
-% use read_pars to extract model and par from allStat
+% uses <reprod_rate_i.html *reprod_rate_i*> to compute max reprod rate.
+% Use <../../../AmPtool/html/read_pars.html *read_pars*> to extract model and parameters from allStat
 
 %% Example of use
 % kap_opt('std', par, C2K(20), 1) 

@@ -4,7 +4,7 @@
 %%
 function [par_elt, chem_out, stat_html] = pet_html_content_std(par, chem, stat, txt_stat, T_ref, model) 
 % created 2009/07/11 by Dina Lika, modified by Bas Kooijman 2014/06/03
-% modified by starrlight augustine 2014/13/04 
+% modified by Starrlight Augustine 2014/13/04 
 
 %% Syntax
 % [par_elt, chem_out, stat_html] = <../pet_html_content.m *pet_html_content*> (par, 
@@ -34,15 +34,13 @@ function [par_elt, chem_out, stat_html] = pet_html_content_std(par, chem, stat, 
 
 
 %% Remarks
-% This function is not yet finalised- we still need to add a lot of row to
-% stat_html
+% This function is not yet finalised- we still need to add a lot of rows to stat_html
 
 %% Example of use
-% load('results_my_pet.mat');
-% v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
-% [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
-% [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat,
-% txt_stat, T_ref) ;
+%   load('results_my_pet.mat');
+%   v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
+%   [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
+%   [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat,txt_stat, T_ref);
 
 v2struct(par); 
 

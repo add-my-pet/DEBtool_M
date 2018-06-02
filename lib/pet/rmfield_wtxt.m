@@ -22,6 +22,7 @@ function st = rmfield_wtxt(st, txt)
 
 %% Example of use
 % Suppose one has the structure x with the following fields:
+%
 %    x.value.temp
 %    x.value.len
 %    x.value.reprod
@@ -30,6 +31,7 @@ function st = rmfield_wtxt(st, txt)
 %    x.temp
 %
 % the command  x = rmfield_wtxt(x, 'temp') will make x have only the fields:
+%
 %    x.value.len
 %    x.value.reprod
 %    x.unit.len

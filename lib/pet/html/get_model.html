@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_model</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-04"><meta name="DC.source" content="get_model.m"><style type="text/css">
+      --><title>get_model</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="get_model.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,20 +55,28 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>get_model</h1><!--introduction--><p>Gets model from phylum or class</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[model info] = <a href="../get_model.m"><b>get_model</b></a> (phylum, class, order)</p><h2>Description<a name="4"></a></h2><p>Sets model according to taxonomic classification</p><p>Input</p><div><ul><li>phylum: string with name of animal phylum (one of 36 possibilities)</li><li>class:  string with name of class</li><li>order:  string with name of order</li></ul></div><p>Output</p><pre>model: string with name of typified model
-info: 1 if taxon could be identified, 0 otherwise</pre><h2>Remarks<a name="5"></a></h2><p>A few taxa have a deviating model Check spelling if info = 0</p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_model</h1><!--introduction--><p>Gets model from phylum or class</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[model, info] = <a href="../get_model.m"><b>get_model</b></a> (phylum, class, order)</p><h2 id="4">Description</h2><p>Sets model according to taxonomic classification</p><p>Input</p><div><ul><li>phylum: string with name of animal phylum (one of 36 possibilities)</li><li>class:  string with name of class</li><li>order:  string with name of order</li></ul></div><p>Output</p><div><ul><li>model: string with name of typified model</li><li>info: 1 if taxon could be identified, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>A few taxa have a deviating model. Check spelling if info = 0</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_model
 % Gets model from phylum or class
 
 %%
-function [model info] = get_model(phylum, class, order)
+function [model, info] = get_model(phylum, class, order)
   % created 2017/01/04 by Bas Kooijman
   
   %% Syntax
-  % [model info] = <../get_model.m *get_model*> (phylum, class, order)
+  % [model, info] = <../get_model.m *get_model*> (phylum, class, order)
   
   %% Description
   % Sets model according to taxonomic classification
@@ -80,11 +89,11 @@ function [model info] = get_model(phylum, class, order)
   %  
   % Output
   %
-  %  model: string with name of typified model
-  %  info: 1 if taxon could be identified, 0 otherwise
+  % * model: string with name of typified model
+  % * info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
-  % A few taxa have a deviating model
+  % A few taxa have a deviating model.
   % Check spelling if info = 0
   
 info = 1;

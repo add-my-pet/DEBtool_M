@@ -35,12 +35,12 @@ for i = 1:length(pets)             % calls species mydata functions
 end 
 
 if pseudodata_pets == 1 % same pseudodata for the group
-  %% remove pseudodata from species struture
+  % remove pseudodata from species structure
   data = rmpseudodata(data);
   txtData = rmpseudodata(txtData); 
   weights = rmpseudodata(weights);
 
-  %% set pseudodata and respective weights for the group
+  % set pseudodata and respective weights for the group
   if exist('addpseudodata_group.m', 'file')
       [dataG, unitsG, labelG, weightsG] = addpseudodata_group;
   else

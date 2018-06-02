@@ -38,11 +38,10 @@ function [par_elt, chem_out, stat_html] = pet_html_content_abj(par, chem, stat, 
 % stat_html
 
 %% Example of use
-% load('results_my_pet.mat');
-% v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
-% [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
-% [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat,
-% txt_stat, T_ref) ;
+%   load('results_my_pet.mat');
+%   v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
+%   [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
+%   [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat, txt_stat, T_ref);
 
 v2struct(par); 
 

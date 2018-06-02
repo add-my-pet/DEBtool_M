@@ -1,4 +1,4 @@
-%% mydata2perdict
+%% mydata2predict
 % writes a predict file from a mydat file
 
 %%
@@ -16,9 +16,8 @@ function mydata2predict(speciesnm)
 % * speciesnm: string with the species name
 
 %% Remarks
-% Keep in mind that the files will be saved in your local directory; use
-% the cd command BEFORE running this function to save files in the desired
-% place.
+% Keep in mind that the files will be saved in your local directory; 
+% use the cd command BEFORE running this function to save files in the desired place.
 
 %% Example of use
 % mydata2predict(speciesnm)

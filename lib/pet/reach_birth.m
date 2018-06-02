@@ -3,24 +3,24 @@
 
 %%
 function info = reach_birth(g, k, v_Hb, f)
-  % created 2015/06/19 by Goncalo Marques; modified 2015/07/06
+% created 2015/06/19 by Goncalo Marques; modified 2015/07/06
   
-  %% Syntax
-  % info = <../reach_birth.m *reach_birth*>(g, k, v_Hb, f)
+%% Syntax
+% info = <../reach_birth.m *reach_birth*>(g, k, v_Hb, f)
   
-  %% Description
-  % Checks if parameters allow for reaching birth in the standard DEB model
-  %
-  % Input
-  %
-  % * g: energy investment ratio
-  % * k: ratio of maturity and somatic maintenance rate coeff
-  % * v_Hb: scaled maturity volume at birth
-  % * f: (opfional) functional response
-  %  
-  % Output
-  %
-  % * info: indicator equals 1 if reaches birth, 0 otherwise
+%% Description
+% Checks if parameters allow for reaching birth in the standard DEB model
+%
+% Input
+%
+% * g: energy investment ratio
+% * k: ratio of maturity and somatic maintenance rate coeff
+% * v_Hb: scaled maturity volume at birth
+% * f: (opfional) functional response
+%  
+% Output
+%
+% * info: indicator equals 1 if reaches birth, 0 otherwise
   
   if ~exist('f', 'var') % if f is not given it is taken as 1
     f = 1;
