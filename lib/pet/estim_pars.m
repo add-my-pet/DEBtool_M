@@ -31,7 +31,7 @@ function nsteps = estim_pars
   % estim_options sets many options;
   % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
   
-global pets toxs pars_init_method method filter cov_rules
+global pets toxs pars_init_method method filter covRules
 
 n_pets = length(pets);
 n_toxs = length(toxs);
@@ -90,11 +90,11 @@ elseif pars_init_method == 2
   end
 end
 
-% make sure that global cov_rules exists; overwrite if metaPar.covRules is specified
+% make sure that global covRules exists
 if exist('metaPar.covRules','var')
-  estim_options('cov_rules', metaPar.covRules);
-elseif ~exist('cov_rules','var') || isempty('cov_rules') 
-  estim_options('cov_rules', 'no');
+  covRules = metaPar.covRules;
+else
+  covRules = 'no';
 end
 
 % check parameter set if you are using a filter

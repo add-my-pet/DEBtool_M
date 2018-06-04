@@ -29,7 +29,7 @@ function parPets = parGrp2Pets(parGrp)
 %% Example of use
 % parPets = parGrp2Pets(parGrp)
 
-  global pets cov_rules
+  global pets covRules
 
   n_pets = length(pets);
   if n_pets == 1
@@ -63,13 +63,13 @@ function parPets = parGrp2Pets(parGrp)
     parPets.(pets{i}) = pari; % copy parameters for pet i to output
   end
 
-  switch cov_rules % global cov_rules specifies the co-variation rules that should be applied
+  switch covRules % global cov_rules specifies the co-variation rules that should be applied
   
     case 'no'
     % do nothing 
   
     case 'maturities' % modify maturity levels according to zoom factor z, using pets{1} as reference
-    % the free-setting and the initial values of these parameters for pets{2} till pets.{n_pets} are ignored with this cov_rule
+    % the free-setting and the initial values of these parameters for pets{2} till pets.{n_pets} are ignored with this covRule
     for i = 2:n_pets         % scan pets, using pets{1} as reference
       for j = 1:n_parNms     % scan parameters for each pet
         if strcmp(parNms{j},'E_H') % identify maturity levels

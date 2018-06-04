@@ -30,10 +30,6 @@ function estim_options (key, val)
   %      1 - use filter (default); 
   %      0 - do not;
   %
-  %    'cov_rules': (only used for multispecies estimation)
-  %      no: multi-species estimation without links between parameters (default)
-  %      maturities: multi-species estimation with maturity levels that are proportional to cubed zoom factors
-  %
   %    'pars_init_method':
   %      0 - get initial estimates from automatized computation (default)
   %      1 - read initial estimates from .mat file (for continuation)
@@ -62,7 +58,7 @@ function estim_options (key, val)
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
  
   global method lossfunction 
-  global filter cov_rules pars_init_method results_output
+  global filter pars_init_method results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
@@ -75,7 +71,6 @@ function estim_options (key, val)
     case 'default'
       lossfunction = 'sb';
       filter = 1;
-      cov_rules = 'no';
       pars_init_method  = 2;
       results_output = 0;
       method = 'nm';
@@ -105,19 +100,6 @@ function estim_options (key, val)
         fprintf('1 - use filter \n');
       else
         filter = val;
-      end
-
-    case 'cov_rules'
-      if exist('val','var') == 0
-        if numel(cov_rules) ~= 0
-          fprintf(['cov_rules = ', cov_rules,' \n']);  
-        else
-          fprintf('cov_rules = unknown \n');
-        end
-        fprintf('no - no relationships between different parameters \n');
-        fprintf('maturities - maturity levels linked to zoom factor \n');
-      else
-        cov_rules = val;
       end
       
     case 'pars_init_method'
@@ -175,12 +157,6 @@ function estim_options (key, val)
         fprintf('filter = unknown \n');
       end
       
-      if numel(cov_rules) ~= 0
-        fprintf(['cov_rules = ', cov_rules,' \n']);
-      else
-        fprintf('cov_rules = unknown \n');
-      end
-      
       if numel(pars_init_method) ~= 0
         fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
       else
@@ -222,13 +198,7 @@ function estim_options (key, val)
         else
           fprintf('filter = unknown \n');
         end
-        
-        if numel(cov_rules) ~= 0
-          fprintf(['cov_rules = ', cov_rules,' \n']);
-        else
-          fprintf('cov_rules = unknown \n');
-        end
-        
+                
         if numel(pars_init_method) ~= 0
           fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
         else
