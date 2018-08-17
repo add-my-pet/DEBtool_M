@@ -1,5 +1,6 @@
 %% estim_pars
-% Runs the entire estimation procedure
+% Runs the AmP estimation procedure (Marques et al 2018, PLOS computational
+% biology  https://doi.org/10.1371/journal.pcbi.1006100)
 
 %%
 function nsteps = estim_pars

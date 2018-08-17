@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-27"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
+      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-17"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,17 +66,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the entire estimation procedure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>intiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>no output</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the AmP estimation procedure (Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>intiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>nsteps: number of steps</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options; option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_pars
-% Runs the entire estimation procedure
+% Runs the AmP estimation procedure (Marques et al 2018, PLOS computational
+% biology  https://doi.org/10.1371/journal.pcbi.1006100)
 
 %%
 function nsteps = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
-  %   2018/05/23 by Bas Kooijman
+  %   2018/05/23 by Bas Kooijman,     2018/08/17 by Starrlight Augustine
   
   %% Syntax 
   % <../estim_pars.m *estim_pars*>
@@ -95,27 +96,22 @@ function nsteps = estim_pars
   %  
   % Output
   %
-  % * no output
+  % * nsteps: number of steps
   
   %% Remarks
-  % estim_options sets many options
+  % estim_options sets many options;
   % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
   
-global pets toxs pars_init_method method filter cov_rules
+global pets pars_init_method method filter covRules
 
 n_pets = length(pets);
-n_toxs = length(toxs);
 
 % get data
 [data, auxData, metaData, txtData, weights] = mydata_pets;
 
 if n_pets == 1
   pars_initnm = ['pars_init_', pets{1}];
-  if n_toxs == 0
     resultsnm = ['results_', pets{1}, '.mat'];
-  else
-    resultsnm = ['results_', pets{1}, '_', toxs{1}, '.mat'];
-  end
 else
   pars_initnm = 'pars_init_group';
   resultsnm = 'results_group.mat';
@@ -125,50 +121,50 @@ end
 if pars_init_method == 0
   if n_pets ~= 1
     error('    For multispecies estimation get_pars cannot be used (pars_init_method cannot be 0)');
-  elseif n_toxs ~= 0
-    error('    For estimation with toxicant get_pars cannot be used (pars_init_method cannot be 0)');
   else
     [par, metaPar, txtPar] = get_pars(data.(pets{1}), auxData.(pets{1}), metaData.(pets{1}));
   end
 elseif pars_init_method == 1
-  if n_toxs == 0
     load(resultsnm, 'par');
-    [par2, metaPar, txtPar] = feval(pars_initnm, metaData);
+    if n_pets == 1
+      [par2, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
+    else
+      [par2, metaPar, txtPar] = feval(pars_initnm, metaData);
+    end
     if length(fieldnames(par.free)) ~= length(fieldnames(par2.free))
       fprintf('The number of parameters in pars.free in the pars_init and in the .mat file are not the same. \n');
       return;
     end
     par.free = par2.free;
-  else
-    load(resultsnm, 'par', 'metaPar', 'txtPar');
-  end
 elseif pars_init_method == 2
-  if n_toxs == 0
-    [par, metaPar, txtPar] = feval(pars_initnm, metaData);
-  else
-    [~, ~, metaDataAux, ~, ~] = feval(['mydata_', pets{1}]);   % This is a provisory way of getting metaData for pars_init
-    [par, metaPar, txtPar] = feval(pars_initnm, metaDataAux);
-    [par, metaPar, txtPar] = feval([pars_initnm, '_', toxs{1}], par, metaPar, txtPar);
-  end
+    if n_pets == 1
+      [par, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
+    else
+      [par, metaPar, txtPar] = feval(pars_initnm, metaData);
+    end
 end
 
-% make sure that global cov_rules exists; overwrite if metaPar.covRules is specified
+% make sure that global covRules exists
 if exist('metaPar.covRules','var')
-  estim_options('cov_rules', metaPar.covRules);
-elseif ~exist('cov_rules','var') || isempty('cov_rules') 
-  estim_options('cov_rules', 'no');
+  covRules = metaPar.covRules;
+else
+  covRules = 'no';
 end
 
 % check parameter set if you are using a filter
 parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
 if filter
-  filternm = ['filter_', metaPar.model];
-  pass = 1;
+  pass = 1; filternm = cell(n_pets,1);
   for i = 1:n_pets
-     if iscell(filternm)
-      [passSpec, flag] = feval(filternm{i}, parPets.(pets{i}));
-    else
+    if ~iscell(metaPar.model) % model is a character string
+      filternm = ['filter_', metaPar.model];
       [passSpec, flag] = feval(filternm, parPets.(pets{i}));
+    elseif length(metaPar.model) == 1 % model could have been a character string
+      filternm = ['filter_', metaPar.model{1}];
+      [passSpec, flag] = feval(filternm, parPets.(pets{i}));
+    else % model is a cell string
+      filternm{i} = ['filter_', metaPar.model{i}];
+      [passSpec, flag] = feval(filternm{i}, parPets.(pets{i}));
     end
     if ~passSpec
       fprintf(['The seed parameter set for ', pets{i}, ' is not realistic. \n']);
@@ -184,8 +180,9 @@ else
   pass = 1;
 end
 
+% perform the actual estimation
 if ~strcmp(method, 'no')
-  if strcmp(method, 'nm')
+  if strcmp(method, 'nm') % prepares for future extension to alternative minimazation algorithms
     if n_pets == 1
       [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
@@ -201,7 +198,11 @@ results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
 parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
 if filter
   for i = 1:n_pets
-    feval(['warning_', metaPar.model], parPets.(pets{i}));
+    if iscell(metaPar.model)
+      feval(['warning_', metaPar.model{i}], parPets.(pets{i}));
+    else
+      feval(['warning_', metaPar.model], parPets.(pets{i}));
+    end
   end
 end
 
