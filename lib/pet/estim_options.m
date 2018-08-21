@@ -3,7 +3,7 @@
 
 %%
 function estim_options (key, val)
-  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21 by Bas Kooijman
+  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -36,10 +36,11 @@ function estim_options (key, val)
   %      2 - read initial estimates from pars_init file
   %
   %    'results_output':
-  %      0 - prints results to screen (default)
+  %     -1 - only saves results to .mat, no figures, no printing to screen
+  %      0 - prints results to screen only (default)
   %      1 - prints results to screen, saves to .mat file
-  %      2 - saves data to .mat file and graphs to .png files
-  %          (prints results to screen using a customized results file when it exists)
+  %      2 - prints results to screen, saves data to .mat file and graphs to .png files, 
+  %      3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file
   %
   %    'method': 
   %      'nm' - use Nelder-Mead method; 
@@ -124,9 +125,11 @@ function estim_options (key, val)
         else
           fprintf('results_output = unknown \n');
         end	      
-        fprintf('0 - prints results to screen \n');
-        fprintf('1 - prints results, saves to matlab file and produces html \n');
-        fprintf('2 - saves to matlab file and produces html \n');
+        fprintf('-1 - only saves results to .mat file, no figures\n');
+        fprintf(' 0 - prints results to screen \n');
+        fprintf(' 1 - prints results to screen, saves to .mat file\n');
+        fprintf(' 2 - prints results to screen, saves to .mat file, figures to .png files\n');
+        fprintf(' 3 - prints results to screen, saves to .mat file, figures to .png files, report to .html file\n');
       else
         results_output = val;
       end

@@ -1,9 +1,9 @@
 %% zip_my_pet
-% Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip.
+% Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip
 
 %%
-function zip_my_pet(my_pet, basefolder)
-% created by Dina Lika 2015/08/07, modified by Bas Kooijman 2017/09/29
+function filenm = zip_my_pet(my_pet, basefolder)
+% created by Dina Lika 2015/08/07, modified by Bas Kooijman 2017/09/29, 2018/08/17
 
 %% Syntax
 % <../zip_my_pet.m *zip_my_pet*>(my_pet)
@@ -22,6 +22,7 @@ function zip_my_pet(my_pet, basefolder)
 %
 % Output 
 %
+% * filenm: character string with name of zip-file that has been written
 % * zip files in the current folder:
 % 
 %    -- my_pet, '\mydata_', my_pet, '.m'

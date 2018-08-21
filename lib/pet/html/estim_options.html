@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-21"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -72,16 +72,15 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     'sb' - multiplicative symmetric bounded (default);
     'su' - multiplicative symmetric unbounded;</pre><pre>  'filter':
     1 - use filter (default);
-    0 - do not;</pre><pre>  'cov_rules': (only used for multispecies estimation)
-    no: multi-species estimation without links between parameters (default)
-    maturities: multi-species estimation with maturity levels that are proportional to cubed zoom factors</pre><pre>  'pars_init_method':
+    0 - do not;</pre><pre>  'pars_init_method':
     0 - get initial estimates from automatized computation (default)
     1 - read initial estimates from .mat file (for continuation)
     2 - read initial estimates from pars_init file</pre><pre>  'results_output':
-    0 - prints results to screen (default)
+   -1 - only saves results to .mat, no figures, no printing to screen
+    0 - prints results to screen only (default)
     1 - prints results to screen, saves to .mat file
-    2 - saves data to .mat file and graphs to .png files
-        (prints results to screen using a customized results file when it exists)</pre><pre>  'method':
+    2 - prints results to screen, saves data to .mat file and graphs to .png files,
+    3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file</pre><pre>  'method':
     'nm' - use Nelder-Mead method;
     'no' - do not estimate;</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>For other options see corresponding options file of the minimazation  algorithm, e.g. <a href="../../regr/html/nmregr_options.html"><b>nmregr_options</b></a>. See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -90,7 +89,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 %%
 function estim_options (key, val)
-  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21 by Bas Kooijman
+  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -117,20 +116,17 @@ function estim_options (key, val)
   %      1 - use filter (default); 
   %      0 - do not;
   %
-  %    'cov_rules': (only used for multispecies estimation)
-  %      no: multi-species estimation without links between parameters (default)
-  %      maturities: multi-species estimation with maturity levels that are proportional to cubed zoom factors
-  %
   %    'pars_init_method':
   %      0 - get initial estimates from automatized computation (default)
   %      1 - read initial estimates from .mat file (for continuation)
   %      2 - read initial estimates from pars_init file
   %
   %    'results_output':
-  %      0 - prints results to screen (default)
+  %     -1 - only saves results to .mat, no figures, no printing to screen
+  %      0 - prints results to screen only (default)
   %      1 - prints results to screen, saves to .mat file
-  %      2 - saves data to .mat file and graphs to .png files
-  %          (prints results to screen using a customized results file when it exists)
+  %      2 - prints results to screen, saves data to .mat file and graphs to .png files, 
+  %      3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file
   %
   %    'method': 
   %      'nm' - use Nelder-Mead method; 
@@ -149,7 +145,7 @@ function estim_options (key, val)
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
  
   global method lossfunction 
-  global filter cov_rules pars_init_method results_output
+  global filter pars_init_method results_output
  
   if exist('key','var') == 0
     key = 'inexistent';
@@ -162,7 +158,6 @@ function estim_options (key, val)
     case 'default'
       lossfunction = 'sb';
       filter = 1;
-      cov_rules = 'no';
       pars_init_method  = 2;
       results_output = 0;
       method = 'nm';
@@ -193,19 +188,6 @@ function estim_options (key, val)
       else
         filter = val;
       end
-
-    case 'cov_rules'
-      if exist('val','var') == 0
-        if numel(cov_rules) ~= 0
-          fprintf(['cov_rules = ', cov_rules,' \n']);  
-        else
-          fprintf('cov_rules = unknown \n');
-        end
-        fprintf('no - no relationships between different parameters \n');
-        fprintf('maturities - maturity levels linked to zoom factor \n');
-      else
-        cov_rules = val;
-      end
       
     case 'pars_init_method'
       if exist('val','var') == 0
@@ -229,9 +211,11 @@ function estim_options (key, val)
         else
           fprintf('results_output = unknown \n');
         end	      
-        fprintf('0 - prints results to screen \n');
-        fprintf('1 - prints results, saves to matlab file and produces html \n');
-        fprintf('2 - saves to matlab file and produces html \n');
+        fprintf('-1 - only saves results to .mat file, no figures\n');
+        fprintf(' 0 - prints results to screen \n');
+        fprintf(' 1 - prints results to screen, saves to .mat file\n');
+        fprintf(' 2 - prints results to screen, saves to .mat file, figures to .png files\n');
+        fprintf(' 3 - prints results to screen, saves to .mat file, figures to .png files, report to .html file\n');
       else
         results_output = val;
       end
@@ -260,12 +244,6 @@ function estim_options (key, val)
         fprintf(['filter = ', num2str(filter),' \n']);
       else
         fprintf('filter = unknown \n');
-      end
-      
-      if numel(cov_rules) ~= 0
-        fprintf(['cov_rules = ', cov_rules,' \n']);
-      else
-        fprintf('cov_rules = unknown \n');
       end
       
       if numel(pars_init_method) ~= 0
@@ -309,13 +287,7 @@ function estim_options (key, val)
         else
           fprintf('filter = unknown \n');
         end
-        
-        if numel(cov_rules) ~= 0
-          fprintf(['cov_rules = ', cov_rules,' \n']);
-        else
-          fprintf('cov_rules = unknown \n');
-        end
-        
+                
         if numel(pars_init_method) ~= 0
           fprintf(['pars_init_method = ', num2str(pars_init_method),' \n']);
         else
