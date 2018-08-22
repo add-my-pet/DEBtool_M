@@ -40,6 +40,7 @@ function cPar = parscomp_st(p)
   % * L_T: cm, heating length (also applies to osmotic work)
   % * l_T: - , scaled heating length
   % * w: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
+  % * ome: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
   % * J_E_Am: mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
   % * y_E_X: mol/mol, yield of reserve on food
   % * y_X_E: mol/mol, yield of food on reserve
@@ -98,7 +99,8 @@ g       = p.E_G/ p.kap/ E_m ;      % -, energy investment ratio
 L_m     = p.v/ k_M/ g;           % cm, maximum length
 L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic work)
 l_T     = L_T/ L_m;            % - , scaled heating length
-w       = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
+ome     = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
+w       = ome;                   % -, just for consistency with the past
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
 if isfield(p, 'E_Hp')
@@ -133,8 +135,8 @@ end
 
 J_E_M   = p.p_M/ p.mu_E;          % mol/d.cm^3, [J_EM], volume-spec somatic  maint costs
 J_E_T   = p.p_T/ p.mu_E;          % mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs
-j_E_M   = k_M * y_E_V;        % mol/d.mol, mass-spec somatic  maint costs
-j_E_J   = p.k_J * y_E_V;        % mol/d.mol, mass-spec maturity maint costs
+j_E_M   = k_M * y_E_V;            % mol/d.mol, mass-spec somatic  maint costs
+j_E_J   = p.k_J * y_E_V;          % mol/d.mol, mass-spec maturity maint costs
 kap_G   = p.mu_V * M_V/ p.E_G;    % -, growth efficiency
 E_V     = p.d_V * p.mu_V/ w_V;    % J/cm^3, [E_V] volume-specific energy of structure
 
@@ -145,7 +147,7 @@ end
 % -------------------------------------------------------------------------
 % pack output:
 cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
-              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'w', w, 's_H', s_H, ...
+              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'ome', ome, 'w', w, 's_H', s_H, ...
               'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_M', j_E_M, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
 
 % -------------------------------------------------------------------------

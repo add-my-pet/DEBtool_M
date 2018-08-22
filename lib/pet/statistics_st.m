@@ -7,7 +7,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18, 2018/08/22 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -132,6 +132,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 %
 %     - p_A*, p_C*, p_S*, p_J*, p_G*, p_R*, p_D* : energy fluxes at b, p, i ; all
 %     - J_Cb, J_Cp, J_Ci: carbon dioxide production at birth, puberty, ultimate; all
+%     - J_Hb, J_Hp, J_Hi: water production at birth, puberty, ultimate; all
 %     - J_Ob, J_Op, J_Oi: dioxygen consumption at birth, puberty, ultimate; all
 %     - J_Nb, J_Np, J_Ni: nitrogen waste production at birth, puberty, ultimate; all
 %
@@ -221,7 +222,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.L_m = L_m; units.L_m = 'cm'; label.L_m = 'maximum structural length'; temp.L_m = NaN; fresp.L_m = NaN;
   stat.L_T = L_T; units.L_T = 'cm'; label.L_T = 'heating length (also applies to osmotic work)'; temp.L_T = NaN; fresp.L_T = NaN;
   stat.l_T = l_T; units.l_T = '-'; label.l_T = 'scaled heating length'; temp.l_T = NaN; fresp.l_T = NaN;
-  stat.w = w; units.w = '-'; label.w = '\omega, contribution of ash free dry mass of reserve to total ash free dry biomass'; temp.w = NaN; fresp.w = NaN;
+  stat.ome = ome; units.ome = '-'; label.ome = '\omega, contribution of ash free dry mass of reserve to total ash free dry biomass'; temp.ome = NaN; fresp.ome = NaN;
   stat.J_E_Am = J_E_Am; units.J_E_Am = 'mol/d.cm^2'; label.J_E_Am = '{J_EAm}, max surface-spec assimilation flux'; temp.J_E_Am = T_ref; fresp.J_E_Am = NaN;
   if exist('kap_X', 'var')
     stat.y_E_X = y_E_X; units.y_E_X = 'mol/mol'; label.y_E_X = 'yield of reserve on food'; temp.y_E_X = NaN; fresp.y_E_X = NaN;
@@ -321,7 +322,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   t_E      = L_m/ v/ TC;    % d, maximum reserve residence time
   stat.t_E = t_E; units.t_E  = 'd';  label.t_E = 'maximum reserve residence time';  temp.t_E = T; fresp.t_E = NaN;                    
   t_starve = E_m/ p_M/ TC;  % d, max survival time when starved  
-  stat.t_starve  = t_starve; units.t_starve = 'd'; label.t_starve = 'maximum survival time when starved';  temp.t_starve = T; fresp.t_starve = NaN;             
+  stat.t_starve  = t_starve; units.t_starve = 'd'; label.t_starve = 'maximum survival time when starved';  temp.t_starve = T; fresp.t_starve = 0;             
 
   % life cycle
   switch model
@@ -859,10 +860,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   % mass fluxes (respiration)
   X_gas = T_ref/ T/ 24.4;       % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
   p_ADG = p_ACSJGRD(:,[1 7 5]); % J/d, assimilation, dissipation, growth powers
-  J_O = eta_O * p_ADG'; J_M = - (n_M\n_O) * J_O; % rows: CHON, cols: bpi
+  n_Ow = n_O; x = (1 - [d_X d_V d_E d_P])/ 18; n_Ow(2,:) = n_O(2,:) + 2 * x; n_Ow(3,:) = n_O(3,:) + x; % convert dry to wet mass
+  J_O = eta_O * p_ADG'; J_M = - (n_M\n_Ow) * J_O; % rows: CHON, cols: bpi
   stat.J_Cb = J_M(1,1); units.J_Cb = 'mol/d'; label.J_Cb = 'CO2 flux at birth'; temp.J_Cb = T; fresp.J_Cb = f;   
   stat.J_Cp = J_M(1,2); units.J_Cp = 'mol/d'; label.J_Cp = 'CO2 flux at puberty'; temp.J_Cp = T; fresp.J_Cp = f;   
   stat.J_Ci = J_M(1,3); units.J_Ci = 'mol/d'; label.J_Ci = 'ultimate CO2 flux';temp.J_Ci = T; fresp.J_Ci = f;    
+  stat.J_Hb = J_M(2,1); units.J_Hb = 'mol/d'; label.J_Hb = 'water flux at birth'; temp.J_Hb = T; fresp.J_Hb = f;   
+  stat.J_Hp = J_M(2,2); units.J_Hp = 'mol/d'; label.J_Hp = 'water flux at puberty'; temp.J_Hp = T; fresp.J_Hp = f;   
+  stat.J_Hi = J_M(2,3); units.J_Hi = 'mol/d'; label.J_Hi = 'ultimate water flux'; temp.J_Hi = T; fresp.J_Hi = f;    
   stat.J_Ob = -J_M(3,1); units.J_Ob = 'mol/d'; label.J_Ob = 'O2 flux at birth'; temp.J_Ob = T; fresp.J_Ob = f;   
   stat.J_Op = -J_M(3,2); units.J_Op = 'mol/d'; label.J_Op = 'O2 flux at puberty'; temp.J_Op = T; fresp.J_Op = f;   
   stat.J_Oi = -J_M(3,3); units.J_Oi = 'mol/d'; label.J_Oi = 'ultimate O2 flux'; temp.J_Oi = T; fresp.J_Oi = f;   

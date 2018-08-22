@@ -3,7 +3,7 @@
 
 %%
 function prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
-% created 2016/11/24 Starrlight;  modified 2018/08/18 Bas Kooijman
+% created 2016/11/24 Starrlight;  modified 2018/08/22 Bas Kooijman
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (metaData, metaPar, par, T, f, destinationFolder) 
@@ -23,8 +23,12 @@ function prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
 % are printed to (default: current folder)
 
 %% Example of use
-% load('results_my_pet.mat');
-% prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
+% load('results_my_pet.mat'); prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
+% or
+% prt_report_my_pet(my_pet)
+% or
+% prt_report_my_pet(my_pet,'', C2K(22), 1)
+
 
 % Removes underscores and makes first letter of english name be in capital:
 
@@ -36,7 +40,7 @@ if isstruct(metaData)
   model = metaPar.model;
   T_typical = metaData.T_typical;
 else % use allStat.mat as data source
-  if ~exist('allStat','var') || length(allStat) == 0
+  if ~exist('allStat','var') || isempty(allStat)
     load('allStat')        % get all parameters and statistics in structure allStat
   end
   species = metaData;
@@ -136,8 +140,7 @@ fprintf(oid, '      <div>\n');
 fprintf(oid, '        <input type="text" id="InputSymbol" onkeyup="FunctionSymbol()" placeholder="Search for symbol ..">\n');
 fprintf(oid, '        <input type="text" id="InputUnits"  onkeyup="FunctionUnits()"  placeholder="Search for units ..">\n');
 fprintf(oid, '        <input type="text" id="InputLabel"  onkeyup="FunctionLabel()"  placeholder="Search for label ..">\n');
-fprintf(oid, '        <input type="text" id="InputShort"  onkeyup="FunctionShort()"  placeholder="Short/Long">\n');
-%fprintf(oid, '      <p id="demo">bla</p>\n\n');
+fprintf(oid, '        <input type="text" id="InputShort"  onkeyup="FunctionShort()"  placeholder="Short/Medium/Long" title="Type S or M or L">\n');
 fprintf(oid, '      </div>\n\n');
 
 % print the table with the properties :    
@@ -227,7 +230,7 @@ fprintf(oid, '        }\n\n');
 
 fprintf(oid, '        function FunctionShort() {\n');
 fprintf(oid, '          // Declare variables\n');
-fprintf(oid, '          var input, filter, table, tr, td, i, symbol;\n');
+fprintf(oid, '          var input, filter, table, tr, td, i;\n');
 fprintf(oid, '          input = document.getElementById("InputShort");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
@@ -237,12 +240,76 @@ fprintf(oid, '          // Loop through all table rows, and show some from the l
 fprintf(oid, '          if (filter == "S") {\n');
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
-%fprintf(oid, '              // symbol = td.innerHTML;\n');
-fprintf(oid, '              if (i==4 || i==5 || i==7) {\n');
-%fprintf(oid, '                document.getElementById("demo").innerHTML = td.innerHTML;');
-fprintf(oid, '                tr[i].style.display = "";\n');
-fprintf(oid, '              } else {\n');
-fprintf(oid, '                tr[i].style.display = "none";\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_m" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_starve" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ci" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Hi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Oi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ni" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Xi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Pi" ||\n');
+fprintf(oid, '                    td.innerHTML == "p_Ti" ||\n');
+fprintf(oid, '                    td.innerHTML == "r_B" ||\n');
+fprintf(oid, '                    td.innerHTML == "R_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_V"\n');
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n');
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
+fprintf(oid, '              }\n');
+fprintf(oid, '            }\n');
+fprintf(oid, '          } else if (filter == "M") {\n');
+fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
+fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "z" ||\n');
+fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_M" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_Hbp" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_s" ||\n');
+fprintf(oid, '                    td.innerHTML == "E_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_99" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_m" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_starve" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ci" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Hi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Oi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ni" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Xi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Pi" ||\n');
+fprintf(oid, '                    td.innerHTML == "p_Ti" ||\n');
+fprintf(oid, '                    td.innerHTML == "r_B" ||\n');
+fprintf(oid, '                    td.innerHTML == "R_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "N_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_V" ||\n');
+fprintf(oid, '                    td.innerHTML == "W_dWm" ||\n');
+fprintf(oid, '                    td.innerHTML == "dWm" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_Wb" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_Wp" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_E" ||\n');
+fprintf(oid, '                    td.innerHTML == "xi_WE"\n');
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n');
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
 fprintf(oid, '          } else {\n');

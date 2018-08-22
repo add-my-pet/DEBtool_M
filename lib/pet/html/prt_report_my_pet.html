@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-20"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
+      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-22"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,14 +66,14 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (metaData, metaPar, par, T, f, destinationFolder)</p><h2 id="4">Description</h2><p>Read and writes report_my_pet.html. This pages contains a list of implied model properties of my_pet.</p><p>Input:</p><div><ul><li>metaData: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet_par</b></a> file)</li><li>metaPar: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet_par</b></a> file)</li><li>par: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet_par</b></a> file)</li><li>T: optional scalar with temperature in Kelvin (default: T_typical)</li><li>f: optional scalar scaled functional response (default: 1)</li><li>destinationFolder : optional string with destination folder the files are printed to (default: current folder)</li></ul></div><h2 id="5">Example of use</h2><p>load('results_my_pet.mat'); prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (metaData, metaPar, par, T, f, destinationFolder)</p><h2 id="4">Description</h2><p>Read and writes report_my_pet.html. This pages contains a list of implied model properties of my_pet.</p><p>Input:</p><div><ul><li>metaData: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet_par</b></a> file)</li><li>metaPar: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet_par</b></a> file)</li><li>par: structure (output of <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet_par</b></a> file)</li><li>T: optional scalar with temperature in Kelvin (default: T_typical)</li><li>f: optional scalar scaled functional response (default: 1)</li><li>destinationFolder : optional string with destination folder the files are printed to (default: current folder)</li></ul></div><h2 id="5">Example of use</h2><p>load('results_my_pet.mat'); prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder) or prt_report_my_pet(my_pet) or prt_report_my_pet(my_pet,'', C2K(22), 1)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_report_my_pet
 % Creates report_my_pet.html 
 
 %%
 function prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
-% created 2016/11/24 Starrlight;  modified 2018/08/18 Bas Kooijman
+% created 2016/11/24 Starrlight;  modified 2018/08/22 Bas Kooijman
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (metaData, metaPar, par, T, f, destinationFolder) 
@@ -93,8 +93,12 @@ function prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
 % are printed to (default: current folder)
 
 %% Example of use
-% load('results_my_pet.mat');
-% prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
+% load('results_my_pet.mat'); prt_report_my_pet(metaData, metaPar, par, T, f, destinationFolder)
+% or
+% prt_report_my_pet(my_pet)
+% or
+% prt_report_my_pet(my_pet,'', C2K(22), 1)
+
 
 % Removes underscores and makes first letter of english name be in capital:
 
@@ -106,7 +110,7 @@ if isstruct(metaData)
   model = metaPar.model;
   T_typical = metaData.T_typical;
 else % use allStat.mat as data source
-  if ~exist('allStat','var') || length(allStat) == 0
+  if ~exist('allStat','var') || isempty(allStat)
     load('allStat')        % get all parameters and statistics in structure allStat
   end
   species = metaData;
@@ -206,8 +210,7 @@ fprintf(oid, '      <div>\n');
 fprintf(oid, '        <input type="text" id="InputSymbol" onkeyup="FunctionSymbol()" placeholder="Search for symbol ..">\n');
 fprintf(oid, '        <input type="text" id="InputUnits"  onkeyup="FunctionUnits()"  placeholder="Search for units ..">\n');
 fprintf(oid, '        <input type="text" id="InputLabel"  onkeyup="FunctionLabel()"  placeholder="Search for label ..">\n');
-fprintf(oid, '        <input type="text" id="InputShort"  onkeyup="FunctionShort()"  placeholder="Short/Long">\n');
-%fprintf(oid, '      <p id="demo">bla</p>\n\n');
+fprintf(oid, '        <input type="text" id="InputShort"  onkeyup="FunctionShort()"  placeholder="Short/Medium/Long" title="Type S or M or L">\n');
 fprintf(oid, '      </div>\n\n');
 
 % print the table with the properties :    
@@ -297,7 +300,7 @@ fprintf(oid, '        }\n\n');
 
 fprintf(oid, '        function FunctionShort() {\n');
 fprintf(oid, '          // Declare variables\n');
-fprintf(oid, '          var input, filter, table, tr, td, i, symbol;\n');
+fprintf(oid, '          var input, filter, table, tr, td, i;\n');
 fprintf(oid, '          input = document.getElementById("InputShort");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
@@ -307,12 +310,76 @@ fprintf(oid, '          // Loop through all table rows, and show some from the l
 fprintf(oid, '          if (filter == "S") {\n');
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
-%fprintf(oid, '              // symbol = td.innerHTML;\n');
-fprintf(oid, '              if (i==4 || i==5 || i==7) {\n');
-%fprintf(oid, '                document.getElementById("demo").innerHTML = td.innerHTML;');
-fprintf(oid, '                tr[i].style.display = "";\n');
-fprintf(oid, '              } else {\n');
-fprintf(oid, '                tr[i].style.display = "none";\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_m" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_starve" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ci" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Hi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Oi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ni" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Xi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Pi" ||\n');
+fprintf(oid, '                    td.innerHTML == "p_Ti" ||\n');
+fprintf(oid, '                    td.innerHTML == "r_B" ||\n');
+fprintf(oid, '                    td.innerHTML == "R_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_V"\n');
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n');
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
+fprintf(oid, '              }\n');
+fprintf(oid, '            }\n');
+fprintf(oid, '          } else if (filter == "M") {\n');
+fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
+fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "z" ||\n');
+fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_M" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_Hbp" ||\n');
+fprintf(oid, '                    td.innerHTML == "s_s" ||\n');
+fprintf(oid, '                    td.innerHTML == "E_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_0" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "Ww_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_b" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_p" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_99" ||\n');
+fprintf(oid, '                    td.innerHTML == "a_m" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_starve" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ci" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Hi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Oi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Ni" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Xi" ||\n');
+fprintf(oid, '                    td.innerHTML == "J_Pi" ||\n');
+fprintf(oid, '                    td.innerHTML == "p_Ti" ||\n');
+fprintf(oid, '                    td.innerHTML == "r_B" ||\n');
+fprintf(oid, '                    td.innerHTML == "R_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "N_i" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_V" ||\n');
+fprintf(oid, '                    td.innerHTML == "W_dWm" ||\n');
+fprintf(oid, '                    td.innerHTML == "dWm" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_Wb" ||\n');
+fprintf(oid, '                    td.innerHTML == "del_Wp" ||\n');
+fprintf(oid, '                    td.innerHTML == "t_E" ||\n');
+fprintf(oid, '                    td.innerHTML == "xi_WE"\n');
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n');
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
 fprintf(oid, '          } else {\n');
