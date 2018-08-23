@@ -5,7 +5,7 @@
 function cPar = parscomp_st(p)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
-  % modified 2015/08/03 by Starrlight, 2017/11/16 by Bas Kooijman
+  % modified 2015/08/03 by Starrlight, 2017/11/16, 2018/08/22 by Bas Kooijman
   
   %% Syntax
   % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
