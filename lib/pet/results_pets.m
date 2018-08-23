@@ -123,10 +123,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
                 figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
                 hold on;
-                set(gca,'Fontsize',12); 
+                set(gca,'Fontsize',10); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
-                set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+                set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
                 legend = cell(0,2);
                 for ii = 1: n_sets2plot
                   xData = st.(sets2plot{ii})(:,1); 
@@ -134,11 +134,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   xPred = data2plot.(pets{i}).(sets2plot{ii})(:,1); 
                   yPred = prdData.(pets{i}).(sets2plot{ii});
                   if n_sets2plot == 1
-                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 4)
-                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',20)
+                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
+                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
                   else
-                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
-                    legend = [legend; {{'.', 20, 4, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
+                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
+                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
                   end
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                   ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
@@ -151,34 +151,35 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               
               elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
                 figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-                set(gca,'Fontsize',12); 
+                set(gca,'Fontsize',15); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
-                set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+                set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
                 xData = st.(nm{j})(:,1); 
                 yData = st.(nm{j})(:,2);
                 xPred = data2plot.(pets{i}).(nm{j})(:,1); 
                 yPred = prdData.(pets{i}).(nm{j});
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);   
                 title(txtData.(pets{i}).bibkey.(nm{j}));
               end
+              
             else
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-              set(gca,'Fontsize',12); 
+              set(gca,'Fontsize',15); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
-              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
               xData = var(:,1); 
               yData = var(:,2);
               aux = getfield(data2plot.(pets{i}), fieldsInCells{1}{:});
               xPred = aux(:,1);
               yPred = getfield(prdData.(pets{i}), fieldsInCells{1}{:});
               if strcmp(getfield(univarX, fieldsInCells{1}{:}), 'dft')
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
               elseif strcmp(getfield(univarX, fieldsInCells{1}{:}), 'usr')
-                plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',20, 'linestyle', 'none')
+                plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',15, 'linestyle', 'none')
               end
               if length(fieldsInCells{1}) == 1
                 aux = txtData.(pets{i});
@@ -190,7 +191,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(aux.bibkey.(fieldsInCells{1}{end}));
             end
           end
-          if results_output == 2  % save graphs to .png
+          if results_output >= 2  % save graphs to .png
             if counter_filenm > 0
               graphnm = ['results_', pets{i}, '_'];
               if counter_fig < 10
