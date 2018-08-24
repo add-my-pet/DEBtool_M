@@ -70,20 +70,20 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   % birth
   L_b = L_m * l_b;                  % cm, structural length at birth at f
   Lw_b = L_b/ del_M;                % cm, physical length at birth at f
-  Wd_b = L_b^3 * d_V * (1 + f * w); % g, dry weight at birth at f (remove d_V for wet weight)
+  Wd_b = L_b^3 * d_V * (1 + f * ome); % g, dry weight at birth at f (remove d_V for wet weight)
   aT_b = t_b/ k_M/ TC_ab;           % d, age at birth at f and T
 
   % puberty 
   L_p = L_m * l_p;                  % cm, structural length at puberty at f
   Lw_p = L_p/ del_M;                % cm, physical length at puberty at f
-  Wd_p = L_p^3 * d_V * (1 + f * w); % g, dry weight at puberty (remove d_V for wet weight)
+  Wd_p = L_p^3 * d_V * (1 + f * ome); % g, dry weight at puberty (remove d_V for wet weight)
   aT_p = t_p/ k_M/ TC_ap;           % d, age at puberty at f and T
 
   % ultimate
   l_i = f - l_T;                    % -, scaled ultimate length at f
   L_i = L_m * l_i;                  % cm, ultimate structural length at f
   Lw_i = L_i/ del_M;                % cm, ultimate physical length at f
-  Wd_i = L_i^3 * d_V * (1 + f * w); % g, ultimate dry weight (remove d_V for wet weight)
+  Wd_i = L_i^3 * d_V * (1 + f * ome); % g, ultimate dry weight (remove d_V for wet weight)
  
   % reproduction
   pars_R = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp]; % compose parameter vector at T
@@ -117,7 +117,7 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   ELw = Lw_i - (Lw_i - Lw_b) * exp( - TC_tL * r_B * tL(:,1)); % cm, expected physical length at time
   %
   % length-weight
-  EWw = (LW(:,1) * del_M).^3 * (1 + f * w);                   % g, expected wet weight at time
+  EWw = (LW(:,1) * del_M).^3 * (1 + f * ome);                   % g, expected wet weight at time
 
   % pack to output
   % the names of the fields in the structure must be the same as the data names in the mydata file
