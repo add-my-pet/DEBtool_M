@@ -1,4 +1,4 @@
-%% results_my_pet
+%% custom_results_my_pet
 % presents results of univariate data graphically
 
 %%
