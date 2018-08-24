@@ -254,16 +254,18 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end 
 
   % save results to result_group.mat or result_my_pet.mat
-  if n_pets > 1
-    filenm   = 'results_group.mat';
-    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
-  else % n_pets == 1
-    filenm   = ['results_', pets{1}, '.mat'];
-    metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
-    metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
-    metaPar = rmfield(metaPar, pets{1});
-    metaData = metaData.(pets{1});
-    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+  if ~(results_output == 0)
+    if n_pets > 1
+      filenm   = 'results_group.mat';
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    else % n_pets == 1
+      filenm   = ['results_', pets{1}, '.mat'];
+      metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
+      metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
+      metaPar = rmfield(metaPar, pets{1});
+      metaData = metaData.(pets{1});
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    end
   end
   
   if results_output == 3 % save report of implied properties to report_my_pet.html and show in browser

@@ -113,7 +113,6 @@ function estim_options (key, val)
         fprintf('0 - get initial estimates from automatized computation \n');
         fprintf('1 - read initial estimates from .mat file \n');
         fprintf('2 - read initial estimates from pars_init file \n');
-        fprintf('3 - prints results using a customized results file \n');
       else
         pars_init_method = val;
       end
