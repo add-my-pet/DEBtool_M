@@ -4,7 +4,7 @@
 %%
 function printprd_st(data, txtData, prdData, RE)
 % created 2015/04/01 by Goncalo Marques & Bas Kooijman
-% modified 2015/07/29,  2015/08/01 by Goncalo Marques
+% modified 2015/07/29,  2015/08/01 by Goncalo Marques, 2018/08/26 Bas Kooijman
 
   %% Syntax
   % <../printprd_st.m *printprd_st*> (data, txtData, prdData, RE)
@@ -32,7 +32,7 @@ function printprd_st(data, txtData, prdData, RE)
     tempData = getfield(data, fieldsInCells{1}{:});
     k = size(tempData, 2); % number of data points per set
     if k == 1
-      if ~isempty(findstr(nm{j}, '.'))
+      if ~isempty(strfind(nm{j}, '.'))
         tempUnit = getfield(txtData.units, fieldsInCells{1}{:}); 
         tempLabel = getfield(txtData.label, fieldsInCells{1}{:});       
         str = [nm{j}, ', ', tempUnit, ', ',  tempLabel];

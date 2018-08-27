@@ -5,7 +5,7 @@
 function check_my_pet(speciesnms)
   % created 2015/05/05 by Goncalo Marques; 
   % modified Goncalo Marques 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08, 2015/07/22 
-  % modified Bas Kooijman 2015/07/31, modified Goncalo Marques 2015/07/31
+  % modified Bas Kooijman 2015/07/31, Goncalo Marques 2015/07/31, Bas Kooijman 2018/08/26
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
@@ -455,6 +455,16 @@ if isfield(metaData, 'grp')
       end
     end
   end
+end
+
+% checking doi's
+if sum(strcmp(fields(metaData), 'biblist'))
+  biblistFields = fields(metaData.biblist);
+  for i = 1:length(biblistFields) 
+    if ~isempty(strfind(metaData.biblist.(biblistFields{i}), 'doi.org'))
+     fprintf(['Wrong reference to doi in ', biblistFields{i}, '; please use: doi = {10...}\n'])
+    end
+  end  
 end
     
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

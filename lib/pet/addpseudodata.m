@@ -3,7 +3,7 @@
 
 %%
 function [data, units, label, weight] = addpseudodata(data, units, label, weight)
-% created 2015/01/16 by Goncalo Marques and Bas Kooijman
+% created 2015/01/16 by Goncalo Marques and Bas Kooijman, 2018/08/26 Bas Kooijman
 
 %% Syntax
 % [data, units, label, weight] = <../addpseudodata.m *addpseudodata*> (data, units, label, weight)
@@ -44,9 +44,9 @@ weight.psd = setweights(data.psd, []);
 weight.psd.v     = 0.1 * weight.psd.v;
 weight.psd.kap   = 0.1 * weight.psd.kap;
 weight.psd.kap_R = 0.1 * weight.psd.kap_R;
+weight.psd.kap_G = 0.1 * weight.psd.kap_G;
 weight.psd.p_M   = 0.1 * weight.psd.p_M;
 weight.psd.k_J   = 0.1 * weight.psd.k_J;
-weight.psd.kap_G = 0.1 * weight.psd.kap_G;
 
 weight.psd.kap_G = 200 * weight.psd.kap_G;   % more weight to kap_G
 
@@ -54,4 +54,7 @@ if strcmp(loss_function, 'su')
   weight.psd.v     = 10^(-4) * weight.psd.v;
   weight.psd.p_M   = 10^(-4) * weight.psd.p_M;
   weight.psd.k_J   = 10^(-4) * weight.psd.k_J;
+  weight.psd.kap_R = 10^(-4) * weight.psd.kap_R;
+  weight.psd.kap   = 10^(-4) * weight.psd.kap;
+  weight.psd.kap_G = 10^(-4) * weight.psd.kap_G;
 end

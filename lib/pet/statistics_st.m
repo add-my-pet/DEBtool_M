@@ -409,7 +409,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       s_M = l_j/ l_s;
     case 'abp'
       E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
-      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; temp.E_Hj = NaN; fresp.E_Hj = NaN; % is not a parameter of hep
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; temp.E_Hj = NaN; fresp.E_Hj = NaN;
       stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis'; temp.M_Hj = NaN; fresp.M_Hj = NaN;
       stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis'; temp.U_Hj = T_ref; fresp.U_Hj = NaN;
       stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis'; temp.V_Hj = T_ref; fresp.V_Hj = NaN;
@@ -517,7 +517,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in initial_scaled_reserve_foetus: invalid parameter value combination for foetus \n')
       end
       E_0 = p_Am * U_E0;
-      stat.E_0 = E_0;   units.E_0 = 'J';       label.E_0 = 'reserve invested in foetus'; temp.E_0 = NaN; fresp.E_0 = f;
+      stat.E_0 = E_0;   units.E_0 = 'J';       label.E_0 = 'reserve invested in foetus';  temp.E_0 = NaN; fresp.E_0 = f;
       M_E0 = J_E_Am * U_E0;
       stat.M_E0 = M_E0; units.M_E0 = 'mol';    label.M_E0 = 'reserve invested in foetus'; temp.M_E0 = NaN; fresp.M_E0 = f;
     otherwise % egg
@@ -528,11 +528,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       end
       stat.U_E0 = U_E0; units.U_E0 = 'cm^2.d'; label.U_E0 = 'scaled initial reserve'; temp.U_E0 = T_ref; fresp.U_E0 = f;
       E_0 = p_Am * U_E0;
-      stat.E_0 = E_0;   units.E_0 = 'J';       label.E_0 = 'initial reserve'; temp.E_0 = NaN; fresp.E_0 = f;
+      stat.E_0 = E_0;   units.E_0 = 'J';       label.E_0 = 'initial reserve';         temp.E_0 = NaN; fresp.E_0 = f;
       M_E0 = J_E_Am * U_E0; Wd_0 = M_E0 * w_E; Ww_0 = Wd_0/ d_E;
-      stat.M_E0 = M_E0; units.M_E0 = 'mol';    label.M_E0 = 'initial reserve'; temp.M_E0 = NaN; fresp.M_E0 = f;
-      stat.Wd_0 = Wd_0; units.Wd_0 = 'g';      label.Wd_0 = 'initial dry weight'; temp.Wd_0 = NaN; fresp.Wd_0 = f;
-      stat.Ww_0 = Ww_0; units.Ww_0 = 'g';      label.Ww_0 = 'initial wet weight'; temp.Ww_0 = NaN; fresp.Ww_0 = f;
+      stat.M_E0 = M_E0; units.M_E0 = 'mol';    label.M_E0 = 'initial reserve';        temp.M_E0 = NaN; fresp.M_E0 = f;
+      stat.Wd_0 = Wd_0; units.Wd_0 = 'g';      label.Wd_0 = 'initial dry weight';     temp.Wd_0 = NaN; fresp.Wd_0 = f;
+      stat.Ww_0 = Ww_0; units.Ww_0 = 'g';      label.Ww_0 = 'initial wet weight';     temp.Ww_0 = NaN; fresp.Ww_0 = f;
   end
   
   % hatch
