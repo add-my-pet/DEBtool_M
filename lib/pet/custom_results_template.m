@@ -1,5 +1,5 @@
 %% custom_results_my_pet
-% presents results of univariate data graphically
+% presents results of univariate data graphically in a customized way
 
 %%
 function custom_results_template(par, metaPar, data, txtData, auxData)
@@ -9,7 +9,7 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % modified 2018/09/06 by Nina Marn
   
   %% Syntax
-  % <../custom_results_my_pet_template.m *custom_results_my_pet_template*>(par, metaPar, txtData, data, auxData)
+  % <../custom_results_my_pet.m *custom_results_my_pet*>(par, metaPar, txtData, data, auxData)
   
   %% Description
   % present customized results of univariate data

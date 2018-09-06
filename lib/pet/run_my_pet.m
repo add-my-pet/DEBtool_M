@@ -1,4 +1,6 @@
 %% <../run_my_pet.m *run_my_pet*>
+% script that calls DEBtool_M functions, for parameter estimation and plotting predictions
+%%
 % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/01/22
 % modified 2015/07/08
 % modified 2018/09/06 by Nina Marn
@@ -31,6 +33,6 @@ estim_options('max_fun_evals',5e2);   % set options for parameter estimation
 
 estim_options('pars_init_method', 2);
 estim_options('results_output', 0);
-estim_options('method', 'no');
+estim_options('method', 'nm');
 
 estim_pars; % run estimation
