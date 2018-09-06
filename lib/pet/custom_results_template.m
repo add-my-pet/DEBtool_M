@@ -6,9 +6,10 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
 %par, metaPar, txtPar, data, auxData, metaData, txtData, weights
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
   % modified 2015/08/25
+  % modified 2018/09/06 by Nina Marn
   
   %% Syntax
-  % <../custom_results_template.m *custom_results_template*>(par, metaPar, txtData, data, auxData)
+  % <../custom_results_my_pet_template.m *custom_results_my_pet_template*>(par, metaPar, txtData, data, auxData)
   
   %% Description
   % present customized results of univariate data
@@ -22,7 +23,11 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % * auxData: structure with temperature data and potential food data
   
   %% Remarks
-  % this is a template to create a customized_results_my_pet file
+  % This is a template to create a custom_results_my_pet file. 
+  % Replace '_template' with 'my_pet' to use with my_pet templates - this function will be called automatically by <results_pets> function of DEBtool_M
+  % Modify to select and plot uni-variate data for your entry: copy to  folder of your species, 
+  %     replacing 'template' (or 'my_pet') with the name of your species,
+  %     and template data with your entry-specific data you wish to plot
   
   % get predictions
   data2plot = data;              % copy data to Prd_data
@@ -32,8 +37,7 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   data2plot.LW = L; % overwrite independent variable in LW
   [prdData, info] = predict_my_pet(par, data2plot, auxData);
   
-  statnm = ['statistics_', metaPar.model];
-  [stat, txt_stat]  = feval(statnm, par, C2K(20), par.f, metaPar.model);
+  [stat, txt_stat]  = feval('statistics_st', metaPar.model, par, C2K(20), par.f);
  
   if strcmp(metaPar.model, 'abj')
     fprintf(['\n acceleration factor s_M is ', num2str(stat.s_M), ' \n'])
