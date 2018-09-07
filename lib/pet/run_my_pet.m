@@ -1,5 +1,5 @@
 %% <../run_my_pet.m *run_my_pet*>
-% script that calls DEBtool_M functions, for parameter estimation and plotting predictions
+% script that calls DEBtool_M functions, for parameter estimation and ploting predictions
 %%
 % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/01/22
 % modified 2015/07/08

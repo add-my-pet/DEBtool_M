@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>results_pets</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-21"><meta name="DC.source" content="results_pets.m"><style type="text/css">
+      --><title>results_pets</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-07"><meta name="DC.source" content="results_pets.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>results_pets</h1><!--introduction--><p>Computes model predictions and handles them</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../results_pets.m"><b>results_pets</b></a>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)</p><h2 id="4">Description</h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>par: structure with parameters of species</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.).   auxData is unpacked in predict and the user needs to construct predictions accordingly.</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>weights: structure with weights for each data set</li></ul></div><h2 id="5">Remarks</h2><p>Depending on <a href="estim_options.html"><b>estim_options</b></a> settings: writes to results_my_pet.mat and/or results_my_pet.html, plots to screen writes to report_my_pet.html and shows in browser Plots use lava-colour scheme; from high to low: white, red, blue, black. In grp-plots, colours are assigned from high to low. Since the standard colour for females is red, and for males blue, compose set with females first, then males.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>results_pets</h1><!--introduction--><p>Computes model predictions and handles them</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../results_pets.m"><b>results_pets</b></a>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)</p><h2>Description<a name="4"></a></h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>par: structure with parameters of species</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.).   auxData is unpacked in predict and the user needs to construct predictions accordingly.</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>weights: structure with weights for each data set</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Depending on <a href="estim_options.html"><b>estim_options</b></a> settings: writes to results_my_pet.mat and/or results_my_pet.html, plots to screen writes to report_my_pet.html and shows in browser Plots use lava-colour scheme; from high to low: white, red, blue, black. In grp-plots, colours are assigned from high to low. Since the standard colour for females is red, and for males blue, compose set with females first, then males.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% results_pets
 % Computes model predictions and handles them
@@ -193,10 +193,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
                 figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
                 hold on;
-                set(gca,'Fontsize',12); 
+                set(gca,'Fontsize',10); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
-                set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+                set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
                 legend = cell(0,2);
                 for ii = 1: n_sets2plot
                   xData = st.(sets2plot{ii})(:,1); 
@@ -204,11 +204,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   xPred = data2plot.(pets{i}).(sets2plot{ii})(:,1); 
                   yPred = prdData.(pets{i}).(sets2plot{ii});
                   if n_sets2plot == 1
-                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 4)
-                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',20)
+                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
+                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
                   else
-                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',20, 'linewidth', 4)
-                    legend = [legend; {{'.', 20, 4, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
+                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
+                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
                   end
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                   ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
@@ -221,34 +221,35 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               
               elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
                 figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-                set(gca,'Fontsize',12); 
+                set(gca,'Fontsize',15); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
-                set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+                set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
                 xData = st.(nm{j})(:,1); 
                 yData = st.(nm{j})(:,2);
                 xPred = data2plot.(pets{i}).(nm{j})(:,1); 
                 yPred = prdData.(pets{i}).(nm{j});
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);   
                 title(txtData.(pets{i}).bibkey.(nm{j}));
               end
+              
             else
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-              set(gca,'Fontsize',12); 
+              set(gca,'Fontsize',15); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
-              set(gcf,'PaperPosition',[0 0 300 180]);%left bottom width height
+              set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
               xData = var(:,1); 
               yData = var(:,2);
               aux = getfield(data2plot.(pets{i}), fieldsInCells{1}{:});
               xPred = aux(:,1);
               yPred = getfield(prdData.(pets{i}), fieldsInCells{1}{:});
               if strcmp(getfield(univarX, fieldsInCells{1}{:}), 'dft')
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',20, 'linewidth', 4)
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
               elseif strcmp(getfield(univarX, fieldsInCells{1}{:}), 'usr')
-                plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',20, 'linestyle', 'none')
+                plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',15, 'linestyle', 'none')
               end
               if length(fieldsInCells{1}) == 1
                 aux = txtData.(pets{i});
@@ -260,7 +261,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(aux.bibkey.(fieldsInCells{1}{end}));
             end
           end
-          if results_output == 2  % save graphs to .png
+          if results_output >= 2  % save graphs to .png
             if counter_filenm > 0
               graphnm = ['results_', pets{i}, '_'];
               if counter_fig < 10
@@ -323,16 +324,18 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end 
 
   % save results to result_group.mat or result_my_pet.mat
-  if n_pets > 1
-    filenm   = 'results_group.mat';
-    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
-  else % n_pets == 1
-    filenm   = ['results_', pets{1}, '.mat'];
-    metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
-    metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
-    metaPar = rmfield(metaPar, pets{1});
-    metaData = metaData.(pets{1});
-    save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+  if ~(results_output == 0)
+    if n_pets > 1
+      filenm   = 'results_group.mat';
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    else % n_pets == 1
+      filenm   = ['results_', pets{1}, '.mat'];
+      metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
+      metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
+      metaPar = rmfield(metaPar, pets{1});
+      metaData = metaData.(pets{1});
+      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
+    end
   end
   
   if results_output == 3 % save report of implied properties to report_my_pet.html and show in browser

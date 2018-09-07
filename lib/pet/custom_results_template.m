@@ -9,12 +9,12 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % modified 2018/09/06 by Nina Marn
   
   %% Syntax
-  % <../custom_results_my_pet.m *custom_results_my_pet*>(par, metaPar, txtData, data, auxData)
+  % <../custom_results_template.m *custom_results_my_pet*>(par, metaPar, txtData, data, auxData)
   
   %% Description
   % present customized results of univariate data
   %
-  % * inputs 
+  % Inputs:
   %
   % * par: structure with parameters (see below)
   % * metaPar: structure with field T_ref for reference temperature
@@ -23,11 +23,13 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % * auxData: structure with temperature data and potential food data
   
   %% Remarks
-  % This is a template to create a custom_results_my_pet file. 
-  % Replace '_template' with 'my_pet' to use with my_pet templates - this function will be called automatically by <results_pets> function of DEBtool_M
-  % Modify to select and plot uni-variate data for your entry: copy to  folder of your species, 
-  %     replacing 'template' (or 'my_pet') with the name of your species,
-  %     and template data with your entry-specific data you wish to plot
+  % * A template named 'custom_results_template' is available in 'pet' folder of DEBtool_M:  
+  % Replace '_template' in the function name with 'my_pet' to use with my_pet templates 
+  % * Modify to select and plot uni-variate data for your entry: copy to  folder of your species, 
+  %     replacing 'template' (or 'my_pet') with the Latin name of your species,
+  %     and template data with the entry-specific data you wish to plot
+  % * Once named appropriately, this function will be called automatically by 
+  %     <results_pets.html *results_pets*> function of DEBtool_M when running the <run_my_pet.html *run*> file
   
   % get predictions
   data2plot = data;              % copy data to Prd_data
