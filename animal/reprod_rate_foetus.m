@@ -4,6 +4,7 @@
 %%
 function [R, UE0, Lb, Lp] = reprod_rate_foetus(L, f, p)
   % created 2010/09/09 by Bas Kooijman, modified 2012/08/29
+  % modified 2018/09/10 (fixed typos in description) Nina Marn
   
   %% Syntax
   % [R, UE0, Lb, Lp] = <../reprod_rate_foetus.m *reprod_rate_foetus*> (L, f, p)
@@ -32,10 +33,11 @@ function [R, UE0, Lb, Lp] = reprod_rate_foetus(L, f, p)
   % * info: indicator with 1 for success, 0 otherwise
   
   %% Remarks
-  %  See also <reprod_rate.html *reprod_rate*> and <reprod_rate_j.html* reprod_rate_j> and 
-  %   <repod_rate_s.html *repod_rate_s*>.
-  %  For cumulative reproduction, see <cum_reprod_rate.html *cum_reprod_rate*>
-  
+  % See also <reprod_rate.html *reprod_rate*>, 
+  %   <reprod_rate_j.html *reprod_rate_j*>, and <reprod_rate_s.html *reprod_rate_s*>.
+  % For cumulative reproduction, see <cum_reprod.html *cum_reprod*>,
+  %  <cum_reprod_j.html *cum_reprod_j*>, <cum_reprod_s.html *cum_reprod_s*>
+   
   %% Example of use
   % p_R = [.8 .95 .42 1.7 1.7 0 3.24 .012 .366]; 
   % reprod_rate_foetus([.5 1 10 30]', 1, p_R)

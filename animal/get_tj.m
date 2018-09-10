@@ -2,12 +2,13 @@
 % Gets scaled age at metamorphosis
 
 %%
-function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
+function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % created at 2011/04/25 by Bas Kooijman, 
   % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <../get_tj.m *get_tj*> (p, f, lb0)
+  % [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = <../get_tj.m *get_tj*> (p, f, lb0)
   
   %% Description
   % Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages;
@@ -29,15 +30,15 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %  
   % Output
   %
-  % * tj: scaled age at metamorphosis \tau_j = a_j k_M
+  % * tau_j: scaled age at metamorphosis \tau_j = a_j k_M
   %
   %      if length(lb0)==2, tj is the scaled time till metamorphosis
   %
-  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tau_p: scaled age at puberty \tau_p = a_p k_M
   %
   %      if length(lb0)==2, tp is the scaled time till puberty
   %
-  % * tb: scaled age at birth \tau_b = a_b k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at end of V1-stage
   % * lp: scaled length at puberty
   % * lb: scaled length at birth
@@ -47,7 +48,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  %  See <get_tj_foetus.html get_tj_foetus*> in case of foetal development
+  % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development
   
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -78,12 +79,12 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % no acceleration
   if vHb == vHj 
     if vHp == 0 % no puberty specified
-      [tb, lb, info] = get_tb(p(1:3), f, lb0);
-      tj = tb; tp = []; lp = []; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
+      [tau_b, lb, info] = get_tb(p(1:3), f, lb0);
+      tau_j = tau_b; tau_p = []; lp = []; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
       return
     else % puberty specified
-      [tp, tb, lp, lb, info] = get_tp(p([1 2 3 4 6]), f, lb0);
-      tj = tb; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
+      [tau_p, tau_b, lp, lb, info] = get_tp(p([1 2 3 4 6]), f, lb0);
+      tau_j = tau_b; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
       return
     end
   end
@@ -91,68 +92,68 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % maintenance ratio k = 1: maturity thresholds coincide with length thresholds
   if k == 1 && f * (f - lT)^2 > vHp * k % constant maturity density, reprod possible
     lb = vHb^(1/3);                  % scaled length at birth
-    tb = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
+    tau_b = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
     lj = vHj^(1/3);                  % scaled length at metamorphosis
     sM = lj/ lb;                     % acceleration factor
     rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-    tj = tb + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
+    tau_j = tau_b + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
     lp = vHp^(1/3);                  % scaled length at puberty
     li = f * sM - lT;                % scaled ultimate length
     rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
-    tp = tj + (log ((li - lj)/ (li - lp)))/ rB; % scaled age at puberty
+    tau_p = tau_j + (log ((li - lj)/ (li - lp)))/ rB; % scaled age at puberty
     info = 1;
     return
   elseif k == 1 && f * (f - lT)^2 > vHj * k % constant maturity density, metam possible
     lb = vHb^(1/3);                  % scaled length at birth
-    tb = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
+    tau_b = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
     lj = vHj^(1/3);                  % scaled length at metamorphosis
     sM = lj/ lb;                     % acceleration factor
     rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-    tj = tb + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
+    tau_j = tau_b + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
     lp = vHp^(1/3);                  % scaled length at puberty
     li = f * sM - lT;                % scaled ultimate length
     rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
-    tp = 1e20;                       % scaled age at puberty
+    tau_p = 1e20;                       % scaled age at puberty
     info = 1;
     return
   end
   
   if isempty(lb0)
-    [tb, lb, info_tb] = get_tb (p([1 2 4]), f, lb0); 
+    [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0); 
   else
-    [tb, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
+    [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
   end
   [lj, lp, lb, info_tj] = get_lj(p, f, lb);
   sM = lj/ lb;                       % acceleration factor
   rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-  tj = tb + log(sM) * 3/ rj;         % scaled age at metamorphosis
+  tau_j = tau_b + log(sM) * 3/ rj;         % scaled age at metamorphosis
   rB = 1/ 3/ (1 + f/ g);             % scaled von Bert growth rate between j and i
   li = f * sM - lT;                  % scaled ultimate length
 
   if isempty(lp) % length(p) < 6
-    tp = [];
+    tau_p = [];
   elseif  li <=  lp                  % reproduction is not possible
-    tp = 1e20;                       % tau_p is never reached
+    tau_p = 1e20;                       % tau_p is never reached
     lp = 1;                          % lp is nerver reached
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 is absent, empty or a scalar
-      tp = tj + log((li - lj)/ (li - lp))/ rB;
+      tau_p = tau_j + log((li - lj)/ (li - lp))/ rB;
     else % lb0 = l and t for a juvenile
-      tb = NaN;
+      tau_b = NaN;
       l = lb0(1);
-      tp = log((li - l)/ (li - lp))/ rB;
+      tau_p = log((li - l)/ (li - lp))/ rB;
     end
   end
   
-  if isempty(tp)
+  if isempty(tau_p)
     info = info_tb;
     return
   end
   
   info = min(info_tb, info_tj);
-  if ~isreal(tp) || ~isreal(tj) % tj and tp must be real and positive
+  if ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
     info = 0;
-  elseif tp < 0 || tj < 0
+  elseif tau_p < 0 || tau_j < 0
     info = 0;
   end
   

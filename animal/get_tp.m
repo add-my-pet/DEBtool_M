@@ -2,12 +2,13 @@
 % Gets scaled age at puberty
 
 %%
-function [tp, tb, lp, lb, info] = get_tp(p, f, lb0)
+function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   % created at 2008/06/04 by Bas Kooijman, 
   % modified 2014/03/04 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tp, tb, lp, lb, info] = <../get_tp.m *get_tp*>(p, f, lb0)
+  % [tau_p, tau_b, lp, lb, info] = <../get_tp.m *get_tp*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age at puberty.
@@ -25,17 +26,17 @@ function [tp, tb, lp, lb, info] = get_tp(p, f, lb0)
   %
   % Output
   %
-  % * tp: scaled with age at puberty \tau_p = a_p k_M
+  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
   %
   %      if length(lb0)==2, tp is the scaled time till puberty
   %
-  % * tb: scaled with age at birth \tau_b = a_b k_M
+  % * tau_b: scaled with age at birth \tau_b = a_b k_M
   % * lp: scaler length at puberty
   % * lb: scaler length at birth
   % * info: indicator equals 1 if successful
   
   %% Remarks
-  %  Function get_tp_foetus does the same for foetal development; the result depends on embryonal development. 
+  % Function <get_tp_foetus.html *get_tp_foetus*> does the same for foetal development; the result depends on embryonal development. 
 
   %% Example of use
   % get_tp([.5, .1, .1, .01, .2])
@@ -58,33 +59,33 @@ function [tp, tb, lp, lb, info] = get_tp(p, f, lb0)
 
   if k == 1 && f * (f - lT)^2 > vHp * k
     lb = vHb^(1/3); 
-    tb = get_tb(p([1 2 4]), f, lb);
+    tau_b = get_tb(p([1 2 4]), f, lb);
     lp = vHp^(1/3);
     li = f - lT;
     rB = 1 / 3/ (1 + f/g);
-    tp = tb + log((li - lb)/ (li - lp))/ rB;
+    tau_p = tau_b + log((li - lb)/ (li - lp))/ rB;
     info = 1;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
     pars_lb = p([1 2 4]);
-    [tb lb info] = get_tb (pars_lb, f, lb0); 
-    tp = 1e20; % tau_p is never reached
+    [tau_b, lb, info] = get_tb (pars_lb, f, lb0); 
+    tau_p = 1e20; % tau_p is never reached
     lp = 1;    % lp is nerver reached
   else % reproduction is possible
     li = f - lT;
     irB = 3 * (1 + f/ g); % k_M/ r_B
     [lp, lb, info] = get_lp(p, f, lb0);
     if length(lb0) ~= 2 % lb0 = l_b 
-      tb = get_tb([g, k, vHb], f, lb);
-      tp = tb + irB * log((li - lb)/ (li - lp));
+      tau_b = get_tb([g, k, vHb], f, lb);
+      tau_p = tau_b + irB * log((li - lb)/ (li - lp));
     else % lb0 = l and t for a juvenile
-      tb = NaN;
+      tau_b = NaN;
       l = lb0(1);
-      tp = irB * log((li - l)/ (li - lp));
+      tau_p = irB * log((li - l)/ (li - lp));
     end
   end
   
-  if ~isreal(tp) % tp must be real and positive
+  if ~isreal(tau_p) % tp must be real and positive
       info = 0;
-  elseif tp < 0
+  elseif tau_p < 0
       info = 0;
   end

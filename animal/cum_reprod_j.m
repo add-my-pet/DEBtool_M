@@ -67,8 +67,8 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
   
   if length(Lf) <= 1
     l0 = Lf/ Lm; % scaled length at birth
-    [tj tp tb lj lp lb li rhoj rhoB info_tj] = get_tj(p_tj, f, l0);
-    ap = tp/ kM; aj = tj/ kM; ab = tb/ kM; % d, age at puberty, metamorphosis, birth
+    [tau_j, tau_p, tau_b, lj, lp, lb, li, rhoj, rhoB, info_tj] = get_tj(p_tj, f, l0);
+    ap = tau_p/ kM; aj = tau_j/ kM; ab = tau_b/ kM; % d, age at puberty, metamorphosis, birth
     t_b = 0;       % d, time since birth at birth
     t_j = aj - ab; % d, time since birth at metamorphosis
     t_p = ap - ab; % d, time since birth at puberty
@@ -83,7 +83,7 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
   else % if length Lb0 = 2
     L0 = Lf(1); % cm, structural length at time 0
     f0 = Lf(2); % -, scaled func response before time 0
-    [tj tp tb lj lp lb li rhoj0 rhoB0 info_tj] = get_tj(p_tj, f0);
+    [tau_j, tau_p, tau_b, lj, lp, lb, li, rhoj0, rhoB0, info_tj] = get_tj(p_tj, f0);
     if info_tj ~= 1% return at failure for tp
       fprintf('maturity_j could not be obtained in cum_reprod_j \n')
       N = t(:,1) * 0; UE0 = [];
@@ -109,13 +109,13 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
     end
     t_p = tL(end,1); Lp = tL(end,2); % cm, struc length at puberty after time 0
     
-    [tj tp tb lj lp lb li rhoj rhoB info_tj] = get_tj(p_tj, f);
-    t_j = t_p - (tp - tj)/ kM;
-    t_b = t_p - (tp - tb)/ kM;
+    [tau_j, tau_p, tau_b, lj, lp, lb, li, rhoj, rhoB, info_tj] = get_tj(p_tj, f);
+    t_j = t_p - (tau_p - tau_j)/ kM;
+    t_b = t_p - (tau_p - tau_b)/ kM;
   end
  
   [t_sort, it, it_sort] = unique(t,'sorted'); % returns the unique values in t in sorted order
-  [tt LU] = ode45(@dcum_reprod_j, [-1e-10; t_sort], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
+  [tt, LU] = ode45(@dcum_reprod_j, [-1e-10; t_sort], [L0; 0], [], f, g, v, kap, kJ, UHp, Lb, Lj, Lm, LT, t_p);
   if length(t_sort) == 1
     LU = LU(end, :);
   else

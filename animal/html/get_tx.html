@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tx</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-31"><meta name="DC.source" content="get_tx.m"><style type="text/css">
+      --><title>get_tx</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-10"><meta name="DC.source" content="get_tx.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,19 +55,30 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>get_tx</h1><!--introduction--><p>gets scaled age and length at puberty, weaning, birth for foetal development.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tp tx tb lp lx lb info] = <a href="../get_tx.m"><b>get_tx</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled age and length at puberty, weaning, birth for foetal development. An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birt. Assumes von Bert growth since age 0</p><p>Input</p><div><ul><li>p: 6-vector with parameters (see below)</li><li>f: scalar with scaled functional response</li></ul></div><p>Output</p><div><ul><li>tp, tx, tb: scalars with scaled age at puberty, weaning, birth</li><li>lp, lx, lb: scalers with scaled length at puberty, weaning, birth</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>uses dget_lx</p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tx</h1><!--introduction--><p>gets scaled age and length at puberty, weaning, birth for foetal development.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tau_p, tau_x, tau_b, lp, lx, lb, info] = <a href="../get_tx.m"><b>get_tx</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled age and length at puberty, weaning, birth for foetal development. An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birt. Assumes von Bert growth since age 0</p><p>Input</p><div><ul><li>p: 6-vector with parameters (see below)</li><li>f: scalar with scaled functional response</li></ul></div><p>Output</p><div><ul><li>tau_p, tau_x, tau_b: scalars with scaled age at puberty, weaning, birth</li><li>lp, lx, lb: scalers with scaled length at puberty, weaning, birth</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>uses dget_lx</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tx
 % gets scaled age and length at puberty, weaning, birth for foetal development.
 
 %%
-function [tp tx tb lp lx lb info] = get_tx(p, f)
+function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   % created 2012/08/18 by Bas Kooijman, modified 2014/07/22
   % last modified by Dina Lika 2016/03/21
+  % modified 2018/09/10 (t -> tau) Nina Marn
+  
   %% Syntax
-  % [tp tx tb lp lx lb info] = <../get_tx.m *get_tx*> (p, f)
+  % [tau_p, tau_x, tau_b, lp, lx, lb, info] = <../get_tx.m *get_tx*> (p, f)
   
   %% Description
   % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
@@ -82,7 +94,7 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   %
   % Output
   %
-  % * tp, tx, tb: scalars with scaled age at puberty, weaning, birth
+  % * tau_p, tau_x, tau_b: scalars with scaled age at puberty, weaning, birth
   % * lp, lx, lb: scalers with scaled length at puberty, weaning, birth
   % * info: indicator equals 1 if successful, 0 otherwise
   %
@@ -104,13 +116,13 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
   info =1;
   l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
-  tb = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
+  tau_b = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
   %tb = 3 * lb/ g;
-  tx = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
-  tp = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
-  if isreal(tb) == 0 || isreal(tx) == 0 || isreal(tp) == 0 % tb, tx and tp must be real and positive
+  tau_x = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
+  tau_p = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
+  if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 % tb, tx and tp must be real and positive
     info = 0;
-  elseif tb < 0 || tx < 0 || tp < 0
+  elseif tau_b < 0 || tau_x < 0 || tau_p < 0
     info = 0;
   end
 

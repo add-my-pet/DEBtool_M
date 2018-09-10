@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>reprod_rate</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-05"><meta name="DC.source" content="reprod_rate.m"><style type="text/css">
+      --><title>reprod_rate</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-10"><meta name="DC.source" content="reprod_rate.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,10 +55,19 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>reprod_rate</h1><!--introduction--><p>gets reproduction rate as function of time</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[R, UE0, Lb, Lp, info] = <a href="reprod_rate.m"><b>reprod_rate</b></a>(L, f, p, Lf)</p><h2>Description<a name="4"></a></h2><p>Calculates the reproduction rate in number of eggs per time for an individual of length L and scaled reserve density f</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with functional response</li><li>p: 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp</li><li>Lf: optional scalar with length at birth (initial value only)</li></ul></div><pre>    or optional 2-vector with length, L, and scaled functional response f0
-    for a juvenile that is now exposed to f, but previously at another f</pre><p>Output</p><div><ul><li>R: n-vector with reproduction rates</li><li>UE0: scalar with scaled initial reserve</li><li>Lb: scalar with (volumetric) length at birth</li><li>Lp: scalar with (volumetric) length at puberty</li><li>info: indicator with 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="reprod_rate_foetus.html"><b>reprod_rate_foetus</b></a>,   <a href="reprod_rate_j.html"><b>reprod_rate_j</b></a>, <a href="reprod_rate_s.html"><b>reprod_rate_s</b></a>. For cumulative reproduction, see <a href="cum_reprod_rate.html"><b>cum_reprod_rate</b></a></p><h2>Example of use<a name="6"></a></h2><p>See <a href="mydata_reprod_rate.m"><b>mydata_reprod_rate</b></a></p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>reprod_rate</h1><!--introduction--><p>gets reproduction rate as function of time</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[R, UE0, Lb, Lp, info] = <a href="reprod_rate.m"><b>reprod_rate</b></a>(L, f, p, Lf)</p><h2>Description<a name="4"></a></h2><p>Calculates the reproduction rate in number of eggs per time for an individual of length L and scaled reserve density f</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with functional response</li><li>p: 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp</li><li>Lf: optional scalar with length at birth (initial value only)</li></ul></div><pre>   or optional 2-vector with length, L, and scaled functional response f0
+   for a juvenile that is now exposed to f, but previously at another f</pre><p>Output</p><div><ul><li>R: n-vector with reproduction rates</li><li>UE0: scalar with scaled initial reserve</li><li>Lb: scalar with (volumetric) length at birth</li><li>Lp: scalar with (volumetric) length at puberty</li><li>info: indicator with 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="reprod_rate_foetus.html"><b>reprod_rate_foetus</b></a>,   <a href="reprod_rate_j.html"><b>reprod_rate_j</b></a>, <a href="reprod_rate_s.html"><b>reprod_rate_s</b></a>. For cumulative reproduction, see <a href="cum_reprod.html"><b>cum_reprod</b></a>,  <a href="cum_reprod_j.html"><b>cum_reprod_j</b></a>, <a href="cum_reprod_s.html"><b>cum_reprod_s</b></a></p><h2>Example of use<a name="6"></a></h2><p>See <a href="mydata_reprod_rate.m"><b>mydata_reprod_rate</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% reprod_rate
 % gets reproduction rate as function of time
@@ -65,6 +75,7 @@ span.syscmd { color:#B28C00 }
 %%
 function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   % created 2003/03/18 by Bas Kooijman, modified 2014/02/26
+  % modified 2018/09/10 (fixed typos in description) Nina Marn
   
   %% Syntax
   % [R, UE0, Lb, Lp, info] = <reprod_rate.m *reprod_rate*>(L, f, p, Lf)
@@ -80,8 +91,8 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   % * p: 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp
   % * Lf: optional scalar with length at birth (initial value only)
   %
-  %      or optional 2-vector with length, L, and scaled functional response f0
-  %      for a juvenile that is now exposed to f, but previously at another f
+  %     or optional 2-vector with length, L, and scaled functional response f0
+  %     for a juvenile that is now exposed to f, but previously at another f
   %  
   % Output
   %
@@ -94,7 +105,8 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   %% Remarks
   % See also <reprod_rate_foetus.html *reprod_rate_foetus*>, 
   %   <reprod_rate_j.html *reprod_rate_j*>, <reprod_rate_s.html *reprod_rate_s*>.
-  % For cumulative reproduction, see <cum_reprod_rate.html *cum_reprod_rate*>
+  % For cumulative reproduction, see <cum_reprod.html *cum_reprod*>,
+   %  <cum_reprod_j.html *cum_reprod_j*>, <cum_reprod_s.html *cum_reprod_s*>
   
   %% Example of use
   % See <mydata_reprod_rate.m *mydata_reprod_rate*>
@@ -154,7 +166,7 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
     Lp = tL(end,2);  % cm, struc length at puberty after time 0
   end
 
-  [UE0 Lb info] = initial_scaled_reserve(f, p_UE0, Lb);
+  [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
   SC = f * L.^3 .* (g ./ L + (1 + LT ./ L)/ Lm)/ (f + g);
   SR = (1 - kap) * SC - kJ * UHp;
   R = (L >= Lp) * kapR .* SR/ UE0; % set reprod rate of juveniles to zero

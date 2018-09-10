@@ -71,8 +71,8 @@ function [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = cum_reprod_s(t,
   
   if length(Lf) <= 1 % Lf is initial estimate for lb
     l0 = Lf/ Lm; % scaled length at birth
-    [ts tj tp tb ls lj lp lb li rhoj rhoB info_ts] = get_ts(p_ts, f, l0);
-    ap = tp/ kM; aj = tj/ kM; as = ts/ kM; ab = tb/ kM; % d, age at puberty, metamorphosis, birth
+    [tau_s, tau_j, tau_p, tau_b, ls, lj, lp, lb, li, rhoj, rhoB, info_ts] = get_ts(p_ts, f, l0);
+    ap = tau_p/ kM; aj = tau_j/ kM; as = tau_s/ kM; ab = tau_b/ kM; % d, age at puberty, metamorphosis, birth
     t_b = 0;       % d, time since birth at birth
     t_s = as - ab; % d, time since birth at start acceleration
     t_j = aj - ab; % d, time since birth at end acceleration
@@ -88,7 +88,7 @@ function [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = cum_reprod_s(t,
   else % if length Lf = 2, Lf is L at time 0 and f before time 0
     L0 = Lf(1); % cm, structural length at time 0
     f0 = Lf(2); % -, scaled func response before time 0
-    [ts tj tp tb ls lj lp lb li rhoj rhoB info_ts] = get_ts(p_ts, f0);
+    [tau_s, tau_j, tau_p, tau_b, ls, lj, lp, lb, li, rhoj, rhoB, info_ts] = get_ts(p_ts, f0);
     if info_ts ~= 1% return at failure for tp
       fprintf('maturity_s could not be obtained in cum_reprod_s \n')
       N = t(:,1) * 0; UE0 = [];
@@ -109,21 +109,21 @@ function [N, L, UE0, Lb, Ls, Lj, Lp, t_b, t_s, t_j, t_p, info] = cum_reprod_s(t,
     if UHj < UH0 % UHj < UH0 < UHp
       [UH, tL] = ode45(@dget_tL_sjp, [UH0; UHp], [0; L0], [], f, g, v, kap, kJ, Ls, Lj, Lm, LT); 
       t_p = tL(end,1); Lp = tL(end,2); % cm, struc length at puberty after time 0
-      t_j = t_p - (tp - tj)/ kM; 
-      t_s = t_p - (tp - ts)/ kM; 
-      t_b = t_p - (tp - tb)/ kM; 
+      t_j = t_p - (tau_p - tau_j)/ kM; 
+      t_s = t_p - (tau_p - tau_s)/ kM; 
+      t_b = t_p - (tau_p - tau_b)/ kM; 
     elseif UHs < UH0 % UHs < UH0 < UHj
       [UH, tL] = ode45(@dget_tL_sjp, [UH0; UHj; UHp], [0; L0], [], f, g, v, kap, kJ, Ls, Lj, Lm, LT); 
       t_p = tL(end,1); Lp = tL(end,2); 
       t_j = tL(2,1); Lj = tL(2,2);
-      t_s = t_p - (tp - ts)/ kM; 
-      t_b = t_p - (tp - tb)/ kM; 
+      t_s = t_p - (tau_p - tau_s)/ kM; 
+      t_b = t_p - (tau_p - tau_b)/ kM; 
      else % UHb < UH0 < UHs
       [UH, tL] = ode45(@dget_tL_sjp, [UH0; UHs; UHj; UHp], [0; L0], [], f, g, v, kap, kJ, Ls, Lj, Lm, LT); 
       t_p = tL(end,1); Lp = tL(end,2); 
       t_j = tL(3,1); Lj = tL(3,2);
       t_s = tL(2,1); Ls = tL(2,2); 
-      t_b = t_p - (tp - tb)/ kM; 
+      t_b = t_p - (tau_p - tau_b)/ kM; 
     end
   end
  
