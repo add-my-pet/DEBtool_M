@@ -7,7 +7,7 @@ function pACSJGRD = scaled_power_s(L, f, p, lb, ls, lj, lp)
   % created 2016/04/16 by Bas Kooijman
   
   %% Syntax
-  % pACSJGRD = <..scaled_power_s.m *scaled_power_s*> (L, f, p, lb, ls, lj, lp)
+  % pACSJGRD = <../scaled_power_s.m *scaled_power_s*> (L, f, p, lb, ls, lj, lp)
   
   %% Description
   % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance,
