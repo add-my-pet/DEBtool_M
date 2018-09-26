@@ -2,11 +2,12 @@
 % Obtains scaled age at birth for foetal development.
 
 %%
-function [tb lb] = get_tb_foetus(par)
+function [tau_b, lb] = get_tb_foetus(par)
   %  created at 2007/07/28 by Bas Kooijman; modified 2013/08/21
+  % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tb lb] = <../get_tb_foetus.m *get_tb_foetus*> (par)
+  % [tau_b, lb] = <../get_tb_foetus.m *get_tb_foetus*> (par)
   
   %% Description
   % Obtains scaled age at birth, given the scaled reserve density at birth in case of foetal development. 
@@ -20,11 +21,11 @@ function [tb lb] = get_tb_foetus(par)
   %  
   % Output
   %
-  % * tb: scaled age at birth \tau_b = a_b k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
   % * lb: scalar with scaled length at birth 
   %
   %% Remarks
-  %  Scaled reserve density at birth equals 1
+  % Scaled reserve density at birth equals 1. See also <get_tb.html *get_tb*>
   
   %% Example of use
   % get_tb_foetus([.1;.5;.03])
@@ -38,13 +39,13 @@ function [tb lb] = get_tb_foetus(par)
 
   if k == 1
     lb = vHb^(1/ 3); % exact solution for k = 1
-    tb = 3 * lb/ g;
+    tau_b = 3 * lb/ g;
     return;
   end
 
   options = odeset('Events',@birth);
-  [t, vH, tb] = ode23(@fnget_tb_foetus, [0; 1e8], 0, options, g, k, vHb);
-  lb = g * tb/ 3;
+  [t, vH, tau_b] = ode23(@fnget_tb_foetus, [0; 1e8], 0, options, g, k, vHb);
+  lb = g * tau_b/ 3;
   
 end
 

@@ -4,6 +4,7 @@
 %%
 function [R, UE0, Lb, Lj, Lp, info] = reprod_rate_j(L, f, p, Lf)
   % created 2009/03/24 by Bas Kooijman, modified 2014/02/26
+  % modified 2018/09/10 (fixed typos in description) Nina Marn
   
   %% Syntax
   % [R, UE0, Lb, Lj, Lp, info] = <../reprod_rate_j.m *reprod_rate_j*> (L, f, p, Lf)
@@ -76,7 +77,7 @@ function [R, UE0, Lb, Lj, Lp, info] = reprod_rate_j(L, f, p, Lf)
 
   if length(Lf) <= 1
     lb0 = Lf/ Lm; % scaled length at birth
-    [lj lp lb info_lj] = get_lj(p_lj, f, lb0);
+    [lj, lp, lb, info_lj] = get_lj(p_lj, f, lb0);
     Lb = lb * Lm; Lj = lj * Lm; Lp = lp * Lm; % volumetric length at birth, puberty
     if info_lj ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate_j \n')
@@ -92,13 +93,13 @@ function [R, UE0, Lb, Lj, Lp, info] = reprod_rate_j(L, f, p, Lf)
       R = L * 0; UE0 = [];
       return;
     end
-    [lj lp lb info_lj] = get_lj(p_lj, f);
+    [lj, lp, lb, info_lj] = get_lj(p_lj, f);
     Lb = lb * Lm; Lj = lj * Lm;
     [UH, tL] = ode45(@dget_tL_jp, [UH0; UHp], [0; L0], [], f, g, v, kap, kJ, Lb, Lj, Lm, LT); 
     Lp = tL(end,2);  % cm, struc length at puberty after time 0
   end
  
-  [UE0 Lb info] = initial_scaled_reserve(f, p_UE0, Lb);
+  [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
 
   SC = L .^ 2 .* ((g + LT/ Lm) * Lj/ Lb + L/ Lm)/ (1 + g/ f);
   SR = (1 - kap) * SC - kJ * UHp;

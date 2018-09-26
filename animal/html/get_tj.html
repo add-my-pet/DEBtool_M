@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tj</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-15"><meta name="DC.source" content="get_tj.m"><style type="text/css">
+      --><title>get_tj</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-10"><meta name="DC.source" content="get_tj.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,20 +55,30 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>get_tj</h1><!--introduction--><p>Gets scaled age at metamorphosis</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <a href="../get_tj.m"><b>get_tj</b></a> (p, f, lb0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages; Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and metamorphosis, see also get_ts. Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p</li></ul></div><pre>   Last value is optional. If ommitted: outputs tp and lp are empty</pre><div><ul><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth      or optional 2-vector with scaled length, l, and scaled maturity, vH      for a juvenile that is now exposed to f, but previously at another f</li></ul></div><p>Output</p><div><ul><li>tj: scaled age at metamorphosis \tau_j = a_j k_M</li></ul></div><pre>    if length(lb0)==2, tj is the scaled time till metamorphosis</pre><div><ul><li>tp: scaled age at puberty \tau_p = a_p k_M</li></ul></div><pre>    if length(lb0)==2, tp is the scaled time till puberty</pre><div><ul><li>tb: scaled age at birth \tau_b = a_b k_M</li><li>lj: scaled length at end of V1-stage</li><li>lp: scaled length at puberty</li><li>lb: scaled length at birth</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between s and j</li><li>rB: scaled von Bertalanffy growth rate between b and s and between j and i</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>See &lt;get_tj_foetus.html get_tj_foetus*&gt; in case of foetal development</pre><h2>Example of use<a name="6"></a></h2><pre>get_tj([.5, .1, 0, .01, .05, .2])</pre><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tj</h1><!--introduction--><p>Gets scaled age at metamorphosis</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = <a href="../get_tj.m"><b>get_tj</b></a> (p, f, lb0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages; Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and metamorphosis, see also get_ts. Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p</li></ul></div><pre>   Last value is optional. If ommitted: outputs tp and lp are empty</pre><div><ul><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth      or optional 2-vector with scaled length, l, and scaled maturity, vH      for a juvenile that is now exposed to f, but previously at another f</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at metamorphosis \tau_j = a_j k_M</li></ul></div><pre>    if length(lb0)==2, tj is the scaled time till metamorphosis</pre><div><ul><li>tau_p: scaled age at puberty \tau_p = a_p k_M</li></ul></div><pre>    if length(lb0)==2, tp is the scaled time till puberty</pre><div><ul><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>lj: scaled length at end of V1-stage</li><li>lp: scaled length at puberty</li><li>lb: scaled length at birth</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between s and j</li><li>rB: scaled von Bertalanffy growth rate between b and s and between j and i</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="get_tj_foetus.html"><b>get_tj_foetus</b></a> in case of foetal development</p><h2>Example of use<a name="6"></a></h2><pre>get_tj([.5, .1, 0, .01, .05, .2])</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tj
 % Gets scaled age at metamorphosis
 
 %%
-function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
+function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % created at 2011/04/25 by Bas Kooijman, 
   % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <../get_tj.m *get_tj*> (p, f, lb0)
+  % [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = <../get_tj.m *get_tj*> (p, f, lb0)
   
   %% Description
   % Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages;
@@ -78,7 +89,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %
   % Input
   %
-  % * p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p 
+  % * p: 5 or 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p 
   %
   %     Last value is optional. If ommitted: outputs tp and lp are empty
   %
@@ -89,15 +100,15 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %  
   % Output
   %
-  % * tj: scaled age at metamorphosis \tau_j = a_j k_M
+  % * tau_j: scaled age at metamorphosis \tau_j = a_j k_M
   %
   %      if length(lb0)==2, tj is the scaled time till metamorphosis
   %
-  % * tp: scaled age at puberty \tau_p = a_p k_M
+  % * tau_p: scaled age at puberty \tau_p = a_p k_M
   %
   %      if length(lb0)==2, tp is the scaled time till puberty
   %
-  % * tb: scaled age at birth \tau_b = a_b k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
   % * lj: scaled length at end of V1-stage
   % * lp: scaled length at puberty
   % * lb: scaled length at birth
@@ -107,7 +118,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  %  See <get_tj_foetus.html get_tj_foetus*> in case of foetal development
+  % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development
   
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -138,12 +149,12 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % no acceleration
   if vHb == vHj 
     if vHp == 0 % no puberty specified
-      [tb, lb, info] = get_tb(p(1:3), f, lb0);
-      tj = tb; tp = []; lp = []; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
+      [tau_b, lb, info] = get_tb(p(1:3), f, lb0);
+      tau_j = tau_b; tau_p = []; lp = []; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
       return
     else % puberty specified
-      [tp, tb, lp, lb, info] = get_tp(p([1 2 3 4 6]), f, lb0);
-      tj = tb; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
+      [tau_p, tau_b, lp, lb, info] = get_tp(p([1 2 3 4 6]), f, lb0);
+      tau_j = tau_b; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
       return
     end
   end
@@ -151,68 +162,68 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   % maintenance ratio k = 1: maturity thresholds coincide with length thresholds
   if k == 1 && f * (f - lT)^2 > vHp * k % constant maturity density, reprod possible
     lb = vHb^(1/3);                  % scaled length at birth
-    tb = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
+    tau_b = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
     lj = vHj^(1/3);                  % scaled length at metamorphosis
     sM = lj/ lb;                     % acceleration factor
     rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-    tj = tb + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
+    tau_j = tau_b + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
     lp = vHp^(1/3);                  % scaled length at puberty
     li = f * sM - lT;                % scaled ultimate length
     rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
-    tp = tj + (log ((li - lj)/ (li - lp)))/ rB; % scaled age at puberty
+    tau_p = tau_j + (log ((li - lj)/ (li - lp)))/ rB; % scaled age at puberty
     info = 1;
     return
   elseif k == 1 && f * (f - lT)^2 > vHj * k % constant maturity density, metam possible
     lb = vHb^(1/3);                  % scaled length at birth
-    tb = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
+    tau_b = get_tb(p([1 2 4]), f, lb);  % scaled age at birth
     lj = vHj^(1/3);                  % scaled length at metamorphosis
     sM = lj/ lb;                     % acceleration factor
     rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-    tj = tb + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
+    tau_j = tau_b + (log(sM)) * 3/ rj;     % scaled age at metamorphosis
     lp = vHp^(1/3);                  % scaled length at puberty
     li = f * sM - lT;                % scaled ultimate length
     rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
-    tp = 1e20;                       % scaled age at puberty
+    tau_p = 1e20;                       % scaled age at puberty
     info = 1;
     return
   end
   
   if isempty(lb0)
-    [tb, lb, info_tb] = get_tb (p([1 2 4]), f, lb0); 
+    [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0); 
   else
-    [tb, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
+    [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
   end
   [lj, lp, lb, info_tj] = get_lj(p, f, lb);
   sM = lj/ lb;                       % acceleration factor
   rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-  tj = tb + log(sM) * 3/ rj;         % scaled age at metamorphosis
+  tau_j = tau_b + log(sM) * 3/ rj;         % scaled age at metamorphosis
   rB = 1/ 3/ (1 + f/ g);             % scaled von Bert growth rate between j and i
   li = f * sM - lT;                  % scaled ultimate length
 
   if isempty(lp) % length(p) < 6
-    tp = [];
+    tau_p = [];
   elseif  li <=  lp                  % reproduction is not possible
-    tp = 1e20;                       % tau_p is never reached
+    tau_p = 1e20;                       % tau_p is never reached
     lp = 1;                          % lp is nerver reached
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 is absent, empty or a scalar
-      tp = tj + log((li - lj)/ (li - lp))/ rB;
+      tau_p = tau_j + log((li - lj)/ (li - lp))/ rB;
     else % lb0 = l and t for a juvenile
-      tb = NaN;
+      tau_b = NaN;
       l = lb0(1);
-      tp = log((li - l)/ (li - lp))/ rB;
+      tau_p = log((li - l)/ (li - lp))/ rB;
     end
   end
   
-  if isempty(tp)
+  if isempty(tau_p)
     info = info_tb;
     return
   end
   
   info = min(info_tb, info_tj);
-  if ~isreal(tp) || ~isreal(tj) % tj and tp must be real and positive
+  if ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
     info = 0;
-  elseif tp < 0 || tj < 0
+  elseif tau_p < 0 || tau_j < 0
     info = 0;
   end
   

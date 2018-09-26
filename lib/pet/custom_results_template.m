@@ -1,19 +1,20 @@
 %% custom_results_my_pet
-% presents results of univariate data graphically
+% presents results of univariate data graphically in a customized way
 
 %%
 function custom_results_template(par, metaPar, data, txtData, auxData)
 %par, metaPar, txtPar, data, auxData, metaData, txtData, weights
   % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/04/12
   % modified 2015/08/25
+  % modified 2018/09/06 by Nina Marn
   
   %% Syntax
-  % <../custom_results_template.m *custom_results_template*>(par, metaPar, txtData, data, auxData)
+  % <../custom_results_template.m *custom_results_my_pet*>(par, metaPar, txtData, data, auxData)
   
   %% Description
   % present customized results of univariate data
   %
-  % * inputs 
+  % Inputs:
   %
   % * par: structure with parameters (see below)
   % * metaPar: structure with field T_ref for reference temperature
@@ -22,7 +23,13 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % * auxData: structure with temperature data and potential food data
   
   %% Remarks
-  % this is a template to create a customized_results_my_pet file
+  % * A template named 'custom_results_template' is available in 'pet' folder of DEBtool_M:  
+  % Replace '_template' in the function name with 'my_pet' to use with my_pet templates 
+  % * Modify to select and plot uni-variate data for your entry: copy to  folder of your species, 
+  %     replacing 'template' (or 'my_pet') with the Latin name of your species,
+  %     and template data with the entry-specific data you wish to plot
+  % * Once named appropriately, this function will be called automatically by 
+  %     <results_pets.html *results_pets*> function of DEBtool_M when running the <run_my_pet.html *run*> file
   
   % get predictions
   data2plot = data;              % copy data to Prd_data
@@ -32,8 +39,7 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   data2plot.LW = L; % overwrite independent variable in LW
   [prdData, info] = predict_my_pet(par, data2plot, auxData);
   
-  statnm = ['statistics_', metaPar.model];
-  [stat, txt_stat]  = feval(statnm, par, C2K(20), par.f, metaPar.model);
+  [stat, txt_stat]  = feval('statistics_st', metaPar.model, par, C2K(20), par.f);
  
   if strcmp(metaPar.model, 'abj')
     fprintf(['\n acceleration factor s_M is ', num2str(stat.s_M), ' \n'])

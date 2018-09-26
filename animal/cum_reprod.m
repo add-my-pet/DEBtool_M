@@ -71,8 +71,8 @@ function [N, L, UE0, Lb, Lp, t_b, t_p, info] = cum_reprod(t, f, p, Lf)
   
   if length(Lf) <= 1
     l0 = Lf/ Lm; % scaled length at birth
-    [tp tb lp lb info_tp] = get_tp(p_lp, f, l0);
-    ap = tp/ kM; ab = tb/ kM; % d, age at puberty, birth
+    [tau_p, tau_b, lp, lb, info_tp] = get_tp(p_lp, f, l0);
+    ap = tau_p/ kM; ab = tau_b/ kM; % d, age at puberty, birth
     t_b = 0;       % d, time since birth at birth
     t_p = ap - ab; % d, time since birth at puberty
     Lb = lb * Lm; Lp = lp * Lm; Li = f * Lm - LT; % volumetric length at birth, puberty, ultimate
@@ -107,7 +107,7 @@ function [N, L, UE0, Lb, Lp, t_b, t_p, info] = cum_reprod(t, f, p, Lf)
   end
  
   [t_sort, it, it_sort] = unique(t,'sorted'); % returns the unique values in t in sorted order
-  [tt LU] = ode45(@dcum_reprod, [-1e-10; t_sort], [L0; UH0], [], f, g, v, kap, kJ, UHp, Lm, LT, t_p);
+  [tt, LU] = ode45(@dcum_reprod, [-1e-10; t_sort], [L0; UH0], [], f, g, v, kap, kJ, UHp, Lm, LT, t_p);
   if length(t_sort) == 1
     LU = LU(end,:);
   else

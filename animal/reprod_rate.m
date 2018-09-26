@@ -4,6 +4,7 @@
 %%
 function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   % created 2003/03/18 by Bas Kooijman, modified 2014/02/26
+  % modified 2018/09/10 (fixed typos in description) Nina Marn
   
   %% Syntax
   % [R, UE0, Lb, Lp, info] = <reprod_rate.m *reprod_rate*>(L, f, p, Lf)
@@ -19,8 +20,8 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   % * p: 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp
   % * Lf: optional scalar with length at birth (initial value only)
   %
-  %      or optional 2-vector with length, L, and scaled functional response f0
-  %      for a juvenile that is now exposed to f, but previously at another f
+  %     or optional 2-vector with length, L, and scaled functional response f0
+  %     for a juvenile that is now exposed to f, but previously at another f
   %  
   % Output
   %
@@ -33,7 +34,8 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   %% Remarks
   % See also <reprod_rate_foetus.html *reprod_rate_foetus*>, 
   %   <reprod_rate_j.html *reprod_rate_j*>, <reprod_rate_s.html *reprod_rate_s*>.
-  % For cumulative reproduction, see <cum_reprod_rate.html *cum_reprod_rate*>
+  % For cumulative reproduction, see <cum_reprod.html *cum_reprod*>,
+   %  <cum_reprod_j.html *cum_reprod_j*>, <cum_reprod_s.html *cum_reprod_s*>
   
   %% Example of use
   % See <mydata_reprod_rate.m *mydata_reprod_rate*>
@@ -93,7 +95,7 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
     Lp = tL(end,2);  % cm, struc length at puberty after time 0
   end
 
-  [UE0 Lb info] = initial_scaled_reserve(f, p_UE0, Lb);
+  [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
   SC = f * L.^3 .* (g ./ L + (1 + LT ./ L)/ Lm)/ (f + g);
   SR = (1 - kap) * SC - kJ * UHp;
   R = (L >= Lp) * kapR .* SR/ UE0; % set reprod rate of juveniles to zero

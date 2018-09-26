@@ -2,11 +2,13 @@
 % gets scaled age and length at puberty, weaning, birth for foetal development.
 
 %%
-function [tp tx tb lp lx lb info] = get_tx(p, f)
+function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   % created 2012/08/18 by Bas Kooijman, modified 2014/07/22
   % last modified by Dina Lika 2016/03/21
+  % modified 2018/09/10 (t -> tau) Nina Marn
+  
   %% Syntax
-  % [tp tx tb lp lx lb info] = <../get_tx.m *get_tx*> (p, f)
+  % [tau_p, tau_x, tau_b, lp, lx, lb, info] = <../get_tx.m *get_tx*> (p, f)
   
   %% Description
   % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
@@ -22,7 +24,7 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   %
   % Output
   %
-  % * tp, tx, tb: scalars with scaled age at puberty, weaning, birth
+  % * tau_p, tau_x, tau_b: scalars with scaled age at puberty, weaning, birth
   % * lp, lx, lb: scalers with scaled length at puberty, weaning, birth
   % * info: indicator equals 1 if successful, 0 otherwise
   %
@@ -44,13 +46,13 @@ function [tp tx tb lp lx lb info] = get_tx(p, f)
   [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
   info =1;
   l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
-  tb = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
+  tau_b = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
   %tb = 3 * lb/ g;
-  tx = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
-  tp = tb + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
-  if isreal(tb) == 0 || isreal(tx) == 0 || isreal(tp) == 0 % tb, tx and tp must be real and positive
+  tau_x = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
+  tau_p = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
+  if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 % tb, tx and tp must be real and positive
     info = 0;
-  elseif tb < 0 || tx < 0 || tp < 0
+  elseif tau_b < 0 || tau_x < 0 || tau_p < 0
     info = 0;
   end
 

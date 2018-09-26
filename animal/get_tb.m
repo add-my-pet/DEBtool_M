@@ -2,11 +2,12 @@
 %
 
 %%
-function [tb, lb, info] = get_tb(p, eb, lb)
+function [tau_b, lb, info] = get_tb(p, eb, lb)
   %  created at 2007/07/27 by Bas Kooijman; modified 2014/03/17, 2015/01/18
+  % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tb, lb, info] = <../get_tb.m *get_tb*> (p, eb, lb)
+  % [tau_b, lb, info] = <../get_tb.m *get_tb*> (p, eb, lb)
   
   %% Description
   % Obtains scaled age at birth, given the scaled reserve density at birth. 
@@ -23,7 +24,7 @@ function [tb, lb, info] = get_tb(p, eb, lb)
   %  
   % Output
   %
-  % * tb: scaled age at birth \tau_b = a_b k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
   % * lb: scalar with scaled length at birth: L_b/ L_m
   % * info: indicator equals 1 if successful, 0 otherwise
   
@@ -33,7 +34,7 @@ function [tb, lb, info] = get_tb(p, eb, lb)
   
   %% Example of use
   % get_tb([.1;.5;.03])
-  % See also <../ mydata_ue0.m *mydata_ue0*>
+  % See also <../mydata_ue0.m *mydata_ue0*>
    
   if ~exist('eb','var')
     eb = 1; % maximum value as juvenile
@@ -44,13 +45,13 @@ function [tb, lb, info] = get_tb(p, eb, lb)
   if ~exist('lb', 'var')
     if length(p) < 3
       fprintf('not enough input parameters, see get_lb \n');
-      tb = [];
+      tau_b = [];
       return;
     end
-    [lb info] = get_lb(p, eb);
+    [lb, info] = get_lb(p, eb);
   end
   if isempty(lb)
-    [lb info] = get_lb(p, eb);
+    [lb, info] = get_lb(p, eb);
   end
 
   % unpack p
@@ -58,7 +59,7 @@ function [tb, lb, info] = get_tb(p, eb, lb)
 
   xb = g/ (eb + g); % f = e_b 
   ab = 3 * g * xb^(1/ 3)/ lb; % \alpha_b
-  tb = 3 * quad(@dget_tb, 1e-15, xb, [], [], ab, xb);
+  tau_b = 3 * quad(@dget_tb, 1e-15, xb, [], [], ab, xb);
   
 end
 

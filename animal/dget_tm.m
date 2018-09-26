@@ -1,7 +1,7 @@
-function dx = dget_tm(t, x)
+function dx = dget_tm(tau, x)
   % created 2000/09/06 by Bas Kooijman, modified 2009/01/24
   % routine called by get_tm
-  % t: scalar with scaled age: a k_M
+  % tau: scalar with scaled age: a k_M
   % x: 7-vector with state variables, see below
   % dx: d/dt x
   

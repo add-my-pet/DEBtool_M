@@ -45,7 +45,7 @@ Make sure that the path to DEBtool_M and its subdirectories has been set.
 Depending on option settings, results will be printed to screen and/or a .mat file and/or .html file.
 This .mat file can be read with 
 <a href="../lib/pet/html/printmat.html"><code>printmat('my_pet')</code></a>.
-You can start parameter estimation from an automized setting, the initial setting as specified in <code>pars_init_my_pet</code>, or from the <code>results_my_pet.mat</code> file, which was written after a previous run. 
+You can start parameter estimation from an automized setting, the initial setting as specified in <code>pars_init_my_pet</code> (default), or from the <code>results_my_pet.mat</code> file, which was written after a previous run. 
 You can reduce or enhance the effect of particular data sets/points by changing weight coefficients in <code>mydata_my_pet</code>.
 The function 
 <a href="../lib/pet/html/parscomp_st.html"><code>parscomp_st</code></a> 
@@ -58,7 +58,7 @@ first checks the consistency of the three user-defined functions with
 assuming that they have no Matlab errors.
 Then estimation-options are set, such as the maximum number of iterations, or no estimation at all.
 Finally the estimation and automatized presentation of results are called;
-the presentation of results can (optionally) be customized with function <a href="../lib/pet/html/results_my_pet.html"><code>results_my_pet</code></a>.
+the presentation of results can (optionally) be customized with function <a href="../lib/pet/html/custom_results_template.html"><code>custom_results_my_pet</code></a>.
 Plots with the same labels and units can be combined into one plot, by assigning datasets to a group and setting a caption.
 
 <p>
@@ -66,7 +66,7 @@ Once the parameters are known, function <a href="../lib/pet/html/statistics_st.h
 The general idea is that these properties can be checked for realism, and if some seem unrealistic, realistic values can be added to the mydata and predict-files and parameters re-estimated.
 
 <p>
-A detailed account of the method is presented in <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET = "_top">the add_my_pet manual</a>
+A detailed account of the method is presented in <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure" TARGET = "_top">the add_my_pet estimation Wiki manual</a>
 
 <H4><A NAME="curators">For curators only</H4>
 

@@ -4,6 +4,7 @@
 %%
 function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
   % created 2011/07/21 by Bas Kooijman, modified 26/02/26
+  % modified 2018/09/10 (fixed typos in description) Nina Marn
   
   %% Syntax
   % [R, UE0, Lb, Ls, Lj, Lp, info] = <../reprod_rate_s.m *reprod_rate_s*> (L, f, p, Lf)
@@ -37,7 +38,8 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
   % Theory is given in comments to DEB3 section 7.8.2
   % See also <reprod_rate.html *reprod_rate*>, <reprod_rate_foetus.html *reprod_rate_foetus*> and 
   %  <reprod_rate_j.html *reprod_rate_j*>.
-  % For cumulative reproduction, see cum_reprod_rate
+  % For cumulative reproduction, see <cum_reprod.html *cum_reprod*>, 
+  %  <cum_reprod_j.html *cum_reprod_j*>, <cum_reprod_s.html *cum_reprod_s*>
   
   %% Example of use
   % See <../mydata_reprod_rate.m *mydata_reprod_rate*>
@@ -75,7 +77,7 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
 
   if length(Lf) <= 1
     lb0 = Lf/ Lm; % scaled length at birth
-    [ls lj lp lb info_ls] = get_ls(p_ls, f, lb0);
+    [ls, lj, lp, lb, info_ls] = get_ls(p_ls, f, lb0);
     Lb = lb * Lm; Ls = ls * Lm; Lj = lj * Lm; Lp = lp * Lm; % volumetric length at birth, puberty
     if info_ls ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate_j \n')
@@ -97,7 +99,7 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
     Lp = tL(end,2);  % cm, struc length at puberty after time 0
   end
  
-  [UE0 Lb info] = initial_scaled_reserve(f, p_UE0, Lb);
+  [UE0, Lb, info] = initial_scaled_reserve(f, p_UE0, Lb);
 
   SC = L .^ 2 .* ((g + LT/ Lm) * Lj/ Ls + L/ Lm)/ (1 + g/ f);
   SR = (1 - kap) * SC - kJ * UHp;
