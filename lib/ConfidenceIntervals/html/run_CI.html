@@ -1,0 +1,156 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>run_CI</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-03"><meta name="DC.source" content="run_CI.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><a href="../run_CI.m"><b>run_CI</b></a></h1><p>created by Dina Lika 2018/09/17</p><p>1. Calibration step for the interval estimation          calls get_lf_distribution          saves output to calibrate.mat</p><p>2. Calculates the profile of the loss function for a parameter          calls get_profile          saves output to profile_nameOFparameter</p><p>3. Plots the profile of the loss function for a parameter;          plots the distribution function of the loss function of Monte Carlo simulations          gives the confidence interval of the parameter</p><p>The working folder must contain the 3 user-defined files of your species mydata_my_pet.m, predict_my_pet.m, pars_init_my_pet.m (with the best estimates)</p><p>The theory is discussed in Marques et al. 2018. "Fitting Multiple Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004</p><p>The user must specify lines 22-42 of this script</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% <../run_CI.m *run_CI*>
+% created by Dina Lika 2018/09/17
+%
+% 1. Calibration step for the interval estimation
+%          calls get_lf_distribution
+%          saves output to calibrate.mat
+%
+% 2. Calculates the profile of the loss function for a parameter
+%          calls get_profile
+%          saves output to profile_nameOFparameter
+%
+% 3. Plots the profile of the loss function for a parameter;
+%          plots the distribution function of the loss function of Monte Carlo simulations
+%          gives the confidence interval of the parameter
+%
+% The working folder must contain the 3 user-defined files of your species
+% mydata_my_pet.m, predict_my_pet.m, pars_init_my_pet.m (with the best estimates)
+%
+% The theory is discussed in Marques et al. 2018. "Fitting Multiple
+% Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004
+%
+% The user must specify lines 22-42 of this script
+
+close all
+global pet
+
+% The user must specify lines 22-42:
+pet = 'my_pet';  % replace my_pet, with your species name
+
+% input for the calibration step
+nbTrials = 500;   % number of data sets
+nCont  = 4;     % increase number of continuations, if necessary
+
+% parameter for the profile step
+pProfile ='v';    % name of the parameter for which the profile will be calculated
+lowVal = 0.005;   % lower value of the profile interval, depends on the parameter
+upperVal = 0.04;  % upper value of the profile interval, depends on the parameter
+dim = 10; % increase for a smooth profile
+
+% Specify the confidence level for the confidence interval
+clevel =0.9; % e.g. 0.9 for a 90% confidence interval
+
+% stepCI - Choose the step(s) you want to simulate
+%          0: runs the whole procedure; 
+%          1: runs only the calibration step
+%          2: runs only the profile for a parameter step
+%          3: computes the CI and graphs the profile
+
+stepCI = 0; 
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+if stepCI == 0 || stepCI == 1
+    fprintf('\n Step 1. Calibration\n\n');
+    [lf_calibrate, pars_calibrate, name_par] = get_lf_distribution(nbTrials, nCont);
+    % lf_calibrate: vector with the values of the loss function
+    % pars_calibrate: matrix with the parameter values 
+    %                 rows: free parameters; columns: number of datasets
+    % name_par: names of free parameters
+    save('calibrate', 'lf_calibrate', 'pars_calibrate', 'name_par')
+end
+%
+if stepCI == 0 || stepCI == 2
+    fprintf('\n Step 2. Profile for parameter %s \n\n', pProfile);
+    [lf_profile, pars_profile] = get_profile(pProfile,lowVal,upperVal,dim,nCont);
+    % lf_profile: vector with the values of the loss function
+    % pars_profile: vector with the parameter values 
+
+    save(['profile_',pProfile], 'lf_profile', 'pars_profile')
+end
+%
+if  stepCI == 0 || stepCI == 3
+    fprintf('\n Step 3. Show plots and CI\n\n');
+    if exist(['profile_',pProfile], 'file') == 0 && exist('calibrate.mat', 'file')== 0
+        disp('Execute steps 1 and 2 first')
+    else
+        load(['profile_',pProfile])
+        load('calibrate.mat')
+    	[lf_thres, ci_low, ci_upper] = plot_profile_CI(pars_profile, lf_profile, lf_calibrate, clevel);
+        % confidence interval
+        fprintf('The CI for %s is from %1.4f to %1.4f \n', pProfile, ci_low, ci_upper)
+        fprintf('The threshold value for the loss function is %1.3f \n', lf_thres)      
+    end
+end
+
+##### SOURCE END #####
+--></body></html>
