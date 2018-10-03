@@ -18,10 +18,13 @@
 %
 % The theory is discussed in Marques et al. 2018. "Fitting Multiple
 % Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004
+%
+% The user must specify lines 22-42 of this script
 
 close all
 global pet
-%% The user must specify lines 22-42
+
+% The user must specify lines 22-42:
 pet = 'my_pet';  % replace my_pet, with your species name
 
 % input for the calibration step
@@ -42,9 +45,10 @@ clevel =0.9; % e.g. 0.9 for a 90% confidence interval
 %          1: runs only the calibration step
 %          2: runs only the profile for a parameter step
 %          3: computes the CI and graphs the profile
+
 stepCI = 0; 
 
-%%
+% -------------------------------------------------------------------------
 if stepCI == 0 || stepCI == 1
     fprintf('\n Step 1. Calibration\n\n');
     [lf_calibrate, pars_calibrate, name_par] = get_lf_distribution(nbTrials, nCont);

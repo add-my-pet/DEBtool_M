@@ -1,0 +1,141 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plot_profile_CI</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-03"><meta name="DC.source" content="plot_profile_CI.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2"><a href="../plot_profile_CI.m"><b>plot_profile_CI</b></a></a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="2"><a href="../plot_profile_CI.m"><b>plot_profile_CI</b></a></h2><p>created by Dina Lika 2018/04/11</p><h2 id="3">Syntax</h2><p>[ci, ci_low, ci_upper] = <a href="../gplot_profile_CI.m"><b>plot_profile_CI</b></a>(pProfile)</p><h2 id="4">Description</h2><p>Calculates the profile of the loss function for a parameter</p><p>The theory is discussed in Marques et al. 2018. "Fitting Multiple Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004</p><p>Input</p><div><ul><li>pProfile: the parameter for which the profile is calculated (string)</li><li>clevel: confidence level, e.g. 0.9 for the 90% marginal confidence interval</li></ul></div><p>Output</p><div><ul><li>lf_thres: threshold of the profile to get the CI</li><li>ci_low: the lower boundary of the CI</li><li>ci_upper: the upper boundary of the CI</li></ul></div><p>REMARK: In some cases several intervals may result. This can be seen from the profile of the loss function. This function will not compute the confidence sets</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% plots the profile of the loss function for a parameter
+% plots the distribution function of the loss function of Monte Carlo
+% simulations
+% gives the confidence interval of the parameter
+
+%% <../plot_profile_CI.m *plot_profile_CI*>
+% created by Dina Lika 2018/04/11
+%
+  %% Syntax
+  % [ci, ci_low, ci_upper] = <../gplot_profile_CI.m *plot_profile_CI*>(pProfile)
+  %
+  %% Description
+  % Calculates the profile of the loss function for a parameter
+  %
+  % The theory is discussed in Marques et al. 2018. "Fitting Multiple
+  % Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004
+  %
+  % Input
+  %
+  % * pProfile: the parameter for which the profile is calculated (string)
+  % * clevel: confidence level, e.g. 0.9 for the 90% marginal confidence interval 
+  %
+  % Output
+  %
+  % * lf_thres: threshold of the profile to get the CI
+  % * ci_low: the lower boundary of the CI
+  % * ci_upper: the upper boundary of the CI
+  %
+  % REMARK: In some cases several intervals may result. This can be seen
+  % from the profile of the loss function. This function will not compute
+  % the confidence sets
+
+function [lf_thres, ci_low, ci_upper] = plot_profile_CI(pars_profile, lf_profile, lf_calibrate, clevel)
+lf_min = min(lf_profile);
+surv_vec0=surv(lf_calibrate);
+lf0      = min(surv_vec0(:,1)); % F_*^0, 
+
+thres = 1-clevel; %0.1; % 1-0.9, for the 90% marginal confidence interval 
+surv_vec = [surv_vec0(:,1)-lf0  surv_vec0(:,2)]; % corrected for contribution of pseudo data
+auxN = find(surv_vec(:,2) <= thres);
+n        = auxN(1);       % find the value of lf that 90% of the estimations in the Monte Carlo simulations were under that
+lf_thres = surv_vec(n,1); % threshold of the profile to get the CI
+
+figure(1)
+plot(surv_vec(:,1),surv_vec(:,2),'r','linewidth',3),hold on
+ylabel('\fontsize{14}survivor function'); xlabel('\fontsize{14}loss function')
+figure(2) 
+plot(pars_profile, lf_profile - lf_min, 'r','linewidth',3), hold on
+plot([min(pars_profile), max(pars_profile)], [lf_thres, lf_thres],'b')
+ylabel('\fontsize{14} loss function'); xlabel('\fontsize{14} z, -')
+
+%%%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- find confidence intervalREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+lf_profile = lf_profile - lf_min;
+I=find(lf_profile <= lf_thres);
+
+% This algorithm assumes that the CI consists of a single set
+x=pars_profile; y = lf_profile;
+z1 = x(I(1)-1); z2 = x(I(1)); z12=0.5*(z1+z2);
+w1 = y(I(1)-1); w2 = y(I(1)); w12= w1 + (z12-z1)*(w1-w2)/(z1-z2); 
+A_low =[z1, z12, z2 ; abs(w1-lf_thres), abs(w12-lf_thres), abs(w2-lf_thres)]';
+[w_min, ii] = min(A_low(:,2));
+ci_low = A_low(ii,1);
+
+z1 = x(I(end)); z2 = x(I(end)+1); z12=0.5*(z1+z2);
+w1 = y(I(end)); w2 = y(I(end)+1); w12= w1 + (z12-z1)*(w1-w2)/(z1-z2); 
+A_upper =[z1, z12, z2 ; abs(w1-lf_thres), abs(w12-lf_thres), abs(w2-lf_thres)]';
+[w_min, ii] = min(A_upper(:,2));
+ci_upper = A_upper(ii,1);
+
+##### SOURCE END #####
+--></body></html>

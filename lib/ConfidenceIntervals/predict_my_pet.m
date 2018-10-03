@@ -32,7 +32,7 @@ function [prdData, info] = predict_my_pet(par, data, auxData)
   % that the parameter-combination is not selected for finding the
   % best-fitting combination; this setting acts as customized filter.
   
-  %% Example of a costumized filter
+  %% Example of a customized filter
   % See the lines just below unpacking
   
   % unpack par, data, auxData

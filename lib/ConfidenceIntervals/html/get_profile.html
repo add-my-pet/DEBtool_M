@@ -1,0 +1,197 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_profile</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-03"><meta name="DC.source" content="get_profile.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><a href="../get_profile.m"><b>get_profile</b></a></h1><!--introduction--><p>created by Dina Lika 2018/09/03</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li></ul></div><h2 id="1">Syntax</h2><p>[pars_profile, lf_profile] = <a href="../get_profile.m"><b>get_profile</b></a>(pProfile,lowVal,upperVal,dim,nCont)</p><h2 id="2">Description</h2><p>Calculates the profile of the loss function for a parameter</p><p>The theory is discussed in Marques et al. 2018. "Fitting Multiple Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004</p><p>Input</p><div><ul><li>pProfile: the parameter for which the profile is calculated (string)</li><li>lowVal: lower value of the profile interval</li><li>upperVal: upper value of the profile interval</li><li>dim: number of nodes, increase for a smooth profile</li><li>nCont: number of continuations</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% <../get_profile.m *get_profile*>
+% created by Dina Lika 2018/09/03
+%
+  %% Syntax
+  % [pars_profile, lf_profile] = <../get_profile.m *get_profile*>(pProfile,lowVal,upperVal,dim,nCont)
+  %
+  %% Description
+  % Calculates the profile of the loss function for a parameter
+  %
+  % The theory is discussed in Marques et al. 2018. "Fitting Multiple
+  % Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004
+  %
+  % Input
+  %
+  % * pProfile: the parameter for which the profile is calculated (string)
+  % * lowVal: lower value of the profile interval
+  % * upperVal: upper value of the profile interval
+  % * dim: number of nodes, increase for a smooth profile
+  % * nCont: number of continuations
+
+  %
+  % Output
+  %
+  % * lf_profile: vector with the values of the loss function
+  % * pars_profile: vector with the parameter values
+
+function [lf_profile, pars_profile] = get_profile(pProfile,lowVal,upperVal,dim,nCont)
+  
+global pet
+
+pet = 'my_pet';
+
+% set all of the estimation options:
+estim_options('default'); 
+estim_options('report', 0);           % does not report to screen to save time
+
+[data, auxData, metaData, txtData, weights] = feval(['mydata_', pet]);
+[par, metaPar, txtPar] = feval(['pars_init_', pet], metaData);
+filternm = ['filter_', metaPar.model];
+
+estVal = eval(['par.',pProfile]);
+aux    = linspace(lowVal, estVal, dim);
+p_vec1 = sort(aux,'descend');
+p_vec2 = linspace(estVal, upperVal, dim);
+
+par.free.(pProfile)= 0;     % fix the "profile" parameter
+
+% compute the profile from (low value you choose to best estimate)
+lf1 = zeros(1,dim);
+for j = 1:length(p_vec1)
+    par.(pProfile)= p_vec1(j);  % replace the value of the "profile" parameter 
+    % estimate parameters with the newData set, nCont continuations
+    for k =1:nCont
+        [par, info, nsteps] = petregr_f(@predict_data_psd, par, data, auxData, weights, filternm);
+    end
+    [prdData, info] = predict_data_psd(par, data, auxData);
+    lf1(j) = lossfun(data, prdData, weights); % calculate the value of the loss function
+end
+
+% compute the profile from (best estimate to upperVal you choose )
+lf2 = zeros(1,dim);
+% initialize all parameters
+[par, metaPar, txtPar] = feval(['pars_init_', pet], metaData);
+par.free.(pProfile)= 0;     % fix the "profile" parameter
+
+for j = 1:length(p_vec2)
+    par.(pProfile)= p_vec2(j) ; % replace the value of the "profile" parameter 
+    % estimate parameters with the newData set, nCont continuations
+    for k =1:nCont
+        [par, info, nsteps] = petregr_f(@predict_data_psd, par, data, auxData, weights, filternm);
+    end
+    [prdData, info] = predict_data_psd(par, data, auxData);
+    lf2(j) = lossfun(data, prdData, weights); % calculate the value of the loss function
+end
+% merge the left and right branch
+[x1 index] = sort(p_vec1,'ascend'); % order
+y1 = lf1(index);
+pars_profile = [x1 p_vec2(2:end)]; lf_profile = [y1 lf2(2:end)];
+end
+
+% auxiliary functions
+function [prdData, info] = predict_data_psd(par, data, auxData)
+% Predictions, using parameters and data
+% Adds pseudodata predictions into predictions structure 
+
+global pet
+
+[prdData, info] = feval(['predict_',pet], par, data, auxData);
+prdData = predict_pseudodata(par, data, prdData);
+
+end
+%%
+function lf_val = lossfun(data, prdData, weights)
+% compute the value of the loss function
+
+global lossfunction
+
+    fileLossfunc = ['lossfunction_', lossfunction];
+    st = data; % take the field from prdData because data have also the pseudo-data
+    [nm, nst] = fieldnmnst_st(data); % nst: number of data sets
+  
+    for i = 1:nst   % makes st only with dependent variables
+        fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+        auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+        k = size(auxVar, 2);
+    if k >= 2
+        st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    end
+    end
+    [Y, meanY] = struct2vector(st, nm);
+    W = struct2vector(weights, nm);
+    [P, meanP] = struct2vector(prdData, nm);
+    lf_val = feval(fileLossfunc, Y, meanY, P, meanP, W);
+end
+%%
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:});
+    vec = [vec; aux];
+    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

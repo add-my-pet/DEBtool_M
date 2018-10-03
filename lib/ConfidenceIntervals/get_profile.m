@@ -44,7 +44,8 @@ p_vec1 = sort(aux,'descend');
 p_vec2 = linspace(estVal, upperVal, dim);
 
 par.free.(pProfile)= 0;     % fix the "profile" parameter
-%% compute the profile from (low value you choose to best estimate)
+
+% compute the profile from (low value you choose to best estimate)
 lf1 = zeros(1,dim);
 for j = 1:length(p_vec1)
     par.(pProfile)= p_vec1(j);  % replace the value of the "profile" parameter 
@@ -55,7 +56,8 @@ for j = 1:length(p_vec1)
     [prdData, info] = predict_data_psd(par, data, auxData);
     lf1(j) = lossfun(data, prdData, weights); % calculate the value of the loss function
 end
-%% compute the profile from (best estimate to upperVal you choose )
+
+% compute the profile from (best estimate to upperVal you choose )
 lf2 = zeros(1,dim);
 % initialize all parameters
 [par, metaPar, txtPar] = feval(['pars_init_', pet], metaData);
@@ -75,7 +77,8 @@ end
 y1 = lf1(index);
 pars_profile = [x1 p_vec2(2:end)]; lf_profile = [y1 lf2(2:end)];
 end
-%% auxiliary functions
+
+% auxiliary functions
 function [prdData, info] = predict_data_psd(par, data, auxData)
 % Predictions, using parameters and data
 % Adds pseudodata predictions into predictions structure 

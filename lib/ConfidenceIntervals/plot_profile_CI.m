@@ -49,7 +49,7 @@ plot(pars_profile, lf_profile - lf_min, 'r','linewidth',3), hold on
 plot([min(pars_profile), max(pars_profile)], [lf_thres, lf_thres],'b')
 ylabel('\fontsize{14} loss function'); xlabel('\fontsize{14} z, -')
 
-%% find confidence interval
+%%%------------------- find confidence interval---------------------------
 lf_profile = lf_profile - lf_min;
 I=find(lf_profile <= lf_thres);
 
