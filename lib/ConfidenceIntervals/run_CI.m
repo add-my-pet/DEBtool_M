@@ -19,6 +19,10 @@
 % The theory is discussed in Marques et al. 2018. "Fitting Multiple
 % Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004
 %
+% For an example of an application see: Stavrakidis-Zachouet al 2018. “A DEB Model for European Sea
+% Bass (Dicentrarchus Labrax): Parameterisation and Application in
+% Aquaculture.” J  Sea Research, doi.org/10.1016/j.seares.2018.05.008
+%
 % The user must specify lines 22-42 of this script
 
 close all
@@ -46,7 +50,7 @@ clevel =0.9; % e.g. 0.9 for a 90% confidence interval
 %          2: runs only the profile for a parameter step
 %          3: computes the CI and graphs the profile
 
-stepCI = 0; 
+stepCI = 1; 
 
 % -------------------------------------------------------------------------
 if stepCI == 0 || stepCI == 1
