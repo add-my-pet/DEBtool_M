@@ -49,7 +49,20 @@ function TC = tempcorr (T, T_ref, pars_T)
     T_AL = pars_T(4);  % Arrh. temp for lower boundary
     T_AH = pars_T(5);  % Arrh. temp for upper boundary
 
-    TC = exp(T_A/ T_ref - T_A ./ T) .* ...
-	     (1 + exp(T_AL ./ T_ref - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
+ %   Sharpe and DeMichele (1977) theoretical (enzyme kinetics)
+ %   model for how the Arrhenius curve drops away at high and low
+ %   temperature due to enzyme inactivation:
+        TC = exp(T_A/ T_ref - T_A ./ T) ./ ...
 	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
+
+% this was the original DEBtool extension of the Sharpe and Demichele 1977 equation:     
+%     TC = exp(T_A/ T_ref - T_A ./ T) .* ...
+% 	     (1 + exp(T_AL ./ T_ref - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
+% 	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
+
+% The two formula are very close to each other if T_ref is between T_L and
+% T_H. The DEBtool extension of Sharpe and DeMichele (1977) differs when
+% T_ref >> T_H which is the case for many Arctic species.  Hence it is now
+% outcommented. 
+
   end
