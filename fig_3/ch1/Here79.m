@@ -27,10 +27,18 @@ iTr = [3.490400  -2.059301;
 Tr = iTr; Tr(:,1) = 1000./Tr(:,1); Tr(:,2) = exp(Tr(:,2));
 
 %% initial parameter estimates
-p = [1.94 1; 310 0; 4370 1; 293 1; 318 1; 20110 1; 69490 1];
-nrregr_options('report',0);
-p = nrregr('kTemp', p, Tr); p = p(:,1); % get parameters
-nrregr_options('report',1);
+p = [...
+    1.94  1;  % 1 reference rate 
+    310   0;  % 2 reference temp; always fix this parameter
+    4370  1;  % 3 Arrhenius temp
+    293   1;  % 4 Lower temp boundary
+    318   1;  % 5 Upper temp boundary
+    20110 1;  % 6 Arrh. temp for lower boundary
+    69490 1]; % 7 Arrh. temp for upper boundary
+
+% nrregr_options('report',0);
+% p = nrregr('kTemp', p, Tr); p = p(:,1); % get parameters
+% nrregr_options('report',1);
 
 iT = linspace(3.1,3.5,100)';       % set plot range for inverse temp
 Tq = p([4 5]); iTq = 1000 ./Tq;    % set T_AL - T_AH range for comparison
@@ -39,7 +47,7 @@ kq = p(1) * exp(p(3)/ p(2) - p(3)./ Tq); % simple Arrhenius
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'Here79.ps'
 
-plot(iTr(:,1), iTr(:,2),'+g', iT, log(ktemp(p, 1000 ./ iT)), '-r', ...
+plot(iTr(:,1), iTr(:,2),'+g', iT, log(kTemp(p, 1000 ./ iT)), '-r', ...
      iTq, log(kq), '-b')
 xlabel('10^3/T, K^-1');
 ylabel('ln pop growth rate, 1/h');
