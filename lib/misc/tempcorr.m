@@ -53,7 +53,7 @@ function TC = tempcorr (T, T_ref, pars_T)
  %   model for how the Arrhenius curve drops away at high and low
  %   temperature due to enzyme inactivation:
         TC = exp(T_A/ T_ref - T_A ./ T) ./ ...
-	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
+	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T ));
 
 % this was the original DEBtool extension of the Sharpe and Demichele 1977 equation:     
 %     TC = exp(T_A/ T_ref - T_A ./ T) .* ...
