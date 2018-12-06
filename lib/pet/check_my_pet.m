@@ -513,7 +513,7 @@ end
 if ~isfield(par, 'T_ref')
     error(['    In pars_init_',speciesnm,'.m: The parameter T_ref is missing in the par structure']);
 elseif par.T_ref ~= C2K(20)
-    error(['    In pars_init_',speciesnm,'.m: The parameter T_ref is not 20ºC (or 293.15K) and it should be']);
+    disp(['  warning:  In pars_init_',speciesnm,'.m: The parameter T_ref is not 20ºC (or 293.15K), please check that there is a very good reason for this.']);
 end
 
 % checking the existence of free in the par structure and if it is filled with either 0 or 1

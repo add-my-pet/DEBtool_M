@@ -10,7 +10,9 @@ function TC = tempcorr (T, T_ref, pars_T)
 
   %% Description
   %  Calculates the factor with which physiological rates should be multiplied 
-  %    to go from a reference temperature to a given temperature. 
+  %    to go from a reference temperature to a given temperature. The
+  %    3 and 5- parameter versions of the Arrhenius module suppose that the
+  %    reference temperature is contained within the thermal neutral zone.
   %
   % Input
   %
@@ -43,26 +45,25 @@ function TC = tempcorr (T, T_ref, pars_T)
     TC = exp(T_A/ T_ref - T_A ./ T) .* ...
          (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
          (1 + exp(T_AL ./ T     - T_AL/ T_L));
+          
+    if T_ref <= T_L
+       fprintf('warning reference temperature is higher than T_H \n');
+    end
+     
   else
     T_L  = pars_T(2);  % Lower temp boundary
     T_H  = pars_T(3);  % Upper temp boundary
     T_AL = pars_T(4);  % Arrh. temp for lower boundary
     T_AH = pars_T(5);  % Arrh. temp for upper boundary
 
- %   Sharpe and DeMichele (1977) theoretical (enzyme kinetics)
- %   model for how the Arrhenius curve drops away at high and low
- %   temperature due to enzyme inactivation:
-        TC = exp(T_A/ T_ref - T_A ./ T) ./ ...
-	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T ));
-
-% this was the original DEBtool extension of the Sharpe and Demichele 1977 equation:     
-%     TC = exp(T_A/ T_ref - T_A ./ T) .* ...
-% 	     (1 + exp(T_AL ./ T_ref - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
-% 	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
-
-% The two formula are very close to each other if T_ref is between T_L and
-% T_H. The DEBtool extension of Sharpe and DeMichele (1977) differs when
-% T_ref >> T_H which is the case for many Arctic species.  Hence it is now
-% outcommented. 
-
+    TC = exp(T_A/ T_ref - T_A ./ T) .* ...
+	     (1 + exp(T_AL ./ T_ref - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
+	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
+    
+    if T_ref >= T_H
+        fprintf('warning reference temperature is higher than T_H \n')    
+    elseif T_ref <= T_L
+       fprintf('warning reference temperature is higher than T_H \n');
+    end
+    
   end
