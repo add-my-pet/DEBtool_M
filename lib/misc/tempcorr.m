@@ -29,7 +29,8 @@ function TC = tempcorr (T, T_ref, pars_T)
   % * TC: vector with temperature correction factor(s) that affect(s) all rates
    
   %% Remarks
-  %  shtempcorr shows a graph of this correction factor as function of the temperature. 
+  %  <shtempcorr.html *shtempcorr*> shows a graph of this correction factor as function of the temperature. 
+  %  To avoid unexpected behaviour in a 5-parameter application, make sure that T_L < T_A < T_H
   
   %% Example of use
   %  tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and 
@@ -47,7 +48,7 @@ function TC = tempcorr (T, T_ref, pars_T)
          (1 + exp(T_AL ./ T     - T_AL/ T_L));
           
     if T_ref <= T_L
-       fprintf('warning reference temperature is higher than T_H \n');
+       fprintf('warning reference temperature is lower than T_L \n');
     end
      
   else
@@ -61,9 +62,9 @@ function TC = tempcorr (T, T_ref, pars_T)
 	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
     
     if T_ref >= T_H
-        fprintf('warning reference temperature is higher than T_H \n')    
+      fprintf('warning reference temperature is higher than T_H \n')    
     elseif T_ref <= T_L
-       fprintf('warning reference temperature is higher than T_H \n');
+      fprintf('warning reference temperature is lower than T_L \n');
     end
     
   end

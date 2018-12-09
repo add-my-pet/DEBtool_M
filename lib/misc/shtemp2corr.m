@@ -35,11 +35,11 @@ function shtemp2corr (T_1, Tpars)
   T_LL = fzero(@findt, T_L, [], T_1, Tpars);
   T_HH = fzero(@findt, T_H + 10, [], T_1, Tpars);
   iT_L = linspace(1/T_LL, 1/T_L, 20);
-  TC_L = tempcorr (1./iT_L, T_1, Tpars);
+  TC_L = tempcorr_new (1./iT_L, T_1, Tpars);
   iT   = linspace(1/T_L, 1/T_H, 60);
   TC   = tempcorr (1./iT, T_1, Tpars);
   iT_H = linspace(1/T_H, 1/T_HH, 20);
-  TC_H = tempcorr (1./iT_H, T_1, Tpars);
+  TC_H = tempcorr_new (1./iT_H, T_1, Tpars);
 
   plot(10^4*iT_H, log10(TC_H), 'r', ...
        10^4*iT, log10(TC), 'g', ...
