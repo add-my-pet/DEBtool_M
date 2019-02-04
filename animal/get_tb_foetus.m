@@ -44,22 +44,22 @@ function [tau_b, lb] = get_tb_foetus(par)
   end
 
   options = odeset('Events',@birth);
-  [t, vH, tau_b] = ode23(@fnget_tb_foetus, [0; 1e8], 0, options, g, k, vHb);
+  [tau, vH, tau_b] = ode23(@fnget_tb_foetus, [0; 1e8], 0, options, g, k, vHb);
   lb = g * tau_b/ 3;
   
 end
 
 % subfunctions
 
-function [val, isterm, dir] = birth(t, vH, g, k, vHb)
+function [val, isterm, dir] = birth(tau, vH, g, k, vHb)
   val = vH - vHb;
   isterm = 1; % stop
   dir = 0; % all directions
 end
 
-function dvH = fnget_tb_foetus(t, vH, g, k, vHb)
-  %  t: scaled age
+function dvH = fnget_tb_foetus(tau, vH, g, k, vHb)
+  %  tau: scaled age
   %  vH: scaled maturity
 
-  dvH = g^3 * t^2 * (1 + t/ 3)/ 9 - k * vH;
+  dvH = g^3 * tau^2 * (1 + tau/ 3)/ 9 - k * vH;
 end
