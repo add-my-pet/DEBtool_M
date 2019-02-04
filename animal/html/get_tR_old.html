@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tR</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="get_tR.m"><style type="text/css">
+      --><title>get_tR_old</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="get_tR_old.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,17 +66,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_tR</h1><!--introduction--><p>Gets scaled age at 1st brood</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li><li><a href="#7">subfunctions</a></li></ul></div><h2 id="3">Syntax</h2><p>[tR, tp, tx, tb, lR, lp, lx, lb, info] = <a href="../get_tp.m"><b>get_tR</b></a>(p, f, lb0)</p><h2 id="4">Description</h2><p>Obtains scaled age and length at 1st brood, puberty, fledging, birth. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at ages.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^x, v_H^p, tau_N</li><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><p>Output</p><div><ul><li>tau_R: scaled with age at 1st brood \tau_R = a_R k_M</li><li>tau_p: scaled with age at puberty \tau_p = a_p k_M</li><li>tau_x: scaled with age at birth \tau_x = a_x k_M</li><li>tau_b: scaled with age at birth \tau_b = a_b k_M</li><li>lR: scaler length at 1st brood</li><li>lp: scaler length at puberty</li><li>lx: scaler length at fledging</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2 id="5">Example of use</h2><p>get_tp([.5, .1, .1, .01, .2])</p><h2 id="7">subfunctions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_tR_old</h1><!--introduction--><p>Gets scaled age at 1st brood</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2 id="3">Syntax</h2><p>[tR, tp, tx, tb, lR, lp, lx, lb, info] = <a href="../get_tp.m"><b>get_tR_old</b></a>(p, f, lb0)</p><h2 id="4">Description</h2><p>Obtains scaled age and length at 1st brood, puberty, fledging, birth. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at ages.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^x, v_H^p, tau_N</li><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><p>Output</p><div><ul><li>tR: scaled with age at 1st brood \tau_R = a_R k_M</li><li>tp: scaled with age at puberty \tau_p = a_p k_M</li><li>tx: scaled with age at birth \tau_x = a_x k_M</li><li>tb: scaled with age at birth \tau_b = a_b k_M</li><li>lR: scaler length at 1st brood</li><li>lp: scaler length at puberty</li><li>lx: scaler length at fledging</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2 id="5">Remarks</h2><p>This is an obsolate function, which is replaced by get_tR</p><h2 id="6">Example of use</h2><p>get_tp([.5, .1, .1, .01, .2])</p><h2 id="8">subfunctions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% get_tR
+%% get_tR_old
 % Gets scaled age at 1st brood
 
 %%
-function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
+function [tR, tp, tx, tb, lR, lp, lx, lb, info] = get_tR_old(p, f, lb0)
   % created at 2016/11/24 by Bas Kooijman
   
   %% Syntax
-  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR*>(p, f, lb0)
+  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR_old*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age and length at 1st brood, puberty, fledging, birth.
@@ -91,16 +91,19 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   %
   % Output
   %
-  % * tau_R: scaled with age at 1st brood \tau_R = a_R k_M
-  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
-  % * tau_x: scaled with age at birth \tau_x = a_x k_M
-  % * tau_b: scaled with age at birth \tau_b = a_b k_M
+  % * tR: scaled with age at 1st brood \tau_R = a_R k_M
+  % * tp: scaled with age at puberty \tau_p = a_p k_M
+  % * tx: scaled with age at birth \tau_x = a_x k_M
+  % * tb: scaled with age at birth \tau_b = a_b k_M
   % * lR: scaler length at 1st brood
   % * lp: scaler length at puberty
   % * lx: scaler length at fledging
   % * lb: scaler length at birth
   % * info: indicator equals 1 if successful
   
+  %% Remarks
+  % This is an obsolate function, which is replaced by get_tR
+
   %% Example of use
   % get_tp([.5, .1, .1, .01, .2])
 
@@ -145,41 +148,33 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     tR = NaN; lR = NaN; 
     info = 0;
   else % reproduction is possible
-    [tau_b, lb, info] = get_tb ([g, k, vHb] , f, lb0); 
-    options = odeset('Events', @event_xpR); 
-    [tau, vHlR, tau_xpR, vHlR_xpR] = ode45(@dget_vHlR, [0; 1e20], [vHb; lb; 0], options, f, g, k, lT, vHx, vHp, tN);
-    tau_x = tau_b + tau_xpR(1); tau_p = tau_b + tau_xpR(2); tau_R = tau_b + tau_xpR(3); 
-    lx = vHlR_xpR(1,2); lp = vHlR_xpR(2,2); lR = vHlR_xpR(3,2);
-    if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 || isreal(tau_R) == 0 % tb, tx, tp and tR must be real and positive
-      info = 0;
-    elseif tau_b < 0 || tau_x < 0 || tau_p < 0 || tau_R < 0 
-      info = 0;
-    end
+    [tb lb] = get_tb ([g, k, vHb] , f, lb0); 
+    li = f - lT; irB = 3 * (1 + f/ g); % k_M/ r_B
+    [lx, lb] = get_lp([g, k, lT, vHb, vHx], f, lb);
+    tx = tb + irB * log((li - lb)/ (li - lx));
+    [lp, lb, info] = get_lp([g, k, lT, vHb, vHp], f, lb0);
+    tp = tb + irB * log((li - lb)/ (li - lp));
+    tR = tp + fzero(@fntR, tN, [], f, tp, lp, li, irB, g, lT, k, vHp, tN); 
+    lR = li - (li - lp) * exp(- (tR - tp)/ irB);
   end
   
+  if ~isreal(tp) % tp must be real and positive
+      info = 0;
+  elseif tp < 0
+      info = 0;
+  end
 end
 
 %% subfunctions
 
-function dvHlR = dget_vHlR (t, vHlR, f, g, k, lT, vHx, vHp, tN)
-  vH = vHlR(1); l = vHlR(2); R = vHlR(3);
-  li = f - lT;
-  dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
-  if vH <= vHp
-    dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
-    dR = 0;
-  else
-    dvH = 0;
-    dR = f * (1 + (g + lT)/ l)/ (f + g) - k * vHp/ l^3;
-  end
-  dvHlR = [dvH; dl; dR];                 % pack to output
+function f = fntR(tR, f, tp, lp, li, irB, g, lT, k, vHp, tN)
+  pR = quad(@fnpR, tp, tp + tR, [], [], f, tp, lp, li, irB, g, lT, k, vHp);
+  f = 1 - k * vHp/ f^3 - pR(end)/ tN;
 end
 
-function [value,isterminal,direction] = event_xpR(t, vHlR, f, g, k, lT, vHx, vHp, tN)
-  % vHlR: 3-vector with [vH; l; R]
-  value = [[vHx; vHp] - vHlR(1); vHlR(3) - tN * (1 - k * vHp/ f^3)];
-  isterminal = [0; 0; 1];
-  direction = [0; 0; 0]; 
+function pR = fnpR(t, f, tp, lp, li, irB, g, lT, k, vHp)
+  l = li - (li - lp) * exp(- (t- tp)/ irB);
+  pR = f * (1 + (g + lT) ./ l)/ (f + g) - k * vHp ./ l .^ 3;
 end
 ##### SOURCE END #####
 --></body></html>

@@ -72,7 +72,7 @@ switch phylum
                d_V = 0.17;
         end
     case 'Echinodermata'                           % Deuterostomata
-        d_V = 0.09;
+        d_V = 0.09; % (AFDW)
     case 'Hemichordata'
         d_V = 0.07;
     case 'Chordata'

@@ -3,9 +3,7 @@
 
 %%
 function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
-  % created 2012/08/18 by Bas Kooijman, modified 2014/07/22
-  % last modified by Dina Lika 2016/03/21
-  % modified 2018/09/10 (t -> tau) Nina Marn
+  % created 2019/02/04 by Bas Kooijman
   
   %% Syntax
   % [tau_p, tau_x, tau_b, lp, lx, lb, info] = <../get_tx.m *get_tx*> (p, f)
@@ -14,8 +12,7 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
   % An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast 
   %    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). 
-  % Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birt. 
-  % Assumes von Bert growth since age 0
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birth. 
   %
   % Input
   %
@@ -29,7 +26,7 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   % * info: indicator equals 1 if successful, 0 otherwise
   %
   %% Remarks
-  % uses dget_lx
+  % uses integration over scaled age with event detection; this function replaces get_tx_old 
 
   % unpack pars
   g   = p(1); % -, energy investment ratio
@@ -43,13 +40,10 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   else
     sF = 1e10;  % fast development
   end
-  [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
-  info =1;
-  l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
-  tau_b = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
-  %tb = 3 * lb/ g;
-  tau_x = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
-  tau_p = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
+  options = odeset('Events', @event_bxp); 
+  [tau, vHl, tau_bxp, vHl_bxp] = ode45(@dget_lx, [0; 1e20], [1e-20; 1e-20], options, f, g, k, lT, vHb, vHx, vHp, sF);
+  info = 1;
+  tau_b = tau_bxp(1); tau_x = tau_bxp(2); tau_p = tau_bxp(3); lb = vHl_bxp(1,2); lx = vHl_bxp(2,2); lp = vHl_bxp(3,2);
   if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 % tb, tx and tp must be real and positive
     info = 0;
   elseif tau_b < 0 || tau_x < 0 || tau_p < 0
@@ -58,17 +52,25 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
 
 end
 
-% subfuction
+% subfunctions
 
-function dl = dget_lx (vH, l, f, g, k, lT, vHb, sF)
-if vH < vHb
-  li = sF * f; % -, scaled ultimate length
-  f  = sF * f; % -, scaled functional response
-else
-  li = f - lT;
-end
-dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
-dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
-dl = dl/ dvH;                     % d/d v_H l
+function dvHl = dget_lx (t, vHl, f, g, k, lT, vHb, vHx, vHp, sF)
+  vH = vHl(1); l = vHl(2);
+  if vH < vHb
+    li = sF * f; % -, scaled ultimate length
+    f  = sF * f; % -, scaled functional response
+  else
+    li = f - lT;
+  end
+  dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
+  dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
+  dvHl = [dvH; dl];                 % pack to output
 end
 
+
+function [value,isterminal,direction] = event_bxp(t, vHl, f, g, k, lT, vHb, vHx, vHp, sF)
+  % vHl: 2-vector with [vH; l]
+  value = [vHb; vHx; vHp] - vHl(1);
+  isterminal = [0; 0; 1];
+  direction = [0; 0; 0]; 
+end

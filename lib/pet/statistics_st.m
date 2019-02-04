@@ -577,7 +577,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     t_g = t_0 + a_b; % gestation/incubation time. Note that t_0 is always given at T_body!
     stat.t_g = t_g; units.t_g = 'd'; label.t_g = 'gestation time'; temp.t_g = T; fresp.t_g = f;
   end  
-  %
   
   % start/end shrinking
   if strcmp(model, 'ssj')
@@ -635,6 +634,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       stat.E_Wj = E_Wj; units.E_Wj = 'J';   label.E_Wj = 'energy content at metamorphosis'; temp.E_Wj = NaN; fresp.E_Wj = f;
       stat.a_j = a_j;   units.a_j = 'd';    label.a_j = 'age at metamorphosis'; temp.a_j = T; fresp.a_j = f;
   end
+
   
   % puberty
   L_p = L_m * l_p; M_Vp = M_V * L_p^3; M_Ep = f * E_m * L_p^3/ mu_E; E_Wp = M_Vp * mu_V + M_Ep * mu_E;
@@ -656,8 +656,11 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.E_Wp = E_Wp;    units.E_Wp = 'J';    label.E_Wp = 'energy content at puberty'; temp.E_Wp = NaN; fresp.E_Wp = f;
   stat.a_p = a_p;      units.a_p = 'd';     label.a_p = 'age at puberty'; temp.a_p = T; fresp.a_p = f;
   stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy divestment ratio at puberty';  temp.g_Hp = NaN; fresp.g_Hp = NaN;
-  
-  
+  %
+  if stat.c_T * p_Am * s_M * L_p^2 * (1 - kap) * f * a_p < E_Hp % p_Am at T_ref, but a_p at T_typical
+    fprintf('Warning from statistics_st: (1 - kap) * f * s_M * {p_Am} * L_p^2 < E_Hp \n');
+  end
+   
   % emergence
   switch model
     case 'hep' % acceleration between a and p; emergence at j
@@ -812,8 +815,12 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   p_ref = TC * p_Am * L_m^2;        % J/d, max assimilation power at max size
   switch model
     case {'std', 'stf', 'stx', 'ssj'}
-      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
-      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p); 
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp]; 
+      if L_i < L_p || L_i - L_p < 1e-4
+        p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_p + 1e-4], f, pars_power, l_b, l_p);
+      else
+        p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p);
+      end
     case 'sbp' % no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i + 1e-6], f, pars_power, l_b, l_p); 

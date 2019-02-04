@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tp</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-10"><meta name="DC.source" content="get_tp.m"><style type="text/css">
+      --><title>get_tp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="get_tp.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,8 +66,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_tp</h1><!--introduction--><p>Gets scaled age at puberty</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tau_p, tau_b, lp, lb, info] = <a href="../get_tp.m"><b>get_tp</b></a>(p, f, lb0)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled age at puberty. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><pre>    or optional 2-vector with scaled length, l, and scaled maturity, vH
-    for a juvenile that is now exposed to f, but previously at another f</pre><p>Output</p><div><ul><li>tau_p: scaled with age at puberty \tau_p = a_p k_M</li></ul></div><pre>    if length(lb0)==2, tp is the scaled time till puberty</pre><div><ul><li>tau_b: scaled with age at birth \tau_b = a_b k_M</li><li>lp: scaler length at puberty</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Function <a href="get_tp_foetus.html"><b>get_tp_foetus</b></a> does the same for foetal development; the result depends on embryonal development.</p><h2>Example of use<a name="6"></a></h2><p>get_tp([.5, .1, .1, .01, .2])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_tp</h1><!--introduction--><p>Gets scaled age at puberty</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_p, tau_b, lp, lb, info] = <a href="../get_tp.m"><b>get_tp</b></a>(p, f, lb0)</p><h2 id="4">Description</h2><p>Obtains scaled age at puberty. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><pre>    or optional 2-vector with scaled length, l, and scaled maturity, vH
+    for a juvenile that is now exposed to f, but previously at another f</pre><p>Output</p><div><ul><li>tau_p: scaled with age at puberty \tau_p = a_p k_M</li></ul></div><pre>    if length(lb0)==2, tp is the scaled time till puberty</pre><div><ul><li>tau_b: scaled with age at birth \tau_b = a_b k_M</li><li>lp: scaler length at puberty</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2 id="5">Remarks</h2><p>Function <a href="get_tp_foetus.html"><b>get_tp_foetus</b></a> does the same for foetal development; the result depends on embryonal development.</p><h2 id="6">Example of use</h2><p>get_tp([.5, .1, .1, .01, .2])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tp
 % Gets scaled age at puberty
@@ -128,6 +128,14 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
     lb0 = [];
   end
 
+  if vHp < vHb
+    fprintf('Warning from get_tp: vHp < vHb\n')
+    [tau_b, l_b] = get_tb(p([1 2 4]), f);
+    tau_p = []; l_p = [];
+    info = 0;
+    return
+  end
+
   if k == 1 && f * (f - lT)^2 > vHp * k
     lb = vHb^(1/3); 
     tau_b = get_tb(p([1 2 4]), f, lb);
@@ -138,19 +146,22 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
     info = 1;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
     pars_lb = p([1 2 4]);
-    [tau_b, lb, info] = get_tb (pars_lb, f, lb0); 
+    [tau_b, lb, info] = get_tb (pars_lb, f); 
     tau_p = 1e20; % tau_p is never reached
     lp = 1;    % lp is nerver reached
   else % reproduction is possible
-    li = f - lT;
-    irB = 3 * (1 + f/ g); % k_M/ r_B
-    [lp, lb, info] = get_lp(p, f, lb0);
     if length(lb0) ~= 2 % lb0 = l_b 
-      tau_b = get_tb([g, k, vHb], f, lb);
-      tau_p = tau_b + irB * log((li - lb)/ (li - lp));
+      [tau_b, lb, info] = get_tb([g, k, vHb], f);      
+      options = odeset('Events', @event_puberty); s_M = 1;
+      [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
+      tau_p = tau_b + tp; lp = vHlp(2);
+
     else % lb0 = l and t for a juvenile
       tau_b = NaN;
+      [lp, lb, info] = get_lp(p, f, lb0);
       l = lb0(1);
+      li = f - lT;
+      irB = 3 * (1 + f/ g); % k_M/ r_B
       tau_p = irB * log((li - l)/ (li - lp));
     end
   end
@@ -160,5 +171,13 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   elseif tau_p < 0
       info = 0;
   end
+end
+
+function [value,isterminal,direction] = event_puberty(t, vHl, k, lT, g, f, s_M, vHp)
+    % vHl: 2-vector with [vH; l]
+    value = vHp - vHl(1);
+    isterminal = 1;
+    direction = 0; 
+end
 ##### SOURCE END #####
 --></body></html>

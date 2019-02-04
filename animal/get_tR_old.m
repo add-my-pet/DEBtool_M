@@ -1,12 +1,12 @@
-%% get_tR
+%% get_tR_old
 % Gets scaled age at 1st brood
 
 %%
-function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
+function [tR, tp, tx, tb, lR, lp, lx, lb, info] = get_tR_old(p, f, lb0)
   % created at 2016/11/24 by Bas Kooijman
   
   %% Syntax
-  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR*>(p, f, lb0)
+  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR_old*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age and length at 1st brood, puberty, fledging, birth.
@@ -21,16 +21,19 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   %
   % Output
   %
-  % * tau_R: scaled with age at 1st brood \tau_R = a_R k_M
-  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
-  % * tau_x: scaled with age at birth \tau_x = a_x k_M
-  % * tau_b: scaled with age at birth \tau_b = a_b k_M
+  % * tR: scaled with age at 1st brood \tau_R = a_R k_M
+  % * tp: scaled with age at puberty \tau_p = a_p k_M
+  % * tx: scaled with age at birth \tau_x = a_x k_M
+  % * tb: scaled with age at birth \tau_b = a_b k_M
   % * lR: scaler length at 1st brood
   % * lp: scaler length at puberty
   % * lx: scaler length at fledging
   % * lb: scaler length at birth
   % * info: indicator equals 1 if successful
   
+  %% Remarks
+  % This is an obsolate function, which is replaced by get_tR
+
   %% Example of use
   % get_tp([.5, .1, .1, .01, .2])
 
@@ -75,39 +78,31 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     tR = NaN; lR = NaN; 
     info = 0;
   else % reproduction is possible
-    [tau_b, lb, info] = get_tb ([g, k, vHb] , f, lb0); 
-    options = odeset('Events', @event_xpR); 
-    [tau, vHlR, tau_xpR, vHlR_xpR] = ode45(@dget_vHlR, [0; 1e20], [vHb; lb; 0], options, f, g, k, lT, vHx, vHp, tN);
-    tau_x = tau_b + tau_xpR(1); tau_p = tau_b + tau_xpR(2); tau_R = tau_b + tau_xpR(3); 
-    lx = vHlR_xpR(1,2); lp = vHlR_xpR(2,2); lR = vHlR_xpR(3,2);
-    if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 || isreal(tau_R) == 0 % tb, tx, tp and tR must be real and positive
-      info = 0;
-    elseif tau_b < 0 || tau_x < 0 || tau_p < 0 || tau_R < 0 
-      info = 0;
-    end
+    [tb lb] = get_tb ([g, k, vHb] , f, lb0); 
+    li = f - lT; irB = 3 * (1 + f/ g); % k_M/ r_B
+    [lx, lb] = get_lp([g, k, lT, vHb, vHx], f, lb);
+    tx = tb + irB * log((li - lb)/ (li - lx));
+    [lp, lb, info] = get_lp([g, k, lT, vHb, vHp], f, lb0);
+    tp = tb + irB * log((li - lb)/ (li - lp));
+    tR = tp + fzero(@fntR, tN, [], f, tp, lp, li, irB, g, lT, k, vHp, tN); 
+    lR = li - (li - lp) * exp(- (tR - tp)/ irB);
   end
   
+  if ~isreal(tp) % tp must be real and positive
+      info = 0;
+  elseif tp < 0
+      info = 0;
+  end
 end
 
 %% subfunctions
 
-function dvHlR = dget_vHlR (t, vHlR, f, g, k, lT, vHx, vHp, tN)
-  vH = vHlR(1); l = vHlR(2); R = vHlR(3);
-  li = f - lT;
-  dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
-  if vH <= vHp
-    dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
-    dR = 0;
-  else
-    dvH = 0;
-    dR = f * (1 + (g + lT)/ l)/ (f + g) - k * vHp/ l^3;
-  end
-  dvHlR = [dvH; dl; dR];                 % pack to output
+function f = fntR(tR, f, tp, lp, li, irB, g, lT, k, vHp, tN)
+  pR = quad(@fnpR, tp, tp + tR, [], [], f, tp, lp, li, irB, g, lT, k, vHp);
+  f = 1 - k * vHp/ f^3 - pR(end)/ tN;
 end
 
-function [value,isterminal,direction] = event_xpR(t, vHlR, f, g, k, lT, vHx, vHp, tN)
-  % vHlR: 3-vector with [vH; l; R]
-  value = [[vHx; vHp] - vHlR(1); vHlR(3) - tN * (1 - k * vHp/ f^3)];
-  isterminal = [0; 0; 1];
-  direction = [0; 0; 0]; 
+function pR = fnpR(t, f, tp, lp, li, irB, g, lT, k, vHp)
+  l = li - (li - lp) * exp(- (t- tp)/ irB);
+  pR = f * (1 + (g + lT) ./ l)/ (f + g) - k * vHp ./ l .^ 3;
 end

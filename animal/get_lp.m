@@ -4,7 +4,7 @@
 %%
 function [lp, lb, info] = get_lp (p, f, lb0)
   % created at 2008/06/04 by Bas Kooijman, 
-  % modified 2014/03/03 Starrlight Augustine, 2015/01/18
+  % modified 2014/03/03 Starrlight Augustine, 2015/01/18, 2019/01/29 by Bas Kooijman
   
   %% Syntax
   % [lp, lb, info] = <../get_lp.m *get_lp*> (p, f, lb0)
@@ -13,7 +13,7 @@ function [lp, lb, info] = get_lp (p, f, lb0)
   % Obtains scaled length at puberty at constant food density. 
   % If scaled length at birth (second input) is not specified, it is computed (using automatic initial estimate); 
   % If it is specified, however, is it just copied to the (second) output. 
-  % Food density is assumed to be constant.
+  % Food density is assumed to be constant. scaled length at puberty is obtained ny integrating over time with even detection
   %
   % Input
   %
@@ -85,18 +85,24 @@ function [lp, lb, info] = get_lp (p, f, lb0)
        lp = [];
        info = 0;
        fprintf('Warning in get_lp: maturity does not increase at birth \n');
-    else
-       [vH lbp] = ode45(@dget_l_ISO, [vHb; vHp],lb, [], k, lT, g, f, 1); 
-       lp = min(li - 1e-4, lbp(end));
+    else % compute using integration in maturity
+       options = odeset('Events', @event_puberty); s_M = 1;
+       [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
+        lp = vHlp(2);
     end
   else % for a juvenile of length l and maturity vH
     if f * l^2 * (g + l) < vH * k * (g + f) 
        lp = [];
        info = 0;
        fprintf('Warning in get_lp: maturity does not increase initially \n');
-    elseif vH + 1e-4 < vHp 
-      [vH lbp] = ode45(@dget_l_ISO, [vH; vHp],l, [], k, lT, g, f, 1); 
+    elseif vH + 1e-4 < vHp % compute using integration in maturity
+      [vH, lbp] = ode45(@dget_l_ISO, [vH; vHp], l, [], k, lT, g, f, 1); 
       lp = lbp(end);
+      if lp > 0.8 * f % recompute using integration in time with event
+        options = odeset('Events', @event_puberty); s_M = 1;
+        [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
+        lp = vHlp(2);
+      end    
     else
       lp = l;
       info = 0;
@@ -104,3 +110,14 @@ function [lp, lb, info] = get_lp (p, f, lb0)
     end
   end
   
+%   if lp > f - 1e-4
+%     fprintf('Warning in get_lp: l_p very close to l_i\n')      
+%   end
+end
+
+function [value,isterminal,direction] = event_puberty(t, vHl, k, lT, g, f, s_M, vHp)
+    % vHl: 2-vector with [vH; l]
+    value = vHp - vHl(1);
+    isterminal = 1;
+    direction = 0; 
+end

@@ -54,6 +54,7 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   %  SC = f (g/ L + (1 + LT/L)/ Lm)/ (f + g); Lm = v/ (kM g)
   %
   % unpack parameters; parameter sequence, cf get_pars_r
+
   kap = p(1); kapR = p(2); g = p(3); kJ = p(4); kM = p(5);
   LT = p(6); v = p(7); UHb = p(8); UHp = p(9);
 

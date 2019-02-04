@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>maturity</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="maturity.m"><style type="text/css">
+      --><title>maturity</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="maturity_old.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,19 +66,20 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>maturity</h1><!--introduction--><p>calculates the scaled maturity</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, a, info] = <a href="../maturity.m"><b>maturity</b></a> (L, f, p)</p><h2 id="4">Description</h2><p>calculates the scaled maturity UH = MH/ {JEAm} at constant food density.</p><p>Input</p><div><ul><li>L: n-vector with length, ordered from small to large</li><li>p: 9-vector with parameters (see below)</li><li>F: scalar with (constant) scaled functional response</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm}</li><li>a: n-vactor with ages at which lengths are reached</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
+  </style></head><body><div class="content"><h1>maturity</h1><!--introduction--><p>calculates the scaled maturity</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, a, info] = <a href="../maturity_old.m"><b>maturity</b></a> (L, f, p)</p><h2 id="4">Description</h2><p>calculates the scaled maturity UH = MH/ {JEAm} at constant food density.</p><p>Input</p><div><ul><li>L: n-vector with length, ordered from small to large</li><li>p: 9-vector with parameters (see below)</li><li>F: scalar with (constant) scaled functional response</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm}</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
 See &lt;maturity_j.html *maturity_j*&gt; for type M accleration and
-&lt;maturity_s.html *maturity_s*&gt; for delayed type M acceleration.</pre><h2 id="6">Example of use</h2><pre>[H, a, info] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+&lt;maturity_s.html *maturity_s*&gt; for delayed type M acceleration.
+obsolate function, which is replace by maturity</pre><h2 id="6">Example of use</h2><pre>[H, a, info] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% maturity
 % calculates the scaled maturity
 
 %%
-function [H, a, info] = maturity(L, f, p)
+function [H, a, info] = maturity_old(L, f, p)
   %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03
   
   %% Syntax
-  % [H, a, info] = <../maturity.m *maturity*> (L, f, p)
+  % [H, a, info] = <../maturity_old.m *maturity*> (L, f, p)
   
   %% Description
   % calculates the scaled maturity UH = MH/ {JEAm} at constant food density. 
@@ -92,13 +93,13 @@ function [H, a, info] = maturity(L, f, p)
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm}
-  % * a: n-vactor with ages at which lengths are reached
   % * info: scalar for 1 for success, 0 otherwise
   
   %% Remarks
   %  called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
   % See <maturity_j.html *maturity_j*> for type M accleration and
   % <maturity_s.html *maturity_s*> for delayed type M acceleration.
+  % obsolate function, which is replace by maturity
   
   %% Example of use
   %  [H, a, info] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])
@@ -120,35 +121,44 @@ function [H, a, info] = maturity(L, f, p)
   end
 
   Lm = v/ kM/ g; lT = LT/ Lm; k = kJ/ kM;
-  l = L(:)/ Lm; n = sum(l == 1); 
-  if n > 0
-    l(l == l) = l(l == l) - fliplr(1:n) * 1e-4;% -, scaled lengths 
-  end
-
+  
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
   uHp = Hp * g^2 * kM^3/ (v^2); vHp = uHp/ (1 - kap);
-  [uE0, lb, info] = get_ue0([g, k, vHb], f);
-
-  options = odeset('Events', @event_length); 
-  [t, luEuH, t_l, luEuH_l, event_l] = ode23(@dget_luEuH, [0; 1e20], [1e-10; uE0; 0], options, l, f, kap, g, k, lT, uHb, uHp);
-  [l in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
+  [tp, tb, lp, lb, info] = get_tp([g; k; lT; vHb; vHp], f);
+  Lp = Lm * lp; 
+  
+  H = Hp * (L >= Lp); a = tp * (L > Lp)/ kM; % prefill output for adults
+  
+  n_mat = sum(L < Lp); % number of embryo and juvenile values: H < Hp
+  if  n_mat == 0 % all adult lengths
+    return
+  else % some embryo and juvenile values
+    L = L(L< Lp); % select embryo and juvenile values
+    ue0 = get_ue0([g; k; vHb], f, lb); %% initial scaled reserve M_E^0/{J_EAm}
+    [l_out, teh] = ode45(@dget_teh, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
+    teh(1:2,:) = []; % remove added L values
+    H(1:n_mat) = teh(:,3) * v^2/ g^2/ kM^3; 
+    a(1:n_mat) = teh(:,1)/ kM;
+  end
 
 end
 
 % subfunctions
-function dluEuH = dget_luEuH(tau, luEuH, l, f, kap, g, k, lT, uHb, uHp)
-
-  % tau: a k_M; scaled age
-  % luEuH: 3-vector with (l, uE, uH) 
-  %   scalar with scaled length  l = L g k_M/ v
+function dtEH = dget_teh(l, tEH, k, g, kap, f, uHb, uHp, lT)
+  % dtEH = dget_teh(l, tEH)
+  % l: scalar with scaled length  l = L g k_M/ v
+  % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
+  %   tau = a k_M; scaled age
   %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
   %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
-  % dluEuH: 3-vector with (dl/dtau, duE/dtau, duH/dtau)
+  % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
+  % called by maturity
   
-  l = luEuH(1); l2 = l * l; l3 = l2 * l; % scaled length
-  uE = max(1e-10,luEuH(2)); % scaled reserve
-  uH = luEuH(3); % scaled maturity
-  
+  t = tEH(1); % scaled age
+  uE = max(1e-10,tEH(2)); % scaled reserve
+  uH = tEH(3); % scaled maturity
+  l2 = l * l; l3 = l2 * l;
+
   if uH < uHb % isomorphic embryo
     r = (g * uE/ l - l3)/ (uE + l3); % spec growth rate in scaled time
     dl = l * r/ 3;
@@ -166,15 +176,9 @@ function dluEuH = dget_luEuH(tau, luEuH, l, f, kap, g, k, lT, uHb, uHp)
     duH = 0; % no maturation in adults
   end
 
-  dluEuH = [dl; duE; duH]; % pack output
+  % then obtain dt/dl, duE/dl, duH/dl, 
+  dtEH = [1; duE; duH]/ dl;
 end
 
-function [value,isterminal,direction] = event_length(t, luEuH, l, f, kap, g, k, lT, uHb, uHp)
-  % luEuH: 3-vector with [l; uE; uH]
-  n = length(l);
-  value = l - luEuH(1);
-  isterminal = zeros(n,1); isterminal(n) = 1;
-  direction = zeros(n,1); 
-end
 ##### SOURCE END #####
 --></body></html>

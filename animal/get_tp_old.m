@@ -2,13 +2,13 @@
 % Gets scaled age at puberty
 
 %%
-function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
+function [tau_p, tau_b, lp, lb, info] = get_tp_old(p, f, lb0)
   % created at 2008/06/04 by Bas Kooijman, 
   % modified 2014/03/04 Starrlight Augustine, 2015/01/18 Bas Kooijman
   % modified 2018/09/10 (t -> tau) Nina Marn
   
   %% Syntax
-  % [tau_p, tau_b, lp, lb, info] = <../get_tp.m *get_tp*>(p, f, lb0)
+  % [tau_p, tau_b, lp, lb, info] = <../get_tp_old.m *get_tp_old*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age at puberty.
@@ -37,6 +37,7 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   
   %% Remarks
   % Function <get_tp_foetus.html *get_tp_foetus*> does the same for foetal development; the result depends on embryonal development. 
+  % obsolate function, replaced by get_tp
 
   %% Example of use
   % get_tp([.5, .1, .1, .01, .2])
@@ -57,14 +58,6 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
     lb0 = [];
   end
 
-  if vHp < vHb
-    fprintf('Warning from get_tp: vHp < vHb\n')
-    [tau_b, l_b] = get_tb(p([1 2 4]), f);
-    tau_p = []; l_p = [];
-    info = 0;
-    return
-  end
-
   if k == 1 && f * (f - lT)^2 > vHp * k
     lb = vHb^(1/3); 
     tau_b = get_tb(p([1 2 4]), f, lb);
@@ -75,22 +68,19 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
     info = 1;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
     pars_lb = p([1 2 4]);
-    [tau_b, lb, info] = get_tb (pars_lb, f); 
+    [tau_b, lb, info] = get_tb (pars_lb, f, lb0); 
     tau_p = 1e20; % tau_p is never reached
     lp = 1;    % lp is nerver reached
   else % reproduction is possible
+    li = f - lT;
+    irB = 3 * (1 + f/ g); % k_M/ r_B
+    [lp, lb, info] = get_lp(p, f, lb0);
     if length(lb0) ~= 2 % lb0 = l_b 
-      [tau_b, lb, info] = get_tb([g, k, vHb], f);      
-      options = odeset('Events', @event_puberty); s_M = 1;
-      [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
-      tau_p = tau_b + tp; lp = vHlp(2);
-
+      tau_b = get_tb([g, k, vHb], f, lb);
+      tau_p = tau_b + irB * log((li - lb)/ (li - lp));
     else % lb0 = l and t for a juvenile
       tau_b = NaN;
-      [lp, lb, info] = get_lp(p, f, lb0);
       l = lb0(1);
-      li = f - lT;
-      irB = 3 * (1 + f/ g); % k_M/ r_B
       tau_p = irB * log((li - l)/ (li - lp));
     end
   end
@@ -100,11 +90,3 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   elseif tau_p < 0
       info = 0;
   end
-end
-
-function [value,isterminal,direction] = event_puberty(t, vHl, k, lT, g, f, s_M, vHp)
-    % vHl: 2-vector with [vH; l]
-    value = vHp - vHl(1);
-    isterminal = 1;
-    direction = 0; 
-end
