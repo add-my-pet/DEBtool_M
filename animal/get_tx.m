@@ -40,20 +40,12 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
   else
     sF = 1e10;  % fast development
   end
-<<<<<<< HEAD
+
   options = odeset('Events', @event_bxp); 
   [tau, vHl, tau_bxp, vHl_bxp] = ode45(@dget_lx, [0; 1e20], [1e-20; 1e-20], options, f, g, k, lT, vHb, vHx, vHp, sF);
-  info = 1;
   tau_b = tau_bxp(1); tau_x = tau_bxp(2); tau_p = tau_bxp(3); lb = vHl_bxp(1,2); lx = vHl_bxp(2,2); lp = vHl_bxp(3,2);
-=======
-  [vH, l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
-  info =1;
-  l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
-  tau_b = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
-  %tb = 3 * lb/ g;
-  tau_x = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lx));
-  tau_p = tau_b + 3 * (1 + f/ g) * log((li - lb)/ (li - lp));
->>>>>>> 009b11fb354a2f57614ed3e957ab6afd889a6023
+  info = 1;
+
   if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 % tb, tx and tp must be real and positive
     info = 0;
   elseif tau_b < 0 || tau_x < 0 || tau_p < 0
