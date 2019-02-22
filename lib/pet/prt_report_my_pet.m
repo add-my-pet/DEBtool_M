@@ -197,12 +197,12 @@ fprintf(oid, '      background-color: #FFE7C6\n');                          % pi
 fprintf(oid, '    }\n\n');
 
 fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');        % grey on even rows
-fprintf(oid, '    td:nth-child(even){border-right: solid 1px black}\n\n');  % lines between species
+fprintf(oid, '    td:nth-child(odd){border-left: solid 1px black}\n\n');  % lines between species
 
 if n_fSpec == 1 && n_spec > 2 % font colors if focus species and more than one comparison species are present
   % parameters
   for i = 1:length(fldsPar)
-    rgb = round(100 * color_lava(eccPar(i))); 
+    rgb = round(255 * color_lava(eccPar(i))); 
 fprintf(oid,['    #', fldsPar{i}, ' {\n']);
 fprintf(oid,['      color: rgb(', num2str(rgb(1)), ',', num2str(rgb(2)), ',', num2str(rgb(3)), ')\n']); % font color for parameter i
 fprintf(oid, '    }\n\n');
@@ -210,7 +210,7 @@ fprintf(oid, '    }\n\n');
  
   % statistics
   for i = 1:length(fldsStat)
-    rgb = round(100 * color_lava(eccStat(i))); 
+    rgb = round(255 * color_lava(eccStat(i))); 
 fprintf(oid,['    #', fldsStat{i}, ' {\n']);
 fprintf(oid,['      color: rgb(', num2str(rgb(1)), ',', num2str(rgb(2)), ',', num2str(rgb(3)), ')\n']); % font color for parameter i
 fprintf(oid, '    }\n\n');
@@ -464,10 +464,27 @@ fprintf(oid, '                  tr[i].style.display = "none";\n');
 fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
-fprintf(oid, '          } else {\n');
-fprintf(oid, '              for (i = 0; i < tr.length; i++) {\n');
-fprintf(oid, '                tr[i].style.display = "";\n');
+fprintf(oid, '          } else if (filter == "L") {\n');
+fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
+fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "model" ||\n');
+for j = 1:length(fldsStat)-1
+fprintf(oid,['                    td.innerHTML == "', fldsStat{j},'" ||\n']);
+end
+fprintf(oid,['                    td.innerHTML == "', fldsStat{end},'"\n']);
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n'); % show all
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
+fprintf(oid, '            }\n');
+fprintf(oid, '          } else {\n'); % complete list
+fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
+fprintf(oid, '              tr[i].style.display = "";\n');
+fprintf(oid, '            }\n');
 fprintf(oid, '          }\n');
 fprintf(oid, '        }\n\n');
 
