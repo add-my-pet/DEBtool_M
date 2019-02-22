@@ -129,6 +129,7 @@ function estim_options (key, val)
         fprintf(' 1 - prints results to screen, saves to .mat file\n');
         fprintf(' 2 - prints results to screen, saves to .mat file, figures to .png files\n');
         fprintf(' 3 - prints results to screen, saves to .mat file, figures to .png files, report to .html file\n');
+        fprintf(' 4 - prints results to screen, saves to .mat file, figures to .png files, report to .html file with results of related species\n');
       else
         results_output = val;
       end
