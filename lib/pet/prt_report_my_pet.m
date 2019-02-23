@@ -22,37 +22,48 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %    - par: structure (output of <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet_par*> file)
 %
 % * comparisonSpecies: cell string with entry names, might be empty
-% * T: optional scalar with temperature in Kelvin (default: T_typical, which is species-specific)
+% * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
-% * destinationFolder: optional string with destination folder the files are printed to (default: current folder)
+% * destinationFolder: optional string with destination folder the output
+% html-file (default: current folder) 
+%
+% Output:
+%
+% * no Malab output, but a html-file is written with report-table
 
 %% Remarks
-% The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
-% If the focus species is specified by string (rather than by data), its parameters are also obtained from allStat.mat. 
-% If the focus species also occurs in the comparison species, it is remove from that list.
-%
 % The difference between focus and comparison species only becomes important in the case of more than one comparison species and
 % color-coding is used to indicate how eccentric the focus-species is from the comparison-species.
 % The lava color-scheme is used, from white (high) to black (low), via red and blue, to quantify the squared distance to the mean of the comparison
 % species as a transformed fraction of the variance of the comparison-species for each statistic or parameter.
 % If you have a set of species and want to avoid colors, treat them all as comparison species.
+% 
+% The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
+% If the focus species is specified by string (rather than by data), its parameters are also obtained from allStat.mat. 
+% If the focus species also occurs in the comparison species, it is remove from that list.
 %
 % The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from
-% the statictics and the parameters.
+% the statictics and/or the parameters.
 %
 % NA means "not applicable", meaning that the parameter or statistic does not depend on temperature or food.
 
 
 %% Example of use
 % load('results_my_pet.mat'); prt_report_my_pet({metaData, metaPar, par}, [], T, f, destinationFolder)
+%
 % or
+%
 % prt_report_my_pet('Daphnia_magna')
+%
 % or
-% prt_report_my_pet('Daphnia_pulex','', C2K(22), 0.8)
+%
+% prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)
+%
 % or
+%
 % prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
 
-% focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes fore getting them)
+% focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
   focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
   allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
@@ -75,47 +86,55 @@ else  % use allStat.mat as parameter source for focusSpecies
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
   n_fSpec = 1; n_spec = 1; % number of focus species
 end
+modelList = {metaPar.model}; % initiate cell string for model
+tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
+specListPrintNm = {strrep(specList{1}, '_', ' ')}; % initiate cell string for species names as they appear above the table
 
-if exist('T', 'var')
-  tempList.(specList{1}) = T; % temperature for statistics
+fldsPar = fieldnmnst_st(parList.(specList{1})); % fieldnames of all pars
+
+if exist('T', 'var') % fix temperature for all species
+  T_free = 0; 
+else
+  T_free = 1; % temperature for each species equals typical body temperature
 end
 
-% scaled functional response
+% scaled functional response for all species
 if ~exist('f', 'var') || isempty(f)
   f = 1;
 end
 
 % path+filename of output file
 if exist('destinationFolder','var')
-  fileName = [destinationFolder, 'report_', species, '.html'];
+  fileName = [destinationFolder, 'report_', focusSpecies, '.html'];
 else
   fileName = ['report_', focusSpecies, '.html'];
 end
  
 % focus species: get statistics
-modelList = {metaPar.model};
-tempList.(specList{1}) = metaData.T_typical;
-specListPrintNm = {strrep(specList{1}, '_', ' ')};
-
-fldsPar = fieldnmnst_st(parList.(specList{1})); % fieldnames of all pars
-
-[statList.(specList{1}), txtStat.(specList{1})] = statistics_st(modelList{1}, parList.(specList{1}), tempList.(specList{1}), f);
+if T_free
+  Ti = tempList.(specList{1}); % temperature for statistics
+else
+  Ti = T;
+end
+[statList.(specList{1}), txtStat.(specList{1})] = statistics_st(modelList{1}, parList.(specList{1}), Ti, f);
 statList.(specList{1}) = rmfield(statList.(specList{1}), {'T','f'}); % remove fields T and f, because it is already in txtStat
 fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics
 % [webStatFields, webColStat] = get_statfields(metaPar.model); % which statistics in what order should be printed in the table
 
 % comparison species
-if exist('comparisonSpecies', 'var')
+if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
   comparisonSpecies = comparisonSpecies(~strcmp(focusSpecies, comparisonSpecies)); % remove focus species from comparison species
   specList = [specList; comparisonSpecies]; n_spec = length(specList); % list of all entries to be shown in the table
   for k = 2:n_spec
     [parList.(specList{k}), metaPar, txtPar, metaData] = allStat2par(specList{k});
     modelList{k} = metaPar.model;
     tempList.(specList{k}) = metaData.T_typical;
-    if exist('T', 'var')
-      tempList.(specList{k}) = T;
+    if T_free
+      Ti = tempList.(specList{k}); % temperature for statistics
+    else
+      Ti = T;
     end
-    [statList.(specList{k}), txtStat.(specList{k})] = statistics_st(modelList{k}, parList.(specList{k}), tempList.(specList{k}), f);
+    [statList.(specList{k}), txtStat.(specList{k})] = statistics_st(modelList{k}, parList.(specList{k}), Ti, f);
     specListPrintNm{k} = strrep(specList{k}, '_', ' '); % list of all species names to be shown in the table
   end
 end
@@ -184,7 +203,7 @@ fprintf(oid, '      border: 1px solid #ddd; /* Add a grey border */\n');
 fprintf(oid, '      margin-bottom: 12px; /* Add some space below the input */\n');
 fprintf(oid, '    }\n\n');
 
-fprintf(oid, '    #specT {\n'); 
+fprintf(oid, '    #specPrintNm {\n'); 
 fprintf(oid, '      background-color: #f2f2f2\n');                          % grey species background
 fprintf(oid, '    }\n\n');
 
@@ -223,7 +242,7 @@ fprintf(oid, '</HEAD>\n\n');
 fprintf(oid, '<BODY>\n\n');
 
 			
-% print out search boxes before the tables
+% search boxes above the table
 fprintf(oid, '      <div>\n');
 fprintf(oid, '        <input type="text" id="InputSymbol" onkeyup="FunctionSymbol()" placeholder="Search for symbol ..">\n');
 fprintf(oid, '        <input type="text" id="InputUnits"  onkeyup="FunctionUnits()"  placeholder="Search for units ..">\n');
@@ -237,23 +256,30 @@ fprintf(oid, '      <TABLE id="Table">\n');
 % table head:    
 fprintf(oid, '        <TR id="species"> <TH colspan="2"></TH>\n');
 for k = 1:n_spec
-fprintf(oid, '          <TH colspan="2" id="specT">%s</TH>\n', specListPrintNm{k});
+fprintf(oid, '          <TH colspan="2" id="specPrintNm">%s</TH>\n', specListPrintNm{k});
 end
 fprintf(oid, '          <TH></TH> <TH>%s</TH>\n', datePrintNm);
 fprintf(oid, '        </TR>\n\n');
-
+%
 fprintf(oid, '        <TR id="head"> <TH>symbol</TH> <TH>units</TH>\n');
 for k = 1:n_spec
 fprintf(oid, '          <TH>value</TH> <TH>&deg;C</TH>\n');
 end
 fprintf(oid, '          <TH>func resp</TH> <TH>description</TH>\n');
 fprintf(oid, '        </TR>\n\n');
-
+%
 fprintf(oid, '        <TR id="model"> <TD style="font-weight:bold">model</TD> <TD>-</TD>\n');
 for k = 1:n_spec
 fprintf(oid,['          <TD>', modelList{k}, '</TD> <TD>NA</TD>\n']);
 end
 fprintf(oid, '          <TD align="center">NA</TD> <TD>typified model</TD>\n');
+fprintf(oid, '        </TR>\n\n');
+%
+fprintf(oid, '        <TR id="T_typical"> <TD style="font-weight:bold">T_typical</TD> <TD>&deg;C</TD>\n');
+for k = 1:n_spec
+fprintf(oid,['          <TD>', num2str(K2C(tempList.(specList{k}))), '</TD> <TD>NA</TD>\n']);
+end
+fprintf(oid, '          <TD align="center">NA</TD> <TD>typical body temperature</TD>\n');
 fprintf(oid, '        </TR>\n\n');
 
 % parameters:    
@@ -297,6 +323,7 @@ end
 fprintf(oid, '      </TABLE>\n\n');
 
 % search facilities
+% symbol
 fprintf(oid, '      <script>\n');
 fprintf(oid, '        function FunctionSymbol() {\n');
 fprintf(oid, '          // Declare variables\n');
@@ -305,7 +332,7 @@ fprintf(oid, '          input = document.getElementById("InputSymbol");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
 fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
-
+%
 fprintf(oid, '          // Loop through all table rows, and hide those who don''t match the search query\n');
 fprintf(oid, '          for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '          td = tr[i].getElementsByTagName("td")[0];\n');
@@ -318,7 +345,7 @@ fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
 fprintf(oid, '          }\n');
 fprintf(oid, '        }\n\n');
-
+% units
 fprintf(oid, '        function FunctionUnits() {\n');
 fprintf(oid, '          // Declare variables\n');
 fprintf(oid, '          var input, filter, table, tr, td, i;\n');
@@ -326,7 +353,7 @@ fprintf(oid, '          input = document.getElementById("InputUnits");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
 fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
-
+%
 fprintf(oid, '          // Loop through all table rows, and hide those who don''t match the search query\n');
 fprintf(oid, '          for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '          td = tr[i].getElementsByTagName("td")[2];\n');
@@ -339,7 +366,7 @@ fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
 fprintf(oid, '          }\n');
 fprintf(oid, '        }\n\n');
-
+% label (= description)
 fprintf(oid, '        function FunctionLabel() {\n');
 fprintf(oid, '          // Declare variables\n');
 fprintf(oid, '          var input, filter, table, tr, td, i;\n');
@@ -347,7 +374,7 @@ fprintf(oid, '          input = document.getElementById("InputLabel");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
 fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
-
+%
 fprintf(oid, '          // Loop through all table rows, and hide those who don''t match the search query\n');
 fprintf(oid, '          for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '          td = tr[i].getElementsByTagName("td")[5];\n');
@@ -360,7 +387,7 @@ fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
 fprintf(oid, '          }\n');
 fprintf(oid, '        }\n\n');
-
+% selection for short/medium/long/pars
 fprintf(oid, '        function FunctionShort() {\n');
 fprintf(oid, '          // Declare variables\n');
 fprintf(oid, '          var input, filter, table, tr, td, i;\n');
@@ -368,14 +395,16 @@ fprintf(oid, '          input = document.getElementById("InputShort");\n');
 fprintf(oid, '          filter = input.value.toUpperCase();\n');
 fprintf(oid, '          table = document.getElementById("Table");\n');
 fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
-
+%
 fprintf(oid, '          // Loop through all table rows, and show some from the long list\n');
+% filter S: popular short selection of some statistics
 fprintf(oid, '          if (filter == "S") {\n');
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
 fprintf(oid, '              if (td) {\n');
 fprintf(oid, '                if (\n');
 fprintf(oid, '                    td.innerHTML == "model" ||\n');
+fprintf(oid, '                    td.innerHTML == "T_typical" ||\n');
 fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
 fprintf(oid, '                    td.innerHTML == "Ww_0" ||\n');
 fprintf(oid, '                    td.innerHTML == "Ww_b" ||\n');
@@ -402,12 +431,14 @@ fprintf(oid, '                  tr[i].style.display = "none";\n');
 fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
+% filter M: statistics as printed on AmP website on pages my_pet_stat.html
 fprintf(oid, '          } else if (filter == "M") {\n');
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
 fprintf(oid, '              if (td) {\n');
 fprintf(oid, '                if (\n');
 fprintf(oid, '                    td.innerHTML == "model" ||\n');
+fprintf(oid, '                    td.innerHTML == "T_typical" ||\n');
 fprintf(oid, '                    td.innerHTML == "z" ||\n');
 fprintf(oid, '                    td.innerHTML == "c_T" ||\n');
 fprintf(oid, '                    td.innerHTML == "s_M" ||\n');
@@ -447,6 +478,26 @@ fprintf(oid, '                  tr[i].style.display = "none";\n');
 fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
+% filter L: all statistics
+fprintf(oid, '          } else if (filter == "L") {\n');
+fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
+fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
+fprintf(oid, '              if (td) {\n');
+fprintf(oid, '                if (\n');
+fprintf(oid, '                    td.innerHTML == "model" ||\n');
+fprintf(oid, '                    td.innerHTML == "T_typical" ||\n');
+for j = 1:length(fldsStat)-1
+fprintf(oid,['                    td.innerHTML == "', fldsStat{j},'" ||\n']);
+end
+fprintf(oid,['                    td.innerHTML == "', fldsStat{end},'"\n']);
+fprintf(oid, '                  ) {\n');
+fprintf(oid, '                  tr[i].style.display = "";\n');
+fprintf(oid, '                } else {\n'); % show all
+fprintf(oid, '                  tr[i].style.display = "none";\n');
+fprintf(oid, '                }\n');
+fprintf(oid, '              }\n');
+fprintf(oid, '            }\n');
+% filter P: parameters only
 fprintf(oid, '          } else if (filter == "P") {\n');
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
@@ -464,23 +515,7 @@ fprintf(oid, '                  tr[i].style.display = "none";\n');
 fprintf(oid, '                }\n');
 fprintf(oid, '              }\n');
 fprintf(oid, '            }\n');
-fprintf(oid, '          } else if (filter == "L") {\n');
-fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
-fprintf(oid, '              td = tr[i].getElementsByTagName("td")[0];\n');
-fprintf(oid, '              if (td) {\n');
-fprintf(oid, '                if (\n');
-fprintf(oid, '                    td.innerHTML == "model" ||\n');
-for j = 1:length(fldsStat)-1
-fprintf(oid,['                    td.innerHTML == "', fldsStat{j},'" ||\n']);
-end
-fprintf(oid,['                    td.innerHTML == "', fldsStat{end},'"\n']);
-fprintf(oid, '                  ) {\n');
-fprintf(oid, '                  tr[i].style.display = "";\n');
-fprintf(oid, '                } else {\n'); % show all
-fprintf(oid, '                  tr[i].style.display = "none";\n');
-fprintf(oid, '                }\n');
-fprintf(oid, '              }\n');
-fprintf(oid, '            }\n');
+% no filter: parameters and statistics
 fprintf(oid, '          } else {\n'); % complete list
 fprintf(oid, '            for (i = 0; i < tr.length; i++) {\n');
 fprintf(oid, '              tr[i].style.display = "";\n');
