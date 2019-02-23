@@ -11,7 +11,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %% Description
 % Writes report_my_pet.html with a list of parameters and implied model properties for selected species. 
 % focusSpecies can be empty, or a single species;
-% comparisonSpecies can be empty (if focusSpecies is specified), or a cellstring of entries.
+% comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries.
 % The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of
 % <http://www.debtheory.org/wiki/index.php?title=Mydata_file *mydata_my_pet*>,
 % <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*>
@@ -28,7 +28,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %
 % Output:
 %
-% * no Malab output, but a html-file is written with report-table
+% * no Malab output, but a html-file is written with report-table and opened automatically in the system browser
 
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 
@@ -37,21 +37,21 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % AmPtool functions <../../../../../AmPtool/html/select.html *select*> or <../../../../../AmPtool/html/clade.html *clade*> can be used to create a cell string of comparison species.
 %
 % The difference between focus and comparison species only becomes important in the case of more than one comparison species and
-% color-coding is used to indicate how eccentric the focus-species is from the comparison-species.
+%   color-coding is used to indicate how eccentric the focus-species is from the comparison-species.
 % The lava color-scheme is used, from white (high) to black (low), via red and blue, to show the value of the eccentricity.
 % This quantity is computed for each statistic and parameter and is the squared distance to the mean of the comparison species as a hyperbolically-transformed fraction 
 %   of the variance for the comparison-species.
 % Function <../../misc/html/color_lava.html *color_lava*> is used to convert the eccentricity to rgb-colors.
-% If the focus species also occurs in the comparison species, it is remove from that list.
+% If the focus species also occurs in the comparison species, it is removed from that list.
 % So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers.
 % If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty.
+% If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown.
+% In absence of a focus species, the first comparison specie serves this role.
 % 
 % The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from
 %   the statictics and/or the parameters.
 % NA means "not applicable": the parameter or statistic does not depend on temperature or food.
-% html output file opens automatically in sysmens browser (program depending on the setting of your computer).
-%
-% Notice that, if model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown.
+% nan means "not a number": the model for that species does not have that field.
 
 %% Example of use
 %
@@ -61,6 +61,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
 
+path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/';
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
@@ -280,7 +281,7 @@ fprintf(oid, '      <TABLE id="Table">\n');
 % row with species print names and source dates
 fprintf(oid, '        <TR id="species"> <TH colspan="2"></TH>\n');
 for k = 1:n_spec
-fprintf(oid, '          <TH colspan="2" id="specPrintNm">%s</TH>\n', specListPrintNm{k});
+fprintf(oid, '          <TH colspan="2" id="specPrintNm"><a href="%s%s/%s_res.html">%s</a></TH>\n', path_entries_web, specList{k}, specList{k}, specListPrintNm{k});
 end
 fprintf(oid, '          <TH></TH> <TH>%s</TH>\n', datePrintNm);
 fprintf(oid, '        </TR>\n\n');
