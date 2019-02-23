@@ -41,7 +41,7 @@ function estim_options (key, val)
   %      1 - prints results to screen, saves to .mat file
   %      2 - prints results to screen, saves data to .mat file and graphs to .png files, 
   %      3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file
-  %
+  %      4 - prints results to screen, saves data to .mat file, figures to .png files, report to .html file with results of related species
   %    'method': 
   %      'nm' - use Nelder-Mead method; 
   %      'no' - do not estimate;
