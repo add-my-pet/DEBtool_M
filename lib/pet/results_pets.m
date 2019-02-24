@@ -269,18 +269,21 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
   
   if results_output >= 3 % save report of implied properties to report_my_pet.html and show in browser
-    if n_pets > 1
+    if n_pets > 1 
       for i = 1:n_pets   
         metaPar_i = metaPar.(pets{i});
+        txtPar_i = txtPar.(pets{i});
         metaPar_i.model = metaPar.model{i};
         if results_output == 3
-          prt_report_my_pet({metaData.(pets{i}), metaPar_i, parPets.(pets{i})}, []);
+          prt_report_my_pet({parPets.(pets{i}), metaPar_i, txtPar_i, metaData.(pets{i})}, []);
         else
-          prt_report_my_pet({metaData.(pets{i}), metaPar_i, parPets.(pets{i})}, clade(metaData.(pets{i})));
+          prt_report_my_pet({parPets.(pets{i}), metaPar_i, txtPar_i, metaData.(pets{i})}, clade(metaData.(pets{i})));
         end
       end
-    else % n_pets == 1
-      prt_report_my_pet(metaData, metaPar, par)  
+    elseif results_output == 3 % n_pets == 1
+      prt_report_my_pet({par, metaPar, txtPar, metaData})  
+    else % results_output > 3  and n_pets == 1
+      prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(metaData.species))  
     end
   end
    

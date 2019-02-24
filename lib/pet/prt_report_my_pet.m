@@ -56,7 +56,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %% Example of use
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
-%   load('results_My_Pet.mat'); prt_report_my_pet({metaData, metaPar, par}, [], T, f, destinationFolder)
+%   load('results_My_Pet.mat'); prt_report_my_pet({par, metaPar, txtPar, metaData}, [], T, f, destinationFolder)
 % * prt_report_my_pet('Daphnia_magna')
 % * prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
@@ -68,23 +68,26 @@ if isempty(focusSpecies) % only comparion species, but treat first comparison sp
   focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
   allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
-  n_fSpec = 0; n_spec = 1; % number of focus species
+  n_fSpec = 0; n_spec = 1; % number of focus species, initiate total number of species
     
 elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify focusSpecies
-  metaData = focusSpecies{1}; metaPar = focusSpecies{2}; par = focusSpecies{3};
-  specList = {metaData.species}; parList.(specList{1}) = par; 
-  datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
-  if ~isempty(comparisonSpecies)
-    allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
-    datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
+  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; focusSpecies = metaData.species;
+  specList = {focusSpecies}; par = rmfield (par, 'free'); fldsPar = get_parfields(metaPar.model, 1);
+  for i=1:length(fldsPar)
+    parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
   end
-  n_fSpec = 1; n_spec = 1; % number of focus species
+  datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
+  if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
+    allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
+    datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
+  end
+  n_fSpec = 1; n_spec = 1; % number of focus species, initiate total number of species
 
 else  % use allStat.mat as parameter source for focusSpecies
   specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
   allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
-  n_fSpec = 1; n_spec = 1; % number of focus species
+  n_fSpec = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
 modelList = {metaPar.model}; % initiate cell string for model
 tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
