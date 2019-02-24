@@ -34,7 +34,7 @@ function [coreParFields, info] = get_parfields(model, addchem)
   end
   
   if ~exist('all', 'var')
-      all = 0;
+      addchem = 0;
   end
   
   info = 1;
