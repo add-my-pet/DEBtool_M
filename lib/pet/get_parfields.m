@@ -2,7 +2,7 @@
 % returns cell array of strings with names of core primary parameters for a given DEB model
 
 %%
-function [coreParFields, info] = get_parfields(model, all)
+function [coreParFields, info] = get_parfields(model, addchem)
 % created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 2017/02/03, 2018/08/18, 2019/02/24 by Bas Kooijman
  
   %% Syntax 
@@ -15,7 +15,7 @@ function [coreParFields, info] = get_parfields(model, all)
   % Input
   %
   % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex', 'nat'. 
-  % * all: optional boolean, to include chemical parameters. Default 0: not include them
+  % * addchem: optional boolean, to include chemical parameters. Default 0: not include them
   %
   % Output
   %
@@ -71,12 +71,12 @@ function [coreParFields, info] = get_parfields(model, all)
           
   end
   
-  if all
+  if addchem
     chem = { ...
-    'd_X'; 'd_V'; 'd_E'; 'd_P';
-    'mu_X'; 'mu_V'; 'mu_E'; 'mu_P'; 
-    'mu_C'; 'mu_H'; 'mu_O'; 'mu_N';
-    'n_CX'; 'n_HX'; 'n_OX'; 'n_NX';
+    'd_X';   'd_V';  'd_E';  'd_P'; % g/cm^3, specific densities 
+    'mu_X'; 'mu_V'; 'mu_E'; 'mu_P'; % J/mol, chemical potentials for organics
+    'mu_C'; 'mu_H'; 'mu_O'; 'mu_N'; % J/mol, chemical potentials for minerals
+    'n_CX'; 'n_HX'; 'n_OX'; 'n_NX'; % -, chemical indices
     'n_CV'; 'n_HV'; 'n_OV'; 'n_NV';
     'n_CE'; 'n_HE'; 'n_OE'; 'n_NE';
     'n_CP'; 'n_HP'; 'n_OP'; 'n_NP';
