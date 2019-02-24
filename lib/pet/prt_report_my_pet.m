@@ -281,7 +281,11 @@ fprintf(oid, '      <TABLE id="Table">\n');
 % row with species print names and source dates
 fprintf(oid, '        <TR id="species"> <TH colspan="2"></TH>\n');
 for k = 1:n_spec
+    if k == 1 && ~isempty(strfind(datePrintNm, 'date')) % no link if focusSpecies is specified by data, rather than by string
+fprintf(oid, '          <TH colspan="2" id="specPrintNm">%s</TH>\n', specListPrintNm{k});
+    else % links to AmP entries
 fprintf(oid, '          <TH colspan="2" id="specPrintNm"><a href="%s%s/%s_res.html">%s</a></TH>\n', path_entries_web, specList{k}, specList{k}, specListPrintNm{k});
+    end
 end
 fprintf(oid, '          <TH></TH> <TH>%s</TH>\n', datePrintNm);
 fprintf(oid, '        </TR>\n\n');
