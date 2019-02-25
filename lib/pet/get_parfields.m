@@ -33,7 +33,7 @@ function [coreParFields, info] = get_parfields(model, addchem)
     fprintf(['warning from check_model: ', model, ' is not a typical model\n'])
   end
   
-  if ~exist('all', 'var')
+  if ~exist('addchem', 'var')
       addchem = 0;
   end
   

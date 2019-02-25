@@ -66,13 +66,13 @@ else
   p_Am = p.p_Am;
 end
 
-% %               X         V          E         P
+%         X       V       E       P
 n_O = [p.n_CX, p.n_CV, p.n_CE, p.n_CP;  % C/C, equals 1 by definition
        p.n_HX, p.n_HV, p.n_HE, p.n_HP;  % H/C  these values show that we consider dry-mass
        p.n_OX, p.n_OV, p.n_OE, p.n_OP;  % O/C
        p.n_NX, p.n_NV, p.n_NE, p.n_NP]; % N/C
         
-%            C     H     O     N
+%          C       H       O       N
 n_M = [ p.n_CC, p.n_CH, p.n_CO, p.n_CN;  % CO2
         p.n_HC, p.n_HH, p.n_HO, p.n_HN;  % H2O  
         p.n_OC, p.n_OH, p.n_OO, p.n_ON;  % O2

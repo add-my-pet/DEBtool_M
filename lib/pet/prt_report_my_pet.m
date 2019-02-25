@@ -60,6 +60,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet('Daphnia_magna')
 % * prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
+% * prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))
 
 path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/';
 
@@ -133,7 +134,7 @@ if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
     [parList.(specList{k}), metaPark, txtPark, metaDatak] = allStat2par(specList{k});
     modelList{k} = metaPark.model;
     if ~strcmp(modelList{1},modelList{k})
-      fldsPark = fieldnmnst_st(parList.(specList{k})); 
+      fldsPark = get_parfields(modelList{k}, 1);
       for j = 1:length(fldsPar)
         if ~ismember(fldsPar{j}, fldsPark)
           parList.(specList{k}).(fldsPar{j}) = NaN;
