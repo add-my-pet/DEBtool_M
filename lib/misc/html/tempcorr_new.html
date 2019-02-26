@@ -73,11 +73,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
   3: T_A, T_L, T_AL or T_A, T_H, T_AH
   5: T_A, T_L, T_H, T_AL, T_AH</pre><p>Output:</p><div><ul><li>TC: vector with temperature correction factor(s) that affect(s) all rates</li></ul></div><h2 id="5">Remarks</h2><pre>The intended use is: (rate at  T) = (rate at T_ref) * tempcorr (T, T_ref, pars_T).
 Notice that tempcorr (T_ref, T_ref, pars_T) results in the value 1, independent of pars_T.
-The Arrhenius temperature T_A affects rates are the full temperature-range.
-The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
+Notice also that the result with one parameter is always larger than with 3 or 5 parameters, with the same first parameter.
+The Arrhenius temperature T_A affects rates at the full temperature-range.</pre><pre>The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
 If pars_T(2) &lt; T_ref, it is assumed that T_L = pars_T(2) and T_AL = pars_T(3), and low-temperature torpor is modelled.
-If pars_T(2) &gt; T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.
-Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
+If pars_T(2) &gt; T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.</pre><pre>Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
 This also holds for the 5-parameter version.</pre><pre>&lt;shtempcorr.html *shtempcorr*&gt; shows a graph of this correction factor as function of the temperature.</pre><h2 id="6">Example of use</h2><pre>tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and
 shtemp2corr(320, [12000 277 318 20000 190000]).</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -87,7 +86,7 @@ shtemp2corr(320, [12000 277 318 20000 190000]).</pre><p class="footer"><br><a hr
 %%
 function TC = tempcorr_new (T, T_ref, pars_T)
   %  Created at 2002/04/09 by Bas Kooijman; modified 2005/01/24, 2016/11/18, 
-  %  Dina Lika & Bas Kooijman: 2019/02/36
+  %  Dina Lika & Bas Kooijman: 2019/02/26
   
   %% Syntax
   % TC = <../tempcorr.m *tempcorr*> (T, T_ref, pars_T)
@@ -115,10 +114,13 @@ function TC = tempcorr_new (T, T_ref, pars_T)
   %% Remarks
   %  The intended use is: (rate at  T) = (rate at T_ref) * tempcorr (T, T_ref, pars_T). 
   %  Notice that tempcorr (T_ref, T_ref, pars_T) results in the value 1, independent of pars_T.
-  %  The Arrhenius temperature T_A affects rates are the full temperature-range. 
+  %  Notice also that the result with one parameter is always larger than with 3 or 5 parameters, with the same first parameter.
+  %  The Arrhenius temperature T_A affects rates at the full temperature-range. 
+  %
   %  The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
   %  If pars_T(2) < T_ref, it is assumed that T_L = pars_T(2) and T_AL = pars_T(3), and low-temperature torpor is modelled.
   %  If pars_T(2) > T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.
+  %
   %  Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
   %  This also holds for the 5-parameter version. 
   %
@@ -154,11 +156,17 @@ function TC = tempcorr_new (T, T_ref, pars_T)
     T_H  = pars_T(3);  % Upper temp boundary
     T_AL = pars_T(4);  % Arrh. temp for lower boundary
     T_AH = pars_T(5);  % Arrh. temp for upper boundary
+    
+    if T_L > T_ref || T_H < T_ref
+      fprintf('Warning from temp_corr: invalid parameter combination, T_L > T_ref and/or T_H < T_ref\n')
+      TC = [];
+      return
+    end
 
-    s_L_ratio = (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
-	            (1 + exp(T_AL ./ T     - T_AL/ T_L));
-    s_H_ratio = (1 + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
-	            (1 + exp(T_AH/ T_H - T_AH ./ T    ));
+    s_L_ratio = (1 + exp(T_AL/ T_ref - T_AL/ T_L)) ./ ...
+	            (1 + exp(T_AL ./ T   - T_AL/ T_L));
+    s_H_ratio = (1 + exp(T_AH/ T_H - T_AH/ T_ref)) ./ ...
+	            (1 + exp(T_AH/ T_H - T_AH ./ T  ));
     TC = s_A .* ((T <= T_ref) .* s_L_ratio + (T > T_ref) .* s_H_ratio);    
   end
 

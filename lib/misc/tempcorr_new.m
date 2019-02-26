@@ -32,10 +32,13 @@ function TC = tempcorr_new (T, T_ref, pars_T)
   %% Remarks
   %  The intended use is: (rate at  T) = (rate at T_ref) * tempcorr (T, T_ref, pars_T). 
   %  Notice that tempcorr (T_ref, T_ref, pars_T) results in the value 1, independent of pars_T.
-  %  The Arrhenius temperature T_A affects rates are the full temperature-range. 
+  %  Notice also that the result with one parameter is always larger than with 3 or 5 parameters, with the same first parameter.
+  %  The Arrhenius temperature T_A affects rates at the full temperature-range. 
+  %
   %  The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
   %  If pars_T(2) < T_ref, it is assumed that T_L = pars_T(2) and T_AL = pars_T(3), and low-temperature torpor is modelled.
   %  If pars_T(2) > T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.
+  %
   %  Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
   %  This also holds for the 5-parameter version. 
   %
@@ -78,9 +81,9 @@ function TC = tempcorr_new (T, T_ref, pars_T)
       return
     end
 
-    s_L_ratio = (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
-	            (1 + exp(T_AL ./ T     - T_AL/ T_L));
-    s_H_ratio = (1 + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
-	            (1 + exp(T_AH/ T_H - T_AH ./ T    ));
+    s_L_ratio = (1 + exp(T_AL/ T_ref - T_AL/ T_L)) ./ ...
+	            (1 + exp(T_AL ./ T   - T_AL/ T_L));
+    s_H_ratio = (1 + exp(T_AH/ T_H - T_AH/ T_ref)) ./ ...
+	            (1 + exp(T_AH/ T_H - T_AH ./ T  ));
     TC = s_A .* ((T <= T_ref) .* s_L_ratio + (T > T_ref) .* s_H_ratio);    
   end
