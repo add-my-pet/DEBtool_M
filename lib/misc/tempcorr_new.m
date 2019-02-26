@@ -71,6 +71,12 @@ function TC = tempcorr_new (T, T_ref, pars_T)
     T_H  = pars_T(3);  % Upper temp boundary
     T_AL = pars_T(4);  % Arrh. temp for lower boundary
     T_AH = pars_T(5);  % Arrh. temp for upper boundary
+    
+    if T_L > T_ref || T_H < T_ref
+      fprintf('Warning from temp_corr: invalid parameter combination, T_L > T_ref and/or T_H < T_ref\n')
+      TC = [];
+      return
+    end
 
     s_L_ratio = (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
 	            (1 + exp(T_AL ./ T     - T_AL/ T_L));
