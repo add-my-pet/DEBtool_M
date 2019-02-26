@@ -11,9 +11,9 @@ function TC = tempcorr_new (T, T_ref, pars_T)
 
   %% Description
   %  Calculates the factor with which physiological rates should be multiplied 
-  %    to go from a reference temperature to a given temperature. The
-  %    3 and 5- parameter versions of the Arrhenius module suppose that the
-  %    reference temperature is contained within the thermal neutral zone.
+  %    to go from a reference temperature to a given temperature.
+  %  The 3-parameter version models low or high temerature torpor, depending the the value of the boudary temparature, relative to the  reference temperatur, the 5-parameter version models both.
+  %  The 5- parameter version assumes that the reference temperature is between the lower and upper temperature boundaries.
   %
   % Input
   %
@@ -21,8 +21,8 @@ function TC = tempcorr_new (T, T_ref, pars_T)
   % * T_ref: scalar with reference temperature in K
   % * pars_T: 1-, 3- or 5-vector with temperature parameters in K
   %
-  %    1: T_A
-  %    3: T_A, T_L, T_AL or T_A, T_H, T_AH
+  %    1: T_A: Arrhenius temperature
+  %    3: T_A, T_L, T_AL or T_A, T_H, T_AH: Arrhenius temperature, boundary temperature, Arrhenius temperature for that boundary temperature
   %    5: T_A, T_L, T_H, T_AL, T_AH    
   %
   % Output:
