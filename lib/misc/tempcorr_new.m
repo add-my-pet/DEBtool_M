@@ -4,7 +4,7 @@
 %%
 function TC = tempcorr_new (T, T_ref, pars_T)
   %  Created at 2002/04/09 by Bas Kooijman; modified 2005/01/24, 2016/11/18, 
-  %  Dina Lika & Bas Kooijman: 2019/02/36
+  %  Dina Lika & Bas Kooijman: 2019/02/26
   
   %% Syntax
   % TC = <../tempcorr.m *tempcorr*> (T, T_ref, pars_T)
