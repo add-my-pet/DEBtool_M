@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>tempcorr</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-11-20"><meta name="DC.source" content="tempcorr.m"><style type="text/css">
+      --><title>tempcorr</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-02"><meta name="DC.source" content="tempcorr.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,36 +55,56 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>tempcorr</h1><!--introduction--><p>computes temperature correction factor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>TC = <a href="../tempcorr.m"><b>tempcorr</b></a> (T, T_ref, pars_T)</p><h2>Description<a name="4"></a></h2><pre>Calculates the factor with which physiological rates should be multiplied
-  to go from a reference temperature to a given temperature.</pre><p>Input</p><div><ul><li>T: vector with new temperatures</li><li>T_ref: scalar with reference temperature</li><li>pars_T: 1-, 3- or 5-vector with temperature parameters</li></ul></div><pre>  1: T_A
-  3: T_A, T_L, T_AL
-  5: T_A, T_L, T_H, T_AL, T_AH</pre><p>Output:</p><div><ul><li>TC: vector with temperature correction factor(s) that affect(s) all rates</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>shtempcorr shows a graph of this correction factor as function of the temperature.</pre><h2>Example of use<a name="6"></a></h2><pre>tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and
-shtemp2corr(320, [12000 277 318 20000 190000]).</pre><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>tempcorr</h1><!--introduction--><p>computes temperature correction factor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>TC = <a href="../tempcorr.m"><b>tempcorr</b></a> (T, T_ref, pars_T)</p><h2 id="4">Description</h2><pre>Calculates the factor with which physiological rates should be multiplied
+  to go from a reference temperature to a given temperature.
+The 3-parameter version models low or high temerature torpor, depending the the value of the boudary temparature, relative to the  reference temperatur, the 5-parameter version models both.
+The 5- parameter version assumes that the reference temperature is between the lower and upper temperature boundaries.</pre><p>Input</p><div><ul><li>T: vector with temperatures in K</li><li>T_ref: scalar with reference temperature in K</li><li>pars_T: 1-, 3- or 5-vector with temperature parameters in K</li></ul></div><pre>  1: T_A: Arrhenius temperature
+  3: T_A, T_L, T_AL or T_A, T_H, T_AH: Arrhenius temperature, boundary temperature, Arrhenius temperature for that boundary temperature
+  5: T_A, T_L, T_H, T_AL, T_AH</pre><p>Output:</p><div><ul><li>TC: vector with temperature correction factor(s) that affect(s) all rates</li></ul></div><h2 id="5">Remarks</h2><pre>The intended use is: (rate at  T) = (rate at T_ref) * tempcorr (T, T_ref, pars_T).
+Notice that tempcorr (T_ref, T_ref, pars_T) results in the value 1, independent of pars_T.
+Notice also that the result with one parameter is always larger than with 3 or 5 parameters, with the same first parameter.
+The Arrhenius temperature T_A affects rates at the full temperature-range.</pre><pre>The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
+If pars_T(2) &lt; T_ref, it is assumed that T_L = pars_T(2) and T_AL = pars_T(3), and low-temperature torpor is modelled.
+If pars_T(2) &gt; T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.</pre><pre>Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
+This also holds for the 5-parameter version.</pre><pre>&lt;shtempcorr.html *shtempcorr*&gt; shows a graph of this correction factor as function of the temperature.</pre><h2 id="6">Example of use</h2><pre>tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and
+shtemp2corr(320, [12000 277 318 20000 190000]).</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% tempcorr
 % computes temperature correction factor
 
 %%
 function TC = tempcorr (T, T_ref, pars_T)
-  %  Created at 2002/04/09 by Bas Kooijman; modified 2005/01/24, 2016/11/18
+  %  Created at 2002/04/09 by Bas Kooijman; modified 2005/01/24, 2016/11/18, 
+  %  Dina Lika & Bas Kooijman: 2019/02/26
   
   %% Syntax
   % TC = <../tempcorr.m *tempcorr*> (T, T_ref, pars_T)
 
   %% Description
   %  Calculates the factor with which physiological rates should be multiplied 
-  %    to go from a reference temperature to a given temperature. 
+  %    to go from a reference temperature to a given temperature.
+  %  The 3-parameter version models low or high temerature torpor, depending the the value of the boudary temparature, relative to the  reference temperatur, the 5-parameter version models both.
+  %  The 5- parameter version assumes that the reference temperature is between the lower and upper temperature boundaries.
   %
   % Input
   %
-  % * T: vector with new temperatures
-  % * T_ref: scalar with reference temperature
-  % * pars_T: 1-, 3- or 5-vector with temperature parameters
+  % * T: vector with temperatures in K
+  % * T_ref: scalar with reference temperature in K
+  % * pars_T: 1-, 3- or 5-vector with temperature parameters in K
   %
-  %    1: T_A
-  %    3: T_A, T_L, T_AL
+  %    1: T_A: Arrhenius temperature
+  %    3: T_A, T_L, T_AL or T_A, T_H, T_AH: Arrhenius temperature, boundary temperature, Arrhenius temperature for that boundary temperature
   %    5: T_A, T_L, T_H, T_AL, T_AH    
   %
   % Output:
@@ -91,31 +112,62 @@ function TC = tempcorr (T, T_ref, pars_T)
   % * TC: vector with temperature correction factor(s) that affect(s) all rates
    
   %% Remarks
-  %  shtempcorr shows a graph of this correction factor as function of the temperature. 
-  
+  %  The intended use is: (rate at  T) = (rate at T_ref) * tempcorr (T, T_ref, pars_T). 
+  %  Notice that tempcorr (T_ref, T_ref, pars_T) results in the value 1, independent of pars_T.
+  %  Notice also that the result with one parameter is always larger than with 3 or 5 parameters, with the same first parameter.
+  %  The Arrhenius temperature T_A affects rates at the full temperature-range. 
+  %
+  %  The interpretation of the parameters in the 3-parameter version depends on the value of pars_T(2), relative to T_ref.
+  %  If pars_T(2) < T_ref, it is assumed that T_L = pars_T(2) and T_AL = pars_T(3), and low-temperature torpor is modelled.
+  %  If pars_T(2) > T_ref, it is assumed that T_H = pars_T(2) and T_AH = pars_T(3), and high-temperature torpor is modelled.
+  %
+  %  Low-temperature torpor does not affect rates at temperatures larger than T_ref; the reverse applies for high-temperature torpor.
+  %  This also holds for the 5-parameter version. 
+  %
+  %  <shtempcorr.html *shtempcorr*> shows a graph of this correction factor as function of the temperature. 
+
   %% Example of use
   %  tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and 
   %  shtemp2corr(320, [12000 277 318 20000 190000]). 
 
   T_A = pars_T(1); % Arrhenius temperature
-  if length(pars_T) == 1
-    TC = exp(T_A/ T_ref - T_A ./ T);
+    s_A = exp(T_A/ T_ref - T_A ./ T);  % Arrhenius factor
     
-  elseif length(pars_T) == 3
-    T_L  = pars_T(2); % Lower temp boundary
-    T_AL = pars_T(3); % Arrh. temp for lower boundary
-    TC = exp(T_A/ T_ref - T_A ./ T) .* ...
-         (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
-         (1 + exp(T_AL ./ T     - T_AL/ T_L));
-  else
+  if length(pars_T) == 1
+    TC = s_A;
+    
+  elseif length(pars_T) == 3 % either low-temperature torpor or high-temperature torpor
+    if pars_T(2) < T_ref
+      T_L  = pars_T(2); % Lower temp boundary
+      T_AL = pars_T(3); % Arrh. temp for lower boundary
+      s_L_ratio = (1 + exp(T_AL ./ T_ref - T_AL/ T_L)) ./ ...
+	              (1 + exp(T_AL ./ T     - T_AL/ T_L));
+      TC = s_A .* ((T <= T_ref) .* s_L_ratio + (T > T_ref));
+    else % pars_T(2) > T_ref
+      T_H  = pars_T(2); % Upper temp boundary
+      T_AH = pars_T(3); % Arrh. temp for upper boundary
+      s_H_ratio = (1 + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
+	              (1 + exp(T_AH/ T_H - T_AH ./ T    ));
+      TC = s_A .* ((T >= T_ref) .* s_H_ratio + (T < T_ref));
+    end
+         
+  else % length(pars_T) == 5: both low- and high-temperature torpor
     T_L  = pars_T(2);  % Lower temp boundary
     T_H  = pars_T(3);  % Upper temp boundary
     T_AL = pars_T(4);  % Arrh. temp for lower boundary
     T_AH = pars_T(5);  % Arrh. temp for upper boundary
+    
+    if T_L > T_ref || T_H < T_ref
+      fprintf('Warning from temp_corr: invalid parameter combination, T_L > T_ref and/or T_H < T_ref\n')
+      TC = [];
+      return
+    end
 
-    TC = exp(T_A/ T_ref - T_A ./ T) .* ...
-	     (1 + exp(T_AL ./ T_ref - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T_ref)) ./ ...
-	     (1 + exp(T_AL ./ T     - T_AL/ T_L) + exp(T_AH/ T_H - T_AH ./ T    ));
+    s_L_ratio = (1 + exp(T_AL/ T_ref - T_AL/ T_L)) ./ ...
+	            (1 + exp(T_AL ./ T   - T_AL/ T_L));
+    s_H_ratio = (1 + exp(T_AH/ T_H - T_AH/ T_ref)) ./ ...
+	            (1 + exp(T_AH/ T_H - T_AH ./ T  ));
+    TC = s_A .* ((T <= T_ref) .* s_L_ratio + (T > T_ref) .* s_H_ratio);    
   end
 
 ##### SOURCE END #####
