@@ -3,10 +3,15 @@
 
 %%
 function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
-% created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
-% modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
-% modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
-% modified 2015/08/25 by Dina Lika, 2018/05/21, 2018/08/21 by Bas Kooijman
+% created  2015/01/17 by Goncalo Marques, 
+% modified 2015/03/21 by Bas Kooijman,
+% modified 2015/03/30 by Goncalo Marques, 
+% modified 2015/04/01 by Bas Kooijman, 
+% modified 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
+% modified 2015/07/30 by Starrlight Augustine, 
+% modified 2015/08/01 by Goncalo Marques,
+% modified 2015/08/25 by Dina Lika, 
+% modified 2018/05/21, 2018/08/21, 2019/03/02 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -34,6 +39,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % Plots use lava-colour scheme; from high to low: white, red, blue, black.
 % In grp-plots, colours are assigned from high to low.
 % Since the standard colour for females is red, and for males blue, compose set with females first, then males.
+%
+% In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species
 
   global pets results_output 
   
@@ -57,7 +64,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
   end
    
-  if results_output >= 0 % plot figures
+  if ~results_output == 0 % plot figures
     data2plot = data;
     close all % to avoid saving figures generated prior the current run
     univarX = {}; 
@@ -206,86 +213,86 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         end
       end 
     end
-  end  
+  end
   
-  if results_output >=0 % print results to screen
-    for i = 1:n_pets
-      fprintf([pets{i}, ' \n']); % print the species name
-      if isfield(metaData.(pets{i}), 'COMPLETE')
-        fprintf('COMPLETE = %3.1f \n', metaData.(pets{i}).COMPLETE)
-      end
-      fprintf('MRE = %8.3f \n', metaPar.(pets{i}).MRE)
-      fprintf('SMSE = %8.3f \n\n', metaPar.(pets{i}).SMSE)
-      
-      fprintf('\n');
-      printprd_st(data.(pets{i}), txtData.(pets{i}), prdData.(pets{i}), metaPar.(pets{i}).RE);
-      
-      currentPar = parPets.(pets{i});
-      free = currentPar.free;  
-      corePar = rmfield_wtxt(currentPar,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
-      [parFields, nbParFields] = fieldnmnst_st(corePar);
-      % we need to make a small addition so that it recognised if one of the chemical parameters was released and then print that to the screen
-      for j = 1:nbParFields
-        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
-          corePar          = rmfield_wtxt(corePar, parFields{j});
-          coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
-          coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
-          free  = rmfield_wtxt(free, parFields{j});
-        end
-      end
-      parFreenm = fields(free);
-      for j = 1:length(parFreenm)
-        if length(free.(parFreenm{j})) ~= 1
-          free.(parFreenm{j}) = free.(parFreenm{j})(i);
-        end
-      end
-      corePar.free = free;
-      printpar_st(corePar,coreTxtPar);
-      fprintf('\n')
+  for i = 1:n_pets % only field pet{1} will be saved in .mat
+    if n_pets == 1
+      metaPar.(pets{1}).model = metaPar.model; 
+    else
+      metaPar.(pets{i}).model = metaPar.model{i}; % only field pet{1} will be saved in .mat
     end
-    
-    if results_output > 0 && n_pets == 1
-      filenm   = ['results_', pets{i}, '.mat'];
-      metaData_sv = metaData;
-      metaData = metaData.(pets{i});
-      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
-      metaData = metaData_sv;
-    end
-  end 
+  end
 
-  % save results to result_group.mat or result_my_pet.mat
-  if ~(results_output == 0)
-    if n_pets > 1
-      filenm   = 'results_group.mat';
-      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
-    else % n_pets == 1
-      filenm   = ['results_', pets{1}, '.mat'];
-      metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
-      metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
-      metaPar = rmfield(metaPar, pets{1});
-      metaData = metaData.(pets{1});
-      save(filenm, 'par', 'txtPar', 'metaPar', 'metaData');
-    end
+  switch results_output
+    case 0
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+    case 1
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+    case -1
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+    case 2
+       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+   case -2
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+    case 3
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+      prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
+    case -3
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+      prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
+    case 4
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(metaData.species))  
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+      end
+    case -4
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
+      prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
   end
   
-  if results_output >= 3 % save report of implied properties to report_my_pet.html and show in browser
-    if n_pets > 1 
-      for i = 1:n_pets   
-        metaPar_i = metaPar.(pets{i});
-        txtPar_i = txtPar.(pets{i});
-        metaPar_i.model = metaPar.model{i};
-        if results_output == 3
-          prt_report_my_pet({parPets.(pets{i}), metaPar_i, txtPar_i, metaData.(pets{i})}, []);
-        else
-          prt_report_my_pet({parPets.(pets{i}), metaPar_i, txtPar_i, metaData.(pets{i})}, clade(metaData.(pets{i})));
-        end
-      end
-    elseif results_output == 3 % n_pets == 1
-      prt_report_my_pet({par, metaPar, txtPar, metaData})  
-    else % results_output > 3  and n_pets == 1
-      prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(metaData.species))  
-    end
-  end
    
 end
 

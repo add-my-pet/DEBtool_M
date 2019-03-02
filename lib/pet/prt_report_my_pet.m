@@ -69,32 +69,61 @@ if isempty(focusSpecies) % only comparion species, but treat first comparison sp
   focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
   allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
-  n_fSpec = 0; n_spec = 1; % number of focus species, initiate total number of species
+  color = 0; n_spec = 1; % number of focus species, initiate total number of species
     
-elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify focusSpecies
-  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; focusSpecies = metaData.species;
-  specList = {focusSpecies}; par = rmfield (par, 'free'); fldsPar = get_parfields(metaPar.model, 1);
-  for i=1:length(fldsPar)
-    parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
+elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or more) focusSpecies
+  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData);
+  if isempty(strfind(metaDataFldNm{1}, '_')) % single species; name of species is recognized by the presence of "_"
+    focusSpecies = metaData.species; specList = {focusSpecies}; color = 1; n_spec = length(specList); % number of focus species, initiate total number of species
+    par = rmfield (par, 'free'); fldsPar = get_parfields(metaPar.model, 1);
+    for i=1:length(fldsPar)
+      parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
+    end
+    datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
+    if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
+      allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
+    end  
+  else % multispecies; no color coding, so color = 0
+    focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); % number of focus species, initiate total number of species
+    par = rmfield (par, 'free'); 
+    for k = 1:n_spec
+      fldsPar = get_parfields(metaPar.model{k}, 1);
+      for i=1:length(fldsPar) % scan all par-field for model of species k
+        if length(par.(fldsPar{i})) == 1 % all species have the same parameter
+          parList.(specList{k}).(fldsPar{i}) = par.(fldsPar{i});
+        else % species have different prameters
+          park = par.(fldsPar{i}); parList.(specList{k}).(fldsPar{i}) = park(k);
+        end
+      end
+    end
+    datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
+    if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
+      allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
+    end  
   end
-  datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
-  if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-    allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
-    datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
-  end
-  n_fSpec = 1; n_spec = 1; % number of focus species, initiate total number of species
 
-else  % use allStat.mat as parameter source for focusSpecies
+else  % use allStat.mat as parameter source for focusSpecies (always single species)
   specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
   allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
-  n_fSpec = 1; n_spec = 1; % number of focus species, initiate total number of species
+  color = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
-modelList = {metaPar.model}; % initiate cell string for model
-tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
-specListPrintNm = {strrep(specList{1}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+if n_spec == 1
+  modelList = {metaPar.model}; % initiate cell string for model
+  tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
+  specListPrintNm = {strrep(specList{1}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+else
+  modelList = metaPar.model; % initiate cell string for model
+  specListPrintNm = cell(n_spec,1);
+  for k = 1: n_spec
+    tempList.(specList{k}) = metaData.(specList{k}).T_typical; % initiate cell string for typical body temperature
+    specListPrintNm(k) = {strrep(specList{k}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+  end
+end
 
-fldsPar = fieldnmnst_st(parList.(specList{1})); % fieldnames of all pars
+fldsPar = fieldnmnst_st(parList.(specList{1})); % fieldnames of all pars are taken from first species only
 
 if exist('T', 'var') % fix temperature for all species
   T_free = 0; 
@@ -111,23 +140,25 @@ end
 if exist('destinationFolder','var')
   fileName = [destinationFolder, 'report_', focusSpecies, '.html'];
 else
-  fileName = ['report_', focusSpecies, '.html'];
+  fileName = ['report_', specList{1}, '.html'];
 end
  
 % focus species: get statistics
-if T_free
-  Ti = tempList.(specList{1}); % temperature for statistics
-else
-  Ti = T;
+for k = 1:n_spec
+  if T_free
+    Ti = tempList.(specList{k}); % temperature for statistics
+  else
+    Ti = T;
+  end
+  [statList.(specList{k}), txtStat.(specList{k})] = statistics_st(modelList{k}, parList.(specList{k}), Ti, f);
+  statList.(specList{k}) = rmfield(statList.(specList{k}), {'T','f'}); % remove fields T and f, because it is already in txtStat
 end
-[statList.(specList{1}), txtStat.(specList{1})] = statistics_st(modelList{1}, parList.(specList{1}), Ti, f);
-statList.(specList{1}) = rmfield(statList.(specList{1}), {'T','f'}); % remove fields T and f, because it is already in txtStat
-fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics
-% [webStatFields, webColStat] = get_statfields(metaPar.model); % which statistics in what order should be printed in the table
+
+fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics are taken from first species only
 
 % comparison species
 if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-  comparisonSpecies = comparisonSpecies(~strcmp(focusSpecies, comparisonSpecies)); % remove focus species from comparison species
+  comparisonSpecies = comparisonSpecies(~ismember(comparisonSpecies,focusSpecies)); % remove focus species from comparison species
   specList = [specList; comparisonSpecies]; n_spec = length(specList); % list of all entries to be shown in the table
   for k = 2:n_spec
     % parameters
@@ -164,7 +195,7 @@ if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
 end
 
 % font color-coding, based on eccentricity of focus species, relative to comparison species
-if n_fSpec == 1 && n_spec > 2
+if color == 1 && n_spec > 2
   % parameters
   eccPar = zeros(length(fldsPar),1); % initiate eccentricity quantifyer
   for i = 1:length(fldsPar)
@@ -248,7 +279,7 @@ fprintf(oid, '    }\n\n');
 fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');        % grey on even rows
 fprintf(oid, '    td:nth-child(odd){border-left: solid 1px black}\n\n');  % lines between species
 
-if n_fSpec == 1 && n_spec > 2 % font colors if focus species and more than one comparison species are present
+if color == 1 && n_spec > 2 % font colors if focus species and more than one comparison species are present
   % parameters
   for i = 1:length(fldsPar)
     rgb = round(255 * color_lava(eccPar(i))); 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-21"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-02"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -68,21 +68,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
    any other key (see below): print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'loss_function':
-    're' - relative error (symmetric by addition);
-    'sb' - multiplicative symmetric bounded (default);
-    'su' - multiplicative symmetric unbounded;</pre><pre>  'filter':
-    1 - use filter (default);
-    0 - do not;</pre><pre>  'pars_init_method':
-    0 - get initial estimates from automatized computation (default)
-    1 - read initial estimates from .mat file (for continuation)
-    2 - read initial estimates from pars_init file</pre><pre>  'results_output':
-   -1 - only saves results to .mat, no figures, no printing to screen
-    0 - prints results to screen only (default)
-    1 - prints results to screen, saves to .mat file
-    2 - prints results to screen, saves data to .mat file and graphs to .png files,
-    3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file</pre><pre>  'method':
-    'nm' - use Nelder-Mead method;
-    'no' - do not estimate;</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>For other options see corresponding options file of the minimazation  algorithm, e.g. <a href="../../regr/html/nmregr_options.html"><b>nmregr_options</b></a>. See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+    're': relative error (symmetric by addition);
+    'sb': multiplicative symmetric bounded (default);
+    'su': multiplicative symmetric unbounded;</pre><pre>  'filter':
+    1: use filter (default);
+    0: do not;</pre><pre>  'pars_init_method':
+    0:  get initial estimates from automatized computation (default)
+    1:  read initial estimates from .mat file (for continuation)
+    2:  read initial estimates from pars_init file</pre><pre>  'results_output':
+    0:      only saves data results to .mat, no figures, no writing to html or screen
+    1, -1:  saves data to .mat file, prints results to html or screen
+    2, -2:  saves data to .mat file and graphs to .png files, writes results to html or screen
+    3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
+    4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species</pre><pre>  'method':
+    'nm': use Nelder-Mead method;
+    'no': do not estimate;</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>For other options see corresponding options file of the minimazation  algorithm, e.g. <a href="../../regr/html/nmregr_options.html"><b>nmregr_options</b></a>. See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_options
 % Sets options for estim.pars
@@ -108,29 +108,29 @@ function estim_options (key, val)
   % * two inputs
   %
   %    'loss_function': 
-  %      're' - relative error (symmetric by addition);
-  %      'sb' - multiplicative symmetric bounded (default);
-  %      'su' - multiplicative symmetric unbounded;
+  %      're': relative error (symmetric by addition);
+  %      'sb': multiplicative symmetric bounded (default);
+  %      'su': multiplicative symmetric unbounded;
   %
   %    'filter': 
-  %      1 - use filter (default); 
-  %      0 - do not;
+  %      1: use filter (default); 
+  %      0: do not;
   %
   %    'pars_init_method':
-  %      0 - get initial estimates from automatized computation (default)
-  %      1 - read initial estimates from .mat file (for continuation)
-  %      2 - read initial estimates from pars_init file
+  %      0:  get initial estimates from automatized computation (default)
+  %      1:  read initial estimates from .mat file (for continuation)
+  %      2:  read initial estimates from pars_init file
   %
   %    'results_output':
-  %     -1 - only saves results to .mat, no figures, no printing to screen
-  %      0 - prints results to screen only (default)
-  %      1 - prints results to screen, saves to .mat file
-  %      2 - prints results to screen, saves data to .mat file and graphs to .png files, 
-  %      3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file
+  %      0:      only saves data results to .mat, no figures, no writing to html or screen
+  %      1, -1:  saves data to .mat file, prints results to html or screen 
+  %      2, -2:  saves data to .mat file and graphs to .png files, writes results to html or screen
+  %      3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
+  %      4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species
   %
   %    'method': 
-  %      'nm' - use Nelder-Mead method; 
-  %      'no' - do not estimate;
+  %      'nm': use Nelder-Mead method; 
+  %      'no': do not estimate;
   %
   % Output
   %
@@ -199,7 +199,6 @@ function estim_options (key, val)
         fprintf('0 - get initial estimates from automatized computation \n');
         fprintf('1 - read initial estimates from .mat file \n');
         fprintf('2 - read initial estimates from pars_init file \n');
-        fprintf('3 - prints results using a customized results file \n');
       else
         pars_init_method = val;
       end
@@ -210,12 +209,12 @@ function estim_options (key, val)
           fprintf(['results_output = ', num2str(results_output),' \n']);
         else
           fprintf('results_output = unknown \n');
-        end	      
-        fprintf('-1 - only saves results to .mat file, no figures\n');
-        fprintf(' 0 - prints results to screen \n');
-        fprintf(' 1 - prints results to screen, saves to .mat file\n');
-        fprintf(' 2 - prints results to screen, saves to .mat file, figures to .png files\n');
-        fprintf(' 3 - prints results to screen, saves to .mat file, figures to .png files, report to .html file\n');
+        end	 
+        fprintf(' 0      only saves data results to .mat, no figures, no writing to html or screen\n');
+        fprintf('1, -1  saves data to .mat file, prints results to html or screen\n');
+        fprintf('2, -2  saves data to .mat file and graphs to .png files, writes results to html or screen\n');
+        fprintf('3, -3  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file\n');
+        fprintf('4, -4  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species\n');
       else
         results_output = val;
       end

@@ -1,0 +1,146 @@
+%% prt_results_my_pet
+% writes results of estimation to screen
+
+%%
+function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData)
+% created 2019/03/01 by Bas Kooijman
+
+%% Syntax
+% <../prt_results_my_pet.m *prt_results_my_pet*> (parPets, metaPar, txtPar, data, metaData, txtData, prdData) 
+
+%% Description
+% Writes results of an estimation to my_pet_res.html for each pet, as specified by pets. 
+% Input is the same as for results_pets, but inputs auxData and  weights are not required in this function
+%
+% Input:
+%
+% * parPets: cell string of parameters for each pet
+% * metaPar: structure with information on metaparameters
+% * txtPar: structure with information on parameters
+% * data: structure with data for species
+% * metaData: structure with information on the entry
+% * txtData: structure with information on the data
+% * prdData: structure with predictions for the data
+%
+% Output:
+%
+% * no Malab output, text is written to screen
+
+%% Remarks
+% Function prt_results2screen writes to screen; subfunction of results_pets.
+
+  global pets
+  
+  n_pets = length(pets);
+    
+  for i = 1:n_pets
+    fileName = [pets{i}, '_res.html']; % char string with file name of output file
+    oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+
+    fprintf(oid, '<!DOCTYPE html>\n');
+    fprintf(oid, '<HTML>\n');
+    fprintf(oid, '<HEAD>\n');
+    fprintf(oid,'   <TITLE>%s</TITLE>\n',  pets{i});
+    fprintf(oid, '  <style>\n');
+    fprintf(oid, '    .head {\n');
+    fprintf(oid, '      background-color: #FFE7C6\n');                    % pink header background
+    fprintf(oid, '    }\n\n');
+    fprintf(oid, '    .psd {\n');
+    fprintf(oid, '      color: blue\n');                                % blue
+    fprintf(oid, '    }\n\n');
+    fprintf(oid, '    #prdData {\n');
+    fprintf(oid, '      border-style: solid hidden solid hidden;\n');     % border top & bottom only
+    fprintf(oid, '    }\n\n');
+    fprintf(oid, '    #par {\n');
+    fprintf(oid, '      border-style: solid hidden solid hidden;\n');     % border top & bottom only
+    fprintf(oid, '    }\n\n');
+    fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
+    fprintf(oid, '  </style>\n');
+    fprintf(oid, '</HEAD>\n\n');
+    fprintf(oid, '<BODY>\n\n');
+
+    fprintf(oid,['  <h1>', strrep(pets{i}, '_', ' '), '</h1>\n']);
+    if ~isfield(metaData.(pets{i}), 'COMPLETE')
+      metaData.(pets{i}).COMPLETE = nan;
+    end
+    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMSE = %8.3f \n\n</h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMSE);
+
+    % open prdData table
+    fprintf(oid, '  <h2>Data & predictions</h2>\n');
+    fprintf(oid, '  <TABLE id="prdData">\n');
+    fprintf(oid, '    <TR  class="head"><TH>data</TH> <TH>prd</TH> <TH>RE</TH>  <TH>symbol</TH> <TH>units</TH> <TH>description</TH> </TR>\n');
+
+    [nm, nst] = fieldnmnst_st(data.(pets{i}));
+    for j = 1:nst
+      fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
+      tempData = getfield(data.(pets{i}), fieldsInCells{1}{:});
+      k = size(tempData, 2); % number of data points per set
+      if k == 1
+        if ~isempty(strfind(nm{j}, '.'))
+          tempUnit = getfield(txtData.(pets{i}).units, fieldsInCells{1}{:}); 
+          tempLabel = getfield(txtData.(pets{i}).label, fieldsInCells{1}{:});       
+          tempPrdData = getfield(prdData.(pets{i}), fieldsInCells{1}{:});
+          tempClass = 'psd'; 
+          if isempty(strfind(nm{j},'psd.'))
+            tempClass = 'data';
+          end
+          str = '    <TR class="%s"><TD>%3.4g</TD> <TD>%3.4g</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n';
+          fprintf(oid, str, tempClass, tempData, tempPrdData, metaPar.(pets{i}).RE(j,1), nm{j}, tempUnit, tempLabel);
+        else
+          str = '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n';
+          fprintf(oid, str, data.(pets{i}).(nm{j}), prdData.(pets{i}).(nm{j}), metaPar.(pets{i}).RE(j,1), nm{j}, txtData.(pets{i}).units.(nm{j}),  txtData.(pets{i}).label.(nm{j}));
+        end
+      else
+        if length(fieldsInCells{1}) == 1
+          aux = txtData.(pets{i});
+        else
+          aux = txtData.(pets{i}).(fieldsInCells{1}{1});
+        end
+        str = '        <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s, vs. %s</TD>\n';
+        fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
+      end
+    end
+  
+    fprintf(oid, '  </TABLE>\n\n'); % close prdData table
+    
+    % open parameter table    
+    fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
+    fprintf(oid, '  <TABLE id="par">\n');
+    fprintf(oid, '    <TR class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>free</TH> <TH>description</TH> </TR>\n');
+
+    currentPar = parPets.(pets{i});
+    free = currentPar.free;  
+    corePar = rmfield_wtxt(currentPar,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
+    [parFields, nbParFields] = fieldnmnst_st(corePar);
+    % we need to make a small addition so that it recognised if one of the chemical parameters was released and then print that to the screen
+    for j = 1:nbParFields
+      if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
+        corePar          = rmfield_wtxt(corePar, parFields{j});
+        coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
+        coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
+        free  = rmfield_wtxt(free, parFields{j});
+      end
+    end
+    parFreenm = fields(free);
+    for j = 1:length(parFreenm)
+      if length(free.(parFreenm{j})) ~= 1
+        free.(parFreenm{j}) = free.(parFreenm{j})(i);
+      end
+    end    
+    parpl = corePar;  % remove substructure free from par
+    [nm, nst] = fieldnmnst_st(parpl);   % get number of parameter fields
+    for j = 1:nst % scan parameter fields
+      str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%d</TD> <TD>%s</TD></TR>\n';
+      fprintf(oid, str, nm{j}, coreTxtPar.units.(nm{j}), parpl.(nm{j}), free.(nm{j}), txtPar.label.(nm{j}));
+    end
+    
+    fprintf(oid, '  </TABLE>\n\n'); % close parameter table  
+
+    fprintf(oid, '</BODY>\n');
+    fprintf(oid, '</HTML>\n');
+
+    fclose(oid);
+
+    web(fileName,'-browser') % open html in systems browser
+
+  end

@@ -22,29 +22,29 @@ function estim_options (key, val)
   % * two inputs
   %
   %    'loss_function': 
-  %      're' - relative error (symmetric by addition);
-  %      'sb' - multiplicative symmetric bounded (default);
-  %      'su' - multiplicative symmetric unbounded;
+  %      're': relative error (symmetric by addition);
+  %      'sb': multiplicative symmetric bounded (default);
+  %      'su': multiplicative symmetric unbounded;
   %
   %    'filter': 
-  %      1 - use filter (default); 
-  %      0 - do not;
+  %      1: use filter (default); 
+  %      0: do not;
   %
   %    'pars_init_method':
-  %      0 - get initial estimates from automatized computation (default)
-  %      1 - read initial estimates from .mat file (for continuation)
-  %      2 - read initial estimates from pars_init file
+  %      0:  get initial estimates from automatized computation (default)
+  %      1:  read initial estimates from .mat file (for continuation)
+  %      2:  read initial estimates from pars_init file
   %
   %    'results_output':
-  %     -1 - only saves results to .mat, no figures, no printing to screen
-  %      0 - prints results to screen only (default)
-  %      1 - prints results to screen, saves to .mat file
-  %      2 - prints results to screen, saves data to .mat file and graphs to .png files, 
-  %      3 - prints results to screen, saves data to .mat file and graphs to .png files, saves report to .htl file
-  %      4 - prints results to screen, saves data to .mat file, figures to .png files, report to .html file with results of related species
+  %      0:      only saves data results to .mat, no figures, no writing to html or screen
+  %      1, -1:  saves data to .mat file, prints results to html or screen 
+  %      2, -2:  saves data to .mat file and graphs to .png files, writes results to html or screen
+  %      3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
+  %      4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species
+  %
   %    'method': 
-  %      'nm' - use Nelder-Mead method; 
-  %      'no' - do not estimate;
+  %      'nm': use Nelder-Mead method; 
+  %      'no': do not estimate;
   %
   % Output
   %
@@ -123,13 +123,12 @@ function estim_options (key, val)
           fprintf(['results_output = ', num2str(results_output),' \n']);
         else
           fprintf('results_output = unknown \n');
-        end	      
-        fprintf('-1 - only saves results to .mat file, no figures\n');
-        fprintf(' 0 - prints results to screen \n');
-        fprintf(' 1 - prints results to screen, saves to .mat file\n');
-        fprintf(' 2 - prints results to screen, saves to .mat file, figures to .png files\n');
-        fprintf(' 3 - prints results to screen, saves to .mat file, figures to .png files, report to .html file\n');
-        fprintf(' 4 - prints results to screen, saves to .mat file, figures to .png files, report to .html file with results of related species\n');
+        end	 
+        fprintf(' 0      only saves data results to .mat, no figures, no writing to html or screen\n');
+        fprintf('1, -1  saves data to .mat file, prints results to html or screen\n');
+        fprintf('2, -2  saves data to .mat file and graphs to .png files, writes results to html or screen\n');
+        fprintf('3, -3  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file\n');
+        fprintf('4, -4  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species\n');
       else
         results_output = val;
       end
