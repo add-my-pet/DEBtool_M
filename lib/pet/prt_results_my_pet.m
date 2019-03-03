@@ -44,7 +44,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '  <style>\n');
     fprintf(oid, '    div.prd {\n');
     fprintf(oid, '      width: 50%%;\n');
-    fprintf(oid, '      float: left;\n');
+    fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
     
     fprintf(oid, '    div.par {\n');
