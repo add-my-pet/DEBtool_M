@@ -40,34 +40,61 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '<!DOCTYPE html>\n');
     fprintf(oid, '<HTML>\n');
     fprintf(oid, '<HEAD>\n');
-    fprintf(oid,'   <TITLE>%s</TITLE>\n',  pets{i});
+    fprintf(oid, '  <TITLE>%s</TITLE>\n',  pets{i});
     fprintf(oid, '  <style>\n');
-    fprintf(oid, '    .head {\n');
-    fprintf(oid, '      background-color: #FFE7C6\n');                    % pink header background
+    fprintf(oid, '    div.prd {\n');
+    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      float: left;\n');
     fprintf(oid, '    }\n\n');
+    
+    fprintf(oid, '    div.par {\n');
+    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      float: right;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    p.clear {\n');
+    fprintf(oid, '      clear: both;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    .head {\n');
+    fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
+    fprintf(oid, '    }\n\n');
+
     fprintf(oid, '    .psd {\n');
     fprintf(oid, '      color: blue\n');                                % blue
     fprintf(oid, '    }\n\n');
-    fprintf(oid, '    #prdData {\n');
-    fprintf(oid, '      border-style: solid hidden solid hidden;\n');     % border top & bottom only
+
+    fprintf(oid, '    #prd {\n');
+    fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
     fprintf(oid, '    }\n\n');
+
     fprintf(oid, '    #par {\n');
-    fprintf(oid, '      border-style: solid hidden solid hidden;\n');     % border top & bottom only
+    fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
     fprintf(oid, '    }\n\n');
+
     fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
     fprintf(oid, '  </style>\n');
     fprintf(oid, '</HEAD>\n\n');
     fprintf(oid, '<BODY>\n\n');
 
+    fprintf(oid, '  <div class="prd">\n');
     fprintf(oid,['  <h1>', strrep(pets{i}, '_', ' '), '</h1>\n']);
+    fprintf(oid, '  </div>\n\n');
+
     if ~isfield(metaData.(pets{i}), 'COMPLETE')
       metaData.(pets{i}).COMPLETE = nan;
     end
-    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMSE = %8.3f \n\n</h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMSE);
+    
+    fprintf(oid, '  <div class="par">\n');
+    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMSE = %8.3f </h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMSE);
+    fprintf(oid, '  </div>\n\n');
 
+    fprintf(oid, '  <p class="clear"></p>\n\n');
+   
+    fprintf(oid, '  <div class="prd">\n');
     % open prdData table
     fprintf(oid, '  <h2>Data & predictions</h2>\n');
-    fprintf(oid, '  <TABLE id="prdData">\n');
+    fprintf(oid, '  <TABLE id="prd">\n');
     fprintf(oid, '    <TR  class="head"><TH>data</TH> <TH>prd</TH> <TH>RE</TH>  <TH>symbol</TH> <TH>units</TH> <TH>description</TH> </TR>\n');
 
     [nm, nst] = fieldnmnst_st(data.(pets{i}));
@@ -96,13 +123,15 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
         else
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
-        str = '        <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s, vs. %s</TD>\n';
+        str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s, <font color="blue"><i>vs.</i></font> %s</TD>\n';
         fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
       end
     end
   
-    fprintf(oid, '  </TABLE>\n\n'); % close prdData table
-    
+    fprintf(oid, '  </TABLE>\n'); % close prdData table
+    fprintf(oid, '  </div>\n\n');
+
+    fprintf(oid, '  <div class="par">\n');
     % open parameter table    
     fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
     fprintf(oid, '  <TABLE id="par">\n');
@@ -134,7 +163,8 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
       fprintf(oid, str, nm{j}, coreTxtPar.units.(nm{j}), parpl.(nm{j}), free.(nm{j}), txtPar.label.(nm{j}));
     end
     
-    fprintf(oid, '  </TABLE>\n\n'); % close parameter table  
+    fprintf(oid, '  </TABLE>\n'); % close parameter table  
+    fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '</BODY>\n');
     fprintf(oid, '</HTML>\n');
