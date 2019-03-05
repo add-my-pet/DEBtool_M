@@ -33,14 +33,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 
 %% Remarks
 % Depending on <estim_options.html *estim_options*> settings:
-% writes to results_my_pet.mat and/or results_my_pet.html, 
-% plots to screen
-% writes to report_my_pet.html and shows in browser
+% writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or;  
+% writes and/or plots to screen.
 % Plots use lava-colour scheme; from high to low: white, red, blue, black.
 % In grp-plots, colours are assigned from high to low.
 % Since the standard colour for females is red, and for males blue, compose set with females first, then males.
 %
 % In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species
+% 
+% For curators: 
+% my_pet_res.html is written in the directory entries, and deleted by run_collection, which writes another file with that name in directory entries_web.
 
   global pets results_output 
   
@@ -198,7 +200,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(aux.bibkey.(fieldsInCells{1}{end}));
             end
           end
-          if results_output >= 2  % save graphs to .png
+          if results_output >= 2  || results_output <= -2 % save graphs to .png
             if counter_filenm > 0
               graphnm = ['results_', pets{i}, '_'];
               if counter_fig < 10
@@ -223,7 +225,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
 
-  switch results_output
+  switch results_output % the results_output controlled saving of figures is done above
     case 0
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -245,13 +247,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 2
-       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-   case -2
+    case -2
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -292,7 +294,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
       prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
   end
-  
    
 end
 

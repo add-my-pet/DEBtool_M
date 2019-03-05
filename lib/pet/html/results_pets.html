@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>results_pets</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-02"><meta name="DC.source" content="results_pets.m"><style type="text/css">
+      --><title>results_pets</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-04"><meta name="DC.source" content="results_pets.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>results_pets</h1><!--introduction--><p>Computes model predictions and handles them</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../results_pets.m"><b>results_pets</b></a>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)</p><h2 id="4">Description</h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>par: structure with parameters of species</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.).   auxData is unpacked in predict and the user needs to construct predictions accordingly.</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>weights: structure with weights for each data set</li></ul></div><h2 id="5">Remarks</h2><p>Depending on <a href="estim_options.html"><b>estim_options</b></a> settings: writes to results_my_pet.mat and/or results_my_pet.html, plots to screen writes to report_my_pet.html and shows in browser Plots use lava-colour scheme; from high to low: white, red, blue, black. In grp-plots, colours are assigned from high to low. Since the standard colour for females is red, and for males blue, compose set with females first, then males.</p><p>In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>results_pets</h1><!--introduction--><p>Computes model predictions and handles them</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../results_pets.m"><b>results_pets</b></a>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights)</p><h2 id="4">Description</h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>par: structure with parameters of species</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.).   auxData is unpacked in predict and the user needs to construct predictions accordingly.</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>weights: structure with weights for each data set</li></ul></div><h2 id="5">Remarks</h2><p>Depending on <a href="estim_options.html"><b>estim_options</b></a> settings: writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or; writes and/or plots to screen. Plots use lava-colour scheme; from high to low: white, red, blue, black. In grp-plots, colours are assigned from high to low. Since the standard colour for females is red, and for males blue, compose set with females first, then males.</p><p>In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species</p><p>For curators: my_pet_res.html is written in the directory entries, and deleted by run_collection, which writes another file with that name in directory entries_web.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% results_pets
 % Computes model predictions and handles them
@@ -103,14 +103,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 
 %% Remarks
 % Depending on <estim_options.html *estim_options*> settings:
-% writes to results_my_pet.mat and/or results_my_pet.html, 
-% plots to screen
-% writes to report_my_pet.html and shows in browser
+% writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or;  
+% writes and/or plots to screen.
 % Plots use lava-colour scheme; from high to low: white, red, blue, black.
 % In grp-plots, colours are assigned from high to low.
 % Since the standard colour for females is red, and for males blue, compose set with females first, then males.
 %
 % In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species
+% 
+% For curators: 
+% my_pet_res.html is written in the directory entries, and deleted by run_collection, which writes another file with that name in directory entries_web.
 
   global pets results_output 
   
@@ -268,7 +270,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(aux.bibkey.(fieldsInCells{1}{end}));
             end
           end
-          if results_output >= 2  % save graphs to .png
+          if results_output >= 2  || results_output <= -2 % save graphs to .png
             if counter_filenm > 0
               graphnm = ['results_', pets{i}, '_'];
               if counter_fig < 10
@@ -293,7 +295,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
 
-  switch results_output
+  switch results_output % the results_output controlled saving of figures is done above
     case 0
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -321,7 +323,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-   case -2
+    case -2
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -362,7 +364,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
       prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
   end
-  
    
 end
 
