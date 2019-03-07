@@ -264,35 +264,38 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
-      end
-      prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
+        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
+      end    
     case -3
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end
-      prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
     case 4
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(metaData.species))  
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
       end
     case -4
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
       end
-      prt_report_my_pet({par, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
   end
    
 end

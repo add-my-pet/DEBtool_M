@@ -86,17 +86,10 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     end  
   else % multispecies; no color coding, so color = 0
     focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); % number of focus species, initiate total number of species
-    par = rmfield (par, 'free'); 
     for k = 1:n_spec
-      fldsPar = get_parfields(metaPar.model{k}, 1);
-      for i=1:length(fldsPar) % scan all par-field for model of species k
-        if length(par.(fldsPar{i})) == 1 % all species have the same parameter
-          parList.(specList{k}).(fldsPar{i}) = par.(fldsPar{i});
-        else % species have different prameters
-          park = par.(fldsPar{i}); parList.(specList{k}).(fldsPar{i}) = park(k);
-        end
-      end
+      par.(specList{k}) = rmfield (par.(specList{k}), 'free'); 
     end
+    parList = par;
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
       allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
@@ -159,7 +152,7 @@ fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics
 % comparison species
 if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
   comparisonSpecies = comparisonSpecies(~ismember(comparisonSpecies,focusSpecies)); % remove focus species from comparison species
-  specList = [specList; comparisonSpecies]; n_spec = length(specList); % list of all entries to be shown in the table
+  specList = [specList; comparisonSpecies(:)]; n_spec = length(specList); % list of all entries to be shown in the table
   for k = 2:n_spec
     % parameters
     [parList.(specList{k}), metaPark, txtPark, metaDatak] = allStat2par(specList{k});
@@ -356,6 +349,9 @@ for i = 1:length(fldsPar)
   end
 fprintf(oid, '        <TR id="%s"> <TD style="font-weight:bold">%s</TD> <TD>%s</TD>\n', fldsPar{i}, fldsPar{i}, txtPar.units.(fldsPar{i}));
   for k = 1:n_spec
+    if ~isfield(parList.(specList{k}),(fldsPar{i}))
+      parList.(specList{k}).(fldsPar{i}) = NaN; txtPar.temp.(fldsPar{i}) = 'NA';
+    end
 fprintf(oid, '          <TD>%g</TD> <TD>%s</TD>\n', parList.(specList{k}).(fldsPar{i}), txtPar.temp.(fldsPar{i}));
   end
 fprintf(oid, '          <TD align="center">%s</TD> <TD>%s</TD>\n', txtPar.fresp.(fldsPar{i}), txtPar.label.(fldsPar{i}));
