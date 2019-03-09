@@ -339,7 +339,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       if info ~= 1              
         fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
       end
-      l_i = f - l_T; s_M = 1;
+      l_i = f - l_T; s_M = 1; 
+      l_p = min(l_p, l_i-1e-3); % this fix avoids numerical problems in a_99
       rho_B = 1/ 3/ (1 + f/ g);
     case 'stf'
       pars_tp  = [g; k; l_T; v_Hb; v_Hp];  % parameters for get_tp
@@ -470,7 +471,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       L_p = l_p * L_m;
       if L_p < L_dWm
         L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w);
-        dWm = TC * 3 * (1 + w) * L_dWm^2 * r_B * (L_m - L_T - L_dWm);
+        dWm = 3 * (1 + w) * L_dWm^2 * r_B * (L_m - L_T - L_dWm);
       end
     case {'abj', 'asj'}
       L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
@@ -493,7 +494,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         dWm = TC * W_dWm * r_j;
       elseif L_dWm > L_j % max growth after metam
         L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w);  
-        dWm = TC * r_B * (s_M * L_m - L_j);  
+        dWm = r_B * (s_M * L_m - L_j);  
       else % max growth somewhere during the adult phase of the larva
         dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
       end
