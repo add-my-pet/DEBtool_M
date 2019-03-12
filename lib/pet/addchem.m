@@ -43,7 +43,7 @@ if ~iscell(phylum) % single species case
   d_V = get_d_V(phylum, class); % see comments on section 3.2.1 of DEB3 
   [n_CN, n_HN, n_ON, n_NN, mu_N] = get_N_waste(phylum, class);
 else % multiple species case, length(phylum) = length(class) and > 1
-  n_pets = length(phylum);
+  n_pets = length(phylum); info = 1;
   for i = 2:n_pets % check if all classes are the same
      info = strcmp(phylum{1}, phylum{i}) && strcmp(class{1}, class{i});
      if ~info

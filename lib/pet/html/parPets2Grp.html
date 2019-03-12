@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>parPets2Grp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-27"><meta name="DC.source" content="parPets2Grp.m"><style type="text/css">
+      --><title>parPets2Grp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-12"><meta name="DC.source" content="parPets2Grp.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,17 +66,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>parPets2Grp</h1><!--introduction--><p>converts parameter-structure for each pet to that for a group of pets</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>parGrp = <a href="../parPets2Grp.m"><b>parPets2Grp</b></a> (parPets)</p><h2 id="4">Description</h2><p>Converts parameter-structure for each pet to that of a group of pets. First level field names of output-structure are that of the parameters.</p><p>Input:</p><div><ul><li>parPets: structure with structures of parameters for each pet that are all scalar</li></ul></div><p>Output:</p><div><ul><li>parGrp: stucture with parameters for the group of pets that can be either scalar or vector-valued of length n_pets</li></ul></div><h2 id="5">Remarks</h2><p>Uses parameter specification in pars_init_group for scalar or vector representation of each parameter Function <a href="parGrp2Pets.html"><b>parGrp2Pets</b></a> maps from structure of parameters for a group to that for each pet.</p><h2 id="6">Example of use</h2><p>parGrp = parPets2Grp(parPets)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>parPets2Grp</h1><!--introduction--><p>converts parameter-structure for each pet to that for a group of pets</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>parGrp = <a href="../parPets2Grp.m"><b>parPets2Grp</b></a> (parPets, metaData)</p><h2 id="4">Description</h2><p>Converts parameter-structure for each pet to that of a group of pets. First level field names of output-structure are that of the parameters.</p><p>Input:</p><div><ul><li>parPets: structure with structures of parameters for each pet that are all scalar</li><li>metaData: structure with field phylum and class for addchem, which adds chemical parameters</li></ul></div><p>Output:</p><div><ul><li>parGrp: stucture with parameters for the group of pets that can be either scalar or vector-valued of length n_pets</li></ul></div><h2 id="5">Remarks</h2><p>Uses parameter specification in pars_init_group for scalar or vector representation of each parameter. If pars_init_group.m does not exist, all parameters are vector-represented, except T_ref, whch is always scalar-represented. Function <a href="parGrp2Pets.html"><b>parGrp2Pets</b></a> maps from structure of parameters for a group to that for each pet.</p><h2 id="6">Example of use</h2><p>parGrp = parPets2Grp(parPets)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% parPets2Grp
 % converts parameter-structure for each pet to that for a group of pets
 
 %%
-function parGrp = parPets2Grp(parPets)
-% created 2018/05/23 by Bas Kooijman
+function parGrp = parPets2Grp(parPets, metaData)
+% created 2018/05/23 by Bas Kooijman, modified 2019/03/12
 
 %% Syntax
-% parGrp = <../parPets2Grp.m *parPets2Grp*> (parPets)
+% parGrp = <../parPets2Grp.m *parPets2Grp*> (parPets, metaData)
 
 %% Description
 % Converts parameter-structure for each pet to that of a group of pets. 
@@ -85,13 +85,15 @@ function parGrp = parPets2Grp(parPets)
 % Input:
 %
 % * parPets: structure with structures of parameters for each pet that are all scalar
+% * metaData: structure with field phylum and class for addchem, which adds chemical parameters
 %
 % Output: 
 %
 % * parGrp: stucture with parameters for the group of pets that can be either scalar or vector-valued of length n_pets
 
 %% Remarks
-% Uses parameter specification in pars_init_group for scalar or vector representation of each parameter
+% Uses parameter specification in pars_init_group for scalar or vector representation of each parameter.
+% If pars_init_group.m does not exist, all parameters are vector-represented, except T_ref, whch is always scalar-represented.
 % Function <parGrp2Pets.html *parGrp2Pets*> maps from structure of parameters for a group to that for each pet.
 
 %% Example of use
@@ -107,24 +109,38 @@ function parGrp = parPets2Grp(parPets)
   
   % get parameter template from pars_init_group to get scalar or vector specification for each parameter
   % copy free-setting from template
-  metaData.phylum = []; metaData.class = [];      % metadata as input for pars_init_group
-  parGrp = pars_init_group(metaData);             % initiate output; will be overwritten 
-  parNms = fieldnames(parGrp); n_parNms = length(parNms);
+  if exist('pars_init_group.m', 'file')
+    parGrp = pars_init_group(metaData);           % initiate output; will be overwritten 
+    parNms = fieldnames(parGrp.free); n_parNms = length(parNms);
+  else % no pars_init_group: all pars and free's are vector-valued
+    parNms = [];
+    for i = 1:n_pets
+      parNmsi = fieldnames(parPets.(pets{i}).free); % prameter names of pets i
+      parNms = [parNms; parNmsi]; % catenate all parameter names of all pets
+    end
+    parNms = unique(parNms, 'stable'); n_parNms = length(parNms); % remove all double names
+    for i = 1:n_parNms
+      parGrp.(parNms{i}) = zeros(1, n_pets); 
+      parGrp.free.(parNms{i}) = zeros(1, n_pets); 
+    end
+  end
 
   % pack single-species specification to group specification
   for j = 1:n_parNms                       % scan parameters for each pet
-    if ~strcmp(parNms{j},'free')
       n_parj = length(parGrp.(parNms{j}));
-      if n_parj == 1 % scalar-valued parameter specification
+      if n_parj == 1 || strcmp(parNms{j},'T_ref') % scalar-valued parameter and free specification
         parGrp.(parNms{j}) = parPets.(pets{1}).(parNms{j});
-      else           % n_parj == n_pets
+        parGrp.free.(parNms{j}) = parPets.(pets{1}).free.(parNms{j});
+      else % vector-valued parameter and free specification
         vec = zeros(1,n_pets); % initiate vector-valued parameter specification
+        fvec = zeros(1,n_pets); % initiate vector-valued parameter-free specification
         for i = 1:n_pets
           vec(i) = parPets.(pets{i}).(parNms{j});
+          fvec(i) = parPets.(pets{i}).free.(parNms{j});
         end
-        parGrp.(parNms{j}) = vec;
-      end
-    end
+        parGrp.(parNms{j}) = vec; 
+        parGrp.free.(parNms{j}) = fvec;
+     end
   end
 
 

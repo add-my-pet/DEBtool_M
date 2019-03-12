@@ -104,7 +104,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     prdData = predict_pets(par, data2plot, auxData);
       
     counter_fig = 0;
-
+    
+    if exist('custom_results_group.m', 'file')
+      feval('custom_results_group', par, metaPar, data, txtData, auxData);
+    else
     for i = 1:n_pets
       if exist(['custom_results_', pets{i}, '.m'], 'file')
         feval(['custom_results_', pets{i}], par, metaPar, data.(pets{i}), txtData.(pets{i}), auxData.(pets{i}));
@@ -214,6 +217,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end
         end
       end 
+    end
     end
   end
   
