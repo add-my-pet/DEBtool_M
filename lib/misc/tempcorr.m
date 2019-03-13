@@ -45,8 +45,8 @@ function TC = tempcorr (T, T_ref, pars_T)
   %  <shtempcorr.html *shtempcorr*> shows a graph of this correction factor as function of the temperature. 
 
   %% Example of use
-  %  tempcorr([330 331 332], 320, [12000 277 318 20000 190000]) and 
-  %  shtemp2corr(320, [12000 277 318 20000 190000]). 
+  %  tempcorr([330 331 332], 320, [12000 277 328 20000 190000]) and 
+  %  shtemp2corr(320, [12000 277 328 20000 190000]). 
 
   T_A = pars_T(1); % Arrhenius temperature
     s_A = exp(T_A/ T_ref - T_A ./ T);  % Arrhenius factor
