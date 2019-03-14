@@ -340,7 +340,6 @@ function [stat txtStat] = statistics_st(model, par, T, f)
         fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
       end
       l_i = f - l_T; s_M = 1; 
-      l_p = min(l_p, l_i-1e-3); % this fix avoids numerical problems in a_99
       rho_B = 1/ 3/ (1 + f/ g);
     case 'stf'
       pars_tp  = [g; k; l_T; v_Hb; v_Hp];  % parameters for get_tp
@@ -721,8 +720,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
   stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
   if exist('r_B', 'var')
-    a_99   = a_p + log((1 - L_p/ L_i)/(1 - 0.99))/ r_B;
-    stat.a_99 = a_99;   units.a_99 = 'd';   label.a_99 = 'age at length 0.99 * L_i'; temp.a_99 = T; fresp.a_99 = f;
+    switch model
+      case {'std', 'stx'}
+        a_99   = a_b + log((1 - L_b/ L_i)/(1 - 0.99))/ r_B; % endotherms sometimes have L_p very close to L_i
+        stat.a_99 = a_99;   units.a_99 = 'd';   label.a_99 = 'age at length 0.99 * L_i'; temp.a_99 = T; fresp.a_99 = f;
+      otherwise
+        a_99   = a_p + log((1 - L_p/ L_i)/(1 - 0.99))/ r_B;
+        stat.a_99 = a_99;   units.a_99 = 'd';   label.a_99 = 'age at length 0.99 * L_i'; temp.a_99 = T; fresp.a_99 = f;
+    end
   end
 
   % reproduction
