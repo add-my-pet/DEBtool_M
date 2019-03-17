@@ -31,9 +31,9 @@ function estim_options (key, val)
   %      0: do not;
   %
   %    'pars_init_method':
-  %      0:  get initial estimates from automatized computation (default)
+  %      0:  get initial estimates from automatized computation 
   %      1:  read initial estimates from .mat file (for continuation)
-  %      2:  read initial estimates from pars_init file
+  %      2:  read initial estimates from pars_init file (default)
   %
   %    'results_output':
   %      0:      only saves data results to .mat, no figures, no writing to html or screen
