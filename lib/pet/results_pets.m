@@ -296,7 +296,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
