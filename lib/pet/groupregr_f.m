@@ -2,15 +2,16 @@
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, filternm)
-% created 2015/08/26 by Goncalo Marques; modified 2018/05/22 by Bas Kooijman
+function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, weightsPar, filternm)
+% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22 by Bas Kooijman
 
 %% Syntax
-% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm)
+% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
 
 %% Description
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
 % The filter gives always a pass in the case that no filter has been selected in <estim_options.html *estim_options*>.
+% Parameters can be shared (scalar), or free (vector) with weighted reduction of scaled variances.
 %
 % Input
 %
@@ -19,7 +20,8 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
 % * par: structure with parameters in the format as specified in pars_init_group
 % * data: structure with data
 % * auxData: structure with auxiliary data
-% * weights: structure with weights
+% * weights: structure with weights for data
+% * weightsPar: structure with weights for parameters to minimize scaled variances
 % * filternm: character or cell string with name of user-defined filter function
 %  
 % Output
@@ -121,7 +123,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
   v(:,1) = xin;
   f = feval(func, q, data, auxData);
   [P, meanP] = struct2vector(f, nm);
-  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -145,7 +147,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
     end  
     v(:,j+1) = y_test;
     [P, meanP] = struct2vector(f, nm);
-    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W)  + addVarPar(q, weightsPar);
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -183,7 +185,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
       fxr = fv(:,np1) + 1;
     else
       [P, meanP] = struct2vector(f, nm);
-      fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
+      fxr = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
     end
     func_evals = func_evals + 1;
    
@@ -196,7 +198,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
          fxe = fxr + 1;
       else
         [P, meanP] = struct2vector(f, nm);
-        fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
+        fxe = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
       end
       func_evals = func_evals + 1;
       if fxe < fxr
@@ -224,7 +226,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
               fxc = fxr + 1;
             else            
               [P, meanP] = struct2vector(f, nm);
-              fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              fxc = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + 1;
             
@@ -245,7 +247,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
               fxcc = fv(:,np1) + 1;
             else
               [P, meanP] = struct2vector(f, nm);
-              fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + 1;
             
@@ -273,7 +275,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
                end
                v(:,j) = v_test;
                [P, meanP] = struct2vector(f, nm);
-               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + n_par;
          end
@@ -294,8 +296,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
   fval = min(fv); 
   if func_evals >= max_fun_evals
     %if report > 0
-    fprintf(['No convergences with ', ...
-      num2str(max_fun_evals), ' function evaluations\n']);
+    fprintf(['No convergences with ', num2str(max_fun_evals), ' function evaluations\n']);
     %end
     info = 0;
   elseif itercount >= max_step_number 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-17"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
+      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the AmP estimation procedure (Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>intiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>nsteps: number of steps</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options; option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the AmP estimation procedure (Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>initiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>nsteps: number of steps</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options; option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_pars
 % Runs the AmP estimation procedure (Marques et al 2018, PLOS computational
@@ -77,7 +77,9 @@ function nsteps = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
-  %   2018/05/23 by Bas Kooijman,     2018/08/17 by Starrlight Augustine
+  %   2018/05/23 by Bas Kooijman,  
+  %   2018/08/17 by Starrlight Augustine,
+  %   2019/03/20 by Bas kooijman
   
   %% Syntax 
   % <../estim_pars.m *estim_pars*>
@@ -87,7 +89,7 @@ function nsteps = estim_pars
   %
   % * gets the parameters
   % * gets the data
-  % * intiates the estimation procedure
+  % * initiates the estimation procedure
   % * sends the results for handling
   %
   % Input
@@ -151,6 +153,18 @@ else
   covRules = 'no';
 end
 
+% set weightsPar in case of n_pets > 1, to minimize scaled variances of parameters
+if n_pets > 1
+  fldPar = fieldnames(par.free);
+  for i = 1: length(fldPar)
+     if isfield(metaPar, 'weights') && isfield(metaPar.weights, fldPar{i})
+       weightsPar.(fldPar{i}) = metaPar.weights.(fldPar{i});
+     else
+       weightsPar.(fldPar{i}) = 0;
+     end
+  end
+end
+
 % check parameter set if you are using a filter
 parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
 if filter
@@ -186,7 +200,7 @@ if ~strcmp(method, 'no')
     if n_pets == 1
       [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
-      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, filternm); % estimate parameters using overwrite
+      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
   end
 end

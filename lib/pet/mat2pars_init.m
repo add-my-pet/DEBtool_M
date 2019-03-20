@@ -4,7 +4,7 @@
 %%
 function mat2pars_init(speciesnm, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
@@ -80,6 +80,12 @@ else
 end
 if n_pets > 1
   fprintf(pars_init_id, ['metaPar.cov_rules = ''', cov_rules,'''; %% see function parGrp2Pets\n']);
+  if isfield(metaPar, 'weights')
+    fldPar = fieldnames(metaPar.weights);
+    for i=1:length(fldPar)
+      fprintf(pars_init_id, ['metaPar.weights.', fldPar{i}, ' = ', num2str(metaPar.weights.(fldPar{i})), ';\n']);
+    end
+  end
 end
 fprintf(pars_init_id, '\n');
 
@@ -87,7 +93,7 @@ free = par.free;
 par = rmfield(par, 'free');
 parFields = fields(par);
 
-% checking the existence of metapar fields
+% checking the existence of metaPar fields
 if ~iscell(metaPar.model) % model is character string
   EparFields = get_parfields(metaPar.model);
 else % model is cell string of length n_pets

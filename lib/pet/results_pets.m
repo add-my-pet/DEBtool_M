@@ -106,7 +106,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     counter_fig = 0;
     
     path =  which('custom_results_group.m');
-    if ~isempty(path) && ~isempty(strfind(pwd, path))
+    if ~isempty(path) && ~isempty(strfind(path, pwd))
       feval('custom_results_group', par, metaPar, data, txtData, auxData);
     else
     for i = 1:n_pets

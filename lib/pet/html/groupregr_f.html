@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>groupregr_f</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="groupregr_f.m"><style type="text/css">
+      --><title>groupregr_f</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="groupregr_f.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,21 +66,22 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>groupregr_f</h1><!--introduction--><p>Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info, itercount] = <a href="../groupregr_f.m"><b>groupregr_f</b></a> (func, par, data, auxData, weights, filternm)</p><h2 id="4">Description</h2><p>Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter. The filter gives always a pass in the case that no filter has been selected in <a href="estim_options.html"><b>estim_options</b></a>.</p><p>Input</p><div><ul><li>func: character string with name of user-defined function that specifies predictions, given parameters;      see nrregr_st or nrregr</li><li>par: structure with parameters in the format as specified in pars_init_group</li><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>weights: structure with weights</li><li>filternm: character or cell string with name of user-defined filter function</li></ul></div><p>Output</p><div><ul><li>q: structure with parameters, result of minimization of the lossfunction</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>itercount: number if iterations</li></ul></div><h2 id="5">Remarks</h2><p>Set options with <a href="nmregr_options.html"><b>nmregr_options</b></a>. Similar to <a href="nrregr_st.html"><b>nrregr_st</b></a>, but slower and a larger bassin of attraction and uses a filter. The number of fields in data is variable. See <a href="petregr_f.html"><b>petregr_f</b></a> for the single-species situation</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>groupregr_f</h1><!--introduction--><p>Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info, itercount] = <a href="../groupregr_f.m"><b>groupregr_f</b></a> (func, par, data, auxData, weights, weightsPar, filternm)</p><h2 id="4">Description</h2><p>Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter. The filter gives always a pass in the case that no filter has been selected in <a href="estim_options.html"><b>estim_options</b></a>. Parameters can be shared (scalar), or free (vector) with weighted reduction of scaled variances.</p><p>Input</p><div><ul><li>func: character string with name of user-defined function that specifies predictions, given parameters;      see nrregr_st or nrregr</li><li>par: structure with parameters in the format as specified in pars_init_group</li><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>weights: structure with weights for data</li><li>weightsPar: structure with weights for parameters to minimize scaled variances</li><li>filternm: character or cell string with name of user-defined filter function</li></ul></div><p>Output</p><div><ul><li>q: structure with parameters, result of minimization of the lossfunction</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>itercount: number if iterations</li></ul></div><h2 id="5">Remarks</h2><p>Set options with <a href="nmregr_options.html"><b>nmregr_options</b></a>. Similar to <a href="nrregr_st.html"><b>nrregr_st</b></a>, but slower and a larger bassin of attraction and uses a filter. The number of fields in data is variable. See <a href="petregr_f.html"><b>petregr_f</b></a> for the single-species situation</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% groupregr_f
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, filternm)
-% created 2015/08/26 by Goncalo Marques; modified 2018/05/22 by Bas Kooijman
+function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, weightsPar, filternm)
+% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22 by Bas Kooijman
 
 %% Syntax
-% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, filternm)
+% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
 
 %% Description
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
 % The filter gives always a pass in the case that no filter has been selected in <estim_options.html *estim_options*>.
+% Parameters can be shared (scalar), or free (vector) with weighted reduction of scaled variances.
 %
 % Input
 %
@@ -89,7 +90,8 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
 % * par: structure with parameters in the format as specified in pars_init_group
 % * data: structure with data
 % * auxData: structure with auxiliary data
-% * weights: structure with weights
+% * weights: structure with weights for data
+% * weightsPar: structure with weights for parameters to minimize scaled variances
 % * filternm: character or cell string with name of user-defined filter function
 %  
 % Output
@@ -191,7 +193,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
   v(:,1) = xin;
   f = feval(func, q, data, auxData);
   [P, meanP] = struct2vector(f, nm);
-  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
   zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
@@ -215,7 +217,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
     end  
     v(:,j+1) = y_test;
     [P, meanP] = struct2vector(f, nm);
-    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W)  + addVarPar(q, weightsPar);
   end     
 
   % sort so v(1,:) has the lowest function value 
@@ -253,7 +255,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
       fxr = fv(:,np1) + 1;
     else
       [P, meanP] = struct2vector(f, nm);
-      fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
+      fxr = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
     end
     func_evals = func_evals + 1;
    
@@ -266,7 +268,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
          fxe = fxr + 1;
       else
         [P, meanP] = struct2vector(f, nm);
-        fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
+        fxe = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
       end
       func_evals = func_evals + 1;
       if fxe < fxr
@@ -294,7 +296,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
               fxc = fxr + 1;
             else            
               [P, meanP] = struct2vector(f, nm);
-              fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              fxc = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + 1;
             
@@ -315,7 +317,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
               fxcc = fv(:,np1) + 1;
             else
               [P, meanP] = struct2vector(f, nm);
-              fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + 1;
             
@@ -343,7 +345,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
                end
                v(:,j) = v_test;
                [P, meanP] = struct2vector(f, nm);
-               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W) + addVarPar(q, weightsPar);
             end
             func_evals = func_evals + n_par;
          end
@@ -364,8 +366,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, f
   fval = min(fv); 
   if func_evals >= max_fun_evals
     %if report > 0
-    fprintf(['No convergences with ', ...
-      num2str(max_fun_evals), ' function evaluations\n']);
+    fprintf(['No convergences with ', num2str(max_fun_evals), ' function evaluations\n']);
     %end
     info = 0;
   elseif itercount >= max_step_number 

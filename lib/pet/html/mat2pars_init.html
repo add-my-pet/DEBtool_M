@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>mat2pars_init</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-12"><meta name="DC.source" content="mat2pars_init.m"><style type="text/css">
+      --><title>mat2pars_init</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="mat2pars_init.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -74,7 +74,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %%
 function mat2pars_init(speciesnm, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
@@ -150,6 +150,12 @@ else
 end
 if n_pets > 1
   fprintf(pars_init_id, ['metaPar.cov_rules = ''', cov_rules,'''; %% see function parGrp2Pets\n']);
+  if isfield(metaPar, 'weights')
+    fldPar = fieldnames(metaPar.weights);
+    for i=1:length(fldPar)
+      fprintf(pars_init_id, ['metaPar.weights.', fldPar{i}, ' = ', num2str(metaPar.weights.(fldPar{i})), ';\n']);
+    end
+  end
 end
 fprintf(pars_init_id, '\n');
 
@@ -157,7 +163,7 @@ free = par.free;
 par = rmfield(par, 'free');
 parFields = fields(par);
 
-% checking the existence of metapar fields
+% checking the existence of metaPar fields
 if ~iscell(metaPar.model) % model is character string
   EparFields = get_parfields(metaPar.model);
 else % model is cell string of length n_pets

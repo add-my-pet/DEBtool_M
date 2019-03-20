@@ -7,7 +7,9 @@ function nsteps = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
-  %   2018/05/23 by Bas Kooijman,     2018/08/17 by Starrlight Augustine
+  %   2018/05/23 by Bas Kooijman,  
+  %   2018/08/17 by Starrlight Augustine,
+  %   2019/03/20 by Bas kooijman
   
   %% Syntax 
   % <../estim_pars.m *estim_pars*>
@@ -17,7 +19,7 @@ function nsteps = estim_pars
   %
   % * gets the parameters
   % * gets the data
-  % * intiates the estimation procedure
+  % * initiates the estimation procedure
   % * sends the results for handling
   %
   % Input
@@ -81,6 +83,18 @@ else
   covRules = 'no';
 end
 
+% set weightsPar in case of n_pets > 1, to minimize scaled variances of parameters
+if n_pets > 1
+  fldPar = fieldnames(par.free);
+  for i = 1: length(fldPar)
+     if isfield(metaPar, 'weights') && isfield(metaPar.weights, fldPar{i})
+       weightsPar.(fldPar{i}) = metaPar.weights.(fldPar{i});
+     else
+       weightsPar.(fldPar{i}) = 0;
+     end
+  end
+end
+
 % check parameter set if you are using a filter
 parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
 if filter
@@ -116,7 +130,7 @@ if ~strcmp(method, 'no')
     if n_pets == 1
       [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
-      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, filternm); % estimate parameters using overwrite
+      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
   end
 end
