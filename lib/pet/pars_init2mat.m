@@ -3,7 +3,7 @@
 
 %%
 function pars_init2mat(petsGrp)
-% created 2019/03121 by  Bas Kooijman
+% created 2019/03/20 by  Bas Kooijman
 
 %% Syntax
 % <../pars_init2mat.m *pars_init2mat*> (petsGrp) 
@@ -39,9 +39,11 @@ function pars_init2mat(petsGrp)
       pet = pars_init(i,:); pet = strsplit(pet,'.'); pet = pet{1}; pet(1:10) = []; pets_pars_init{i} = pet;
     end
     pets = pets_mydata(ismember(pets_mydata, pets_pars_init)); pets = pets(ismember(pets_mydata, pets));
+    n_pets = length(pets);
+    prt_run_group(pets);
   elseif ~iscell(petsGrp) % single species
     pets = {petsGrp}; n_pets = 1;
-  else % grp memebers are specified
+  else % grp members are specified
     pets = petsGrp; n_pets = length(pets);
   end
 
