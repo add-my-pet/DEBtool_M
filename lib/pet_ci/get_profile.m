@@ -28,8 +28,6 @@ function [lf_profile, pars_profile] = get_profile(pProfile,lowVal,upperVal,dim,n
   
 global pet
 
-pet = 'my_pet';
-
 % set all of the estimation options:
 estim_options('default'); 
 estim_options('report', 0);           % does not report to screen to save time
