@@ -11,7 +11,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/07/30 by Starrlight Augustine, 
 % modified 2015/08/01 by Goncalo Marques,
 % modified 2015/08/25 by Dina Lika, 
-% modified 2018/05/21, 2018/08/21, 2019/03/02 by Bas Kooijman
+% modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -204,7 +204,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               title(aux.bibkey.(fieldsInCells{1}{end}));
             end
           end
-          if results_output >= 2  || results_output <= -2 % save graphs to .png
+          if results_output >= 3  || results_output <= -3 % save graphs to .png
             if counter_filenm > 0
               graphnm = ['results_', pets{i}, '_'];
               if counter_fig < 10
@@ -231,50 +231,54 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
 
   switch results_output % the results_output controlled saving of figures is done above
-    case 0
+    case 0  % only saving to .mat, no figures plotted
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case 1
+    case 1  % no saving to .mat, no saving to png, print to html
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+    case -1 % no saving to .mat, no saving to png, print to screen
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+    case 2  % save to .mat, no saving to png, print to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case -1
+    case -2  % save to .mat, no saving to png, print to screen
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case 2
+    case 3  % save to .mat, save to png, print to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case -2
+    case -3  % save to .mat, save to png,, print to screen
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case 3
+    case 4  % save to .mat, save to png, print to html, implied properties to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
-      else
+      else  
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end    
-    case -3
+    case -4  % save to .mat, save to png, print to screen, implied properties to html
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -283,7 +287,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end
-    case 4
+    case 5 % save to .mat, save to png, print to html, implied properties to html, including related species
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -292,7 +296,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
       end
-    case -4
+    case -5 % save to .mat, save to png, print to screen, implied properties to html, including related species
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
