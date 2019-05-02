@@ -43,7 +43,7 @@ switch phylum
         d_V = 0.05;
     case 'Rotifera'
         d_V = 0.06;
-    case {'Platyhelminthes', 'Acanthocephala', 'Chaetognatha'}
+    case {'Platyhelminthes', 'Nemertea', 'Acanthocephala', 'Chaetognatha'}
         d_V = 0.07;
     case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         d_V = 0.07;

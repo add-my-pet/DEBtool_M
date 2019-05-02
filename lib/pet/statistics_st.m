@@ -7,7 +7,8 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
-% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18, 2018/08/22 by Bas Kooijman
+% modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 
+% modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18, 2018/08/22, 2019/04/25 by Bas Kooijman
 
 %% Syntax
 % [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -822,14 +823,14 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   switch model
     case {'std', 'stf', 'stx', 'ssj'}
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp]; 
-      if L_i < L_p || L_i - L_p < 1e-4
-        p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_p + 1e-4], f, pars_power, l_b, l_p);
+      if L_i < L_p || L_i - L_p < 1e-8
+        p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_p + 1e-8], f, pars_power, l_b, l_p);
       else
         p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p);
       end
     case 'sbp' % no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
-      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i + 1e-6], f, pars_power, l_b, l_p); 
+      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i + 1e-8], f, pars_power, l_b, l_p); 
       p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
     case 'abp'% no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
@@ -842,7 +843,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_s([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_s, l_j, l_p); 
     case 'hep' 
-      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6]; 
+      pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-8]; 
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
     case 'hex' % birth and puberty coincide; ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 

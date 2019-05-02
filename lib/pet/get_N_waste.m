@@ -44,7 +44,7 @@ switch phylum
         N_waste = 'ammonoletic';
     case 'Rotifera'
         N_waste = 'ammonoletic';
-    case {'Platyhelminthes', 'Acanthocephala', 'Chaetognatha'}
+    case {'Platyhelminthes', 'Nemertea', 'Acanthocephala', 'Chaetognatha'}
         N_waste = 'ammonoletic';
     case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
         N_waste = 'ammonoletic';
