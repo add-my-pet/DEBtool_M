@@ -62,7 +62,7 @@ function [H, a, info] = maturity_old(L, f, p)
   else % some embryo and juvenile values
     L = L(L< Lp); % select embryo and juvenile values
     ue0 = get_ue0([g; k; vHb], f, lb); %% initial scaled reserve M_E^0/{J_EAm}
-    [l_out, teh] = ode45(@dget_teh, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
+    [l_out, teh] = ode45(@dget_teh, [-1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
     teh(1:2,:) = []; % remove added L values
     H(1:n_mat) = teh(:,3) * v^2/ g^2/ kM^3; 
     a(1:n_mat) = teh(:,1)/ kM;

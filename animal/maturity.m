@@ -3,7 +3,7 @@
 
 %%
 function [H, a, info] = maturity(L, f, p)
-  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03
+  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03, 2019/06/01
   
   %% Syntax
   % [H, a, info] = <../maturity.m *maturity*> (L, f, p)
@@ -59,7 +59,10 @@ function [H, a, info] = maturity(L, f, p)
 
   options = odeset('Events', @event_length); 
   [t, luEuH, t_l, luEuH_l, event_l] = ode23(@dget_luEuH, [0; 1e20], [1e-10; uE0; 0], options, l, f, kap, g, k, lT, uHb, uHp);
-  [l in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
+  if length(t) < length(l)
+    event_l = [1; event_l]; t_l = [0; t_l]; luEuH_l = [[0, uE0, 0]; luEuH_l];
+  end
+  [l, in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
 
 end
 

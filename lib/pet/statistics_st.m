@@ -659,7 +659,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.g_Hp = g_Hp;    units.g_Hp = '-';    label.g_Hp = 'energy divestment ratio at puberty';  temp.g_Hp = NaN; fresp.g_Hp = NaN;
   %
   if stat.c_T * p_Am * s_M * L_p^2 * (1 - kap) * f * a_p < E_Hp % p_Am at T_ref, but a_p at T_typical
-    fprintf('Warning from statistics_st: (1 - kap) * f * s_M * {p_Am} * L_p^2 < E_Hp \n');
+    fprintf('Warning from statistics_st: (1 - kap) * f * s_M * {p_Am} * L_p^2  * a_p < E_Hp \n');
   end
    
   % emergence

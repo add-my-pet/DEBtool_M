@@ -4,7 +4,7 @@
 %%
 function mat2pars_init(speciesnm, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25, 2019/03/20 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
@@ -23,7 +23,7 @@ function mat2pars_init(speciesnm, varargin)
 
 %% Example of use
 % mat2pars_init
-
+  
 global pets cov_rules
 
 n_pets = length(pets);
