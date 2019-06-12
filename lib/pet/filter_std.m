@@ -25,7 +25,7 @@ function [filter, flag] = filter_std(p)
 %
 %     0: parameters pass the filter
 %     1: some parameter is negative
-%     2: some kappa is larger than 1
+%     2: some kappa is larger than 1 or smaller than 0
 %     3: growth efficiency is larger than 1
 %     4: maturity levels do not increase during life cycle
 %     5: puberty cannot be reached

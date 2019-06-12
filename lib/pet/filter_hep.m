@@ -33,7 +33,7 @@ function [filter, flag] = filter_hep(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  parvec = [p.z; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.E_Rj; p.kap_R; p.h_a; p.T_A];
+  parvec = [p.z; p.kap_X; p.kap_P; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.E_Rj; p.kap_R; p.h_a; p.T_A];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;
