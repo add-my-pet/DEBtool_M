@@ -1,5 +1,4 @@
-%% get_tj
-% Gets scaled age at metamorphosis
+%% get_tj Gets scaled age at metamorphosis
 
 %%
 function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)

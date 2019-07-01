@@ -3,7 +3,7 @@
 
 %%
 function prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData)
-% created 2019/03/01 by Bas Kooijman
+% created 2019/03/01 by Bas Kooijman, modified 2019/07/01
 
 %% Syntax
 % <../prt_results2screen.m *prt_results2screen*> (parPets, metaPar, txtPar, data, metaData, txtData, prdData) 
@@ -47,9 +47,9 @@ function prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, p
       free = currentPar.free;  
       corePar = rmfield_wtxt(currentPar,'free'); coreTxtPar.units = txtPar.units; coreTxtPar.label = txtPar.label;
       [parFields, nbParFields] = fieldnmnst_st(corePar);
-      % we need to make a small addition so that it recognised if one of the chemical parameters was released and then print that to the screen
+    % we need to make a small addition so that it recognises if one of the chemical parameters were released and then print them as well
       for j = 1:nbParFields
-        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_'))
+        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_')) && ~free.(parFields{j}) || 
           corePar          = rmfield_wtxt(corePar, parFields{j});
           coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
           coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
