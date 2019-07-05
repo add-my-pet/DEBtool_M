@@ -71,9 +71,9 @@ function [tj, te, tb, lj, le, lb, rj, vRj, uEe, info] = get_tj_hex(p, f)
 
   options = odeset('Events', @emergence);
   [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; uEj; 0], options, g, k, vHe);
-  te = tj + te;     % -, scaled age at emergence 
-  le = luEvH_e(1);  % -, scaled length at emergence
-  uEe = luEvH_e(2); % -, scaled reserve at emergence
+  te = tj + te;       % -, scaled age at emergence 
+  le = luEvH(end,1);  % -, scaled length at emergence
+  uEe = luEvH(end,2); % -, scaled reserve at emergence
 
 end
 
