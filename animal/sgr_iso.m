@@ -11,7 +11,7 @@ function [r info tb tp_out lb lp_out uE0] = sgr_iso (p, f)
   %% Description
   % Specific population growth rate for reproducing isomorphs;
   % The embryonic stage is excluded; aging is the only cause of death. 
-  % Food ensity is assumed to be constant.
+  % Food density is assumed to be constant.
   %
   % Input
   %
