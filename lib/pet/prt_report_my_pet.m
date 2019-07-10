@@ -3,10 +3,10 @@
 
 %%
 function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder)
-% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22 Bas Kooijman
+% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
 
 %% Syntax
-% <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, T, f, destinationFolder) 
+% <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder) 
 
 %% Description
 % Writes report_my_pet.html with a list of parameters and implied model properties for selected species. 
@@ -29,7 +29,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % Output:
 %
 % * no Malab output, but a html-file is written with report-table and opened automatically in the system browser
-
+%
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 
 % The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
@@ -416,7 +416,7 @@ fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
 %
 fprintf(oid, '          // Loop through all table rows, and hide those who don''t match the search query\n');
 fprintf(oid, '          for (i = 0; i < tr.length; i++) {\n');
-fprintf(oid, '          td = tr[i].getElementsByTagName("td")[2];\n');
+fprintf(oid, '          td = tr[i].getElementsByTagName("td")[1];\n');
 fprintf(oid, '          if (td) {\n');
 fprintf(oid, '            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {\n');
 fprintf(oid, '              tr[i].style.display = "";\n');
