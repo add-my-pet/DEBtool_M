@@ -62,6 +62,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
 % * prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))
 
+
 path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/'; % links of species names to AmP collection in table head
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)

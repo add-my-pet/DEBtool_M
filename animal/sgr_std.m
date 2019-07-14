@@ -71,9 +71,18 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
     h_Bpi = 0;
   end
   
-  TC = tempcorr(T, T_ref, T_A);
+  % temperature correction
+  pars_T = T_A;
+  if exist('T_L','var') && exist('T_AL','var')
+    pars_T = [T_A; T_L; T_AL];
+  end
+  if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
+    pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
+  end
+  TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
   kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2;
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
+  
   [u_E0, l_b, info] = get_ue0([g k v_Hb], f);
   if info == 0
     r = NaN; S_b = NaN; S_p = NaN; t_max = NaN;
@@ -89,7 +98,7 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
   L_b = L_m * l_b; l_i = f - l_T; % -, cm, ultimate scaled struc length
   
   % max time for integration of the char eq
-  options = odeset('Events', @dead_for_sure);  
+  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhS] = ode45(@dget_qhS, [0; 1e10], [0, 0, S_b], options, f, L_b, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
   t_max = t(end);
 
@@ -108,7 +117,11 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
   %   for Dirac delta functions for R(t): 1 = sum_i S(t_i) exp(- r*t_i),
   %   where t_i's are times at egg laying
   char_eq = @(r, t, S) 1 - sum(S .* exp(- r * t));
-  [r, fval, info, output] = fzero(@(r) char_eq(r, t, S), [0 r_max]);
+  if char_eq(0, t, S) > 0
+    r = NaN; info = 0; % no positive r exists
+  else
+    [r, fval, info, output] = fzero(@(r) char_eq(r, t, S), [0 r_max]);
+  end
  
 end
 
@@ -123,7 +136,7 @@ function dqhS = dget_qhS(t, qhS, f, L_b, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_B
   % t: time since birth
   q   = qhS(1); % 1/d^2, aging acceleration
   h_A = qhS(2); % 1/d^2, hazard rate due to aging
-  S   = qhS(3); % -, survival prob
+  S   = max(0, qhS(3)); % -, survival prob
   
   L_i = L_m * f - L_T;
   L = L_i - (L_i - L_b) * exp(- t * r_B);

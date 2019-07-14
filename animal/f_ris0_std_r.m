@@ -36,6 +36,10 @@ function [f, S_b, S_p, info] = f_ris0_std_r (par, f_0)
 
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
+  [norm, S_b, S_p, t_max, info] = sgr_std(par, [], f_1);
+  if info == 0
+    f = NaN; S_b = NaN; S_p = NaN; return
+  end
   norm = 1; i = 0; % initialize norm and counter
 
   while i < 100 && norm^2 > 1e-16 && f_1 - f_0 > 1e-4 % bisection method
