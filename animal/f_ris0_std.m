@@ -2,11 +2,11 @@
 % Gets scaled functional response at with the specific population growth rate is zero for the std model
 
 %%
-function [f, S_b, S_p, f_0, info] = f_ris0_std (par)
+function [f, S_b, S_p, a_b, t_p, info] = f_ris0_std (par)
   % created 2019/07/06 by Bas Kooijman
   
   %% Syntax
-  % [f, S_b, S_p, f_0, info] = <../f_ris0_std.m *f_ris0_std*> (par)
+  % [f, S_b, S_p, a_b, t_p, info] = <../f_ris0_std.m *f_ris0_std*> (par)
   
   %% Description
   % Obtains the scaled function response at which specific population growth rate for the std model equals zero, 
@@ -21,7 +21,8 @@ function [f, S_b, S_p, f_0, info] = f_ris0_std (par)
   % * f: scaled func response at which r = 0 forfor the std model
   % * S_b: survivor probability at birth
   % * S_p: survivor probability at puberty
-  % * f_0: scaled func response at which pubert can just be reached
+  % * a_b: age at birth at T_ref
+  % * t_p: time since birth at puberty at T_ref
   % * info: scalar with indicator for failure (0) or success (1)
   %
   %% Remarks
@@ -29,10 +30,13 @@ function [f, S_b, S_p, f_0, info] = f_ris0_std (par)
   %
   %% Example of use
   % cd to entries/Passer_domesticus/; load results_Passer_domesticus; 
-  % [f, info] = f_ris0_std(par)
+  % f = f_ris0_std(par)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
+  if strcmp(gender,'D')
+    kap_R = kap_R/2; % take cost of male production into account
+  end
 
   % defaults
   if ~exist('thinning','var')

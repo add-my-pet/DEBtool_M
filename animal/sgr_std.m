@@ -2,11 +2,11 @@
 % Gets specific population growth rate for the std model
 
 %%
-function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
+function [r, S_b, S_p, aT_b, tT_p, info] = sgr_std (par, T_pop, f_pop)
   % created 2019/07/06 by Bas Kooijman
   
   %% Syntax
-  % [r, S_b, S_p, t_max, info] = <../sgr_std.m *sgr_std*> (par, T_pop, f_pop)
+  % [r, S_b, S_p, aT_b, tT_p, info] = <../sgr_std.m *sgr_std*> (par, T_pop, f_pop)
   
   %% Description
   % Specific population growth rate for the std model.
@@ -34,7 +34,8 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
   % * r: scalar with specific population growth rate
   % * S_b: survivor probability at birth
   % * S_p: survivor probability at puberty
-  % * t_max: maximum time since birth for integration of the characteristic equation
+  % * aT_b: age at birth
+  % * tT_p: time since birth at puberty
   % * info: scalar with indicator for failure (0) or success (1)
   %
   %% Remarks
@@ -44,10 +45,13 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
   %
   %% Example of use
   % cd to entries/Rana_temporaria/; load results_Rana_temporaria; 
-  % [r, r_max, S_b, S_p, info] = sgr_std(par)
+  % [r, S_b, S_p, tT_p, info] = sgr_std(par)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
+  if ~isempty(strfind(gender, 'D'))
+    kap_R = kap_R/2; % take cost of male production into account
+  end
 
   % defaults
   if exist('T_pop','var') && ~isempty(T_pop)
@@ -85,12 +89,12 @@ function [r, S_b, S_p, t_max, info] = sgr_std (par, T_pop, f_pop)
   
   [u_E0, l_b, info] = get_ue0([g k v_Hb], f);
   if info == 0
-    r = NaN; S_b = NaN; S_p = NaN; t_max = NaN;
+    r = NaN; S_b = NaN; S_p = NaN; tT_p = NaN;
     return
   end
   [tau_p, tau_b, l_p, l_b, info] = get_tp([g k l_T v_Hb v_Hp], f, l_b);
   if l_p > f || info == 0 || tau_p < 0
-    r = 0; S_b = NaN; S_p = NaN; t_max = NaN; info = 0;
+    r = 0; S_b = NaN; S_p = NaN; aT_b = NaN; tT_p = NaN; info = 0;
     return
   end
   aT_b = tau_b/ kT_M; aT_p = tau_p/ kT_M; tT_p = aT_p - aT_b; % d, age at birth, puberty

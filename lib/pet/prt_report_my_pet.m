@@ -28,7 +28,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %
 % Output:
 %
-% * no Malab output, but a html-file is written with report-table and opened automatically in the system browser
+% * no Malab output, but a html-file is written with report-table and opens automatically in the system browser
 %
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 

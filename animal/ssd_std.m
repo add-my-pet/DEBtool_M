@@ -2,11 +2,11 @@
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, EWw, EWw_pi, hWw, theta_bp, tS, tSs] = ssd_std(par, T_pop, f_pop, sgr)
+function [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, EWw, EWw_pi, hWw, theta_bp, S_p, tS, tSs] = ssd_std(par, T_pop, f_pop, sgr)
   % created 2019/07/09 by Bas Kooijman
   
   %% Syntax
-  % [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, hWw, EWw, EWw_pi, theta_bp, tS, tSs] = <../ssd_std.m *ssd_std*> (par, T_pop, f_pop, sgr)
+  % [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, hWw, EWw, EWw_pi, theta_bp, S_p, tS, tSs] = <../ssd_std.m *ssd_std*> (par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumptions that the population has the stable age distribution.
@@ -36,6 +36,7 @@ function [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, EWw, EWw_pi, hWw, theta_bp, tS, t
   % * EWw_pi: mean wet weight of adults (excluding contributions from reproduction buffer)
   % * hWw: production of dead post-natals (excluding contributions from reproduction buffer)
   % * theta_bp: fraction of the post-natal individuals that is juvenile
+  % * S_p: survival probability at puberty
   % * tS: (n,2)-array with age (d), surivival probability (-)
   % * tSs: (n,2)-array with age (d), survivor function of the stable age distribution (-)
   %
@@ -93,14 +94,18 @@ function [EL, EL2, EL3, EL_pi, EL2_pi, EL3_pi, EWw, EWw_pi, hWw, theta_bp, tS, t
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events', @p_dead_for_sure, 'AbsTol', 1e-9, 'RelTol', 1e-9); 
   qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
-  [t, qhSL, t_pi, qhSL_pi] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, sgr, f, L_b, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
+  [t, qhSL, t_pi, qhSL_pi, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, sgr, f, L_b, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
+  if length(ie) == 1
+    EL=NaN; EL2=NaN; EL3=NaN; EL_pi=NaN; EL2_pi=NaN; EL3_pi=NaN; EWw=NaN; EWw_pi=NaN; hWw=NaN; theta_bp=NaN; S_p = NaN; tS=[NaN NaN]; tSs=[NaN NaN];
+    return
+  end
   EL0_i = qhSL_pi(2,4); theta_bp = qhSL_pi(1,4)/ EL0_i; % -, fraction of post-natals that is juvenile
   theta_pi = 1 - theta_bp; % -, fraction of post-natals that is adult
   EL = qhSL(end,5)/ EL0_i; EL2 = qhSL(end,6)/ EL0_i; EL3 = qhSL(end,7)/ EL0_i; % mean L^1,2,3 for post-natals
   EL_pi = qhSL(end,8)/ EL0_i/ theta_pi; EL2_pi = qhSL(end,9)/ EL0_i/ theta_pi; EL3_pi = qhSL(end,10)/ EL0_i/ theta_pi; % mean L^1,2,3 for adults
   EWw = EL3 * (1 + f * ome); EWw_pi = EL3_pi * (1 + f * ome);% g, mean weight of post-natails, adults
   hWw = qhSL(end,11)/ EL0_i * (1 + f * ome); % g/d, production of dead post-natal mass
-  % S_p = qhSL_pi(1,3); % -, survival prob at puberty, just for checking
+  S_p = qhSL_pi(1,3); % -, survival prob at puberty
   
   tS = [0, 1; t + aT_b, qhSL(:,3)];                   % d,-, convert time since birth to age for survivor probability
   tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ qhSL_pi(2,4)]; % d,-, convert time since birth to age for survivor function of the stable age distribution
