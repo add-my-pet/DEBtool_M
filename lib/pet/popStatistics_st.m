@@ -122,12 +122,16 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   switch model
     % var_00 means var for f=f_min and thinning=0; var_11 means var for f=f_max and thinning=1
     % var_00m means var for f=f_min and thinning=0 and male
+    % if ischar(F), f_ris0 depends on thinning, but the-in-between-f's are taken the same, corresponding with thinning=1
+    
+    %% std, stx
     case {'std','stx'}
       par.thinning = 1; 
       % growth
-      [f_01, S_b_01, S_p_01, a_b_01, t_p_01, info_01] = f_ris0_std (par); t2_01 = NaN; 
+      [f_01, S_b_01, S_p_01, a_b_01, t_p_01, info_01] = f_ris0_std (par, T); t2_01 = NaN; 
       if info_01 == 0
-        EL_01=NaN; EL2_01=NaN; EL3_01=NaN; EL_a_01=NaN; EL2_a_01=NaN; EL3_a_01=NaN; EWw_n_01=NaN; EWw_a_01=NaN; hWw_n_01=NaN; theta_jn_01=NaN; S_p_01=NaN; tS_01=NaN; tSs_01=NaN;
+        EL_01=NaN; EL2_01=NaN; EL3_01=NaN; EL_a_01=NaN; EL2_a_01=NaN; EL3_a_01=NaN; EWw_n_01=NaN; EWw_a_01=NaN; hWw_n_01=NaN; theta_jn_01=NaN; 
+        S_p_01=NaN; tS_01=[NaN NaN]; tSs_01=[NaN NaN];
       else
         [EL_01, EL2_01, EL3_01, EL_a_01, EL2_a_01, EL3_a_01, EWw_n_01, EWw_a_01, hWw_n_01, theta_jn_01, S_p_01, tS_01, tSs_01] = ssd_std(par, T, f_01, 0);
       end 
@@ -146,20 +150,31 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
           fprintf(['Warning from popStatistics_st: specified f = ', num2str(f_f1), ' is smaller than minimum value ', num2str(f_01), '\n']);
           return
         end
-        [r_f1, S_b_f1, S_p_f1, a_b_f1, t_p_f1, info_f1] = sgr_std (par, T, f_f1); t2_f1 = (log(2))/ r_f1;
+        if isnan(f_f1)
+          r_f1=NaN; t2_f1=NaN; S_b_f1=NaN; S_p_f1=NaN; a_b_f1=NaN; t_p_f1=NaN; info_f1 = 0;
+          EL_f1=NaN; EL2_f1=NaN; EL3_f1=NaN; EL_a_f1=NaN; EL2_a_f1=NaN; EL3_a_f1=NaN; EWw_n_f1=NaN; EWw_a_f1=NaN; hWw_n_f1=NaN; theta_jn_f1=NaN; 
+          S_p_f1=NaN; tS_f1=[NaN NaN]; tSs_f1=[NaN NaN];
+        else
+          [r_f1, S_b_f1, S_p_f1, a_b_f1, t_p_f1, info_f1] = sgr_std (par, T, f_f1); t2_f1 = (log(2))/ r_f1;
+        end
         if info_f1 == 0
-          EL_f1=NaN; EL2_f1=NaN; EL3_f1=NaN; EL_a_f1=NaN; EL2_a_f1=NaN; EL3_a_f1=NaN; EWw_n_f1=NaN; EWw_a_f1=NaN; hWw_n_f1=NaN; theta_jn_f1=NaN; S_p_f1=NaN; tS_f1=NaN; tSs_f1=NaN;
+          EL_f1=NaN; EL2_f1=NaN; EL3_f1=NaN; EL_a_f1=NaN; EL2_a_f1=NaN; EL3_a_f1=NaN; EWw_n_f1=NaN; EWw_a_f1=NaN; hWw_n_f1=NaN; theta_jn_f1=NaN; 
+          S_p_f1=NaN; tS_f1=[NaN NaN]; tSs_f1=[NaN NaN];
         else
           [EL_f1, EL2_f1, EL3_f1, EL_a_f1, EL2_a_f1, EL3_a_f1, EWw_n_f1, EWw_a_f1, hWw_n_f1, theta_jn_f1, S_p_f1, tS_f1, tSs_f1] = ssd_std(par, T, f_f1, r_f1);
         end
       end
       [r_11, S_b_11, S_p_11, a_b_11, t_p_11, info_11] = sgr_std (par, T, 1); t2_11 = (log(2))/ r_11;
       if info_11 == 0
-        EL_11=NaN; EL2_11=NaN; EL3_11=NaN; EL_a_11=NaN; EL2_a_11=NaN; EL3_a_11=NaN; EWw_n_11=NaN; EWw_a_11=NaN; hWw_n_11=NaN; theta_jn_11=NaN; S_p_11=NaN; tS_11=NaN; tSs_11=NaN;
+        EL_11=NaN; EL2_11=NaN; EL3_11=NaN; EL_a_11=NaN; EL2_a_11=NaN; EL3_a_11=NaN; EWw_n_11=NaN; EWw_a_11=NaN; hWw_n_11=NaN; theta_jn_11=NaN; 
+        S_p_11=NaN; tS_11=[NaN NaN]; tSs_11=[NaN NaN];
       else
         [EL_11, EL2_11, EL3_11, EL_a_11, EL2_a_11, EL3_a_11, EWw_n_11, EWw_a_11, hWw_n_11, theta_jn_11, S_p_11, tS_11, tSs_11] = ssd_std(par, T, 1, r_11);
       end
       
+      if isnan(f_01)
+        ER_01=NaN; del_ea_01=NaN; theta_e_01=NaN;
+      else
       % reproduction
       p_C = f_01 * g/ (f_01 + g) * E_m * (vT * EL2_a_01 + kT_M * (EL3_a_01 + L_T * EL2_a_01)); % J/d, mean mobilisation of adults
       p_R = (1 - kap) * p_C - kT_J * E_Hp; % J/d, mean allocation to reproduction of adults
@@ -167,13 +182,18 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       ER_01 = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
       del_ea_01 = ER_01 * a_b_01 * exp(h_B0b * a_b_01/ 2); % -, number of embryos per adult
       theta_e_01 = del_ea_01/ (del_ea_01 + 1/ (1 - theta_jn_01)); % -, fraction of individuals that is embryo
+      end
       if n_fVal == 3
         p_C = f_f1 * g/ (f_f1 + g) * E_m * (vT * EL2_a_f1 + kT_M * (EL3_a_f1 + L_T * EL2_a_f1)); % J/d, mean mobilisation of adults
         p_R = (1 - kap) * p_C - kT_J * E_Hp; % J/d, mean allocation to reproduction of adults
+        if isnan(f_f1)
+          ER_f1=NaN; del_ea_f1=NaN; theta_e_f1=NaN;
+        else
         E_0 = p_Am * initial_scaled_reserve(f_f1, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
         ER_f1 = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adults
         del_ea_f1 = ER_f1 * a_b_f1 * exp(h_B0b * a_b_f1/ 2); % -, number of embryos per adult
         theta_e_f1 = del_ea_f1/ (del_ea_f1 + 1/ (1 - theta_jn_f1)); % -, fraction of individuals that is embryo
+        end
       end
       p_C = g/ (1 + g) * E_m * (vT * EL2_a_11 + kT_M * (EL3_a_11 + L_T * EL2_a_11)); % J/d, mean mobilisation of adults
       p_R = (1 - kap) * p_C - kT_J * E_Hp; % J/d, mean allocation to reproduction of adults
@@ -191,21 +211,31 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       
       par.thinning = 0;
       % growth
-      [f_00, S_b_00, S_p_00, a_b_00, t_p_00, info_00] = f_ris0_std (par); t2_00 = NaN;
+      [f_00, S_b_00, S_p_00, a_b_00, t_p_00, info_00] = f_ris0_std (par, T); t2_00 = NaN;
       if info_00 == 0
-        EL_00=NaN; EL2_00=NaN; EL3_00=NaN; EL_a_00=NaN; EL2_a_00=NaN; EL3_a_00=NaN; EWw_n_00=NaN; EWw_a_00=NaN; hWw_n_00=NaN; theta_jn_00=NaN; S_p_00=NaN; tS_00=NaN; tSs_00=NaN;
+        EL_00=NaN; EL2_00=NaN; EL3_00=NaN; EL_a_00=NaN; EL2_a_00=NaN; EL3_a_00=NaN; EWw_n_00=NaN; EWw_a_00=NaN; hWw_n_00=NaN; theta_jn_00=NaN; 
+        S_p_00=NaN; tS_00=[NaN NaN]; tSs_00=[NaN NaN];
       else
         [EL_00, EL2_00, EL3_00, EL_a_00, EL2_a_00, EL3_a_00, EWw_n_00, EWw_a_00, hWw_n_00, theta_jn_00, S_p_00, tS_00, tSs_00] = ssd_std(par, T, f_00, 0);
       end
       if n_fVal == 3
-        if ischar(F)
+        if ischar(F) && ~isnan(f_f1)
           f_f0 = f_f1; % f_00 + str2double(F) * (1 - f_00); % -, scaled function response
+        elseif ischar(F)
+          f_f0 = f_00 + str2double(F) * (1 - f_00); % -, scaled function response
         else
           f_f0 = F;
         end
-        [r_f0, S_b_f0, S_p_f0, a_b_f0, t_p_f0, info_f0] = sgr_std (par, T, f_f0); t2_f0 = (log(2))/ r_f0;
+        if isnan(f_f0)
+          r_f0=NaN; t2_f0=NaN; S_b_f0=NaN; S_p_f0=NaN; a_b_f0=NaN; t_p_f0=NaN; info_f0 = 0;
+          EL_f0=NaN; EL2_f0=NaN; EL3_f0=NaN; EL_a_f0=NaN; EL2_a_f0=NaN; EL3_a_f0=NaN; EWw_n_f0=NaN; EWw_a_f0=NaN; hWw_n_f0=NaN; theta_jn_f0=NaN; 
+          S_p_f0=NaN; tS_f0=[NaN NaN]; tSs_f0=[NaN NaN];
+        else
+          [r_f0, S_b_f0, S_p_f0, a_b_f0, t_p_f0, info_f0] = sgr_std (par, T, f_f0); t2_f0 = (log(2))/ r_f0;
+        end
         if info_f0 == 0
-          EL_f0=NaN; EL2_f0=NaN; EL3_f0=NaN; EL_a_f0=NaN; EL2_a_f0=NaN; EL3_a_f0=NaN; EWw_n_f0=NaN; EWw_a_f0=NaN; hWw_n_f0=NaN; theta_jn_f0=NaN; S_p_f0=NaN; tS_f0=NaN; tSs_f0=NaN;
+          EL_f0=NaN; EL2_f0=NaN; EL3_f0=NaN; EL_a_f0=NaN; EL2_a_f0=NaN; EL3_a_f0=NaN; EWw_n_f0=NaN; EWw_a_f0=NaN; hWw_n_f0=NaN; theta_jn_f0=NaN; 
+          S_p_f0=NaN; tS_f0=[NaN NaN]; tSs_f0=[NaN NaN];
         else
           [EL_f0, EL2_f0, EL3_f0, EL_a_f0, EL2_a_f0, EL3_a_f0, EWw_n_f0, EWw_a_f0, hWw_n_f0, theta_jn_f0, S_p_f0, tS_f0, tSs_f0] = ssd_std(par, T, f_f0, r_f0);
         end
@@ -227,10 +257,14 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       if n_fVal == 3
         p_C = f_f0 * g/ (f_f0 + g) * E_m * (vT * EL2_a_f0 + kT_M * (EL3_a_f0 + L_T * EL2_a_f0)); % J/d, mean mobilisation of adults
         p_R = (1 - kap) * p_C - kT_J * E_Hp; % J/d, mean allocation to reproduction of adults
+        if isnan(f_f0)
+           ER_f0=NaN; del_ea_f0=NaN; theta_e_f0=NaN;
+        else
         E_0 = p_Am * initial_scaled_reserve(f_f0, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
         ER_f0 = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adults
         del_ea_f0 = ER_f0 * a_b_f0 * exp(h_B0b * a_b_f0/ 2); % -, number of embryos per adult
         theta_e_f0 = del_ea_f0/ (del_ea_f0 + 1/ (1 - theta_jn_f0));
+        end
       end
       p_C = g/ (1 + g) * E_m * (vT * EL2_a_10 + kT_M * (EL3_a_10 + L_T * EL2_a_10)); % J/d, mean mobilisation of adults
       p_R = (1 - kap) * p_C - kT_J * E_Hp; % J/d, mean allocation to reproduction of adults
@@ -315,6 +349,7 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
         
       end
 
+    %% stf
     otherwise
       return
             

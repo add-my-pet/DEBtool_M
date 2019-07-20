@@ -2,11 +2,11 @@
 % Gets scaled functional response at with the specific population growth rate is zero
 
 %%
-function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
+function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, T, f_0)
   % created 2019/07/09 by Bas Kooijman
   
   %% Syntax
-  % [f, S_b, S_p, aT_b, tT_p, info] = <../f_ris0_std.m *f_ris_std_r0*> (par, f_0)
+  % [f, S_b, S_p, aT_b, tT_p, info] = <../f_ris0_std.m *f_ris_std_r0*> (par, T, f_0)
   
   %% Description
   % Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero, 
@@ -15,6 +15,7 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
   % Input
   %
   % * par: structure parameter
+  % * T: optional scalar for body temperature in Kelvin
   % * f_0: optional scalar with func response for which maturation ceases at puberty (see <get_ep_min.html *get_ep_min*>)
   %
   % Output
@@ -29,6 +30,10 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
   %% Remarks
   % Shell around <sgr_std.html *sgr_std*>.
 
+  if ~exist('T', 'var') || isempty(T)
+    T = C2K(20);
+  end
+  
   if ~exist('f_0', 'var')
     % unpack par and compute statisitics
     cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
@@ -38,7 +43,7 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
 
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
-  [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, [], f_1);
+  [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, T, f_1);
   if info == 0
     f = NaN; S_b = NaN; S_p = NaN; return
   end
@@ -48,7 +53,7 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
   while i < 15 && norm^2 > 1e-16 && f_1 - f_0 > 1e-4 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, [], f);
+    [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, T, f);
     if norm > 1e-3 && info == 1
         f_1 = f;
     else
@@ -58,10 +63,10 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, f_0)
 
   if i == 15 
     info = 0;
-    fprintf('f_ris0_std_r warning: no convergence for f in 100 steps\n')
+    fprintf('f_ris0_std warning: no convergence for f in 15 steps\n')
   elseif f_1 - f_0 > 1e-4
     info = 0;
-    fprintf('f_ris0_std_r warning: interval for f < 1e-4, norm = %g\n', norm)
+    fprintf('f_ris0_std warning: interval for f < 1e-4, norm = %g\n', norm)
   else
     info = 1;
   end

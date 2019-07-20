@@ -113,13 +113,18 @@ function [r, S_b, S_p, aT_b, tT_p, info] = sgr_std (par, T_pop, f_pop)
   % survivor at egg-laying
   [t, N] = ode45(@dget_N, [0 t_max], 0, [], f, kap, kap_R, kT_M, k, g, v_Hp, l_p, l_i, l_T, u_E0, rT_B); % times since puberty
   R_i = (N(end) - N(end-1))/ (t(end) - t(end-1));
-  t = spline1(1:N(end), [N, tT_p + t]);  % convert times since pubert to times since birth at egg laying
+  t = spline1(1:N(end), [N, tT_p + t]);  % convert times since puberty to times since birth at egg laying
   [t_S, qhS] = ode45(@dget_qhS, [0; tT_p; t], [0, 0, S_b], [], f, L_b, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);  
   S = qhS(:,3); S_p = S(3); S(1:2) = []; i = ~isnan(S); S = max(1e-9,S(i)); t = t(i); % survivor prob and times at egg laying
   
+  if sum(S)<1
+    r = NaN; info = 0; % no positive r exists
+    return
+  end
+  
   % ceiling for r, see DEB3 eq (9.22) 
   char_eq = @(rho, rho_p) 1 + exp(- rho * rho_p) - exp(rho);
-  [r_max, fval, info] = fzero(@(rho) char_eq(rho, R_i * tT_p), [1e-9 1]); r_max = r_max * R_i;
+  [rho_max, fval, info] = fzero(@(rho) char_eq(rho, R_i * tT_p), [1e-9 1]); r_max = rho_max * R_i;
   
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
   %   for Dirac delta functions for R(t): 1 = sum_i S(t_i) exp(- r*t_i),
