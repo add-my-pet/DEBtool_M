@@ -125,8 +125,12 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
     case {'std','stx'}
       par.thinning = 1; 
       % growth
-      [f_01, S_b_01, S_p_01, a_b_01, t_p_01, info] = f_ris0_std_r (par); t2_01 = NaN;        
-      [EL_01, EL2_01, EL3_01, EL_a_01, EL2_a_01, EL3_a_01, EWw_n_01, EWw_a_01, hWw_n_01, theta_jn_01, S_p_01, tS_01, tSs_01] = ssd_std(par, [], f_01, 0);
+      [f_01, S_b_01, S_p_01, a_b_01, t_p_01, info_01] = f_ris0_std (par); t2_01 = NaN; 
+      if info_01 == 0
+        EL_01=NaN; EL2_01=NaN; EL3_01=NaN; EL_a_01=NaN; EL2_a_01=NaN; EL3_a_01=NaN; EWw_n_01=NaN; EWw_a_01=NaN; hWw_n_01=NaN; theta_jn_01=NaN; S_p_01=NaN; tS_01=NaN; tSs_01=NaN;
+      else
+        [EL_01, EL2_01, EL3_01, EL_a_01, EL2_a_01, EL3_a_01, EWw_n_01, EWw_a_01, hWw_n_01, theta_jn_01, S_p_01, tS_01, tSs_01] = ssd_std(par, T, f_01, 0);
+      end 
       if n_fVal == 3
         if ischar(F)
           f_f1 = str2double(F);
@@ -142,11 +146,19 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
           fprintf(['Warning from popStatistics_st: specified f = ', num2str(f_f1), ' is smaller than minimum value ', num2str(f_01), '\n']);
           return
         end
-        [r_f1, S_b_f1, S_p_f1, a_b_f1, t_p_f1] = sgr_std (par, T, f_f1); t2_f1 = (log(2))/ r_f1;
-        [EL_f1, EL2_f1, EL3_f1, EL_a_f1, EL2_a_f1, EL3_a_f1, EWw_n_f1, EWw_a_f1, hWw_n_f1, theta_jn_f1, S_p_f1, tS_f1, tSs_f1] = ssd_std(par, [], f_f1, r_f1);
+        [r_f1, S_b_f1, S_p_f1, a_b_f1, t_p_f1, info_f1] = sgr_std (par, T, f_f1); t2_f1 = (log(2))/ r_f1;
+        if info_f1 == 0
+          EL_f1=NaN; EL2_f1=NaN; EL3_f1=NaN; EL_a_f1=NaN; EL2_a_f1=NaN; EL3_a_f1=NaN; EWw_n_f1=NaN; EWw_a_f1=NaN; hWw_n_f1=NaN; theta_jn_f1=NaN; S_p_f1=NaN; tS_f1=NaN; tSs_f1=NaN;
+        else
+          [EL_f1, EL2_f1, EL3_f1, EL_a_f1, EL2_a_f1, EL3_a_f1, EWw_n_f1, EWw_a_f1, hWw_n_f1, theta_jn_f1, S_p_f1, tS_f1, tSs_f1] = ssd_std(par, T, f_f1, r_f1);
+        end
       end
-      [r_11, S_b_11, S_p_11, a_b_11, t_p_11] = sgr_std (par, T, 1); t2_11 = (log(2))/ r_11;
-      [EL_11, EL2_11, EL3_11, EL_a_11, EL2_a_11, EL3_a_11, EWw_n_11, EWw_a_11, hWw_n_11, theta_jn_11, S_p_11, tS_11, tSs_11] = ssd_std(par, [], 1, r_11);
+      [r_11, S_b_11, S_p_11, a_b_11, t_p_11, info_11] = sgr_std (par, T, 1); t2_11 = (log(2))/ r_11;
+      if info_11 == 0
+        EL_11=NaN; EL2_11=NaN; EL3_11=NaN; EL_a_11=NaN; EL2_a_11=NaN; EL3_a_11=NaN; EWw_n_11=NaN; EWw_a_11=NaN; hWw_n_11=NaN; theta_jn_11=NaN; S_p_11=NaN; tS_11=NaN; tSs_11=NaN;
+      else
+        [EL_11, EL2_11, EL3_11, EL_a_11, EL2_a_11, EL3_a_11, EWw_n_11, EWw_a_11, hWw_n_11, theta_jn_11, S_p_11, tS_11, tSs_11] = ssd_std(par, T, 1, r_11);
+      end
       
       % reproduction
       p_C = f_01 * g/ (f_01 + g) * E_m * (vT * EL2_a_01 + kT_M * (EL3_a_01 + L_T * EL2_a_01)); % J/d, mean mobilisation of adults
@@ -179,19 +191,31 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       
       par.thinning = 0;
       % growth
-      [f_00, S_b_00, S_p_00, a_b_00, t_p_00] = f_ris0_std_r (par); t2_00 = NaN;
-      [EL_00, EL2_00, EL3_00, EL_a_00, EL2_a_00, EL3_a_00, EWw_n_00, EWw_a_00, hWw_n_00, theta_jn_00, S_p_00, tS_00, tSs_00] = ssd_std(par, [], f_00, 0);
+      [f_00, S_b_00, S_p_00, a_b_00, t_p_00, info_00] = f_ris0_std (par); t2_00 = NaN;
+      if info_00 == 0
+        EL_00=NaN; EL2_00=NaN; EL3_00=NaN; EL_a_00=NaN; EL2_a_00=NaN; EL3_a_00=NaN; EWw_n_00=NaN; EWw_a_00=NaN; hWw_n_00=NaN; theta_jn_00=NaN; S_p_00=NaN; tS_00=NaN; tSs_00=NaN;
+      else
+        [EL_00, EL2_00, EL3_00, EL_a_00, EL2_a_00, EL3_a_00, EWw_n_00, EWw_a_00, hWw_n_00, theta_jn_00, S_p_00, tS_00, tSs_00] = ssd_std(par, T, f_00, 0);
+      end
       if n_fVal == 3
         if ischar(F)
           f_f0 = f_f1; % f_00 + str2double(F) * (1 - f_00); % -, scaled function response
         else
           f_f0 = F;
         end
-        [r_f0, S_b_f0, S_p_f0, a_b_f0, t_p_f0] = sgr_std (par, T, f_f0); t2_f0 = (log(2))/ r_f0;
-        [EL_f0, EL2_f0, EL3_f0, EL_a_f0, EL2_a_f0, EL3_a_f0, EWw_n_f0, EWw_a_f0, hWw_n_f0, theta_jn_f0, S_p_f0, tS_f0, tSs_f0] = ssd_std(par, [], f_f0, r_f0);
+        [r_f0, S_b_f0, S_p_f0, a_b_f0, t_p_f0, info_f0] = sgr_std (par, T, f_f0); t2_f0 = (log(2))/ r_f0;
+        if info_f0 == 0
+          EL_f0=NaN; EL2_f0=NaN; EL3_f0=NaN; EL_a_f0=NaN; EL2_a_f0=NaN; EL3_a_f0=NaN; EWw_n_f0=NaN; EWw_a_f0=NaN; hWw_n_f0=NaN; theta_jn_f0=NaN; S_p_f0=NaN; tS_f0=NaN; tSs_f0=NaN;
+        else
+          [EL_f0, EL2_f0, EL3_f0, EL_a_f0, EL2_a_f0, EL3_a_f0, EWw_n_f0, EWw_a_f0, hWw_n_f0, theta_jn_f0, S_p_f0, tS_f0, tSs_f0] = ssd_std(par, T, f_f0, r_f0);
+        end
       end
-      [r_10, S_b_10, S_p_10, a_b_10, t_p_10] = sgr_std (par, T, 1); t2_10 = (log(2))/ r_10;
-      [EL_10, EL2_10, EL3_10, EL_a_10, EL2_a_10, EL3_a_10, EWw_n_10, EWw_a_10, hWw_n_10, theta_jn_10, S_p_10, tS_10, tSs_10] = ssd_std(par, [], 1, r_10);
+      [r_10, S_b_10, S_p_10, a_b_10, t_p_10, info_10] = sgr_std (par, T, 1); t2_10 = (log(2))/ r_10;
+      if info_10 == 0
+        EL_10=NaN; EL2_10=NaN; EL3_10=NaN; EL_a_10=NaN; EL2_a_10=NaN; EL3_a_10=NaN; EWw_n_10=NaN; EWw_a_10=NaN; hWw_n_10=NaN; theta_jn_10=NaN; S_p_10=NaN; tS_10=NaN; tSs_10=NaN;
+      else
+        [EL_10, EL2_10, EL3_10, EL_a_10, EL2_a_10, EL3_a_10, EWw_n_10, EWw_a_10, hWw_n_10, theta_jn_10, S_p_10, tS_10, tSs_10] = ssd_std(par, T, 1, r_10);
+      end
       
       % reproduction
       p_C = f_00 * g/ (f_00 + g) * E_m * (vT * EL2_a_00 + kT_M * (EL3_a_00 + L_T * EL2_a_00)); % J/d, mean mobilisation of adults
@@ -237,13 +261,13 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       par.thinning = 1; 
       % growth
       [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], f_01); a_b_01m = tau_b/ kT_M; t_p_01m = (tau_p - tau_b)/ kT_M;
-      [EL_01m, EL2_01m, EL3_01m, EL_a_01m, EL2_a_01m, EL3_a_01m, EWw_n_01m, EWw_a_01m, hWw_n_01m, theta_jn_01m, S_p_01m] = ssd_std(par, [], f_01, 0);
+      [EL_01m, EL2_01m, EL3_01m, EL_a_01m, EL2_a_01m, EL3_a_01m, EWw_n_01m, EWw_a_01m, hWw_n_01m, theta_jn_01m, S_p_01m] = ssd_std(par, T, f_01, 0);
       if n_fVal == 3
         [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], f_f1); a_b_f1m = tau_b/ kT_M; t_p_f1m = (tau_p - tau_b)/ kT_M;
-        [EL_f1m, EL2_f1m, EL3_f1m, EL_a_f1m, EL2_a_f1m, EL3_a_f1m, EWw_n_f1m, EWw_a_f1m, hWw_n_f1m, theta_jn_f1m, S_p_f1m] = ssd_std(par, [], f_f1, r_f1);
+        [EL_f1m, EL2_f1m, EL3_f1m, EL_a_f1m, EL2_a_f1m, EL3_a_f1m, EWw_n_f1m, EWw_a_f1m, hWw_n_f1m, theta_jn_f1m, S_p_f1m] = ssd_std(par, T, f_f1, r_f1);
       end
       [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], 1); a_b_11m = tau_b/ kT_M; t_p_11m = (tau_p - tau_b)/ kT_M;
-      [EL_11m, EL2_11m, EL3_11m, EL_a_11m, EL2_a_11m, EL3_a_11m, EWw_n_11m, EWw_a_11m, hWw_n_11m, theta_jn_11m, S_p_11m] = ssd_std(par, [], 1, r_11);
+      [EL_11m, EL2_11m, EL3_11m, EL_a_11m, EL2_a_11m, EL3_a_11m, EWw_n_11m, EWw_a_11m, hWw_n_11m, theta_jn_11m, S_p_11m] = ssd_std(par, T, 1, r_11);
       
 
       % food/feces
@@ -256,7 +280,11 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       par.thinning = 0;
       % growth
       [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], f_00); a_b_00m = tau_b/ kT_M; t_p_00m = (tau_p - tau_b)/ kT_M;
-      [EL_00m, EL2_00m, EL3_00m, EL_a_00m, EL2_a_00m, EL3_a_00m, EWw_n_00m, EWw_a_00m, hWw_n_00m, theta_jn_00m, S_p_00m] = ssd_std(par, [], f_00, 0);
+      if info_00 == 0
+        EL_00m=NaN; EL2_00m=NaN; EL3_00m=NaN; EL_a_00m=NaN; EL2_a_00m=NaN; EL3_a_00m=NaN; EWw_n_00m=NaN; EWw_a_00m=NaN; hWw_n_00m=NaN; theta_jn_00m=NaN; S_p_00m=NaN;
+      else
+        [EL_00m, EL2_00m, EL3_00m, EL_a_00m, EL2_a_00m, EL3_a_00m, EWw_n_00m, EWw_a_00m, hWw_n_00m, theta_jn_00m, S_p_00m] = ssd_std(par, T, f_00, 0);
+      end
       if n_fVal == 3
         if ischar(F)
           f_f0 = f_f1; % f_00 + str2double(F) * (1 - f_00); % -, scaled function response
@@ -264,10 +292,18 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
           f_f0 = F;
         end
         [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], f_f0); a_b_f0m = tau_b/ kT_M; t_p_f0m = (tau_p - tau_b)/ kT_M;
-        [EL_f0m, EL2_f0m, EL3_f0m, EL_a_f0m, EL2_a_f0m, EL3_a_f0m, EWw_n_f0m, EWw_a_f0m, hWw_n_f0m, theta_jn_f0m, S_p_f0m] = ssd_std(par, [], f_f0, r_f0);
+        if info_f0 == 0
+          EL_f0m=NaN; EL2_f0m=NaN; EL3_f0m=NaN; EL_a_f0m=NaN; EL2_a_f0m=NaN; EL3_a_f0m=NaN; EWw_n_f0m=NaN; EWw_a_f0m=NaN; hWw_n_f0m=NaN; theta_jn_f0m=NaN; S_p_f0m=NaN;
+        else
+          [EL_f0m, EL2_f0m, EL3_f0m, EL_a_f0m, EL2_a_f0m, EL3_a_f0m, EWw_n_f0m, EWw_a_f0m, hWw_n_f0m, theta_jn_f0m, S_p_f0m] = ssd_std(par, T, f_f0, r_f0);
+        end
       end
      [tau_p, tau_b] = get_tp([g k l_T v_Hb v_Hp], 1); a_b_10m = tau_b/ kT_M; t_p_10m = (tau_p - tau_b)/ kT_M;
-     [EL_10m, EL2_10m, EL3_10m, EL_a_10m, EL2_a_10m, EL3_a_10m, EWw_n_10m, EWw_a_10m, hWw_n_10m, theta_jn_10m, S_p_10m] = ssd_std(par, [], 1, r_10);
+     if info_10 == 0
+       EL_10m, EL2_10m, EL3_10m, EL_a_10m, EL2_a_10m, EL3_a_10m, EWw_n_10m=NaN; EWw_a_10m=NaN; hWw_n_10m=NaN; theta_jn_10m=NaN; S_p_10m=NaN;
+     else
+       [EL_10m, EL2_10m, EL3_10m, EL_a_10m, EL2_a_10m, EL3_a_10m, EWw_n_10m, EWw_a_10m, hWw_n_10m, theta_jn_10m, S_p_10m] = ssd_std(par, T, 1, r_10);
+     end
       
 
       % food/feces
@@ -295,7 +331,7 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   units.t_p  = 'd';      label.t_p = 'time since birth at puberty';
   units.theta_jn = '-';  label.theta_jn = 'fraction of post-natals that is juvenile';
   units.theta_e = '-';   label.theta_e = 'fraction of individuals that is embryo';
-  units.del_ea = '-';    label.del_ea = 'number of embryos per adult';
+  units.del_ea = '-';    label.del_ea = 'number of embryos per adult in population';
   units.ER = '1/d';      label.ER  = 'mean reproduction rate per adult female';
   units.EL_n   = 'cm';   label.EL_n   = 'mean structural length of post-natals';
   units.EL2_n  = 'cm^2'; label.EL2_n  = 'mean squared structural length of post-natals';

@@ -42,6 +42,7 @@ function [r, S_b, S_p, aT_b, tT_p, info] = sgr_std_c (par, T_pop, f_pop)
   % See <ssd_std.html *ssd_std*> for mean age, length, squared length, cubed length.
   % See <f_ris0_std.html *f_ris0_std*> for f at which r = 0
   % par.thinning, par.h_B0b, par.h_Bbj and par.h_Bji are not standard in structure par; Add them before use if necessary.
+  % par.gender is not standard in structure par. Add it before use.
   %
   %% Example of use
   % cd to entries/Passer_domesticus/; load results_Passer_domesticus; 
@@ -49,6 +50,9 @@ function [r, S_b, S_p, aT_b, tT_p, info] = sgr_std_c (par, T_pop, f_pop)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
+  if ~isempty(strfind(gender, 'D'))
+    kap_R = kap_R/2; % take cost of male production into account
+  end
 
   % defaults
   if exist('T_pop','var')
