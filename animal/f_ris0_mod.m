@@ -1,30 +1,26 @@
-%% f_ris0_std
+%% f_ris0_mod
 % Gets scaled functional response at with the specific population growth rate is zero
 
 %%
-function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, T, f_0)
-  % created 2019/07/09 by Bas Kooijman
+function [f, info] = f_ris0_mod (model, par, T)
+  % created 2019/07/21 by Bas Kooijman
   
   %% Syntax
-  % [f, S_b, S_p, aT_b, tT_p, info] = <../f_ris0_std.m *f_ris0_std*> (par, T, f_0)
+  % [f, info] = <../f_ris0_mod.m *f_ris0_mod*> (model, par, T)
   
   %% Description
   % Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero, 
-  %   by solving the characteristic equation in r via sgr_std, for a bisection method in f.  
+  %   by solving the characteristic equation in r via sgr_mod, for a bisection method in f.  
   %
   % Input
   %
+  % * model: character string with name of model
   % * par: structure parameter
   % * T: optional scalar for body temperature in Kelvin
-  % * f_0: optional scalar with func response for which maturation ceases at puberty (see <get_ep_min.html *get_ep_min*>)
   %
   % Output
   %
-  % * f: scaled func response at which r = 0 for the std model
-  % * S_b: survival prob at birth
-  % * S_p: survival prob at puberty
-  % * aT_b: age at birth
-  % * tT_p: time since birth at puberty
+  % * f: scaled func response at which r = 0
   % * info: scalar with indicator for failure (0) or success (1)
   
   %% Remarks
@@ -43,9 +39,9 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, T, f_0)
 
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
-  [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, T, f_1);
+  [norm, info] = sgr_mod(model, par, T, f_1);
   if info == 0
-    f = NaN; S_b = NaN; S_p = NaN; return
+    f = NaN; return
   end
   norm = 1; i = 0; % initialize norm and counter
 
@@ -53,11 +49,11 @@ function [f, S_b, S_p, aT_b, tT_p, info] = f_ris0_std (par, T, f_0)
   while i < 15 && norm^2 > 1e-16 && f_1 - f_0 > 1e-4 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    [norm, S_b, S_p, aT_b, tT_p, info] = sgr_std(par, T, f);
+    [norm, info] = sgr_mod(model, par, T, f);
     if norm > 1e-3 && info == 1
-        f_1 = f;
+      f_1 = f;
     else
-        f_0 = f; norm = 1;
+      f_0 = f; norm = 1;
     end
   end
 
