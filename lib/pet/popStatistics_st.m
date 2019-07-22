@@ -190,7 +190,7 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       stat = ssd_mod(stat, 'f0f', model, NaN); stat.ff.thin0.f.f = NaN;
       stat.ff.thin0.f.f = NaN; stat.ff.thin0.f.r = NaN; stat.ff.thin0.f.t2 = NaN;
     else
-      stat = ssd_mod(stat, 'f0f', model, par, T, f_f1, r_f1);
+      stat = ssd_mod(stat, 'f0f', model, par, T, f_f0, r_f0);
     end
   end
   [r_10, info_10] = sgr_mod (model, par, T, 1); 
