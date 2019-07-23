@@ -49,7 +49,7 @@ function prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, p
       [parFields, nbParFields] = fieldnmnst_st(corePar);
     % we need to make a small addition so that it recognises if one of the chemical parameters were released and then print them as well
       for j = 1:nbParFields
-        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_')) && ~free.(parFields{j}) || 
+        if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_')) && ~free.(parFields{j}) %|| 
           corePar          = rmfield_wtxt(corePar, parFields{j});
           coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
           coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
