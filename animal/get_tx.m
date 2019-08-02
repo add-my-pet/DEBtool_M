@@ -41,6 +41,11 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
     sF = 1e10;  % fast development
   end
 
+  if isempty(get_lp([g, k, lT, vHb, vHp], f))
+    tau_p=[]; tau_x=[]; tau_b=[]; lp=[]; lx=[]; lb=[]; info=0;
+    return
+  end
+  
   options = odeset('Events', @event_bxp); 
   [tau, vHl, tau_bxp, vHl_bxp] = ode45(@dget_lx, [0; 1e20], [1e-20; 1e-20], options, f, g, k, lT, vHb, vHx, vHp, sF);
   tau_b = tau_bxp(1); tau_x = tau_bxp(2); tau_p = tau_bxp(3); lb = vHl_bxp(1,2); lx = vHl_bxp(2,2); lp = vHl_bxp(3,2);
@@ -64,9 +69,9 @@ function dvHl = dget_lx (t, vHl, f, g, k, lT, vHb, vHx, vHp, sF)
   else
     li = f - lT;
   end
-  dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
-  dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
-  dvHl = [dvH; dl];                 % pack to output
+  dl = (g/ 3) * (li - l)/ (f + g);   % d/d tau l
+  dvH = 3 * l^2 * dl + l^3 - k * vH; % d/d tau vH
+  dvHl = [dvH; dl];                  % pack to output
 end
 
 
@@ -74,5 +79,5 @@ function [value,isterminal,direction] = event_bxp(t, vHl, f, g, k, lT, vHb, vHx,
   % vHl: 2-vector with [vH; l]
   value = [vHb; vHx; vHp] - vHl(1);
   isterminal = [0; 0; 1];
-  direction = [0; 0; 0]; 
+  direction  = [0; 0; 0]; 
 end

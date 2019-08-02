@@ -65,7 +65,6 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
 %% Example of use
 % load('results_species.mat'); [stat, txtStat] = popStatistics_st(metaPar.model, par); printstat_st(stat, txtStat)
 
-  
   choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'};
   if ~any(strcmp(model,choices))
     fprintf('warning from statistics_st: invalid model key \n')
@@ -86,17 +85,47 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   if ~isfield(par, 'h_B0b')
     par.h_B0b = 0;
   end
+  if ~isfield(par, 'h_Bbx')
+    par.h_Bbx = 0;
+  end
+  if ~isfield(par, 'h_Bbs')
+    par.h_Bbs = 0;
+  end
+  if ~isfield(par, 'h_Bbj')
+    par.h_Bbj = 0;
+  end
   if ~isfield(par, 'h_Bbp')
     par.h_Bbp = 0;
   end
+  if ~isfield(par, 'h_Bsj')
+    par.h_Bsj = 0;
+  end
+  if ~isfield(par, 'h_Bxp')
+    par.h_Bxp = 0;
+  end
+  if ~isfield(par, 'h_Bsp')
+    par.h_Bsp = 0;
+  end
+  if ~isfield(par, 'h_Bjp')
+    par.h_Bjp = 0;
+  end
   if ~isfield(par, 'h_Bpi')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bbj')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bje')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bei')
     par.h_Bpi = 0;
   end
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par); vars_pull(cPar);  
   
-  if any(ismember({'z_m','E_Hbm','E_Hjm','E_Hpm'},fieldnames(par)))
+  if any(ismember({'z_m','E_Hbm','E_Hsm','E_Hxm','E_Hjm','E_Hpm'},fieldnames(par)))
     male = 1; % male and females parameters differ
   else
     male = 0; % male and females parameters are the same
@@ -116,15 +145,15 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   stat.T = K2C(T);        units.T = 'C';       label.T = 'body temperature'; 
   stat.c_T = TC;          units.c_T = '-';     label.c_T = 'temperature correction factor'; 
       
-  % first females with thinning 1 and 0, possibly followed by males with thinning 1 and 0
-
-  par.thinning = 1; 
-  [f_01, info_01] = f_ris0_mod (model, par, T); % get f for r = 0
-  stat.f0.thin1.f.f = f_01; stat.f0.thin1.f.r = 0; stat.f0.thin1.f.t2 = NaN; 
+  % first females with and without thinning, possibly followed by males; 
+  % for each thinning-setting: f_min, possibly f, and f_max (=1)
+  par.thinning = 1;
+  [f_01, info_01] = f_ris0_mod (model, par); % get f for r = 0
+  stat.f0.thin1.f.f = f_01; r_01 = 0; stat.f0.thin1.f.r = r_01; stat.f0.thin1.f.t2 = NaN; 
   if info_01 == 0
-    stat = ssd_mod(stat, '01f', model, NaN); stat.f0.thin1.f = NaN;
+    stat = ssd_mod(model, stat, '01f', NaN); f_01 = NaN; stat.f0.thin1.f.f = f_01;
   else % fill statistics
-    stat = ssd_mod(stat, '01f', model, par, T, f_01, 0);
+    stat = ssd_mod(model, stat, '01f', par, T, f_01, 0);
   end 
   if n_fVal == 3
     if ischar(F)
@@ -143,34 +172,34 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       return
     end
     if isnan(f_f1)
-      stat = ssd_mod(stat, 'f1f', model, NaN); stat.ff.thin1.f.f = NaN;
+      stat = ssd_mod(model, stat, 'f1f', NaN); stat.ff.thin1.f.f = f_f1;
     else
       [r_f1, info_f1] = sgr_mod (model, par, T, f_f1); 
       stat.ff.thin1.f.f = f_f1; stat.ff.thin1.f.r = r_f1; stat.ff.thin1.f.t2 = (log(2))/ r_f1;
     end
-    if info_f1 == 0
-      stat = ssd_mod(stat, 'f1f', model, NaN); 
-      stat.ff.thin1.f.f = NaN; stat.ff.thin1.f.r = NaN; stat.ff.thin1.f.t2 = NaN;
+    if ~exist('info_f1', 'var') || info_f1 == 0
+      stat = ssd_mod(model, stat, 'f1f', NaN); 
+      stat.ff.thin1.f.r = NaN; stat.ff.thin1.f.t2 = NaN;
     else
-      stat = ssd_mod(stat, 'f1f', model, par, T, f_f1, r_f1);
+      stat = ssd_mod(model, stat, 'f1f', par, T, f_f1, r_f1);
     end
   end
   [r_11, info_11] = sgr_mod (model, par, T, 1);
   stat.f1.thin1.f.f = 1; stat.f1.thin1.f.r = r_11; stat.f1.thin1.f.t2 = (log(2))/ r_11; 
   if info_11 == 0
-    stat = ssd_mod(stat, '11f', model, NaN); 
+    stat = ssd_mod(model, stat, '11f', NaN); 
     stat.f1.thin1.f.r = NaN; stat.f1.thin1.f.t2 = NaN;
   else
-    stat = ssd_mod(stat, '11f', model, par, T, 1, r_11);
+    stat = ssd_mod(model, stat, '11f', par, T, 1, r_11);
   end
             
   par.thinning = 0;
-  [f_00, info_00] = f_ris0_mod (model, par, T); % get f for r = 0
-  stat.f0.thin0.f.f = f_01; stat.f0.thin0.f.r = 0; stat.f0.thin0.f.t2 = NaN; 
+  [f_00, info_00] = f_ris0_mod (model, par); % get f for r = 0
+  stat.f0.thin0.f.f = f_00; r_00 = 0; stat.f0.thin0.f.r = r_00; stat.f0.thin0.f.t2 = NaN; 
   if info_00 == 0
-    stat = ssd_mod(stat, '00f', model, NaN); stat.f0.thin0.f.f = NaN;
+    stat = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;
   else
-    stat = ssd_mod(stat, '00f', model, par, T, f_00, 0);
+    stat = ssd_mod(model, stat, '00f', par, T, f_00, 0);
   end
   if n_fVal == 3
     if ischar(F) && ~isnan(f_f1)
@@ -181,25 +210,25 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       f_f0 = F;
     end
     if isnan(f_f0)
-      stat = ssd_mod(stat, 'f0f', model, NaN); stat.ff.thin0.f.f = NaN;
+      stat = ssd_mod(model, stat, 'f0f', NaN); stat.ff.thin0.f.f = f_f0;
     else
       [r_f0, info_f0] = sgr_mod (model, par, T, f_f0);
       stat.ff.thin0.f.f = f_f0; stat.ff.thin0.f.r = r_f0; stat.ff.thin0.f.t2 = (log(2))/ r_f0;
     end
-    if info_f0 == 0
-      stat = ssd_mod(stat, 'f0f', model, NaN); stat.ff.thin0.f.f = NaN;
-      stat.ff.thin0.f.f = NaN; stat.ff.thin0.f.r = NaN; stat.ff.thin0.f.t2 = NaN;
+    if ~exist('info_f0', 'var') || info_f0 == 0
+      stat = ssd_mod(model, stat, 'f0f', NaN);
+      stat.ff.thin0.f.r = NaN; stat.ff.thin0.f.t2 = NaN;
     else
-      stat = ssd_mod(stat, 'f0f', model, par, T, f_f0, r_f0);
+      stat = ssd_mod(model, stat, 'f0f', par, T, f_f0, r_f0);
     end
   end
   [r_10, info_10] = sgr_mod (model, par, T, 1); 
   stat.f1.thin0.f.f = 1; stat.f1.thin0.f.r = r_10; stat.f1.thin0.f.t2 = (log(2))/ r_10;
   if info_10 == 0
-    stat = ssd_mod(stat, '10f', model, NaN); 
+    stat = ssd_mod(model, stat, '10f', NaN); 
     stat.f1.thin0.f.r = NaN; stat.f1.thin0.f.t2 = NaN;
   else
-    stat = ssd_mod(stat, '10f', model, par, T, 1, r_10);
+    stat = ssd_mod(model, stat, '10f', par, T, 1, r_10);
   end
             
   if male % overwrite of par!!!! parameters become male parameters
@@ -217,41 +246,41 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
     end
     
     par.thinning = 1; 
-    stat.f0.thin1.m.r = stat.f0.thin1.f.r; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
-    if isnan(stat.f0.thin1.f.f)
-      stat = ssd_mod(stat, '01m', model, NaN); 
-      stat.f0.thin1.m.f = NaN; stat.f0.thin1.m.r = r_01; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
+    stat.f0.thin1.m.f = stat.f0.thin1.f.f; stat.f0.thin1.m.r = stat.f0.thin1.f.r; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
+    if isnan(stat.f0.thin1.f.f) 
+      stat = ssd_mod(model, stat, '01m', NaN); 
+      stat.f0.thin1.m.r = r_01; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     else
-      stat = ssd_mod(stat, '01m', model, par, T, f_01, 0); stat.f0.thin1.m.ER = [];
+      stat = ssd_mod(model, stat, '01m', par, T, f_01, 0); stat.f0.thin1.m.ER = [];
     end
     if n_fVal == 3
-      stat.ff.thin1.m.r = stat.ff.thin1.f.r; stat.ff.thin1.m.t2 = stat.ff.thin1.f.t2; stat.ff.thin1.m.ER = [];
+      stat.ff.thin1.m.f = stat.ff.thin1.f.f; stat.ff.thin1.m.r = stat.ff.thin1.f.r; stat.ff.thin1.m.t2 = stat.ff.thin1.f.t2; stat.ff.thin1.m.ER = [];
       if isnan(stat.ff.thin1.f.f)
-        stat = ssd_mod(stat, 'f1m', model, NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
+        stat = ssd_mod(model, stat, 'f1m', NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
       else
-        stat = ssd_mod(stat, 'f1m', model, par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
+        stat = ssd_mod(model, stat, 'f1m', par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
       end
     end
-    stat.f1.thin1.m.r = stat.f1.thin1.f.r; stat.f1.thin1.m.t2 = stat.f1.thin1.f.t2;
-    stat = ssd_mod(stat, '11m', model, par, T, 1, r_11); stat.f1.thin1.m.ER = [];
+    stat.f1.thin1.m.f = stat.f1.thin1.f.f; stat.f1.thin1.m.r = stat.f1.thin1.f.r; stat.f1.thin1.m.t2 = stat.f1.thin1.f.t2;
+    stat = ssd_mod(model, stat, '11m', par, T, 1, r_11); stat.f1.thin1.m.ER = [];
             
     par.thinning = 0;
-    stat.f0.thin0.m.r = stat.f0.thin0.f.r; stat.f0.thin0.m.t2 = stat.f0.thin0.f.t2;
-    if isnan(stat.f0.thin0.f.f)
-      stat = ssd_mod(stat, '00m', model, NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
+    stat.f0.thin0.m.f = stat.f0.thin0.f.f; stat.f0.thin0.m.r = stat.f0.thin0.f.r; stat.f0.thin0.m.t2 = stat.f0.thin0.f.t2;
+    if isnan(stat.f0.thin0.f.f) 
+      stat = ssd_mod(model, stat, '00m', NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
     else
-      stat = ssd_mod(stat, '00m', model, par, T, f_00, 0); stat.f0.thin0.m.ER = [];
+      stat = ssd_mod(model, stat, '00m', par, T, f_00, 0); stat.f0.thin0.m.ER = [];
     end
     if n_fVal == 3
-      stat.ff.thin0.m.r = stat.ff.thin0.f.r; stat.ff.thin0.m.t2 = stat.ff.thin0.f.t2;
+      stat.ff.thin0.m.f = stat.ff.thin0.f.f; stat.ff.thin0.m.r = stat.ff.thin0.f.r; stat.ff.thin0.m.t2 = stat.ff.thin0.f.t2;
       if isnan(stat.ff.thin0.f.f)
-        stat = ssd_mod(stat, 'f0m', model, NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
+        stat = ssd_mod(model, stat, 'f0m', NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
       else
-        stat = ssd_mod(stat, 'f0m', model, par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
+        stat = ssd_mod(model, stat, 'f0m', par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
       end
     end
-    stat = ssd_mod(stat, '10m', model, par, T, 1, r_10);    
-    stat.f1.thin0.m.r = stat.f1.thin0.f.r; stat.f1.thin0.m.t2 = stat.f1.thin0.f.t2; stat.f1.thin0.m.ER = [];
+    stat.f1.thin0.m.f = stat.f1.thin0.f.f; stat.f1.thin0.m.r = stat.f1.thin0.f.r; stat.f1.thin0.m.t2 = stat.f1.thin0.f.t2; 
+    stat = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
   end
   
   % add statistics to output structure

@@ -11,7 +11,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/07/30 by Starrlight Augustine, 
 % modified 2015/08/01 by Goncalo Marques,
 % modified 2015/08/25 by Dina Lika, 
-% modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08 by Bas Kooijman
+% modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -33,7 +33,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 
 %% Remarks
 % Depending on <estim_options.html *estim_options*> settings:
-% writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or;  
+% writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or my_pet_pop.html;  
 % writes and/or plots to screen.
 % Plots use lava-colour scheme; from high to low: white, red, blue, black.
 % In grp-plots, colours are assigned from high to low.
@@ -269,7 +269,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case 4  % save to .mat, save to png, print to html, implied properties to html
+    case 4  % save to .mat, save to png, print to html, implied traits to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -278,7 +278,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end    
-    case -4  % save to .mat, save to png, print to screen, implied properties to html
+    case -4  % save to .mat, save to png, print to screen, implied traits to html
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -287,7 +287,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end
-    case 5 % save to .mat, save to png, print to html, implied properties to html, including related species
+    case 5 % save to .mat, save to png, print to html, implied traits to html, including related species
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -301,6 +301,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+      else
+        save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+      end
+    case 6 % save to .mat, save to png, print to html, implied traits to html, including related species, population traits to html
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        prt_my_pet_pop({metaData, metaPar, par}, [], '0.5'); % my_pet_pop.html, assuming that reprodCode is 'O'
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  

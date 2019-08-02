@@ -2,15 +2,15 @@
 % Gets scaled functional response at with the specific population growth rate is zero
 
 %%
-function [f, info] = f_ris0_mod (model, par, T)
+function [f, info] = f_ris0_mod (model, par)
   % created 2019/07/21 by Bas Kooijman
   
   %% Syntax
-  % [f, info] = <../f_ris0_mod.m *f_ris0_mod*> (model, par, T)
+  % [f, info] = <../f_ris0_mod.m *f_ris0_mod*> (model, par)
   
   %% Description
   % Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero, 
-  %   by solving the characteristic equation in r via sgr_mod, for a bisection method in f.  
+  %   by solving the characteristic equation with r=0, for a bisection method in f.  
   %
   % Input
   %
@@ -23,46 +23,26 @@ function [f, info] = f_ris0_mod (model, par, T)
   % * f: scaled func response at which r = 0
   % * info: scalar with indicator for failure (0) or success (1)
   
-  %% Remarks
-  % Shell around <sgr_std.html *sgr_std*>.
-
-  if ~exist('T', 'var') || isempty(T)
-    T = C2K(20);
+  switch model
+    case 'std'
+      [f, info] = f_ris0_std (par);
+    case 'stf'
+      [f, info] = f_ris0_stf (par);
+    case 'stx'
+      [f, info] = f_ris0_stx (par);
+    case 'ssj'
+      [f, info] = f_ris0_ssj (par);
+    case 'sbp'
+      [f, info] = f_ris0_sbp (par);
+    case 'abj'
+      [f, info] = f_ris0_abj (par);
+    case 'asj'
+      [f, info] = f_ris0_asj (par);
+    case 'abp'
+      [f, info] = f_ris0_abp (par);
+    case 'hep'
+      [f, info] = f_ris0_hep (par);
+    case 'hex'
+      [f, info] = f_ris0_hex (par);
   end
   
-  if ~exist('f_0', 'var')
-    % unpack par and compute statisitics
-    cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
-    
-    f_0 = 5e-4 + get_ep_min([k; l_T; v_Hp]);
-  end
-
-  % initialize range for f
-  f_1 = 1;         % upper boundary (lower boundary is f_0)
-  [norm, info] = sgr_mod(model, par, T, f_1);
-  if info == 0
-    f = NaN; return
-  end
-  norm = 1; i = 0; % initialize norm and counter
-
-  % 2^-15 = 3e-5: min accuracy of f_min, starting from worst-case (0,1)
-  while i < 15 && norm^2 > 1e-16 && f_1 - f_0 > 1e-4 % bisection method
-    i = i + 1;
-    f = (f_0 + f_1)/ 2;
-    [norm, info] = sgr_mod(model, par, T, f);
-    if norm > 1e-3 && info == 1
-      f_1 = f;
-    else
-      f_0 = f; norm = 1;
-    end
-  end
-
-  if i == 15 
-    info = 0;
-    fprintf('f_ris0_std warning: no convergence for f in 15 steps\n')
-  elseif f_1 - f_0 > 1e-4
-    info = 0;
-    fprintf('f_ris0_std warning: interval for f < 1e-4, norm = %g\n', norm)
-  else
-    info = 1;
-  end

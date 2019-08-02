@@ -12,8 +12,24 @@ function [r, info] = sgr_mod (model, par, T_pop, f_pop)
   % Shell around sgr_std, sgr_stf, etc. For explanation see there
 
   switch model
-    case {'std','stx'}
+    case 'std'
       [r, info] = sgr_std (par, T_pop, f_pop);
-    otherwise
-      r = []; info = 0;
+    case 'stf'
+      [r, info] = sgr_stf (par, T_pop, f_pop);
+    case 'stx'
+      [r, info] = sgr_stx (par, T_pop, f_pop);
+    case 'ssj'
+      [r, info] = sgr_ssj (par, T_pop, f_pop);
+    case 'sbp'
+      [r, info] = sgr_sbp (par, T_pop, f_pop);
+    case 'abj'
+      [r, info] = sgr_abj (par, T_pop, f_pop);
+    case 'asj'
+      [r, info] = sgr_asj (par, T_pop, f_pop);
+    case 'abp'
+      [r, info] = sgr_abp (par, T_pop, f_pop);
+    case 'hep'
+      [r, info] = sgr_hep (par, T_pop, f_pop);
+    case 'hex'
+      [r, info] = sgr_hex (par, T_pop, f_pop);
   end

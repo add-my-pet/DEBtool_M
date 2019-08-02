@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>f_ris0_std_r</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-10"><meta name="DC.source" content="f_ris0_std_r.m"><style type="text/css">
+      --><title>f_ris0_mod</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="f_ris0_mod.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,68 +66,56 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>f_ris0_std_r</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, S_b, S_p, info] = <a href="../f_ris0_std_r.m"><b>f_ris_std_r0</b></a> (par, f_0)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero,   by solving the characteristic equation.</p><p>Input</p><div><ul><li>par: structure parameter</li><li>f_0: optional scalar with func response for which maturation ceases at puberty (see <a href="get_ep_min.html"><b>get_ep_min</b></a>)</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0 for the std model</li><li>S_b: survival prob at birth</li><li>S_p: survival prob at puberty</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>Shell around <a href="sgr_std.html"><b>sgr_std</b></a>, using a bisection method.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>f_ris0_mod</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, info] = <a href="../f_ris0_mod.m"><b>f_ris0_mod</b></a> (model, par)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero,   by solving the characteristic equation with r=0, for a bisection method in f.</p><p>Input</p><div><ul><li>model: character string with name of model</li><li>par: structure parameter</li><li>T: optional scalar for body temperature in Kelvin</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% f_ris0_std_r
+%% f_ris0_mod
 % Gets scaled functional response at with the specific population growth rate is zero
 
 %%
-function [f, S_b, S_p, info] = f_ris0_std_r (par, f_0)
-  % created 2019/07/09 by Bas Kooijman
+function [f, info] = f_ris0_mod (model, par)
+  % created 2019/07/21 by Bas Kooijman
   
   %% Syntax
-  % [f, S_b, S_p, info] = <../f_ris0_std_r.m *f_ris_std_r0*> (par, f_0)
+  % [f, info] = <../f_ris0_mod.m *f_ris0_mod*> (model, par)
   
   %% Description
   % Obtains the scaled function response at which specific population growth rate for the standard DEB model equals zero, 
-  %   by solving the characteristic equation.  
+  %   by solving the characteristic equation with r=0, for a bisection method in f.  
   %
   % Input
   %
+  % * model: character string with name of model
   % * par: structure parameter
-  % * f_0: optional scalar with func response for which maturation ceases at puberty (see <get_ep_min.html *get_ep_min*>)
+  % * T: optional scalar for body temperature in Kelvin
   %
   % Output
   %
-  % * f: scaled func response at which r = 0 for the std model
-  % * S_b: survival prob at birth
-  % * S_p: survival prob at puberty
+  % * f: scaled func response at which r = 0
   % * info: scalar with indicator for failure (0) or success (1)
   
-  %% Remarks
-  % Shell around <sgr_std.html *sgr_std*>, using a bisection method.
-
-  if ~exist('f_0', 'var')
-    % unpack par and compute statisitics
-    cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
-    
-    f_0 = 5e-4 + get_ep_min([k; l_T; v_Hp]);
+  switch model
+    case 'std'
+      [f, info] = f_ris0_std (par);
+    case 'stf'
+      [f, info] = f_ris0_stf (par);
+    case 'stx'
+      [f, info] = f_ris0_stx (par);
+    case 'ssj'
+      [f, info] = f_ris0_ssj (par);
+    case 'sbp'
+      [f, info] = f_ris0_sbp (par);
+    case 'abj'
+      [f, info] = f_ris0_abj (par);
+    case 'asj'
+      [f, info] = f_ris0_asj (par);
+    case 'abp'
+      [f, info] = f_ris0_abp (par);
+    case 'hep'
+      [f, info] = f_ris0_hep (par);
+    case 'hex'
+      [f, info] = f_ris0_hex (par);
   end
-
-  % initialize range for f
-  f_1 = 1;         % upper boundary (lower boundary is f_0)
-  norm = 1; i = 0; % initialize norm and counter
-
-  while i < 100 && norm^2 > 1e-16 && f_1 - f_0 > 1e-4 % bisection method
-    i = i + 1;
-    f = (f_0 + f_1)/ 2;
-    [norm, S_b, S_p, t_max, info] = sgr_std(par, [], f);
-    if norm > 1e-3 && info == 1
-        f_1 = f;
-    else
-        f_0 = f; norm = 1;
-    end
-  end
-
-  if i == 100
-    info = 0;
-    fprintf('f_ris0_std_r warning: no convergence for f in 100 steps\n')
-  elseif f_1 - f_0 > 1e-4
-    info = 0;
-    fprintf('f_ris0_std_r warning: interval for f < 1e-4, norm = %g\n', norm)
-  else
-    info = 1;
-  end
+  
 
 ##### SOURCE END #####
 --></body></html>

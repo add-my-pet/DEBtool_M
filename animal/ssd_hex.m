@@ -1,22 +1,22 @@
-%% ssd_std
+%% ssd_hex
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
-  % created 2019/07/09 by Bas Kooijman
+function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
+  % created 2019/08/01 by Bas Kooijman
   
   %% Syntax
-  % stat = <../ssd_std.m *ssd_std*> (stat, code, par, T_pop, f_pop, sgr)
+  % stat = <../ssd_hex.m *ssd_hex*> (stat, code, par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution.
-  % Use sgr_std to obtain sgr. Background hazards are not standard in par as produced by AmP; add them before use.
+  % Use sgr_hep to obtain sgr. Background hazards are not standard in par as produced by AmP; add them before use.
   % If code is e.g. '01f', fields stat.f0.thin1.f are filled. For 'f0m', the fields stat.f.thin0.m are filled. 
   % If par is not a structure, all fields are filled with NaN.
   % Hazard includes 
   %
   % * thinning (optional, default: 1; otherwise specified in par.thinning), 
-  % * stage-specific background (optional, default: 0; otherwise specified in par.h_B0b, par.h_Bbp, par.h_Bpi)
+  % * stage-specific background (optional, default: 0; otherwise specified in par.h_B0b, par.h_Bbj, par.h_Bie, par.h_Bei)
   % * ageing (controlled by par.h_a and par.s_G)
   %
   % Input
@@ -55,10 +55,6 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   %
   %% Remarks
   % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
-  %
-  %% Example of use
-  % cd to entries/Rana_temporaria/; load results_Rana_temporaria; 
-  % [EL, EL2, EL3, EWw, Prob_bp] = ssd_std(par, [], [], 0.006, 1e10)
 
   % get output fields
   fldf = 'f0fff1'; fldf = fldf([-1 0] + 2 * strfind('0f1',code(1))); % f0 or ff or f1
@@ -88,11 +84,14 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   if ~exist('h_B0b', 'var')
     h_B0b = 0;
   end
-  if ~exist('h_Bbp', 'var')
-    h_Bbp = 0;
+  if ~exist('h_Bbj', 'var')
+    h_Bbj = 0;
   end
-  if ~exist('h_Bpi', 'var')
-    h_Bpi = 0;
+  if ~exist('h_Bje', 'var')
+    h_Bje = 0;
+  end
+  if ~exist('h_Bei', 'var')
+    h_Bei = 0;
   end
   
   % temperature correction
@@ -104,26 +103,34 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
   TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
-  kT_M = k_M * TC; kT_J = k_J * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
-  rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
+  kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
 
-  % get t_p
-  [tau_p, tau_b, l_p, l_b, info] = get_tp([g k l_T v_Hb v_Hp], f);
-  tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
-  aT_b = tau_b/ kT_M; % d, age at birth
-  S_b = exp(-aT_b * h_B0b); % -, survivor prob at birth
-  L_b = L_m * l_b; % cm, structural length at birth
+  % supporting statistics
+  pars_tj = [g k v_Hb v_He s_j kap kap_V];
+  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);  
+  u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
+  aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_e = (tau_e - tau_b)/ kT_M; % unscale
+  L_b = L_m * l_b; L_j = L_m * l_j;  L_e = L_m * l_e;  % unscale
+  S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
+  rT_j = kT_M * rho_j; % 1/d, growth rate
+  
+  % life span as imago
+  pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+  tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
+  tT_im = tau_m / kT_M;                 % d, mean life span as imago
+  
+  % reproduction rate of imago
+  E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reprod buffer at pupation
+  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
+  R = N/ tT_im;                       % #/d, reproduction rate
+  tT_N0 = tT_j + tT_im;               % d, time since birth at which all eggs are produced
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events', @p_dead_for_sure, 'AbsTol', 1e-8, 'RelTol', 1e-8); 
+  options = odeset('AbsTol', 1e-8, 'RelTol', 1e-8); 
   qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
-  [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, sgr, f, L_b, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
-  EL0_i = qhSL(end,4); 
-  if isempty(ie) % ode45 fails to detect proper events
-    theta_jn = qhSL(end,4)/ EL0_i; S_p = qhSL(end,3)/ EL0_i; % this gives value one, in absence of a better value
-  else
-    theta_jn = qhSL_a(1,4)/ EL0_i; S_p = qhSL_a(1,3)/ EL0_i; % proper detection of puberty
-  end
+  pars_qhSL = {sgr, f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, tT_j, tT_e, tT_N0, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
+  [t, qhSL] = ode45(@dget_qhSL, [0, tT_N0], qhSL_0, options, pars_qhSL{:});
+  EL0_i = qhSL(end,4); theta_jn = 0;
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
   EL = qhSL(end,5)/ EL0_i; EL2 = qhSL(end,6)/ EL0_i; EL3 = qhSL(end,7)/ EL0_i; % mean L^1,2,3 for post-natals
@@ -136,21 +143,18 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).EWw_a = EL3_a * (1 + f * ome);% g, mean weight of post-natails, adults
   stat.(fldf).(fldt).(fldg).hWw_n = qhSL(end,11)/ EL0_i * (1 + f * ome); % g/d, production of dead post-natal mass
   stat.(fldf).(fldt).(fldg).S_b = S_b; % -, survival prob at birth
-  stat.(fldf).(fldt).(fldg).S_p = S_p; % -, survival prob at puberty
+  stat.(fldf).(fldt).(fldg).S_p = S_b; % -, survival prob at puberty
   
-  stat.(fldf).(fldt).(fldg).tS = [0, 1; t + aT_b, qhSL(:,3)];            % d,-, convert time since birth to age for survivor probability
+  stat.(fldf).(fldt).(fldg).tS = [0, 1; t + aT_b, qhSL(:,3)];          % d,-, convert time since birth to age for survivor probability
   stat.(fldf).(fldt).(fldg).tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ EL0_i]; % d,-, convert time since birth to age for survivor function of the stable age distribution
   
-  p_C = f * g/ (f + g) * E_m * (vT * EL2_a + kT_M * (EL3_a + L_T * EL2_a)); % J/d, mean mobilisation of adults
-  p_R = max(0, (1 - kap) * p_C - kT_J * E_Hp); % J/d, mean allocation to reproduction of adults
-  E_0 = p_Am * initial_scaled_reserve(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
-  ER = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
+  ER = R; % 1/d, mean reproduction rate of  female imago
   stat.(fldf).(fldt).(fldg).ER = ER; 
   del_ea = ER * aT_b * exp(h_B0b * aT_b/ 2); % -, number of embryos per adult
   stat.(fldf).(fldt).(fldg).del_ea = del_ea; 
   stat.(fldf).(fldt).(fldg).theta_e = del_ea/ (del_ea + 1/ theta_an); % -, fraction of individuals that is embryo
 
-  Ep_A = EL2 * pT_Am * f;
+  Ep_A = EL3 * pT_Am/ L_b * f; % J/d, assimilation = mobilisation of adults
   stat.(fldf).(fldt).(fldg).Ep_A = Ep_A; 
   stat.(fldf).(fldt).(fldg).EJ_X = Ep_A/ kap_X/ mu_X * w_X/ d_X; 
   stat.(fldf).(fldt).(fldg).EJ_P = Ep_A/ kap_X * kap_P/ mu_P * w_P/ d_P;
@@ -158,29 +162,40 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   % pack output
   stat.(fldf).(fldt).(fldg).EL_n=EL; stat.(fldf).(fldt).(fldg).EL2_n=EL2; stat.(fldf).(fldt).(fldg).EL3_n=EL3; 
   stat.(fldf).(fldt).(fldg).EL_a=EL_a; stat.(fldf).(fldt).(fldg).EL2_a=EL2_a; stat.(fldf).(fldt).(fldg).EL3_a=EL3_a; 
-  stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = tT_p;
+  stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = aT_b;
 end
 
-function dqhSL = dget_qhSL(t, qhSL, sgr, f, L_b, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  % t: time since birth
-  q   = max(0, qhSL(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSL(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSL(3)); % -, survival prob
+
+function dqhSL = dget_qhSL(t, qhSL, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m, t_j, t_e, t_N0, r_j, s_G, h_a, h_Bbj, h_Bje, h_Bei, thinning)
+  q   = max(0,qhSL(1)); % 1/d^2, aging acceleration
+  h_A = max(0,qhSL(2)); % 1/d^2, hazard rate due to aging
+  S   = max(0,qhSL(3)); % -, survival prob
   
-  L_i = L_m * f - L_T;
-  L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = max(0, v * (f/ L - (1 + L_T/ L)/ L_m)/ (f + g)); % 1/d, spec growth rate of structure
-  dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q; % 1/d^3
-  dh_A = q - r * h_A;                                         % 1/d^2
-  if t < t_p
-    h_B = h_Bbp;
-  else
-    h_B = h_Bpi;
+  if t < t_j % larva
+    h_B = h_Bbj;
+    h_X = thinning * r_j; % 1/d, hazard due to thinning
+    L = L_b * exp(t * r_j/ 3);
+    dq = 0;
+    dh_A = 0;
+  elseif t < t_e % pupa
+    h_B = h_Bje;
+    h_X = 0; % 1/d, hazard due to thinning
+    L = (L_j * (t_e - t)) + L_e * (t - t_j)/(t_e - t_j); % linear transition as approximation
+    dq = 0;
+    dh_A = 0;
+  else % imago
+    h_B = h_Bei;
+    s_M = L_j/ L_b;
+    L = L_e;
+    r = 0; % 1/d, spec growth rate of structure
+    h_X = 0; % 1/d, hazard due to thinning
+    dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
   end
-  h_X = thinning * r * 2/3;
-  h = max(0, h_A + h_B + h_X); 
-  dS = - h * S;
-    
+
+  h = h_A + h_B + h_X; 
+  dS = - h * S; % 1/d, change in survival prob
+      
   dEL0 = exp(- sgr * t) * S;
   % EL0(t)/EL0(infty) equals distribution function of times since birth
   % so dEL0(t)/EL0(infty) equals pdf of times since birth
@@ -189,20 +204,13 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, L_b, L_m, L_T, t_p, r_B, v, g, s_G, 
   dEL2 = L * dEL1; % d/dt L^2*pdf(t)
   dEL3 = L * dEL2; % d/dt L^3*pdf(t)
   %
-  dEL1_a = (t > t_p) * L * dEL0; % d/dt L*pdf(t) of adults
-  dEL2_a = L * dEL1_a; % d/dt L^2*pdf(t) of adults
-  dEL3_a = L * dEL2_a; % d/dt L^3*pdf(t) of adults
+  dEL1_a = dEL1; % d/dt L*pdf(t) of adults
+  dEL2_a = dEL2; % d/dt L^2*pdf(t) of adults
+  dEL3_a = dEL3; % d/dt L^3*pdf(t) of adults
   
   dhV = h * dEL3; % cm^3/d, production of dead structure
   
   dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
-end
-
-% event p_dead_for_sure
-function [value,isterminal,direction] = p_dead_for_sure(t, qhSFL, sgr, f, L_b, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  value = [t - t_p; (qhSFL(3) - 1e-6) * (t < 365*600)];  % trigger 
-  isterminal = [0; 1];    % terminate after the second event
-  direction  = [];        % get all the zeros
 end
 
 % fill fieds with nan

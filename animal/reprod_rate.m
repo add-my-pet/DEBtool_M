@@ -75,7 +75,7 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
   if length(Lf) <= 1
     lb0 = Lf/ Lm; % scaled length at birth
     [lp, lb, info_lp] = get_lp(p_lp, f, lb0);
-    Lb = lb * Lm; Lp = lp * Lm; % volumetric length at birth, puberty
+    Lb = lb * Lm; Lp = lp * Lm; % structural length at birth, puberty
     if info_lp ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate \n')
       R = L * 0; UE0 = [];

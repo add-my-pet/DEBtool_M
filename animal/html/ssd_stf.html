@@ -1,16 +1,86 @@
-%% ssd_std
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ssd_stf</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="ssd_stf.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>ssd_stf</h1><!--introduction--><p>Gets mean structural length^1,2,3 and wet weight at f and r</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>stat = <a href="../ssd_stf.m"><b>ssd_stf</b></a> (stat, code, par, T_pop, f_pop, sgr)</p><h2 id="4">Description</h2><p>Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution. Use sgr_stf to obtain sgr. Brackground hazards are not standard in par as produced by AmP; add them before use. If code is e.g. '01f', fields stat.f0.thin1.f are filled. For 'f0m', the fields stat.f.thin0.m are filled. If par is not a structure, all fields are filled with NaN. Hazard includes</p><div><ul><li>thinning (optional, default: 1; otherwise specified in par.thinning),</li><li>stage-specific background (optional, default: 0; otherwise specified in par.h_B0b, par.h_Bbp, par.h_Bpi)</li><li>ageing (controlled by par.h_a and par.s_G)</li></ul></div><p>Input</p><div><ul><li>struc: structure to which output is added</li><li>code: character string with scaled functional response (0,f,1), thinning (0,1), gender(f,m), e.g. '10f'</li><li>par: structure with parameters for individual</li><li>T_pop: optional temperature (in Kelvin, default C2K(20))</li><li>f_pop: optional scalar with scaled functional response (overwrites value in par.f)</li><li>sgr: specific population growth rate at T_pop</li></ul></div><p>Output: res: structure with fields</p><div><ul><li>EL: cm, mean structural length for post-natals</li><li>EL2: cm^2, mean squared structural length for post-natals</li><li>EL3: cm^3, mean cubed structural length for post-natals</li><li>EL_a: cm, mean structural length for adults</li><li>EL2_a: cm^2, mean squared structural length  for adults</li><li>EL3_a: cm^3, mean cubed structural length  for adults</li><li>EWw_n: g, mean wet weight of post-natals (excluding contributions from reproduction buffer)</li><li>EWw_a: g, mean wet weight of adults (excluding contributions from reproduction buffer)</li><li>hWw: 1/d, production of dead post-natals (excluding contributions from reproduction buffer)</li><li>theta_jn: -, fraction of the post-natal individuals that is juvenile</li><li>S_b: -, survival probability at birth</li><li>S_p: -, survival probability at puberty</li><li>tS: (n,2)-array with age (d), surivival probability (-)</li><li>tSs: (n,2)-array with age (d), survivor function of the stable age distribution (-)</li><li>ER: #/d, mean reproduction rate of adult female</li><li>del_ea: -, number of embryos per adult</li><li>theta_e: -, fraction of individuals that is embryo</li><li>Ep_A: J/d, mean assimilation rate for post-natals</li><li>EJ_X: g/d, mean feeding rate for post-natals</li><li>EJ_P: g/d, mean defacating rate for post-natals</li><li>a_b: d, age at birth</li><li>t_p: d, time since birth at puberty</li></ul></div><h2 id="5">Remarks</h2><p>The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ssd_stf
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
-  % created 2019/07/09 by Bas Kooijman
+function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
+  % created 2019/07/26 by Bas Kooijman
   
   %% Syntax
-  % stat = <../ssd_std.m *ssd_std*> (stat, code, par, T_pop, f_pop, sgr)
+  % stat = <../ssd_stf.m *ssd_stf*> (stat, code, par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution.
-  % Use sgr_std to obtain sgr. Background hazards are not standard in par as produced by AmP; add them before use.
+  % Use sgr_stf to obtain sgr. Brackground hazards are not standard in par as produced by AmP; add them before use.
   % If code is e.g. '01f', fields stat.f0.thin1.f are filled. For 'f0m', the fields stat.f.thin0.m are filled. 
   % If par is not a structure, all fields are filled with NaN.
   % Hazard includes 
@@ -28,7 +98,7 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   % * f_pop: optional scalar with scaled functional response (overwrites value in par.f)
   % * sgr: specific population growth rate at T_pop
   %
-  % Output: stat: structure with fields
+  % Output: res: structure with fields
   %
   % * EL: cm, mean structural length for post-natals
   % * EL2: cm^2, mean squared structural length for post-natals
@@ -55,10 +125,6 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   %
   %% Remarks
   % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
-  %
-  %% Example of use
-  % cd to entries/Rana_temporaria/; load results_Rana_temporaria; 
-  % [EL, EL2, EL3, EWw, Prob_bp] = ssd_std(par, [], [], 0.006, 1e10)
 
   % get output fields
   fldf = 'f0fff1'; fldf = fldf([-1 0] + 2 * strfind('0f1',code(1))); % f0 or ff or f1
@@ -108,7 +174,7 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
 
   % get t_p
-  [tau_p, tau_b, l_p, l_b, info] = get_tp([g k l_T v_Hb v_Hp], f);
+  [tau_p, tau_b, l_p, l_b, info] = get_tp_foetus([g k l_T v_Hb v_Hp], f);
   tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
   aT_b = tau_b/ kT_M; % d, age at birth
   S_b = exp(-aT_b * h_B0b); % -, survivor prob at birth
@@ -143,7 +209,7 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   
   p_C = f * g/ (f + g) * E_m * (vT * EL2_a + kT_M * (EL3_a + L_T * EL2_a)); % J/d, mean mobilisation of adults
   p_R = max(0, (1 - kap) * p_C - kT_J * E_Hp); % J/d, mean allocation to reproduction of adults
-  E_0 = p_Am * initial_scaled_reserve(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
+  E_0 = p_Am * initial_scaled_reserve_foetus(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
   ER = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
   stat.(fldf).(fldt).(fldg).ER = ER; 
   del_ea = ER * aT_b * exp(h_B0b * aT_b/ 2); % -, number of embryos per adult
@@ -216,3 +282,5 @@ function stat = setNaN(stat, fldf, fldt, fldg)
     stat.(fldf).(fldt).(fldg).Ep_A = NaN;     stat.(fldf).(fldt).(fldg).EJ_X = NaN;   stat.(fldf).(fldt).(fldg).EJ_P = NaN;   
     stat.(fldf).(fldt).(fldg).a_b = NaN;      stat.(fldf).(fldt).(fldg).t_p = NaN;   
 end
+##### SOURCE END #####
+--></body></html>

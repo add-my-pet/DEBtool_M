@@ -1,16 +1,16 @@
-%% ssd_std
+%% ssd_stf
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
-  % created 2019/07/09 by Bas Kooijman
+function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
+  % created 2019/07/26 by Bas Kooijman
   
   %% Syntax
-  % stat = <../ssd_std.m *ssd_std*> (stat, code, par, T_pop, f_pop, sgr)
+  % stat = <../ssd_stf.m *ssd_stf*> (stat, code, par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution.
-  % Use sgr_std to obtain sgr. Background hazards are not standard in par as produced by AmP; add them before use.
+  % Use sgr_stf to obtain sgr. Brackground hazards are not standard in par as produced by AmP; add them before use.
   % If code is e.g. '01f', fields stat.f0.thin1.f are filled. For 'f0m', the fields stat.f.thin0.m are filled. 
   % If par is not a structure, all fields are filled with NaN.
   % Hazard includes 
@@ -55,10 +55,6 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   %
   %% Remarks
   % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
-  %
-  %% Example of use
-  % cd to entries/Rana_temporaria/; load results_Rana_temporaria; 
-  % [EL, EL2, EL3, EWw, Prob_bp] = ssd_std(par, [], [], 0.006, 1e10)
 
   % get output fields
   fldf = 'f0fff1'; fldf = fldf([-1 0] + 2 * strfind('0f1',code(1))); % f0 or ff or f1
@@ -108,7 +104,7 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
 
   % get t_p
-  [tau_p, tau_b, l_p, l_b, info] = get_tp([g k l_T v_Hb v_Hp], f);
+  [tau_p, tau_b, l_p, l_b, info] = get_tp_foetus([g k l_T v_Hb v_Hp], f);
   tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
   aT_b = tau_b/ kT_M; % d, age at birth
   S_b = exp(-aT_b * h_B0b); % -, survivor prob at birth
@@ -143,7 +139,7 @@ function stat = ssd_std(stat, code, par, T_pop, f_pop, sgr)
   
   p_C = f * g/ (f + g) * E_m * (vT * EL2_a + kT_M * (EL3_a + L_T * EL2_a)); % J/d, mean mobilisation of adults
   p_R = max(0, (1 - kap) * p_C - kT_J * E_Hp); % J/d, mean allocation to reproduction of adults
-  E_0 = p_Am * initial_scaled_reserve(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
+  E_0 = p_Am * initial_scaled_reserve_foetus(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
   ER = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
   stat.(fldf).(fldt).(fldg).ER = ER; 
   del_ea = ER * aT_b * exp(h_B0b * aT_b/ 2); % -, number of embryos per adult
