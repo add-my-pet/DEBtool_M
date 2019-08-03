@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>f_ris0_stf</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="f_ris0_stf.m"><style type="text/css">
+      --><title>f_ris0_stf</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-08-03"><meta name="DC.source" content="f_ris0_stf.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>f_ris0_stf</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero for the stf model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, info] = <a href="../f_ris0_stf.m"><b>f_ris0_stf</b></a> (par)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the std model equals zero,   by solving the characteristic equation. We work at T_ref here.</p><p>Input</p><div><ul><li>par: structure with parameters for individual</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0 for the std model</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbp, h_Bpi (default all 0) must be added to par before use, if necessary par.reprodCode must exist R(t) is taken to be continuous; t_p at searched f is presemably large, so effect will be little.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>f_ris0_stf</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero for the stf model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, info] = <a href="../f_ris0_stf.m"><b>f_ris0_stf</b></a> (par)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the std model equals zero,   by solving the characteristic equation. We work at T_ref here.</p><p>Input</p><div><ul><li>par: structure with parameters for individual</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0 for the stf model</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbp, h_Bpi (default all 0) must be added to par before use, if necessary. par.reprodCode must exist. R(t) is taken to be continuous.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% f_ris0_stf
 % Gets scaled functional response at with the specific population growth rate is zero for the stf model
@@ -88,13 +88,13 @@ function [f, info] = f_ris0_stf (par)
   %
   % Output
   %
-  % * f: scaled func response at which r = 0 for the std model
+  % * f: scaled func response at which r = 0 for the stf model
   % * info: scalar with indicator for failure (0) or success (1)
   %
   %% Remarks
-  % optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbp, h_Bpi (default all 0) must be added to par before use, if necessary
-  % par.reprodCode must exist
-  % R(t) is taken to be continuous; t_p at searched f is presemably large, so effect will be little.
+  % optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbp, h_Bpi (default all 0) must be added to par before use, if necessary.
+  % par.reprodCode must exist.
+  % R(t) is taken to be continuous.
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
@@ -157,10 +157,10 @@ function [f, info] = f_ris0_stf (par)
 
   if i == 18 
     info = 0;
-    fprintf('f_ris0_std warning: no convergence for f in 18 steps\n')
+    fprintf('f_ris0_stf warning: no convergence for f in 18 steps\n')
   elseif f_1 - f_0 > 1e-4
     info = 0;
-    fprintf('f_ris0_std warning: interval for f < 1e-4, norm = %g\n', norm)
+    fprintf('f_ris0_stf warning: interval for f < 1e-4, norm = %g\n', norm)
   else
     info = 1;
   end

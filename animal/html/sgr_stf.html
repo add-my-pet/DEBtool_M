@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>sgr_stf</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="sgr_stf.m"><style type="text/css">
+      --><title>sgr_stf</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-08-03"><meta name="DC.source" content="sgr_stf.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -161,7 +161,7 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
     r = NaN; info = 0;
     return
   end
-  aT_b = tau_b/ kT_M; aT_p = tau_p/ kT_M; tT_p = aT_p - aT_b; % d, age at birth, puberty, time since birth at puberty
+  aT_b = tau_b/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at birth, puberty, time since birth at puberty
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
   L_b = L_m * l_b; L_p = L_m * l_p;  % cm, struc length at birth, puberty
   l_i = f - l_T; L_i = L_m * l_i;    % -, cm, ultimate (scaled) struc length
@@ -232,7 +232,7 @@ function dqhS = dget_qhS(t, qhS, f, L_b, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_B
   
   L_i = L_m * f - L_T;
   L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = v * (f/ L - (1 + L_T/ L)/ L_m)/ (f + g); % 1/d, spec growth rate of structure
+  r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q;
   dh_A = q - r * h_A;
   if t < t_p
@@ -263,7 +263,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
   
   L_i = L_m * f - L_T;
   L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = v * (f/ L - (1 + L_T/ L)/ L_m)/ (f + g); % 1/d, spec growth rate of structure
+  r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q;
   dh_A = q - r * h_A;
   if t < t_p

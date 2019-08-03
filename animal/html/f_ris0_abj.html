@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>f_ris0_abj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="f_ris0_abj.m"><style type="text/css">
+      --><title>f_ris0_abj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-08-03"><meta name="DC.source" content="f_ris0_abj.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>f_ris0_abj</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero for the abj model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, info] = <a href="../f_ris0_abj.m"><b>f_ris0_abj</b></a> (par)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the abj model equals zero,   by solving the characteristic equation. We work at T_ref here.</p><p>Input</p><div><ul><li>par: structure with parameters for individual</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0 for the abj model</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbj, h_Bjp, h_Bpi (default all 0) must be added to par before use, if necessary par.reprodCode must exist R(t) is taken to be continuous; t_p at searched f is presemably large, so effect will be little.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>f_ris0_abj</h1><!--introduction--><p>Gets scaled functional response at with the specific population growth rate is zero for the abj model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[f, info] = <a href="../f_ris0_abj.m"><b>f_ris0_abj</b></a> (par)</p><h2 id="4">Description</h2><p>Obtains the scaled function response at which specific population growth rate for the abj model equals zero,   by solving the characteristic equation. We work at T_ref here.</p><p>Input</p><div><ul><li>par: structure with parameters for individual</li></ul></div><p>Output</p><div><ul><li>f: scaled func response at which r = 0 for the abj model</li><li>info: scalar with indicator for failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbj, h_Bjp, h_Bpi (default all 0) must be added to par before use, if necessary. par.reprodCode must exist R(t) is taken to be continuous; t_p at searched f is presemably large, so effect will be little.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% f_ris0_abj
 % Gets scaled functional response at with the specific population growth rate is zero for the abj model
@@ -92,7 +92,7 @@ function [f, info] = f_ris0_abj (par)
   % * info: scalar with indicator for failure (0) or success (1)
   %
   %% Remarks
-  % optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbj, h_Bjp, h_Bpi (default all 0) must be added to par before use, if necessary
+  % optional thinning (a boolean, default 1), and background hazards h_B0b, h_Bbj, h_Bjp, h_Bpi (default all 0) must be added to par before use, if necessary.
   % par.reprodCode must exist
   % R(t) is taken to be continuous; t_p at searched f is presemably large, so effect will be little.
 
@@ -119,39 +119,28 @@ function [f, info] = f_ris0_abj (par)
     h_Bpi = 0;
   end
   
-  % max time for integration of the char eq; evaluated at f = 1, but t_max does not depend sensitively to this
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9); 
-  u_E0 = get_ue0([g k v_Hb], 1); % -, scaled cost for egg
-  [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g, k, l_T, v_Hb, v_Hj, v_Hp], 1); 
-  t_b = tau_b/ k_M; t_j = (tau_j - tau_b)/ k_M; t_p = (tau_p - tau_b)/ k_M; % unscale
-  L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; % unscale
-  S_b = exp( - t_b * h_B0b); % - , survival prob at birth
-  r_j = k_M * rho_j; r_B = k_M * rho_B; % 1/d, von Bert growth rate
-  %options = odeset('AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 1e10], [0, 0, S_b, 0], options, 1, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i,L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
-  t_max = min(1e5,t(end)); % sometimes detection of proper t_max fails
-  t_max = 1e3;
-
-  % get f at r = 0
+  % set lower boundary of f
   f_0 = 1e-5 + get_ep_min_j([g k l_T v_Hb v_Hj v_Hp]); % -, scaled functional response at which puberty can just be reached
-  if char_eq_0(f_0, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning) > 0
+  pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning};
+  if charEq0(f_0, pars_charEq0{:}) > 0
     fprintf('Warning from f_ris0_abj: f for which r = 0 is very close to that for R_i = 0\n');
     f = f_0; info = 1; return
   end
   
-  % initialize range for f
+  % set upper boundary of f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
-  if char_eq_0(f_1, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning) < 0
+  if charEq0(f_1, pars_charEq0{:}) < 0
     fprintf('Warning from f_ris0_abj: no f detected for which r = 0\n');
     info = 0; f = f_0; return
   end
+  
+  % get f at r = 0
   norm = 1; i = 0; % initialize norm and counter
-
   % 2^-18 = 4e-6: min accuracy of f_min, starting from worst-case (0,1)
   while i < 18 && norm^2 > 1e-16 && f_1 - f_0 > 1e-5 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    norm = char_eq_0(f, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning);
+    norm = charEq0(f, pars_charEq0{:});
     %[i f_0 f f_1 norm] % show progress
     if norm > 0
       f_1 = f;
@@ -162,26 +151,31 @@ function [f, info] = f_ris0_abj (par)
 
   if i == 18 
     info = 0;
-    fprintf('f_ris0_std warning: no convergence for f in 18 steps\n')
+    fprintf('f_ris0_abj warning: no convergence for f in 18 steps\n')
   elseif f_1 - f_0 > 1e-4
     info = 0;
-    fprintf('f_ris0_std warning: interval for f < 1e-4, norm = %g\n', norm)
+    fprintf('f_ris0_abj warning: interval for f < 1e-4, norm = %g\n', norm)
   else
     info = 1;
   end
   
 end
 
-function val = char_eq_0(f, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning)
+function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning)
   % val = char eq in f, for r = 0
   u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
   [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g, k, 0, v_Hb, v_Hj, v_Hp], f); 
+  if isempty(tau_j)
+    val = -1; return
+  end
   a_b = tau_b/ k_M; t_j = (tau_j - tau_b)/ k_M; t_p = (tau_p - tau_b)/ k_M; % unscale
   L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; % unscale
   S_b = exp( - a_b * h_B0b); % - , survival prob at birth
   r_j = k_M * rho_j; r_B = k_M * rho_B; % 1/d, von Bert growth rate
-  %options = odeset('AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhSC] = ode45(@dget_qhSC, [0; t_max], [0, 0, S_b, 0], [], f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
+  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9); 
+  pars_qhSC = {f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning};
+  [t, qhSC] = ode45(@dget_qhSC, [0; 1e8], [0, 0, S_b, 0], options, pars_qhSC{:});
+  i = ~isnan(qhSC(:,3)); qhSC = qhSC(i,:); t = t(i);
   val = qhSC(end, 4) - 1;
 end
     
@@ -192,7 +186,7 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j,
   
   if t < t_j
     h_B = h_Bbj;
-    L = L_b * exp(r_j * t);
+    L = L_b * exp(t * r_j/ 3);
     s_M = L/ L_b;
     r = r_j;
     h_X = thinning * r; % 1/d, hazard due to thinning
@@ -200,7 +194,7 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j,
     h_B = (t < t_p) * h_Bjp + (t > t_p) * h_Bpi;
     L = L_i - (L_i - L_j) * exp(- r_B * (t - t_j));
     s_M = L_j/ L_b;
-    r = v * s_M * (f/ L - 1/ L_i)/ (f + g); % 1/d, spec growth rate of structure
+    r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
     h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
   end
 
@@ -217,7 +211,7 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j,
   dqhSC = [dq; dh_A; dS; dCharEq]; 
 end
 
-% event dead_for_sure, linked to dget_qhS
+% event dead_for_sure
 function [value, isterminal, direction] = dead_for_sure(t, qhSC, varargin)
   value = qhSC(3) - 1e-6;  % trigger 
   isterminal = 1;          % terminate after the first event

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-07-28"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
+      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-08-03"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -178,17 +178,47 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   if ~isfield(par, 'h_B0b')
     par.h_B0b = 0;
   end
+  if ~isfield(par, 'h_Bbx')
+    par.h_Bbx = 0;
+  end
+  if ~isfield(par, 'h_Bbs')
+    par.h_Bbs = 0;
+  end
+  if ~isfield(par, 'h_Bbj')
+    par.h_Bbj = 0;
+  end
   if ~isfield(par, 'h_Bbp')
     par.h_Bbp = 0;
   end
+  if ~isfield(par, 'h_Bsj')
+    par.h_Bsj = 0;
+  end
+  if ~isfield(par, 'h_Bxp')
+    par.h_Bxp = 0;
+  end
+  if ~isfield(par, 'h_Bsp')
+    par.h_Bsp = 0;
+  end
+  if ~isfield(par, 'h_Bjp')
+    par.h_Bjp = 0;
+  end
   if ~isfield(par, 'h_Bpi')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bbj')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bje')
+    par.h_Bpi = 0;
+  end
+  if ~isfield(par, 'h_Bei')
     par.h_Bpi = 0;
   end
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par); vars_pull(cPar);  
   
-  if any(ismember({'z_m','E_Hbm','E_Hjm','E_Hpm'},fieldnames(par)))
+  if any(ismember({'z_m','E_Hbm','E_Hsm','E_Hxm','E_Hjm','E_Hpm'},fieldnames(par)))
     male = 1; % male and females parameters differ
   else
     male = 0; % male and females parameters are the same
@@ -208,7 +238,8 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   stat.T = K2C(T);        units.T = 'C';       label.T = 'body temperature'; 
   stat.c_T = TC;          units.c_T = '-';     label.c_T = 'temperature correction factor'; 
       
-  % first females with thinning 1 and 0, possibly followed by males with thinning 1 and 0
+  % first females with and without thinning, possibly followed by males; 
+  % for each thinning-setting: f_min, possibly f, and f_max (=1)
   par.thinning = 1;
   [f_01, info_01] = f_ris0_mod (model, par); % get f for r = 0
   stat.f0.thin1.f.f = f_01; r_01 = 0; stat.f0.thin1.f.r = r_01; stat.f0.thin1.f.t2 = NaN; 
