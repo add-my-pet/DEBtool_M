@@ -74,7 +74,7 @@ function estim_options (key, val)
       lossfunction = 'sb';
       filter = 1;
       pars_init_method  = 2;
-      results_output = 0;
+      results_output = 3;
       method = 'nm';
       nmregr_options('default');
 

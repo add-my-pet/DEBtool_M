@@ -93,8 +93,7 @@ function [r, info] = sgr_abp (par, T_pop, f_pop)
   if charEq(0, S_b, pars_qhSC{:}) > 0
     r = NaN; info = 0; % no positive r exists
   else
-    nmregr_options('report', 0); nmregr_options('max_step_number', 100);% used in nmfzero (which is like fzero, but more stable, using simplex)
-    [r, info] = nmfzero(@charEq, 0, S_b, pars_qhSC{:});
+    [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
   end
 end
 

@@ -117,13 +117,14 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   % life span as imago
   pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
   tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
-  tT_im = tau_m / kT_M;                 % d, mean life span as imago
+  tT_im = tau_m / kT_M/ 2;              % d, half mean life span as imago
   
   % reproduction rate of imago
   E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reprod buffer at pupation
-  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
+  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
-  tT_N0 = tT_j + tT_im;               % d, time since birth at which all eggs are produced
+  tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('AbsTol', 1e-8, 'RelTol', 1e-8); 

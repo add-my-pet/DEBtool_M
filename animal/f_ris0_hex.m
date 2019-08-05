@@ -113,13 +113,14 @@ function val = charEq0(f, L_m, kap, kap_R, kap_V, k_M, v, g, k, E_G, E_m, v_Hb, 
   % life span as imago
   pars_tm = [g; 0; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
   tau_m = get_tm_s(pars_tm, f, l_b);  % -, scaled mean life span at T_ref
-  t_im = tau_m/ k_M;                  % d, mean life span as imago
+  t_im = tau_m/ k_M/ 2;               % d, half mean life span as imago
   
   % reproduction rate of imago
   E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J,reprod buffer at pupation
-  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
+  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
   R = N/ t_im;                        % #/d, reproduction rate
-  t_N0 = t_j + t_im;                  % d, time since birth at which all eggs are produced
+  t_N0 = t_e + t_im;                  % d, time since birth at which all eggs are produced
 
   options = odeset('AbsTol',1e-9, 'RelTol',1e-9); 
   pars_qhSC = {f, kap, kap_R, k_M, v, g, k, R, L_b, L_j, L_e, L_m, t_j, t_e, t_N0, r_j, s_G, h_a, h_Bbj, h_Bje, h_Bei, thinning};

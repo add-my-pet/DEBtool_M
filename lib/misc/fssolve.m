@@ -26,19 +26,19 @@ function [x, info] = fssolve(func, xin)
   x = xin; % copy input to output
   
   %% set options if necessary
-  if exist('max_step_nr')==0 
+  if ~exist('max_step_nr','var')
     fssolve_options('max_step_nr', 200*n);
   end
-  if exist('max_fun_evals')==0 
+  if ~exist('max_fun_evals','var')
     fssolve_options('max_fun_evals', 200*n);
   end
-  if exist('tol_simplex')==0 
+  if ~exist('tol_simplex','var')
     fssolve_options('tol_simplex', 1e-4);
   end
-  if exist('tol_fun')==0
+  if ~exist('tol_fun','var')
     fssolve_options('tol_fun', 1e-4);
   end
-  if exist('report')==0
+  if ~exist('report','var')
     fssolve_options('report', 1);
   end
 

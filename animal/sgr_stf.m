@@ -135,11 +135,10 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
     if charEq(0, t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning) > 0
       r = NaN; info = 0; % no positive r exists
     else
-      nmregr_options('report', 0); % used in nmfzero (which is like fzero, but more stable, using simplex)
       if charEq(r_max, t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning) < 0
         r_max = kap_R * (1 - kap) * kT_M * (1 - k * v_Hp)/ u_E0; % numerical problem, probably because L_p is too close to L_i
       end
-      [r, info] = nmfzero(@charEq, r_max, t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
+      [r, info] = nmfzero(@charEq, r_max, [], t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
     end
   end
  

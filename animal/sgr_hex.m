@@ -18,7 +18,7 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   %
   % With thinning the hazard rate is such that the feeding rate of a cohort does not change during growth, in absence of other causes of death.
   % Survival of embryo due to ageing is taken for sure
-  % Buffer handling rule: continuous reproduction is used in the hex model.
+  % Buffer handling rule: constant continuous reproduction is used in the hex model during mean life span as imago.
   % Food density and temperature are assumed to be constant; temperature is specified in par.T_typical.
   % The resulting specific growth rate r is solved from the characteristic equation 1 = \int_0^a_max S(a) R(a) exp(- r a) da
   %   with a_max such that S(a_max) = 1e-6
@@ -94,13 +94,14 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   % life span as imago
   pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
   tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
-  tT_im = tau_m / kT_M;                 % d, mean life span as imago
+  tT_im = tau_m / kT_M/ 2;              % d, half mean life span as imago
   
   % reproduction rate of imago
-  E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, threshold reprod buffer  at pupation
-  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
+  E_Rj = L_j^3 * v_Rj * E_G * (1 - kap)/ kap; % J, threshold reprod buffer  at pupation
+  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
-  tT_N0 = tT_j + tT_im;               % d, time since birth at which all eggs are produced
+  tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
   pars_qhSC = {f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, tT_j, tT_e, tT_N0, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
       
@@ -108,8 +109,7 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   if charEq(0, S_b, pars_qhSC{:}) > 0
     r = NaN; info = 0; % no positive r exists
   else
-    nmregr_options('report', 0); nmregr_options('max_step_number', 100);% used in nmfzero (which is like fzero, but more stable, using simplex)
-    [r, info] = nmfzero(@charEq, .01, S_b, pars_qhSC{:});
+    [r, info] = nmfzero(@charEq, .01, [], S_b, pars_qhSC{:});
   end
 end
 

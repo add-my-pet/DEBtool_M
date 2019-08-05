@@ -94,7 +94,6 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   % ceiling for r
   R_i = kap_R * (1 - kap) * kT_M * (l_i^3 * (g * s_M + 1)/ (g + 1) - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
   char_eq = @(rho, rho_p) 1 + exp(- rho * rho_p) - exp(rho); % see DEB3 eq (9.22): exp(-r*a_p) = exp(r/R) - 1 
-  nmregr_options('report',0); nmregr_options('max_step_number',100);
   [rho_max, info] = nmfzero(@(rho) char_eq(rho, R_i * tT_p), 1); 
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
     
@@ -102,11 +101,10 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   if charEq(0, S_b, pars_qhSC{:}) > 0
     r = NaN; info = 0; % no positive r exists
   else 
-    nmregr_options('report', 0); nmregr_options('max_step_number', 100);% used in nmfzero (which is like fzero, but more stable, using simplex)
     if charEq(r_max, S_b, pars_qhSC{:}) > 0.99
-      [r, info] = nmfzero(@charEq, 0, S_b, pars_qhSC{:});
+      [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
     else
-      [r, info] = nmfzero(@charEq, r_max, S_b, pars_qhSC{:});
+      [r, info] = nmfzero(@charEq, r_max, [], S_b, pars_qhSC{:});
     end
   end
 end
