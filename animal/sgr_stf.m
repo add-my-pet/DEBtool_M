@@ -80,7 +80,7 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
   kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2; rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
   
   % supporting statistics
-  [u_E0, l_b, info] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for egg
+  [u_E0, l_b, t_b, info] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for egg
   if info == 0
     r = NaN; return
   end

@@ -83,13 +83,13 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
   kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2; rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
   
   % supporting statistics
-  [u_E0, l_b, info] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for egg
+  [u_E0, l_b, t_b, info] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for egg
   if info == 0
     r = NaN; return
   end
   [tau_p, tau_x, tau_b, l_p, l_x, l_b, info] = get_tx([g k l_T v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
-  if l_p > f || info == 0 || tau_p < 0
-    r = NaN; info = 0;
+  if info == 0
+    r = NaN;
     return
   end
   aT_b = tau_b/ kT_M; tT_x = (tau_x - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M;  % d, age at birth, time since birth at weaning, puberty
@@ -97,26 +97,27 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
   L_b = L_m * l_b; L_x = L_m * l_x; L_p = L_m * l_p;  % cm, struc length at birth, weaning, puberty
   l_i = f - l_T; L_i = L_m * l_i;    % -, cm, ultimate (scaled) struc length
   
+  % get t_max to see if too many eggs can be expected
+  pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+  t_m = get_tm_s(pars_tm, f, l_b);      % -, scaled mean life span at T_ref
+  t_max = t_m/ kT_M/ TC;                % d, mean life span at T
+
   % ceiling for r
   R_i = kap_R * (1 - kap) * kT_M * (f^3 - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
   char_eq = @(rho, rho_p) 1 + exp(- rho * rho_p) - exp(rho); % see DEB3 eq (9.22): exp(-r*a_p) = exp(r/R) - 1 
   [rho_max, fval, info] = fzero(@(rho) char_eq(rho, R_i * tT_p), [1e-9 1]); 
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
 
-  % max time for integration of the char eq
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhS] = ode45(@dget_qhS, [0; 1e10], [0, 0, S_b], options, f, L_b, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);
-  t_max = min(5e5,t(end)); % sometimes detection of proper t_max fails
-  
   if R_i * t_max < 1e4 % let egg appear as soon as the reproduction buffer allows
 
     % survivor at foetus production
-    [t, N] = ode45(@dget_N, [0 t_max], 0, [], f, kap, kap_R, kT_M, k, g, v_Hp, l_p, l_i, l_T, u_E0, rT_B); % times since puberty
+    [t, N] = ode45(@dget_N, [0 10*t_max], 0, [], f, kap, kap_R, kT_M, k, g, v_Hp, l_p, l_i, l_T, u_E0, rT_B); % times since puberty
     t = spline1(1:N(end), [N, tT_p + t]);  % convert times since puberty to times since birth at egg laying
     if isempty(t)
-      t = tT_p + t_max; % produce a single foetus at max time since birth
+      t = tT_p + t(end); % produce a single foetus at max time since birth
     end
-    [t_S, qhS] = ode45(@dget_qhS, [0; tT_p; t], [0, 0, S_b], [], f, L_b, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);  
+    options = odeset('AbsTol',1e-9, 'RelTol',1e-9);  
+    [t_S, qhS] = ode45(@dget_qhS, [0; tT_p; t], [0, 0, S_b], options, f, L_b, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);  
     S = qhS(:,3); S_p = S(3); S(1:2) = []; i = ~isnan(S); S = max(1e-9,S(i)); t = t(i); % survivor prob and times at foetus production
   
     if sum(S)<1 % no positive r exists
@@ -134,13 +135,13 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
     
   else % too many eggs: treat R(t) as a continuous function
     % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-    if charEq(0, t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning) > 0
+    if charEq(0, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning) > 0
       r = NaN; info = 0; % no positive r exists
     else
-      if charEq(r_max, t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning) < 0
+      if charEq(r_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning) < 0
        r_max = kap_R * (1 - kap) * kT_M * (1 - k * v_Hp)/ u_E0; % numerical problem, probably because L_p is too close to L_i
       end
-      [r, info] = nmfzero(@charEq, r_max, [], t_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);
+      [r, info] = nmfzero(@charEq, r_max, [], S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);
     end
   end
  
@@ -180,7 +181,7 @@ end
 
 % event dead_for_sure
 function [value,isterminal,direction] = dead_for_sure(t, qhS, varargin)
-  value = qhS(3) - 1e-6;  % trigger 
+  value = (qhS(3) - 1e-6);  % trigger 
   isterminal = 1;    % terminate after the first event
   direction  = [];  % get all the zeros
 end
@@ -209,15 +210,15 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
   dS = - h * S;
   
   l = L/ L_m; l_p = L_p/ L_m; l_T = L_T/ L_m;
-  R = (l > l_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l_T + l) - k * v_Hp) * (1 - kap)/ u_E0;
+  R = (t > t_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l_T + l) - k * v_Hp) * (1 - kap)/ u_E0;
   dCharEq = S * R * exp(- sgr * t);
   
   dqhSC = [dq; dh_A; dS; dCharEq]; 
 end
 
-function value = charEq (r, t_max, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
+function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
   options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 t_max], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
+  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
   value = 1 - qhSC(end,4);
 end
 

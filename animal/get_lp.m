@@ -95,7 +95,7 @@ function [lp, lb, info] = get_lp (p, f, lb0)
        lp = [];
        info = 0;
        fprintf('Warning in get_lp: maturity does not increase initially \n');
-    elseif vH + 1e-4 < vHp % compute using integration in maturity
+    elseif vH + 1e-4 < vHp % compute using integration in time
       [vH, lbp] = ode45(@dget_l_ISO, [vH; vHp], l, [], k, lT, g, f, 1); 
       lp = lbp(end);
       if lp > 0.8 * f % recompute using integration in time with event
@@ -117,7 +117,7 @@ end
 
 function [value,isterminal,direction] = event_puberty(t, vHl, k, lT, g, f, s_M, vHp)
     % vHl: 2-vector with [vH; l]
-    value = vHp - vHl(1);
+    value = (vHp - vHl(1)) * (t < 5e5);
     isterminal = 1;
     direction = 0; 
 end

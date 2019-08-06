@@ -49,27 +49,16 @@ function [f, info] = f_ris0_stx (par)
     h_Bpi = 0;
   end
   
-  % max time for integration of the char eq; evaluated at f = 1, but t_max does not depend sensitively to this
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9);  
-  [u_E0, l_b] = get_ue0_foetus([g k v_Hb], 1); % -, scaled cost for foetus
-  [tau_x, tau_p, tau_b, l_x, l_p, l_b] = get_tx([g, k, l_T, v_Hb, v_Hx, v_Hp], 1); 
-  t_b = tau_b/ k_M; t_x = (tau_x - tau_b)/ k_M; t_p = (tau_p - tau_b)/ k_M; L_b = L_m * l_b; % unscale
-  S_b = exp( - t_b * h_B0b); % - , survival prob at birth
-  r_B = k_M/ 3/ (1 + 1/g); % 1/d, von Bert growth rate
-  %options = odeset('AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhSC] = ode45(@dget_qhSC, [0; 1e10], [0, 0, S_b, 0], options, 1, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_x, t_p, r_B, v_Hp, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
-  t_max = min(1e5,t(end)); % sometimes detection of proper t_max fails
-
   % get f at r = 0
-  f_0 = 1e-5 + get_ep_min([k; l_T; v_Hp]); % -, scaled functional response at which puberty can just be reached
-  if char_eq_0(f_0, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning) > 0
+  f_0 = 1e-6 + get_ep_min([k; l_T; v_Hp]); % -, scaled functional response at which puberty can just be reached
+  if char_eq_0(f_0, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning) > 0
     fprintf('Warning from f_ris0_stx: f for which r = 0 is very close to that for R_i = 0\n');
     f = f_0; info = 1; return
   end
   
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
-  if char_eq_0(1, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning) < 0
+  if char_eq_0(1, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning) < 0
     fprintf('Warning from f_ris0_stx: no f detected for which r = 0\n');
     info = 0; f = f_0; return
   end
@@ -79,7 +68,7 @@ function [f, info] = f_ris0_stx (par)
   while i < 18 && norm^2 > 1e-16 && f_1 - f_0 > 1e-5 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    norm = char_eq_0(f, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning);
+    norm = char_eq_0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning);
     %[i f_0 f f_1 norm] % show progress
     if norm > 0
       f_1 = f;
@@ -100,18 +89,18 @@ function [f, info] = f_ris0_stx (par)
   
 end
 
-function val = char_eq_0(f, t_max, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning)
+function val = char_eq_0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hx, v_Hp, s_G, h_a, h_B0b, h_Bbx, h_Bxp, h_Bpi, thinning)
 % val = char eq in f, for r = 0
   [u_E0, l_b] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for foetus
-  if isempty(get_lp([g, k, 0, v_Hb, v_Hp], f-1e-4))
+  if isempty(get_lp([g, k, 0, v_Hb, v_Hp], f))
     val = -1; return
   end
   [tau_x, tau_p, tau_b, l_x, l_p, l_b] = get_tx([g, k, 0, v_Hb, v_Hx, v_Hp], f); 
   t_b = tau_b/ k_M; t_x = (tau_x - tau_b)/ k_M; t_p = (tau_p - tau_b)/ k_M; L_b = L_m * l_b; % unscale
   S_b = exp( - t_b * h_B0b); % - , survival prob at birth
-  r_B = k_M/ 3/ (1 + 1/g); % 1/d, von Bert growth rate
-  %options = odeset('AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhSC] = ode45(@dget_qhSC, [0; t_max], [0, 0, S_b, 0], [], f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_x, t_p, r_B, v_Hp, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
+  r_B = k_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate
+  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9);  
+  [t, qhSC] = ode45(@dget_qhSC, [0; 1e8], [0, 0, S_b, 0], options, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_x, t_p, r_B, v_Hp, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
   val = qhSC(end, 4) - 1;
 end
     
