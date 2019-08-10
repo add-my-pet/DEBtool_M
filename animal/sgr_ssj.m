@@ -145,8 +145,8 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0,
   dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
   dS = - h * S; % 1/d, change in survival prob
   
-  l = L/ L_m; l_p = L_p/ L_m; 
-  R = (l > l_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l) - k * v_Hp) * (1 - kap)/ u_E0;
+  l = L/ L_m; 
+  R = (t > t_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l) - k * v_Hp) * (1 - kap)/ u_E0;
   dCharEq = S * R * exp(- sgr * t);
   
   dqhSC = [dq; dh_A; dS; dCharEq]; 
@@ -154,7 +154,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0,
 end
 
 function value = charEq (r, S_b, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_p, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e10], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_p, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning);
   value = 1 - qhSC(end,4);
 end

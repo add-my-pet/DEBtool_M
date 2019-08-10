@@ -120,7 +120,7 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
 
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events', @p_dead_for_sure, 'AbsTol', 1e-8, 'RelTol', 1e-8); 
+  options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-8, 'RelTol', 1e-8); 
   qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, kT_E, vT, g, k, u_E0, L_b, L_s, L_j, L_m, tT_s, tT_j, tT_p, rT_B, v_Hp, s_G, hT_a, h_Bbs, h_Bsp, h_Bpi, thinning};
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
@@ -169,9 +169,9 @@ end
 
 function dqhSL = dget_qhSL(t, qhSL, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
   % t: time since birth
-  q   = max(0, qhSL(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSL(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSL(3)); % -, survival prob
+  q   = qhSL(1); % 1/d^2, aging acceleration
+  h_A = qhSL(2); % 1/d^2, hazard rate due to aging
+  S   = qhSL(3); % -, survival prob
   
   if t < t_s
     L = f * L_m - (f * L_m - L_b) * exp(- t * r_B);  % cm, structural length

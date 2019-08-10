@@ -98,15 +98,15 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h
   a_b = tau_b/ k_M; t_p = (tau_p - tau_b)/ k_M; L_b = L_m * l_b; % unscale
   S_b = exp( - a_b * h_B0b); % - , survival prob at birth
   r_B = k_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0; 1e10], [0, 0, S_b, 0], options, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_p, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning);
   val = qhSC(end, 4) - 1;
 end
     
 function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_p, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
-  h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0,qhSC(3)); % -, survival prob
+  q   = qhSC(1); % 1/d^2, aging acceleration
+  h_A = qhSC(2); % 1/d^2, hazard rate due to aging
+  S   = qhSC(3); % -, survival prob
   
   L = f * L_m - (f * L_m - L_b) * exp(- t * r_B);  % cm, structural length
   r = v * (f/ L - 1/ L_m)/ (f + g); % 1/d, spec growth rate of structure

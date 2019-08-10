@@ -106,9 +106,9 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, k_E, v, g, k, t_sj, v_Hb, v_Hs, 
 end
     
 function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
-  q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
-  h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0,qhSC(3)); % -, survival prob
+  q   = qhSC(1); % 1/d^2, aging acceleration
+  h_A = qhSC(2); % 1/d^2, hazard rate due to aging
+  S   = qhSC(3); % -, survival prob
   
   
   if t < t_s

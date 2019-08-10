@@ -104,23 +104,17 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
 
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  pars_charEq = {S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning};
-  if charEq(0, pars_charEq{:}) > 0
+  pars_charEq = {f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning};
+  if charEq(0, S_b, pars_charEq{:}) > 0
     r = NaN; info = 0; % no positive r exists
   else
-    if charEq(r_max, pars_charEq{:}) < 0
-      r_max = kap_R * (1 - kap) * kT_M * (1 - k * v_Hp)/ u_E0; % numerical problem, probably because L_p is too close to L_i
-    elseif charEq(r_max, pars_charEq{:}) == 1
-      [r, ~, info] = fzero(@charEq, [0 r_max], [], pars_charEq{:});
-    else
-      [r, info] = nmfzero(@charEq, r_max, [], pars_charEq{:});
-    end
+    [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, pars_charEq{:});
   end
  
 end
 
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSC, varargin)
+function [value,isterminal,direction] = dead_for_sure(t, qhSC, r, varargin)
   value = (qhSC(3) - 1e-6);  % trigger 
   isterminal = 1;    % terminate after the first event
   direction  = [];  % get all the zeros
@@ -157,9 +151,9 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
 end
 
 % characteristic equation
-function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning);
+function value = charEq (r, S_b, varargin)
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, varargin{:});
   qhSC = qhSC(~isnan(qhSC(:,4)),:); value = 1 - qhSC(end,4);
 end
 

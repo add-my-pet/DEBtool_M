@@ -120,9 +120,10 @@ function stat = ssd_stx(stat, code, par, T_pop, f_pop, sgr)
   L_b = L_m * l_b; % cm, structural length at birth
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events', @p_dead_for_sure, 'AbsTol', 1e-8, 'RelTol', 1e-8); 
+  options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-8, 'RelTol', 1e-8); 
   qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
-  [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, sgr, f, L_b, L_m, L_T, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning);
+  pars_qhSL = {sgr, f, L_b, L_m, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning};
+  [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); 
   if isempty(ie) % ode45 fails to detect proper events
     theta_jn = qhSL(end,4)/ EL0_i; S_p = qhSL(end,3)/ EL0_i; % this gives value one, in absence of a better value
@@ -166,15 +167,15 @@ function stat = ssd_stx(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = tT_p;
 end
 
-function dqhSL = dget_qhSL(t, qhSL, sgr, f, L_b, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
+function dqhSL = dget_qhSL(t, qhSL, sgr, f, L_b, L_m, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
   % t: time since birth
-  q   = max(0, qhSL(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSL(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSL(3)); % -, survival prob
+  q   = qhSL(1); % 1/d^2, aging acceleration
+  h_A = qhSL(2); % 1/d^2, hazard rate due to aging
+  S   = qhSL(3); % -, survival prob
   
-  L_i = L_m * f - L_T;
+  L_i = L_m * f;
   L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = max(0, v * (f/ L - (1 + L_T/ L)/ L_m)/ (f + g)); % 1/d, spec growth rate of structure
+  r = max(0, v * (f/ L - 1/ L_m)/ (f + g)); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q; % 1/d^3
   dh_A = q - r * h_A;                                         % 1/d^2
   if t < t_x
@@ -206,7 +207,7 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, L_b, L_m, L_T, t_x, t_p, r_B, v, g, 
 end
 
 % event p_dead_for_sure
-function [value,isterminal,direction] = p_dead_for_sure(t, qhSFL, sgr, f, L_b, L_m, L_T, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
+function [value,isterminal,direction] = p_dead_for_sure(t, qhSFL, sgr, f, L_b, L_m, t_x, t_p, r_B, v, g, s_G, h_a, h_Bbx, h_Bxp, h_Bpi, thinning)
   value = [t - t_p; (qhSFL(3) - 1e-6) * (t < 365*600)];  % trigger 
   isterminal = [0; 1];    % terminate after the second event
   direction  = [];        % get all the zeros

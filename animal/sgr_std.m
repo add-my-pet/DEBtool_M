@@ -93,7 +93,7 @@ function [r, info] = sgr_std (par, T_pop, f_pop)
     r = NaN; info = 0;
     return
   end
-  aT_b = tau_b/ kT_M; aT_p = tau_p/ kT_M; tT_p = aT_p - aT_b; % d, age at birth, puberty, time since birth at puberty
+  aT_b = tau_b/ kT_M; tT_p = (tau_p - tau_b)/ kT_M;  % d, age at birth, time since birth at puberty
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
   L_b = L_m * l_b; L_p = L_m * l_p;  % cm, struc length at birth, puberty
   l_i = f - l_T; L_i = L_m * l_i;    % -, cm, ultimate (scaled) struc length
@@ -105,34 +105,32 @@ function [r, info] = sgr_std (par, T_pop, f_pop)
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
 
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning) > 0
+  pars_charEq = {f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
+  if charEq(0, S_b, pars_charEq{:}) > 0 || charEq(r_max, S_b, pars_charEq{:}) < 0
     r = NaN; info = 0; % no positive r exists
   else
-    if charEq(r_max, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning) < 0
-      r_max = kap_R * (1 - kap) * kT_M * (1 - k * v_Hp)/ u_E0; % numerical problem, probably because L_p is too close to L_i
-    end
-      [r, info] = nmfzero(@charEq, r_max, [], S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
+    [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, pars_charEq{:});
   end
  
 end
     
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSC, varargin)
+function [value,isterminal,direction] = dead_for_sure(t, qhSC, r, varargin)
   value = qhSC(3) - 1e-6;  % trigger 
   isterminal = 1;   % terminate after the first event
   direction  = [];  % get all the zeros
 end
 
 % ode's survival, reprod & char eq
-function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
+function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
   % t: time since birth
   q   = qhSC(1); % 1/d^2, aging acceleration
   h_A = qhSC(2); % 1/d^2, hazard rate due to aging
   S   = qhSC(3); % -, survival prob
   
-  L_i = L_m * f - L_T;
+  L_i = L_m * f;
   L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = v * (f/ L - (1 + L_T/ L)/ L_m)/ (f + g); % 1/d, spec growth rate of structure
+  r = v * (f/ L - 1/ L_m)/ (f + g); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q;
   dh_A = q - r * h_A;
   if t < t_p
@@ -144,8 +142,8 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
   h = h_A + h_B + h_X; 
   dS = - h * S;
   
-  l = L/ L_m; l_p = L_p/ L_m; l_T = L_T/ L_m;
-  R = (l > l_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l_T + l) - k * v_Hp) * (1 - kap)/ u_E0;
+  l = L/ L_m; 
+  R = (t > t_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l) - k * v_Hp) * (1 - kap)/ u_E0;
   dCharEq = S * R * exp(- sgr * t);
   
   dqhSC = [dq; dh_A; dS; dCharEq]; 
@@ -153,8 +151,9 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
 end
 
 % characteristic equation
-function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, L_T, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning);
+function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning);
   value = 1 - qhSC(end,4);
 end
+
