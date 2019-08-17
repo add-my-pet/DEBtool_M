@@ -70,7 +70,7 @@ function [r, info] = sgr_asj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -87,7 +87,7 @@ function [r, info] = sgr_asj (par, T_pop, f_pop)
   
   % supporting statistics
   u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-  [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_ts([g, k, 0, v_Hb, v_Hs, v_Hj, v_Hp], f); 
+  [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_ts([g, k, 0, v_Hb, v_Hs, v_Hj, v_Hp], f); 
   aT_b = tau_b/ kT_M; tT_s = (tau_s - tau_b)/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at b, time since birth at s, j, p
   L_b = L_m * l_b; L_s = L_m * l_s; L_j = L_m * l_j; L_i = L_m * l_i; L_p = L_m * l_p;  s_M = l_j/ l_s; % cm, struc length at birth, puberty, ultimate
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
@@ -96,6 +96,7 @@ function [r, info] = sgr_asj (par, T_pop, f_pop)
       
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
   if charEq(0, S_b, pars_qhSC{:}) > 0
+    fprintf(['Warning from sgr_asj: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
   else
     [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
@@ -112,9 +113,9 @@ end
 % reproduction is continuous
 function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_s, L_j, L_p, L_i, t_s, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsj, h_Bjp, h_Bpi, thinning)
 % t: time since birth
-  q   = max(0, qhSC(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSC(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSC(3)); % -, survival prob
+  q   = qhSC(1); % 1/d^2, aging acceleration
+  h_A = qhSC(2); % 1/d^2, hazard rate due to aging
+  S   = qhSC(3); % -, survival prob
   
   L_m = v/ k_M/ g; % cm, "max" structural length
   if t < t_s
@@ -151,7 +152,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b,
 end
 
 function value = charEq (sgr, S_b, varargin)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, varargin{:});
   value = 1 - qhSC(end,4);
 end

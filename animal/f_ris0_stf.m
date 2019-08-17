@@ -48,15 +48,16 @@ function [f, info] = f_ris0_stf (par)
   
   % get f at r = 0
   f_0 = 1e-6 + get_ep_min([k; l_T; v_Hp]); % -, scaled functional response at which puberty can just be reached
-  if char_eq_0(f_0, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning) > 0
-    fprintf('Warning from f_ris0_stf: f for which r = 0 is very close to that for R_i = 0\n');
+  pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning};
+  if charEq0(f_0, pars_charEq0{:}) > 0
+    fprintf(['Warning from f_ris0_stf: f for which r = 0 is very close to that for R_i = 0 and thinning = ', num2str(thinning), '\n']);
     f = f_0; info = 1; return
   end
   
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
-  if char_eq_0(1, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning) < 0
-    fprintf('Warning from f_ris0_stf: no f detected for which r = 0\n');
+  if charEq0(1, pars_charEq0{:}) < 0
+    fprintf(['Warning from f_ris0_stf: no f detected for which r = 0 and thinning = ', num2str(thinning), '\n']);
     info = 0; f = f_0; return
   end
   norm = 1; i = 0; % initialize norm and counter
@@ -65,7 +66,7 @@ function [f, info] = f_ris0_stf (par)
   while i < 18 && norm^2 > 1e-16 && f_1 - f_0 > 1e-5 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    norm = char_eq_0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning);
+    norm = charEq0(f, pars_charEq0{:});
     %[i f_0 f f_1 norm] % show progress
     if norm > 0
       f_1 = f;
@@ -86,7 +87,7 @@ function [f, info] = f_ris0_stf (par)
   
 end
 
-function val = char_eq_0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning)
+function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning)
   % val = char eq in f, for r = 0
   [u_E0, l_b] = get_ue0_foetus([g k v_Hb], f); % -, scaled cost for foetus
   [tau_p, tau_b, l_p, l_b, info] = get_tp_foetus([g, k, 0, v_Hb, v_Hp], f, l_b); 

@@ -53,14 +53,14 @@ function [f, info] = f_ris0_abj (par)
   f_0 = 1e-5 + get_ep_min_j([g k l_T v_Hb v_Hj v_Hp]); % -, scaled functional response at which puberty can just be reached
   pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning};
   if charEq0(f_0, pars_charEq0{:}) > 0
-    fprintf('Warning from f_ris0_abj: f for which r = 0 is very close to that for R_i = 0\n');
+    fprintf(['Warning from f_ris0_abj: f for which r = 0 is very close to that for R_i = 0 and thinning = ', num2str(thinning), '\n']);
     f = f_0; info = 1; return
   end
   
   % set upper boundary of f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
   if charEq0(f_1, pars_charEq0{:}) < 0
-    fprintf('Warning from f_ris0_abj: no f detected for which r = 0\n');
+    fprintf(['Warning from f_ris0_abj: no f detected for which r = 0, thinning = ', num2str(thinning), '\n']);
     info = 0; f = f_0; return
   end
   
@@ -102,14 +102,16 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, 
   L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; % unscale
   S_b = exp( - a_b * h_B0b); % - , survival prob at birth
   r_j = k_M * rho_j; r_B = k_M * rho_B; % 1/d, von Bert growth rate
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9); 
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
   pars_qhSC = {f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning};
   [t, qhSC] = ode45(@dget_qhSC, [0; 1e8], [0, 0, S_b, 0], options, pars_qhSC{:});
-  i = ~isnan(qhSC(:,3)); qhSC = qhSC(i,:); t = t(i);
+  qhSC = qhSC(~isnan(qhSC(:,3)),:); qhSC = qhSC(qhSC(:,3)>0,:); 
   val = qhSC(end, 4) - 1;
 end
     
 function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+
+  % although option NonNegative is used, variables can become negative
   q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
   h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
   S   = max(0,qhSC(3)); % -, survival prob
@@ -143,8 +145,8 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j,
 end
 
 % event dead_for_sure
-function [value, isterminal, direction] = dead_for_sure(t, qhSC, varargin)
-  value = qhSC(3) - 1e-6;  % trigger 
-  isterminal = 1;          % terminate after the first event
+function [value, isterminal, direction] = dead_for_sure(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+  value = [t - t_j; t - t_p; qhSC(3) - 1e-6];  % trigger 
+  isterminal = [0; 0; 1];  % terminate at dead_for_sure
   direction = [];          % get all the zeros
 end

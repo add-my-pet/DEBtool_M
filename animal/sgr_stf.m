@@ -64,7 +64,7 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -92,7 +92,6 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
   aT_b = tau_b/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at birth, puberty, time since birth at puberty
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
   L_b = L_m * l_b; L_p = L_m * l_p;  % cm, struc length at birth, puberty
-  l_i = f - l_T; L_i = L_m * l_i;    % -, cm, ultimate (scaled) struc length
   
   % ceiling for r
   R_i = kap_R * (1 - kap) * kT_M * (f^3 - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
@@ -101,10 +100,14 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
 
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning) > 0
+  pars_charEq = {S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
+  if charEq(0, pars_charEq{:}) > 0
+    fprintf(['Warning from sgr_stf: no root for the characteristic equation, thinning = ', num2str(thinnig), '\n']);
     r = NaN; info = 0; % no positive r exists
+  elseif charEq(r_max, pars_charEq{:}) < 0
+    [r, info] = nmfzero(@charEq, 0, [], pars_charEq{:});
   else
-    [r, info] = fzero(@charEq, [0 r_max], [], S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
+    [r, ~, info] = fzero(@charEq, [0 r_max], [], pars_charEq{:});
   end
  
 end
@@ -146,7 +149,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
 end
 
 function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning);
   value = 1 - qhSC(end,4);
 end

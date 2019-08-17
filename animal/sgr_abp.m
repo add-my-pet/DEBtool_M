@@ -64,7 +64,7 @@ function [r, info] = sgr_abp (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -90,7 +90,8 @@ function [r, info] = sgr_abp (par, T_pop, f_pop)
   pars_qhSC = {f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_p, tT_p, rT_j, v_Hp, s_G, hT_a, h_Bbp, h_Bpi, thinning};
       
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, pars_qhSC{:}) > 0
+  if charEq(0, S_b, pars_qhSC{:}) > 0 
+    fprintf(['Warning from sgr_abp: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
   else
     [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
@@ -107,9 +108,9 @@ end
 % reproduction is continuous
 function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_p, t_p, r_j, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)
   % t: time since birth
-  q   = max(0, qhSC(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSC(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSC(3)); % -, survival prob
+  q   = qhSC(1); % 1/d^2, aging acceleration
+  h_A = qhSC(2); % 1/d^2, hazard rate due to aging
+  S   = qhSC(3); % -, survival prob
   
   if t < t_p
     h_B = h_Bbp;
@@ -142,7 +143,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b,
 end
 
 function value = charEq (sgr, S_b, varargin)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, varargin{:});
   value = 1 - qhSC(end,4);
 end

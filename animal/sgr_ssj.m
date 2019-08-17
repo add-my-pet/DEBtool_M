@@ -71,7 +71,7 @@ function [r, info] = sgr_ssj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -154,7 +154,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0,
 end
 
 function value = charEq (r, S_b, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_p, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
-  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e10], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_p, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning);
   value = 1 - qhSC(end,4);
 end

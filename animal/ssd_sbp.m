@@ -111,7 +111,7 @@ function stat = ssd_sbp(stat, code, par, T_pop, f_pop, sgr)
   L_b = L_m * l_b; L_p = L_m * l_p; % cm, structural length at birth, puberty
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-8, 'RelTol', 1e-8); 
+  options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
   qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, sgr, f, L_b, L_p, L_m, L_T, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning);
   EL0_i = qhSL(end,4); 

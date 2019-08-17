@@ -67,7 +67,7 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -87,15 +87,14 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
   if info == 0
     r = NaN; return
   end
-  [tau_p, tau_x, tau_b, l_p, l_x, l_b, info] = get_tx([g k l_T v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
+  [tau_p, tau_x, tau_b, l_p, l_x, l_b, info] = get_tx([g k 0 v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
   if info == 0
     r = NaN;
     return
   end
   aT_b = tau_b/ kT_M; tT_x = (tau_x - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M;  % d, age at birth, time since birth at weaning, puberty
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
-  L_b = L_m * l_b; L_x = L_m * l_x; L_p = L_m * l_p;  % cm, struc length at birth, weaning, puberty
-  l_i = f; L_i = L_m * l_i;    % -, cm, ultimate (scaled) struc length
+  L_b = L_m * l_b; L_p = L_m * l_p;  % cm, struc length at birth, puberty
   
   % ceiling for r
   R_i = kap_R * (1 - kap) * kT_M * (f^3 - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
@@ -105,8 +104,14 @@ function [r, info] = sgr_stx (par, T_pop, f_pop)
 
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
   pars_charEq = {f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_x, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning};
-  if charEq(0, S_b, pars_charEq{:}) > 0
+  if charEq(0, S_b, pars_charEq{:}) > 0 
+    fprintf(['Warning from sgr_stx: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
+  elseif charEq(r_max, S_b, pars_charEq{:}) < 0
+    [r, info] = nmfzero(@charEq, 0, [], S_b, pars_charEq{:});
+    if info == 0 && charEq(2*r_max, S_b, pars_charEq{:}) > 0
+      [r, ~, info] = fzero(@charEq, [0 2*r_max], [], S_b, pars_charEq{:});
+    end
   else
     [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, pars_charEq{:});
   end
@@ -132,6 +137,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b,
   r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q;
   dh_A = q - r * h_A;
+
   if t < t_x
     h_B = h_Bbx;
   elseif t < t_p
@@ -152,7 +158,7 @@ end
 
 % characteristic equation
 function value = charEq (r, S_b, varargin)
-  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, varargin{:});
   qhSC = qhSC(~isnan(qhSC(:,4)),:); value = 1 - qhSC(end,4);
 end

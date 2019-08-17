@@ -94,7 +94,7 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   % life span as imago
   pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
   tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
-  tT_im = tau_m / kT_M/ 2;              % d, half mean life span as imago
+  tT_im = tau_m / kT_M;                 % d, mean life span as imago
   
   % reproduction rate of imago
   E_Rj = L_j^3 * v_Rj * E_G * (1 - kap)/ kap; % J, threshold reprod buffer  at pupation
@@ -136,7 +136,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m,
     L = L_e;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
     dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
   end
 

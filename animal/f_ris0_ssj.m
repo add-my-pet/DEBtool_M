@@ -53,14 +53,14 @@ function [f, info] = f_ris0_ssj (par)
   f_0 = 1e-5 + get_ep_min([k; l_T; v_Hp]); % -, scaled functional response at which puberty can just be reached
   pars_charEq0 = {L_m, kap, kap_R, k_M, k_E, v, g, k, t_sj, v_Hb, v_Hs, v_Hp, s_G, h_a, h_B0b, h_Bbs, h_Bsp, h_Bpi, thinning};
   if charEq0(f_0, pars_charEq0{:}) > 0
-    fprintf('Warning from f_ris0_ssj: f for which r = 0 is very close to that for R_i = 0\n');
+    fprintf(['Warning from f_ris0_ssj: f for which r = 0 is very close to that for R_i = 0 and thinning = ', num2str(thinning), '\n']);
     f = f_0; info = 1; return
   end
   
   % initialize range for f
   f_1 = 1;         % upper boundary (lower boundary is f_0)
   if charEq0(1, pars_charEq0{:}) < 0
-    fprintf('Warning from f_ris0_ssj: no f detected for which r = 0\n');
+    fprintf(['Warning from f_ris0_ssj: no f detected for which r = 0 and thinning = ', num2str(thinning), '\n']);
     info = 0; f = f_0; return
   end
   norm = 1; i = 0; % initialize norm and counter

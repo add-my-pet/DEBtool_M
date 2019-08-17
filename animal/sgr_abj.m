@@ -67,7 +67,7 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -84,12 +84,12 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   
   % supporting statistics
   u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-  [tau_j tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hj v_Hp], f); % -, scaled ages and lengths
+  [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hj v_Hp], f); % -, scaled ages and lengths
   aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at birth, time since birth at metam, puberty
-  L_b = L_m * l_b; L_j = L_m * l_j; L_p = L_m * l_p;  L_i = L_m * l_i; s_M = l_j/ l_b; % cm, struc length at birth, metam, puberty, ultimate
+  L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; s_M = l_j/ l_b; % cm, struc length at birth, metam, puberty, ultimate
   S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
   rT_j = kT_M * rho_j; rT_B = kT_M * rho_B; % 1/d, expo, von Bert growth rate
-  pars_qhSC = {f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_j, L_p, L_i, tT_j, tT_p, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbj, h_Bjp, h_Bpi, thinning};
+  pars_qhSC = {f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_j, L_i, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbj, h_Bjp, h_Bpi, thinning};
   
   % ceiling for r
   R_i = kap_R * (1 - kap) * kT_M * (f/ (f + g) * l_i^2 * (g * s_M + l_i) - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
@@ -98,30 +98,33 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
     
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, pars_qhSC{:}) > 0
+  if charEq(0, S_b, tT_j, tT_p, pars_qhSC{:}) > 0 || charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) < 0
+    fprintf(['Warning from sgr_abj: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
   else 
-    if charEq(r_max, S_b, pars_qhSC{:}) > 0.99
-      [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
+    if charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) > 0.95
+      [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
     else
-      [r, info] = nmfzero(@charEq, r_max, [], S_b, pars_qhSC{:});
+      [r, info] = nmfzero(@charEq, r_max, [], S_b, tT_j, tT_p, pars_qhSC{:});
     end
   end
 end
 
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSC, sgr, varargin)
-  value = qhSC(3) - 1e-6;  % trigger 
-  isterminal = 1;          % terminate after the first event
+function [value,isterminal,direction] = dead_for_sure(t, qhSC, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+  value = [t - t_j; t - t_p; qhSC(3) - 1e-6];  % trigger 
+  isterminal = [0; 0; 1];  % terminate at dead_for_sure
   direction  = [];         % get all the zeros
 end
 
 % reproduction is continuous
-function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_p, L_i, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+function dqhSC = dget_qhSC(t, qhSC, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
   % t: time since birth
-  q   = max(0, qhSC(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSC(2)); % 1/d^2, hazard rate due to aging
-  S   = max(0, qhSC(3)); % -, survival prob
+
+  % although option NonNegative is used, variables can become negative
+  q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
+  h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
+  S   = max(0,qhSC(3)); % -, survival prob
   
   if t < t_j
     h_B = h_Bbj;
@@ -148,11 +151,16 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b,
   R = (t > t_p) * kap_R * k_M * (f/ (f + g) * l^2 * (g * s_M + l) - k * v_Hp) * (1 - kap)/ u_E0;
   dCharEq = S * R * exp(- sgr * t);
   
+  if t > t_p
+    x=1;
+  end
+
   dqhSC = [dq; dh_A; dS; dCharEq]; 
 end
 
-function value = charEq (sgr, S_b, varargin)
-  options = odeset('Events', @dead_for_sure, 'AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, varargin{:});
+function value = charEq (sgr, S_b, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
+  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
+  qhSC = qhSC(qhSC(:,3)>0,:);  % the case of Pteria_sterna shows that S can become negative
   value = 1 - qhSC(end,4);
 end

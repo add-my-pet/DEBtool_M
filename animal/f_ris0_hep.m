@@ -142,7 +142,7 @@ function dqhSC = dget_qhSC(t, qhSC, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m,
     L = L_j;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
     dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
   end
 
