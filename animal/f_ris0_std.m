@@ -32,7 +32,7 @@ function [f, info] = f_ris0_std (par)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
-  if strcmp(reprodCode,'O')
+  if strcmp(reprodCode,'O') && strcmp(genderCode,'D')
     kap_R = kap_R/2; % take cost of male production into account
   end
 
@@ -100,6 +100,9 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hp, s_G, h_a, h
   r_B = k_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate
   options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0; 1e10], [0, 0, S_b, 0], options, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_p, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning);
+  if qhSC(end,3) > 2e-6
+    [t, qhSC] = ode45(@dget_qhSC, [0; 1e6], [0, 0, S_b, 0], [], f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_m, t_p, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning);
+  end
   val = qhSC(end, 4) - 1;
 end
     

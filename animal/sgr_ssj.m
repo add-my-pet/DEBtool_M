@@ -71,7 +71,7 @@ function [r, info] = sgr_ssj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
+  if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
     kap_R = kap_R/2; % take cost of male production into account
   end
   

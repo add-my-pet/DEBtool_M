@@ -69,7 +69,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % instantaneous conversion from larval structure to pupal reserve
   u_Ej = l_j^3 * (kap * kap_V + f/ g);        % -, scaled reserve at pupation
 
-  options = odeset('Events', @emergence);
+  options = odeset('Events',@emergence, 'NonNegative',[1; 1; 1]);
   [t luEvH tau_e luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; u_Ej; 0], options, g, k, v_He);
   tau_e = tau_j + tau_e; % -, scaled age at emergence 
   l_e = luEvH(end,1);    % -, scaled length at emergence

@@ -67,7 +67,7 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   if ~exist('h_Bei', 'var')
     h_Bei = 0;
   end
-  if ~exist('reprodCode', 'var') || ~isempty(strfind(reprodCode, 'O'))
+  if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
     kap_R = kap_R/2; % take cost of male production into account
   end
   
