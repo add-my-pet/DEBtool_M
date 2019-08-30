@@ -67,7 +67,7 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
+  if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -98,9 +98,11 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
     
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, tT_j, tT_p, pars_qhSC{:}) > 0 || charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) < 0
+  if charEq(0, S_b, tT_j, tT_p, pars_qhSC{:}) > 0 
     fprintf(['Warning from sgr_abj: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
+  elseif charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) < 0
+      [r, ~, info] = fzero(@charEq, [0 2*r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
   else 
     if charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) > 0.95
       [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
@@ -112,8 +114,8 @@ end
 
 % event dead_for_sure
 function [value,isterminal,direction] = dead_for_sure(t, qhSC, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
-  value = [t - t_j; t - t_p; qhSC(3) - 1e-6];  % trigger 
-  isterminal = [0; 0; 1];  % terminate at dead_for_sure
+  value = [t - t_j, t - t_p, qhSC(3) - 1e-6];  % trigger 
+  isterminal = [0, 0, 1];  % terminate at dead_for_sure
   direction  = [];         % get all the zeros
 end
 
@@ -160,7 +162,11 @@ end
 
 function value = charEq (sgr, S_b, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
-  qhSC = qhSC(qhSC(:,3)>0,:);  % the case of Pteria_sterna shows that S can become negative
+  [t, qhSC, te, qhSCe, ie] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
+  qhSC = qhSC(cumsum(qhSC(:,3)<0)==0,:);  % the case of Pteria_sterna shows that S can become negative
+  if qhSC(end,3) > 2e-6
+    [t, qhSC] = ode45(@dget_qhSC, [0 1e6], [0 0 S_b 0], [], sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning);
+    qhSC = qhSC(cumsum(qhSC(:,3)<0)==0,:);  % the case of Pteria_sterna shows that S can become negative
+  end
   value = 1 - qhSC(end,4);
 end

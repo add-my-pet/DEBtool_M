@@ -68,7 +68,7 @@ function [r, info] = sgr_std (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if ~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')
+  if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
     kap_R = kap_R/2; % take cost of male production into account
   end
   
@@ -89,7 +89,7 @@ function [r, info] = sgr_std (par, T_pop, f_pop)
     r = NaN; return
   end
   [tau_p, tau_b, l_p, l_b, info] = get_tp([g k l_T v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
-  if l_p > f || info == 0 || tau_p < 0
+  if info == 0 
     r = NaN; info = 0;
     fprintf('Warning from sgr_std: puberty is not reached\n');
     return
@@ -117,7 +117,7 @@ function [r, info] = sgr_std (par, T_pop, f_pop)
   else
     [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, pars_charEq{:});
   end
- 
+   
 end
     
 % event dead_for_sure
@@ -160,6 +160,9 @@ end
 function value = charEq (r, S_b, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning);
+  if qhSC(end,3) > 2e-6
+    [t, qhSC] = ode45(@dget_qhSC, [0 1e6], [0 0 S_b 0], [], r, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning);
+  end
   value = 1 - qhSC(end,4);
 end
 

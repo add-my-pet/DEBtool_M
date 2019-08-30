@@ -28,7 +28,7 @@ function [f, info] = f_ris0_abj (par)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
-  if strcmp(reprodCode,'O')
+  if strcmp(reprodCode,'O') && strcmp(genderCode,'D')
     kap_R = kap_R/2; % take cost of male production into account
   end
 
@@ -106,6 +106,10 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, 
   pars_qhSC = {f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, t_j, t_p, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning};
   [t, qhSC] = ode45(@dget_qhSC, [0; 1e8], [0, 0, S_b, 0], options, pars_qhSC{:});
   qhSC = qhSC(~isnan(qhSC(:,3)),:); qhSC = qhSC(qhSC(:,3)>0,:); 
+  if qhSC(end,3) > 2e-6
+    [t, qhSC] = ode45(@dget_qhSC, [0; 1e6], [0, 0, S_b, 0], [], pars_qhSC{:});
+    qhSC = qhSC(cumsum(qhSC(:,3)<0)==0,:);  % the case of Pteria_sterna shows that S can become negative
+  end
   val = qhSC(end, 4) - 1;
 end
     

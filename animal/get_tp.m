@@ -81,7 +81,7 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 = l_b 
       [tau_b, lb, info] = get_tb([g, k, vHb], f);      
-      options = odeset('Events', @event_puberty); s_M = 1;
+      options = odeset('Events',@event_puberty, 'NonNegative',ones(2,1), 'AbsTol',1e-9, 'RelTol',1e-9); s_M = 1;
       [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
       tau_p = tau_b + tp; lp = vHlp(2);
 
