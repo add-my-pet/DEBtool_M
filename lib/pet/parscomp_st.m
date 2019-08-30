@@ -5,7 +5,8 @@
 function cPar = parscomp_st(p)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
-  % modified 2015/08/03 by Starrlight, 2017/11/16, 2018/08/22 by Bas Kooijman
+  % modified 2015/08/03 by Starrlight, 2017/11/16, 2018/08/22 by Bas Kooijman, 
+  % mod 2019/08/30 by Nina Marn (note on {p_Am})
   
   %% Syntax
   % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
@@ -61,7 +62,7 @@ function cPar = parscomp_st(p)
   % * s_H: -, maturity ratio E_Hb/ E_Hp
 
 if isfield(p,'p_Am') == 0
-  p_Am = p.z * p.p_M/ p.kap;        % J/d.cm^2, {p_Am} spec assimilation flux
+  p_Am = p.z * p.p_M/ p.kap;   % J/d.cm^2, {p_Am} spec assimilation flux; the expression for p_Am is multiplied also by L_m^ref = 1 cm, for units to match. 
 else
   p_Am = p.p_Am;
 end
