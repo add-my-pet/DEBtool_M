@@ -121,8 +121,8 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   
   % reproduction rate of imago
   E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reprod buffer at pupation
-  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
-  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
+  %E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_Rj/ E_0;               % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
@@ -190,8 +190,10 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m,
     L = L_e;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
-    dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    %dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dq = (q * s_G + h_a) * f * v * s_M/ L;
+    %dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    dh_A = q; % 1/d^2, change in hazard due to aging
   end
 
   h = h_A + h_B + h_X; 

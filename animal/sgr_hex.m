@@ -84,8 +84,13 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   
   % supporting statistics
   pars_tj = [g k v_Hb v_He s_j kap kap_V];
-  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);  
-  u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
+  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
+  if exist('V_Hx','var')
+    pars_UE0 = [V_Hx; g; k_J; k_M; v]; % compose parameter vector
+    E_0 = p_Am * initial_scaled_reserve(f, pars_UE0); % J, initial energy
+  else
+    u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
+  end
   aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_e = (tau_e - tau_b)/ kT_M; % unscale
   L_b = L_m * l_b; L_j = L_m * l_j;  L_e = L_m * l_e;  % unscale
   S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
@@ -98,8 +103,8 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   
   % reproduction rate of imago
   E_Rj = L_j^3 * v_Rj * E_G * (1 - kap)/ kap; % J, threshold reprod buffer  at pupation
-  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
-  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
+  %E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_Rj/ E_0;               % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
@@ -109,7 +114,7 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   if charEq(0, S_b, pars_qhSC{:}) > 0
     r = NaN; info = 0; % no positive r exists
   else
-    [r, info] = nmfzero(@charEq, .01, [], S_b, pars_qhSC{:});
+    [r, info] = nmfzero(@charEq, 0, [], S_b, pars_qhSC{:});
   end
 end
 
@@ -136,8 +141,10 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m,
     L = L_e;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
-    dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    %dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dq = (q * s_G + h_a) * f * v * s_M/ L;
+    %dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    dh_A = q; % 1/d^2, change in hazard due to aging
   end
 
   h = h_A + h_B + h_X; 

@@ -160,7 +160,8 @@ end
 function value = charEq (r, S_b, varargin)
   options = odeset('Events', @dead_for_sure, 'NonNegative', ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [t, qhSC] = ode45(@dget_qhSC, [0 1e8], [0 0 S_b 0], options, r, varargin{:});
-  qhSC = qhSC(~isnan(qhSC(:,4)),:); value = 1 - qhSC(end,4);
+  qhSC = qhSC(~isnan(qhSC(:,4)),:); 
+  value = 1 - qhSC(end,4);
 end
 
 

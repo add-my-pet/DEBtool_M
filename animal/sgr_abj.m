@@ -153,10 +153,6 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, 
   R = (t > t_p) * kap_R * k_M * (f/ (f + g) * l^2 * (g * s_M + l) - k * v_Hp) * (1 - kap)/ u_E0;
   dCharEq = S * R * exp(- sgr * t);
   
-  if t > t_p
-    x=1;
-  end
-
   dqhSC = [dq; dh_A; dS; dCharEq]; 
 end
 

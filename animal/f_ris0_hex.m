@@ -49,6 +49,10 @@ function [f, info] = f_ris0_hex (par)
     h_Bei = 0;
   end
   
+  if exist('v_Hx','var')
+    v_Hb = v_Hx; % copy start of absorbtion by embryo to condition at birth (e.g. as in Venturia canescens)
+  end
+  
   % set lower boundary of f
   f_0 = 0.1; i = 0;
   pars_charEq0 = {L_m, kap, kap_R, kap_V, k_M, v, g, k, E_G, E_m, v_Hb, v_He, s_j, s_G, h_a, h_B0b, h_Bbj, h_Bje, h_Bei, thinning};
@@ -59,9 +63,9 @@ function [f, info] = f_ris0_hex (par)
     fprintf('Warning from f_ris0_hex: no lower boundary for f found for which r = 0\n');
     info = 0; f = NaN; return
   end
-
   
   % set upper boundary of f if necessary
+  pars_charEq0 = {L_m, kap, kap_R, kap_V, k_M, v, g, k, E_G, E_m, v_Hb, v_He, s_j, s_G, h_a, h_B0b, h_Bbj, h_Bje, h_Bei, thinning};
   if ~exist('f_1','var')
     f_1 = 1;         % upper boundary (lower boundary is f_0)
     if charEq0(f_1, pars_charEq0{:}) < 0
@@ -117,8 +121,8 @@ function val = charEq0(f, L_m, kap, kap_R, kap_V, k_M, v, g, k, E_G, E_m, v_Hb, 
   
   % reproduction rate of imago
   E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J,reprod buffer at pupation
-  E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
-  N = kap_R * E_R/ E_0;               % #, number of eggs at emergence
+  %E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
+  N = kap_R * E_Rj/ E_0;               % #, number of eggs at emergence
   R = N/ t_im;                        % #/d, reproduction rate
   t_N0 = t_e + t_im;                  % d, time since birth at which all eggs are produced
 
@@ -149,8 +153,10 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, R, L_b, L_j, L_
     L = L_e;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
-    dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    %dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dq = (q * s_G  + h_a) * f * v * s_M/ L;
+    %dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
+    dh_A = q; % 1/d^2, change in hazard due to aging
   end
 
   h = h_A + h_B + h_X; 
