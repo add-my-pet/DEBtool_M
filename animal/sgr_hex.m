@@ -102,9 +102,9 @@ function [r, info] = sgr_hex (par, T_pop, f_pop)
   tT_im = tau_m / kT_M;                 % d, mean life span as imago
   
   % reproduction rate of imago
-  E_Rj = L_j^3 * v_Rj * E_G * (1 - kap)/ kap; % J, threshold reprod buffer  at pupation
-  %E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
-  N = kap_R * E_Rj/ E_0;               % #, number of eggs at emergence
+  E_R_ref = (1 - kap) * E_m * (g + l_b)/ (1 - l_b);  % J/cm^3, reference value for [E_R]
+  E_Rj = E_R_ref * s_j * L_j^3;       % J, reproduction buffer
+  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
