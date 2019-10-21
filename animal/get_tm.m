@@ -2,11 +2,11 @@
 % Gets scaled mean age at death
 
 %%
-function [t_m S_b S_p info] = get_tm(p, F, l_b, l_p)
+function [t_m, S_b, S_p, info] = get_tm(p, F, l_b, l_p)
   % created 2009/02/21 by Bas Kooijman; modified 2013/08/21, 2015/01/18
   
   %% Syntax
-  % [t_m S_b S_p info] = <../get_tm.m *get_tm*>(p, F, l_b, l_p)
+  % [t_m, S_b, S_p, info] = <../get_tm.m *get_tm*>(p, F, l_b, l_p)
   
   %% Description
   % Obtains scaled mean age at death by integration of cumulative survival prob over length. 

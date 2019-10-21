@@ -711,10 +711,27 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   stat.del_Wb  = del_Wb; units.del_Wb = '-'; label.del_Wb   = 'birth weight as fraction of maximum weight'; temp.del_Wb = NaN; fresp.del_Wb = f;        
   stat.del_Wp  = del_Wp; units.del_Wp = '-'; label.del_Wp   = 'puberty weight as fraction of maximum weight'; temp.del_Wp = NaN; fresp.del_Wp = f;
   del_V    = 1/(1 + f * w); % -, fraction of max weight that is structure
-  stat.del_V  = del_V; units.del_V = '-';   label.del_V    = 'fraction of max weight that is structure'; temp.del_V = NaN; fresp.del_V = f;          
-  h_W = TC * (h_a * f * v * s_M/ 6/ L_i)^(1/3); h_G = TC * s_G * f * v * s_M * L_i^2/ L_m^3;
-  pars_tm  = [g; k; l_T; v_Hb; v_Hp; h_a/ (p_M/ E_G)^2; s_G];
-  [t_m, S_b, S_p] = get_tm_s(pars_tm, f, L_b/ L_i, L_p/ L_i); a_m = t_m/ k_M/ TC;
+  stat.del_V  = del_V; units.del_V = '-';   label.del_V    = 'fraction of max weight that is structure'; temp.del_V = NaN; fresp.del_V = f;     
+  
+  % aging
+  h_W = TC * (h_a * f * v * s_M/ 6/ L_i)^(1/3); h_G = TC * s_G * f * v * s_M * L_i^2/ L_m^3; h_a = h_a/ k_M^2; % overwrite of h_a!!!
+  switch model
+    case {'std','stf','sbp','abp'}
+      pars_tm  = [g; k; v_Hb; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(2); 
+    case 'stx'
+      pars_tm  = [g; k; v_Hb; v_Hx; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3); 
+    case 'ssj'
+      pars_tm = [g; k; v_Hb; v_Hs; v_Hp; t_sj * k_M; k_E/ k_M; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3);      
+    case 'abj'
+      pars_tm = [g; k; v_Hb; v_Hj; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3);      
+    case 'asj'
+      pars_tm = [g; k; v_Hb; v_Hs; v_Hj; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(4);      
+    case 'hep'
+      pars_tm = [g; k; v_Hb; v_Hp; v_Rj; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(2);      
+    case 'hex'
+      pars_tm = [g; k; v_Hb; v_He; s_j; kap; kap_V; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(1);      
+  end
+  a_m = tau_m/ k_M/ TC;
   stat.h_W = h_W;      units.h_W = '1/d';   label.h_W = 'Weibull ageing rate'; temp.h_W = T; fresp.h_W = f;
   stat.h_G = h_G;      units.h_G = '1/d';   label.h_G = 'Gompertz aging rate'; temp.h_G = T; fresp.h_G = f;
   stat.a_m = a_m;      units.a_m = 'd';     label.a_m = 'life span'; temp.a_m = T; fresp.a_m = f;

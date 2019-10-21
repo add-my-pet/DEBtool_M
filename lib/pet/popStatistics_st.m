@@ -1,6 +1,6 @@
 %% popStatistics_st
 % Computes implied population properties of DEB models
-%%
+
 function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F) 
 % created 2019/07/08 by Bas Kooijman
 

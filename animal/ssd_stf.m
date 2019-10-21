@@ -104,15 +104,15 @@ function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
 
   % get t_p
-  [tau_p, tau_b, l_p, l_b, info] = get_tp_foetus([g k l_T v_Hb v_Hp], f);
+  [tau_p, tau_b, l_p, l_b] = get_tp_foetus([g k l_T v_Hb v_Hp], f);
   tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
   aT_b = tau_b/ kT_M; % d, age at birth
-  S_b = exp(-aT_b * h_B0b); % -, survivor prob at birth
   L_b = L_m * l_b; % cm, structural length at birth
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
-  qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
+  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb_foetus([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
+  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, L_b, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); 

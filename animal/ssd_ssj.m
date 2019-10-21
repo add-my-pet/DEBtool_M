@@ -108,20 +108,15 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
   
   % supporting statistics
-  [u_E0, l_b, info] = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-  if info == 0
-    r = NaN; return
-  end
   pars_ts = [g k 0 v_Hb v_Hs]; [tau_s, tau_b, l_s, l_b] = get_tp(pars_ts, 1);
   pars_tp = [g k 0 v_Hs v_Hp]; [tau_p, tau_ss, l_p, l_ss] = get_tp(pars_tp, 1);
   aT_b = tau_b/ kT_M; tT_s = (tau_p - tau_s)/ kT_M; tT_j = tT_s + t_sj; tT_p = tT_s + (tau_p - tau_ss)/ kT_M; % d, unscale times
   L_b = L_m * l_b; L_s = L_m * l_s; L_j = L_s * exp(- k_E * t_sj); l_p = L_m * l_p;                           % cm, struc lengths
-  S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
-
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
-  qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
+  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
+  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, kT_E, vT, g, k, u_E0, L_b, L_s, L_j, L_m, tT_s, tT_j, tT_p, rT_B, v_Hp, s_G, hT_a, h_Bbs, h_Bsp, h_Bpi, thinning};
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); 

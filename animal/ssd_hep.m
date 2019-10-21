@@ -103,7 +103,6 @@ function stat = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
 
   % supporting statistics
-  u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
   v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
   [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep(pars_tj, f); 
   if isempty(tau_j)
@@ -112,26 +111,31 @@ function stat = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   end
   aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % unscale
   L_b = L_m * l_b; L_p = L_m * l_p; L_j = L_m * l_j;   L_i = L_m * l_i;  % unscale
-  S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
   rT_j = kT_M * rho_j; rT_B = kT_M * rho_B; % 1/d, growth rates
   
   % life span as imago
-  pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
-  tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
-  tT_im = tau_m/ kT_M;                  % d, mean life span as imago
+  pars_tm = [g; k; v_Hb; v_Hp; v_Rj; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+  tau_m = get_tm_mod('hep',pars_tm, f);    % -, scaled mean life span at T_ref
+  tT_im = (tau_m - tau_p)/ kT_M;           % d, mean life span as imago
 
   % reproduction rate of imago
+  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
+  E_0 = u_E0 * g * E_m * L_m^3;       % J, energy cost of egg
   N = kap_R * E_Rj * L_j^3/ E_0;      % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_j + tT_im;               % d, time since birth at which all eggs are produced
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events', @puberty, 'AbsTol', 1e-8, 'RelTol', 1e-8); 
-  qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
+  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, kT_M, vT, g, k, R, L_b, L_p, L_j, L_i, L_m, tT_p, tT_j, tT_N0, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbp, h_Bpi, thinning};
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, tT_N0], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); 
-  theta_jn = qhSL_a(1,4)/ EL0_i; S_p = qhSL_a(1,3)/ EL0_i; % proper detection of puberty
+  if isempty(qhSL_a)
+    theta_jn = qhSL(end,4)/ EL0_i; S_p = qhSL(end,3)/ EL0_i; % not proper detection of puberty
+  else
+    theta_jn = qhSL_a(1,4)/ EL0_i; S_p = qhSL_a(1,3)/ EL0_i; % proper detection of puberty
+  end
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
   EL = qhSL(end,5)/ EL0_i; EL2 = qhSL(end,6)/ EL0_i; EL3 = qhSL(end,7)/ EL0_i; % mean L^1,2,3 for post-natals

@@ -20,7 +20,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %
 % Input:
 %
-% * focusSpecies: character-string with name of entry of special interest or cellstring with structures: {metaData, metaPar, par}; might also be empty 
+% * focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty 
 % * comparisonSpecies: cell string with entry names, might be empty
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species

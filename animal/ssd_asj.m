@@ -109,7 +109,6 @@ function stat = ssd_asj(stat, code, par, T_pop, f_pop, sgr)
   kT_M = k_M * TC; kT_J = k_J * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
 
   % supporting statistics
-  u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
   [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_ts([g, k, 0, v_Hb, v_Hs, v_Hj, v_Hp], f); 
   if isempty(tau_s)
     stat = setNaN(stat, fldf, fldt, fldg); % set all statistics to NaN
@@ -117,12 +116,12 @@ function stat = ssd_asj(stat, code, par, T_pop, f_pop, sgr)
   end
   aT_b = tau_b/ kT_M; tT_s = (tau_s - tau_b)/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at b, time since birth at s, j, p
   L_b = L_m * l_b; L_s = L_m * l_s; L_j = L_m * l_j; L_i = L_m * l_i; L_p = L_m * l_p;  s_M = l_j/ l_s; % cm, struc length at birth, puberty, ultimate
-  S_b = exp(-aT_b * h_B0b); % -, survivor prob at birth
   rT_j = kT_M * rho_j; rT_B = kT_M * rho_B; % 1/d, expo, von Bert growth rate  
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
-  qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
+  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
+  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_s, L_j, L_i, L_m, tT_s, tT_j, tT_p, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbs, h_Bsj, h_Bjp, h_Bpi, thinning};
   [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); 

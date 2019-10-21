@@ -1,5 +1,5 @@
 %% get_tm_s
-% Obtains scaled mean age at death fro short growth periods
+% Obtains scaled mean age at death for short growth periods
 
 %%
 function [tm, Sb, Sp, info] = get_tm_s(p, f, lb, lp)
@@ -30,6 +30,7 @@ function [tm, Sb, Sp, info] = get_tm_s(p, f, lb, lp)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
+  % Obsolete function; please use get_tm_mod.
   % Theory is given in comments on DEB3 Section 6.1.1. 
   % See <get_tm.html *get_tm*> for the general case of long growth period relative to life span
 

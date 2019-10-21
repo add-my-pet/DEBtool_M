@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-02"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
+      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-19"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,17 +66,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html in specified directory</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (focusSpecies, T, f, destinationFolder)</p><h2 id="4">Description</h2><p>Writes report_my_pet.html with a list of parameters and implied model properties for selected species. focusSpecies can be empty, or a single species; comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries. The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet</b></a>, <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> and <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> respectively, as part of the parameter estimation process.</p><p>Input:</p><div><ul><li>focusSpecies: character-string with name of entry of special interest or cellstring with structures: {metaData, metaPar, par}; might also be empty</li><li>comparisonSpecies: cell string with entry names, might be empty</li><li>T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)</li><li>f: optional scalar scaled functional response (default: 1); it applies to all species</li><li>destinationFolder: optional string with destination folder the output html-file (default: current folder)</li></ul></div><p>Output:</p><div><ul><li>no Malab output, but a html-file is written with report-table and opened automatically in the system browser</li></ul></div><h2 id="5">Remarks</h2><p>If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report. AmPtool has allStat.mat, and is available via GitHub. AmPtool functions <a href="../../../../../AmPtool/html/select.html"><b>select</b></a> or <a href="../../../../../AmPtool/html/clade.html"><b>clade</b></a> can be used to create a cell string of comparison species.</p><p>The difference between focus and comparison species only becomes important in the case of more than one comparison species and   color-coding is used to indicate how eccentric the focus-species is from the comparison-species. The lava color-scheme is used, from white (high) to black (low), via red and blue, to show the value of the eccentricity. This quantity is computed for each statistic and parameter and is the squared distance to the mean of the comparison species as a hyperbolically-transformed fraction   of the variance for the comparison-species. Function <a href="../../misc/html/color_lava.html"><b>color_lava</b></a> is used to convert the eccentricity to rgb-colors. If the focus species also occurs in the comparison species, it is removed from that list. So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers. If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty. If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown. In absence of a focus species, the first comparison specie serves this role.</p><p>The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from   the statictics and/or the parameters. NA means "not applicable": the parameter or statistic does not depend on temperature or food. nan means "not a number": the model for that species does not have that field.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_report_my_pet({par, metaPar, txtPar, metaData}, [], T, f, destinationFolder)</li><li>prt_report_my_pet('Daphnia_magna')</li><li>prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)</li><li>prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))</li><li>prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html in specified directory</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (focusSpecies, comparisonSpecies, T, f, destinationFolder)</p><h2 id="4">Description</h2><p>Writes report_my_pet.html with a list of parameters and implied model properties for selected species. focusSpecies can be empty, or a single species; comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries. The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet</b></a>, <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> and <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> respectively, as part of the parameter estimation process.</p><p>Input:</p><div><ul><li>focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty</li><li>comparisonSpecies: cell string with entry names, might be empty</li><li>T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)</li><li>f: optional scalar scaled functional response (default: 1); it applies to all species</li><li>destinationFolder: optional string with destination folder the output html-file (default: current folder)</li></ul></div><p>Output:</p><div><ul><li>no Malab output, but a html-file is written with report-table and opens automatically in the system browser</li></ul></div><h2 id="5">Remarks</h2><p>If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report. AmPtool has allStat.mat, and is available via GitHub. AmPtool functions <a href="../../../../../AmPtool/html/select.html"><b>select</b></a> or <a href="../../../../../AmPtool/html/clade.html"><b>clade</b></a> can be used to create a cell string of comparison species.</p><p>The difference between focus and comparison species only becomes important in the case of more than one comparison species and   color-coding is used to indicate how eccentric the focus-species is from the comparison-species. The lava color-scheme is used, from white (high) to black (low), via red and blue, to show the value of the eccentricity. This quantity is computed for each statistic and parameter and is the squared distance to the mean of the comparison species as a hyperbolically-transformed fraction   of the variance for the comparison-species. Function <a href="../../misc/html/color_lava.html"><b>color_lava</b></a> is used to convert the eccentricity to rgb-colors. If the focus species also occurs in the comparison species, it is removed from that list. So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers. If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty. If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown. In absence of a focus species, the first comparison specie serves this role.</p><p>The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from   the statictics and/or the parameters. NA means "not applicable": the parameter or statistic does not depend on temperature or food. nan means "not a number": the model for that species does not have that field.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_report_my_pet({par, metaPar, txtPar, metaData}, [], T, f, destinationFolder)</li><li>prt_report_my_pet('Daphnia_magna')</li><li>prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)</li><li>prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))</li><li>prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_report_my_pet
 % Creates report_my_pet.html in specified directory
 
 %%
 function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder)
-% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22 Bas Kooijman
+% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
 
 %% Syntax
-% <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, T, f, destinationFolder) 
+% <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder) 
 
 %% Description
 % Writes report_my_pet.html with a list of parameters and implied model properties for selected species. 
@@ -90,7 +90,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %
 % Input:
 %
-% * focusSpecies: character-string with name of entry of special interest or cellstring with structures: {metaData, metaPar, par}; might also be empty 
+% * focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty 
 % * comparisonSpecies: cell string with entry names, might be empty
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
@@ -98,8 +98,8 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %
 % Output:
 %
-% * no Malab output, but a html-file is written with report-table and opened automatically in the system browser
-
+% * no Malab output, but a html-file is written with report-table and opens automatically in the system browser
+%
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 
 % The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
@@ -132,6 +132,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
 % * prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))
 
+
 path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/'; % links of species names to AmP collection in table head
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
@@ -156,17 +157,10 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     end  
   else % multispecies; no color coding, so color = 0
     focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); % number of focus species, initiate total number of species
-    par = rmfield (par, 'free'); 
     for k = 1:n_spec
-      fldsPar = get_parfields(metaPar.model{k}, 1);
-      for i=1:length(fldsPar) % scan all par-field for model of species k
-        if length(par.(fldsPar{i})) == 1 % all species have the same parameter
-          parList.(specList{k}).(fldsPar{i}) = par.(fldsPar{i});
-        else % species have different prameters
-          park = par.(fldsPar{i}); parList.(specList{k}).(fldsPar{i}) = park(k);
-        end
-      end
+      par.(specList{k}) = rmfield (par.(specList{k}), 'free'); 
     end
+    parList = par;
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
       allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
@@ -229,7 +223,7 @@ fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics
 % comparison species
 if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
   comparisonSpecies = comparisonSpecies(~ismember(comparisonSpecies,focusSpecies)); % remove focus species from comparison species
-  specList = [specList; comparisonSpecies]; n_spec = length(specList); % list of all entries to be shown in the table
+  specList = [specList; comparisonSpecies(:)]; n_spec = length(specList); % list of all entries to be shown in the table
   for k = 2:n_spec
     % parameters
     [parList.(specList{k}), metaPark, txtPark, metaDatak] = allStat2par(specList{k});
@@ -426,6 +420,9 @@ for i = 1:length(fldsPar)
   end
 fprintf(oid, '        <TR id="%s"> <TD style="font-weight:bold">%s</TD> <TD>%s</TD>\n', fldsPar{i}, fldsPar{i}, txtPar.units.(fldsPar{i}));
   for k = 1:n_spec
+    if ~isfield(parList.(specList{k}),(fldsPar{i}))
+      parList.(specList{k}).(fldsPar{i}) = NaN; txtPar.temp.(fldsPar{i}) = 'NA';
+    end
 fprintf(oid, '          <TD>%g</TD> <TD>%s</TD>\n', parList.(specList{k}).(fldsPar{i}), txtPar.temp.(fldsPar{i}));
   end
 fprintf(oid, '          <TD align="center">%s</TD> <TD>%s</TD>\n', txtPar.fresp.(fldsPar{i}), txtPar.label.(fldsPar{i}));
@@ -490,7 +487,7 @@ fprintf(oid, '          tr = table.getElementsByTagName("tr");\n\n');
 %
 fprintf(oid, '          // Loop through all table rows, and hide those who don''t match the search query\n');
 fprintf(oid, '          for (i = 0; i < tr.length; i++) {\n');
-fprintf(oid, '          td = tr[i].getElementsByTagName("td")[2];\n');
+fprintf(oid, '          td = tr[i].getElementsByTagName("td")[1];\n');
 fprintf(oid, '          if (td) {\n');
 fprintf(oid, '            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {\n');
 fprintf(oid, '              tr[i].style.display = "";\n');

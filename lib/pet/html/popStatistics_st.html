@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-08-03"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
+      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-21"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>popStatistics_st</h1><!--introduction--><p>Computes implied population properties of DEB models</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[stat txtStat] = <a href="../popStatistics_st.m"><b>popStatistics_st</b></a>(model, par, T, f)</p><h2 id="4">Description</h2><p>Computes quantities that depend on parameters, temperature and food level at population level. Field-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional) View results with prt_my_pet_pop, which is a shell around this function. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex. If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>F:     optional scalar scaled functional response (default 1), or character string representing a fraction</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, units and labels</li></ul></div><pre>   - f: scaled function response (set by input F)
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">popStatistics_st</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">popStatistics_st</h2><p>Computes implied population properties of DEB models</p><h2 id="3">Syntax</h2><p>[stat txtStat] = <a href="../popStatistics_st.m"><b>popStatistics_st</b></a>(model, par, T, f)</p><h2 id="4">Description</h2><p>Computes quantities that depend on parameters, temperature and food level at population level. Field-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional) View results with prt_my_pet_pop, which is a shell around this function. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex. If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>F:     optional scalar scaled functional response (default 1), or character string representing a fraction</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, units and labels</li></ul></div><pre>   - f: scaled function response (set by input F)
    - T: absolute temperature (set by input)
    - TC: temperature correction factor</pre><pre>   for with and without thinning, at f_min, f and f_max
    - f:  scaled functional response
@@ -93,7 +93,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 ##### SOURCE BEGIN #####
 %% popStatistics_st
 % Computes implied population properties of DEB models
-%%
+
 function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F) 
 % created 2019/07/08 by Bas Kooijman
 

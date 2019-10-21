@@ -107,28 +107,28 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
 
   % supporting statistics
   pars_tj = [g k v_Hb v_He s_j kap kap_V];
-  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);  
-  u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
+  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee] = get_tj_hex(pars_tj, f);  
   aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_e = (tau_e - tau_b)/ kT_M; % unscale
   L_b = L_m * l_b; L_j = L_m * l_j;  L_e = L_m * l_e;  % unscale
-  S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
   rT_j = kT_M * rho_j; % 1/d, growth rate
   
   % life span as imago
-  pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
-  tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
-  tT_im = tau_m / kT_M;                 % d, mean life span as imago
+  pars_tm = [g; k; v_Hb; v_He; s_j; kap; kap_V; h_a; s_G];  % compose parameter vector at T_ref
+  tau_m = get_tm_mod('hex', pars_tm, f);    % -, scaled mean life span at T_ref
+  tT_im = (tau_m - tau_e)/ kT_M;          % d, mean life span as imago
   
   % reproduction rate of imago
   E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reprod buffer at pupation
   %E_R = E_Rj + u_Ee * v * E_m * L_m^2/ k_M - f * E_m * L_e^3; % J, total reserve for reprod
-  N = kap_R * E_Rj/ E_0;               % #, number of eggs at emergence
+  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
+  E_0 = u_E0 * g * E_m * L_m^3;       % J, energy cost of egg
+  N = kap_R * E_Rj/ E_0;              % #, number of eggs at emergence
   R = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('AbsTol', 1e-8, 'RelTol', 1e-8); 
-  qhSL_0 = [0 0 S_b 0 0 0 0 0 0 0 0]; % initial states
+  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
   pars_qhSL = {sgr, f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, tT_j, tT_e, tT_N0, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
   [t, qhSL] = ode45(@dget_qhSL, [0, tT_N0], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); theta_jn = 0;
