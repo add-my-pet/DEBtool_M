@@ -142,7 +142,7 @@ else
 end
 if exist('destinationFolder','var')
   fileName = [destinationFolder, fnm];
-elseif
+else
   fileName = ['report_', specList{1}, '.html'];
 end
  
