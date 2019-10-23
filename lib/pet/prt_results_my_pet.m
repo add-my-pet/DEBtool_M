@@ -1,5 +1,5 @@
 %% prt_results_my_pet
-% writes results of estimation to screen
+% writes results of estimation to my_pet_res.html
 
 %%
 function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData)

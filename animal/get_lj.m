@@ -95,13 +95,31 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
   end
 
   % get lj
-  [vH lj] = ode45(@dget_l_V1, [vHb; vHj], lb, [], k, lT, g, f, lb); 
-  lj = lj(end); sM = lj/ lb;
+  options = odeset('Events',@end_of_accel, 'AbsTol',1e-9, 'RelTol',1e-9); 
+  [t, vHl] = ode45(@dget_l_V1_t, [0; 1e6], [vHb; lb], options, k, lT, g, f, lb, vHj); 
+  lj = vHl(end,2); sM = lj/ lb;
   
   % get lp
   if n_p > 5
-    [vH lp] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); 
-    lp = lp(end);
+    options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9); 
+    [t, vHl] = ode45(@dget_l_ISO_t, [0; 1e6], [vHj; lj], options, k, lT, g, f, sM, vHp); 
+    lp = vHl(end,2);
   else
     lp = [];
   end
+end
+
+% end_of_accel
+function [value,isterminal,direction] = end_of_accel(t, vHl, k, lT, g, f, lb, vHj)
+  value = vHl(1) - vHj;  % trigger 
+  isterminal = 1;    % terminate after event
+  direction  = [];   % get all the zeros
+end
+
+% puberty
+function [value,isterminal,direction] = puberty(t, vHl, k, lT, g, f, sM, vHp)
+  value = vHl(1) - vHp;  % trigger 
+  isterminal = 1;    % terminate after event
+  direction  = [];   % get all the zeros
+end
+

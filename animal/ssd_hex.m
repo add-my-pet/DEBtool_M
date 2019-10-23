@@ -127,10 +127,10 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   tT_N0 = tT_e + tT_im;               % d, time since birth at which all eggs are produced
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('AbsTol', 1e-8, 'RelTol', 1e-8); 
-  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
+  options = odeset('Events',@dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9); 
+  qhSL_0 = [q_b; h_Ab; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, tT_j, tT_e, tT_N0, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
-  [t, qhSL] = ode45(@dget_qhSL, [0, tT_N0], qhSL_0, options, pars_qhSL{:});
+  [t, qhSL] = ode45(@dget_qhSL, [0; min(1e6-1,tT_p); 1e6], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); theta_jn = 0;
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
@@ -214,6 +214,13 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m,
   dhV = h * dEL3; % cm^3/d, production of dead structure
   
   dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
+end
+
+% event dead_for_sure
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, varargin)
+  value = qhSL(3) - 1e-6;  % trigger 
+  isterminal = 1;    % terminate after event
+  direction  = [];   % get all the zeros
 end
 
 % fill fieds with nan

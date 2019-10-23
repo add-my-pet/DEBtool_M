@@ -2,7 +2,7 @@
 % Gets scaled mean age at death, survival prob at birth and puberty
 
 %%
-function [tau_m, S, tau, info] = get_tm_mod(model, p, f, h_B, thinning)
+function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
   % created 2019/10/07 by Bas Kooijman
   
   %% Syntax
@@ -15,7 +15,7 @@ function [tau_m, S, tau, info] = get_tm_mod(model, p, f, h_B, thinning)
   % Input
   %
   % * mod: character string with model (e.g. 'std', 'hex')
-  % * p: vector with parameters: different for each model
+  % * p: vector with parameters: different for each model, or structure, like par in results_my_pet
   % * f: optional scalar with scaled reserve density at birth (default f = 1)
   % * h_B; optional vector with background hazards for each stage: e.g. for std model h_B0b, h_Bbp, h_Bpi (default: zero's)
   % * thinning: optional boolean with thinning being false/true (default: false)
@@ -25,7 +25,6 @@ function [tau_m, S, tau, info] = get_tm_mod(model, p, f, h_B, thinning)
   % * t_m: scalar with scaled mean life span
   % * S: vector with survival probabilities at life history events 
   % * tau: vector with scaled ages at life history events 
-  % * info: boolean with success (true) or failure (false)
  
   %% Remarks
   % Theory is given in comments on DEB3 Section 6.1.1 
@@ -39,85 +38,102 @@ function [tau_m, S, tau, info] = get_tm_mod(model, p, f, h_B, thinning)
   end
 
   if ~exist('h_B', 'var') || isempty(h_B)
-    h_B = zeros(5,1);
+    h_B = zeros(5,1); 
   end;
 
   if ~exist('thinning', 'var')
     thinning = false;
   end;
   
+  if isstruct(p)
+    vars_pull(p); cPar = parscomp_st(p); vars_pull(cPar)
+  else
+    switch model
+      case 'std'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      case 'stf'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      case 'stx'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hx = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      case 'ssj'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hp = p(5); tau_j = p(6); k_E = p(7); h_a = p(8); s_G = p(9); %  unpack pars
+      case 'sbp'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      case 'abj'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hj = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      case 'asj'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hj = p(5); v_Hp = p(6); h_a = p(7); s_G = p(8); %  unpack pars
+      case 'abp'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      case 'hep'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); v_Rj = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      case 'hex'
+        g = p(1); k = p(2); v_Hb = p(3); v_He = p(4); s_j = p(5); kap = p(6); kap_V = p(7); h_a = p(8); s_G = p(9); %  unpack pars
+    end          
+  end
+  
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
 
   switch model
     case 'std'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);   
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_p, ~, l_p] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
       [tau, qhSt] = ode45(@dget_qhSt_std, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'stf'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb_foetus([g k v_Hb h_a s_G h_B(1)], f);
-      [tau_p, ~, l_p, ~, info] = get_tp_foetus([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_p, ~, l_p] = get_tp_foetus([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau, qhSt] = ode45(@dget_qhSt_std, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'stx'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hx = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb_foetus([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_p, tau_x, ~, l_p, l_x, ~, info] = get_tx([g k 0 v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_p, tau_x, ~, l_p, l_x] = get_tx([g k 0 v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
       [tau, qhSt] = ode45(@dget_qhSt_stx, [0; tau_x - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_x - tau_b, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_x = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_x; S_p]; tau = [tau_b; tau_x; tau_p];
     case 'ssj'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hp = p(5); tau_j = p(6); k_E = p(7); h_a = p(8); s_G = p(9); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_s, ~, l_s, ~, info] = get_tp([g k 0 v_Hb v_Hs], f); % -, scaled ages and lengths at start skrink
-      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hs v_Hp], f); % -, scaled ages and lengths at puberty
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_s, ~, l_s] = get_tp([g k 0 v_Hb v_Hs], f); % -, scaled ages and lengths at start skrink
+      [tau_p, ~, l_p] = get_tp([g k 0 v_Hs v_Hp], f); % -, scaled ages and lengths at puberty
       [tau, qhSt] = ode45(@dget_qhSt_ssj, [0; tau_s - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_p - tau_b, tau_j, l_b, l_s, k_E, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_s = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_s; S_p]; tau = [tau_b; tau_s; tau_p];
     case 'sbp'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_p, ~, l_p] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
       [tau, qhSt] = ode45(@dget_qhSt_sbp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'abj'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hj = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g k 0 v_Hb v_Hj v_Hp], f, l_b); 
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hj v_Hp], f, l_b); 
       [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_j = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
     case 'asj'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hj = p(5); v_Hp = p(6); h_a = p(7); s_G = p(8); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_ts([g k 0 v_Hb v_Hs v_Hj v_Hp], f, l_b); 
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_ts([g k 0 v_Hb v_Hs v_Hj v_Hp], f, l_b); 
       [tau, qhSt] = ode45(@dget_qhSt_asj, [0; tau_s - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_j - tau_b, tau_p - tau_b, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_s = qhSt(2,3); S_j = qhSt(3,3); S_p = qhSt(4,3); S = [S_b; S_s; S_j; S_p]; tau = [tau_b; tau_s; tau_j; tau_p];
     case 'abp'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g k 0 v_Hb v_Hp v_Hp+1e-9], f, l_b); 
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hp v_Hp+1e-9], f, l_b); 
       [tau, qhSt] = ode45(@dget_qhSt_abp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, rho_j, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'hep'
-      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); v_Rj = p(5); h_a = p(6); s_G = p(7); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj], f);
       [tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); S = [S_b; S_p; S_j]; tau = [tau_b; tau_p; tau_j];
     case 'hex'
-      g = p(1); k = p(2); v_Hb = p(3); v_He = p(4); s_j = p(5); kap = p(6); kap_V = p(7); h_a = p(8); s_G = p(9); %  unpack pars
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
-      [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
       [tau, qhSt] = ode45(@dget_qhSt_hex_bj, [0; tau_j - tau_b], qhSt_b, [], f, l_b, rho_j, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_j = qhSt(end,3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
       [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e - tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);

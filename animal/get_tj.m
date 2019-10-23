@@ -112,7 +112,7 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
     lp = vHp^(1/3);                  % scaled length at puberty
     li = f * sM - lT;                % scaled ultimate length
     rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
-    tau_p = 1e20;                       % scaled age at puberty
+    tau_p = 1e20;                    % scaled age at puberty
     info = 1;
     return
   end
@@ -125,14 +125,14 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   [lj, lp, lb, info_tj] = get_lj(p, f, lb);
   sM = lj/ lb;                       % acceleration factor
   rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-  tau_j = tau_b + log(sM) * 3/ rj;         % scaled age at metamorphosis
+  tau_j = tau_b + log(sM) * 3/ rj;        % scaled age at metamorphosis
   rB = 1/ 3/ (1 + f/ g);             % scaled von Bert growth rate between j and i
   li = f * sM - lT;                  % scaled ultimate length
 
   if isempty(lp) % length(p) < 6
     tau_p = [];
   elseif  li <=  lp                  % reproduction is not possible
-    tau_p = 1e20;                       % tau_p is never reached
+    tau_p = 1e20;                    % tau_p is never reached
     lp = 1;                          % lp is nerver reached
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 is absent, empty or a scalar

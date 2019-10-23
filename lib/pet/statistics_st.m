@@ -715,28 +715,44 @@ function [stat txtStat] = statistics_st(model, par, T, f)
   
   % aging
   h_W = TC * (h_a * f * v * s_M/ 6/ L_i)^(1/3); h_G = TC * s_G * f * v * s_M * L_i^2/ L_m^3; h_a = h_a/ k_M^2; % overwrite of h_a!!!
-  switch model
-    case {'std','stf','sbp','abp'}
-      pars_tm  = [g; k; v_Hb; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(2); 
-    case 'stx'
-      pars_tm  = [g; k; v_Hb; v_Hx; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3); 
-    case 'ssj'
-      pars_tm = [g; k; v_Hb; v_Hs; v_Hp; t_sj * k_M; k_E/ k_M; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3);      
-    case 'abj'
-      pars_tm = [g; k; v_Hb; v_Hj; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(3);      
-    case 'asj'
-      pars_tm = [g; k; v_Hb; v_Hs; v_Hj; v_Hp; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(4);      
-    case 'hep'
-      pars_tm = [g; k; v_Hb; v_Hp; v_Rj; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(2);      
-    case 'hex'
-      pars_tm = [g; k; v_Hb; v_He; s_j; kap; kap_V; h_a; s_G]; [tau_m, S] = get_tm_mod(model, pars_tm, f); S_b = S(1); S_p = S(1);      
-  end
-  a_m = tau_m/ k_M/ TC;
   stat.h_W = h_W;      units.h_W = '1/d';   label.h_W = 'Weibull ageing rate'; temp.h_W = T; fresp.h_W = f;
   stat.h_G = h_G;      units.h_G = '1/d';   label.h_G = 'Gompertz aging rate'; temp.h_G = T; fresp.h_G = f;
+  switch model
+    case {'std','stf','sbp','abp','hep'}
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(2); 
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+    case 'stx'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_x = S(2); S_p = S(3); 
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_x  = S_x;     units.S_x = '-';     label.S_x = 'survival probability at weaning'; temp.S_x = NaN; fresp.S_x = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+    case 'ssj'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_s = S(2); S_p = S(3);      
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_s  = S_s;     units.S_s = '-';     label.S_s = 'survival probability at metam'; temp.S_s = NaN; fresp.S_s = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+    case 'abj'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_j = S(2); S_p = S(3);      
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at end acceleration'; temp.S_j = NaN; fresp.S_j = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+    case 'asj'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_s = S(2); S_j = S(3); S_p = S(4);      
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_s  = S_s;     units.S_s = '-';     label.S_s = 'survival probability at start acceleration'; temp.S_s = NaN; fresp.S_s = f;  
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at end acceleration'; temp.S_j = NaN; fresp.S_j = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+    case 'hex'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(1); S_e = S(3);     
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+      stat.S_e  = S_e;     units.S_e = '-';     label.S_e = 'survival probability at emergence'; temp.S_e = NaN; fresp.S_e = f;  
+  end
+  a_m = tau_m/ k_M/ TC;
   stat.a_m = a_m;      units.a_m = 'd';     label.a_m = 'life span'; temp.a_m = T; fresp.a_m = f;
-  stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
-  stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+
+  % growth period
   if exist('r_B', 'var')
     switch model
       case {'std', 'stx'}

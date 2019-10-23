@@ -117,17 +117,13 @@ function stat = ssd_abp(stat, code, par, T_pop, f_pop, sgr)
   s_M = l_p/ l_b;  % -, acceleration factor
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events', @p_dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(11,1), 'AbsTol', 1e-9, 'RelTol', 1e-9); 
   [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
-  qhSL_0 = [q_b, h_Ab, S_b, 0 0 0 0 0 0 0 0]; % initial states
+  qhSL_0 = [q_b; h_Ab; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_p, L_m, tT_p, rT_j, v_Hp, s_G, hT_a, h_Bbp, h_Bpi, thinning};
-  [t, qhSL, t_a, qhSL_a, ie] = ode45(@dget_qhSL, [0, 1e5], qhSL_0, options, pars_qhSL{:});
-  EL0_i = qhSL(end,4); 
-  if isempty(ie) % ode45 fails to detect proper events
-    theta_jn = qhSL(end,4)/ EL0_i; S_p = qhSL(end,3)/ EL0_i; % this gives value one, in absence of a better value
-  else
-    theta_jn = qhSL_a(1,4)/ EL0_i; S_p = qhSL_a(1,3)/ EL0_i; % proper detection of puberty
-  end
+  [t, qhSL] = ode45(@dget_qhSL, [0; min(1e6-1,tT_p); 1e6], qhSL_0, options, pars_qhSL{:});
+  S_p = qhSL(2,3); % -, survival prob at puberty
+  EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
   EL = qhSL(end,5)/ EL0_i; EL2 = qhSL(end,6)/ EL0_i; EL3 = qhSL(end,7)/ EL0_i; % mean L^1,2,3 for post-natals
@@ -209,9 +205,9 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b,
 end
 
 % event p_dead_for_sure
-function [value,isterminal,direction] = p_dead_for_sure(t, qhS, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_p, L_m, t_p, r_j, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)
-  value = [t - t_p; (qhS(3) - 1e-6) * (t < 365*600)];  % trigger 
-  isterminal = [0; 1];    % terminate after the second event
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, varargin)
+  value = qhSL(3) - 1e-6;  % trigger 
+  isterminal = 1;    % terminate after the second event
   direction  = [];        % get all the zeros
 end
 

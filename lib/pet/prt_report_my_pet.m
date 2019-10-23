@@ -2,7 +2,7 @@
 % Creates report_my_pet.html in specified directory
 
 %%
-function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder)
+function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
 % created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
 
 %% Syntax
@@ -25,6 +25,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
 % * destinationFolder: optional string with destination folder the output html-file (default: current folder) 
+% * filename: optional string with name of output file (default report_My_pet.html)
 %
 % Output:
 %
@@ -47,6 +48,8 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty.
 % If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown.
 % In absence of a focus species, the first comparison specie serves this role.
+% The default name of the output file is report_My_pet, but this name is replaced by filename, if specified, which is not opened automatically.
+% If filename is specified, destinationFolder must be specified as well
 % 
 % The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from
 %   the statictics and/or the parameters.
@@ -104,6 +107,7 @@ else  % use allStat.mat as parameter source for focusSpecies (always single spec
   datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
   color = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
+
 if n_spec == 1
   modelList = {metaPar.model}; % initiate cell string for model
   tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
@@ -131,9 +135,14 @@ if ~exist('f', 'var') || isempty(f)
 end
 
 % path+filename of output file
-if exist('destinationFolder','var')
-  fileName = [destinationFolder, 'report_', focusSpecies, '.html'];
+if ~exist('filename','var') || isempty(filename)
+  fnm = ['report_', specList{1}, '.html'];
 else
+  fnm = filename;
+end
+if exist('destinationFolder','var')
+  fileName = [destinationFolder, fnm];
+elseif
   fileName = ['report_', specList{1}, '.html'];
 end
  
@@ -591,6 +600,7 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 
-web(fileName,'-browser') % open html in systems browser
-%web(fileName)
+if ~exist('filename')
+  web(fileName,'-browser') % open html in systems browser
+end
 
