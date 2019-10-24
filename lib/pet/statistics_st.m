@@ -735,7 +735,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
     case 'abj'
       [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_j = S(2); S_p = S(3);      
       stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
-      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at end acceleration'; temp.S_j = NaN; fresp.S_j = f;  
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at metam'; temp.S_j = NaN; fresp.S_j = f;  
       stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
     case 'asj'
       [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_s = S(2); S_j = S(3); S_p = S(4);      

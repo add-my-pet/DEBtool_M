@@ -145,6 +145,10 @@ if isfield(p,'F_m')
   K = J_X_Am/ p.F_m;        % c-mol X/l, half-saturation coefficient
 end
 
+if isfield(p,'E_Rj')
+  v_Rj = p.kap/ (1 - p.kap) * p.E_Rj/ p.E_G;
+end
+
 % -------------------------------------------------------------------------
 % pack output:
 cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
@@ -190,3 +194,6 @@ if isfield(p,'F_m')
   cPar.K = K;
 end
 
+if isfield(p,'E_Rj')
+  cPar.v_Rj = v_Rj;
+end

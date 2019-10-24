@@ -55,10 +55,6 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
   %
   %% Remarks
   % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
-  %
-  %% Example of use
-  % cd to entries/Rana_temporaria/; load results_Rana_temporaria; 
-  % [EL, EL2, EL3, EWw, Prob_bp] = ssd_std(par, [], [], 0.006, 1e10)
 
   % get output fields
   fldf = 'f0fff1'; fldf = fldf([-1 0] + 2 * strfind('0f1',code(1))); % f0 or ff or f1
@@ -116,10 +112,10 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(11,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
   [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
-  qhSL_0 = [q_b; h_Ab; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
-  pars_qhSL = {sgr, f, kap, kap_R, kT_M, kT_E, vT, g, k, u_E0, L_b, L_s, L_j, L_m, tT_s, tT_j, tT_p, rT_B, v_Hp, s_G, hT_a, h_Bbs, h_Bsp, h_Bpi, thinning};
-  [t, qhSL] = ode45(@dget_qhSL, [0; min(1e6-1,tT_p); 1e6], qhSL_0, options, pars_qhSL{:});
-  S_p = qhSL(2,3); % -, survival prob at puberty
+  qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
+  pars_qhSL = {sgr, f, kap, kap_R, kT_M, kT_E, vT, g, k, u_E0, L_b, L_s, L_j, L_m, rT_B, v_Hp, s_G, hT_a, h_Bbs, h_Bsp, h_Bpi, thinning};
+  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_s, tT_j, tT_p, pars_qhSL{:});
+  S_p = qhSL_event(3,3); % -, survival prob at puberty
   EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
@@ -135,7 +131,7 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).S_b = S_b; % -, survival prob at birth
   stat.(fldf).(fldt).(fldg).S_p = S_p; % -, survival prob at puberty
   
-  stat.(fldf).(fldt).(fldg).tS = [0, 1; t + aT_b, qhSL(:,3)];            % d,-, convert time since birth to age for survivor probability
+  stat.(fldf).(fldt).(fldg).tS = [0 1; t + aT_b, qhSL(:,3)];             % d,-, convert time since birth to age for survivor probability
   stat.(fldf).(fldt).(fldg).tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ EL0_i]; % d,-, convert time since birth to age for survivor function of the stable age distribution
   
   p_C = f * g/ (f + g) * E_m * (vT * EL2_a + kT_M * (EL3_a + L_T * EL2_a)); % J/d, mean mobilisation of adults
@@ -158,7 +154,14 @@ function stat = ssd_ssj(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = tT_p;
 end
 
-function dqhSL = dget_qhSL(t, qhSL, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_m, t_s, t_j, t_p, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
+% event dead_for_sure
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_s, t_j, t_p, varargin)
+  value = [t - t_s; t - t_j; t - t_p; qhSL(3) - 1e-6];  % trigger 
+  isterminal = [0 0 0 1];                               % terminate after last event
+  direction  = [];                                      % get all the zeros
+end
+
+function dqhSL = dget_qhSL(t, qhSL, t_s, t_j, t_p, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0, L_b, L_s, L_j, L_m, r_B, v_Hp, s_G, h_a, h_Bbs, h_Bsp, h_Bpi, thinning)
   % t: time since birth
   q   = qhSL(1); % 1/d^2, aging acceleration
   h_A = qhSL(2); % 1/d^2, hazard rate due to aging
@@ -202,13 +205,6 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0,
   dhV = h * dEL3; % cm^3/d, production of dead structure
   
   dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
-end
-
-% event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, varargin)
-  value = qhSL(3) - 1e-6;  % trigger 
-  isterminal = 1;    % terminate after event
-  direction  = [];   % get all the zeros
 end
 
 % fill fieds with nan

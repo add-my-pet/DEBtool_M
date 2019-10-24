@@ -46,7 +46,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
   end;
   
   if isstruct(p)
-    vars_pull(p); cPar = parscomp_st(p); vars_pull(cPar)
+    v2struct(p); cPar = parscomp_st(p); v2struct(cPar)
   else
     switch model
       case 'std'
@@ -72,7 +72,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
     end          
   end
   
-  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
 
   switch model
     case 'std'

@@ -128,9 +128,9 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events',@dead_for_sure, 'AbsTol',1e-9, 'RelTol',1e-9); 
-  qhSL_0 = [q_b; h_Ab; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
-  pars_qhSL = {sgr, f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, tT_j, tT_e, tT_N0, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
-  [t, qhSL] = ode45(@dget_qhSL, [0; min(1e6-1,tT_p); 1e6], qhSL_0, options, pars_qhSL{:});
+  qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
+  pars_qhSL = {tT_j, tT_e, sgr, f, kT_M, vT, g, k, R, L_b, L_j, L_e, L_m, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
+  [t, qhSL] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, pars_qhSL{:});
   EL0_i = qhSL(end,4); theta_jn = 0;
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
@@ -146,7 +146,7 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).S_b = S_b; % -, survival prob at birth
   stat.(fldf).(fldt).(fldg).S_p = S_b; % -, survival prob at puberty
   
-  stat.(fldf).(fldt).(fldg).tS = [0, 1; t + aT_b, qhSL(:,3)];          % d,-, convert time since birth to age for survivor probability
+  stat.(fldf).(fldt).(fldg).tS = [0 1; t + aT_b, qhSL(:,3)];             % d,-, convert time since birth to age for survivor probability
   stat.(fldf).(fldt).(fldg).tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ EL0_i]; % d,-, convert time since birth to age for survivor function of the stable age distribution
   
   ER = R; % 1/d, mean reproduction rate of  female imago
@@ -166,8 +166,14 @@ function stat = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = aT_b;
 end
 
+% event dead_for_sure
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_j, t_e, varargin)
+  value = [t - t_j; t - t_e; qhSL(3) - 1e-6];  % trigger 
+  isterminal = [0 0 1];                        % terminate after last event
+  direction  = [];                             % get all the zeros
+end
 
-function dqhSL = dget_qhSL(t, qhSL, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m, t_j, t_e, t_N0, r_j, s_G, h_a, h_Bbj, h_Bje, h_Bei, thinning)
+function dqhSL = dget_qhSL(t, qhSL, t_j, t_e, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m, r_j, s_G, h_a, h_Bbj, h_Bje, h_Bei, thinning)
   q   = max(0,qhSL(1)); % 1/d^2, aging acceleration
   h_A = max(0,qhSL(2)); % 1/d^2, hazard rate due to aging
   S   = max(0,qhSL(3)); % -, survival prob
@@ -214,13 +220,6 @@ function dqhSL = dget_qhSL(t, qhSL, sgr, f, k_M, v, g, k, R, L_b, L_j, L_e, L_m,
   dhV = h * dEL3; % cm^3/d, production of dead structure
   
   dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
-end
-
-% event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, varargin)
-  value = qhSL(3) - 1e-6;  % trigger 
-  isterminal = 1;    % terminate after event
-  direction  = [];   % get all the zeros
 end
 
 % fill fieds with nan
