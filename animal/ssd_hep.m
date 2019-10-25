@@ -167,7 +167,7 @@ function stat = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
 end
 
 % event p_dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_p, t_j, arargin)
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_p, t_j, varargin)
   value = [t - t_p; t - t_j; qhSL(3) - 1e-6];  % trigger 
   isterminal = [0 0 1];                        % terminate after last event
   direction  = [];                             % get all the zeros
@@ -220,13 +220,6 @@ function dqhSL = dget_qhSL(t, qhSL, t_p, t_j, sgr, f, k_M, v, g, k, R, L_b, L_p,
   dhV = h * dEL3; % cm^3/d, production of dead structure
   
   dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
-end
-
-% event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, varargin)
-  value = qhSL(3) - 1e-6;  % trigger 
-  isterminal = 1;    % terminate after event
-  direction  = [];   % get all the zeros
 end
 
 % fill fieds with nan

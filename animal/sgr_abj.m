@@ -113,7 +113,7 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
 end
 
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSC, sgr, t_j, t_p, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
+function [value,isterminal,direction] = dead_for_sure(t, qhSC, sgr, t_j, t_p, varargin)
   value = [t - t_j, t - t_p, qhSC(3) - 1e-6];  % trigger 
   isterminal = [0, 0, 1];  % terminate at dead_for_sure
   direction  = [];         % get all the zeros

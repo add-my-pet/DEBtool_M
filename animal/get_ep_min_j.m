@@ -41,7 +41,7 @@ function [ep, sM, info] = get_ep_min_j(p)
   %   The range for which F is negative is VERY small
   ep_range = [0 1]; sM_range = [0 1]; ep = 0.5;    % set initial value
   for i = 1:16 % range-width becomes 2^-16 = 1.5e-5
-    [F sM] = fnget_ep_min_j(ep, p);   % get loss function
+    [F, sM] = fnget_ep_min_j(ep, p);   % get loss function
     if isempty(F) || F < 0       % lower boundary
       ep_range(1) = ep;
       if ~isempty(sM)

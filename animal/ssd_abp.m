@@ -121,7 +121,7 @@ function stat = ssd_abp(stat, code, par, T_pop, f_pop, sgr)
   [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
   qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_p, L_m, rT_j, v_Hp, s_G, hT_a, h_Bbp, h_Bpi, thinning};
-  [t, qhSL] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_p, pars_qhSL{:});
+  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_p, pars_qhSL{:});
   S_p = qhSL_event(1,3); % -, survival prob at puberty
   EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile

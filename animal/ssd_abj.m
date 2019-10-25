@@ -124,8 +124,12 @@ function stat = ssd_abj(stat, code, par, T_pop, f_pop, sgr)
   [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
   qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_j, L_i, L_m, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbj, h_Bjp, h_Bpi, thinning};
-  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_j, tT_p, pars_qhSL{:});
-  S_p = qhSL_event(2,3); % -, survival prob at puberty
+  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e8], qhSL_0, options, tT_j, tT_p, pars_qhSL{:});
+  if size(qhSL_event,1) == 2
+     S_p = qhSL_event(2,3); % -, survival prob at puberty
+  else
+     S_p = qhSL(end,3); % -, survival prob at puberty
+  end
   EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
@@ -172,9 +176,9 @@ function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_j, t_p, varargi
 end
 
 function dqhSL = dget_qhSL(t, qhSL, t_j, t_p, sgr, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_j, L_i, L_m, r_j, r_B, v_Hp, s_G, h_a, h_Bbj, h_Bjp, h_Bpi, thinning)
-  q   = qhSL(1); % 1/d^2, aging acceleration
-  h_A = qhSL(2); % 1/d^2, hazard rate due to aging
-  S   = qhSL(3); % -, survival prob
+  q   = max(0,qhSL(1)); % 1/d^2, aging acceleration
+  h_A = max(0,qhSL(2)); % 1/d^2, hazard rate due to aging
+  S   = max(0,qhSL(3)); % -, survival prob
   
   if t < t_j
     h_B = h_Bbj;

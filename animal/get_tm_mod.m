@@ -308,10 +308,10 @@ end
 
 function dqhSt = dget_qhSt_asj(tau, qhSt, f, tau_s, tau_j, tau_p, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning)
   % tau: scaled time since birth
-  q   = qhSt(1); % -, scaled aging acceleration
-  h_A = qhSt(2); % -, scaled hazard rate due to aging
-  S   = qhSt(3); % -, survival prob
-  %t  = qhSt(4); % -, scaled cumulative survival
+  q   = max(0,qhSt(1)); % -, scaled aging acceleration
+  h_A = max(0,qhSt(2)); % -, scaled hazard rate due to aging
+  S   = max(0,qhSt(3)); % -, survival prob
+  %t  = max(0,qhSt(4)); % -, scaled cumulative survival
   
   if tau < tau_s
     h_B = h_B(2);
