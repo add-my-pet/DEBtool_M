@@ -110,7 +110,7 @@ function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
   L_b = L_m * l_b; % cm, structural length at birth
 
   % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(11,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(11,1), 'AbsTol',1e-8, 'RelTol',1e-8); 
   [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb_foetus([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
   qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, L_b, L_m, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};

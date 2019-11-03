@@ -124,7 +124,11 @@ function stat = ssd_stx(stat, code, par, T_pop, f_pop, sgr)
   qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {sgr, f, L_b, L_m, rT_B, vT, g, s_G, hT_a, h_Bbx, h_Bxp, h_Bpi, thinning};
   [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_x, tT_p, pars_qhSL{:});
-  S_p = qhSL_event(2,3); % -, survival prob at puberty
+  if size(qhSL_event,1) == 1
+    S_p = qhSL(end,3);
+  else
+    S_p = qhSL_event(2,3); % -, survival prob at puberty
+  end
   EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
   stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
   theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult

@@ -130,9 +130,9 @@ end
 % ode's survival, reprod & char eq
 function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k, v_Hp, u_E0, L_b, L_p, L_m, t_p, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
   % t: time since birth
-  q   = qhSC(1); % 1/d^2, aging acceleration
-  h_A = qhSC(2); % 1/d^2, hazard rate due to aging
-  S   = qhSC(3); % -, survival prob
+  q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
+  h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
+  S   = max(0,qhSC(3)); % -, survival prob
   
   L_i = L_m * f;
   L = L_i - (L_i - L_b) * exp(- t * r_B);

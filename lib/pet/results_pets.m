@@ -255,7 +255,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 3  % save to .mat, save to png, print to html
-      %prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else

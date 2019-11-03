@@ -46,7 +46,8 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
   end;
   
   if isstruct(p)
-    v2struct(p); cPar = parscomp_st(p); v2struct(cPar)
+    v2struct(p); cPar = parscomp_st(p); v2struct(cPar); % unpack pars and compute coumpound pars
+    h_a = h_a/ k_M^2; % -, remove units from aging accelleration
   else
     switch model
       case 'std'
@@ -56,7 +57,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       case 'stx'
         g = p(1); k = p(2); v_Hb = p(3); v_Hx = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
       case 'ssj'
-        g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hp = p(5); tau_j = p(6); k_E = p(7); h_a = p(8); s_G = p(9); %  unpack pars
+        g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hp = p(5); t_sj = p(6); k_E = p(7); h_a = p(8); s_G = p(9); %  unpack pars
       case 'sbp'
         g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       case 'abj'
@@ -94,12 +95,14 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau, qhSt] = ode45(@dget_qhSt_stx, [0; tau_x - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_x - tau_b, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_x = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_x; S_p]; tau = [tau_b; tau_x; tau_p];
     case 'ssj'
-      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f); 
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_s, ~, l_s] = get_tp([g k 0 v_Hb v_Hs], f); % -, scaled ages and lengths at start skrink
       [tau_p, ~, l_p] = get_tp([g k 0 v_Hs v_Hp], f); % -, scaled ages and lengths at puberty
-      [tau, qhSt] = ode45(@dget_qhSt_ssj, [0; tau_s - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_p - tau_b, tau_j, l_b, l_s, k_E, g, s_G, h_a, h_B, thinning);
-      tau_m = qhSt(end,4); S_s = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_s; S_p]; tau = [tau_b; tau_s; tau_p];
+      tau_j = tau_s + t_sj * k_M; % -, scaled age at end metam
+      k_E = k_E/ k_M; % - scaled shrinking rate
+      [tau, qhSt] = ode45(@dget_qhSt_ssj, [0; tau_s - tau_b; tau_j - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_p - tau_b, tau_j, l_b, l_s, k_E, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_s = qhSt(2,3); S_j = qhSt(3,3); S_p = qhSt(4,3); S = [S_b; S_s; S_j; S_p]; tau = [tau_b; tau_s; tau_j; tau_p];
     case 'sbp'
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
@@ -110,13 +113,13 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hj v_Hp], f, l_b); 
-      [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b; tau_p - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_j = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
     case 'asj'
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_ts([g k 0 v_Hb v_Hs v_Hj v_Hp], f, l_b); 
-      [tau, qhSt] = ode45(@dget_qhSt_asj, [0; tau_s - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_j - tau_b, tau_p - tau_b, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      [tau, qhSt] = ode45(@dget_qhSt_asj, [0; tau_s - tau_b; tau_j - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_j - tau_b, tau_p - tau_b, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_s = qhSt(2,3); S_j = qhSt(3,3); S_p = qhSt(4,3); S = [S_b; S_s; S_j; S_p]; tau = [tau_b; tau_s; tau_j; tau_p];
     case 'abp'
       [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
@@ -224,13 +227,13 @@ function dqhSt = dget_qhSt_ssj(tau, qhSt, f, tau_s, tau_p, tau_j, l_b, l_s, k_E,
     r = 0; % 
     h_B = h_B(3);
   elseif tau < tau_p
-    l_j = l_s * exp( - k_E * tau_j); 
+    l_j = l_s * exp( - k_E * (tau_j - tau_s)); 
     rho_B = 1/ 3/ (1 + f/ g); 
     l = f - (f - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
     h_B = h_B(3);
   else
-    l_j = l_s * exp( - k_E * tau_j); 
+    l_j = l_s * exp( - k_E * (tau_j - tau_s)); 
     rho_B = 1/ 3/ (1 + f/ g); 
     l = f - (f - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
@@ -302,7 +305,7 @@ function dqhSt = dget_qhSt_abj(tau, qhSt, f, tau_j, tau_p, l_b, l_j, l_i, rho_j,
   h = h_A + h_B + h_X; 
   dS = - h * S;
   dt = S;
-  
+    
   dqhSt = [dq; dh_A; dS; dt]; 
 end
 
