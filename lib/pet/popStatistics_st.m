@@ -9,7 +9,7 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
 
 %% Description
 % Computes quantities that depend on parameters, temperature and food level at population level.
-% Field-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional)
+% First-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional)
 % View results with prt_my_pet_pop, which is a shell around this function.
 % The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex.
 % If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)
