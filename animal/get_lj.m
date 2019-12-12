@@ -101,9 +101,9 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
   
   % get lp
   if n_p > 5
-    options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9); 
-    [t, vHl] = ode45(@dget_l_ISO_t, [0; 1e6], [vHj; lj], options, k, lT, g, f, sM, vHp); 
-    lp = vHl(end,2);
+    %options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9); 
+    %[t, vHl] = ode45(@dget_l_ISO_t, [0; 1e6], [vHj; lj], options, k, lT, g, f, sM, vHp); lp = vHl(end,2);
+    [vH, l] = ode45(@dget_l_ISO, [vHb; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
   else
     lp = [];
   end
