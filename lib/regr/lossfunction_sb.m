@@ -10,14 +10,14 @@ function [lf] = lossfunction_sb(data, meanData, prdData, meanPrdData, weights)
   
   %% Description
   % Calculates the loss function
-  %   w' (d - p)^2/ (mean_d^2 + mean_p^2)
+  %   w' (d - f)^2/ (mean_d^2 + mean_f^2)
   % multiplicative symmetric bounded 
   %
   % Input
   %
   % * data: vector with data
   % * meanData: vector with mean value of data per set
-  % * prdData: vector with predictions
+  % * prdData: vectod with predictions
   % * meanPrdData: vector with mean value of predictions per set
   % * weights: vector with weights for the data
   %  

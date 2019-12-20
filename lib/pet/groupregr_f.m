@@ -3,7 +3,7 @@
 
 %%
 function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, weightsPar, filternm)
-% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22 by Bas Kooijman
+% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22, 2019/12/16 by Bas Kooijman
 
 %% Syntax
 % [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
@@ -295,19 +295,19 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, w
 
   fval = min(fv); 
   if func_evals >= max_fun_evals
-    %if report > 0
-    fprintf(['No convergences with ', num2str(max_fun_evals), ' function evaluations\n']);
-    %end
+    if report > 0
+      fprintf(['No convergences with ', num2str(max_fun_evals), ' function evaluations\n']);
+    end
     info = 0;
   elseif itercount >= max_step_number 
-    %if report > 0
+    if report > 0
       fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
-    %end
+    end
     info = 0; 
   else
-    %if report > 0
+    if report > 0
       fprintf('Successful convergence \n');              
-    %end
+    end
     info = 1;
   end
    

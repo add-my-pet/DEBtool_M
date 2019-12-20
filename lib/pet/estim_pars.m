@@ -3,16 +3,17 @@
 % biology  https://doi.org/10.1371/journal.pcbi.1006100)
 
 %%
-function nsteps = estim_pars
+function [nsteps, info] = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
   %   2019/03/20 by Bas kooijman
+  %   2019/12/16 by Bas kooijman
   
   %% Syntax 
-  % <../estim_pars.m *estim_pars*>
+  % [nsteps, info] = <../estim_pars.m *estim_pars*>
   
   %% Description
   % Runs the entire estimation procedure
@@ -28,7 +29,8 @@ function nsteps = estim_pars
   %  
   % Output
   %
-  % * nsteps: number of steps
+  % * nsteps: scalar with number of steps
+  % * info: boolean with succussful convergence (true)
   
   %% Remarks
   % estim_options sets many options;

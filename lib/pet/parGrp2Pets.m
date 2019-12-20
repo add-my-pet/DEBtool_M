@@ -42,7 +42,7 @@ function parPets = parGrp2Pets(parGrp)
   
   % map group-specification to single-species specification
   for i = 1:n_pets         % scan pets
-    pari = parGrp;         % prepare pararameters for pet i
+    pari = parGrp;         % prepare parameters for pet i
     % parameter value setting (skipping free setting)
     for j = 1:n_parNms     % scan parameters for each pet
       if ~strcmp(parNms{j},'free') 
