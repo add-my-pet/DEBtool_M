@@ -10,7 +10,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques,
 % modified 2015/08/25 by Dina Lika, 
 % modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
-% modified 2019/08/30 by Nina Marn (case -1 to print to screen)
+% modified 2019/08/30, 2019/11/12, 2019/12/20  by Nina Marn 
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -238,8 +238,18 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     case 1  % no saving to .mat, no saving to png, print to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); 
+%       else
+%         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
     case -1 % no saving to .mat, no saving to png, print to screen
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      if n_pets == 1
+        metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); 
+%       else
+%         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+      end
     case 2  % save to .mat, no saving to png, print to html
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
@@ -261,7 +271,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
-    case -3  % save to .mat, save to png,, print to screen
+    case -3  % save to .mat, save to png, print to screen
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
@@ -335,6 +345,10 @@ function plotColours4AllSets = listOfPlotColours4UpTo13Sets
     {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
     {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
     {[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, .75], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0]}, ...
+    %{[1, .75, .75], [1, .5, .5], [1, .25, .25], [1, 0, 0], [1, 0, .5], [1, 0, .75], [1, 0, 1], [.5, 0, 1],  [0, 0, 1], [0, 0, .75], [0, 0, .5], [0, 0, .25], [0, 0, 0], [0.1, 0.1, 0.1]}, ...
+    % <-- note to self : No problem with me as long as the lava-colour coding is respected: from white (high) to black (low), via red and blue. Notice that you can have more than 13 sets, but some will then have the same colours.
+
+% Function DEBtool_M/lib.misc/real2color.m assigns colors in the lava-colour coding scheme, with a facility to work around the problem that colour white might be hard to see :-). Perhaps this function can be called with with any number larger than 13. Function shcolor_lava show the colour-strip with values for colours.
     };
 
 end
