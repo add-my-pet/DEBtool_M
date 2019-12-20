@@ -13,7 +13,7 @@ function [nsteps, info, fval] = estim_pars
   %   2019/12/16, 2019/12/20 by Bas kooijman
   
   %% Syntax 
-  % [nsteps, info] = <../estim_pars.m *estim_pars*>
+  % [nsteps, info, fval] = <../estim_pars.m *estim_pars*>
   
   %% Description
   % Runs the entire estimation procedure

@@ -10,7 +10,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
 %   2018/05/23, 2019/12/20 by Bas Kooijman
 
 %% Syntax
-% [q, info, itercount] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
+% [q, info, itercount, fval] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
 
 %% Description
 % Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter.

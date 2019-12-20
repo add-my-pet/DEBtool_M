@@ -6,7 +6,7 @@ function [q, info, itercount, fval] = groupregr_f(func, par, data, auxData, weig
 % created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22, 2019/12/16, 2019/12/20 by Bas Kooijman
 
 %% Syntax
-% [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
+% [q, info, itercount, fval] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
 
 %% Description
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
