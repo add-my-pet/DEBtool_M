@@ -2,8 +2,8 @@
 % Finds parameter values for a group of pets that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, weightsPar, filternm)
-% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22, 2019/12/16 by Bas Kooijman
+function [q, info, itercount, fval] = groupregr_f(func, par, data, auxData, weights, weightsPar, filternm)
+% created 2015/08/26 by Goncalo Marques; modified 2018/05/22, 2019/05/22, 2019/12/16, 2019/12/20 by Bas Kooijman
 
 %% Syntax
 % [q, info, itercount] = <../groupregr_f.m *groupregr_f*> (func, par, data, auxData, weights, weightsPar, filternm)
@@ -29,6 +29,7 @@ function [q, info, itercount] = groupregr_f(func, par, data, auxData, weights, w
 % * q: structure with parameters, result of minimization of the lossfunction
 % * info: 1 if convergence has been successful; 0 otherwise
 % * itercount: number if iterations
+% * fval: minimum values of the lossfunction
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.

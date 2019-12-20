@@ -3,14 +3,14 @@
 % biology  https://doi.org/10.1371/journal.pcbi.1006100)
 
 %%
-function [nsteps, info] = estim_pars
+function [nsteps, info, fval] = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
   %   2019/03/20 by Bas kooijman
-  %   2019/12/16 by Bas kooijman
+  %   2019/12/16, 2019/12/20 by Bas kooijman
   
   %% Syntax 
   % [nsteps, info] = <../estim_pars.m *estim_pars*>
@@ -31,6 +31,7 @@ function [nsteps, info] = estim_pars
   %
   % * nsteps: scalar with number of steps
   % * info: boolean with succussful convergence (true)
+  % * fval: minimum of loss function
   
   %% Remarks
   % estim_options sets many options;
@@ -130,9 +131,9 @@ end
 if ~strcmp(method, 'no')
   if strcmp(method, 'nm') % prepares for future extension to alternative minimazation algorithms
     if n_pets == 1
-      [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+      [par, info, nsteps, fval] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
-      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
+      [par, info, nsteps, fval] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
   end
 end

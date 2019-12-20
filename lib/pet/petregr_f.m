@@ -2,12 +2,12 @@
 % Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter
 
 %%
-function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, filternm)
+function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weights, filternm)
 % created 2001/09/07 by Bas Kooijman; 
 % modified 2015/01/29 by Goncalo Marques, 
 %   2015/03/21 by Bas Kooijman, 
 %   2015/03/30, 2015/04/27, 2015/07/29, 2016/05/05 by Goncalo Marques
-%   2018/05/23 by Bas Kooijman
+%   2018/05/23, 2019/12/20 by Bas Kooijman
 
 %% Syntax
 % [q, info, itercount] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
@@ -31,6 +31,7 @@ function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, fil
 % * q: structure with parameters, result of the least squares estimates
 % * info: 1 if convergence has been successful; 0 otherwise
 % * itercount: nummber if iterations
+% * fval: minimum of loss function
 
 %% Remarks
 % Set options with <nmregr_options.html *nmregr_options*>.
