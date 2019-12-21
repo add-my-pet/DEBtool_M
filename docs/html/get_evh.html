@@ -1,0 +1,132 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_evh</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-07"><meta name="DC.source" content="get_evh.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_evh</h1><!--introduction--><p>mass of reserve and structure and maturity as function of time</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>EVH = <a href="..get_evh.m"><b>get_evh</b></a> (a,p,X)</p><h2>Description<a name="4"></a></h2><p>Obtains mass of reserve and structure and maturity    (quantified as cumulated investedment into maturation in the form of reserve), given constant food density, for different ages.</p><p>Input</p><div><ul><li>a: (n,1)-matrix with ages</li><li>p: 12 or 13 -vector with parameters of standard DEB model:      {J_EAm}, {F_m}, y_EX, y_VE, v, [J_EM], k_J, kap, kap_R, M_H^b, M_H^p, [M_V] with {J_ET} = 0</li></ul></div><pre>  or
+    {J_EAm}, {F_m}, y_EX, y_VE, v, [J_EM], {J_ET}, k_J, kap, kap_R, M_H^b, M_H^p, [M_V]</pre><div><ul><li>X: scalar with food density</li></ul></div><p>Output</p><div><ul><li>EVH: (n,3)-matrix with   masses of reserve M_E, structure M_V, maturity M_H</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The theory behind get_lb, get_tb and get_ue0 is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2009b.html">Kooy2009b</a>.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_flux.m"><b>mydata_flux</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_evh
+% mass of reserve and structure and maturity as function of time
+
+%%
+function EVH = get_evh(a,p,X)
+  % created by Bas Kooijman 2007/01/28, modified 2011/07/03
+  
+  %% Syntax
+  % EVH = <..get_evh.m *get_evh*> (a,p,X)
+  
+  %% Description
+  % Obtains mass of reserve and structure and maturity 
+  %    (quantified as cumulated investedment into maturation in the form of reserve), 
+  % given constant food density, for different ages. 
+  %
+  % Input
+  %
+  % * a: (n,1)-matrix with ages
+  % * p: 12 or 13 -vector with parameters of standard DEB model:
+  %      {J_EAm}, {F_m}, y_EX, y_VE, v, [J_EM], k_J, kap, kap_R, M_H^b, M_H^p, [M_V] with {J_ET} = 0
+  %
+  %    or
+  %      {J_EAm}, {F_m}, y_EX, y_VE, v, [J_EM], {J_ET}, k_J, kap, kap_R, M_H^b, M_H^p, [M_V]
+  %
+  % * X: scalar with food density
+  %  
+  % Output
+  %
+  % * EVH: (n,3)-matrix with
+  %   masses of reserve M_E, structure M_V, maturity M_H
+  
+  %% Remarks
+  % The theory behind get_lb, get_tb and get_ue0 is discussed in 
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2009b.html Kooy2009b>.
+  
+  %% Example of use
+  % See <../mydata_flux.m *mydata_flux*>
+  
+  % unpack p
+  if length(p) == 12
+    JEAm = p(1); Fm = p(2); yEX = p(3); yVE = p(4); v = p(5);
+    JEM = p(6); kJ = p(7); kap = p(8); kapR = p(9); MHb = p(10);
+    MHp = p(11); MV = p(12); JET = 0;
+  elseif length(p) == 13
+    JEAm = p(1); Fm = p(2); yEX = p(3); yVE = p(4); v = p(5);
+    JEM = p(6); JET = p(7); kJ = p(8); kap = p(9); kapR = p(10);
+    MHb = p(11); MHp = p(12); MV = p(13);
+  else
+    fprintf('number of DEB parameters does not equal 12 or 13\n');
+    return
+  end
+
+  kM = yVE * JEM/ MV; % 1/d, somatic maintenance rate coefficient
+  g = v * MV/ (kap * JEAm * yVE); % -, energy investment ratio
+  VHb = MHb/ JEAm/ (1 - kap);     % d.cm^2, scaled maturity at birth
+  JXAm = JEAm/ yEX;   % mol/d.cm^2, max spec food uptake rate
+  K = JXAm/ Fm;       % M, half saturation coefficient
+  f = X/ (X + K);     % -, scaled functional response
+  ME0 = JEAm * initial_scaled_reserve(f, [VHb; g; kJ; kM; v]); % mol
+
+  MEm = JEAm/ v;      % mol/cm^3, [M_Em] = {J_EAm}/v  max reserve density (mass/ vol)
+  mEm = MEm/ MV;      % mol/mol, max reserve density (mass/ mass)
+  Lm = v/ (kM * g);   % cm, maximum length
+  LT = JET/ JEM;      % cm, heating length
+
+  a = [-1e-10; a];    % d, prepend zero
+  [a EVH] = ode45(@dget_evh, a, [ME0; 1e-6; 1e-6], [], f, Lm, LT, mEm, g, v, JEAm, yVE, JEM, JET, kJ, kap, MHb, MHp, MV);
+  EVH(1,:) = [];      % remove first row
+
+##### SOURCE END #####
+--></body></html>

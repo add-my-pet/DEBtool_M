@@ -1,0 +1,149 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tx</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="get_tx.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tx</h1><!--introduction--><p>gets scaled age and length at puberty, weaning, birth for foetal development.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_p, tau_x, tau_b, lp, lx, lb, info] = <a href="../get_tx.m"><b>get_tx</b></a> (p, f)</p><h2 id="4">Description</h2><p>Obtains scaled age and length at puberty, weaning, birth for foetal development. An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birth.</p><p>Input</p><div><ul><li>p: 6-vector with parameters (see below)</li><li>f: scalar with scaled functional response</li></ul></div><p>Output</p><div><ul><li>tau_p, tau_x, tau_b: scalars with scaled age at puberty, weaning, birth</li><li>lp, lx, lb: scalers with scaled length at puberty, weaning, birth</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>uses integration over scaled age with event detection; this function replaces get_tx_old</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tx
+% gets scaled age and length at puberty, weaning, birth for foetal development.
+
+%%
+function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx(p, f)
+  % created 2019/02/04 by Bas Kooijman
+  
+  %% Syntax
+  % [tau_p, tau_x, tau_b, lp, lx, lb, info] = <../get_tx.m *get_tx*> (p, f)
+  
+  %% Description
+  % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
+  % An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast 
+  %    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). 
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birth. 
+  %
+  % Input
+  %
+  % * p: 6-vector with parameters (see below)
+  % * f: scalar with scaled functional response
+  %
+  % Output
+  %
+  % * tau_p, tau_x, tau_b: scalars with scaled age at puberty, weaning, birth
+  % * lp, lx, lb: scalers with scaled length at puberty, weaning, birth
+  % * info: indicator equals 1 if successful, 0 otherwise
+  %
+  %% Remarks
+  % uses integration over scaled age with event detection; this function replaces get_tx_old 
+
+  % unpack pars
+  g   = p(1); % -, energy investment ratio
+  k   = p(2); % -, k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % -, scaled heating length
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}
+  vHx = p(5); % v_H^x = U_H^x g^2 kM^3/ (1 - kap) v^2; U_B^x = M_H^x/ {J_EAm}
+  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
+  if length(p) >= 7
+    sF = p(7); % slow development: sF = 1, for sF > 1 intermediate between slow and fast
+  else
+    sF = 1e10;  % fast development
+  end
+  options = odeset('Events', @event_bxp); 
+  [tau, vHl, tau_bxp, vHl_bxp] = ode45(@dget_lx, [0; 1e20], [1e-20; 1e-20], options, f, g, k, lT, vHb, vHx, vHp, sF);
+  info = 1;
+  tau_b = tau_bxp(1); tau_x = tau_bxp(2); tau_p = tau_bxp(3); lb = vHl_bxp(1,2); lx = vHl_bxp(2,2); lp = vHl_bxp(3,2);
+  if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 % tb, tx and tp must be real and positive
+    info = 0;
+  elseif tau_b < 0 || tau_x < 0 || tau_p < 0
+    info = 0;
+  end
+
+end
+
+% subfunctions
+
+function dvHl = dget_lx (t, vHl, f, g, k, lT, vHb, vHx, vHp, sF)
+  vH = vHl(1); l = vHl(2);
+  if vH < vHb
+    li = sF * f; % -, scaled ultimate length
+    f  = sF * f; % -, scaled functional response
+  else
+    li = f - lT;
+  end
+  dl = (g/ 3) * (li - l)/ (f + g);  % d/d tau l
+  dvH = 3 * l^2 * dl + l^3 - k * vH;% d/d tau vH
+  dvHl = [dvH; dl];                 % pack to output
+end
+
+
+function [value,isterminal,direction] = event_bxp(t, vHl, f, g, k, lT, vHb, vHx, vHp, sF)
+  % vHl: 2-vector with [vH; l]
+  value = [vHb; vHx; vHp] - vHl(1);
+  isterminal = [0; 0; 1];
+  direction = [0; 0; 0]; 
+end
+
+##### SOURCE END #####
+--></body></html>

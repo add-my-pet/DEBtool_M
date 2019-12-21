@@ -1,0 +1,165 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shpower</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-09"><meta name="DC.source" content="shpower.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shpower</h1><!--introduction--><p>Plots powers as function of length</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use after editing <a href="../pars_animal.m"><b>pars_animal</b></a></a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shpower.m"><b>shpower</b></a> (j)</p><h2>Description<a name="4"></a></h2><p>Plots powers as function of length. Each curve corresponds with a value for f, stepping down from 1 with steps 0.2. The animal develops through the embryo (red), juvenile (blue) and adult (green) stages.</p><p>Input</p><div><ul><li>j: optional scalar with plot number (default: all)</li></ul></div><p>Output figures for embryo (red), juvenile (blue) and adult (green) stages.</p><div><ul><li>fig 1 Heat, which dissipates into the enironment</li><li>fig 2 Assimilation power (power input into reserves, extracted from food)</li><li>fig 3 Catabolic power</li><li>fig 4 Somatic maintenance plus heating plus growth power</li><li>fig 5 Specific heat, which dissipates into the environment</li><li>fig 6 Specific assimilation power (power input into reserves, extracted from food)</li><li>fig 7 Specific catabolic power % fig 8 Specific somatic maintenance plus heating plus growth power</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Notice that dissipation makes a jump at puberty because maturation ceases and allocation to reproduction staert. All maturity investment dissipates, but most of the reproductioninvestment does not. The powers are in terms of kJ/d, and the specific powers in kJ/mol.d, where the power has been devided by the structural mass. See pages 78 ff of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html"><b>DEB-book</b></a>.</p><h2>Example of use after editing <a href="../pars_animal.m"><b>pars_animal</b></a><a name="6"></a></h2><p>clear all; pars_animal; shpower</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shpower
+% Plots powers as function of length
+
+%%
+function shpower (j)
+  % created 2000/10/03 by Bas Kooijman, modified 2009/09/29
+  % power plots for 'animal'
+  
+  %% Syntax
+  % <../shpower.m *shpower*> (j)
+  
+  %% Description
+  % Plots powers as function of length. Each curve corresponds with a value for f, stepping down from 1 with steps 0.2.
+  % The animal develops through the embryo (red), juvenile (blue) and adult (green) stages. 
+  %
+  % Input
+  %
+  % * j: optional scalar with plot number (default: all)
+  %
+  % Output figures for embryo (red), juvenile (blue) and adult (green) stages.
+  %
+  % * fig 1 Heat, which dissipates into the enironment
+  % * fig 2 Assimilation power (power input into reserves, extracted from food)
+  % * fig 3 Catabolic power
+  % * fig 4 Somatic maintenance plus heating plus growth power
+  % * fig 5 Specific heat, which dissipates into the environment
+  % * fig 6 Specific assimilation power (power input into reserves, extracted from food)
+  % * fig 7 Specific catabolic power
+  % % fig 8 Specific somatic maintenance plus heating plus growth power 
+  
+  %% Remarks
+  % Notice that dissipation makes a jump at puberty because maturation ceases and allocation to reproduction staert. 
+  % All maturity investment dissipates, but most of the reproductioninvestment does not.
+  % The powers are in terms of kJ/d, and the specific powers in kJ/mol.d, where the power has been devided by the structural mass. 
+  % See pages 78 ff of the <http://www.bio.vu.nl/thb/research/bib/Kooy2010.html *DEB-book*>.
+   
+  %% Example of use after editing <../pars_animal.m *pars_animal*>
+  % clear all; pars_animal; shpower
+
+  global eb_min g k l_T v_Hb v_Hp p_ref mu_O mu_M n_O n_M eta_O d_O w_O m_Em
+  global L_m L_T vT kT_M kT_J kap kap_R U_Hb U_Hp
+
+  f = 1;              % -, scaled functional response
+  pars_lp = [g; k; l_T; v_Hb; v_Hp];
+  pars_power = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+  
+  txt =   {'dissipating heat, J/d'; 
+           'assimilation power, J/d';
+	       'dissipation power, J/d';
+           'growth power, J/d';
+           'spec dissipating heat, J/d.g'; 
+           'spec assimilation power, J/d.g';
+	       'spec dissipation power, J/d.g';
+           'spec growth power, J/d.g';
+           };
+
+  if exist('j', 'var') ~= 1
+    handle = zeros(8,1);
+    for i = 1:8 
+        handle(i) = figure(i);
+    end
+  end
+  
+  while f > .2 + eb_min(2)
+        
+    [l_p l_b] = get_lp(pars_lp, f);
+    l = linspace(l_b, f - l_T, 100)';
+        
+    % actual plotting
+    sel_embryo = l < l_b;
+    sel_juvenile = and(l >= l_b, l < l_p);
+    sel_adult = l >= l_p;
+    
+    % scaled lengths for embryo, juvenile and adult
+    
+    pACSJGRD = p_ref * scaled_power(l * L_m, f, pars_power, l_b, l_p);
+    pADG = pACSJGRD(:, [1 7 5]); % assimilation, dissipation, growth
+    pT = pADG * eta_O' * ((n_M\n_O) * mu_M  - mu_O); % dissipating heat
+    W = (L_m * l) .^ 3 * d_O(2)* (1 + f * m_Em * w_O(3)/ w_O(2));
+    P = [pT, pADG, pT ./ W, pADG ./ [W, W, W]];
+ 
+    if exist('j', 'var') % single-plot mode
+      plot(l(sel_embryo), P(sel_embryo,j), 'b', ... 
+         l(sel_juvenile), P(sel_juvenile,j), 'g', ... 
+         l(sel_adult), P(sel_adult,j), 'r')
+      ylabel(txt{j}); xlabel('scaled length');
+      title('total flux for f = 1, .8, ..')
+      hold on  
+    else % multiple plot-mode
+      for i = 1:8
+        set(0,'CurrentFigure',handle(i))
+        plot(l(sel_embryo), P(sel_embryo,i), 'b', ... 
+           l(sel_juvenile), P(sel_juvenile,i), 'g', ... 
+           l(sel_adult), P(sel_adult,i), 'r')
+        ylabel(txt{i}); xlabel('scaled length');
+        title('heat and powers for f = 1, .8, ..')
+        hold on
+      end 
+
+    end
+    f = f - 0.2;               % -, decrease functional response
+  end
+  
+##### SOURCE END #####
+--></body></html>

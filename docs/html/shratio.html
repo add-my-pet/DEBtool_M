@@ -1,0 +1,165 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shratio</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-09"><meta name="DC.source" content="shratio.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shratio</h1><!--introduction--><p>Plots of ratio's of mineral fluxes for 'animal'</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shratio.m"><b>shratio</b></a> (j)</p><h2>Description<a name="4"></a></h2><p>Produces three plots that show ratio of mineral fluxes as functions of the scaled length, for scaled functional responses f = 1, 0.8, 0.6, ... respiration, urination and watering quotients, excluding contributions from assimilation</p><p>Input</p><div><ul><li>optional scalar with figure number</li></ul></div><p>Output figures</p><div><ul><li>fig 1 Respiration Quotient:   ratio of carbon dioxide and (negative) dioxygen fluxes</li><li>fig 2 Watering Quotient:   ratio of water and (negative) dioxygen fluxes *fig 3 Urination Quotient:   ratio of nitrogen waste and (negative) dioxygen fluxes</li></ul></div><h2>Remarks<a name="5"></a></h2><p>The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. The range of the scaled lengths is from 0.8*l_b to f. The fluxes exclude contributions from assimilation; so only contributions from dissipation and growth are included. All fluxes are in terms of mol per time; the ratio's are dimensionless. See pages 138 ff of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html"><b>DEB-book</b></a>.</p><h2>Example of use<a name="6"></a></h2><p>after editing <a href="../pars_animal.m"><b>pars_animal</b></a>: clear all; pars_animal; shratio.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shratio
+% Plots of ratio's of mineral fluxes for 'animal'
+
+%%
+function shratio (j)
+  % created 2000/10/20 by Bas Kooijman, modified 2009/09/29
+  
+  %% Syntax 
+  % <../shratio.m *shratio*> (j)
+  
+  %% Description
+  % Produces three plots that show ratio of mineral fluxes as functions of the scaled length, for scaled functional responses f = 1, 0.8, 0.6, ... 
+  % respiration, urination and watering quotients,
+  % excluding contributions from assimilation
+  %
+  % Input
+  %
+  % * optional scalar with figure number
+  %
+  % Output figures
+  %
+  % * fig 1 Respiration Quotient: 
+  %   ratio of carbon dioxide and (negative) dioxygen fluxes
+  % * fig 2 Watering Quotient: 
+  %   ratio of water and (negative) dioxygen fluxes
+  % *fig 3 Urination Quotient: 
+  %   ratio of nitrogen waste and (negative) dioxygen fluxes
+
+  %% Remarks
+  % The lowest value of f still has an ultimate length larger than l_b, which depends on other parameter values. 
+  % The range of the scaled lengths is from 0.8*l_b to f. 
+  % The fluxes exclude contributions from assimilation; so only contributions from dissipation and growth are included. 
+  % All fluxes are in terms of mol per time; the ratio's are dimensionless. 
+  % See pages 138 ff of the <http://www.bio.vu.nl/thb/research/bib/Kooy2010.html *DEB-book*>.
+  
+  %% Example of use
+  % after editing <../pars_animal.m *pars_animal*>: 
+  % clear all; pars_animal; shratio.
+  
+  global eta_O n_O n_M eb_min g k l_T v_Hb v_Hp p_ref
+  global L_m L_T vT kT_M kT_J kap kap_R U_Hb U_Hp
+
+  f = 1;              % -, scaled functional response
+  O2M = (- n_M\n_O)'; % -, matrix that converts organic to mineral fluxes
+			               	% O2M is prepared for post-multiplication
+  pars_lp = [g; k; l_T; v_Hb; v_Hp];
+  pars_power = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+  
+  txt =   {'respiration quotient, mol CO_2/mol O_2';
+	       'urination  quotient mol NH_3/mol O_2';
+           'watering quotient mol H_2O/mol O_2'};
+
+  if exist('j','var') ~= 1
+    handle = zeros(3,1);
+    for i = 1:8 
+        handle(i) = figure(i);
+    end
+  end
+  
+  while f > eb_min(2)  
+        
+    [l_p l_b] = get_lp(pars_lp, f);
+    l = linspace(1e-4, f, 100)';
+        
+    % actual plotting
+    sel_embryo = l < l_b;
+    sel_juvenile = and(l >= l_b, l < l_p);
+    sel_adult = l >= l_p;
+    
+    % scaled lengths for embryo, juvenile and adult
+    
+    pACSJGRD = p_ref * scaled_power(l * L_m, f, pars_power, l_b, l_p);
+    pADG = pACSJGRD(:, [1 7 5]);
+    
+    pADG(:,1) = 0; % exclude contributions from assimilation
+    JO = pADG * eta_O';        % organic fluxes
+    JM = JO * O2M;             % mineral fluxes
+    % respiration, urination, watering quotient
+    RUW = -JM(:,[1 4 2]) ./ JM(:,[3 3 3]);   
+
+ 
+    if exist('j','var') == 1 % single-plot mode
+      plot(l(sel_embryo), RUW(sel_embryo,j), 'b', ... 
+         l(sel_juvenile), RUW(sel_juvenile,j), 'g', ... 
+         l(sel_adult), RUW(sel_adult,j), 'r')
+      ylabel(txt{j}); xlabel('scaled length');
+      title('total flux for f = 1, .8, ..')
+      hold on  
+    else % multiple plot-mode
+      for i = 1:3
+        set(0,'CurrentFigure',handle(i))
+        plot(l(sel_embryo), RUW(sel_embryo,i), 'b', ... 
+           l(sel_juvenile), RUW(sel_juvenile,i), 'g', ... 
+           l(sel_adult), RUW(sel_adult,i), 'r')
+        ylabel(txt{i}); xlabel('scaled length');
+        title('quotient for f = 1, .8, .., excl assim')
+        hold on
+      end 
+
+    end
+    f = f - 0.2;               % -, decrease functional response
+  end
+  
+##### SOURCE END #####
+--></body></html>

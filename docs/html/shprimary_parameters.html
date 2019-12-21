@@ -1,0 +1,706 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shprimary_parameters</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-06"><meta name="DC.source" content="shprimary_parameters.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Description</a></li><li><a href="#4">Input</a></li><li><a href="#5">Output</a></li><li><a href="#6">Remarks</a></li><li><a href="#7">Example of use</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [pars vars TYPE FIT COMPLETE] = shprimary_parameters
+</pre><pre class="codeinput"><span class="comment">% created at 2013/08/01 by Bas Kooijman</span>
+<span class="comment">%</span>
+</pre><h2>Description<a name="3"></a></h2><pre>plots parameters in Species.xls, which can be found at http://www.bio.vu.nl/thb/deb/deblab/
+the present path-setting assumes that the file Species.xls is in subdir add_my_pet</pre><h2>Input<a name="4"></a></h2><pre>the file Species.xls</pre><h2>Output<a name="5"></a></h2><pre>lots of figures</pre><h2>Remarks<a name="6"></a></h2><pre>A desciption of pars and vars can be found in report_init</pre><h2>Example of use<a name="7"></a></h2><pre>[pars vars TYPE FIT COMPLETE] = shprimary_parameters</pre><pre class="codeinput">  file = <span class="string">'/add_my_pet/Species.xls'</span>;
+  read_Species
+
+  <span class="keyword">if</span> 0
+    mv = mean(v); mvj = mean(vj);
+    cv = std(v)/mv; cvj = std(vj)/mvj; <span class="comment">% -, variation coeff of v, vj</span>
+    txt = {<span class="string">'before acceleration'</span>; <span class="string">'after acceleration'</span>};
+    printpar(txt, [mv; mvj], [cv; cvj], <span class="string">'energy conductance mean, var coeff'</span>);
+  <span class="keyword">end</span>
+
+  close <span class="string">all</span>
+
+<span class="keyword">if</span> 1
+
+  figure <span class="comment">% L_i</span>
+  hold <span class="string">on</span>
+  surv_Li = surv(Li, 0);
+  m_Li = sum(Li  &gt; 1)/ n_species;
+  plot(surv_Li(:,1), surv_Li(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; 1; 1], [m_Li; m_Li; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  ylim([0;1]);
+  xlabel(<span class="string">'L_\infty, cm'</span>)
+
+  figure <span class="comment">% v</span>
+  hold <span class="string">on</span>
+  surv_v = surv(v,0);  surv_vj = surv(vj,0);
+  m_v = sum(v &gt; .02)/ n_species;
+  plot(surv_v(:,1), surv_v(:,2),<span class="string">'b'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot(surv_vj(:,1), surv_vj(:,2),<span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; .02; .02], [m_v; m_v; 0], <span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'v, cm d^{-1}'</span>)
+  taxa_loc = {<span class="string">'v_b'</span>; <span class="string">'v_j'</span>}; col_taxa_loc = [0 0 1; 1 0 0];
+  txt_taxa(1, .8, taxa_loc, col_taxa_loc);
+
+  figure <span class="comment">% L_i - v</span>
+  hold <span class="string">on</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(vj(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0)), log10(v(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(v(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2;2], [log10(0.02); log10(0.02)],<span class="string">'b'</span>, <span class="string">'linewidth'</span>, 2)
+  <span class="keyword">for</span> i = 1:n_species
+    <span class="keyword">if</span> TYPE(i) &gt; 0 &amp;&amp; s_M(i) &gt; 1 <span class="comment">% TYPE(i) == 3 || TYPE(i) == 4</span>
+      <span class="comment">%plot(log10(Li(i)), log10(v(i)), 'ob', 'linewidth', 2)</span>
+      <span class="comment">%plot(log10(Li(i)), log10(vj(i)), 'or', 'linewidth', 2)</span>
+      plot(log10(Li(i) * ones(2,1)), log10([vj(i); v(i)]),<span class="string">'-k'</span>, <span class="string">'Linewidth'</span>, 2)
+    <span class="comment">%elseif TYPE(i) == 1 || TYPE(i) == 2</span>
+      <span class="comment">%plot(log10(Li(i)), log10(v(i)), '.b', 'markersize', 20)</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  <span class="comment">%set(gca, 'ylim', [-3 0.5], 'YTick', -2:.5:0.5)</span>
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>, <span class="string">'FontSize'</span>, 15)
+  ylabel(<span class="string">'_{10}log v, cm d^{-1}'</span>, <span class="string">'FontSize'</span>, 15)
+  txt_taxa(-2, 0.85, taxa, col_taxa);
+
+  figure <span class="comment">% kap</span>
+  hold <span class="string">on</span>
+  surv_kap = surv(kap,0);
+  m_kap = sum(kap &gt; .8)/ n_species;
+  plot(surv_kap(:,1), surv_kap(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; .8; .8], [m_kap; m_kap; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'\kappa, -'</span>)
+
+  figure <span class="comment">% L_i - kap</span>
+  hold <span class="string">on</span>
+  scatter(log10(Li(TYPE&gt;0)), kap(TYPE&gt;0), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), kap(TYPE&gt;0 &amp; s_M == 1), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], 0.8 * [1; 1], <span class="string">'b'</span>, <span class="string">'linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  <span class="comment">%set(gca, 'ylim', [0 1], 'YTick', 0:.2:1)</span>
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'\kappa, -'</span>)
+  txt_taxa(-2.2, 0.3, taxa, col_taxa);
+
+  figure <span class="comment">% [p_M]</span>
+  hold <span class="string">on</span>
+  surv_pM = surv(pM,0);
+  m_pM = sum(pM &gt; 20)/ n_species;
+  plot(surv_pM(:,1), surv_pM(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; 20; 20], [m_pM; m_pM; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'[p_M], J cm^{-1} d^{-1}'</span>)
+
+  figure <span class="comment">% L_i - [p_M]</span>
+  hold <span class="string">on</span>
+  <span class="comment">%scatter(log10(Li(TYPE&gt;0)), log10(pM(TYPE&gt;0)), 60, color(TYPE&gt;0, :), 'LineWidth', 2)</span>
+  scatter(log10(Li), log10(pM), 60, color, <span class="string">'LineWidth'</span>, 2)
+  <span class="comment">%scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(pM(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), 'LineWidth', 4)</span>
+  scatter(log10(Li(s_M == 1)), log10(pM(s_M == 1)), 20, color(s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(18) * [1; 1], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  set(gca, <span class="string">'ylim'</span>, [.25 4], <span class="string">'YTick'</span>, 0.5:1:4)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log [p_M], J cm^{-3} d^{-1}'</span>)
+  txt_taxa(2, 3, taxa, col_taxa);
+
+  figure <span class="comment">% L_i - [p_M]/ d_V</span>
+  pMdV = pM ./ dV;
+  hold <span class="string">on</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(pMdV(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(pMdV(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(180) * [1; 1], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  <span class="comment">%set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)</span>
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log [p_M]/d_V, J g^{-1} d^{-1}'</span>)
+  txt_taxa(2, 4.5, taxa, col_taxa);
+
+  figure <span class="comment">% kap - [p_M]</span>
+  hold <span class="string">on</span>
+  scatter(kap(TYPE&gt;0), log10(pM(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(kap(TYPE&gt;0 &amp; s_M == 1), log10(pM(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  <span class="comment">%set(gca, 'xlim', [0 1])</span>
+  <span class="comment">%set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)</span>
+  xlabel(<span class="string">'\kappa, -'</span>)
+  ylabel(<span class="string">'_{10}log [p_M], J cm^{-3} d^{-1}'</span>)
+  txt_taxa(.1, .5, taxa, col_taxa);
+
+  figure <span class="comment">% k_J</span>
+  hold <span class="string">on</span>
+  surv_kJ = surv(kJ,0);
+  m_kJ = sum(kJ &gt; .002)/ n_species;
+  plot(surv_kJ(:,1), surv_kJ(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; .002; .002], [m_kJ; m_kJ; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'k_J, d^{-1}'</span>)
+
+  figure <span class="comment">% L_i - k_J</span>
+  hold <span class="string">on</span>
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(kJ(TYPE == 1 | TYPE == 2)),'.b', 'Markersize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(kJ(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(kJ(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(kJ(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(0.002) * [1; 1], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  set(gca, <span class="string">'ylim'</span>, [-8 -.5], <span class="string">'YTick'</span>, -8:2:1)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log k_J, d^{-1}'</span>)
+  txt_taxa(-2, -6, taxa, col_taxa);
+
+  figure <span class="comment">% [E_G]</span>
+  hold <span class="string">on</span>
+  surv_EG = surv(EG,0);
+  m_EG = sum(EG &gt; 2800)/ n_species;
+  plot(surv_EG(:,1), surv_EG(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([0; 2800; 2800], [m_EG; m_EG; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'[E_G], J cm^{-1}'</span>)
+
+  figure<span class="comment">% [E_G]/ d_V</span>
+  EGdV = EG ./ dV;
+  surv_EGdV = surv(EGdV,0);
+  plot(surv_EGdV(:,1), surv_EGdV(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'[E_G]/ d_V, J g^{-1}'</span>)
+
+  figure <span class="comment">% L_i - [E_G]/ d_V</span>
+  hold <span class="string">on</span>
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EGdV(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EGdV(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(EGdV(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(EGdV(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(28000) * [1; 1], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  set(gca, <span class="string">'ylim'</span>, [4.3 4.8], <span class="string">'YTick'</span>, 4.3:.1:4.8)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log [E_G]/d_V, J g^{-1}'</span>)
+  txt_taxa(-2, -6, taxa, col_taxa);
+
+  figure <span class="comment">% {p_Am}/ L_i</span>
+  hold <span class="string">on</span>
+  pAmLi = pAm ./ Li;
+  surv_pAm = surv(log10(pAmLi), 0);
+  EpAmLi = 20/ 0.8; <span class="comment">% J/d.cm^3, expected  {p_Am}/L_i for generlized animal</span>
+  m_pAm = sum(log10(pAmLi)  &gt; log10(EpAmLi))/ n_species;
+  plot(surv_pAm(:,1), surv_pAm(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([surv_pAm(1,1); log10(EpAmLi); log10(EpAmLi)], [m_pAm; m_pAm; 0], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'_{10}log \{p_{Am}\}/L_\infy, J cm^{-3} d^{-1}'</span>)
+
+  figure <span class="comment">% L_i - {p_Am}</span>
+  hold <span class="string">on</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(pAmj(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0)), log10(pAm(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(pAm(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(pAm(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(pAm(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(pAmj(TYPE == 3 | TYPE == 4)),'or', 'LineWidth', 2)</span>
+  plot([-2; 2], log10(22.5) + [-2; 2], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  <span class="keyword">for</span> i = 1:n_species
+    <span class="keyword">if</span> TYPE(i) &gt; 0 &amp;&amp; s_M(i) &gt; 1 <span class="comment">% TYPE(i) == 3 || TYPE(i) == 4</span>
+      plot(log10(Li(i) * ones(2,1)), log10([pAmj(i); pAm(i)]),<span class="string">'-k'</span>, <span class="string">'Linewidth'</span>, 2)
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  set(gca, <span class="string">'ylim'</span>, [-.5 4.5], <span class="string">'YTick'</span>, 0:1:4)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log \{p_{Am}\}, J cm^{-2} d^{-1}'</span>)
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure <span class="comment">% E_H^b/ L_i^3</span>
+  surv_EHb = surv(log10(EHb ./ Li.^3), 0);
+  plot(surv_EHb(:,1), surv_EHb(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'_{10}log E_H^b/ L_\infty^3, J/cm^2'</span>)
+
+  figure <span class="comment">% L_i - E_H^b</span>
+  hold <span class="string">on</span>
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHb(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHb(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(EHb(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(EHb(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(275) - 3 + [-6; 6], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  <span class="comment">%set(gca, 'ylim', [-10 10], 'YTick', -10:5:10)</span>
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log E_H^b'</span>)
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure <span class="comment">% E_H^j/ L_i^3</span>
+  surv_EHj = surv(log10(EHj ./ Li.^3), 0);
+  plot(surv_EHj(:,1), surv_EHj(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'_{10} log E_H^j/ L_\infty^3, J/cm^3'</span>)
+
+  figure <span class="comment">% L_i - E_H^j</span>
+  hold <span class="string">on</span>
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHj(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHj(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(EHj(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(EHj(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(275) - 3 + [-6; 6], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  set(gca, <span class="string">'ylim'</span>, [-7 9], <span class="string">'YTick'</span>, -10:3:10)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log E_H^j'</span>)
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure <span class="comment">% E_H^p/ L_i^3</span>
+  surv_EHp = surv(log10(EHp ./ Li.^3), 0);
+  plot(surv_EHp(:,1), surv_EHp(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'_{10}log E_H^p/ L_\infty^3, J/cm^3'</span>)
+
+  figure <span class="comment">% L_i - E_H^p</span>
+  hold <span class="string">on</span>
+  <span class="comment">%plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHp(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)</span>
+  <span class="comment">%plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHp(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)</span>
+  scatter(log10(Li(TYPE&gt;0)), log10(EHp(TYPE&gt;0)), 60, color(TYPE&gt;0, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; s_M == 1)), log10(EHp(TYPE&gt;0 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(166) + [-6; 6], <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  <span class="comment">%set(gca, 'ylim', [-5 10], 'YTick', -5:5:10)</span>
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log E_H^p'</span>)
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure <span class="comment">% L_i - h_a</span>
+  hold <span class="string">on</span>
+  scatter(log10(Li(TYPE&gt;0 &amp; sG &lt; 1e-3)), log10(ha(TYPE&gt;0 &amp; sG &lt; 1e-3)), 60, color(TYPE&gt;0 &amp; sG &lt; 1e-3, :), <span class="string">'LineWidth'</span>, 2)
+  scatter(log10(Li(TYPE&gt;0 &amp; sG &lt; 1e-3 &amp; s_M == 1)), log10(ha(TYPE&gt;0 &amp; sG &lt; 1e-3 &amp; s_M == 1)), 20, color(TYPE&gt;0 &amp; sG &lt; 1e-3 &amp; s_M == 1, :), <span class="string">'LineWidth'</span>, 4)
+  plot([-2; 2], log10(1e-6) + [2; -2], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  set(gca, <span class="string">'xlim'</span>, [-2.5 2.5], <span class="string">'XTick'</span>, -2:1:2)
+  xlabel(<span class="string">'_{10}log L_\infty, cm'</span>)
+  ylabel(<span class="string">'_{10}log h_a, d^{-2}'</span>)
+  txt_taxa(-2, -15, taxa, col_taxa);
+
+<span class="keyword">end</span>
+
+  figure <span class="comment">% FIT</span>
+  hold <span class="string">on</span>
+  surv_FIT = surv(FIT,0);
+  m_FIT = sum(FIT)/ n_species;
+  M_FIT = sum(FIT &gt; m_FIT)/ n_species;
+  plot(surv_FIT(:,1), surv_FIT(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([m_FIT; m_FIT; 0], [0; M_FIT; M_FIT], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlim([0 10]);
+  xlabel(<span class="string">'FIT mark'</span>)
+
+  figure <span class="comment">% COMPLETE</span>
+  hold <span class="string">on</span>
+  surv_COMPLETE = surv(COMPLETE,0);
+  m_COMPLETE = sum(COMPLETE)/ n_species;
+  M_COMPLETE = sum(COMPLETE &gt; m_COMPLETE)/ n_species;
+  plot(surv_COMPLETE(:,1), surv_COMPLETE(:,2),<span class="string">'g'</span>, <span class="string">'Linewidth'</span>, 2)
+  plot([m_COMPLETE; m_COMPLETE; 0], [0; M_COMPLETE; M_COMPLETE], <span class="string">'r'</span>, <span class="string">'Linewidth'</span>, 2)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'COMPLETE mark'</span>)
+
+  figure <span class="comment">% COMPLETE - FIT</span>
+  plot(COMPLETE, FIT,<span class="string">'.r'</span>,<span class="string">'MarkerSize'</span>, 20)
+  set(gca, <span class="string">'FontSize'</span>, 15, <span class="string">'Box'</span>, <span class="string">'on'</span>)
+  xlabel(<span class="string">'COMPLETE mark'</span>)
+  ylabel(<span class="string">'FIT mark'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function [pars vars TYPE FIT COMPLETE] = shprimary_parameters 
+% created at 2013/08/01 by Bas Kooijman 
+%
+%% Description
+%  plots parameters in Species.xls, which can be found at http://www.bio.vu.nl/thb/deb/deblab/
+%  the present path-setting assumes that the file Species.xls is in subdir add_my_pet
+%
+%% Input
+%  the file Species.xls
+%
+%% Output
+%  lots of figures
+%
+%% Remarks
+%  A desciption of pars and vars can be found in report_init
+%
+%% Example of use
+%  [pars vars TYPE FIT COMPLETE] = shprimary_parameters 
+
+  file = '/add_my_pet/Species.xls';
+  read_Species
+
+  if 0
+    mv = mean(v); mvj = mean(vj);
+    cv = std(v)/mv; cvj = std(vj)/mvj; % -, variation coeff of v, vj
+    txt = {'before acceleration'; 'after acceleration'};
+    printpar(txt, [mv; mvj], [cv; cvj], 'energy conductance mean, var coeff');
+  end
+  
+  close all
+  
+if 1
+    
+  figure % L_i 
+  hold on
+  surv_Li = surv(Li, 0);
+  m_Li = sum(Li  > 1)/ n_species;
+  plot(surv_Li(:,1), surv_Li(:,2),'g', 'Linewidth', 2)
+  plot([0; 1; 1], [m_Li; m_Li; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  ylim([0;1]);
+  xlabel('L_\infty, cm')
+  
+  figure % v
+  hold on
+  surv_v = surv(v,0);  surv_vj = surv(vj,0); 
+  m_v = sum(v > .02)/ n_species;
+  plot(surv_v(:,1), surv_v(:,2),'b', 'Linewidth', 2)
+  plot(surv_vj(:,1), surv_vj(:,2),'r', 'Linewidth', 2)
+  plot([0; .02; .02], [m_v; m_v; 0], 'g', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('v, cm d^{-1}')
+  taxa_loc = {'v_b'; 'v_j'}; col_taxa_loc = [0 0 1; 1 0 0];
+  txt_taxa(1, .8, taxa_loc, col_taxa_loc);
+
+  figure % L_i - v
+  hold on
+  scatter(log10(Li(TYPE>0)), log10(vj(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(v(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(v(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2;2], [log10(0.02); log10(0.02)],'b', 'linewidth', 2)
+  for i = 1:n_species
+    if TYPE(i) > 0 && s_M(i) > 1 % TYPE(i) == 3 || TYPE(i) == 4
+      %plot(log10(Li(i)), log10(v(i)), 'ob', 'linewidth', 2)
+      %plot(log10(Li(i)), log10(vj(i)), 'or', 'linewidth', 2)
+      plot(log10(Li(i) * ones(2,1)), log10([vj(i); v(i)]),'-k', 'Linewidth', 2)
+    %elseif TYPE(i) == 1 || TYPE(i) == 2
+      %plot(log10(Li(i)), log10(v(i)), '.b', 'markersize', 20)
+    end
+  end
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [-3 0.5], 'YTick', -2:.5:0.5)
+  xlabel('_{10}log L_\infty, cm', 'FontSize', 15)
+  ylabel('_{10}log v, cm d^{-1}', 'FontSize', 15)
+  txt_taxa(-2, 0.85, taxa, col_taxa);
+
+  figure % kap
+  hold on
+  surv_kap = surv(kap,0);  
+  m_kap = sum(kap > .8)/ n_species;
+  plot(surv_kap(:,1), surv_kap(:,2),'g', 'Linewidth', 2)
+  plot([0; .8; .8], [m_kap; m_kap; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('\kappa, -')
+
+  figure % L_i - kap
+  hold on
+  scatter(log10(Li(TYPE>0)), kap(TYPE>0), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), kap(TYPE>0 & s_M == 1), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], 0.8 * [1; 1], 'b', 'linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [0 1], 'YTick', 0:.2:1)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('\kappa, -')
+  txt_taxa(-2.2, 0.3, taxa, col_taxa);
+
+  figure % [p_M]
+  hold on
+  surv_pM = surv(pM,0);  
+  m_pM = sum(pM > 20)/ n_species;
+  plot(surv_pM(:,1), surv_pM(:,2),'g', 'Linewidth', 2)
+  plot([0; 20; 20], [m_pM; m_pM; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('[p_M], J cm^{-1} d^{-1}')
+
+  figure % L_i - [p_M]
+  hold on
+  %scatter(log10(Li(TYPE>0)), log10(pM(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li), log10(pM), 60, color, 'LineWidth', 2)
+  %scatter(log10(Li(TYPE>0 & s_M == 1)), log10(pM(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  scatter(log10(Li(s_M == 1)), log10(pM(s_M == 1)), 20, color(s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(18) * [1; 1], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log [p_M], J cm^{-3} d^{-1}')
+  txt_taxa(2, 3, taxa, col_taxa);
+  
+  figure % L_i - [p_M]/ d_V
+  pMdV = pM ./ dV;
+  hold on
+  scatter(log10(Li(TYPE>0)), log10(pMdV(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(pMdV(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(180) * [1; 1], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log [p_M]/d_V, J g^{-1} d^{-1}')
+  txt_taxa(2, 4.5, taxa, col_taxa);
+
+  figure % kap - [p_M]
+  hold on
+  scatter(kap(TYPE>0), log10(pM(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(kap(TYPE>0 & s_M == 1), log10(pM(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  %set(gca, 'xlim', [0 1])
+  %set(gca, 'ylim', [.25 4], 'YTick', 0.5:1:4)
+  xlabel('\kappa, -')
+  ylabel('_{10}log [p_M], J cm^{-3} d^{-1}')
+  txt_taxa(.1, .5, taxa, col_taxa);
+
+  figure % k_J
+  hold on
+  surv_kJ = surv(kJ,0);  
+  m_kJ = sum(kJ > .002)/ n_species;
+  plot(surv_kJ(:,1), surv_kJ(:,2),'g', 'Linewidth', 2)
+  plot([0; .002; .002], [m_kJ; m_kJ; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('k_J, d^{-1}')
+
+  figure % L_i - k_J
+  hold on
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(kJ(TYPE == 1 | TYPE == 2)),'.b', 'Markersize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(kJ(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(kJ(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(kJ(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(0.002) * [1; 1], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  set(gca, 'ylim', [-8 -.5], 'YTick', -8:2:1)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log k_J, d^{-1}')
+  txt_taxa(-2, -6, taxa, col_taxa);
+
+  figure % [E_G]
+  hold on
+  surv_EG = surv(EG,0);  
+  m_EG = sum(EG > 2800)/ n_species;
+  plot(surv_EG(:,1), surv_EG(:,2),'g', 'Linewidth', 2)
+  plot([0; 2800; 2800], [m_EG; m_EG; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('[E_G], J cm^{-1}')
+  
+  figure% [E_G]/ d_V
+  EGdV = EG ./ dV;
+  surv_EGdV = surv(EGdV,0);
+  plot(surv_EGdV(:,1), surv_EGdV(:,2),'g', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('[E_G]/ d_V, J g^{-1}')
+
+  figure % L_i - [E_G]/ d_V
+  hold on
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EGdV(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EGdV(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(EGdV(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(EGdV(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(28000) * [1; 1], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  set(gca, 'ylim', [4.3 4.8], 'YTick', 4.3:.1:4.8)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log [E_G]/d_V, J g^{-1}')
+  txt_taxa(-2, -6, taxa, col_taxa);
+
+  figure % {p_Am}/ L_i
+  hold on
+  pAmLi = pAm ./ Li;
+  surv_pAm = surv(log10(pAmLi), 0);
+  EpAmLi = 20/ 0.8; % J/d.cm^3, expected  {p_Am}/L_i for generlized animal
+  m_pAm = sum(log10(pAmLi)  > log10(EpAmLi))/ n_species;
+  plot(surv_pAm(:,1), surv_pAm(:,2),'g', 'Linewidth', 2)
+  plot([surv_pAm(1,1); log10(EpAmLi); log10(EpAmLi)], [m_pAm; m_pAm; 0], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('_{10}log \{p_{Am}\}/L_\infy, J cm^{-3} d^{-1}')
+
+  figure % L_i - {p_Am}
+  hold on
+  scatter(log10(Li(TYPE>0)), log10(pAmj(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(pAm(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(pAm(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(pAm(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(pAm(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(pAmj(TYPE == 3 | TYPE == 4)),'or', 'LineWidth', 2)
+  plot([-2; 2], log10(22.5) + [-2; 2], 'b', 'LineWidth', 2)
+  for i = 1:n_species
+    if TYPE(i) > 0 && s_M(i) > 1 % TYPE(i) == 3 || TYPE(i) == 4
+      plot(log10(Li(i) * ones(2,1)), log10([pAmj(i); pAm(i)]),'-k', 'Linewidth', 2)
+    end
+  end
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  set(gca, 'ylim', [-.5 4.5], 'YTick', 0:1:4)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log \{p_{Am}\}, J cm^{-2} d^{-1}')
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+  
+  figure % E_H^b/ L_i^3
+  surv_EHb = surv(log10(EHb ./ Li.^3), 0);
+  plot(surv_EHb(:,1), surv_EHb(:,2),'g', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('_{10}log E_H^b/ L_\infty^3, J/cm^2')
+
+  figure % L_i - E_H^b
+  hold on
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHb(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHb(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(EHb(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(EHb(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(275) - 3 + [-6; 6], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [-10 10], 'YTick', -10:5:10)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log E_H^b')
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+  
+  figure % E_H^j/ L_i^3
+  surv_EHj = surv(log10(EHj ./ Li.^3), 0);
+  plot(surv_EHj(:,1), surv_EHj(:,2),'g', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('_{10} log E_H^j/ L_\infty^3, J/cm^3')
+
+  figure % L_i - E_H^j
+  hold on
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHj(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHj(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(EHj(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(EHj(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(275) - 3 + [-6; 6], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  set(gca, 'ylim', [-7 9], 'YTick', -10:3:10)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log E_H^j')
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure % E_H^p/ L_i^3
+  surv_EHp = surv(log10(EHp ./ Li.^3), 0);
+  plot(surv_EHp(:,1), surv_EHp(:,2),'g', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('_{10}log E_H^p/ L_\infty^3, J/cm^3')
+
+  figure % L_i - E_H^p
+  hold on
+  %plot(log10(Li(TYPE == 1 | TYPE == 2)), log10(EHp(TYPE == 1 | TYPE == 2)),'.b', 'MarkerSize', 20)
+  %plot(log10(Li(TYPE == 3 | TYPE == 4)), log10(EHp(TYPE == 3 | TYPE == 4)),'ob', 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0)), log10(EHp(TYPE>0)), 60, color(TYPE>0, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & s_M == 1)), log10(EHp(TYPE>0 & s_M == 1)), 20, color(TYPE>0 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(166) + [-6; 6], 'b', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  %set(gca, 'ylim', [-5 10], 'YTick', -5:5:10)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log E_H^p')
+  txt_taxa(-2, 3.5, taxa, col_taxa);
+
+  figure % L_i - h_a
+  hold on
+  scatter(log10(Li(TYPE>0 & sG < 1e-3)), log10(ha(TYPE>0 & sG < 1e-3)), 60, color(TYPE>0 & sG < 1e-3, :), 'LineWidth', 2)
+  scatter(log10(Li(TYPE>0 & sG < 1e-3 & s_M == 1)), log10(ha(TYPE>0 & sG < 1e-3 & s_M == 1)), 20, color(TYPE>0 & sG < 1e-3 & s_M == 1, :), 'LineWidth', 4)
+  plot([-2; 2], log10(1e-6) + [2; -2], 'k', 'LineWidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  set(gca, 'xlim', [-2.5 2.5], 'XTick', -2:1:2)
+  xlabel('_{10}log L_\infty, cm')
+  ylabel('_{10}log h_a, d^{-2}')
+  txt_taxa(-2, -15, taxa, col_taxa);
+
+end
+
+  figure % FIT
+  hold on
+  surv_FIT = surv(FIT,0);  
+  m_FIT = sum(FIT)/ n_species; 
+  M_FIT = sum(FIT > m_FIT)/ n_species;
+  plot(surv_FIT(:,1), surv_FIT(:,2),'g', 'Linewidth', 2)
+  plot([m_FIT; m_FIT; 0], [0; M_FIT; M_FIT], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlim([0 10]);
+  xlabel('FIT mark')
+
+  figure % COMPLETE
+  hold on
+  surv_COMPLETE = surv(COMPLETE,0);  
+  m_COMPLETE = sum(COMPLETE)/ n_species; 
+  M_COMPLETE = sum(COMPLETE > m_COMPLETE)/ n_species;
+  plot(surv_COMPLETE(:,1), surv_COMPLETE(:,2),'g', 'Linewidth', 2)
+  plot([m_COMPLETE; m_COMPLETE; 0], [0; M_COMPLETE; M_COMPLETE], 'r', 'Linewidth', 2)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('COMPLETE mark')
+
+  figure % COMPLETE - FIT
+  plot(COMPLETE, FIT,'.r','MarkerSize', 20)
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('COMPLETE mark')
+  ylabel('FIT mark')
+
+##### SOURCE END #####
+--></body></html>

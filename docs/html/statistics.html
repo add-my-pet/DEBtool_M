@@ -1,0 +1,519 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>created 2000/11/02 by Bas Kooijman, modified 2014/03/17</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-03-20"><meta name="DC.source" content="statistics.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>created 2000/11/02 by Bas Kooijman, modified 2014/03/17</h1><!--introduction--><p>calculates food-dependent quantities for 'animal' run pars_animal before running this script add_my_pet is also using this script; first run pars_my_pet</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">life stage quantities</a></li><li><a href="#2">size</a></li><li><a href="#3">life span</a></li><li><a href="#4">feeding</a></li><li><a href="#5">reproduction</a></li><li><a href="#6">mass fluxes for L = L_i = s_M (f L_m - L_T)</a></li><li><a href="#7">population characteristics</a></li></ul></div><h2>life stage quantities<a name="1"></a></h2><pre class="codeinput"><span class="keyword">if</span> foetus == 1 &amp;&amp; E_Hj == E_Hb <span class="comment">% foetal development, no metamorphosis</span>
+  <span class="comment">% notice that foetal development typically combines with high U_Hb</span>
+  pars_E0 = [V_Hb; g; kT_J; kT_M; vT]; <span class="comment">% pars for initial_scaled_reserve</span>
+  [U_E0 L_b info] = initial_scaled_reserve_foetus(f, pars_E0); <span class="comment">% d cm^2, initial scaled reserve</span>
+  <span class="keyword">if</span> info ~= 1
+    fprintf(<span class="string">'warning in initial_scaled_reserve_foetus: invalid parameter value combination for foetus \n'</span>)
+  <span class="keyword">end</span>
+  [l_b, t_b, info] = get_lb_foetus([g; k; v_Hb]);
+  <span class="keyword">if</span> info ~= 1
+    fprintf(<span class="string">'warning in get_lb_foetus: invalid parameter value combination for foetus \n'</span>)
+  <span class="keyword">end</span>
+  l_j = l_b;
+  t_j = t_b;
+  pars_tp = [g; k; l_T; v_Hb; v_Hp]; <span class="comment">% parameters for get_tp</span>
+  [t_p tb l_p lb info] = get_tp_foetus(pars_tp, f);
+  <span class="keyword">if</span> info ~= 1
+    fprintf(<span class="string">'warning in get_tp: invalid parameter value combination for foetus \n'</span>)
+  <span class="keyword">end</span>
+  l_i = f - l_T;                       <span class="comment">% scaled ultimate length</span>
+  r_B = 1/(3/ kT_M + 3 * f * L_m/ vT); <span class="comment">% 1/d, von Bert growth rate after j</span>
+  s_M = 1; <span class="comment">% -, acceleration factor</span>
+  clear <span class="string">tb</span> <span class="string">lb</span>
+<span class="keyword">else</span> <span class="comment">% egg development, possibly with metamorphosis</span>
+  <span class="keyword">if</span> E_Hj == E_Hb <span class="comment">% no metamorphosis</span>
+    pars_tp = [g; k; l_T; v_Hb; v_Hp]; <span class="comment">% parameters for get_tp</span>
+    [t_p t_b l_p l_b info] = get_tp(pars_tp, f); <span class="comment">% -, scaled age at puberty</span>
+    <span class="keyword">if</span> info ~= 1
+      fprintf(<span class="string">'warning in get_tp: invalid parameter value combination for t_p \n'</span>)
+    <span class="keyword">end</span>
+    l_j = l_b;                          <span class="comment">% -, scaled length at metamorphosis</span>
+    t_j = t_b;                          <span class="comment">% -, scaled age at metamorphosis</span>
+    l_i = f - l_T;                      <span class="comment">% -, scaled ultimate length</span>
+    r_j = 0;                            <span class="comment">% 1/d, exponential growth rate between b and j</span>
+    r_B = 1/(3/ kT_M + 3 * f * L_m/ vT);<span class="comment">% 1/d, von Bert growth rate after j</span>
+    s_M = 1; <span class="comment">% -, acceleration factor</span>
+  <span class="keyword">else</span> <span class="comment">% metamorphosis</span>
+    <span class="comment">% notice that L_m relates to the embryo-values</span>
+    pars_tj = [g; k; l_T; v_Hb; v_Hj; v_Hp]; <span class="comment">% parameters for get_tj</span>
+    [t_j t_p t_b l_j l_p l_b l_i rho_j rho_B info] = get_tj(pars_tj, f, l_b);
+    <span class="keyword">if</span> info ~= 1
+      fprintf(<span class="string">'warning in get_tj: invalid parameter value combination for t_j \n'</span>)
+    <span class="keyword">end</span>
+    r_j = rho_j * kT_M;  <span class="comment">% 1/d, exponential growth rate between b and j</span>
+    r_B = rho_B * kT_M;  <span class="comment">% 1/d, von Bert growth rate after j</span>
+    s_M = l_j/ l_b;      <span class="comment">% -, acceleration factor</span>
+  <span class="keyword">end</span>
+  pars_E0 = [V_Hb; g; kT_J; kT_M; vT]; <span class="comment">% pars for initial_scaled_reserve</span>
+  [U_E0 L_b info] = initial_scaled_reserve(f, pars_E0); <span class="comment">% d cm^2, initial scaled reserve</span>
+  <span class="keyword">if</span> info ~= 1
+    fprintf(<span class="string">'warning in initial_scaled_reserve: invalid parameter value combination for egg \n'</span>)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+E_0 = pT_Am * U_E0;    <span class="comment">% J, initial reserve (of embryo)</span>
+M_E0 = E_0/ mu_E;      <span class="comment">% mol, initial reserve (of embryo)</span>
+W_0 = M_E0 * w_O(3);   <span class="comment">% g, initial reserve (of embryo)</span>
+
+a_b = t_b/ kT_M;       <span class="comment">% d, age at birth at T</span>
+a_j = t_j/ kT_M;       <span class="comment">% d, age at metamorphosis at T</span>
+a_p = t_p/ kT_M;       <span class="comment">% d, age at puberty at T</span>
+a_99 = a_p + log((1 - l_p/ l_i)/(1 - 0.99))/ r_B;
+				       <span class="comment">% d, time to reach length 0.99 * L_i</span>
+L_b = L_m * l_b;       <span class="comment">% cm, structural length at birth</span>
+L_j = L_m * l_j;       <span class="comment">% cm, structural length at metamorphosis</span>
+L_p = L_m * l_p;       <span class="comment">% cm, structural length at puberty</span>
+L_i = L_m * l_i;       <span class="comment">% cm, ultimate structural length</span>
+Lw_b = L_b/ del_M;     <span class="comment">% cm. physical length at birth</span>
+Lw_j = L_j/ del_M;     <span class="comment">% cm. physical length at metamorphosis</span>
+Lw_p = L_p/ del_M;     <span class="comment">% cm, physical length at puberty</span>
+Lw_i = L_i/ del_M;     <span class="comment">% cm, physical ultimate length</span>
+M_Vb = M_V * L_b^3;    <span class="comment">% mol, structural mass at birth</span>
+M_Vj = M_V * L_j^3;    <span class="comment">% mol, structural mass at metamorphosis</span>
+M_Vp = M_V * L_p^3;    <span class="comment">% mol, structural mass at puberty</span>
+M_Vi = M_V * L_i^3;    <span class="comment">% mol, ultimate structural mass</span>
+U_Eb = f * E_m * L_b^3/ pT_Am; <span class="comment">% d cm^2, scaled reserve at birth</span>
+del_Ub = U_Eb/ U_E0;   <span class="comment">% -, fraction of reserve left at birth</span>
+
+s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3; <span class="comment">% -, supply stress</span>
+</pre><h2>size<a name="2"></a></h2><pre class="codeinput">W_b = L_b^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); <span class="comment">% g, dry weight at birth</span>
+W_j = L_j^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); <span class="comment">% g, dry weight at metamorphosis</span>
+W_p = L_p^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); <span class="comment">% g, dry weight at puberty</span>
+W_i = L_i^3 * d_O(2)* (1 + f * m_Em * w_O(3)/ w_O(2));  <span class="comment">% g, ultimate dry weight</span>
+
+del_Wb = W_b/ W_m;     <span class="comment">% -, birth weight as fraction of maximum weight</span>
+del_Wj = W_j/ W_m;     <span class="comment">% -, metamorphosis weight as fraction of maximum weight</span>
+del_Wp = W_p/ W_m;     <span class="comment">% -, puberty weight as fraction of maximum weight</span>
+xi_W_E = (mu_V + mu_O(3) * m_Em * f)/ (w_O(2) + w_O(3) * m_Em * f);
+    <span class="comment">% kJ/g, whole-body energy density (no reprod buffer), &lt;E + E_V&gt;</span>
+</pre><h2>life span<a name="3"></a></h2><pre class="codeinput">pars_tm = [g; k; l_T; v_Hb; v_Hp; h_a/ (p_M/ E_G)^2; s_G];
+<span class="comment">%[t_m S_b S_p] = get_tm(pars_tm, f, l_b, l_p); a_m = t_m/ kT_M; % d, mean life span</span>
+[t_m S_b S_p] = get_tm_s(pars_tm, f, l_b/ l_i, l_p/ l_i); a_m = t_m/ kT_M; <span class="comment">% d, mean life span</span>
+<span class="comment">% if E_Hj &gt; E_Hb: l_i &gt; f - l_T</span>
+hT_W = (hT_a * f * kT_M * g/ 6)^(1/3); <span class="comment">% 1/d, Weibull ageing rate</span>
+hT_G = s_G * f * kT_M * g;             <span class="comment">% 1/d, Gompertz ageing rate</span>
+</pre><h2>feeding<a name="4"></a></h2><pre class="codeinput"><span class="comment">% scaled functional responses</span>
+[eb_min lb_min uE0_min info_eb_min] = get_eb_min([g; k; v_Hb]); <span class="comment">% growth, maturation cease at birth</span>
+M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; <span class="comment">% mol, initial reserve (of embryo) at eb_min</span>
+
+<span class="keyword">if</span> sum(info_eb_min) ~= 2
+  fprintf(<span class="string">'Warning: no convergence for eb_min\n'</span>)
+<span class="keyword">end</span>
+<span class="keyword">if</span> E_Hj == E_Hb
+  ep_min  = get_ep_min([k; l_T; v_Hp]); <span class="comment">% growth and maturation cease at puberty</span>
+<span class="keyword">else</span>
+  ep_min  = get_ep_min_metam([g; k; l_T; v_Hb; v_Hj; v_Hp]); <span class="comment">% growth and maturation cease at puberty</span>
+<span class="keyword">end</span>
+M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; <span class="comment">% mol, initial reserve (of embryo) at ep_min</span>
+
+<span class="comment">% food densities</span>
+Kb_min = K * eb_min ./ (1 - eb_min);          <span class="comment">% growth, maturation cease at birth</span>
+Kp_min = K * ep_min ./ (1 - ep_min);          <span class="comment">% growth and maturation cease at puberty</span>
+
+<span class="comment">% food intake</span>
+pT_Xb = pT_Am * f * L_b^2/ kap_X;             <span class="comment">% J/d, food intake at birth</span>
+JT_XAb = pT_Xb/ mu_X;                         <span class="comment">% mol/d, food intake at birth</span>
+pT_Xj = s_M * pT_Am * f * L_j^2/ kap_X;       <span class="comment">% J/d, food intake at metamorphosis</span>
+JT_XAj = pT_Xj/ mu_X;                         <span class="comment">% mol/d, food intake at metamorphosis</span>
+pT_Xp = s_M * pT_Am * f * L_p^2/ kap_X;       <span class="comment">% J/d, food intake at puberty</span>
+JT_XAp = pT_Xp/ mu_X;                         <span class="comment">% mol/d, food intake at puberty</span>
+pT_Xi = s_M * pT_Am * f * L_i^2/ kap_X;       <span class="comment">% J/d, ultimate food intake</span>
+JT_XAi = pT_Xi/ mu_X;                         <span class="comment">% mol/d, ultimate food intake</span>
+
+<span class="comment">% clearance rates</span>
+CR_b = FT_m * L_b^2;                          <span class="comment">% l/d, clearance rate at birth</span>
+CR_j = s_M * FT_m * L_j^2;                    <span class="comment">% l/d, clearance rate at metamorphosis</span>
+CR_p = s_M * FT_m * L_p^2;                    <span class="comment">% l/d, clearance rate at puberty</span>
+CR_i = s_M * FT_m * L_i^2;                    <span class="comment">% l/d, ultimate clearance rate</span>
+</pre><h2>reproduction<a name="5"></a></h2><pre class="codeinput">pars_R = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+<span class="keyword">if</span> foetus == 1 <span class="comment">% foetal development</span>
+  R_i = reprod_rate_foetus(L_i, f, pars_R); <span class="comment">% d^-1</span>
+<span class="keyword">elseif</span> E_Hj == E_Hb <span class="comment">% egg development without metamorphosis</span>
+  R_i = reprod_rate(L_i, f, pars_R); <span class="comment">% d^-1</span>
+<span class="keyword">else</span> <span class="comment">% egg development with metamorphosis</span>
+  pars_R = [pars_R; L_b; L_j; L_p]; <span class="comment">% append lengths at b,j,p</span>
+  [R_i, UE0, info] = reprod_rate_metam(L_i, f, pars_R);
+  <span class="keyword">if</span> info ~= 1
+    fprintf(<span class="string">'warning in reprod_rate_metam: invalid parameter value combination for R_i \n'</span>)
+  <span class="keyword">end</span>
+  clear <span class="string">UE0</span>
+<span class="keyword">end</span>
+<span class="comment">% very sensitive to U_Hb, which controls size at birth</span>
+
+<span class="comment">% max gonado-somatic index of fully grown individual</span>
+<span class="comment">%   that spawns once per year see (4.89) of DEB3</span>
+GI = 365 * kT_M * g/ f^3/ (f + kap * g * y_V_E);
+GI = GI * ((1 - kap) * f^3 - k_J * U_Hp/ L_i^2/ s_M^3); <span class="comment">% mol E_R/ mol W</span>
+</pre><h2>mass fluxes for L = L_i = s_M (f L_m - L_T)<a name="6"></a></h2><pre class="codeinput">p_ref = pT_Am * L_m^2;        <span class="comment">% max assimilation power at max size</span>
+<span class="keyword">if</span> U_Hj == U_Hb <span class="comment">% no metamorphosis</span>
+  pars_pow = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+  pACSJGRD_i = p_ref * scaled_power(L_i, f, pars_pow, l_b, l_p); <span class="comment">% powers</span>
+  pACSJGRD_b = p_ref * scaled_power(L_b, f, pars_pow, l_b, l_p); <span class="comment">% powers</span>
+  pACSJGRD_p = p_ref * scaled_power(L_p, f, pars_pow, l_b, l_p); <span class="comment">% powers</span>
+<span class="keyword">else</span> <span class="comment">% metamorphosis</span>
+  pars_pow = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hj; U_Hp];
+  pACSJGRD_i = p_ref * scaled_power_j(L_i, f, pars_pow, l_b, l_j, l_p); <span class="comment">% powers</span>
+  pACSJGRD_b = p_ref * scaled_power_j(L_b, f, pars_pow, l_b, l_j, l_p); <span class="comment">% powers</span>
+  pACSJGRD_p = p_ref * scaled_power_j(L_p, f, pars_pow, l_b, l_j, l_p); <span class="comment">% powers</span>
+<span class="keyword">end</span>
+<span class="comment">% at birth</span>
+pADG_b = pACSJGRD_b(:,[1 7 5])';  <span class="comment">% assimilation, dissipation, growth power</span>
+J_O = eta_O * diag(pADG_b);     <span class="comment">% mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols</span>
+J_M = - (n_M\n_O) * J_O;      <span class="comment">% mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols</span>
+RQ_b = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol C/ mol O, resp quotient</span>
+UQ_b = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol N/ mol O, urin quotient</span>
+WQ_b = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol H/ mol O, water quotient</span>
+SDA_b = J_M(3,1)/ J_O(1,1);     <span class="comment">% mol O/mol X, specific dynamic action</span>
+VO_b = J_M(3,2)/ W_b/ 24/ X_gas; <span class="comment">% L/g.h, dioxygen use per gram max dry weight, &lt;J_OD&gt;</span>
+p_Tt_b = sum(- J_O' * mu_O - J_M' * mu_M); <span class="comment">% J/d, dissipating heat</span>
+<span class="comment">% at puberty</span>
+pADG_p = pACSJGRD_p(:,[1 7 5])';  <span class="comment">% assimilation, dissipation, growth power</span>
+J_O = eta_O * diag(pADG_p);     <span class="comment">% mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols</span>
+J_M = - (n_M\n_O) * J_O;      <span class="comment">% mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols</span>
+RQ_p = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol C/ mol O, resp quotient</span>
+UQ_p = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol N/ mol O, urin quotient</span>
+WQ_p = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol H/ mol O, water quotient</span>
+SDA_p = J_M(3,1)/ J_O(1,1);     <span class="comment">% mol O/mol X, specific dynamic action</span>
+VO_p = J_M(3,2)/ W_p/ 24/ X_gas; <span class="comment">% L/g.h, dioxygen use per gram max dry weight, &lt;J_OD&gt;</span>
+p_Tt_p = sum(- J_O' * mu_O - J_M' * mu_M); <span class="comment">% J/d, dissipating heat</span>
+<span class="comment">% at ultimate</span>
+pADG_i = pACSJGRD_i(:,[1 7 5])';  <span class="comment">% assimilation, dissipation, growth power</span>
+J_O = eta_O * diag(pADG_i);     <span class="comment">% mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols</span>
+J_M = - (n_M\n_O) * J_O;      <span class="comment">% mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols</span>
+RQ_i = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol C/ mol O, resp quotient</span>
+UQ_i = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol N/ mol O, urin quotient</span>
+WQ_i = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); <span class="comment">% mol H/ mol O, water quotient</span>
+SDA_i = J_M(3,1)/ J_O(1,1);     <span class="comment">% mol O/mol X, specific dynamic action</span>
+VO_i = J_M(3,2)/ W_i/ 24/ X_gas; <span class="comment">% L/g.h, dioxygen use per gram max dry weight, &lt;J_OD&gt;</span>
+p_Tt_i = sum(- J_O' * mu_O - J_M' * mu_M); <span class="comment">% J/d, dissipating heat</span>
+</pre><h2>population characteristics<a name="7"></a></h2><pre class="codeinput"><span class="keyword">if</span> foetus == 1 &amp;&amp; E_Hj == E_Hb <span class="comment">% foetal development</span>
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso_foetus(pars_rm, f);
+  <span class="keyword">if</span> info_ssd ~= 1
+    fprintf([<span class="string">'Warning: no convergence for sgr_iso_foetus for f = '</span>, num2str(f),<span class="string">'\n'</span>]);
+  <span class="keyword">end</span>
+  <span class="comment">% f_r = f_ris0(pars_rm, 1.02 * ep_min(1));</span>
+  f_r = 1.02 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso_foetus(pars_rm, f_r, 0);
+<span class="keyword">elseif</span> E_Hj == E_Hb  <span class="comment">% egg development, no metamorphosis</span>
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso(pars_rm, f);
+  <span class="keyword">if</span> info_ssd &lt; 1
+    fprintf([<span class="string">'Warning: no convergence for sgr_iso for f = '</span>, num2str(f),<span class="string">'\n'</span>]);
+  <span class="keyword">end</span>
+  <span class="comment">% f_r = f_ris0(pars_rm, 1.02 * ep_min(1));</span>
+  f_r = 1.02 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso(pars_rm, f_r, 0);
+<span class="keyword">else</span> <span class="comment">% egg development with metamorphosis</span>
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hj U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso_metam(pars_rm, f);
+  <span class="keyword">if</span> info_ssd ~= 1
+    fprintf([<span class="string">'Warning: no convergence for sgr_iso_metam for f = '</span>, num2str(f),<span class="string">'\n'</span>]);
+  <span class="keyword">end</span>
+  <span class="comment">% f_r = f_ris0(pars_rm, 1.02 * ep_min(1));</span>
+  f_r = 1.5 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso_metam(pars_rm, f_r, 0);
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% created 2000/11/02 by Bas Kooijman, modified 2014/03/17
+% calculates food-dependent quantities for 'animal'
+% run pars_animal before running this script
+% add_my_pet is also using this script; first run pars_my_pet 
+
+%% life stage quantities
+
+if foetus == 1 && E_Hj == E_Hb % foetal development, no metamorphosis  
+  % notice that foetal development typically combines with high U_Hb
+  pars_E0 = [V_Hb; g; kT_J; kT_M; vT]; % pars for initial_scaled_reserve
+  [U_E0 L_b info] = initial_scaled_reserve_foetus(f, pars_E0); % d cm^2, initial scaled reserve
+  if info ~= 1
+    fprintf('warning in initial_scaled_reserve_foetus: invalid parameter value combination for foetus \n')
+  end
+  [l_b, t_b, info] = get_lb_foetus([g; k; v_Hb]);
+  if info ~= 1
+    fprintf('warning in get_lb_foetus: invalid parameter value combination for foetus \n')
+  end
+  l_j = l_b;
+  t_j = t_b;
+  pars_tp = [g; k; l_T; v_Hb; v_Hp]; % parameters for get_tp
+  [t_p tb l_p lb info] = get_tp_foetus(pars_tp, f);
+  if info ~= 1
+    fprintf('warning in get_tp: invalid parameter value combination for foetus \n')
+  end
+  l_i = f - l_T;                       % scaled ultimate length
+  r_B = 1/(3/ kT_M + 3 * f * L_m/ vT); % 1/d, von Bert growth rate after j
+  s_M = 1; % -, acceleration factor
+  clear tb lb
+else % egg development, possibly with metamorphosis
+  if E_Hj == E_Hb % no metamorphosis
+    pars_tp = [g; k; l_T; v_Hb; v_Hp]; % parameters for get_tp
+    [t_p t_b l_p l_b info] = get_tp(pars_tp, f); % -, scaled age at puberty
+    if info ~= 1              
+      fprintf('warning in get_tp: invalid parameter value combination for t_p \n')
+    end
+    l_j = l_b;                          % -, scaled length at metamorphosis
+    t_j = t_b;                          % -, scaled age at metamorphosis
+    l_i = f - l_T;                      % -, scaled ultimate length
+    r_j = 0;                            % 1/d, exponential growth rate between b and j
+    r_B = 1/(3/ kT_M + 3 * f * L_m/ vT);% 1/d, von Bert growth rate after j
+    s_M = 1; % -, acceleration factor
+  else % metamorphosis
+    % notice that L_m relates to the embryo-values
+    pars_tj = [g; k; l_T; v_Hb; v_Hj; v_Hp]; % parameters for get_tj
+    [t_j t_p t_b l_j l_p l_b l_i rho_j rho_B info] = get_tj(pars_tj, f, l_b); 
+    if info ~= 1
+      fprintf('warning in get_tj: invalid parameter value combination for t_j \n')
+    end
+    r_j = rho_j * kT_M;  % 1/d, exponential growth rate between b and j
+    r_B = rho_B * kT_M;  % 1/d, von Bert growth rate after j
+    s_M = l_j/ l_b;      % -, acceleration factor
+  end
+  pars_E0 = [V_Hb; g; kT_J; kT_M; vT]; % pars for initial_scaled_reserve
+  [U_E0 L_b info] = initial_scaled_reserve(f, pars_E0); % d cm^2, initial scaled reserve
+  if info ~= 1
+    fprintf('warning in initial_scaled_reserve: invalid parameter value combination for egg \n')
+  end
+end
+E_0 = pT_Am * U_E0;    % J, initial reserve (of embryo)
+M_E0 = E_0/ mu_E;      % mol, initial reserve (of embryo)
+W_0 = M_E0 * w_O(3);   % g, initial reserve (of embryo)
+    
+a_b = t_b/ kT_M;       % d, age at birth at T
+a_j = t_j/ kT_M;       % d, age at metamorphosis at T
+a_p = t_p/ kT_M;       % d, age at puberty at T
+a_99 = a_p + log((1 - l_p/ l_i)/(1 - 0.99))/ r_B; 
+				       % d, time to reach length 0.99 * L_i
+L_b = L_m * l_b;       % cm, structural length at birth
+L_j = L_m * l_j;       % cm, structural length at metamorphosis
+L_p = L_m * l_p;       % cm, structural length at puberty
+L_i = L_m * l_i;       % cm, ultimate structural length
+Lw_b = L_b/ del_M;     % cm. physical length at birth
+Lw_j = L_j/ del_M;     % cm. physical length at metamorphosis
+Lw_p = L_p/ del_M;     % cm, physical length at puberty
+Lw_i = L_i/ del_M;     % cm, physical ultimate length
+M_Vb = M_V * L_b^3;    % mol, structural mass at birth
+M_Vj = M_V * L_j^3;    % mol, structural mass at metamorphosis
+M_Vp = M_V * L_p^3;    % mol, structural mass at puberty
+M_Vi = M_V * L_i^3;    % mol, ultimate structural mass
+U_Eb = f * E_m * L_b^3/ pT_Am; % d cm^2, scaled reserve at birth
+del_Ub = U_Eb/ U_E0;   % -, fraction of reserve left at birth
+
+s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3; % -, supply stress
+
+%% size
+
+W_b = L_b^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); % g, dry weight at birth
+W_j = L_j^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); % g, dry weight at metamorphosis
+W_p = L_p^3 * d_O(2) * (1 + f * m_Em * w_O(3)/ w_O(2)); % g, dry weight at puberty
+W_i = L_i^3 * d_O(2)* (1 + f * m_Em * w_O(3)/ w_O(2));  % g, ultimate dry weight
+
+del_Wb = W_b/ W_m;     % -, birth weight as fraction of maximum weight
+del_Wj = W_j/ W_m;     % -, metamorphosis weight as fraction of maximum weight
+del_Wp = W_p/ W_m;     % -, puberty weight as fraction of maximum weight
+xi_W_E = (mu_V + mu_O(3) * m_Em * f)/ (w_O(2) + w_O(3) * m_Em * f); 
+    % kJ/g, whole-body energy density (no reprod buffer), <E + E_V>
+
+%% life span
+
+pars_tm = [g; k; l_T; v_Hb; v_Hp; h_a/ (p_M/ E_G)^2; s_G]; 
+%[t_m S_b S_p] = get_tm(pars_tm, f, l_b, l_p); a_m = t_m/ kT_M; % d, mean life span
+[t_m S_b S_p] = get_tm_s(pars_tm, f, l_b/ l_i, l_p/ l_i); a_m = t_m/ kT_M; % d, mean life span
+% if E_Hj > E_Hb: l_i > f - l_T
+hT_W = (hT_a * f * kT_M * g/ 6)^(1/3); % 1/d, Weibull ageing rate
+hT_G = s_G * f * kT_M * g;             % 1/d, Gompertz ageing rate
+
+%% feeding
+
+% scaled functional responses
+[eb_min lb_min uE0_min info_eb_min] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
+M_E0_min_b = L_m^3 * E_m * g * uE0_min/ mu_E; % mol, initial reserve (of embryo) at eb_min
+
+if sum(info_eb_min) ~= 2
+  fprintf('Warning: no convergence for eb_min\n')
+end
+if E_Hj == E_Hb
+  ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty
+else
+  ep_min  = get_ep_min_metam([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty  
+end
+M_E0_min_p = L_m^3 * E_m * g * get_ue0([g; k; v_Hb], ep_min)/ mu_E; % mol, initial reserve (of embryo) at ep_min
+
+% food densities
+Kb_min = K * eb_min ./ (1 - eb_min);          % growth, maturation cease at birth
+Kp_min = K * ep_min ./ (1 - ep_min);          % growth and maturation cease at puberty
+
+% food intake
+pT_Xb = pT_Am * f * L_b^2/ kap_X;             % J/d, food intake at birth
+JT_XAb = pT_Xb/ mu_X;                         % mol/d, food intake at birth
+pT_Xj = s_M * pT_Am * f * L_j^2/ kap_X;       % J/d, food intake at metamorphosis
+JT_XAj = pT_Xj/ mu_X;                         % mol/d, food intake at metamorphosis
+pT_Xp = s_M * pT_Am * f * L_p^2/ kap_X;       % J/d, food intake at puberty
+JT_XAp = pT_Xp/ mu_X;                         % mol/d, food intake at puberty
+pT_Xi = s_M * pT_Am * f * L_i^2/ kap_X;       % J/d, ultimate food intake
+JT_XAi = pT_Xi/ mu_X;                         % mol/d, ultimate food intake
+
+% clearance rates
+CR_b = FT_m * L_b^2;                          % l/d, clearance rate at birth 
+CR_j = s_M * FT_m * L_j^2;                    % l/d, clearance rate at metamorphosis
+CR_p = s_M * FT_m * L_p^2;                    % l/d, clearance rate at puberty
+CR_i = s_M * FT_m * L_i^2;                    % l/d, ultimate clearance rate
+
+%% reproduction
+
+pars_R = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+if foetus == 1 % foetal development
+  R_i = reprod_rate_foetus(L_i, f, pars_R); % d^-1
+elseif E_Hj == E_Hb % egg development without metamorphosis
+  R_i = reprod_rate(L_i, f, pars_R); % d^-1
+else % egg development with metamorphosis
+  pars_R = [pars_R; L_b; L_j; L_p]; % append lengths at b,j,p
+  [R_i, UE0, info] = reprod_rate_metam(L_i, f, pars_R);
+  if info ~= 1
+    fprintf('warning in reprod_rate_metam: invalid parameter value combination for R_i \n')
+  end  
+  clear UE0
+end
+% very sensitive to U_Hb, which controls size at birth
+
+% max gonado-somatic index of fully grown individual 
+%   that spawns once per year see (4.89) of DEB3
+GI = 365 * kT_M * g/ f^3/ (f + kap * g * y_V_E);
+GI = GI * ((1 - kap) * f^3 - k_J * U_Hp/ L_i^2/ s_M^3); % mol E_R/ mol W
+
+%% mass fluxes for L = L_i = s_M (f L_m - L_T)
+
+p_ref = pT_Am * L_m^2;        % max assimilation power at max size
+if U_Hj == U_Hb % no metamorphosis
+  pars_pow = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hp];
+  pACSJGRD_i = p_ref * scaled_power(L_i, f, pars_pow, l_b, l_p); % powers
+  pACSJGRD_b = p_ref * scaled_power(L_b, f, pars_pow, l_b, l_p); % powers
+  pACSJGRD_p = p_ref * scaled_power(L_p, f, pars_pow, l_b, l_p); % powers
+else % metamorphosis
+  pars_pow = [kap; kap_R; g; kT_J; kT_M; L_T; vT; U_Hb; U_Hj; U_Hp];
+  pACSJGRD_i = p_ref * scaled_power_j(L_i, f, pars_pow, l_b, l_j, l_p); % powers
+  pACSJGRD_b = p_ref * scaled_power_j(L_b, f, pars_pow, l_b, l_j, l_p); % powers
+  pACSJGRD_p = p_ref * scaled_power_j(L_p, f, pars_pow, l_b, l_j, l_p); % powers
+end
+% at birth
+pADG_b = pACSJGRD_b(:,[1 7 5])';  % assimilation, dissipation, growth power
+J_O = eta_O * diag(pADG_b);     % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+J_M = - (n_M\n_O) * J_O;      % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+RQ_b = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); % mol C/ mol O, resp quotient
+UQ_b = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); % mol N/ mol O, urin quotient
+WQ_b = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); % mol H/ mol O, water quotient
+SDA_b = J_M(3,1)/ J_O(1,1);     % mol O/mol X, specific dynamic action
+VO_b = J_M(3,2)/ W_b/ 24/ X_gas; % L/g.h, dioxygen use per gram max dry weight, <J_OD>
+p_Tt_b = sum(- J_O' * mu_O - J_M' * mu_M); % J/d, dissipating heat
+% at puberty
+pADG_p = pACSJGRD_p(:,[1 7 5])';  % assimilation, dissipation, growth power
+J_O = eta_O * diag(pADG_p);     % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+J_M = - (n_M\n_O) * J_O;      % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+RQ_p = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); % mol C/ mol O, resp quotient
+UQ_p = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); % mol N/ mol O, urin quotient
+WQ_p = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); % mol H/ mol O, water quotient
+SDA_p = J_M(3,1)/ J_O(1,1);     % mol O/mol X, specific dynamic action
+VO_p = J_M(3,2)/ W_p/ 24/ X_gas; % L/g.h, dioxygen use per gram max dry weight, <J_OD>
+p_Tt_p = sum(- J_O' * mu_O - J_M' * mu_M); % J/d, dissipating heat
+% at ultimate
+pADG_i = pACSJGRD_i(:,[1 7 5])';  % assimilation, dissipation, growth power
+J_O = eta_O * diag(pADG_i);     % mol/d, J_X, J_V, J_E, J_P in rows, A, D, G in cols
+J_M = - (n_M\n_O) * J_O;      % mol/d, J_C, J_H, J_O, J_N in rows, A, D, G in cols
+RQ_i = -(J_M(1,2) + J_M(1,3))/ (J_M(3,2) + J_M(3,3)); % mol C/ mol O, resp quotient
+UQ_i = -(J_M(4,2) + J_M(4,3))/ (J_M(3,2) + J_M(3,3)); % mol N/ mol O, urin quotient
+WQ_i = -(J_M(2,2) + J_M(2,3))/ (J_M(3,2) + J_M(3,3)); % mol H/ mol O, water quotient
+SDA_i = J_M(3,1)/ J_O(1,1);     % mol O/mol X, specific dynamic action
+VO_i = J_M(3,2)/ W_i/ 24/ X_gas; % L/g.h, dioxygen use per gram max dry weight, <J_OD>
+p_Tt_i = sum(- J_O' * mu_O - J_M' * mu_M); % J/d, dissipating heat
+
+
+%% population characteristics
+
+if foetus == 1 && E_Hj == E_Hb % foetal development
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso_foetus(pars_rm, f);
+  if info_ssd ~= 1
+    fprintf(['Warning: no convergence for sgr_iso_foetus for f = ', num2str(f),'\n']);
+  end
+  % f_r = f_ris0(pars_rm, 1.02 * ep_min(1));
+  f_r = 1.02 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso_foetus(pars_rm, f_r, 0);
+elseif E_Hj == E_Hb  % egg development, no metamorphosis
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso(pars_rm, f);
+  if info_ssd < 1
+    fprintf(['Warning: no convergence for sgr_iso for f = ', num2str(f),'\n']);
+  end
+  % f_r = f_ris0(pars_rm, 1.02 * ep_min(1));
+  f_r = 1.02 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso(pars_rm, f_r, 0);
+else % egg development with metamorphosis
+  pars_rm = [kap kap_R g kT_J kT_M L_T vT U_Hb U_Hj U_Hp hT_a s_G];
+  [r_m Ea_m EL_m EL2_m EL3_m info_ssd] = ssd_iso_metam(pars_rm, f);
+  if info_ssd ~= 1
+    fprintf(['Warning: no convergence for sgr_iso_metam for f = ', num2str(f),'\n']);
+  end
+  % f_r = f_ris0(pars_rm, 1.02 * ep_min(1));
+  f_r = 1.5 * ep_min(1);
+  [r_0 Ea_0 EL_0 EL2_0 EL3_0 info_ssd] = ssd_iso_metam(pars_rm, f_r, 0);
+end
+
+##### SOURCE END #####
+--></body></html>

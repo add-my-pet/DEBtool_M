@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="get_tp.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tp</h1><!--introduction--><p>Gets scaled age at puberty</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_p, tau_b, lp, lb, info] = <a href="../get_tp.m"><b>get_tp</b></a>(p, f, lb0)</p><h2 id="4">Description</h2><p>Obtains scaled age at puberty. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty.</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li><li>lb0: optional scalar with scaled length at birth</li></ul></div><pre>    or optional 2-vector with scaled length, l, and scaled maturity, vH
+    for a juvenile that is now exposed to f, but previously at another f</pre><p>Output</p><div><ul><li>tau_p: scaled with age at puberty \tau_p = a_p k_M</li></ul></div><pre>    if length(lb0)==2, tp is the scaled time till puberty</pre><div><ul><li>tau_b: scaled with age at birth \tau_b = a_b k_M</li><li>lp: scaler length at puberty</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2 id="5">Remarks</h2><p>Function <a href="get_tp_foetus.html"><b>get_tp_foetus</b></a> does the same for foetal development; the result depends on embryonal development.</p><h2 id="6">Example of use</h2><p>get_tp([.5, .1, .1, .01, .2])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tp
+% Gets scaled age at puberty
+
+%%
+function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
+  % created at 2008/06/04 by Bas Kooijman, 
+  % modified 2014/03/04 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  % modified 2018/09/10 (t -> tau) Nina Marn
+  
+  %% Syntax
+  % [tau_p, tau_b, lp, lb, info] = <../get_tp.m *get_tp*>(p, f, lb0)
+  
+  %% Description
+  % Obtains scaled age at puberty.
+  % Food density is assumed to be constant.
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty. 
+  %
+  % Input
+  %
+  % * p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p 
+  % * f: optional scalar with functional response (default f = 1)
+  % * lb0: optional scalar with scaled length at birth
+  %
+  %      or optional 2-vector with scaled length, l, and scaled maturity, vH
+  %      for a juvenile that is now exposed to f, but previously at another f
+  %
+  % Output
+  %
+  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
+  %
+  %      if length(lb0)==2, tp is the scaled time till puberty
+  %
+  % * tau_b: scaled with age at birth \tau_b = a_b k_M
+  % * lp: scaler length at puberty
+  % * lb: scaler length at birth
+  % * info: indicator equals 1 if successful
+  
+  %% Remarks
+  % Function <get_tp_foetus.html *get_tp_foetus*> does the same for foetal development; the result depends on embryonal development. 
+
+  %% Example of use
+  % get_tp([.5, .1, .1, .01, .2])
+
+  %  unpack pars
+  g   = p(1); % energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}
+  vHp = p(5); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = M_H^p/ {J_EAm} = E_H^p/ {p_Am}
+  
+  if ~exist('f', 'var')
+    f = 1;
+  elseif isempty(f)
+    f = 1;
+  end
+  if ~exist('lb0', 'var')
+    lb0 = [];
+  end
+
+  if vHp < vHb
+    fprintf('Warning from get_tp: vHp < vHb\n')
+    [tau_b, l_b] = get_tb(p([1 2 4]), f);
+    tau_p = []; l_p = [];
+    info = 0;
+    return
+  end
+
+  if k == 1 && f * (f - lT)^2 > vHp * k
+    lb = vHb^(1/3); 
+    tau_b = get_tb(p([1 2 4]), f, lb);
+    lp = vHp^(1/3);
+    li = f - lT;
+    rB = 1 / 3/ (1 + f/g);
+    tau_p = tau_b + log((li - lb)/ (li - lp))/ rB;
+    info = 1;
+  elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
+    pars_lb = p([1 2 4]);
+    [tau_b, lb, info] = get_tb (pars_lb, f); 
+    tau_p = 1e20; % tau_p is never reached
+    lp = 1;    % lp is nerver reached
+  else % reproduction is possible
+    if length(lb0) ~= 2 % lb0 = l_b 
+      [tau_b, lb, info] = get_tb([g, k, vHb], f);      
+      options = odeset('Events', @event_puberty); s_M = 1;
+      [t, vHl, tp, vHlp] = ode45(@dget_l_ISO_t, [0; 1e8], [vHb; lb], options, k, lT, g, f, s_M, vHp);
+      tau_p = tau_b + tp; lp = vHlp(2);
+
+    else % lb0 = l and t for a juvenile
+      tau_b = NaN;
+      [lp, lb, info] = get_lp(p, f, lb0);
+      l = lb0(1);
+      li = f - lT;
+      irB = 3 * (1 + f/ g); % k_M/ r_B
+      tau_p = irB * log((li - l)/ (li - lp));
+    end
+  end
+  
+  if ~isreal(tau_p) % tp must be real and positive
+      info = 0;
+  elseif tau_p < 0
+      info = 0;
+  end
+end
+
+function [value,isterminal,direction] = event_puberty(t, vHl, k, lT, g, f, s_M, vHp)
+    % vHl: 2-vector with [vH; l]
+    value = vHp - vHl(1);
+    isterminal = 1;
+    direction = 0; 
+end
+##### SOURCE END #####
+--></body></html>

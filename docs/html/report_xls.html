@@ -1,0 +1,453 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>report_xls</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="report_xls.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Description</a></li><li><a href="#3">sheet 1: list of species</a></li><li><a href="#4">sheet 2: primary parameters for all species</a></li><li><a href="#5">sheet 3: statistics for all species</a></li><li><a href="#6">sheet species; one sheet per species</a></li><li><a href="#7">prepare for a next species</a></li></ul></div><pre class="codeinput"><span class="comment">% created 2009/07/11 by Dina Lika, modified by Bas Kooijman 2013/01/15</span>
+<span class="comment">%</span>
+</pre><h2>Description<a name="2"></a></h2><pre>writes report input parameters and output statistics
+ to Excel-file file_name set in pars_my_pets
+ assumes that report (and so parscomp) and report_xls_init have been run previously
+   and report_xls_close afterwards
+ txt_statistics, val_statistics, txt_par, val_par, txt_mudn are set in report</pre><pre class="codeinput"><span class="keyword">if</span> exist(<span class="string">'n_spec'</span>,<span class="string">'var'</span>)==0
+  report_xls_init
+<span class="keyword">end</span>
+
+report_html <span class="comment">%  hmtl reporting parallel to xls</span>
+
+n_spec = n_spec + 1; <span class="comment">% increment row number; initiated in report_xls_init</span>
+txt_row = num2str(n_spec);
+</pre><h2>sheet 1: list of species<a name="3"></a></h2><pre class="codeinput">  hyper_species = [<span class="string">'=HYPERLINK("['</span>, file_name, <span class="string">'.xls]'</span>, species, <span class="string">'!A1";"'</span>, species,<span class="string">'")'</span>];
+  xlswrite(file_name, {phylum, class, order, family, hyper_species, species_en, TYPE, FIT, COMPLETE, data_0{:}, data_1{:}}, <span class="string">'species_list'</span>, [<span class="string">'A'</span>, txt_row])
+
+  <span class="comment">% colour font for data_0 and data_1</span>
+  n_data_0 = size(data_0,1); n_0_start = 1 + 9;       n_0_end = n_0_start + n_data_0 - 1;
+    cell_0_start = cell_name{n_0_start}; cell_0_end = cell_name{n_0_end}; <span class="comment">% cell_name is defined in report_xls_init</span>
+  n_data_1 = size(data_1,1); n_1_start = 1 + n_0_end; n_1_end = n_1_start + n_data_1 - 1;
+    cell_1_start = cell_name{n_1_start}; cell_1_end = cell_name{n_1_end};
+
+  excelObj = actxserver(<span class="string">'Excel.Application'</span>); <span class="comment">%opens up an excel object</span>
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  <span class="comment">% column width</span>
+  excelObj.sheets.Item(<span class="string">'species_list'</span>).Range(<span class="string">'E:F'</span>).ColumnWidth = 20; <span class="comment">% species, common name-column are broad</span>
+  excelObj.sheets.Item(<span class="string">'species_list'</span>).Range(<span class="string">'G:I'</span>).ColumnWidth = 4;  <span class="comment">% TYPE,COMPLETE,FIT-column are narrow</span>
+  <span class="comment">% colour cells fit TYPE FIT and COMPLETE</span>
+  excelObj.sheets.Item(<span class="string">'species_list'</span>).Range([<span class="string">'G2:I'</span>, num2str(n_spec)]).Interior.ColorIndex = 36;
+  <span class="comment">% colour data types</span>
+  <span class="keyword">if</span> n_data_0 &gt; 0
+    excelObj.sheets.Item(1).Range([cell_0_start, txt_row, <span class="string">':'</span>, cell_0_end, txt_row]).Font.ColorIndex = 5; <span class="comment">% blue for zero-variate data</span>
+  <span class="keyword">end</span>
+  <span class="keyword">if</span> n_data_1 &gt; 0
+    excelObj.sheets.Item(1).Range([cell_1_start, txt_row, <span class="string">':'</span>, cell_1_end, txt_row]).Font.ColorIndex = 10; <span class="comment">% green for uni-variate data</span>
+  <span class="keyword">end</span>
+  excelWorkbook.Save;         <span class="comment">% save font change</span>
+  excelWorkbook.Close(false); <span class="comment">% closes excel object</span>
+  excelObj.Quit;
+  delete(excelObj);
+</pre><h2>sheet 2: primary parameters for all species<a name="4"></a></h2><pre class="codeinput">  xlswrite(file_name, {hyper_species}, <span class="string">'primary_parameters'</span>, [<span class="string">'A'</span>, txt_row]);
+
+  <span class="comment">% sequence of par_prim equals that of header in report_xls_init</span>
+  <span class="comment">% present rates at reference temperature</span>
+  par_primary = [ <span class="keyword">...</span>
+      T; T_A; T_L; T_H; T_AL; T_AH;
+      f; z; del_M; FT_m; kap_X; kap_X_P;
+      p_Am; v; kap; kap_R; p_M; p_T; k_J; E_G;
+      E_Hb; E_Hj; E_Hp; h_a; s_G;
+      mu_X; mu_V; mu_E; mu_P;
+      d_O;
+      n_O(2:4,1); n_O(2:4,2);
+      n_O(2:4,3); n_O(2:4,4)];
+
+  xlswrite(file_name, par_primary', <span class="string">'primary_parameters'</span>, [<span class="string">'B'</span>, txt_row,<span class="string">':AT'</span>, txt_row]);
+
+  <span class="comment">% colour cells</span>
+  excelObj = actxserver(<span class="string">'Excel.Application'</span>); <span class="comment">%opens up an excel object</span>
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range(<span class="string">'A:A'</span>).ColumnWidth = 20; <span class="comment">% species-column is broad</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'A1:A'</span>, txt_row]).Interior.ColorIndex = 36; <span class="comment">% species list</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'B1:G'</span>, txt_row]).Interior.ColorIndex = 22; <span class="comment">% temp pars</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'H1:H'</span>, txt_row]).Interior.ColorIndex = 38; <span class="comment">% scaled func resp</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'I1:J'</span>, txt_row]).Interior.ColorIndex =  7; <span class="comment">% zoom, del_M</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'K1:N'</span>, txt_row]).Interior.ColorIndex = 43; <span class="comment">% assimilation</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'O1:Q'</span>, txt_row]).Interior.ColorIndex =  4; <span class="comment">% reserve, reprod</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'R1:T'</span>, txt_row]).Interior.ColorIndex =  6; <span class="comment">% maintenance</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'U1:U'</span>, txt_row]).Interior.ColorIndex = 19; <span class="comment">% growth</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'V1:X'</span>, txt_row]).Interior.ColorIndex = 17; <span class="comment">% life stages</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'Y1:Z'</span>, txt_row]).Interior.ColorIndex = 24; <span class="comment">% ageing</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AA1:AD'</span>,txt_row]).Interior.ColorIndex = 42; <span class="comment">% chem potentials</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AE1:AH'</span>,txt_row]).Interior.ColorIndex = 34; <span class="comment">% densities</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AI1:AK'</span>,txt_row]).Interior.ColorIndex = 28; <span class="comment">% chem indices X</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AL1:AN'</span>,txt_row]).Interior.ColorIndex = 33; <span class="comment">% chem indices V</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AO1:AQ'</span>,txt_row]).Interior.ColorIndex = 28; <span class="comment">% chem indices E</span>
+  excelObj.sheets.Item(<span class="string">'primary_parameters'</span>).Range([<span class="string">'AR1:AT'</span>,txt_row]).Interior.ColorIndex = 33; <span class="comment">% chem indices P</span>
+  excelWorkbook.Save;
+  excelWorkbook.Close(false);
+  excelObj.Quit;
+  delete(excelObj);
+</pre><h2>sheet 3: statistics for all species<a name="5"></a></h2><pre class="codeinput">  xlswrite(file_name, {hyper_species}, <span class="string">'statistics'</span>, [<span class="string">'A'</span>, txt_row]);
+
+  <span class="comment">% sequence of statistics equals that in report_animal</span>
+  <span class="comment">% present rates at temperature that is set for each species</span>
+
+  xlswrite(file_name, val_statistics', <span class="string">'statistics'</span>, [<span class="string">'B'</span>, txt_row,<span class="string">':DB'</span>, txt_row]);
+
+  <span class="comment">% colour cells</span>
+  excelObj = actxserver(<span class="string">'Excel.Application'</span>); <span class="comment">%opens up an excel object</span>
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">' B2: D'</span>,txt_row]).Interior.ColorIndex = 22; <span class="comment">% 1</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">' E2: J'</span>,txt_row]).Interior.ColorIndex = 38; <span class="comment">% 2</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">' K2: P'</span>,txt_row]).Interior.ColorIndex =  7; <span class="comment">% 3</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">' Q2: U'</span>,txt_row]).Interior.ColorIndex =  4; <span class="comment">% 4</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">' V2: Z'</span>,txt_row]).Interior.ColorIndex =  4; <span class="comment">% 5</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'AA2:AG'</span>,txt_row]).Interior.ColorIndex =  6; <span class="comment">% 6</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'AH2:AK'</span>,txt_row]).Interior.ColorIndex = 19; <span class="comment">% 7</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'AL2:AO'</span>,txt_row]).Interior.ColorIndex = 17; <span class="comment">% 8</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'AP2:AS'</span>,txt_row]).Interior.ColorIndex = 24; <span class="comment">% 9</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'AT2:BB'</span>,txt_row]).Interior.ColorIndex = 42; <span class="comment">% 10</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'BC2:BF'</span>,txt_row]).Interior.ColorIndex = 34; <span class="comment">% 11</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'BG2:BJ'</span>,txt_row]).Interior.ColorIndex = 28; <span class="comment">% 12</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'BK2:BT'</span>,txt_row]).Interior.ColorIndex = 22; <span class="comment">% 13</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'BU2:BZ'</span>,txt_row]).Interior.ColorIndex = 38; <span class="comment">% 14</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'CA2:CD'</span>,txt_row]).Interior.ColorIndex =  7; <span class="comment">% 15</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'CE2:CF'</span>,txt_row]).Interior.ColorIndex = 43; <span class="comment">% 16</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'CG2:CP'</span>,txt_row]).Interior.ColorIndex =  4; <span class="comment">% 17</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'CQ2:CS'</span>,txt_row]).Interior.ColorIndex =  6; <span class="comment">% 18</span>
+  excelObj.sheets.Item(<span class="string">'statistics'</span>).Range([<span class="string">'CT2:DC'</span>,txt_row]).Interior.ColorIndex = 19; <span class="comment">% 19</span>
+  excelWorkbook.Save;
+  excelWorkbook.Close(false);
+  excelObj.Quit;
+  delete(excelObj);
+</pre><h2>sheet species; one sheet per species<a name="6"></a></h2><pre class="codeinput">  <span class="comment">% links to pars-, mydata-, predict-, result-files in header</span>
+  hyper_pars = [<span class="string">'=HYPERLINK("'</span>, hyp_add_my_pet, <span class="string">'pars_'</span>, species,<span class="string">'.m";"pars")'</span>];
+  xlswrite(file_name, {hyper_pars}, species, <span class="string">'F1'</span>)
+
+  hyper_mydata = [<span class="string">'=HYPERLINK("'</span>, hyp_add_my_pet, <span class="string">'mydata/mydata_'</span>, species,<span class="string">'.m";"mydata")'</span>];
+  xlswrite(file_name, {hyper_mydata}, species, <span class="string">'G1'</span>)
+  hyper_predict = [<span class="string">'=HYPERLINK("'</span>, hyp_add_my_pet, <span class="string">'mydata/predict_'</span>, species,<span class="string">'.m";"predict")'</span>];
+  xlswrite(file_name, {hyper_predict}, species, <span class="string">'H1'</span>)
+  hyper_result = [<span class="string">'=HYPERLINK("'</span>, hyp_add_my_pet, <span class="string">'mydata/html/mydata_'</span>, species,<span class="string">'.html";"fit")'</span>];
+  xlswrite(file_name, {hyper_result}, species, <span class="string">'I1'</span>)
+
+
+  <span class="comment">% statistics</span>
+  hyper_statistics = [<span class="string">'=HYPERLINK("'</span>, hyp_add_my_pet, <span class="string">'add_my_pet.pdf"; "statistics at T")'</span>];
+  xlswrite(file_name, [{hyper_statistics}; txt_statistics], species, <span class="string">'A1'</span>)
+  xlswrite(file_name, val_statistics, species, <span class="string">'B2'</span>)
+
+  <span class="comment">% input parameters</span>
+  n_par = length(val_par);
+
+  xlswrite(file_name, [{<span class="string">'Input parameters at T_ref'</span>}; txt_par; txt_mudn], species, <span class="string">'D1'</span>)
+  xlswrite(file_name, val_par, species, <span class="string">'E2'</span>)
+  xlswrite(file_name, [mu_O'; d_O'; n_O], species, [<span class="string">'E'</span>, num2str(2 + n_par)]);
+
+  excelObj = actxserver(<span class="string">'Excel.Application'</span>); <span class="comment">%opens up an excel object</span>
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item(species).Range(<span class="string">'A:A'</span>).ColumnWidth = 40; <span class="comment">% description-column is broad</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D:D'</span>).ColumnWidth = 30; <span class="comment">% description-column is broad</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A1:I1'</span>).Interior.ColorIndex   = 36; <span class="comment">% header</span>
+
+  <span class="comment">% colour statistics</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A2:B4'</span>).Interior.ColorIndex   = 22; <span class="comment">% 1</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A5:B10'</span>).Interior.ColorIndex  = 38; <span class="comment">% 2</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A11:B16'</span>).Interior.ColorIndex =  7; <span class="comment">% 3</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A17:B21'</span>).Interior.ColorIndex =  4; <span class="comment">% 4</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A22:B26'</span>).Interior.ColorIndex =  4; <span class="comment">% 5</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A27:B33'</span>).Interior.ColorIndex =  6; <span class="comment">% 6</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A34:B37'</span>).Interior.ColorIndex = 19; <span class="comment">% 7</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A38:B41'</span>).Interior.ColorIndex = 17; <span class="comment">% 8</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A42:B45'</span>).Interior.ColorIndex = 24; <span class="comment">% 9</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A46:B54'</span>).Interior.ColorIndex = 42; <span class="comment">% 10</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A55:B58'</span>).Interior.ColorIndex = 34; <span class="comment">% 11</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A59:B62'</span>).Interior.ColorIndex = 28; <span class="comment">% 12</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A63:B72'</span>).Interior.ColorIndex = 22; <span class="comment">% 13</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A73:B78'</span>).Interior.ColorIndex = 38; <span class="comment">% 14</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A79:B82'</span>).Interior.ColorIndex =  7; <span class="comment">% 15</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A83:B84'</span>).Interior.ColorIndex = 43; <span class="comment">% 16</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A85:B94'</span>).Interior.ColorIndex =  4; <span class="comment">% 17</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A95:B97'</span>).Interior.ColorIndex =  6; <span class="comment">% 18</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'A98:B107'</span>).Interior.ColorIndex = 19;<span class="comment">% 19</span>
+
+  <span class="comment">% colour primary_parameters</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D2:E8'</span>).Interior.ColorIndex =   22; <span class="comment">% temp pars</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D9:E9'</span>).Interior.ColorIndex =   38; <span class="comment">% scaled func resp</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D10:E11'</span>).Interior.ColorIndex =  7; <span class="comment">% zoom, del_M</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D12:E14'</span>).Interior.ColorIndex = 43; <span class="comment">% assimilation</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D15:E17'</span>).Interior.ColorIndex =  4; <span class="comment">% reserve, reprod</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D18:E20'</span>).Interior.ColorIndex =  6; <span class="comment">% maintenance</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D21:E21'</span>).Interior.ColorIndex = 19; <span class="comment">% growth</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D22:E24'</span>).Interior.ColorIndex = 17; <span class="comment">% life stages</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D25:E26'</span>).Interior.ColorIndex = 24; <span class="comment">% ageing</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D27:H27'</span>).Interior.ColorIndex = 42; <span class="comment">% chem potentials</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D28:H28'</span>).Interior.ColorIndex = 34; <span class="comment">% densities</span>
+  excelObj.sheets.Item(species).Range(<span class="string">'D29:H32'</span>).Interior.ColorIndex = 28; <span class="comment">% chem indices X</span>
+
+  excelWorkbook.Save;         <span class="comment">% save font change</span>
+  excelWorkbook.Close(false); <span class="comment">% closes excel object</span>
+  excelObj.Quit;
+  delete(excelObj);
+</pre><h2>prepare for a next species<a name="7"></a></h2><pre class="codeinput">  clear <span class="string">T*</span> <span class="string">t_*</span> <span class="string">W*</span> <span class="string">w*</span> <span class="string">d*</span> <span class="string">M*</span> <span class="string">m*</span> <span class="string">E*</span> <span class="string">e*</span> <span class="string">p*</span> <span class="string">V*</span> <span class="string">v*</span> <span class="string">U*</span> <span class="string">u*</span> <span class="string">L*</span> <span class="string">l*</span> <span class="string">a*</span> <span class="string">F*</span> <span class="string">s_*</span> <span class="string">SD*</span> <span class="string">S_*</span> <span class="string">K*</span> <span class="string">k*</span>
+  clear <span class="string">y*</span> <span class="string">J*</span> <span class="string">j*</span> <span class="string">x*</span> <span class="string">z*</span> <span class="string">G*</span> <span class="string">g*</span> <span class="string">F*</span> <span class="string">R*</span> <span class="string">r*</span> <span class="string">h_*</span> <span class="string">hT*</span> <span class="string">C*</span> <span class="string">X*</span> <span class="string">f</span> <span class="string">f_*</span> <span class="string">n_M</span> <span class="string">n_O</span>
+  clear <span class="string">val*</span> <span class="string">info*</span> <span class="string">species</span> <span class="string">family</span> <span class="string">order</span> <span class="string">class</span> <span class="string">phylum</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% created 2009/07/11 by Dina Lika, modified by Bas Kooijman 2013/01/15
+%
+%% Description
+%  writes report input parameters and output statistics
+%   to Excel-file file_name set in pars_my_pets
+%   assumes that report (and so parscomp) and report_xls_init have been run previously 
+%     and report_xls_close afterwards
+%   txt_statistics, val_statistics, txt_par, val_par, txt_mudn are set in report
+
+if exist('n_spec','var')==0
+  report_xls_init 
+end
+
+report_html %  hmtl reporting parallel to xls
+
+n_spec = n_spec + 1; % increment row number; initiated in report_xls_init
+txt_row = num2str(n_spec);
+
+%% sheet 1: list of species
+        
+  hyper_species = ['=HYPERLINK("[', file_name, '.xls]', species, '!A1";"', species,'")'];
+  xlswrite(file_name, {phylum, class, order, family, hyper_species, species_en, TYPE, FIT, COMPLETE, data_0{:}, data_1{:}}, 'species_list', ['A', txt_row])
+   
+  % colour font for data_0 and data_1
+  n_data_0 = size(data_0,1); n_0_start = 1 + 9;       n_0_end = n_0_start + n_data_0 - 1; 
+    cell_0_start = cell_name{n_0_start}; cell_0_end = cell_name{n_0_end}; % cell_name is defined in report_xls_init
+  n_data_1 = size(data_1,1); n_1_start = 1 + n_0_end; n_1_end = n_1_start + n_data_1 - 1;
+    cell_1_start = cell_name{n_1_start}; cell_1_end = cell_name{n_1_end};
+ 
+  excelObj = actxserver('Excel.Application'); %opens up an excel object
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  % column width
+  excelObj.sheets.Item('species_list').Range('E:F').ColumnWidth = 20; % species, common name-column are broad
+  excelObj.sheets.Item('species_list').Range('G:I').ColumnWidth = 4;  % TYPE,COMPLETE,FIT-column are narrow
+  % colour cells fit TYPE FIT and COMPLETE
+  excelObj.sheets.Item('species_list').Range(['G2:I', num2str(n_spec)]).Interior.ColorIndex = 36;
+  % colour data types
+  if n_data_0 > 0
+    excelObj.sheets.Item(1).Range([cell_0_start, txt_row, ':', cell_0_end, txt_row]).Font.ColorIndex = 5; % blue for zero-variate data
+  end
+  if n_data_1 > 0 
+    excelObj.sheets.Item(1).Range([cell_1_start, txt_row, ':', cell_1_end, txt_row]).Font.ColorIndex = 10; % green for uni-variate data
+  end  
+  excelWorkbook.Save;         % save font change
+  excelWorkbook.Close(false); % closes excel object
+  excelObj.Quit;
+  delete(excelObj);
+ 
+%% sheet 2: primary parameters for all species
+
+  xlswrite(file_name, {hyper_species}, 'primary_parameters', ['A', txt_row]);
+  
+  % sequence of par_prim equals that of header in report_xls_init
+  % present rates at reference temperature
+  par_primary = [ ...
+      T; T_A; T_L; T_H; T_AL; T_AH;
+      f; z; del_M; FT_m; kap_X; kap_X_P;
+      p_Am; v; kap; kap_R; p_M; p_T; k_J; E_G;
+      E_Hb; E_Hj; E_Hp; h_a; s_G;
+      mu_X; mu_V; mu_E; mu_P;
+      d_O;
+      n_O(2:4,1); n_O(2:4,2);
+      n_O(2:4,3); n_O(2:4,4)];
+  
+  xlswrite(file_name, par_primary', 'primary_parameters', ['B', txt_row,':AT', txt_row]);
+  
+  % colour cells
+  excelObj = actxserver('Excel.Application'); %opens up an excel object
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item('primary_parameters').Range('A:A').ColumnWidth = 20; % species-column is broad
+  excelObj.sheets.Item('primary_parameters').Range(['A1:A', txt_row]).Interior.ColorIndex = 36; % species list
+  excelObj.sheets.Item('primary_parameters').Range(['B1:G', txt_row]).Interior.ColorIndex = 22; % temp pars
+  excelObj.sheets.Item('primary_parameters').Range(['H1:H', txt_row]).Interior.ColorIndex = 38; % scaled func resp
+  excelObj.sheets.Item('primary_parameters').Range(['I1:J', txt_row]).Interior.ColorIndex =  7; % zoom, del_M
+  excelObj.sheets.Item('primary_parameters').Range(['K1:N', txt_row]).Interior.ColorIndex = 43; % assimilation
+  excelObj.sheets.Item('primary_parameters').Range(['O1:Q', txt_row]).Interior.ColorIndex =  4; % reserve, reprod
+  excelObj.sheets.Item('primary_parameters').Range(['R1:T', txt_row]).Interior.ColorIndex =  6; % maintenance
+  excelObj.sheets.Item('primary_parameters').Range(['U1:U', txt_row]).Interior.ColorIndex = 19; % growth
+  excelObj.sheets.Item('primary_parameters').Range(['V1:X', txt_row]).Interior.ColorIndex = 17; % life stages
+  excelObj.sheets.Item('primary_parameters').Range(['Y1:Z', txt_row]).Interior.ColorIndex = 24; % ageing
+  excelObj.sheets.Item('primary_parameters').Range(['AA1:AD',txt_row]).Interior.ColorIndex = 42; % chem potentials
+  excelObj.sheets.Item('primary_parameters').Range(['AE1:AH',txt_row]).Interior.ColorIndex = 34; % densities
+  excelObj.sheets.Item('primary_parameters').Range(['AI1:AK',txt_row]).Interior.ColorIndex = 28; % chem indices X
+  excelObj.sheets.Item('primary_parameters').Range(['AL1:AN',txt_row]).Interior.ColorIndex = 33; % chem indices V
+  excelObj.sheets.Item('primary_parameters').Range(['AO1:AQ',txt_row]).Interior.ColorIndex = 28; % chem indices E
+  excelObj.sheets.Item('primary_parameters').Range(['AR1:AT',txt_row]).Interior.ColorIndex = 33; % chem indices P
+  excelWorkbook.Save;
+  excelWorkbook.Close(false);
+  excelObj.Quit;
+  delete(excelObj);
+
+%% sheet 3: statistics for all species
+
+  xlswrite(file_name, {hyper_species}, 'statistics', ['A', txt_row]);
+  
+  % sequence of statistics equals that in report_animal
+  % present rates at temperature that is set for each species
+  
+  xlswrite(file_name, val_statistics', 'statistics', ['B', txt_row,':DB', txt_row]);
+
+  % colour cells
+  excelObj = actxserver('Excel.Application'); %opens up an excel object
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item('statistics').Range([' B2: D',txt_row]).Interior.ColorIndex = 22; % 1
+  excelObj.sheets.Item('statistics').Range([' E2: J',txt_row]).Interior.ColorIndex = 38; % 2
+  excelObj.sheets.Item('statistics').Range([' K2: P',txt_row]).Interior.ColorIndex =  7; % 3
+  excelObj.sheets.Item('statistics').Range([' Q2: U',txt_row]).Interior.ColorIndex =  4; % 4
+  excelObj.sheets.Item('statistics').Range([' V2: Z',txt_row]).Interior.ColorIndex =  4; % 5
+  excelObj.sheets.Item('statistics').Range(['AA2:AG',txt_row]).Interior.ColorIndex =  6; % 6
+  excelObj.sheets.Item('statistics').Range(['AH2:AK',txt_row]).Interior.ColorIndex = 19; % 7
+  excelObj.sheets.Item('statistics').Range(['AL2:AO',txt_row]).Interior.ColorIndex = 17; % 8
+  excelObj.sheets.Item('statistics').Range(['AP2:AS',txt_row]).Interior.ColorIndex = 24; % 9
+  excelObj.sheets.Item('statistics').Range(['AT2:BB',txt_row]).Interior.ColorIndex = 42; % 10
+  excelObj.sheets.Item('statistics').Range(['BC2:BF',txt_row]).Interior.ColorIndex = 34; % 11
+  excelObj.sheets.Item('statistics').Range(['BG2:BJ',txt_row]).Interior.ColorIndex = 28; % 12
+  excelObj.sheets.Item('statistics').Range(['BK2:BT',txt_row]).Interior.ColorIndex = 22; % 13
+  excelObj.sheets.Item('statistics').Range(['BU2:BZ',txt_row]).Interior.ColorIndex = 38; % 14
+  excelObj.sheets.Item('statistics').Range(['CA2:CD',txt_row]).Interior.ColorIndex =  7; % 15
+  excelObj.sheets.Item('statistics').Range(['CE2:CF',txt_row]).Interior.ColorIndex = 43; % 16
+  excelObj.sheets.Item('statistics').Range(['CG2:CP',txt_row]).Interior.ColorIndex =  4; % 17
+  excelObj.sheets.Item('statistics').Range(['CQ2:CS',txt_row]).Interior.ColorIndex =  6; % 18
+  excelObj.sheets.Item('statistics').Range(['CT2:DC',txt_row]).Interior.ColorIndex = 19; % 19
+  excelWorkbook.Save;
+  excelWorkbook.Close(false);
+  excelObj.Quit;
+  delete(excelObj);
+  
+%% sheet species; one sheet per species
+
+  % links to pars-, mydata-, predict-, result-files in header
+  hyper_pars = ['=HYPERLINK("', hyp_add_my_pet, 'pars_', species,'.m";"pars")'];
+  xlswrite(file_name, {hyper_pars}, species, 'F1')
+
+  hyper_mydata = ['=HYPERLINK("', hyp_add_my_pet, 'mydata/mydata_', species,'.m";"mydata")'];
+  xlswrite(file_name, {hyper_mydata}, species, 'G1')
+  hyper_predict = ['=HYPERLINK("', hyp_add_my_pet, 'mydata/predict_', species,'.m";"predict")'];
+  xlswrite(file_name, {hyper_predict}, species, 'H1')
+  hyper_result = ['=HYPERLINK("', hyp_add_my_pet, 'mydata/html/mydata_', species,'.html";"fit")'];
+  xlswrite(file_name, {hyper_result}, species, 'I1')
+
+
+  % statistics
+  hyper_statistics = ['=HYPERLINK("', hyp_add_my_pet, 'add_my_pet.pdf"; "statistics at T")'];
+  xlswrite(file_name, [{hyper_statistics}; txt_statistics], species, 'A1')
+  xlswrite(file_name, val_statistics, species, 'B2') 
+
+  % input parameters
+  n_par = length(val_par);
+
+  xlswrite(file_name, [{'Input parameters at T_ref'}; txt_par; txt_mudn], species, 'D1')
+  xlswrite(file_name, val_par, species, 'E2')
+  xlswrite(file_name, [mu_O'; d_O'; n_O], species, ['E', num2str(2 + n_par)]);
+  
+  excelObj = actxserver('Excel.Application'); %opens up an excel object
+  excelWorkbook = excelObj.workbooks.Open([txt_pwd, file_name]);
+  excelObj.sheets.Item(species).Range('A:A').ColumnWidth = 40; % description-column is broad
+  excelObj.sheets.Item(species).Range('D:D').ColumnWidth = 30; % description-column is broad
+  excelObj.sheets.Item(species).Range('A1:I1').Interior.ColorIndex   = 36; % header
+
+  % colour statistics
+  excelObj.sheets.Item(species).Range('A2:B4').Interior.ColorIndex   = 22; % 1
+  excelObj.sheets.Item(species).Range('A5:B10').Interior.ColorIndex  = 38; % 2
+  excelObj.sheets.Item(species).Range('A11:B16').Interior.ColorIndex =  7; % 3
+  excelObj.sheets.Item(species).Range('A17:B21').Interior.ColorIndex =  4; % 4
+  excelObj.sheets.Item(species).Range('A22:B26').Interior.ColorIndex =  4; % 5
+  excelObj.sheets.Item(species).Range('A27:B33').Interior.ColorIndex =  6; % 6
+  excelObj.sheets.Item(species).Range('A34:B37').Interior.ColorIndex = 19; % 7
+  excelObj.sheets.Item(species).Range('A38:B41').Interior.ColorIndex = 17; % 8
+  excelObj.sheets.Item(species).Range('A42:B45').Interior.ColorIndex = 24; % 9
+  excelObj.sheets.Item(species).Range('A46:B54').Interior.ColorIndex = 42; % 10
+  excelObj.sheets.Item(species).Range('A55:B58').Interior.ColorIndex = 34; % 11
+  excelObj.sheets.Item(species).Range('A59:B62').Interior.ColorIndex = 28; % 12
+  excelObj.sheets.Item(species).Range('A63:B72').Interior.ColorIndex = 22; % 13
+  excelObj.sheets.Item(species).Range('A73:B78').Interior.ColorIndex = 38; % 14
+  excelObj.sheets.Item(species).Range('A79:B82').Interior.ColorIndex =  7; % 15
+  excelObj.sheets.Item(species).Range('A83:B84').Interior.ColorIndex = 43; % 16
+  excelObj.sheets.Item(species).Range('A85:B94').Interior.ColorIndex =  4; % 17
+  excelObj.sheets.Item(species).Range('A95:B97').Interior.ColorIndex =  6; % 18
+  excelObj.sheets.Item(species).Range('A98:B107').Interior.ColorIndex = 19;% 19
+ 
+  % colour primary_parameters
+  excelObj.sheets.Item(species).Range('D2:E8').Interior.ColorIndex =   22; % temp pars
+  excelObj.sheets.Item(species).Range('D9:E9').Interior.ColorIndex =   38; % scaled func resp
+  excelObj.sheets.Item(species).Range('D10:E11').Interior.ColorIndex =  7; % zoom, del_M
+  excelObj.sheets.Item(species).Range('D12:E14').Interior.ColorIndex = 43; % assimilation
+  excelObj.sheets.Item(species).Range('D15:E17').Interior.ColorIndex =  4; % reserve, reprod
+  excelObj.sheets.Item(species).Range('D18:E20').Interior.ColorIndex =  6; % maintenance
+  excelObj.sheets.Item(species).Range('D21:E21').Interior.ColorIndex = 19; % growth
+  excelObj.sheets.Item(species).Range('D22:E24').Interior.ColorIndex = 17; % life stages
+  excelObj.sheets.Item(species).Range('D25:E26').Interior.ColorIndex = 24; % ageing
+  excelObj.sheets.Item(species).Range('D27:H27').Interior.ColorIndex = 42; % chem potentials
+  excelObj.sheets.Item(species).Range('D28:H28').Interior.ColorIndex = 34; % densities
+  excelObj.sheets.Item(species).Range('D29:H32').Interior.ColorIndex = 28; % chem indices X
+
+  excelWorkbook.Save;         % save font change
+  excelWorkbook.Close(false); % closes excel object
+  excelObj.Quit;
+  delete(excelObj);
+
+%% prepare for a next species
+  
+  clear T* t_* W* w* d* M* m* E* e* p* V* v* U* u* L* l* a* F* s_* SD* S_* K* k*
+  clear y* J* j* x* z* G* g* F* R* r* h_* hT* C* X* f f_* n_M n_O
+  clear val* info* species family order class phylum
+
+##### SOURCE END #####
+--></body></html>

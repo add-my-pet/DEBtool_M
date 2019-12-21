@@ -1,0 +1,128 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shphase_memv</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-09"><meta name="DC.source" content="shphase_memv.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shphase_memv</h1><!--introduction--><p>Shows phase diagram of reserve and structural mass</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shphase_memv.m"><b>shphase_memv</b></a> (F,d)</p><h2>Description<a name="4"></a></h2><p>The routine plots the phase diagram of reserve mass M_E and structural mass M_V (in C-moles). The direction field is given with arrows, the null-isoclines in red curves. The green curves represent stage transitions: embryo to juvenile (where feeding is switched on), and where the mobilisation flux equals the somatic maintenance costs. If the organism could shrink, it would die at this border. The magenta box gives the border of possible values.</p><p>Input</p><div><ul><li>F: scalar with functional response</li><li>d: scalar with multiplier for directionfield</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Shrinking should be faster than indicated here cf {231}   run pars_animal before running this function See <a href="shphase_el.html"><b>shphase_el</b></a> for phase diagram of scaled reserve density e and scaled lenth l.</p><h2>Example of use<a name="6"></a></h2><p>pars_animal; shphase_memv(1,5)</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shphase_memv
+% Shows phase diagram of reserve and structural mass 
+
+%%
+function shphase_memv(F,d)
+  % created 2000/09/05 by Bas Kooijman, modified 2009/09/30
+  
+  %% Syntax
+  % <../shphase_memv.m *shphase_memv*> (F,d)
+  
+  %% Description
+  % The routine plots the phase diagram of reserve mass M_E and structural mass M_V (in C-moles). 
+  % The direction field is given with arrows, the null-isoclines in red curves. 
+  % The green curves represent stage transitions: 
+  % embryo to juvenile (where feeding is switched on), and where the mobilisation flux equals the somatic maintenance costs. 
+  % If the organism could shrink, it would die at this border. 
+  % The magenta box gives the border of possible values.
+  %
+  % Input
+  %
+  % * F: scalar with functional response
+  % * d: scalar with multiplier for directionfield
+  
+  %% Remarks
+  % Shrinking should be faster than indicated here cf {231}
+  %   run pars_animal before running this function
+  % See <shphase_el.html *shphase_el*> for phase diagram of scaled reserve density e and scaled lenth l.
+  
+  %% Example of use
+  % pars_animal; shphase_memv(1,5)
+
+  global JT_X_Am y_E_X jT_E_M kap m_Em M_Em M_Vm M_Vb l_T L_m g f
+
+  if exist('d','var') == 0
+    d = .01;
+  end
+  if exist('F','var') == 0
+    F = .7;
+  end
+  
+  f = F; % make func response available for fnmemv
+
+  M_E = linspace(0, M_Em, 30)';  
+  M_V = linspace(1e-4, M_Vm, 30)';
+  dirf_memv = dirfield('fnmemv', M_E, M_V, d); % direction field
+  
+  M_V = linspace(1e-4, M_Vm, 100)'; l = (M_V/ M_Vm) .^ (1/3); % scaled length
+  j_E_Am = y_E_X * (JT_X_Am * (l * L_m) .^ 2) ./ M_V;
+  EV = [M_Em 0; M_Em M_Vm; 0 M_Vm];    % border
+  E0 = [f* M_V * m_Em, M_V];  % isocline d/dt M_E = 0
+  V0 = [M_V * m_Em .* (l_T + jT_E_M ./ (kap * j_E_Am)), M_V]; % d/dt M_V = 0
+  Mb = [0, M_Vb; M_Em, M_Vb];            % embryo/juvenile transition
+  E = kap * g * l ./ (g + (1 - kap) * l + l_T); % e at d/l transition
+  Md = [E .* M_V * m_Em, M_V]; % death/alive transition
+  
+  hold on;
+ 
+  plot(EV(:,1), EV(:,2), '-m') % border of phase diagram
+  plot(E0(:,1), E0(:,2), '-r', V0(:,1), V0(:,2), '-r') % isoclines
+  plot(Mb(:,1), Mb(:,2), '-g', Md(:,1), Md(:,2), '-g') % embryo/juvenile, death/alive transition
+  plot_vector(dirf_memv, '-k') % attemps specification of linetype gives crashes
+  plot(dirf_memv(:,1), dirf_memv(:,2), '.b') % points of departure
+  title(['phase diagram for f = ', num2str(f)])
+  xlabel('reserve mass, M_E')
+  ylabel('structural mass, M_V')
+
+##### SOURCE END #####
+--></body></html>
