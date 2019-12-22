@@ -1,0 +1,282 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mat2pars_init</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="mat2pars_init.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>mat2pars_init</h1><!--introduction--><p>writes a pars_init file from a .mat file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../mat2pars_init.m"><b>mat2pars_init</b></a> (speciesnm, varargin)</p><h2 id="4">Description</h2><p>Makes a pars_init file from a results_'speciesnm'.mat file</p><p>Input:</p><div><ul><li>speciesnm: optional string with the species name (default pets{1} for single species or group for multiple species)</li><li>varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file</li></ul></div><h2 id="5">Remarks</h2><p>Keep in mind that the files will be saved in your local directory; use the cd command BEFORE running this function to save files in the desired place.</p><h2 id="6">Example of use</h2><p>mat2pars_init</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% mat2pars_init
+% writes a pars_init file from a .mat file
+
+%%
+function mat2pars_init(speciesnm, varargin)
+% created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
+% modified 2017/07/19, 2018/05/25, 2019/03/20 by Bas Kooijman
+
+%% Syntax
+% <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
+
+%% Description
+% Makes a pars_init file from a results_'speciesnm'.mat file
+%
+% Input:
+%
+% * speciesnm: optional string with the species name (default pets{1} for single species or group for multiple species)
+% * varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file
+
+%% Remarks
+% Keep in mind that the files will be saved in your local directory; 
+% use the cd command BEFORE running this function to save files in the desired place.
+
+%% Example of use
+% mat2pars_init
+
+global pets cov_rules
+
+n_pets = length(pets);
+
+if ~exist('speciesnm','var')
+  if n_pets == 1
+    speciesnm = pets{1}; 
+  else
+    speciesnm = 'group';
+  end
+  fix = 0;
+elseif nargin > 2
+  error('Too many inputs in mat2pars_init');
+elseif isempty(varargin) || varargin{1} ~= 1
+  fix = 0;  % free/fix parameters as in .mat file
+else
+  fix = 1;  % all parameters fixed 
+end
+
+matFile = ['results_', speciesnm, '.mat'];
+
+% check that mydata actually exists
+if exist(matFile, 'file') == 0
+  fprintf([matFile, ' not found.\n']);
+  return
+end
+
+pars_initFile = ['pars_init_', speciesnm, '.m'];
+
+if exist(pars_initFile, 'file') == 2
+  prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
+  overwr = lower(input(prompt, 's'));
+  if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
+    fprintf([pars_initFile, ' was not overwritten.\n']);
+    return
+  end
+end
+
+load(matFile);
+
+% open pars_init file
+pars_init_id = fopen(['pars_init_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
+fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', speciesnm,'(metaData)\n\n']);
+
+if ~iscell(metaPar.model)
+  fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n']);
+else
+  txt_model = '';
+  for i = 1:n_pets
+    txt_model = [txt_model, ', ''', metaPar.model{i}, ''''];
+  end
+  txt_model(1:2) = [];
+  fprintf(pars_init_id, ['metaPar.model = {', txt_model,'}; \n']);
+end
+if n_pets > 1
+  fprintf(pars_init_id, ['metaPar.cov_rules = ''', cov_rules,'''; %% see function parGrp2Pets\n']);
+  if isfield(metaPar, 'weights')
+    fldPar = fieldnames(metaPar.weights);
+    for i=1:length(fldPar)
+      fprintf(pars_init_id, ['metaPar.weights.', fldPar{i}, ' = ', num2str(metaPar.weights.(fldPar{i})), ';\n']);
+    end
+  end
+end
+fprintf(pars_init_id, '\n');
+
+free = par.free;
+par = rmfield(par, 'free');
+parFields = fields(par);
+
+% checking the existence of metaPar fields
+if ~iscell(metaPar.model) % model is character string
+  EparFields = get_parfields(metaPar.model);
+else % model is cell string of length n_pets
+  EparFields = {}; model = metaPar.model;
+  for i = 1:n_pets
+    EparFields = [EparFields, get_parfields(model{i})];
+  end
+  EparFields = unique(EparFields); % sorted order
+end
+
+fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
+
+currentPar = 'T_ref';
+write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+
+parFields = setdiff(parFields, {currentPar});
+
+fprintf(pars_init_id, '\n%%%% core primary parameters \n');
+
+for i = 1:length(EparFields)
+  currentPar = EparFields{i};
+  if isfield(par,currentPar)
+    if length(par.(currentPar)) == 1
+      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    else
+      write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    end
+  end
+end 
+
+fprintf(pars_init_id, '\n%%%% other parameters \n');
+
+parFields = setdiff(parFields, EparFields);
+
+% separate chemical parameters from other
+if n_pets == 1
+  par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+else
+  par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+end
+chemParFields = fields(par_auto);
+otherParFields = setdiff(parFields, chemParFields);
+
+for i = 1:length(otherParFields)
+  currentPar = otherParFields{i};
+    if length(par.(currentPar)) == 1
+      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    else
+      write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    end
+end
+
+fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
+if n_pets == 1
+  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
+else
+  fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
+  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
+end
+
+for i = 1:length(chemParFields)
+  currentPar = chemParFields{i};
+  if par.(currentPar) ~= par_auto.(currentPar)
+    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+  end
+end
+
+fprintf(pars_init_id, '\n%%%% Pack output: \n');
+fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = free; \n');
+
+fclose(pars_init_id);
+
+end
+
+function write_par_line(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
+
+  if ~isempty(strfind(parName,'E_H'))
+    fprintf(file_id, ['par.', parName,' = %1.3e; '], parValue);
+  elseif ~isempty(strfind(parName,'h_a'))
+    fprintf(file_id, ['par.', parName,' = %1.3e;  '], parValue);
+  else    
+    fprintf(file_id, '%-*s', 22, ['par.', parName,' = ', num2str(parValue), ';  ']);
+  end
+  fprintf(file_id, '%-*s', 10, ['free.', parName]);
+  if fix
+    fprintf(file_id, ' = 0;   ');
+  else
+    fprintf(file_id, [' = ', num2str(freeValue), ';   ']);
+  end
+  fprintf(file_id, '%-*s', 26, ['units.', parName,' = ''', unitsString, ''';  ']);
+  fprintf(file_id, ['label.', parName,' = ''', labelString, '''; \n']);
+end
+
+function write_par_line_vec(file_id, parName, parValue, freeValue, unitsString, labelString, fix)
+
+  if ~isempty(strfind(parName,'E_H')) 
+    fprintf(file_id, ['par.', parName,' = [']); fprintf(file_id, '% 1.3e', parValue); fprintf(file_id, ']; ');
+  elseif ~isempty(strfind(parName,'h_a'))
+    fprintf(file_id, ['par.', parName,' = [']); fprintf(file_id, '% 1.3e', parValue); fprintf(file_id, ']; ');
+  else    
+    fprintf(file_id, ['par.', parName,' = [', num2str(parValue), '];  ']);
+  end
+  fprintf(file_id, '%-*s', 10, ['free.', parName]);
+  if fix
+    fprintf(file_id, ' = 0;   ');
+  else
+    fprintf(file_id, [' = [', num2str(freeValue), '];   ']);
+  end
+  fprintf(file_id, '%-*s', 26, ['units.', parName,' = ''', unitsString, ''';  ']);
+  fprintf(file_id, ['label.', parName,' = ''', labelString, '''; \n']);
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

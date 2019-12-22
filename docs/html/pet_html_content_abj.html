@@ -1,0 +1,227 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pet_html_content_abj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="pet_html_content_abj.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>pet_html_content_abj</h1><!--introduction--><p>prepares matrixes used as input for print_my_pet_html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">primary parameters in energy-length-time format:</a></li><li><a href="#8">biochemical parameters:</a></li><li><a href="#9">statistics in energy time length framework</a></li></ul></div><h2 id="3">Syntax</h2><p>[par_elt, chem_out, stat_html] = <a href="../pet_html_content.m"><b>pet_html_content</b></a> (par, chem, stat, txt_stat, T_ref)</p><h2 id="4">Description</h2><p>This function might become obsolete in the future. But at the moment it prepares the input for print_my_pet_html assuming model 'abj'</p><p>Input:</p><div><ul><li>par  (structure with paramters)</li><li>chem  (structure with volume/energy converters and chemical indices)</li><li>stat (structure created with implied model properties created in statistics)</li><li>txt_stat (structure with units and labels of the implied properties, also created in statistics)</li><li>T_ref (scalar, reference temperature)</li></ul></div><p>Output:</p><div><ul><li>par_elt: n-4 matrix with symbol, value, units, description of parameters</li><li>chem_out: n-4 matrix with symbol, value, units, description of biochemical parameters</li><li>stat_html: n-4 matrix with symbol, value, units, description of implied model properties</li></ul></div><h2 id="5">Remarks</h2><p>This function is not yet finalised- we still need to add a lot of row to stat_html</p><h2 id="6">Example of use</h2><pre class="language-matlab">load(<span class="string">'results_my_pet.mat'</span>);
+v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
+[stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
+[par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat, txt_stat, T_ref);
+</pre><h2 id="7">primary parameters in energy-length-time format:</h2><h2 id="8">biochemical parameters:</h2><h2 id="9">statistics in energy time length framework</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% pet_html_content_abj
+% prepares matrixes used as input for print_my_pet_html
+
+%%
+function [par_elt, chem_out, stat_html] = pet_html_content_abj(par, chem, stat, txt_stat, T_ref) 
+% created 2009/07/11 by Dina Lika, modified by Bas Kooijman 2014/06/03
+% modified by starrlight augustine 2014/13/04 
+
+%% Syntax
+% [par_elt, chem_out, stat_html] = <../pet_html_content.m *pet_html_content*> (par, 
+% chem, stat, txt_stat, T_ref) 
+
+%% Description
+% This function might become obsolete in the future. But at the moment it
+% prepares the input for print_my_pet_html assuming model 'abj'
+%
+% Input:
+%
+% * par  (structure with paramters)
+% * chem  (structure with volume/energy converters and chemical indices)
+% * stat (structure created with implied model properties created in
+% statistics)
+% * txt_stat (structure with units and labels of the implied properties,
+% also created in statistics)
+% * T_ref (scalar, reference temperature)
+%
+% Output:
+% 
+% * par_elt: n-4 matrix with symbol, value, units, description of parameters
+% * chem_out: n-4 matrix with symbol, value, units, description of
+% biochemical parameters
+% * stat_html: n-4 matrix with symbol, value, units, description of implied
+% model properties
+
+
+%% Remarks
+% This function is not yet finalised- we still need to add a lot of row to
+% stat_html
+
+%% Example of use
+%   load('results_my_pet.mat');
+%   v2struct(metadata); v2struct(metapar); f= 1; T = T_typical;
+%   [stat, txt_stat] = statistics_std(par, chem, T, T_ref, f, model)
+%   [par_elt, chem_out, stat_html] = pet_html_content(par, chem, stat, txt_stat, T_ref);
+
+v2struct(par); 
+
+v2struct(chem);
+
+cp = parscomp_st(par, chem);
+v2struct(cp); 
+
+v2struct(stat); 
+
+%% primary parameters in energy-length-time format:
+
+par_elt = { ...
+% temperature  #FFC6A5    
+'#FFC6A5', 'T_ref', T_ref,     'K',        'Reference temp'    
+'#FFC6A5', 'T_A', T_A  ,       'K',        'Arrhenius temp'   
+% assimilation #CEEFBD
+'#CEEFBD', '{F_m}',   F_m   ,  'l/d.cm^2', 'max spec searching rate'   
+'#CEEFBD', 'kap_X',   kap_X ,  '-',        'digestion efficiency of food to reserve'   
+'#CEEFBD', 'kap_P', kap_P, '-',        'faecation efficiency of food to faeces'   
+'#CEEFBD', '{p_Am}',  p_Am,    'J/d.cm^2', 'max spec assimilation rate'
+% mobilisation & allocation #DEF3BD
+'#DEF3BD', 'v',       v,       'cm/d',     'energy conductance'   
+'#DEF3BD', 'kap',     kap,     '-',        'allocation fraction to soma'   
+'#DEF3BD', 'kap_R',   kap_R,   '-',        'reproduction efficiency' 
+% maintenance #FFFF9C
+'#FFFF9C', '[p_M]',   p_M,     'J/d.cm^3', 'vol-specific somatic maintenance'   
+'#FFFF9C', '{p_T}',   p_T,     'J/d.cm^2', 'surface-specific som maintenance'   
+'#FFFF9C', 'k_J',     k_J,     '1/d'     , 'maturity maint rate coefficient' 
+% growth #FFFFC6
+'#FFFFC6', '[E_G]',   E_G,     'J/cm^3',   'specific cost for structure'  
+% life stages #94D6E7
+'#94D6E7', 'E_H^b',   E_Hb,    'J',        'maturity at birth'   
+'#94D6E7', 'E_H^p',   E_Hp,    'J',        'maturity at puberty'   
+% aging #BDC6DE
+'#BDC6DE', 'h_a',     h_a,     '1/d^2',    'Weibull aging acceleration'   
+'#BDC6DE', 's_G',     s_G,     '-',        'Gompertz stress coefficient'    
+};
+
+%% biochemical parameters:
+
+chem_out = { ...
+% temperature  #FFC6A5    
+'#FFC6A5', 'mu_X', mu_X,  'J/ mol', 'chemical potential of food'  
+'#FFC6A5', 'mu_V', mu_V,  'J/ mol', 'chemical potential of structure'    
+'#FFC6A5', 'mu_E', mu_E,  'J/ mol', 'chemical potential of reserve'    
+'#FFC6A5', 'mu_P', mu_P,  'J/ mol', 'chemical potential of faeces'   
+%
+'#CEEFBD', 'd_X',   d_X,  'g/cm^3', 'specific density of food'   
+'#CEEFBD', 'd_V',   d_V,  'g/cm^3', 'specific density of structure'   
+'#CEEFBD', 'd_E',   d_E,  'g/cm^3', 'specific density of reserve'   
+'#CEEFBD', 'd_P',   d_P,  'g/cm^3', 'specific density of faeces' 
+% 
+'#DEF3BD', 'n_HX',    n_O(2,1),  '-',     'chem. index of hydrogen in food'   
+'#DEF3BD', 'n_OX',    n_O(3,1),  '-',     'chem. index of oxygen in food'     
+'#DEF3BD', 'n_NX',    n_O(4,1),  '-',     'chem. index of nitrogen in food'   
+% 
+'#FFFF9C', 'n_HV',    n_O(2,2),  '-',     'chem. index of hydrogen in structure'     
+'#FFFF9C', 'n_OV',    n_O(3,2),  '-',     'chem. index of oxygen in structure'    
+'#FFFF9C', 'n_NV',    n_O(4,2),  '-',     'chem. index of nitrogen in structure'    
+% 
+'#FFFFC6', 'n_HE',    n_O(2,3),  '-',     'chem. index of hydrogen in reserve'  
+'#FFFFC6', 'n_OE',    n_O(3,3),  '-',     'chem. index of oxygen in reserve'
+'#FFFFC6', 'n_NE',    n_O(4,3),  '-',     'chem. index of nitrogen in reserve'
+% 
+'#94D6E7', 'n_HP',    n_O(2,4),  '-',     'chem. index of hydrogen in faeces' 
+'#94D6E7', 'n_OP',    n_O(3,4),  '-',     'chem. index of oxygen in faeces' 
+'#94D6E7', 'n_NP',    n_O(4,4),  '-',     'chem. index of nitrogen in faeces' 
+};
+
+
+%% statistics in energy time length framework
+v2struct(stat);
+units = txt_stat.units;
+label = txt_stat.label;
+
+stat_html = { ...
+'#FFC6A5', 'f', f, units.f,    label.f 
+'#FFC6A5', 'T', T, 'K',    'typical temp'     
+%
+'#FFFFFF', 'c_T', c_T, units.c_T,    label.c_T                            
+'#FFFFFF', 'E_0', E_0, units.E_0, label.E_0                             
+'#FFFFFF', 'W_d^0', W_0, units.W_0, label.W_0
+'#FFFFFF', 'del_Ub', del_Ub, units.del_Ub, label.del_Ub
+%
+'#C6E7DE', 'a_b', a_b, units.a_b, label.a_b 
+% '#C6E7DE', 'a_j', a_j, units.a_j, label.a_j
+'#C6E7DE', 'a_p', a_p, units.a_p, label.a_p
+'#C6E7DE', 'a_99', a_99, units.a_99, label.a_99
+%
+'#DEF3BD', 'W_b', W_b, units.W_b, label.W_b 
+% '#DEF3BD', 'W_j', W_j, units.W_j, label.W_j 
+'#DEF3BD', 'W_p', W_p, units.W_p, label.W_p 
+'#DEF3BD', 'W_i', W_i, units.W_i, label.W_i
+%
+'#CEEFBD', 'L_b',L_b, units.L_b, label.L_b 
+% '#CEEFBD', 'L_j',L_j, units.L_j, label.L_j 
+'#CEEFBD', 'L_b',L_p, units.L_p, label.L_p 
+'#CEEFBD', 'L_i',L_i, units.L_i, label.L_i 
+};
+
+% col_statistics = { ... % colours for statistics
+%     '#FFC6A5'; '#FFFFFF'; '#C6E7DE'; '#CEEFBD'; '#CEEFBD';
+%     '#DEF3BD'; '#FFFFC6'; '#BDC6DE'; '#C6B5DE'; '#DEBDDE';
+%     '#F7BDDE'; '#C6E7DE'; '#FFFFC6'; '#FFC6A5'; '#FFFFC6'; 
+%     '#F7BDDE'; '#BDC6DE'; '#FFFFC6'; '#FFFFFF'};
+% 
+##### SOURCE END #####
+--></body></html>

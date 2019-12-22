@@ -1,0 +1,172 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pars_init_my_pet</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-23"><meta name="DC.source" content="pars_init_my_pet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>pars_init_my_pet</h1><!--introduction--><p>sets (initial values for) parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">set chemical parameters from Kooy2010</a></li><li><a href="#6">pack chem</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[par, txt_par, chem] = <a href="../pars_init_my_pet.m"><b>pars_init_my_pet</b></a>(metadata)</p><h2>Description<a name="4"></a></h2><p>sets (initial values for) parameters</p><p>Input</p><div><ul><li>metadata for names of phylum and class to get d_V</li></ul></div><p>Output</p><div><ul><li>par : structure with values of parameters</li><li>txt_par: structure with information on parameters</li><li>chem : structure with values of chemical parameters</li></ul></div><h2>set chemical parameters from Kooy2010<a name="5"></a></h2><pre>don't change these values, unless you have a good reason</pre><h2>pack chem<a name="6"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% pars_init_my_pet
+% sets (initial values for) parameters
+
+%%
+function [par, txt_par, chem] = pars_init_my_pet(metadata)
+  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo Marques and Laure Pecquerie 2015/01/25
+  
+  %% Syntax
+  % [par, txt_par, chem] = <../pars_init_my_pet.m *pars_init_my_pet*>(metadata)
+  
+  %% Description
+  % sets (initial values for) parameters
+  %
+  % Input
+  %
+  % * metadata for names of phylum and class to get d_V
+  %  
+  % Output
+  %
+  % * par : structure with values of parameters
+  % * txt_par: structure with information on parameters
+  % * chem : structure with values of chemical parameters
+
+% parameters: initial values at 
+T_C = 273.15;     % K, temperature at 0 degrees C
+T_ref = T_C + 20; % K, reference temperature
+% edit these values such that predictions are not too far off;
+% the values must be set in the standard DEB units:
+%   d for time; cm for length; J for energy; K for temperature
+
+% primary parameters
+par.z = 1;          free.z     = 1;    units.z = '-';          label.z = 'z';          % zoom factor; for z = 1: L_m = 1 cm
+par.F_m = 6.5;      free.F_m   = 0;    units.F_m = 'l/d.cm^2'; label.F_m = '{F_M}';    % max spec searching rate
+par.kap_X = 0.8;    free.kap_X = 0;    units.kap_X = '-';      label.kap_X = 'kap_X';  % digestion efficiency of food to reserve
+par.v = 0.02;       free.v     = 1;    units.v = 'cm/d';       label.v = 'v';          % energy conductance
+par.kap = 0.8;      free.kap   = 1;    units.kap = '-';        label.kap = 'kap';      % allocation fraction to soma
+par.kap_R = 0.95;   free.kap_R = 0;    units.kap_R = '-';      label.kap_R = 'kap_R';  % reproduction efficiency
+par.p_M = 18;       free.p_M   = 1;    units.p_M = 'J/d.cm^3'; label.p_M = '[p_M]';    % vol-spec somatic maint
+par.p_T =  0;       free.p_T   = 0;    units.p_T = 'J/d.cm^2'; label.p_T = '{p_T}';    % surf-spec somatic maint
+par.k_J = 0.002;    free.k_J   = 1;    units.k_J = '1/d';      label.k_J = 'k_J';      % maturity maint rate coefficient
+par.E_G = 2800;     free.E_G   = 1;    units.E_G = 'J/cm^3';   label.E_G = '[E_G]';    % spec cost for structure
+par.E_Hb = .275;    free.E_Hb  = 1;    units.E_Hb = 'J';       label.E_Hb = 'E_Hb';    % maturity at birth
+par.E_Hp = 50;      free.E_Hp  = 1;    units.E_Hp = 'J';       label.E_Hp = 'E_Hp';    % maturity at puberty
+par.h_a = 1e-6;     free.h_a   = 1;    units.h_a = '1/d^2';    label.h_a = 'h_a';      % Weibull aging acceleration
+par.s_G = 1e-4;     free.s_G   = 0;    units.s_G = '-';        label.s_G = 's_G';      % Gompertz stress coefficient
+
+% auxiliary parameters
+par.T_A   = 8000;   free.T_A   = 0;    units.T_A = 'K';        label.T_A = 'T_A';      % Arrhenius temperature
+par.del_M = 0.16;   free.del_M = 1;    units.del_M = '-';      label.del_M = 'del_M';  % shape coefficient
+
+% environmental parameters (temperatures are in data)
+par.f = 1.0;        free.f     = 0;    units.f = '-';          label.f = 'f';          % scaled functional response for 0-var data
+par.f_tL = 0.8;   free.f_tL  = 0;      units.f_tL = '-';     label.f_tL = 'f_tL';      % scaled functional response for 1-var data
+
+txt_par.units = units; txt_par.label = label; par.free = free; % pack units, label, free in structure
+
+%% set chemical parameters from Kooy2010 
+%  don't change these values, unless you have a good reason
+
+% specific densities
+%   set specific densites using the pet's taxonomy
+d_V = get_d_V(metadata.phylum, metadata.class); d_E = d_V;
+% For a specific density of wet mass of 1 g/cm^3,
+%   a specific density of d_E = d_V = 0.1 g/cm^3 means a dry-over-wet weight ratio of 0.1
+% Replace d_V and d_E to more appropriate values if you have them
+% see comments on section 3.2.1 of DEB3 
+%
+%       X     V     E     P       food, structure, reserve, product (=faeces)
+d_O = [0.1;  d_V;  d_E;  0.1];    % g/cm^3, specific densities for organics
+
+% chemical potentials from Kooy2010 Tab 4.2
+%        X     V     E     P
+mu_O = [525; 500;  550;  480] * 1000; % J/mol, chemical potentials for organics
+%       C  H  O  N     CO2, H2O, O2, NH3
+mu_M = [0; 0; 0; 0]; % chemical potential of minerals
+
+% chemical indices from Kooy2010 Fig 4.15
+%       X     V     E     P
+n_O = [1.00, 1.00, 1.00, 1.00;  % C/C, equals 1 by definition
+       1.80, 1.80, 1.80, 1.80;  % H/C  these values show that we consider dry-mass
+       0.50, 0.50, 0.50, 0.50;  % O/C
+       0.15, 0.15, 0.15, 0.15]; % N/C
+%       C     H     O     N
+n_M = [ 1     0     0     0;    % C/C, equals 0 or 1
+        0     2     0     3;    % H/C
+        2     1     2     0;    % O/C
+        0     0     0     1];   % N/C
+
+% makes structure with chemical indices
+% molar volume of gas at 1 bar and 20 C is 24.4 L/mol
+T = T_C + 20;            % K, temp of measurement equipment
+X_gas = T_ref/ T/ 24.4;  % M, mol of gas per litre at T_ref (= 20 C) and 1 bar 
+
+%% pack chem 
+chem = struct(...
+'T_ref', T_ref, ...
+'mu_M', mu_M,  ...
+'mu_X', mu_O(1),  ...
+'mu_V', mu_O(2),  ...
+'mu_E', mu_O(3),  ...
+'mu_P', mu_O(4),  ...
+'d_X',  d_O(1),   ...
+'d_V',  d_O(2),   ...
+'d_E',  d_O(3),   ...
+'d_P',  d_O(4),   ...
+'X_gas', X_gas, ...
+'n_O',  n_O,   ...
+'n_M',  n_M);
+
+
+##### SOURCE END #####
+--></body></html>

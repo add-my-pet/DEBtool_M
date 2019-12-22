@@ -1,0 +1,159 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_d_V</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-05-12"><meta name="DC.source" content="get_d_V.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_d_V</h1><!--introduction--><p>Gets specific density of structure from phylum or class</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[d_V info] = <a href="../get_d_V.m"><b>get_d_V</b></a> (phylum, class)</p><h2>Description<a name="4"></a></h2><p>Sets specific density d_V according to taxonomic classification</p><p>Input</p><div><ul><li>phylum: name of animal phylum (one of 36 possibilities)</li><li>class: name of class, only used for molluscs, arthropods and chordates</li></ul></div><p>Output</p><pre>d_V: scalar with specific density in g/cm^3 of dry mass
+info: 1 if taxon could be identified, 0 otherwise</pre><h2>Remarks<a name="5"></a></h2><p>Since the specific density of wet mass is taken to be 1 g/cm^3,   d_V can also be considered as a dry/wet mass ratio Check spelling if info = 0</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_d_V
+% Gets specific density of structure from phylum or class
+
+%%
+function [d_V info] = get_d_V(phylum, class)
+  % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12
+  
+  %% Syntax
+  % [d_V info] = <../get_d_V.m *get_d_V*> (phylum, class)
+  
+  %% Description
+  % Sets specific density d_V according to taxonomic classification
+  %
+  % Input
+  %
+  % * phylum: name of animal phylum (one of 36 possibilities)
+  % * class: name of class, only used for molluscs, arthropods and chordates
+  %  
+  % Output
+  %
+  %  d_V: scalar with specific density in g/cm^3 of dry mass
+  %  info: 1 if taxon could be identified, 0 otherwise
+  
+  %% Remarks
+  % Since the specific density of wet mass is taken to be 1 g/cm^3,
+  %   d_V can also be considered as a dry/wet mass ratio
+  % Check spelling if info = 0
+  
+info = 1;
+switch phylum
+    case 'Porifera'
+        d_V = 0.11;
+    case {'Ctenophora', 'Cnidaria'}                  % Radiata
+        d_V = 0.01;
+    case 'Gastrotricha'                              % Platyzoa
+        d_V = 0.05;
+    case 'Rotifera'
+        d_V = 0.06;
+    case {'Platyhelminthes', 'Acanthocephala', 'Chaetognatha'}
+        d_V = 0.07;
+    case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
+        d_V = 0.07;
+    case 'Annelida'
+        d_V = 0.16;
+    case 'Sipuncula'
+        d_V = 0.11;
+    case 'Mollusca'
+        switch class
+            case 'Cephalopoda'
+              d_V = 0.21;
+            case 'Gastropoda'
+              d_V = 0.15;
+            case 'Bivalvia'
+              d_V = 0.09;
+            otherwise
+              d_V = 0.1;
+        end
+    case {'Tardigrada', 'Priapulida', 'Nematoda'}   % Ecdysozoa
+        d_V = 0.07;
+    case 'Arthropoda'
+        switch class
+            case 'Insecta'
+               d_V = 0.17; % 0.27 is possibly better
+            otherwise
+               d_V = 0.17;
+        end
+    case 'Echinodermata'                           % Deuterostomata
+        d_V = 0.09;
+    case 'Hemichordata'
+        d_V = 0.07;
+    case 'Chordata'
+        switch class
+            case {'Mammalia', 'Reptilia'}
+              d_V = 0.3;
+            case {'Aves', 'Amphibia'}
+              d_V = 0.28;
+            case {'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
+              d_V = 0.2;
+            case 'Myxini'
+              d_V = 0.17;
+            case 'Cephalaspidomorphi'
+              d_V = 0.125;
+            case 'Appendicularia'
+              d_V = 0.045;
+            case 'Thaliacea'
+              d_V = 0.08;
+            case 'Ascidiacea'
+              d_V = 0.06;
+        end 
+    case 'my_pet_phylum' % demo mydata_my_pet
+        d_V = 0.1;
+    otherwise
+        fprintf('warning from get_d_V: taxon could not be identified: d_V = 0.1 g/cm^3\n')
+        d_V = 0.1; info = 0;
+end
+end
+##### SOURCE END #####
+--></body></html>

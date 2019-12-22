@@ -1,0 +1,274 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="mydata_my_pet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>mydata_my_pet</h1><!--introduction--><p>Sets referenced data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">To do (remove these remarks after editing this file)</a></li><li><a href="#7">set metaData</a></li><li><a href="#8">set data</a></li><li><a href="#9">set weights for all real data</a></li><li><a href="#10">overwriting weights (remove these remarks after editing the file)</a></li><li><a href="#11">set pseudodata and respective weights</a></li><li><a href="#12">overwriting pseudodata and respective weights (remove these remarks after editing the file)</a></li><li><a href="#13">pack auxData and txtData for output</a></li><li><a href="#14">Discussion points</a></li><li><a href="#15">Facts</a></li><li><a href="#16">References</a></li></ul></div><h2 id="3">Syntax</h2><p>[data, auxData, metaData, txtData, weights] = <a href="../mydata_my_pet.m"><b>mydata_my_pet</b></a></p><h2 id="4">Description</h2><p>Sets data, pseudodata, metadata, auxdata, explanatory text, weights coefficients. Meant to be a template in add-my-pet</p><p>Output</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.).   auxData is unpacked in predict and the user needs to construct predictions accordingly.</li><li>txtData: text vector for the presentation of results</li><li>metaData: structure with info about this entry</li><li>weights: structure with weights for each data set</li></ul></div><h2 id="5">Remarks</h2><p>Plots with the same labels and units can be combined into one plot by assigning a cell string with dataset names to metaData.grp.sets, and a caption to metaData.grp.comment.</p><h2 id="6">To do (remove these remarks after editing this file)</h2><div><ul><li>copy this template; replace 'my_pet' by the name of your species (Genus_species)</li><li>fill in metaData fields with the proper information</li><li>insert references for each data (an example is given), for multiple references, please use commas to separate references</li><li>edit real data; remove all data that to not belong to your pet</li><li>list facts - this is where you can add relevant/interesting information on its biology</li><li>edit discussion concerning e.g. choice of model, assumptions needed to model certain data sets etc.</li><li>fill in all of the references</li></ul></div><h2 id="7">set metaData</h2><h2 id="8">set data</h2><p>zero-variate data; typically depend on scaled functional response f. here assumed to be equal for all real data; the value of f is specified in pars_init_my_pet. add an optional comment structure to give any additional explanations on how the value was chosen, see the last column of the ab data set for an example</p><h2 id="9">set weights for all real data</h2><h2 id="10">overwriting weights (remove these remarks after editing the file)</h2><p>the weights were set automatically with the function setweigths, if one wants to ovewrite one of the weights it should always present an explanation example:</p><p>zero-variate data: weights.Wdi = 100 * weights.Wdi; % Much more confidence in the ultimate dry                                % weights than the other data points uni-variate data: weights.tL = 2 * weights.tL;</p><h2 id="11">set pseudodata and respective weights</h2><p>(pseudo data are in data.psd and weights are in weights.psd)</p><h2 id="12">overwriting pseudodata and respective weights (remove these remarks after editing the file)</h2><p>the pseudodata and respective weights were set automatically with the function setpseudodata if one wants to overwrite one of the values then please provide an explanation example: data.psd.p_M = 1000;                    % my_pet belongs to a group with high somatic maint weights.psd.kap = 10 * weights.psd.kap;   % I need to give this pseudo data a higher weights</p><h2 id="13">pack auxData and txtData for output</h2><h2 id="14">Discussion points</h2><h2 id="15">Facts</h2><p>list facts: F1, F2, etc. make sure each fact has a corresponding bib key do not put any DEB modelling assumptions here, only relevant information on biology and life-cycles etc.</p><h2 id="16">References</h2><p>the following reference should be kept for chemical parameter settings -----------------------------</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% mydata_my_pet
+% Sets referenced data
+
+%%
+function [data, auxData, metaData, txtData, weights] = mydata_my_pet 
+  % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/03/31
+  % last modified: 2015/07/28 
+  
+  %% Syntax
+  % [data, auxData, metaData, txtData, weights] = <../mydata_my_pet.m *mydata_my_pet*>
+  
+  %% Description
+  % Sets data, pseudodata, metadata, auxdata, explanatory text, weights coefficients.
+  % Meant to be a template in add-my-pet
+  %
+  % Output
+  %
+  % * data: structure with data
+  % * auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.). 
+  %   auxData is unpacked in predict and the user needs to construct predictions accordingly.
+  % * txtData: text vector for the presentation of results
+  % * metaData: structure with info about this entry
+  % * weights: structure with weights for each data set
+  
+  %% Remarks
+  % Plots with the same labels and units can be combined into one plot by assigning a cell string with dataset names to metaData.grp.sets, and a caption to metaData.grp.comment. 
+  
+  %% To do (remove these remarks after editing this file)
+  % * copy this template; replace 'my_pet' by the name of your species (Genus_species)
+  % * fill in metaData fields with the proper information
+  % * insert references for each data (an example is given), for multiple references, please use commas to separate references
+  % * edit real data; remove all data that to not belong to your pet
+  % * list facts - this is where you can add relevant/interesting information on its biology
+  % * edit discussion concerning e.g. choice of model, assumptions needed to model certain data sets etc. 
+  % * fill in all of the references
+
+%% set metaData
+
+metaData.phylum     = 'my_pet_phylum'; 
+metaData.class      = 'my_pet_class'; 
+metaData.order      = 'my_pet_order'; 
+metaData.family     = 'my_pet_family';
+metaData.species    = 'my_pet'; % 
+metaData.species_en = 'my_pet_english_name'; 
+metaData.T_typical  = C2K(20); % K, body temp
+metaData.data_0     = {'ab'; 'ap'; 'am'; 'Lb'; 'Lp'; 'Li'; 'Wdb'; 'Wdp'; 'Wdi'; 'Ri'};  % tags for different types of zero-variate data
+metaData.data_1     = {'t-L'; 'L-W'}; % tags for different types of uni-variate data
+
+metaData.COMPLETE = 2.5; % using criteria of LikaKear2011
+
+metaData.author   = {'FirstName1 LastName1'};            % put names as authors as separate strings:  {'FirstName1 LastName2','FirstName2 LastName2'} , with corresponding author in first place 
+metaData.date_subm = [2015 04 20];                       % [year month day], date at which the entry is submitted
+metaData.email    = {'myname@myuniv.univ'};              % e-mail of corresponding author
+metaData.address  = {'affiliation, zipcode, country'};   % affiliation, postcode, country of the corresponding author
+
+% uncomment and fill in the following fields when the entry is updated:
+% metaData.author_mod_1  = {'FirstName3 LastName3'};          % put names as authors as separate strings:  {'author1','author2'} , with corresponding author in first place 
+% metaData.date_mod_1    = [2017 09 18];                      % [year month day], date modified entry is accepted into the collection
+% metaData.email_mod_1   = {'myname@myuniv.univ'};            % e-mail of corresponding author
+% metaData.address_mod_1 = {'affiliation, zipcode, country'}; % affiliation, postcode, country of the corresponding author
+
+% for curators only REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+% metaData.curator     = {'FirstName LastName'};
+% metaData.email_cur   = {'myname@myuniv.univ'}; 
+% metaData.date_acc    = [2015 04 22]; 
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+
+%% set data
+% zero-variate data;
+% typically depend on scaled functional response f.
+% here assumed to be equal for all real data; the value of f is specified in pars_init_my_pet.
+% add an optional comment structure to give any additional explanations on
+% how the value was chosen, see the last column of the ab data set for an
+% example
+
+% age 0 is at onset of embryo development
+data.ab = 15;      units.ab = 'd';    label.ab = 'age at birth';  bibkey.ab = 'MollCano2010';   comment.ab  = 'mean value taken from several measurements'; 
+  temp.ab = C2K(20);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
+  % observed age at birth is frequently larger than ab, because of diapauzes during incubation
+data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = 'Anon2015';
+  temp.ap = C2K(20);  units.temp.ap = 'K'; label.temp.ap = 'temperature';
+  % observed age at puberty is frequently larger than ap, 
+  %   because allocation to reproduction starts before first eggs appear
+data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
+  temp.am = C2K(20);  units.temp.am = 'K'; label.temp.am = 'temperature'; 
+% (accounting for aging only) 
+
+% Please specify what type of length measurement is used for your species.
+% We put here snout-to-vent length, but you should change this depending on your species:
+data.Lb  = 0.45;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Anon2015';  
+data.Lp  = 2.36;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = {'Anon2015','Wiki'}; % for multiple references, please use commas to separate references
+data.Li  = 6.25;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Wiki';
+
+data.Wdb = 5.8e-5; units.Wdb = 'g';    label.Wdb = 'dry weight at birth';             bibkey.Wdb = 'Anon2015';
+data.Wdp = 8e-3;   units.Wdp = 'g';    label.Wdp = 'dry weight at puberty';           bibkey.Wdp = 'Anon2015';
+data.Wdi = 0.15;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weight';             bibkey.Wdi = 'Wiki';
+
+data.Ri  = 2.3;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Wiki';   
+% for an individual of ultimate length Li 
+temp.Ri = C2K(20);  units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
+ 
+% uni-variate data
+
+% uni-variate data at f = 0.8 (this value should be added in pars_init_my_pet as a parameter f_tL) 
+% snout-to-vent length and wet weights were measured at the same time
+data.tL = [0     50  100 200 300 400 500 600;    % d, time since birth
+           0.45  1.1 1.7 2.7 3.4 4.0 4.5 4.9]';  % cm, snout-to-vent length at f and T
+units.tL   = {'d', 'cm'};  label.tL = {'time since birth', 'snout to vent length'};  bibkey.tL = 'Anon2015';
+temp.tL    = C2K(20);  units.temp.tL = 'K'; label.temp.tL = 'temperature';
+comment.tL = 'Put here any relevant remarks about this data'; % optional field
+  
+data.LW = [0.9 1.8 3.2 4.3 5.0;      % cm, snout-to-vent length at f
+           0.004 0.03 0.20 0.55 1.1]';   % g, wet weights at f and T
+units.LW = {'cm', 'g'};     label.LW = {'snout to vent length', 'wet weights'};  bibkey.LW = 'Anon2015';
+comment.LW = 'Put here any relevant remarks about this data'; % optional field
+
+%% set weights for all real data
+weights = setweights(data, []);
+
+%% overwriting weights (remove these remarks after editing the file)
+% the weights were set automatically with the function setweigths,
+% if one wants to ovewrite one of the weights it should always present an explanation example:
+%
+% zero-variate data:
+% weights.Wdi = 100 * weights.Wdi; % Much more confidence in the ultimate dry
+%                                % weights than the other data points
+% uni-variate data: 
+% weights.tL = 2 * weights.tL;
+
+%% set pseudodata and respective weights
+% (pseudo data are in data.psd and weights are in weights.psd)
+[data, units, label, weights] = addpseudodata(data, units, label, weights);
+
+%% overwriting pseudodata and respective weights (remove these remarks after editing the file)
+% the pseudodata and respective weights were set automatically with the function setpseudodata
+% if one wants to overwrite one of the values then please provide an explanation
+% example:
+% data.psd.p_M = 1000;                    % my_pet belongs to a group with high somatic maint 
+% weights.psd.kap = 10 * weights.psd.kap;   % I need to give this pseudo data a higher weights
+
+%% pack auxData and txtData for output
+auxData.temp = temp;
+txtData.units = units;
+txtData.label = label;
+txtData.bibkey = bibkey;
+if exist('comment','var')
+  txtData.comment = comment;
+end
+
+%% Discussion points
+D1 = 'Author_mod_1: I found information on the number of eggs per female as a function of length in Anon2013 that was much higher than in Anon2015 but chose to not include it as the temperature was not provided';
+% optional bibkey: metaData.bibkey.D1 = 'Anon2013';
+D2 = 'Author_mod_1: I was surprised to observe that the weights coefficient for ab changed so much the parameter values';     
+% optional bibkey: metaData.bibkey.D2 = 'Kooy2010';
+metaData.discussion = struct('D1', D1, 'D2', D2);
+
+%% Facts
+% list facts: F1, F2, etc.
+% make sure each fact has a corresponding bib key
+% do not put any DEB modelling assumptions here, only relevant information on
+% biology and life-cycles etc.
+F1 = 'The larval stage lasts 202 days and no feeding occurs';
+metaData.bibkey.F1 = 'Wiki'; % optional bibkey
+metaData.facts = struct('F1',F1);
+
+%% References
+% the following reference should be kept for chemical parameter settings REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+bibkey = 'Kooy2010'; type = 'Book'; bib = [ ...  % used in setting of chemical parameters and pseudodata
+'author = {Kooijman, S.A.L.M.}, ' ...
+'year = {2010}, ' ...
+'title  = {Dynamic Energy Budget theory for metabolic organisation}, ' ...
+'publisher = {Cambridge Univ. Press, Cambridge}, ' ...
+'pages = {Table 4.2 (page 150), 8.1 (page 300)}, ' ...
+'howpublished = {\url{http://www.bio.vu.nl/thb/research/bib/Kooy2010.html}}'];
+metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+ % References for the data, following BibTex rules
+ % author names : author = {Last Name, F. and Last Name2, F2. and Last Name 3, F3. and Last Name 4, F4.}
+ % latin names in title e.g. \emph{Pleurobrachia pileus}
+
+bibkey = 'Wiki'; type = 'Misc'; bib = [...
+'howpublished = {\url{http://en.wikipedia.org/wiki/my_pet}},'...% replace my_pet by latin species name
+'note = {Accessed : 2015-04-30}'];
+metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+%
+bibkey = 'MollCano2010'; type = 'Article'; bib = [ ... % meant as example; replace this and further bib entries
+'author = {M{\o}ller, L. F. and Canon, J. M. and Tiselius, P.}, ' ... 
+'year = {2010}, ' ...
+'title = {Bioenergetics and growth in the ctenophore \emph{Pleurobrachia pileus}}, ' ...
+'journal = {Hydrobiologia}, ' ...
+'volume = {645}, ' ...
+'number = {4}, '...
+'pages = {167-178}'];
+metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+%
+bibkey = 'Anon2015'; type = 'Misc'; bib = [ ...
+'author = {Anonymous}, ' ...
+'year = {2015}, ' ...
+'howpublished = {\url{http://www.fishbase.org/summary/Rhincodon-typus.html}}'];
+metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+
+##### SOURCE END #####
+--></body></html>
