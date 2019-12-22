@@ -1,0 +1,120 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_NW_hex</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-08-03"><meta name="DC.source" content="get_NW_hex.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_NW_hex</h1><!--introduction--><p>Gets number of eggs at emergence for hex model from wet weight of imago</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunction</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[N, f, l_e, info] = <a href="../get_NW_hex.m"><b>get_NW_hex</b></a> (Ww, pars_tj, pars_aux)</p><h2>Description<a name="4"></a></h2><p>Obtains number of eggs at emergence from wet weight of imago for hex model Food density is assumed to be constant.</p><p>Input</p><div><ul><li>Ww: n-vector with scaled wet weights of imago in grams</li><li>pars_tj: 7-vector with parameters: g k v_Hb v_He s_j kap kap_V, see get_tj_hex</li><li>pars_aux: 6-vector with parameters: kap_R, E_m, L_m, w_E, mu_E, d_E</li></ul></div><p>Output</p><div><ul><li>N: n-vector with number of eggs at emergence</li><li>f: n-vector with functional response</li><li>le: n-vector with scaled structural length at emergence</li><li>info: n-vector with indicators equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><pre>first finds f from Ww, then N and le from f.</pre><h2>Example of use<a name="6"></a></h2><pre>get_NW_hex([.5, .1, .01, .05, .2, 0.8, .95])</pre><h2>subfunction<a name="8"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_NW_hex
+% Gets number of eggs at emergence for hex model from wet weight of imago
+
+%%
+function [N, f, le, info] = get_NW_hex(Ww, pars_tj, pars_aux)
+  % created at 2017/07/31 by Bas Kooijman, 
+  
+  %% Syntax
+  % [N, f, l_e, info] = <../get_NW_hex.m *get_NW_hex*> (Ww, pars_tj, pars_aux)
+  
+  %% Description
+  % Obtains number of eggs at emergence from wet weight of imago for hex model
+  % Food density is assumed to be constant.
+  %
+  % Input
+  %
+  % * Ww: n-vector with scaled wet weights of imago in grams
+  % * pars_tj: 7-vector with parameters: g k v_Hb v_He s_j kap kap_V, see get_tj_hex 
+  % * pars_aux: 6-vector with parameters: kap_R, E_m, L_m, w_E, mu_E, d_E
+  %  
+  % Output
+  %
+  % * N: n-vector with number of eggs at emergence
+  % * f: n-vector with functional response 
+  % * le: n-vector with scaled structural length at emergence
+  % * info: n-vector with indicators equals 1 if successful, 0 otherwise
+  
+  %% Remarks
+  %  first finds f from Ww, then N and le from f.
+  
+  %% Example of use
+  %  get_NW_hex([.5, .1, .01, .05, .2, 0.8, .95])
+   
+   kap = pars_tj(6); kap_R = pars_aux(1); % unpack parameters
+   n = length(Ww); N = zeros(n,1); le = zeros(n,1); f = zeros(n,1); info = zeros(n,1); % initiate output
+ 
+   for i = 1:n    
+     f(i) = fzero(@fnfW, 1, [], pars_tj, pars_aux, Ww(i)); % -, scaled functional response
+     [tj, te, tb, lj, le(i), lb, rj, vRj, uEe, info(i)] = get_tj_hex(pars_tj, f(i));
+     N(i) = kap_R * (1 - kap) * vRj * lj^3/ get_ue0(pars_tj, f(i)); % total # of eggs
+   end
+ 
+end
+
+%% subfunction
+
+function F = fnfW(f, pars_tj, pars_aux, Ww) 
+  % called from get_NW_hex via fzero: F = 0 for f such that Ww_e = Ww 
+  [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee] = get_tj_hex(pars_tj, f);
+  g = pars_tj(1); kap = pars_tj(6);   % pars_tj: g k v_Hb v_He s_j kap kap_V kap_R
+  E_m = pars_aux(2); L_m = pars_aux(3); w_E = pars_aux(4); mu_E = pars_aux(5); d_E = pars_aux(6);
+  
+  %Ww_0 = g * E_m * L_m^3 * get_ue0(pars_tj, f) * w_E/ mu_E/ d_E;         % g, initial wet weight
+  Ww_Rj = v_Rj * (1 - kap) * g * E_m * (L_m * l_j)^3 * w_E/ mu_E/ d_E;    % g, wet weight reprod buffer at pupation
+  Ww_e = (L_m * l_e)^3 + Ww_Rj + u_Ee * g * E_m * L_m^3 * w_E/ mu_E/ d_E; % g, wet weight including reprod buffer
+
+  F = Ww_e - Ww; % loss function
+end
+##### SOURCE END #####
+--></body></html>

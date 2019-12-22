@@ -1,0 +1,153 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Demonstrates the use of get_eb_min</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_get_eb_min.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Demonstrates the use of get_eb_min</h1><p>plots lb, uE and vH against tau    for f = 1, f_G and f_R, where growth or maturation ceases</p><pre class="codeinput"><span class="comment">% set parameters</span>
+g = 2;
+k = .001;
+vHb = .01;
+
+<span class="comment">% pack parameters</span>
+p = [g; k; vHb];
+
+<span class="comment">% get f_G and f_R</span>
+[f_G lb_G] = get_eb_min_G(p);
+[f_R lb_R] = get_eb_min_R(p);
+<span class="comment">% [f lb] = get_eb_min(p);</span>
+<span class="comment">% f_G = f(1); f_R = f(2); lb_G = lb(1); lb_R = lb(2);</span>
+
+close <span class="string">all</span>
+
+figure
+
+<span class="keyword">for</span> f = [1, f_G, f_R+1e-8]
+
+[tb lb info] = get_tb(p, f);
+[uE0, lb, info] = get_ue0(p, f, lb);
+[t luv] = ode45(@dget_luv, [0;tb], [0; uE0; 0], [], g, k);
+
+subplot(1,3,1)
+hold <span class="string">on</span>
+plot(t, luv(:,1),<span class="string">'g'</span>, tb, lb, <span class="string">'og'</span>)
+xlabel(<span class="string">'\tau'</span>); ylabel(<span class="string">'l'</span>);
+title(<span class="string">'f = 1, f_G, f_R'</span>)
+
+subplot(1,3,2)
+hold <span class="string">on</span>
+uEb = f * lb^3/ g;
+plot(t, luv(:,2),<span class="string">'b'</span>, [0; tb], [uE0;uEb], <span class="string">'ob'</span>)
+xlabel(<span class="string">'\tau'</span>); ylabel(<span class="string">'u_E'</span>);
+title(<span class="string">'f = 1, f_G, f_R'</span>)
+
+subplot(1,3,3)
+hold <span class="string">on</span>
+plot(t, luv(:,3),<span class="string">'r'</span>, tb, vHb, <span class="string">'or'</span>)
+xlabel(<span class="string">'\tau'</span>); ylabel(<span class="string">'v_H'</span>);
+title(<span class="string">'f = 1, f_G, f_R'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="mydata_get_eb_min_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Demonstrates the use of get_eb_min
+% plots lb, uE and vH against tau
+%    for f = 1, f_G and f_R, where growth or maturation ceases
+
+% set parameters
+g = 2;
+k = .001;
+vHb = .01;
+
+% pack parameters
+p = [g; k; vHb];
+
+% get f_G and f_R
+[f_G lb_G] = get_eb_min_G(p);
+[f_R lb_R] = get_eb_min_R(p);
+% [f lb] = get_eb_min(p);
+% f_G = f(1); f_R = f(2); lb_G = lb(1); lb_R = lb(2);
+
+close all
+
+figure
+
+for f = [1, f_G, f_R+1e-8]
+
+[tb lb info] = get_tb(p, f);
+[uE0, lb, info] = get_ue0(p, f, lb);
+[t luv] = ode45(@dget_luv, [0;tb], [0; uE0; 0], [], g, k);
+
+subplot(1,3,1)
+hold on
+plot(t, luv(:,1),'g', tb, lb, 'og')
+xlabel('\tau'); ylabel('l');
+title('f = 1, f_G, f_R')
+
+subplot(1,3,2)
+hold on
+uEb = f * lb^3/ g;
+plot(t, luv(:,2),'b', [0; tb], [uE0;uEb], 'ob')
+xlabel('\tau'); ylabel('u_E');
+title('f = 1, f_G, f_R')
+
+subplot(1,3,3)
+hold on
+plot(t, luv(:,3),'r', tb, vHb, 'or')
+xlabel('\tau'); ylabel('v_H');
+title('f = 1, f_G, f_R')
+end
+
+##### SOURCE END #####
+--></body></html>

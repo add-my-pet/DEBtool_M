@@ -1,0 +1,170 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shyield_CC</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-06"><meta name="DC.source" content="shyield_CC.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Description</a></li><li><a href="#4">Input</a></li><li><a href="#5">Example of use</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> shyield_CC(p)
+</pre><pre class="codeinput">  <span class="comment">%  created 2009/01/15 by Bas Kooijman</span>
+  <span class="comment">%</span>
+</pre><h2>Description<a name="3"></a></h2><pre>plots yield on carbon-carbon basis as functions of length and scaled func response</pre><h2>Input<a name="4"></a></h2><pre>p: 10-vector with parameters (see below)</pre><h2>Example of use<a name="5"></a></h2><pre>shyield_CC([0.8; 0.95; 0.0207; 0.002; 0.0064; 0; 0.02; 0.275; 50; 0.8])</pre><pre class="codeinput">  <span class="comment">% unpack parameters</span>
+  kap  = p(1);  <span class="comment">% -, fraction allocated to growth + som maint</span>
+  kapR = p(2);  <span class="comment">% -, fraction of reprod flux that is fixed in embryo reserve</span>
+  g    = p(3);  <span class="comment">% -, energy investment ratio</span>
+  kJ   = p(4);  <span class="comment">% 1/d, maturity maint rate coeff</span>
+  kM   = p(5);  <span class="comment">% 1/d, somatic maint rate coeff</span>
+  LT   = p(6);  <span class="comment">% cm, heating length</span>
+  v    = p(7);  <span class="comment">% cm/d, energy conductance</span>
+  Hb   = p(8);  <span class="comment">% d cm^2, scaled maturity at birth</span>
+  Hp   = p(9);  <span class="comment">% d cm^2, scaled maturity at puberty</span>
+  yVE =  p(10); <span class="comment">% mol/mol, yield of structure on reserve</span>
+
+  vHb = Hb * g^2 * kM^3/ ((1 - kap) * v^2);
+  vHp = Hp * g^2 * kM^3/ ((1 - kap) * v^2);
+  k = kJ/ kM; Lm = v/ g/ kM; lT = LT/ Lm;
+  f_min_b = get_eb_min([g; k; vHb]); f_min_b = f_min_b(2);
+  f_min_p = get_ep_min([g; k; lT; vHb; vHp]);
+  nf = 10; f = linspace(.001 + max(f_min_p), 1, nf)'; f_min_p = f_min_p(2);
+
+  clf
+  hold <span class="string">on</span>
+
+  <span class="keyword">for</span> i = 1:nf
+    nl = round(2 + 100 * f(i));
+    l = linspace(1e-3, f(i) - lT - 1e-8, nl)';
+    <span class="keyword">if</span> f(i) &gt; f_min_p
+     [lp lb] = get_lp([g;k;lT;vHb;vHp], f(i));
+    <span class="keyword">elseif</span> f(i) &gt; f_min_b
+      lp = NaN;
+      lb = get_lb([g;k;vHb], f(i));
+    <span class="keyword">else</span>
+      lp = NaN;
+      lb = NaN;
+    <span class="keyword">end</span>
+
+    pACSJGRD = scaled_power(l, f(i), p, lb, lp);
+    F = f(i) * ones(nl,1);
+    sel = (sum(pACSJGRD(:,[5 6]) &gt; 0, 2) == 2);
+    pC = pACSJGRD(:,2); pD = pACSJGRD(:,7); pG = pACSJGRD(:,5);
+    y = (pD + (1 - yVE) * pG) ./ pC;
+    plot3(l(sel), F(sel), y(sel), <span class="string">'r'</span>)
+  <span class="keyword">end</span>
+  title(<span class="string">'yield of CO2 dissipation on mobilisation'</span>)
+  xlabel(<span class="string">'length'</span>)
+  ylabel(<span class="string">'func resp'</span>)
+  zlabel(<span class="string">'yield_{CC}'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function shyield_CC(p)
+  %  created 2009/01/15 by Bas Kooijman
+  %
+  %% Description
+  %  plots yield on carbon-carbon basis as functions of length and scaled func response
+  %
+  %% Input
+  %  p: 10-vector with parameters (see below)
+  %
+  %% Example of use
+  %  shyield_CC([0.8; 0.95; 0.0207; 0.002; 0.0064; 0; 0.02; 0.275; 50; 0.8])
+
+  % unpack parameters
+  kap  = p(1);  % -, fraction allocated to growth + som maint
+  kapR = p(2);  % -, fraction of reprod flux that is fixed in embryo reserve 
+  g    = p(3);  % -, energy investment ratio
+  kJ   = p(4);  % 1/d, maturity maint rate coeff
+  kM   = p(5);  % 1/d, somatic maint rate coeff
+  LT   = p(6);  % cm, heating length
+  v    = p(7);  % cm/d, energy conductance
+  Hb   = p(8);  % d cm^2, scaled maturity at birth
+  Hp   = p(9);  % d cm^2, scaled maturity at puberty
+  yVE =  p(10); % mol/mol, yield of structure on reserve
+  
+  vHb = Hb * g^2 * kM^3/ ((1 - kap) * v^2);
+  vHp = Hp * g^2 * kM^3/ ((1 - kap) * v^2);
+  k = kJ/ kM; Lm = v/ g/ kM; lT = LT/ Lm;
+  f_min_b = get_eb_min([g; k; vHb]); f_min_b = f_min_b(2);
+  f_min_p = get_ep_min([g; k; lT; vHb; vHp]); 
+  nf = 10; f = linspace(.001 + max(f_min_p), 1, nf)'; f_min_p = f_min_p(2);
+  
+  clf
+  hold on
+  
+  for i = 1:nf
+    nl = round(2 + 100 * f(i)); 
+    l = linspace(1e-3, f(i) - lT - 1e-8, nl)';
+    if f(i) > f_min_p
+     [lp lb] = get_lp([g;k;lT;vHb;vHp], f(i));
+    elseif f(i) > f_min_b
+      lp = NaN;
+      lb = get_lb([g;k;vHb], f(i));
+    else
+      lp = NaN;
+      lb = NaN;
+    end
+
+    pACSJGRD = scaled_power(l, f(i), p, lb, lp);
+    F = f(i) * ones(nl,1);
+    sel = (sum(pACSJGRD(:,[5 6]) > 0, 2) == 2);
+    pC = pACSJGRD(:,2); pD = pACSJGRD(:,7); pG = pACSJGRD(:,5); 
+    y = (pD + (1 - yVE) * pG) ./ pC;
+    plot3(l(sel), F(sel), y(sel), 'r')
+  end
+  title('yield of CO2 dissipation on mobilisation')
+  xlabel('length')
+  ylabel('func resp')
+  zlabel('yield_{CC}')
+  
+##### SOURCE END #####
+--></body></html>

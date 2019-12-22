@@ -1,0 +1,121 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>elas_pars_g</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="elas_pars_g.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>elas_pars_g</h1><!--introduction--><p>gets parameters &amp; elasticities from data</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[p, elas, Jac] = <a href="../elas_pars_g.m"><b>elas_pars_g</b></a> (data)</p><h2>Description<a name="4"></a></h2><p>Gets parameters &amp; elasticities from data using <a href="get_pars_g.hmtl"><b>get_pars_g</b></a></p><p>Input</p><div><ul><li>data: 5-vector with quantities at fixed functional response</li></ul></div><pre>   1 f, -, scaled functional response
+   2 L_b, cm, length at birth
+   3 L_m, cm, maximum length
+   4 a_b, d, age at birth
+   5 r_B, 1/d, von Bert growth rate</pre><p>Output</p><div><ul><li>p: 4-vector with compound DEB parameters</li></ul></div><pre>   1 VHb, d.mm^2, scaled maturity at birth
+   2 g, -, energy investment ratio
+   3 kM, 1/d, somatic maintenance rate coefficient
+   4 v, cm/d, energy conductance</pre><div><ul><li>elas: (4,5)-matrix with elasticity coefficients:    element (i,j): data(j) dp(i)/ (p(i) * ddata(j))</li></ul></div><div><ul><li>Jac: (4,5)-matrix with Jacobian:    element (i,j): dp(i)/ ddata(j)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See also <a href="elas_pars_r.html"><b>elas_pars_r</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% elas_pars_g
+% gets parameters & elasticities from data
+
+%%
+function [p, elas, Jac] = elas_pars_g(data)
+  %  created 2006/09/30 by Bas Kooijman
+  
+  %% Syntax
+  % [p, elas, Jac] = <../elas_pars_g.m *elas_pars_g*> (data)
+  
+  %% Description
+  % Gets parameters & elasticities from data using <get_pars_g.hmtl *get_pars_g*>
+  %
+  % Input
+  %
+  % * data: 5-vector with quantities at fixed functional response
+  %
+  %     1 f, -, scaled functional response
+  %     2 L_b, cm, length at birth
+  %     3 L_m, cm, maximum length
+  %     4 a_b, d, age at birth
+  %     5 r_B, 1/d, von Bert growth rate
+  %
+  % Output
+  %
+  % * p: 4-vector with compound DEB parameters
+  %
+  %     1 VHb, d.mm^2, scaled maturity at birth
+  %     2 g, -, energy investment ratio
+  %     3 kM, 1/d, somatic maintenance rate coefficient
+  %     4 v, cm/d, energy conductance
+  %
+  % * elas: (4,5)-matrix with elasticity coefficients:
+  %    element (i,j): data(j) dp(i)/ (p(i) * ddata(j))
+  %
+  % * Jac: (4,5)-matrix with Jacobian:
+  %    element (i,j): dp(i)/ ddata(j)
+
+  %% Remarks
+  % See also <elas_pars_r.html *elas_pars_r*>
+
+  data = data(:); p = get_pars_g(data);
+
+  del = 1e-6;
+  q = data; q(1) = q(1) + del; p1 = get_pars_g(q); dp1 = (p1 - p)/del;
+  q = data; q(2) = q(2) + del; p2 = get_pars_g(q); dp2 = (p2 - p)/del;
+  q = data; q(3) = q(3) + del; p3 = get_pars_g(q); dp3 = (p3 - p)/del;
+  q = data; q(4) = q(4) + del; p4 = get_pars_g(q); dp4 = (p4 - p)/del;
+  q = data; q(5) = q(5) + del; p5 = get_pars_g(q); dp5 = (p5 - p)/del;
+
+  Jac = [dp1, dp2, dp3, dp4, dp5];
+  elas = [data,data,data,data]' .* Jac ./ [p,p,p,p,p];
+##### SOURCE END #####
+--></body></html>

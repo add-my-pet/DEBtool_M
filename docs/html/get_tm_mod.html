@@ -1,0 +1,502 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tm_mod</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-21"><meta name="DC.source" content="get_tm_mod.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tm_mod</h1><!--introduction--><p>Gets scaled mean age at death, survival prob at birth and puberty</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_m, S_, tau, info] = <a href="../get_tm_mod.m"><b>get_tm_mod</b></a>(model, p, f, h_B, thinning)</p><h2 id="4">Description</h2><p>Obtains scaled mean age at death by integration survival prob over age. Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death.</p><p>Input</p><div><ul><li>mod: character string with model (e.g. 'std', 'hex')</li><li>p: vector with parameters: different for each model</li><li>f: optional scalar with scaled reserve density at birth (default f = 1)</li><li>h_B; optional vector with background hazards for each stage: e.g. for std model h_B0b, h_Bbp, h_Bpi (default: zero's)</li><li>thinning: optional boolean with thinning being false/true (default: false)</li></ul></div><p>Output</p><div><ul><li>t_m: scalar with scaled mean life span</li><li>S: vector with survival probabilities at life history events</li><li>tau: vector with scaled ages at life history events</li><li>info: boolean with success (true) or failure (false)</li></ul></div><h2 id="5">Remarks</h2><p>Theory is given in comments on DEB3 Section 6.1.1 See <a href="get_tm_s.html"><b>get_tm_s</b></a> for a short growth period relative to the life span</p><h2 id="6">Example of use</h2><p>get_tm_mod('std', [.5, .1, .001, .01, 1e-5, .0001])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tm_mod
+% Gets scaled mean age at death, survival prob at birth and puberty
+
+%%
+function [tau_m, S, tau, info] = get_tm_mod(model, p, f, h_B, thinning)
+  % created 2019/10/07 by Bas Kooijman
+  
+  %% Syntax
+  % [tau_m, S_, tau, info] = <../get_tm_mod.m *get_tm_mod*>(model, p, f, h_B, thinning)
+  
+  %% Description
+  % Obtains scaled mean age at death by integration survival prob over age. 
+  % Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death. 
+  %
+  % Input
+  %
+  % * mod: character string with model (e.g. 'std', 'hex')
+  % * p: vector with parameters: different for each model
+  % * f: optional scalar with scaled reserve density at birth (default f = 1)
+  % * h_B; optional vector with background hazards for each stage: e.g. for std model h_B0b, h_Bbp, h_Bpi (default: zero's)
+  % * thinning: optional boolean with thinning being false/true (default: false)
+  %  
+  % Output
+  %
+  % * t_m: scalar with scaled mean life span
+  % * S: vector with survival probabilities at life history events 
+  % * tau: vector with scaled ages at life history events 
+  % * info: boolean with success (true) or failure (false)
+ 
+  %% Remarks
+  % Theory is given in comments on DEB3 Section 6.1.1 
+  % See <get_tm_s.html *get_tm_s*> for a short growth period relative to the life span
+  
+  %% Example of use
+  % get_tm_mod('std', [.5, .1, .001, .01, 1e-5, .0001])
+    
+  if ~exist('f', 'var') || isempty(f)
+    f = 1;
+  end
+
+  if ~exist('h_B', 'var') || isempty(h_B)
+    h_B = zeros(5,1);
+  end;
+
+  if ~exist('thinning', 'var')
+    thinning = false;
+  end;
+  
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
+
+  switch model
+    case 'std'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);   
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      [tau, qhSt] = ode45(@dget_qhSt_std, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
+    case 'stf'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb_foetus([g k v_Hb h_a s_G h_B(1)], f);
+      [tau_p, ~, l_p, ~, info] = get_tp_foetus([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau, qhSt] = ode45(@dget_qhSt_std, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
+    case 'stx'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hx = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb_foetus([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_p, tau_x, ~, l_p, l_x, ~, info] = get_tx([g k 0 v_Hb v_Hx v_Hp], f); % -, scaled ages and lengths at puberty, birth
+      [tau, qhSt] = ode45(@dget_qhSt_stx, [0; tau_x - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_x - tau_b, tau_p - tau_b, l_b, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_x = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_x; S_p]; tau = [tau_b; tau_x; tau_p];
+    case 'ssj'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hp = p(5); tau_j = p(6); k_E = p(7); h_a = p(8); s_G = p(9); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_s, ~, l_s, ~, info] = get_tp([g k 0 v_Hb v_Hs], f); % -, scaled ages and lengths at start skrink
+      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hs v_Hp], f); % -, scaled ages and lengths at puberty
+      [tau, qhSt] = ode45(@dget_qhSt_ssj, [0; tau_s - tau_b; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_p - tau_b, tau_j, l_b, l_s, k_E, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_s = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_s; S_p]; tau = [tau_b; tau_s; tau_p];
+    case 'sbp'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_p, ~, l_p, ~, info] = get_tp([g k 0 v_Hb v_Hp], f, l_b); % -, scaled ages and lengths at puberty, birth
+      [tau, qhSt] = ode45(@dget_qhSt_sbp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
+    case 'abj'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hj = p(4); v_Hp = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g k 0 v_Hb v_Hj v_Hp], f, l_b); 
+      [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_j = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
+    case 'asj'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hs = p(4); v_Hj = p(5); v_Hp = p(6); h_a = p(7); s_G = p(8); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_ts([g k 0 v_Hb v_Hs v_Hj v_Hp], f, l_b); 
+      [tau, qhSt] = ode45(@dget_qhSt_asj, [0; tau_s - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_s - tau_b, tau_j - tau_b, tau_p - tau_b, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_s = qhSt(2,3); S_j = qhSt(3,3); S_p = qhSt(4,3); S = [S_b; S_s; S_j; S_p]; tau = [tau_b; tau_s; tau_j; tau_p];
+    case 'abp'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g k 0 v_Hb v_Hp v_Hp+1e-9], f, l_b); 
+      [tau, qhSt] = ode45(@dget_qhSt_abp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, rho_j, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
+    case 'hep'
+      g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); v_Rj = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj], f);
+      [tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); S = [S_b; S_p; S_j]; tau = [tau_b; tau_p; tau_j];
+    case 'hex'
+      g = p(1); k = p(2); v_Hb = p(3); v_He = p(4); s_j = p(5); kap = p(6); kap_V = p(7); h_a = p(8); s_G = p(9); %  unpack pars
+      [S_b, q_b, h_Ab, tau_b, l_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; 0]; % initial state vars
+      [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_bj, [0; tau_j - tau_b], qhSt_b, [], f, l_b, rho_j, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_j = qhSt(end,3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e - tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);
+      S_e = qhSt(2,3); S = [S_b; S_j; S_e]; tau = [tau_b; tau_j; tau_e];
+  end
+
+end
+
+% subfunctions
+
+% event dead_for_sure
+function [value,isterminal,direction] = dead_for_sure(~, qhSt, varargin)
+  value = qhSt(3) - 1e-6;  % trigger 
+  isterminal = 1;  % terminate after the last event
+  direction  = [];  % get all the zeros
+end
+
+function dqhSt = dget_qhSt_std(tau, qhSt, f, tau_p, l_b, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_p
+    h_B = h_B(2);
+  else % adult
+    h_B = h_B(3);
+  end
+  
+  rho_B = 1/ 3/ (1 + f/ g); 
+  l = f - (f - l_b) * exp(- tau * rho_B);
+  r = 3 * rho_B * (f/ l - 1);
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_stx(tau, qhSt, f, tau_x, tau_p, l_b, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_x
+    h_B = h_B(2);
+  elseif tau < tau_p
+    h_B = h_B(3);
+  else % adult
+    h_B = h_B(4);
+  end
+  
+  rho_B = 1/ 3/ (1 + f/ g); 
+  l = f - (f - l_b) * exp(- tau * rho_B);
+  r = 3 * rho_B * (f/ l - 1);
+
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_ssj(tau, qhSt, f, tau_s, tau_p, tau_j, l_b, l_s, k_E, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_s
+    rho_B = 1/ 3/ (1 + f/ g); 
+    l = f - (f - l_b) * exp(- tau * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+    h_B = h_B(2);
+  elseif tau < tau_j
+    l = l_s * exp( - k_E * (tau - tau_s));  
+    r = 0; % 
+    h_B = h_B(3);
+  elseif tau < tau_p
+    l_j = l_s * exp( - k_E * tau_j); 
+    rho_B = 1/ 3/ (1 + f/ g); 
+    l = f - (f - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+    h_B = h_B(3);
+  else
+    l_j = l_s * exp( - k_E * tau_j); 
+    rho_B = 1/ 3/ (1 + f/ g); 
+    l = f - (f - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+    h_B = h_B(4);
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_sbp(tau, qhSt, f, tau_p, l_b, l_p, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_p
+    rho_B = 1/ 3/ (1 + f/ g); 
+    l = f - (f - l_b) * exp(- tau * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+    h_B = h_B(2);
+  else % adult
+    l = l_p;
+    r = 0;
+    h_B = h_B(3);
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_abj(tau, qhSt, f, tau_j, tau_p, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_j
+    h_B = h_B(2);
+    l = l_b * exp(tau * rho_j);
+    r = rho_j;
+  elseif tau < tau_p
+    h_B = h_B(3);
+    l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+  else % adult
+    h_B = h_B(4);
+    l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_asj(tau, qhSt, f, tau_s, tau_j, tau_p, l_b, l_s, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_s
+    h_B = h_B(2);
+    rho_B = 1/ 3/ (1 + f/ g); 
+    l = f - (f - l_b) * exp(- tau * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+  elseif tau < tau_j
+    h_B = h_B(3);
+    l = l_s * exp((tau - tau_s) * rho_j);
+    r = rho_j;
+  elseif tau < tau_p
+    h_B = h_B(4);
+    l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+  else % adult
+    h_B = h_B(5);
+    l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
+    r = 3 * rho_B * (f/ l - 1);
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_abp(tau, qhSt, f, tau_p, l_b, l_p, rho_j, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_p
+    h_B = h_B(2);
+    l = l_b * exp(tau * rho_j);
+    r = rho_j;
+  else % adult
+    h_B = h_B(3);
+    l = l_p;
+    r = 0;
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_hep(tau, qhSt, f, tau_p, tau_j, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_p
+    h_B = h_B(2);
+    l = l_b * exp(tau * rho_j);
+    r = rho_j;
+  elseif tau < tau_j % adult
+    h_B = h_B(3);
+    l = l_i - (l_i - l_p) * exp(- (tau - tau_p) * rho_B);
+    r = 3 * rho_B * (l_i/ l - 1);
+  else % adult
+    h_B = h_B(4);
+    l = l_i - (l_i - l_p) * exp(- (tau - tau_p) * rho_B);
+    r = 3 * rho_B * (l_i/ l - 1);
+  end
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_hex_bj(tau, qhSt, f, l_b, rho_j, g, s_G, h_a, h_B, thinning)
+  % tau: scaled time since birth
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  h_B = h_B(2);
+  l = l_b * exp(tau * rho_j);
+  r = rho_j;
+  
+  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dh_A = q - r * h_A;
+  h_X = thinning * r * 2/3;
+  h = h_A + h_B + h_X; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+
+function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_e, g, s_G, h_a, h_B)
+  % tau: scaled time since pupation
+  q   = qhSt(1); % -, scaled aging acceleration
+  h_A = qhSt(2); % -, scaled hazard rate due to aging
+  S   = qhSt(3); % -, survival prob
+  %t  = qhSt(4); % -, scaled cumulative survival
+  
+  if tau < tau_e
+    h_B = h_B(3);
+    dq = 0;
+    dh_A = 0;
+  else
+    h_B = h_B(4);
+    dq = f * (q * l_e^3 * s_G + h_a) * g/ l_e;
+    dh_A = q;
+  end
+  
+  h = h_A + h_B; 
+  dS = - h * S;
+  dt = S;
+  
+  dqhSt = [dq; dh_A; dS; dt]; 
+end
+##### SOURCE END #####
+--></body></html>

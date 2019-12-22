@@ -1,0 +1,844 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Demonstrates the use of f2o and o2f</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_of.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Demonstrates the use of f2o and o2f</h1><!--introduction--><pre>We first obtain (otolith-length,opacity( data from functional response trajectory
+  then we reconstruct functional response trajectory from (otolith-length,opacity) data
+  and test the result graphically
+shrinking is not allowed, on the assumption that the reproduction buffer is large enough
+we assume k_J = k_M for simplicity's sake (implying stage transitions at fixed length)
+we use volumetric length for body and otolith
+if d/dt f changes slowly,  we have f about equal to e</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">2006/03/27 Set anchovy parameters</a></li><li><a href="#2">from scaled functional response f to opacity o</a></li><li><a href="#3">from opacity o to scaled functional response f</a></li><li><a href="#4">tcfeLLOO = o2f_init(LOO, tc, par, teLLOO(end,3)); % get initial estimate</a></li><li><a href="#5">start plotting</a></li></ul></div><h2>2006/03/27 Set anchovy parameters<a name="1"></a></h2><pre class="codeinput">  Lb = .1; <span class="comment">% 1, d.cm^2, scaled maturity at birth</span>
+  Lp = 1.6; <span class="comment">% 2, d.cm^2, scaled maturity at puberty</span>
+  v = .031748 * 16.5838; <span class="comment">% 3, cm/d, energy conductance * M shape correction factor</span>
+  vOD = 1.1861e-005; <span class="comment">% 4, mum/d, otolith speed for dissipation</span>
+  vOG = .00011049; <span class="comment">% 5, mum/d, otolith speed for growth</span>
+  kM = .015; <span class="comment">% 6, 1/d, somatic maintenance rate coeff</span>
+  g = 6; <span class="comment">% 7, -, energy investment ratio</span>
+  kap = 0.65; <span class="comment">% 8, was 0.65;% -, Veer</span>
+  kapR = 0.95; <span class="comment">% 9, -, Fraction of reproduction energy fixed in eggs; ref = ;</span>
+  delS = 20;<span class="comment">% 10, -, shape of the otosac</span>
+par = [Lb; Lp; v; vOD; vOG; kM; g; kap; kapR; delS];
+
+t = linspace(0,3*365,200)'; <span class="comment">% time points for simulation</span>
+
+TA = 9800; <span class="comment">% K, Arrhenius temperature ; ref = after Regner 1996;</span>
+T1 = 286; <span class="comment">% K, Reference temperature ;</span>
+T = 286 + 1.85 * sin(2 * pi * (t + 207)/ 365); <span class="comment">% K, temp at time t</span>
+cor_T = exp(TA/ T1 - TA ./ T); <span class="comment">% temp correction factors</span>
+
+p5 = 1.0e+002 * <span class="keyword">...</span>
+   [3.650000000000000 0.000338436258255;
+   0.000139797026871 -0.000061529908266;
+  -0.000140529304759 -0.000037548182856;
+   0.000005704656069  0.000066063518408;
+   0.000047981953130  0.000016729882406;
+  -0.000005258679892 -0.000022614364105];
+
+X = fnfourier(mod(t, 365), p5);
+K = .045; <span class="comment">% chlo_a/d.m^2, saturation constant</span>
+f = X ./ (K + X); <span class="comment">% scaled functional response</span>
+tcf = [t, cor_T, f]; <span class="comment">% pack environmental forcing</span>
+</pre><h2>from scaled functional response f to opacity o<a name="2"></a></h2><pre class="codeinput">LOb = .01; eb = .85; <span class="comment">% LO and e at birth</span>
+[LOO, teLLOO] = f2o(tcf, eb, LOb, par); <span class="comment">% get otolith, state vars</span>
+</pre><h2>from opacity o to scaled functional response f<a name="3"></a></h2><pre class="codeinput">tc = tcf(:,[1 2]); <span class="comment">% remove unknown f</span>
+</pre><h2>tcfeLLOO = o2f_init(LOO, tc, par, teLLOO(end,3)); % get initial estimate<a name="4"></a></h2><pre class="codeinput">tcfeLLOO = o2f(LOO, tc, par); <span class="comment">% get best estimate (less robust)</span>
+</pre><pre class="codeoutput">i = 3; t = 11.0937; f = 0.17533; e = 0.17543; L = 0.14882; LO = 0.014409; O = 0.92035; df = -0.0017027
+i = 4; t = 16.61; f = 0.16331; e = 0.16355; L = 0.16835; LO = 0.016241; O = 0.91418; df = -0.0021781
+i = 5; t = 22.1278; f = 0.15127; e = 0.15161; L = 0.18557; LO = 0.017878; O = 0.90712; df = -0.0021828
+i = 6; t = 27.6406; f = 0.1445; e = 0.14474; L = 0.20091; LO = 0.019348; O = 0.90068; df = -0.0012276
+i = 7; t = 33.1414; f = 0.14977; e = 0.14954; L = 0.2155; LO = 0.020754; O = 0.89828; df = 0.00095803
+i = 8; t = 38.6277; f = 0.17267; e = 0.17149; L = 0.23119; LO = 0.022264; O = 0.90169; df = 0.0041748
+i = 9; t = 44.1059; f = 0.21508; e = 0.2125; L = 0.25018; LO = 0.024083; O = 0.90801; df = 0.0077402
+i = 10; t = 49.5804; f = 0.27316; e = 0.26897; L = 0.27445; LO = 0.026395; O = 0.91356; df = 0.01061
+i = 11; t = 55.0556; f = 0.33891; e = 0.33324; L = 0.30519; LO = 0.029317; O = 0.91706; df = 0.012009
+i = 12; t = 60.5352; f = 0.40412; e = 0.3974; L = 0.34264; LO = 0.032875; O = 0.91873; df = 0.011899
+i = 13; t = 66.0191; f = 0.46299; e = 0.4558; L = 0.38623; LO = 0.037022; O = 0.91906; df = 0.010736
+i = 14; t = 71.5053; f = 0.51153; e = 0.50457; L = 0.43495; LO = 0.041665; O = 0.91838; df = 0.0088476
+i = 15; t = 76.997; f = 0.54957; e = 0.54327; L = 0.48766; LO = 0.046699; O = 0.91697; df = 0.0069278
+i = 16; t = 82.4918; f = 0.57701; e = 0.57182; L = 0.54323; LO = 0.052018; O = 0.91496; df = 0.0049938
+i = 17; t = 87.9901; f = 0.59465; e = 0.59089; L = 0.60064; LO = 0.057527; O = 0.91241; df = 0.0032087
+i = 18; t = 93.4909; f = 0.60344; e = 0.60134; L = 0.65898; LO = 0.063139; O = 0.90933; df = 0.0015977
+i = 19; t = 98.9939; f = 0.60435; e = 0.60406; L = 0.71743; LO = 0.068777; O = 0.9057; df = 0.00016392
+i = 20; t = 104.4954; f = 0.59754; e = 0.59934; L = 0.77522; LO = 0.074368; O = 0.90144; df = -0.0012373
+i = 21; t = 109.9993; f = 0.58382; e = 0.58778; L = 0.83163; LO = 0.079846; O = 0.89638; df = -0.0024933
+i = 22; t = 115.5063; f = 0.56548; e = 0.57115; L = 0.88604; LO = 0.085152; O = 0.89048; df = -0.0033292
+i = 23; t = 121.0134; f = 0.54193; e = 0.54957; L = 0.93788; LO = 0.090233; O = 0.88346; df = -0.004276
+i = 24; t = 126.5256; f = 0.51755; e = 0.52586; L = 0.98672; LO = 0.09505; O = 0.87532; df = -0.0044233
+i = 25; t = 132.0367; f = 0.49329; e = 0.50186; L = 1.0323; LO = 0.099583; O = 0.86607; df = -0.0044025
+i = 26; t = 137.5484; f = 0.47279; e = 0.48032; L = 1.0748; LO = 0.10384; O = 0.85611; df = -0.0037182
+i = 27; t = 143.0572; f = 0.45777; e = 0.4635; L = 1.1146; LO = 0.10786; O = 0.84618; df = -0.0027275
+i = 28; t = 148.5671; f = 0.44919; e = 0.45263; L = 1.1523; LO = 0.1117; O = 0.83716; df = -0.0015571
+i = 29; t = 154.0734; f = 0.44681; e = 0.44794; L = 1.1888; LO = 0.11544; O = 0.82978; df = -0.0004313
+i = 30; t = 159.5759; f = 0.44778; e = 0.44755; L = 1.2248; LO = 0.11914; O = 0.82384; df = 0.00017533
+i = 31; t = 165.0815; f = 0.45218; e = 0.45061; L = 1.2608; LO = 0.12285; O = 0.81922; df = 0.000799
+i = 32; t = 170.5818; f = 0.45625; e = 0.45466; L = 1.2971; LO = 0.12661; O = 0.81498; df = 0.00074036
+i = 33; t = 176.0815; f = 0.45964; e = 0.45827; L = 1.3338; LO = 0.1304; O = 0.81044; df = 0.00061549
+i = 34; t = 181.5817; f = 0.46175; e = 0.46085; L = 1.3707; LO = 0.13423; O = 0.80529; df = 0.00038404
+i = 35; t = 187.0849; f = 0.4621; e = 0.46188; L = 1.4076; LO = 0.13808; O = 0.79922; df = 6.4033e-05
+i = 36; t = 192.5908; f = 0.46171; e = 0.46183; L = 1.4442; LO = 0.14191; O = 0.79236; df = -7.0582e-05
+i = 37; t = 198.0911; f = 0.45952; e = 0.46033; L = 1.4802; LO = 0.1457; O = 0.78445; df = -0.00039928
+i = 38; t = 203.596; f = 0.458; e = 0.45865; L = 1.5155; LO = 0.14944; O = 0.7761; df = -0.00027455
+i = 39; t = 209.1027; f = 0.45591; e = 0.45675; L = 1.55; LO = 0.15312; O = 0.76733; df = -0.00038111
+i = 40; t = 214.6121; f = 0.45444; e = 0.45508; L = 1.5836; LO = 0.15674; O = 0.75839; df = -0.0002654
+i = 41; t = 220.237; f = 0.45354; e = 0.45394; L = 1.617; LO = 0.16028; O = 0.78161; df = -0.00016135
+i = 42; t = 225.7703; f = 0.45247; e = 0.45292; L = 1.6489; LO = 0.16364; O = 0.77189; df = -0.00019211
+i = 43; t = 231.2637; f = 0.45124; e = 0.45177; L = 1.6797; LO = 0.16691; O = 0.76187; df = -0.00022416
+i = 44; t = 236.7645; f = 0.4499; e = 0.45048; L = 1.7096; LO = 0.17012; O = 0.75147; df = -0.00024415
+i = 45; t = 242.2647; f = 0.44855; e = 0.44915; L = 1.7385; LO = 0.17324; O = 0.74079; df = -0.00024514
+i = 46; t = 247.762; f = 0.44749; e = 0.44798; L = 1.7662; LO = 0.17629; O = 0.7301; df = -0.00019368
+i = 47; t = 253.2629; f = 0.44763; e = 0.44764; L = 1.793; LO = 0.17925; O = 0.72031; df = 2.6187e-05
+i = 48; t = 258.761; f = 0.44869; e = 0.44826; L = 1.8189; LO = 0.18215; O = 0.71184; df = 0.00019325
+i = 49; t = 264.2585; f = 0.45023; e = 0.44954; L = 1.8441; LO = 0.18499; O = 0.70438; df = 0.00028043
+i = 50; t = 269.7597; f = 0.45378; e = 0.4522; L = 1.8687; LO = 0.18779; O = 0.69904; df = 0.00064423
+i = 51; t = 275.2553; f = 0.45638; e = 0.45504; L = 1.8929; LO = 0.19054; O = 0.69424; df = 0.00047401
+i = 52; t = 280.7573; f = 0.45882; e = 0.45756; L = 1.9166; LO = 0.19325; O = 0.68903; df = 0.00044259
+i = 53; t = 286.2547; f = 0.45852; e = 0.45844; L = 1.9397; LO = 0.19589; O = 0.68145; df = -5.4359e-05
+i = 54; t = 291.752; f = 0.45495; e = 0.45653; L = 1.9617; LO = 0.19845; O = 0.66923; df = -0.00065002
+i = 55; t = 297.2527; f = 0.44645; e = 0.45059; L = 1.9822; LO = 0.20087; O = 0.64928; df = -0.0015445
+i = 56; t = 302.7629; f = 0.43306; e = 0.44; L = 2.0004; LO = 0.20311; O = 0.61772; df = -0.0024308
+i = 57; t = 308.2669; f = 0.41369; e = 0.42412; L = 2.0156; LO = 0.20509; O = 0.56701; df = -0.0035183
+
+1 218.360837
+2 
+3 153.551923
+4 
+ no convergence within 5 generations 
+
+5 130.828166
+no convergence at point 58
+i = 58; t = 313.7785; f = 0.41369; e = 0.40215; L = 2.027; LO = 0.20677; O = 0.47923; df = 0
+
+1 130.828166
+2 3 
+4 51.022577
+
+ no convergence within 5 generations 
+
+5 51.022577
+no convergence at point 59
+i = 59; t = 319.0718; f = 0.41369; e = 0.37413; L = 2.0345; LO = 0.20809; O = 0.31798; df = 0
+
+1 51.022577
+
+2 0.000000
+3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 60; t = 323.9762; f = 1; e = 0.34827; L = 2.0374; LO = 0.20899; O = 0; df = NaN
+i = 61; t = 325.7448; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.20973; O = 0; df = 0
+i = 62; t = 331.1422; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21045; O = 0; df = 0
+i = 63; t = 336.536; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21115; O = 0; df = 0
+i = 64; t = 341.9274; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21182; O = 0; df = 0
+i = 65; t = 347.3169; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21248; O = 0; df = 0
+i = 66; t = 352.7052; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21312; O = 0; df = 0
+i = 67; t = 358.0937; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21375; O = 0; df = 0
+i = 68; t = 363.4831; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21436; O = 0; df = 0
+i = 69; t = 368.8746; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21495; O = 0; df = 0
+i = 70; t = 374.2694; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21553; O = 0; df = 0
+i = 71; t = 379.6685; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.2161; O = 0; df = 0
+i = 72; t = 385.073; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21665; O = 0; df = 0
+i = 73; t = 390.484; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.2172; O = 0; df = 0
+i = 74; t = 395.9028; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21774; O = 0; df = 0
+i = 75; t = 401.3302; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21826; O = 0; df = 0
+i = 76; t = 406.7671; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21878; O = 0; df = 0
+i = 77; t = 412.2143; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.2193; O = 0; df = 0
+i = 78; t = 417.6721; f = 0.34827; e = 0.34827; L = 2.0374; LO = 0.21981; O = 0; df = 0
+no convergence at point 79 after awakening 
+i = 79; t = 422.6106; f = 1; e = 0.39211; L = 2.0391; LO = 0.22038; O = 0.40596; df = 0.5
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 80; t = 427.8553; f = 1; e = 0.35007; L = 2.0479; LO = 0.22147; O = 0.61237; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 81
+i = 81; t = 432.9031; f = 1; e = 0.47973; L = 2.0631; LO = 0.22298; O = 0.697; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 82
+i = 82; t = 437.5242; f = 1; e = 0.52068; L = 2.0838; LO = 0.22483; O = 0.73836; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 83
+i = 83; t = 442.2792; f = 1; e = 0.55229; L = 2.108; LO = 0.22695; O = 0.76025; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 84
+i = 84; t = 447.1139; f = 1; e = 0.57292; L = 2.1346; LO = 0.22927; O = 0.77015; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 85
+i = 85; t = 452.0041; f = 1; e = 0.58465; L = 2.1627; LO = 0.23171; O = 0.77269; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 86
+i = 86; t = 456.9157; f = 1; e = 0.58743; L = 2.1912; LO = 0.2342; O = 0.76885; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 87
+i = 87; t = 461.8323; f = 1; e = 0.58222; L = 2.2194; LO = 0.2367; O = 0.75919; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 88
+i = 88; t = 466.7323; f = 1; e = 0.56983; L = 2.2465; LO = 0.23914; O = 0.74325; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 89
+i = 89; t = 471.5939; f = 1; e = 0.55126; L = 2.2718; LO = 0.24146; O = 0.71993; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 90
+i = 90; t = 476.3953; f = 1; e = 0.52796; L = 2.2948; LO = 0.24363; O = 0.68764; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 91
+i = 91; t = 481.1163; f = 1; e = 0.50191; L = 2.3149; LO = 0.24561; O = 0.6446; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 92
+i = 92; t = 485.74; f = 1; e = 0.47488; L = 2.3321; LO = 0.24738; O = 0.58951; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 93
+i = 93; t = 490.2873; f = 1; e = 0.44885; L = 2.3464; LO = 0.24895; O = 0.52811; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 94; t = 495.8123; f = 1; e = 0.40283; L = 2.3566; LO = 0.25036; O = 0.46674; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 95; t = 504.8425; f = 1; e = 0.40319; L = 2.3586; LO = 0.25165; O = 0.41768; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 96; t = 510.4315; f = 1; e = 0.40443; L = 2.3659; LO = 0.25288; O = 0.39098; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 97; t = 516.0842; f = 1; e = 0.4056; L = 2.3728; LO = 0.2541; O = 0.38585; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 98; t = 521.6577; f = 1; e = 0.40684; L = 2.38; LO = 0.25536; O = 0.39385; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 99; t = 527.109; f = 1; e = 0.4082; L = 2.388; LO = 0.25665; O = 0.40545; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 100; t = 532.4288; f = 1; e = 0.40969; L = 2.3967; LO = 0.258; O = 0.41486; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 101; t = 537.7038; f = 1; e = 0.41126; L = 2.4059; LO = 0.25939; O = 0.41572; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 102; t = 543.0092; f = 1; e = 0.41283; L = 2.4151; LO = 0.2608; O = 0.41063; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 103; t = 548.4112; f = 1; e = 0.41436; L = 2.424; LO = 0.26221; O = 0.39998; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 104; t = 553.9462; f = 1; e = 0.41578; L = 2.4323; LO = 0.26362; O = 0.38563; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 105; t = 559.6296; f = 1; e = 0.41707; L = 2.4399; LO = 0.26501; O = 0.36844; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 106; t = 565.4425; f = 1; e = 0.41823; L = 2.4467; LO = 0.26638; O = 0.35069; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 107; t = 571.3544; f = 1; e = 0.41927; L = 2.4528; LO = 0.26773; O = 0.33379; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 108; t = 577.3281; f = 1; e = 0.42022; L = 2.4583; LO = 0.26905; O = 0.31864; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 109; t = 583.3404; f = 1; e = 0.42107; L = 2.4633; LO = 0.27036; O = 0.30472; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 110; t = 589.3678; f = 1; e = 0.42185; L = 2.4678; LO = 0.27165; O = 0.28988; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 111; t = 595.4149; f = 1; e = 0.42255; L = 2.4719; LO = 0.27291; O = 0.27421; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 112; t = 601.4573; f = 1; e = 0.42317; L = 2.4756; LO = 0.27415; O = 0.25859; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 113; t = 607.4772; f = 1; e = 0.42375; L = 2.4789; LO = 0.27536; O = 0.24636; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 114; t = 613.4626; f = 1; e = 0.42429; L = 2.4821; LO = 0.27654; O = 0.24016; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 115; t = 619.4283; f = 1; e = 0.42484; L = 2.4853; LO = 0.27772; O = 0.24006; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 116; t = 625.3619; f = 1; e = 0.42541; L = 2.4886; LO = 0.2789; O = 0.25028; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 117; t = 631.2815; f = 1; e = 0.42603; L = 2.4923; LO = 0.28008; O = 0.26381; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 118; t = 637.1781; f = 1; e = 0.42671; L = 2.4963; LO = 0.28127; O = 0.27625; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 119; t = 643.0675; f = 1; e = 0.42743; L = 2.5005; LO = 0.28247; O = 0.2808; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 120; t = 648.9648; f = 1; e = 0.42814; L = 2.5046; LO = 0.28364; O = 0.27143; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 121; t = 654.9006; f = 1; e = 0.42874; L = 2.5081; LO = 0.28476; O = 0.2394; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 122; t = 660.8188; f = 1; e = 0.42915; L = 2.5106; LO = 0.2858; O = 0.1675; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 123; t = 666.4446; f = 1; e = 0.42935; L = 2.5117; LO = 0.28669; O = 0.02239; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 124; t = 671.5117; f = 1; e = 0.42948; L = 2.5125; LO = 0.28747; O = 0; df = NaN
+i = 125; t = 676.6677; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.28824; O = 0; df = 0
+i = 126; t = 682.1052; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.28899; O = 0; df = 0
+i = 127; t = 687.5374; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.28972; O = 0; df = 0
+i = 128; t = 692.9651; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29043; O = 0; df = 0
+i = 129; t = 698.3893; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29112; O = 0; df = 0
+i = 130; t = 703.8109; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29179; O = 0; df = 0
+i = 131; t = 709.2308; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29245; O = 0; df = 0
+i = 132; t = 714.6504; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29309; O = 0; df = 0
+i = 133; t = 720.0704; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29371; O = 0; df = 0
+i = 134; t = 725.4925; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29432; O = 0; df = 0
+i = 135; t = 730.9179; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29492; O = 0; df = 0
+i = 136; t = 736.3473; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.2955; O = 0; df = 0
+i = 137; t = 741.7828; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29607; O = 0; df = 0
+i = 138; t = 747.2252; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29663; O = 0; df = 0
+i = 139; t = 752.6759; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29718; O = 0; df = 0
+i = 140; t = 758.1361; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29772; O = 0; df = 0
+i = 141; t = 763.6066; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29825; O = 0; df = 0
+i = 142; t = 769.0886; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29878; O = 0; df = 0
+i = 143; t = 774.5827; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.2993; O = 0; df = 0
+i = 144; t = 780.0895; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.29981; O = 0; df = 0
+i = 145; t = 785.6098; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.30033; O = 0; df = 0
+i = 146; t = 791.1428; f = 0.42948; e = 0.42948; L = 2.5125; LO = 0.30083; O = 0; df = 0
+no convergence at point 147 after awakening 
+i = 147; t = 796.7269; f = 1; e = 0.47155; L = 2.5143; LO = 0.30144; O = 0.34394; df = 0.5
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 148
+i = 148; t = 800.981; f = 1; e = 0.49799; L = 2.524; LO = 0.30237; O = 0.51885; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 149
+i = 149; t = 805.6546; f = 1; e = 0.53487; L = 2.5375; LO = 0.30355; O = 0.59732; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 150
+i = 150; t = 810.4462; f = 1; e = 0.56109; L = 2.5542; LO = 0.30492; O = 0.63651; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 151
+i = 151; t = 815.316; f = 1; e = 0.57758; L = 2.573; LO = 0.30643; O = 0.65457; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 152
+i = 152; t = 820.2268; f = 1; e = 0.5848; L = 2.5928; LO = 0.30802; O = 0.65833; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 153
+i = 153; t = 825.1476; f = 1; e = 0.58364; L = 2.6129; LO = 0.30964; O = 0.65067; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 154
+i = 154; t = 830.0582; f = 1; e = 0.5751; L = 2.6323; LO = 0.31123; O = 0.63213; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 155
+i = 155; t = 834.9285; f = 1; e = 0.55955; L = 2.6504; LO = 0.31276; O = 0.60039; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 156
+i = 156; t = 839.7326; f = 1; e = 0.53843; L = 2.6664; LO = 0.31419; O = 0.55234; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 157
+i = 157; t = 844.4471; f = 1; e = 0.51346; L = 2.6799; LO = 0.31546; O = 0.48281; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+no convergence at point 158
+i = 158; t = 849.0564; f = 1; e = 0.48486; L = 2.6905; LO = 0.31658; O = 0.38507; df = 0
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 159; t = 854.22; f = 1; e = 0.46102; L = 2.697; LO = 0.31753; O = 0.25673; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 160; t = 859.5689; f = 1; e = 0.4616; L = 2.7003; LO = 0.31833; O = 0.10721; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 161; t = 864.7669; f = 1; e = 0.46186; L = 2.7019; LO = 0.31902; O = 0; df = NaN
+i = 162; t = 869.7281; f = 0.46186; e = 0.46186; L = 2.7019; LO = 0.31969; O = 0; df = 0
+i = 163; t = 875.4883; f = 0.46186; e = 0.46186; L = 2.7019; LO = 0.32037; O = 0; df = 0
+i = 164; t = 881.2452; f = 0.46186; e = 0.46186; L = 2.7019; LO = 0.32107; O = 0; df = 0
+i = 165; t = 886.9957; f = 0.46186; e = 0.46186; L = 2.7019; LO = 0.32177; O = 0; df = 0
+i = 166; t = 892.7369; f = 0.46186; e = 0.46186; L = 2.7019; LO = 0.32249; O = 0; df = 0
+no convergence at point 167 after awakening 
+i = 167; t = 898.4471; f = 1; e = 0.46261; L = 2.7019; LO = 0.32322; O = 0.0084916; df = 0.5
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 168; t = 903.5607; f = 1; e = 0.46214; L = 2.7035; LO = 0.32397; O = 0.021462; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 169; t = 908.7053; f = 1; e = 0.46242; L = 2.7052; LO = 0.32474; O = 0.020191; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 170; t = 913.8278; f = 1; e = 0.46268; L = 2.7067; LO = 0.3255; O = 0.0073991; df = NaN
+
+1 0.000000
+2 3 4 
+ no convergence within 5 generations 
+
+5 0.000000
+i = 171; t = 918.8997; f = 1; e = 0.46293; L = 2.7082; LO = 0.32627; O = 0; df = NaN
+i = 172; t = 923.9422; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.32704; O = 0; df = 0
+i = 173; t = 929.574; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.32782; O = 0; df = 0
+i = 174; t = 935.1743; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.32861; O = 0; df = 0
+i = 175; t = 940.7518; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.32939; O = 0; df = 0
+i = 176; t = 946.2958; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33018; O = 0; df = 0
+i = 177; t = 951.8095; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33097; O = 0; df = 0
+i = 178; t = 957.2934; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33176; O = 0; df = 0
+i = 179; t = 962.7441; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33255; O = 0; df = 0
+i = 180; t = 968.1638; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33333; O = 0; df = 0
+i = 181; t = 973.5519; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33411; O = 0; df = 0
+i = 182; t = 978.9071; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33488; O = 0; df = 0
+i = 183; t = 984.2341; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33564; O = 0; df = 0
+i = 184; t = 989.5262; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33639; O = 0; df = 0
+i = 185; t = 994.7838; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33714; O = 0; df = 0
+i = 186; t = 1000.0113; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33787; O = 0; df = 0
+i = 187; t = 1005.2073; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33858; O = 0; df = 0
+i = 188; t = 1010.3726; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33929; O = 0; df = 0
+i = 189; t = 1015.5083; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.33998; O = 0; df = 0
+i = 190; t = 1020.6149; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34065; O = 0; df = 0
+i = 191; t = 1025.6935; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34131; O = 0; df = 0
+i = 192; t = 1030.7457; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34196; O = 0; df = 0
+i = 193; t = 1035.7728; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34259; O = 0; df = 0
+i = 194; t = 1040.7768; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34321; O = 0; df = 0
+i = 195; t = 1045.7597; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34381; O = 0; df = 0
+i = 196; t = 1050.7238; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34439; O = 0; df = 0
+i = 197; t = 1055.6719; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34497; O = 0; df = 0
+i = 198; t = 1060.6069; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34552; O = 0; df = 0
+i = 199; t = 1065.532; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.34607; O = 0; df = 0
+i = 200; t = 1070.4509; f = 0.46293; e = 0.46293; L = 2.7082; LO = 0.3466; O = 0; df = 0
+</pre><h2>start plotting<a name="5"></a></h2><pre class="codeinput">subplot(2,3,1)
+plot(tcf(:,1), tcf(:,2), <span class="string">'g'</span>, tcfeLLOO(:,1), tcfeLLOO(:,2), <span class="string">'r'</span>)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'c_T'</span>)
+
+subplot(2,3,2)
+plot(tcf(:,1), tcf(:,3), <span class="string">'g'</span>, tcfeLLOO(:,1), tcfeLLOO(:,3), <span class="string">'r'</span>)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'f'</span>)
+
+subplot(2,3,3)
+plot(teLLOO(:,1), teLLOO(:,2), <span class="string">'g'</span>, tcfeLLOO(:,1), tcfeLLOO(:,4), <span class="string">'r'</span>)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'e'</span>)
+
+subplot(2,3,4)
+plot(teLLOO(:,1), teLLOO(:,3), <span class="string">'g'</span>, tcfeLLOO(:,1), tcfeLLOO(:,5), <span class="string">'r'</span>)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'L'</span>)
+
+subplot(2,3,5)
+plot(teLLOO(:,1), teLLOO(:,4), <span class="string">'g'</span>, tcfeLLOO(:,1), tcfeLLOO(:,6), <span class="string">'r'</span>)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'L_O'</span>)
+
+subplot(2,3,6)
+plot(LOO(:,1), LOO(:,2), <span class="string">'g'</span>, tcfeLLOO(:,6), tcfeLLOO(:,7), <span class="string">'r'</span>)
+xlabel(<span class="string">'L_O'</span>)
+ylabel(<span class="string">'O'</span>)
+</pre><img vspace="5" hspace="5" src="mydata_of_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Demonstrates the use of f2o and o2f
+%  We first obtain (otolith-length,opacity( data from functional response trajectory
+%    then we reconstruct functional response trajectory from (otolith-length,opacity) data
+%    and test the result graphically
+%  shrinking is not allowed, on the assumption that the reproduction buffer is large enough
+%  we assume k_J = k_M for simplicity's sake (implying stage transitions at fixed length)
+%  we use volumetric length for body and otolith
+%  if d/dt f changes slowly,  we have f about equal to e
+
+%% 2006/03/27 Set anchovy parameters
+  Lb = .1; % 1, d.cm^2, scaled maturity at birth
+  Lp = 1.6; % 2, d.cm^2, scaled maturity at puberty
+  v = .031748 * 16.5838; % 3, cm/d, energy conductance * M shape correction factor
+  vOD = 1.1861e-005; % 4, mum/d, otolith speed for dissipation
+  vOG = .00011049; % 5, mum/d, otolith speed for growth
+  kM = .015; % 6, 1/d, somatic maintenance rate coeff
+  g = 6; % 7, -, energy investment ratio
+  kap = 0.65; % 8, was 0.65;% -, Veer
+  kapR = 0.95; % 9, -, Fraction of reproduction energy fixed in eggs; ref = ;
+  delS = 20;% 10, -, shape of the otosac
+par = [Lb; Lp; v; vOD; vOG; kM; g; kap; kapR; delS];
+
+t = linspace(0,3*365,200)'; % time points for simulation 
+
+TA = 9800; % K, Arrhenius temperature ; ref = after Regner 1996;
+T1 = 286; % K, Reference temperature ;
+T = 286 + 1.85 * sin(2 * pi * (t + 207)/ 365); % K, temp at time t
+cor_T = exp(TA/ T1 - TA ./ T); % temp correction factors
+
+p5 = 1.0e+002 * ...
+   [3.650000000000000 0.000338436258255;
+   0.000139797026871 -0.000061529908266;
+  -0.000140529304759 -0.000037548182856;
+   0.000005704656069  0.000066063518408;
+   0.000047981953130  0.000016729882406;
+  -0.000005258679892 -0.000022614364105];
+
+X = fnfourier(mod(t, 365), p5);
+K = .045; % chlo_a/d.m^2, saturation constant
+f = X ./ (K + X); % scaled functional response
+tcf = [t, cor_T, f]; % pack environmental forcing
+
+%% from scaled functional response f to opacity o
+LOb = .01; eb = .85; % LO and e at birth
+[LOO, teLLOO] = f2o(tcf, eb, LOb, par); % get otolith, state vars
+
+%% from opacity o to scaled functional response f
+tc = tcf(:,[1 2]); % remove unknown f
+
+%% tcfeLLOO = o2f_init(LOO, tc, par, teLLOO(end,3)); % get initial estimate
+tcfeLLOO = o2f(LOO, tc, par); % get best estimate (less robust)
+
+%% start plotting
+subplot(2,3,1)
+plot(tcf(:,1), tcf(:,2), 'g', tcfeLLOO(:,1), tcfeLLOO(:,2), 'r')
+xlabel('time')
+ylabel('c_T')
+
+subplot(2,3,2)
+plot(tcf(:,1), tcf(:,3), 'g', tcfeLLOO(:,1), tcfeLLOO(:,3), 'r')
+xlabel('time')
+ylabel('f')
+
+subplot(2,3,3)
+plot(teLLOO(:,1), teLLOO(:,2), 'g', tcfeLLOO(:,1), tcfeLLOO(:,4), 'r')
+xlabel('time')
+ylabel('e')
+
+subplot(2,3,4)
+plot(teLLOO(:,1), teLLOO(:,3), 'g', tcfeLLOO(:,1), tcfeLLOO(:,5), 'r')
+xlabel('time')
+ylabel('L')
+
+subplot(2,3,5)
+plot(teLLOO(:,1), teLLOO(:,4), 'g', tcfeLLOO(:,1), tcfeLLOO(:,6), 'r')
+xlabel('time')
+ylabel('L_O')
+
+subplot(2,3,6)
+plot(LOO(:,1), LOO(:,2), 'g', tcfeLLOO(:,6), tcfeLLOO(:,7), 'r')
+xlabel('L_O')
+ylabel('O')
+
+##### SOURCE END #####
+--></body></html>

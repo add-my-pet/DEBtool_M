@@ -4,6 +4,7 @@
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman
+  % 2019/12/20 by Nina Marn
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -36,13 +37,14 @@ function estim_options (key, val)
   %      2:  read initial estimates from pars_init file (default)
   %
   %    'results_output':
-  %      0:      only saves data results to .mat, no figures, no writing to html or screen
-  %      1, -1:  no saving of .mat file, prints results to html or screen 
-  %      2, -2:  saves data to .mat file, prints results to html or screen 
-  %      3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen
-  %      4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
-  %      5, -5:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species
-  %
+  %      0 - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
+  %      1, -1 - no saving to .mat file, prints results to html (1) or screen (-1)
+  %      2, -2 - saves to .mat file, prints results to html (2) or screen (-2)
+  %      3, -3 - like 2 (or -2), but also prints graphs to .png files (default is 3)
+  %      4, -4 - like 3 (or -3), but also prints html with implied traits
+  %      5, -5 - like 3 (or -3), but also prints html with implied traits including related species
+  %      6 - like 5, but also prints html with population traits
+  %   
   %    'method': 
   %      'nm': use Nelder-Mead method; 
   %      'no': do not estimate;
@@ -126,10 +128,12 @@ function estim_options (key, val)
           fprintf('results_output = unknown \n');
         end	 
         fprintf(' 0      only saves data results to .mat, no figures, no writing to html or screen\n');
-        fprintf('1, -1  saves data to .mat file, prints results to html or screen\n');
-        fprintf('2, -2  saves data to .mat file and graphs to .png files, writes results to html or screen\n');
-        fprintf('3, -3  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file\n');
-        fprintf('4, -4  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species\n');
+        fprintf('1, -1  no saving to .mat file, prints results to html (1) or screen (-1)\n');
+        fprintf('2, -2  saves to .mat file, prints results to html (2) or screen (-2) \n');
+        fprintf('3, -3  like 2 (or -2), but also prints graphs to .png files (default is 3)\n');
+        fprintf('4, -4  like 3 (or -3), but also prints html with implied traits \n');
+        fprintf('5, -5  like 3 (or -3), but also prints html with implied traits including related species \n');
+        fprintf('6, -6  like 5, but also prints html with population traits \n');         
       else
         results_output = val;
       end

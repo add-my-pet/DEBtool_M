@@ -1,0 +1,231 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_pars_9_foetus</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_pars_9_foetus.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_pars_9_foetus</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>par = <a href="../get_pars_9_foetus"><b>get_pars_9_foetus</b></a> (data, t_0, T)</p><h2>Description<a name="4"></a></h2><p>Obtains 10 DEB parameters from 9 data points at abundant food, see get_pars. See iget_pars_9_foetus for the inverse mapping Similar to <a href="get_pars_9.html"><b>et_pars_9</b></a>, but for foetal development with delay and no accelation</p><p>Input</p><div><ul><li>data: 9-vector with zero-variate data</li></ul></div><pre>  d_V, g/cm^3 specific density of structure
+  t_b, d, time at birth: t_0 + a_b
+  t_x, d, time since birth at weaning: a_x - a_b
+  t_p, d, time since birth at puberty: a_p - a_b
+  t_m, d, time since birth at death due to ageing
+  W_b, g, wet weight at birth
+  W_x, g, wet weight at weaning
+  W_m, g,  maximum wet weight
+  R_m, #/d, maximum reproduction rate</pre><div><ul><li>t_0: scalar with time at start development: t_b - a_b</li></ul></div><p>Output</p><p>% par: 9-vector with DEB parameters   p_Am, J/d.cm^2,  {p_Am}, max specific assimilation rate   v, cm/d, energy conductance   kap, -, allocation fraction to soma   p_M, J/d.cm^3, [p_M], specific somatic maintenance costs   E_G, J/cm^3, [E_G] specific cost for structure   E_Hb, J, E_H^b, maturity at birth   E_Hx, J, E_H^x, maturity at weaning   E_Hp, J, E_H^p, maturity at puberty   h_a, 1/d^2, ageing acceleration</p><h2>Remarks<a name="5"></a></h2><pre>The theory behind get_pars_9 is discussed in
+  &lt;http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf comments to DEB3&gt;.</pre><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_pars_9_foetus.m"><b>mydata_get_pars_9_foetus</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_pars_9_foetus
+%
+
+%%
+function par = get_pars_9_foetus(data, t_0, T)
+  % created 2014/06/14 by Bas Kooijman
+  
+  %% Syntax
+  % par = <../get_pars_9_foetus *get_pars_9_foetus*> (data, t_0, T)
+  
+  %% Description
+  % Obtains 10 DEB parameters from 9 data points at abundant food, see get_pars. 
+  % See iget_pars_9_foetus for the inverse mapping
+  % Similar to <get_pars_9.html *et_pars_9*>, but for foetal development with delay and no accelation
+  %
+  % Input
+  %
+  % * data: 9-vector with zero-variate data
+  %
+  %    d_V, g/cm^3 specific density of structure
+  %    t_b, d, time at birth: t_0 + a_b
+  %    t_x, d, time since birth at weaning: a_x - a_b 
+  %    t_p, d, time since birth at puberty: a_p - a_b
+  %    t_m, d, time since birth at death due to ageing
+  %    W_b, g, wet weight at birth
+  %    W_x, g, wet weight at weaning
+  %    W_m, g,  maximum wet weight
+  %    R_m, #/d, maximum reproduction rate
+  %
+  % * t_0: scalar with time at start development: t_b - a_b
+  %  
+  % Output
+  %
+  % % par: 9-vector with DEB parameters
+  %   p_Am, J/d.cm^2,  {p_Am}, max specific assimilation rate
+  %   v, cm/d, energy conductance
+  %   kap, -, allocation fraction to soma 
+  %   p_M, J/d.cm^3, [p_M], specific somatic maintenance costs
+  %   E_G, J/cm^3, [E_G] specific cost for structure
+  %   E_Hb, J, E_H^b, maturity at birth 
+  %   E_Hx, J, E_H^x, maturity at weaning 
+  %   E_Hp, J, E_H^p, maturity at puberty 
+  %   h_a, 1/d^2, ageing acceleration
+  
+  %% Remarks
+  %  The theory behind get_pars_9 is discussed in 
+  %    <http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf comments to DEB3>.
+  
+  %% Example of use
+  % See <../mydata_get_pars_9_foetus.m *mydata_get_pars_9_foetus*>
+  
+  %  assumptions:
+  %  abundant food (f=1)
+  %  a_0, a_b, a_x, a_p, a_m and R_m are temp-corrected to T_ref = 293 K
+     kap_R = 0.95; % -, reproduction efficiency
+  %  kap_G = 0.80  % -, growth efficiency
+     k_J = 0.002;  % 1/d, maturity maintenance rate coefficient (or 0 for kap)
+     s_G = 0.04;   % -, Gompertz stress coefficient 
+  %  {p_T} = 0     % J/d.cm^2, surf-spec som maint
+  %  C:H:O:N = 1:1.8:0.5:0.15
+     w_V = 23.9;   % g/C-mol, molecular weight of structure
+     w_E = 23.9;   % g/C-mol, molecular weight of reserve
+     mu_V = 5E5;   % J/C-mol, chemical potential of structure
+     mu_E = 5.5E5; % J/C-mol, chemical potential of reserve
+
+% unpack data
+d_V = data(1); % g/cm^3 specific density of structure
+t_b = data(2); % d, time at birth
+t_x = data(3); % d, time since birth at weaning
+t_p = data(4); % d, time since birth at puberty
+t_m = data(5); % d, age at death due to ageing
+W_b = data(6); % g, wet weight at birth
+W_x = data(7); % g, wet weight at weaning
+W_m = data(8); % g,  maximum wet weight
+R_m = data(9); % #/d, maximum reproduction rate
+
+if exist('t_0', 'var') == 0
+    t_0 = 0; % d, delay till strat of development
+end
+
+a_b = max(1e-6, t_b - t_0); % d, age at birth
+a_x = t_x + a_b; % d, age at weaning
+a_p = t_p + a_b; % d, age at puberty
+a_m = t_m + a_b; % d, age at death
+
+l_b = (W_b/ W_m)^(1/3);  % -, scaled length at birth
+l_x = (W_x/ W_m)^(1/3);  % -, scaled length at metamorphosis
+r_B = log((1 - l_b)/ (1 - l_x))/ t_x;    % 1/d, von Bertalanffy growth rate
+l_p = 1 - (1 - l_b) * exp(- r_B * t_p);  % -, scaled length at puberty
+
+E_G = 26151 * d_V;             % J/cm^3, [E_G] costs for structure
+g = l_b/ r_B/ a_b - 1;         % -, energy investment ratio
+k_M = 3 * l_b/ g/ a_b;         % 1/d, maintenance rate coefficient
+k = k_J/ k_M;                  % -, maintenance ratio
+p_M = E_G * k_M;               % J/d.cm^3, specific somatic maintenance costs
+
+uE0 = (1 + g + l_b * 3/ 4) * l_b^3/ g; % -, scaled initial reserve
+rho_m = R_m/ kap_R/ k_M; % -, scaled max reprod rate
+kap = 1 - uE0 * R_m/ kap_R/ k_M/ (1 - l_p^3); % -, allocation fraction to soma
+kap = fzero(@fnget_kap, kap, [], l_b, l_p, k, g, rho_m, uE0);
+E_m = E_G/ kap/ g;       % J/cm^3, (max) reserve capacity 
+w = E_m * w_E/ d_V/ mu_E;% -, contribution of reserve to weight
+
+L_m = (W_m/ (1 + w))^(1/3); % cm, maximum structural length
+v = L_m * k_M * g;       % cm/d, energy conductance
+p_Am = v * E_m;          % J/d.cm^2, max spec assimilation rate
+
+L_b = l_b * L_m;         % cm, structural length at birth
+L_x = l_x * L_m;         % cm, structural length at weaning
+L_p = l_p * L_m;         % cm, structural length at puberty
+
+options = odeset('RelTol', 1e-10);
+[l u_H] = ode45(@dget_uH, [1e-8; l_b; l_x; l_p], 0, options, l_b, kap, k, g);
+E_Hb = u_H(2,1) * g * E_m * L_m^3; % J, maturity level at birth
+E_Hx = u_H(3,1) * g * E_m * L_m^3; % J, maturity level at weaning
+E_Hp = u_H(4,1) * g * E_m * L_m^3; % J, maturity level at puberty
+
+h_G = s_G * g * k_M;    % 1/d, Gompertz ageing rate
+t_G = a_m * h_G;        % -, scaled Gompertz ageing rate
+h_a = - s_G^3 * g^2 * k_M^2 * log(2)/ (1 - exp(t_G) + t_G + t_G^2/ 2); % 1/d^2, ageing acceleration
+
+% correct for temperature using T_A = 8e3 and T_ref = 293 K
+if exist('T', 'var') == 0
+  T = 293; % K, reference temperature, TC = 1;
+end
+TC = tempcorr(T, 293, 8e3);
+p_Am = p_Am/ TC; v = v/ TC; p_M = p_M/ TC; h_a = h_a/ TC^2;
+
+% pack par
+par = [p_Am; v; kap; p_M; E_G; E_Hb; E_Hx; E_Hp; h_a];
+end
+
+% subfunctions
+
+function f = fnget_kap(kap, l_b, l_p, k, g, rho_m, u_E0)
+  % rho_m: scaled max reprod rate: R_m/ k_M/ kap_R
+  kap = max(1e-4,min(kap, 1-1e-4));
+
+  options = odeset('RelTol', 1e-10);
+  [l u_H] = ode45(@dget_uH, [0; l_p], 0, options, l_b, kap, k, g);
+  v_Hp = u_H(end,1)/ (1 - kap); % -, scaled maturity at puberty
+  % set f to zero
+  f = rho_m - (1 - kap) * (1 - k * v_Hp)/ u_E0;
+end
+
+function duH = dget_uH(l, uH, l_b, kap, k, g)
+  % forward integration of u_H  l = 0 to l_p
+  % unpack states
+  
+  if l < l_b
+    dl = g/ 3;
+    duH = (1 - kap) * l^2 * (g + l) - k * uH;
+  else
+    dl = g/ 3 * (1 - l)/ (1 + g);                         % -, d/dtau l, change in scaled length 
+    duH = (1 - kap) * l^2 * (g + l)/ (g + 1) - k * uH;    % -, d/dtau u_H, change in scaled maturity
+  end
+  
+  duH = duH/ dl; % -, change in scaled maturity d/dl u_H
+end
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,181 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tj_foetus</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-10"><meta name="DC.source" content="get_tj_foetus.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tj_foetus</h1><!--introduction--><p>Get scaled age at metamorphosis for foetal development</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = <a href="../get_tj_foetus.m"><b>get_tj_foetus</b></a> (p, f)</p><h2>Description<a name="4"></a></h2><p>Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages in case of foetal development Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and metamorphosis. Notice j-p-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at metamorphosis \tau_j = a_j k_M</li><li>tau_p: scaled age at puberty \tau_p = a_p k_M</li><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>lj: scaled length at end of V1-stage</li><li>lp: scaled length at puberty</li><li>lb: scaled length at birth</li><li>li: ultimate scaled length</li><li>rj: scaled exponential growth rate between s and j</li><li>rB: scaled von Bertalanffy growth rate between b and s and between j and i</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>See <a href="get_tj.html"><b>get_tj</b></a> in case of egg development</p><h2>Example of use<a name="6"></a></h2><p>get_tj_foetus([.5, .1, 0, .01, .05, .2])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tj_foetus
+% Get scaled age at metamorphosis for foetal development
+
+%%
+function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj_foetus(p, f)
+  % created at 2012/06/29 by Bas Kooijman; modified 2015/01/18 Bas Kooijman
+  % modified 2018/09/10 (t -> tau) Nina Marn
+  
+  %% Syntax
+  % [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = <../get_tj_foetus.m *get_tj_foetus*> (p, f)
+  
+  %% Description
+  % Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages in case of foetal development
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. 
+  % Metabolic acceleration occurs between birth and metamorphosis.
+  % Notice j-p-b sequence in output, due to the name of the routine
+  %
+  % Input
+  %
+  % * p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j v_H^p 
+  % * f: optional scalar with functional response (default f = 1)
+  %  
+  % Output
+  %
+  % * tau_j: scaled age at metamorphosis \tau_j = a_j k_M
+  % * tau_p: scaled age at puberty \tau_p = a_p k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
+  % * lj: scaled length at end of V1-stage
+  % * lp: scaled length at puberty
+  % * lb: scaled length at birth
+  % * li: ultimate scaled length
+  % * rj: scaled exponential growth rate between s and j
+  % * rB: scaled von Bertalanffy growth rate between b and s and between j and i
+  % * info: indicator equals 1 if successful, 0 otherwise
+  
+  %% Remarks
+  % See <get_tj.html *get_tj*> in case of egg development
+  
+  %% Example of use
+  % get_tj_foetus([.5, .1, 0, .01, .05, .2])
+
+  %  unpack pars
+  g   = p(1); % energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
+  vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = E_H^j/ {p_Am}
+  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
+  
+  if ~exist('f','var')
+    f = 1;
+  elseif isempty(f)
+    f = 1;
+  end
+
+  % no acceleration
+  if vHb == vHj 
+    [tau_p, tau_b, lp, lb, info] = get_tp_foetus(p([1 2 3 4 6]), f);
+    tau_j = tau_b; lj = lb; li = f - lT; rj = 0; rB = 1/ 3/ (1 + f/ g);
+    return
+  end
+
+  % maintenance ratio k = 1: maturity thresholds coincide with length thresholds
+  if k == 1 && f * (f - lT)^2 > vHp * k % constant maturity density, reprod possible
+    lb = vHb^(1/3);                  % scaled length at birth
+    tau_b = get_tb_foetus(p([1 2 4]));  % scaled age at birth
+    lj = vHj^(1/3);                  % scaled length at metamorphosis
+    rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
+    tau_j = tau_b + (log(lj/ lb)) * 3/ rj; % scaled age at metamorphosis
+    lp = vHp^(1/3);                  % scaled length at puberty
+    li = f * lj/ lb - lT;            % scaled ultimate length
+    rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
+    tau_p = tau_j + log ((li - lj)/ (li - lp))/ rB; % scaled age at puberty
+    info = 1;
+    return
+  elseif k == 1 && f * (f - lT)^2 > vHj * k % constant maturity density, metam possible
+    lb = vHb^(1/3);                  % scaled length at birth
+    tau_b = get_tb_foetus(p([1 2 4]));  % scaled age at birth
+    lj = vHj^(1/3);                  % scaled length at metamorphosis
+    rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
+    tau_j = tau_b + log(lj/ lb) * 3/ rj;   % scaled age at metamorphosis
+    lp = vHp^(1/3);                  % scaled length at puberty
+    li = f * lj/ lb - lT;            % scaled ultimate length
+    rB = 1/ 3/ (1 + f/ g);           % scaled von Bert growth rate between j and i
+    tau_p = 1e20;                       % scaled age at puberty
+    info = 1;
+    return
+  end
+  
+  tau_b = get_tb_foetus (p([1 2 4])); 
+  [lj, lp, lb, info] = get_lj_foetus(p, f);
+  rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
+  tau_j = tau_b + log(lj/ lb) * 3/ rj;     % scaled age at metamorphosis
+  rB = 1/ 3/ (1 + f/ g);             % scaled von Bert growth rate between j and i
+  li = f * lj/ lb - lT;              % scaled ultimate length
+
+  if  li <=  lp                      % reproduction is not possible
+    tau_p = 1e20;                       % tau_p is never reached
+    lp = 1;                          % lp is nerver reached
+  else % reproduction is possible
+    tau_p = tau_j + log((li - lj)/ (li - lp))/ rB;
+  end
+    
+  if ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
+    info = 0;
+  elseif tau_p < 0 || tau_j < 0
+    info = 0;
+  end
+  
+##### SOURCE END #####
+--></body></html>

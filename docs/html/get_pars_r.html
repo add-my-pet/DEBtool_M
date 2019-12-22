@@ -1,0 +1,163 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_pars_r</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_pars_r.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>get_pars_r</h1><!--introduction--><p>Obtains parameters from growth and reprod data at one food level</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[par, U] = <a href="../get_pars_r.m"><b>get_pars_r</b></a>(p)</p><h2>Description<a name="4"></a></h2><p>Obtains parameters from growth and reprod data at one food level Maturity and somatic maitenance rate coefficients are equal.</p><p>Input</p><div><ul><li>p: 7 or 8-vector with quantities at constant scaled functional response</li></ul></div><pre>  1 f     % -  % scaled functional response
+  2 L_b   % mm % length at birth
+  3 L_p   % mm % length at puberty
+  4 L_i   % mm % ultimate length
+  5 a_b   % d  % age at birth
+  6 \dot{r}_B % d^-1   % von Bertalanffy growth rate
+  7 \dot{R}_i % % d^-1 % ultimate reproduction rate
+  8 kapR  % -  % fraction allocated to reprod that is fixed in embryo's
+          this parameter is optional; if not specified kapR = 0.95</pre><p>Output</p><div><ul><li>par: 8-vector with</li></ul></div><pre>  1 kap   % -    % fraction allocated to som maint + growth
+  2 kapR  % -    % fraction of energy allocated to reprod fixed in embryo
+  3 g     % -    % energy investment ratio
+  4 kJ    % d^-1 % maturity maintenance rate coefficient
+  5 kM    % d^-1 % somatic maintenance rate coefficient
+  6 v     % mm/d % energy conductance
+  7 Hb    % d mm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  8 Hp    % d mm^2 % scaled maturity at puberty M_H^p/{J_EAm}</pre><div><ul><li>U: 3-vector with    U^0 = M_E^0/\{\dot{J}_{EAm}\},    U^b = M_E^b/\{\dot{J}_{EAm}\},    U^p = M_E^p/\{\dot{J}_{EAm}\}.</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Function <a href="iget_pars_r.html"><b>iget_pars_r</b></a> is inverse.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_pars.m"><b>mydata_get_pars</b></a></p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_pars_r
+% Obtains parameters from growth and reprod data at one food level
+
+%%
+function [par, U] = get_pars_r(p)
+  %  created 2006/09/29 by Bas Kooijman, modified 2009/09/29
+  
+  %% Syntax
+  % [par, U] = <../get_pars_r.m *get_pars_r*>(p)
+  
+  %% Description
+  % Obtains parameters from growth and reprod data at one food level
+  % Maturity and somatic maitenance rate coefficients are equal.
+  %
+  % Input
+  %
+  % * p: 7 or 8-vector with quantities at constant scaled functional response
+  %
+  %    1 f     % -  % scaled functional response
+  %    2 L_b   % mm % length at birth
+  %    3 L_p   % mm % length at puberty
+  %    4 L_i   % mm % ultimate length
+  %    5 a_b   % d  % age at birth
+  %    6 \dot{r}_B % d^-1   % von Bertalanffy growth rate
+  %    7 \dot{R}_i % % d^-1 % ultimate reproduction rate
+  %    8 kapR  % -  % fraction allocated to reprod that is fixed in embryo's
+  %            this parameter is optional; if not specified kapR = 0.95
+  %
+  % Output
+  %
+  % * par: 8-vector with
+  %
+  %    1 kap   % -    % fraction allocated to som maint + growth
+  %    2 kapR  % -    % fraction of energy allocated to reprod fixed in embryo
+  %    3 g     % -    % energy investment ratio
+  %    4 kJ    % d^-1 % maturity maintenance rate coefficient
+  %    5 kM    % d^-1 % somatic maintenance rate coefficient
+  %    6 v     % mm/d % energy conductance
+  %    7 Hb    % d mm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  %    8 Hp    % d mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  %
+  % * U: 3-vector with
+  %    U^0 = M_E^0/\{\dot{J}_{EAm}\},
+  %    U^b = M_E^b/\{\dot{J}_{EAm}\},
+  %    U^p = M_E^p/\{\dot{J}_{EAm}\}.
+  
+  %% Remarks
+  % Function <iget_pars_r.html *iget_pars_r*> is inverse.
+
+  %% Example of use
+  % See <../mydata_get_pars.m *mydata_get_pars*>
+
+  np = size(p,1);
+  
+  % unpack input parameters
+  f  = p(1); % scaled functional response
+  Lb = p(2); % length at birth
+  Lp = p(3); % length at puberty
+  Li = p(4); % ultimate length
+  ab = p(5); % age at birth at abundant food
+  rB = p(6); % von Bertalannfy growth rate
+  Ri = p(7); % ultimate reproduction rate
+  if np == 8
+    kapR = p(8); % frac of energy allocated to reprod fixed in embryo
+  else
+    kapR = 0.95;
+  end
+  % tp = - log((Li - Lp)/ (Li - Lb))/ rB; % time since birth to puberty
+  % Lm = Li/ f; % maximum length
+
+  % get growth parameters and U0, Ub
+  p_g = [f; Lb; Li; ab; rB]; [par, U] = get_pars_g(p_g);
+  % unpack growth parameters
+  g = par(2); kM = par(3); v = par(4); U0 = U(1); Ub = U(2);
+
+  % now obtain parameters related to development and reproduction
+  kJ = kM; % maturity maintenance rate coefficient
+  % allocation fraction to somatic maintenance plus growth
+  kap = 1 - Ri * U0/ (kapR * (f * Li^2 - kJ * Lp^3 * g/ v));
+  Hb = Lb^3 * (1 - kap) * g/ v; % scaled maturity at birth
+  Hp = Lp^3 * (1 - kap) * g/ v; % scaled maturity at puberty
+  Up = Ub * (Lp/ Lb)^3;         % scaled reserve at puberty
+  
+  % prepare output
+  par = [kap; kapR; g; kJ; kM; v; Hb; Hp];
+  U = [U0; Ub; Up];
+##### SOURCE END #####
+--></body></html>

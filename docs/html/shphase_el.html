@@ -1,0 +1,135 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>shphase_el</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-09"><meta name="DC.source" content="shphase_el.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>shphase_el</h1><!--introduction--><p>Shows phase diagram of scaled reserve density and scaled structural length</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">truncate direction field to avoid problems with vector plotting</a></li><li><a href="#8">xrange [0:1]</a></li><li><a href="#9">yrange [0:1]</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../shphase_el.m"><b>shphase_el</b></a>(F,d)</p><h2>Description<a name="4"></a></h2><p>The routine plots the phase diagram of scaled reserve density e and scaled length l. Embryos start at infinitely large scaled reserve density, but after birth, it is confined on the interval from 0 till 1. Scaled length is always between 0 and 1. The direction field is given with arrows, the null-isoclines in red curves. The green curves represent stage transitions: embryo to juvenile (where feeding is switched on), and where the mobilisation flux equals the somatic maintenance costs. If the organism could shrink, it would die at this border. The magenta box gives the border of possible values for juveniles and adults. Notice that the principle of weak homeostasis can be clearly seen from this direction field: any trajectory first bends to the null-isocline for e, than continue into the direction of the null-isocline for l, following the null-isocline for e.</p><p>Input</p><div><ul><li>F: optional scalar with functional response (a number between 0 and 1)</li><li>d: optional scalar with multiplier for directionfield</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Shrinking should be faster than indicated here cf {231};   run pars_animal befor running this function. See <a href="shphase_memv.html"><b>shphase_memv</b></a> for phase diagram of reserve and structural mass. The scaled reserve density e and the scaled length l relate to the reserve mass and the structural mass as e = M_E * M_Vm/ (M_V * M_Em) and l = (M_V/ M_Vm)^(1/3).</p><h2>Example of use<a name="6"></a></h2><p>shphase_el(1,100)</p><h2>truncate direction field to avoid problems with vector plotting<a name="7"></a></h2><h2>xrange [0:1]<a name="8"></a></h2><h2>yrange [0:1]<a name="9"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% shphase_el
+% Shows phase diagram of scaled reserve density and scaled structural length
+
+%%
+function shphase_el(F,d)
+  % created 2000/09/05 by Bas Kooijman, modified 2009/09/30
+  
+  %% Syntax
+  % <../shphase_el.m *shphase_el*>(F,d)
+  
+  %% Description
+  % The routine plots the phase diagram of scaled reserve density e and scaled length l. 
+  % Embryos start at infinitely large scaled reserve density, but after birth, it is confined on the interval from 0 till 1. 
+  % Scaled length is always between 0 and 1. 
+  % The direction field is given with arrows, the null-isoclines in red curves. 
+  % The green curves represent stage transitions: embryo to juvenile (where feeding is switched on), and where the mobilisation flux equals the somatic maintenance costs.  
+  % If the organism could shrink, it would die at this border. 
+  % The magenta box gives the border of possible values for juveniles and adults. 
+  % Notice that the principle of weak homeostasis can be clearly seen from this direction field: 
+  % any trajectory first bends to the null-isocline for e, than continue into the direction of the null-isocline for l, following the null-isocline for e.
+  %
+  % Input
+  %
+  % * F: optional scalar with functional response (a number between 0 and 1)
+  % * d: optional scalar with multiplier for directionfield
+  
+  %% Remarks
+  % Shrinking should be faster than indicated here cf {231};
+  %   run pars_animal befor running this function.
+  % See <shphase_memv.html *shphase_memv*> for phase diagram of reserve and structural mass.
+  % The scaled reserve density e and the scaled length l relate to the reserve mass and the structural mass as e = M_E * M_Vm/ (M_V * M_Em) and l = (M_V/ M_Vm)^(1/3).
+
+  %% Example of use
+  % shphase_el(1,100)
+  
+  global g v_Hb k l_T kap f
+
+  if exist('d','var') == 0
+    d = .4;
+  end
+  if exist('F','var') == 0
+    F = .7;
+  end
+  
+  f = F; % % make func response available for fnel
+  
+  l_b = get_lb([g; k; v_Hb], f);
+  
+  l = linspace(.01, .99, 30)';
+  %% truncate direction field to avoid problems with vector plotting
+  dirf_el = max(-.1,dirfield('fnel', l, l, d)); % direction field
+
+  el = [1 0; 1 1; 0 1];    % border
+  e0 = [1e-4 0; 1e-4 l_b; f l_b;f 1];  % isocline d/dt e = 0
+  l0 = [0, -l_T; 1, 1 - l_T];          % isocline d/dt l = 0
+  lb = [0 l_b; 1 l_b];                 % embryo/juvenile transition
+  
+  l = linspace(0, 1, 100)';
+  ld = [kap * g * l ./ (g + (1 - kap) * l + l_T), l]; % death/alive transition
+  
+  hold on;
+  
+  %% xrange [0:1]
+  %% yrange [0:1]
+  plot(el(:,1), el(:,2), '-m') % border
+  plot(e0(:,1), e0(:,2), '-r', l0(:,1), l0(:,2), '-r') % isoclines
+  plot(lb(:,1), lb(:,2), '-g', ld(:,1), ld(:,2), '-g') % embryo/juvenile, death/alive transition
+  plot_vector(dirf_el, '-k') % attemps specification of linetype gives crashes
+  plot(dirf_el(:,1), dirf_el(:,2), '.b') % points of departure
+  title(['phase diagram for f = ', num2str(f)])
+  ylabel('scaled length, l')
+  xlabel('scaled res density, e')
+
+##### SOURCE END #####
+--></body></html>

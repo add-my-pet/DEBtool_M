@@ -1,0 +1,142 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata_shyield_CC</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="mydata_shyield_CC.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">see Table 8.1 of DEB3 for par-setting</a></li></ul></div><pre class="codeinput"><span class="comment">% illustrates use of shyield_CC: yield of dissipating CO2 on mobilisation</span>
+</pre><h2>see Table 8.1 of DEB3 for par-setting<a name="2"></a></h2><pre class="codeinput">z = 1; <span class="comment">% zoom factor rel to reference L_m = 1 cm</span>
+mu_E = 550; <span class="comment">% kJ mol^{-1} = J mmol^{-1}</span>
+M_V = 4; <span class="comment">% mmol cm^{-3}</span>
+
+F_m = 6.5; <span class="comment">% l cm^{-2} d^{-1}, {F_m}</span>
+kap_X = 0.8;
+  y_EX = kap_X; <span class="comment">% mol mol^{-1}</span>
+p_Am = 22.5 * z; <span class="comment">% J cm^{-2} d^{-1}, {p_Am}</span>
+  J_EAm = p_Am/ mu_E; <span class="comment">% mmol\,cm^{-2} d^{-1}, {J_EAm}</span>
+v = 0.02; <span class="comment">% cm d^{-1}</span>
+kap = 0.8;
+kap_R = 0.95;
+p_M = 18; <span class="comment">% J cm^{-3} d^{-1}, [p_M]</span>
+  J_EM = p_M/ mu_E; <span class="comment">% mmol cm^{-3} d^{-1}, [J_EM]</span>
+p_T =  0; <span class="comment">% J cm^{-2} d^{-1}, {p_T}</span>
+  J_ET = p_T/ mu_E; <span class="comment">% mol cm^{-2} d^{-1}, {J_ET}</span>
+k_J = 0.002; <span class="comment">% d^{-1} &lt; k_M</span>
+E_G = 2800; <span class="comment">% J cm^{-3}, [E_G]</span>
+  y_VE = 1/ (E_G/ M_V/ mu_E); <span class="comment">% mol mol^{-1}</span>
+E_Hb = 275 * z^3; <span class="comment">% mJ, E_H^b</span>
+  M_Hb = E_Hb/ mu_E; <span class="comment">% nmol</span>
+E_Hp = .3 * 166 * z^3; <span class="comment">% J, E_H^p</span>
+  M_Hp = E_Hp/ mu_E; <span class="comment">% mmol</span>
+
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+k_M = p_M/ E_G; k = k_J/ k_M; <span class="comment">% d^-1</span>
+E_m = p_Am/ v;     <span class="comment">% J cm^-3</span>
+g = E_G/ kap/ E_m; <span class="comment">% -</span>
+L_m = v/ k_M/ g;   <span class="comment">% cm</span>
+L_T = p_T/ p_M;    <span class="comment">% cm</span>
+
+U_Hb = 1E-6 * M_Hb/ J_EAm; <span class="comment">% cm^2 d</span>
+U_Hp = M_Hp/ J_EAm;        <span class="comment">% cm^2 d</span>
+
+par = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; y_VE];
+shyield_CC(par)
+</pre><pre class="codeoutput">Warning in get_ep_min: 2 solutions
+</pre><img vspace="5" hspace="5" src="mydata_shyield_CC_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% illustrates use of shyield_CC: yield of dissipating CO2 on mobilisation
+
+%% see Table 8.1 of DEB3 for par-setting
+
+z = 1; % zoom factor rel to reference L_m = 1 cm
+mu_E = 550; % kJ mol^{-1} = J mmol^{-1}
+M_V = 4; % mmol cm^{-3}
+
+F_m = 6.5; % l cm^{-2} d^{-1}, {F_m}
+kap_X = 0.8;
+  y_EX = kap_X; % mol mol^{-1}
+p_Am = 22.5 * z; % J cm^{-2} d^{-1}, {p_Am}
+  J_EAm = p_Am/ mu_E; % mmol\,cm^{-2} d^{-1}, {J_EAm}
+v = 0.02; % cm d^{-1}
+kap = 0.8;
+kap_R = 0.95;
+p_M = 18; % J cm^{-3} d^{-1}, [p_M]
+  J_EM = p_M/ mu_E; % mmol cm^{-3} d^{-1}, [J_EM]
+p_T =  0; % J cm^{-2} d^{-1}, {p_T}
+  J_ET = p_T/ mu_E; % mol cm^{-2} d^{-1}, {J_ET}
+k_J = 0.002; % d^{-1} < k_M
+E_G = 2800; % J cm^{-3}, [E_G]
+  y_VE = 1/ (E_G/ M_V/ mu_E); % mol mol^{-1}
+E_Hb = 275 * z^3; % mJ, E_H^b
+  M_Hb = E_Hb/ mu_E; % nmol
+E_Hp = .3 * 166 * z^3; % J, E_H^p 
+  M_Hp = E_Hp/ mu_E; % mmol
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+k_M = p_M/ E_G; k = k_J/ k_M; % d^-1
+E_m = p_Am/ v;     % J cm^-3
+g = E_G/ kap/ E_m; % -
+L_m = v/ k_M/ g;   % cm
+L_T = p_T/ p_M;    % cm
+
+U_Hb = 1E-6 * M_Hb/ J_EAm; % cm^2 d
+U_Hp = M_Hp/ J_EAm;        % cm^2 d
+
+par = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; y_VE];
+shyield_CC(par)
+##### SOURCE END #####
+--></body></html>

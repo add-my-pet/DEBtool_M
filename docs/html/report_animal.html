@@ -1,0 +1,191 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>report_animal</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-01-04"><meta name="DC.source" content="report_animal.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Description</a></li></ul></div><pre class="codeinput"><span class="comment">% created 2000/10/26 by Bas Kooijman, modified 2012/01/31</span>
+<span class="comment">%</span>
+</pre><h2>Description<a name="2"></a></h2><p>writes report on compound parameters and statistics called by 'pars_animal', after running 'parscomp', 'statistics'</p><pre class="codeinput"><span class="keyword">if</span> exist(<span class="string">'txt_statistics'</span>,<span class="string">'var'</span>) == 0
+  report_init
+<span class="keyword">end</span>
+
+val_par = [ <span class="keyword">...</span>
+T; T_ref; T_A; T_L; T_H; T_AL ;T_AH <span class="comment">% 1 | 1 2 3 4 5 6 7</span>
+f;                                  <span class="comment">% 2 | 8</span>
+z; del_M;                           <span class="comment">% 3 | 9 10</span>
+F_m; kap_X; kap_X_P;                <span class="comment">% 4 | 11 12 13</span>
+v; kap; kap_R;                      <span class="comment">% 5 | 14 15 16</span>
+p_M; p_T; k_J;                      <span class="comment">% 6 | 17 18 19</span>
+E_G                                 <span class="comment">% 7 | 20</span>
+E_Hb; E_Hj; E_Hp;                   <span class="comment">% 8 | 21 22 23</span>
+h_a ; s_G                           <span class="comment">% 9 | 24 25</span>
+];
+
+val_statistics = [ <span class="keyword">...</span><span class="comment">                      %</span>
+    T_ref; T; TC;                           <span class="comment">%  1 | 1 2 3</span>
+    M_E0_min_b; M_E0_min_p; M_E0; E_0; W_0; <span class="comment">%  2 | 4 5 6 7 8 9</span>
+    del_Ub; L_b; M_Vb; Lw_b; W_b; del_Wb;   <span class="comment">%  3 | 10 11 12 13 14 15</span>
+    L_j; M_Vj; Lw_j; W_j; del_Wj;           <span class="comment">%  4 | 16 17 18 19 20</span>
+    L_p; M_Vp; Lw_p; W_p; del_Wp;           <span class="comment">%  5 | 21 22 23 24 25</span>
+    L_m; L_i; M_Vi; Lw_i; W_m; W_i; del_V;  <span class="comment">%  6 | 26 27 28 29 30 31 32</span>
+    FT_m; CR_b; CR_p; CR_i;                 <span class="comment">%  7 | 33 34 35 36</span>
+    K; Kb_min; Kp_min;                      <span class="comment">%  8 | 37 38 39 40</span>
+    f; eb_min; ep_min;                      <span class="comment">%  9 | 41 42 43 44</span>
+    pT_Xm; JT_X_Am; pT_Xb;                  <span class="comment">% 10 | 45 46 47</span>
+      JT_XAb; pT_Xp; JT_XAp; pT_Xi; JT_XAi; <span class="comment">%    | 48 49 50 51 52</span>
+      t_starve;                             <span class="comment">%    | 53</span>
+    pT_Am; JT_E_Am; y_E_X; y_P_X;           <span class="comment">% 11 | 54 55 56 57</span>
+    vT; t_E; E_m; m_Em;                     <span class="comment">% 12 | 58 59 60 61</span>
+    pT_M; pT_T; L_T; kT_M; kT_J; k;         <span class="comment">% 13 | 62 63 64 65 66 67</span>
+      JT_E_M; JT_E_T; jT_E_M; jT_E_J;       <span class="comment">%    | 68 69 70 71</span>
+    SDA; RQ; UQ; WQ; p_Tt; VO;              <span class="comment">% 14 | 72 73 74 75 76 77</span>
+    y_V_E; kap_G; g; r_B;                   <span class="comment">% 15 | 78 79 80 81</span>
+    R_i; GI;                                <span class="comment">% 16 | 82 83</span>
+    a_b; a_j; a_p; a_99; a_m; S_b; S_p;     <span class="comment">% 17 | 84 85 86 87 88 89 90</span>
+      hT_a; hT_W; hT_G;                     <span class="comment">%    | 91 92 93</span>
+    M_V; E_V; xi_W_E;                       <span class="comment">% 18 | 94 95 96</span>
+    r_m; Ea_m; EL_m; EL2_m; EL3_m;          <span class="comment">% 19 | 97 98 99 100 101</span>
+      f_r; Ea_0; EL_0; EL2_0; EL3_0;        <span class="comment">%    | 102 103 104 105 106</span>
+    ];
+
+ <span class="keyword">if</span> E_Hj ~= E_Hb &amp;&amp; foetus == 1
+   TYPE = 4; <span class="comment">% acceleration and foetal development</span>
+ <span class="keyword">elseif</span> E_Hj ~= E_Hb
+   TYPE = 3; <span class="comment">% acceleration</span>
+ <span class="keyword">elseif</span> foetus == 1
+   TYPE = 2; <span class="comment">% foetal development</span>
+ <span class="keyword">else</span>
+   TYPE = 1; <span class="comment">% standard</span>
+ <span class="keyword">end</span>
+
+<span class="keyword">if</span> exist(<span class="string">'file_name'</span>,<span class="string">'var'</span>) == 0  <span class="comment">% print to screen if no file_name is specified</span>
+  printpar(txt_statistics, val_statistics)
+<span class="keyword">else</span>
+  fprintf([num2str(n_spec), <span class="string">' '</span>, species, <span class="string">'\n'</span>]);
+<span class="keyword">end</span>
+
+<span class="comment">% printpar(txt_par, val_par)</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+% created 2000/10/26 by Bas Kooijman, modified 2012/01/31
+%
+%% Description
+% writes report on compound parameters and statistics
+% called by 'pars_animal', after running 'parscomp', 'statistics'
+
+if exist('txt_statistics','var') == 0
+  report_init
+end
+
+val_par = [ ... 
+T; T_ref; T_A; T_L; T_H; T_AL ;T_AH % 1 | 1 2 3 4 5 6 7
+f;                                  % 2 | 8
+z; del_M;                           % 3 | 9 10
+F_m; kap_X; kap_X_P;                % 4 | 11 12 13
+v; kap; kap_R;                      % 5 | 14 15 16
+p_M; p_T; k_J;                      % 6 | 17 18 19
+E_G                                 % 7 | 20
+E_Hb; E_Hj; E_Hp;                   % 8 | 21 22 23
+h_a ; s_G                           % 9 | 24 25
+];
+
+val_statistics = [ ...                      % 
+    T_ref; T; TC;                           %  1 | 1 2 3
+    M_E0_min_b; M_E0_min_p; M_E0; E_0; W_0; %  2 | 4 5 6 7 8 9
+    del_Ub; L_b; M_Vb; Lw_b; W_b; del_Wb;   %  3 | 10 11 12 13 14 15
+    L_j; M_Vj; Lw_j; W_j; del_Wj;           %  4 | 16 17 18 19 20
+    L_p; M_Vp; Lw_p; W_p; del_Wp;           %  5 | 21 22 23 24 25
+    L_m; L_i; M_Vi; Lw_i; W_m; W_i; del_V;  %  6 | 26 27 28 29 30 31 32
+    FT_m; CR_b; CR_p; CR_i;                 %  7 | 33 34 35 36
+    K; Kb_min; Kp_min;                      %  8 | 37 38 39 40
+    f; eb_min; ep_min;                      %  9 | 41 42 43 44
+    pT_Xm; JT_X_Am; pT_Xb;                  % 10 | 45 46 47
+      JT_XAb; pT_Xp; JT_XAp; pT_Xi; JT_XAi; %    | 48 49 50 51 52
+      t_starve;                             %    | 53
+    pT_Am; JT_E_Am; y_E_X; y_P_X;           % 11 | 54 55 56 57
+    vT; t_E; E_m; m_Em;                     % 12 | 58 59 60 61
+    pT_M; pT_T; L_T; kT_M; kT_J; k;         % 13 | 62 63 64 65 66 67
+      JT_E_M; JT_E_T; jT_E_M; jT_E_J;       %    | 68 69 70 71
+    SDA; RQ; UQ; WQ; p_Tt; VO;              % 14 | 72 73 74 75 76 77
+    y_V_E; kap_G; g; r_B;                   % 15 | 78 79 80 81
+    R_i; GI;                                % 16 | 82 83
+    a_b; a_j; a_p; a_99; a_m; S_b; S_p;     % 17 | 84 85 86 87 88 89 90
+      hT_a; hT_W; hT_G;                     %    | 91 92 93
+    M_V; E_V; xi_W_E;                       % 18 | 94 95 96
+    r_m; Ea_m; EL_m; EL2_m; EL3_m;          % 19 | 97 98 99 100 101
+      f_r; Ea_0; EL_0; EL2_0; EL3_0;        %    | 102 103 104 105 106
+    ];
+
+ if E_Hj ~= E_Hb && foetus == 1
+   TYPE = 4; % acceleration and foetal development
+ elseif E_Hj ~= E_Hb
+   TYPE = 3; % acceleration
+ elseif foetus == 1
+   TYPE = 2; % foetal development
+ else
+   TYPE = 1; % standard
+ end
+
+if exist('file_name','var') == 0  % print to screen if no file_name is specified
+  printpar(txt_statistics, val_statistics)
+else
+  fprintf([num2str(n_spec), ' ', species, '\n']);
+end
+
+% printpar(txt_par, val_par)
+
+##### SOURCE END #####
+--></body></html>

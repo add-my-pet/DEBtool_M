@@ -1,0 +1,152 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_lib_misc</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: lib/misc</H3>
+
+Miscellaneous routines for the library. 
+Some of these routines might move to other subdirectories in the future.
+
+<H3><A NAME = "interpol">Interpolation, integration, differentiation, extremes, roots</A></H3>
+
+  The following table summarizes the supporting functions.
+
+  <table>
+    <tr>
+      <th></th>
+      <th colspan = 2> general data</th>
+      <th> periodic data</th>
+    </tr>
+    <tr>
+      <th></th> <th> first order </th> <th> cubic </th> <th> Fourier</th>
+    </tr>
+    <tr>
+      <th> task </th> <th> spline </th> <th> spline </th> <th> series </th>
+    </tr>
+    <tr> 
+      <th> parametrisation</th> 
+      <th> - </th>
+      <th> <a HREF="../lib/misc/html/knot.html"><code>knot</code></a>, <a HREF="../lib/misc/html/knot_p.html"><code>knot_p</code></a> </th>
+      <th> <a HREF="../lib/misc/html/get_fourier.html"><code>get_fourier</code></a> </th> 
+    </tr>
+    <tr> 
+      <th> interpolation </th> 
+      <th> <a HREF="../lib/misc/html/spline1.html"><code>spline1</code></a> </th>
+      <th> <a HREF="../lib/misc/html/spline.html"><code>spline</code></a>, <a HREF="../lib/misc/html/spline_p.html"><code>spline_p</code></a> </th> 
+      <th> <a HREF="../lib/misc/html/fnfourier.html"><code>fnfourier</code></a></th>
+    </tr>
+    <tr>
+      <th> differentiation </th> 
+      <th> <a HREF="../lib/misc/html/spline1.html"><code>spline1</code></a> </th> 
+      <th> <a HREF="../lib/misc/html/spline.html"><code>spline</code></a>, <a HREF="../lib/misc/html/spline_p.html"><code>spline_p</code></a> </th>
+      <th> <a HREF="../lib/misc/html/dfnfourier.html"><code>dfnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> 2nd differentiation </th> 
+      <th> zero </th> 
+      <th> <a HREF="../lib/misc/html/spline.html"><code>spline</code></a>, <a HREF="../lib/misc/html/spline_p.html"><code>spline_p</code></a> </th>
+      <th> <a HREF="../lib/misc/html/ddfnfourier.html"><code>ddfnfourier</code></a> </th> 
+    </tr>   
+    <tr> 
+      <th> integration </th> 
+      <th> <a HREF="../lib/misc/html/ispline1.html"><code>ispline1</code></a> </th> 
+      <th> <a HREF="../lib/misc/html/ispline.html"><code>ispline</code></a> </th>
+      <th> <a HREF="../lib/misc/html/ifnfourier.html"><code>ifnfourier</code></a> </th> 
+    </tr>
+    <tr>
+      <th> roots </th> 
+      <th> <a HREF="../lib/misc/html/rspline1.html"><code>rspline1</code></a> </th> 
+      <th> <a HREF="../lib/misc/html/rspline.html"><code>rspline</code></a> </th>
+      <th> <a HREF="../lib/misc/html/rfnfourier.html"><code>rfnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> extremes </th> 
+      <th> <a HREF="../lib/misc/html/espline1.html"><code>espline1</code></a> </th> 
+      <th> <a HREF="../lib/misc/html/espline.html"><code>espline</code></a> </th>
+      <th> <a HREF="../lib/misc/html/efnfourier.html"><code>efnfourier</code></a> </th> 
+    </tr>   
+    <tr>
+      <th> example script</th> 
+      <th> <a HREF="../lib/misc/mydata_smooth.m"><code>mydata_smooth</code></a> </th> 
+      <th> <a HREF="../lib/misc/mydata_smooth.m"><code>mydata_smooth</code></a> </th>
+      <th> <a HREF="../lib/misc/mydata_smooth.m"><code>mydata_smooth</code></a> </th> 
+    </tr>   
+    <tr>
+      <th></th> 
+      <th></th> 
+      <th> <a HREF="../lib/misc/mydata_spline.m"><code>mydata_spline</code></a> </th>
+      <th></th> 
+    </tr>   
+  </table>
+
+
+<H3><A NAME = "reconfig">Reconfiguration</A></H3>
+
+The function <a HREF="../lib/misc/html/wrap.html"><code>wrap</code></a> wraps a vector into a matrix, like function reshape, but the number of elements doesn't need to match. Function <a HREF="../lib/misc/html/trian.html"><code>trian</code></a> wraps a vector into an upper trangular matrix, function <a HREF="../lib/misc/html/itrian.html"><code>itrian</code></a> does the inverse.
+
+<p>
+Function <a HREF="../lib/misc/html/select_marker.html"><code>select_marker</code></a> modifies the specification of a marker that can be used in plotting.
+
+<p>
+Function <a HREF="../lib/misc/html/v2struct.html"><code>v2struct</code></a> converts variables into a structure, function <a HREF="../lib/misc/html/vars_pull.html"><code>vars_pull</code></a> does the opposite. Function <a HREF="../lib/misc/html/comp_struct.html"><code>comp_struct</code></a> checks two structures for differences. Function <a HREF="../lib/misc/html/matrix2file.html"><code>matrix2file</code></a> writes a matrix of numbers to an m-file.
+
+<H3><A NAME = "calculus">Calculus</A></H3>
+
+Function <a HREF="../lib/misc/html/beta0.html"><code>beta0</code></a> computes a special incomplete beta function; function <a HREF="../lib/misc/html/gamma.html"><code>gamma</code></a> the incomplete gamma function.
+
+<p>
+Functions <a HREF="../lib/misc/html/re.html"><code>re</code></a> and <a HREF="../lib/misc/html/im.html"><code>im</code></a> separate the real and imaginary parts of complex numbers.
+
+<p>
+Function <a HREF="../lib/misc/html/ricatti.html"><code>ricatti</code></a> solves the Riccati equation. Function <a HREF="../lib/misc/html/rotate.html"><code>rotate</code></a> rotates a 2-vector.
+
+<p>
+Functions <a HREF="../lib/misc/html/roots3.html"><code>roots3</code></a> and <a HREF="../lib/misc/html/rooth.html"><code>rooth</code></a> find roots of a cubic polynomial. Function <a HREF="../lib/misc/html/cont1.html"><code>cont1</code></a> finds intervals for which a function exceeds a specief level.
+
+<p>
+Functions <a HREF="../lib/misc/html/dirfield.html"><code>dirfield</code></a> and <a HREF="../lib/misc/html/dirfield3.html"><code>dirfield3</code></a> compute the direction fields for 2 and 3 variables.
+
+<H3><A NAME = "numerics">Numerics</A></H3>
+
+Function <a HREF="../lib/misc/html/rkutta.html"><code>rkutta</code></a> intergrates a set of ode's using a Runge Kutta 5 method; <a HREF="../lib/misc/html/int2equi.html"><code>int2equi</code></a> integrates till equilibrium. Function <a HREF="../lib/misc/html/numdif.html"><code>numdif</code></a> numerically differentiates a function of several variables. Function <a HREF="../lib/misc/html/nmmin.html"><code>nmmin</code></a> finds the minimum of a function. 
+
+<p>
+Function <a HREF="../lib/misc/html/cummax.html"><code>cummax</code></a> gets cumulative maxima from a series of numbers.
+
+<H3><A NAME = "DEB">DEB</A></H3>
+
+Function <a HREF="../lib/misc/html/C2K.html"><code>C2K</code></a> converts Celsius to Kelvin, <a HREF="../lib/misc/html/K2C.html"><code>K2C</code></a> does the opposite. <a HREF="../lib/misc/html/tempcorr.html"><code>tempcorr</code></a> computes the temperature correction factor, <a HREF="../lib/misc/html/shtemp2corr.html"><code>shtemp2corr</code></a> produces a plot of the correction factor as function of temperature.
+
+<p>
+Functions <a HREF="../lib/misc/html/shstar.html"><code>shstar</code></a> and <a HREF="../lib/misc/html/shloglogstar.html"><code>shloglogstar</code></a> plot a star where slopes are multiples of 1/3.
+
+<p>
+Functions <a HREF="../lib/misc/html/printpar.html"><code>printpar</code></a> and <a HREF="../lib/misc/html/print_txt_var.html"><code>print_txt_var</code></a> print text in combination with values.
+
+<H3><A NAME = "markup">Markup</A></H3>
+
+Function <a HREF="../lib/misc/html/debtool_fn_markup.html"><code>debtool_fn_markup</code></a> specifies the markup rules for function in DEBtool_M.
+It can be used as template to write DEBtool functions.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

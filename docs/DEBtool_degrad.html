@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_degrad</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: degrad</H3>
+
+  Biodegradation of chemical compounds in batch cultures.
+
+  <p>
+  The theory for the models can be found in the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+
+<HR>
+<H4><A NAME="pirt">pirt</A></H4>
+
+  The Marr-Pirt model is a special case of the DEB model, and has the Monod model as special case. 
+  It concerns V1-morphs in a batch culture. 
+  Two data sets are required to estimate all parameters using routines 
+  <A HREF="DEBtool_lib_regr.html#nmregr"><code>nmregr</code></A>, or 
+  <A HREF="DEBtool_lib_regr.html#nrregr"><code>nrregr</code></A>: time-substrate-weight and time-biomass-weight matrices. 
+  The weight coefficients can be suppressed, in which case value one is inserted for all weight coefficients. 
+  The single data set time-substrate-weight is sufficient if the initial biomass concentration, the yield and maintenance rate coefficients are kept fixed.
+
+  <p>
+  Input:
+  <ul>
+    <li> 6-vector with parameters:
+      <ol>
+        <li> initial concentration of substrate </li>
+        <li> initial concentration of biomass </li>
+        <li> saturation constant </li>
+        <li> max spec uptake rate </li>
+        <li> yield of substrate on biomass </li>
+        <li> maintenance rate coefficient </li>
+      </ol>
+    </li> 
+    <li> (n,k)-matrix with times for concentrations of substrate in column 1 </li>
+    <li> (m,k)-matrix with times for biomass in column 1 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with concentrations of substrate </li>
+    <li> m-vector with biomass </li>
+  </ul>
+
+  <p>
+  An example of application of <code>pirt</code> in regression and plotting routines is given in the script-file <code>mydata_pirt</code>.
+
+<HR>
+<H4><A NAME="DEB">DEB</A></H4>
+
+  The DEB model concerns 1-structure, 1-reserve V1-morphs in a batch culture. 
+  The reserve density is treated as a hidden variable, and the measured biomass is taken to quantify structure. 
+  Two data sets are required to estimate all parameters using routines 
+  <A HREF="DEBtool_lib_regr.html#nmregr"> <code>nmregr</code></A>, or 
+  <A HREF="DEBtool_lib_regr.html#nrregr"> <code>nrregr</code></A>:
+  time-substrate-weight and time-biomass-weight matrices. 
+  The weight coefficients can be suppressed, in which case value one is inserted for all weight coefficients.
+
+  <p>
+  Input:
+  <ul>
+    <li> 6-vector with parameters:
+      <ol>
+        <li> initial concentration of substrate </li>
+        <li> initial concentration of structure </li>
+        <li> saturation constant </li>
+        <li> max spec uptake rate </li>
+        <li> yield of substrate on structure </li>
+        <li> reserve turnover rate </li>
+        <li> maintenance rate coefficient </li>
+      </ol>
+    </li> 
+    <li> (n,k)-matrix with times for concentrations of substrate in column 1 </li>
+    <li> (m,k)-matrix with times for biomass in column 1 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with concentrations of substrate </li>
+    <li> m-vector with biomass </li>
+  </ul>
+
+  <p>
+  An example of application of <code>DEB</code> in regression and plotting routines is given in the script-file <code>mydata_deb</code>.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>
+
