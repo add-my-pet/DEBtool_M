@@ -1,0 +1,162 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>kap_opt</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="kap_opt.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>kap_opt</h1><!--introduction--><p>finds kappa that maximizes max reprod rate</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[kap R_i] = <a href="kap_opt.m"><b>kap_opt</b></a>(model, par, T, f)</p><h2 id="4">Description</h2><p>Finds kappa that maximizes max reprod rate given all other parameters. For models hep and hex, however, it is kappa that maximizes cumulative numer of eggs.</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par:   structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>f:     optional scalar scaled functional response; default 1</li></ul></div><p>Output</p><div><ul><li>kap:   2-vector, optimal, actual kappa</li><li>R_i:   2-vector, optimal, actual max reprod rate (#/d)</li></ul></div><h2 id="5">Remarks</h2><p>uses <a href="reprod_rate_i.html"><b>reprod_rate_i</b></a> to compute max reprod rate. Use <a href="../../../AmPtool/html/read_pars.html"><b>read_pars</b></a> to extract model and parameters from allStat</p><h2 id="6">Example of use</h2><p>kap_opt('std', par, C2K(20), 1)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% kap_opt
+% finds kappa that maximizes max reprod rate
+
+%%
+function [kap R_i] = kap_opt(model, par, T, f) 
+% created 2016/06/09 by Bas Kooijman
+
+%% Syntax
+% [kap R_i] = <kap_opt.m *kap_opt*>(model, par, T, f)
+
+%% Description
+% Finds kappa that maximizes max reprod rate given all other parameters.
+% For models hep and hex, however, it is kappa that maximizes cumulative numer of eggs.
+%
+% Input
+%
+% * model: string with name of model
+% * par:   structure with primary parameters at reference temperature in time-length-energy frame
+% * T:     optional scalar with temperature in Kelvin; default C2K(20)
+% * f:     optional scalar scaled functional response; default 1
+% 
+% Output
+% 
+% * kap:   2-vector, optimal, actual kappa
+% * R_i:   2-vector, optimal, actual max reprod rate (#/d)
+
+%% Remarks
+% uses <reprod_rate_i.html *reprod_rate_i*> to compute max reprod rate.
+% Use <../../../AmPtool/html/read_pars.html *read_pars*> to extract model and parameters from allStat
+
+%% Example of use
+% kap_opt('std', par, C2K(20), 1) 
+
+  kap = par.kap; z = par.z;
+  R_i = fngain(model, par, T, f); % get actual value
+  
+  del = 0.02;  % intial step size in kap
+  kap_0 = 0.7; % kap close to optimal value
+  par.kap = kap_0; par.z = z * kap_0/ kap; R_0 = fngain(model, par, T, f);
+  %i = 1; [i kap_0 R_0]
+
+  kap_1 = kap_0 + del;
+  par.kap = kap_1; par.z = z * kap_1/ kap; R_1 = fngain(model, par, T, f);
+  %i = i + 1; [i kap_1 R_1]
+  if R_1 < R_0
+    del = -del;
+    kap_1 = kap_0 + del;
+    par.kap = kap_1; par.z = z * kap_1/ kap; R_1 = fngain(model, par, T, f);
+    %i = i + 1; [i kap_1 R_1]
+  end
+
+  while abs(del) > 1e-6 && abs(R_0 - R_1) > 1e-4
+    while R_1 > R_0 
+      kap_0 = kap_1; R_0 = R_1;
+      kap_1 = kap_0 + del;
+      if kap_1 > 1
+        kap_1 = (1 + kap_0)/2;
+      elseif kap_1 < 0
+       kap_1 = kap_0/2;
+      end
+      par.kap = kap_1; par.z = z * kap_1/ kap; R_1 = fngain(model, par, T, f);
+      %i = i + 1; [i kap_1 R_1]
+    end
+    kap_0 = kap_1; R_0 = R_1;
+    del = -del/5;       
+    kap_1 = kap_0 + del;
+    if kap_1 > 1
+      kap_1 = (1 + kap_0)/2;
+    elseif kap_1 < 0
+       kap_1 = kap_0/2;
+    end
+    par.kap = kap_1; par.z = z * kap_1/ kap; R_1 = fngain(model, par, T, f);
+    %i = i + 1; [i kap_1 R_1]
+  end
+  
+  % finish
+  kap_m = kap_1; R_m = R_1;
+  kap = [kap_m; kap]; R_i = [R_m; R_i];
+
+end
+
+function R_i = fngain(model, par, T, f)
+  switch model
+    case {'hep','hex'}
+      [x R_i] = reprod_rate_i(model, par, T, f);
+    otherwise
+      R_i = reprod_rate_i(model, par, T, f);
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

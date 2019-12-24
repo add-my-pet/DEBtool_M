@@ -1,0 +1,224 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>print_pet_frames_html</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-14"><meta name="DC.source" content="print_pet_frames_html.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>print_pet_frames_html</h1><!--introduction--><p>prints four html pages for each pet</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">read and write i_my_pet</a></li><li><a href="#8">read and write i_results_my_pet</a></li><li><a href="#9">read and write i_top_my_pet:</a></li><li><a href="#10">rad and write i_left_my_pet</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p><a href="../print_pet_frames_html.m"><b>print_pet_frames_html</b></a> (metadata)</p><h2>Description<a name="4"></a></h2><p>Prints four html pages for each entry :</p><div><ul><li>i_my_pet.html</li><li>i_results_my_pet.html</li><li>i_left_my_pet.html</li><li>i_top_my_pet.html</li></ul></div><p>Input:</p><div><ul><li>metadata: structure</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Keep in mind that this function is specifically designed for created the webpage of add-my-pet - this function is called when local directory is html and when we go one level up it supposes the existance of a subdirectory called results ! see</p><h2>Example of use<a name="6"></a></h2><p>load('results_my_pet.mat'); print_pet_frames_html(metadata)</p><h2>read and write i_my_pet<a name="7"></a></h2><h2>read and write i_results_my_pet<a name="8"></a></h2><h2>read and write i_top_my_pet:<a name="9"></a></h2><h2>rad and write i_left_my_pet<a name="10"></a></h2><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% print_pet_frames_html
+% prints four html pages for each pet
+
+%%
+function print_pet_frames_html(metadata)
+% created 2015/04/11 Starrlight; modified 2015/04/14 Starrlight & Goncalo
+% Marques
+
+%% Syntax
+% <../print_pet_frames_html.m *print_pet_frames_html*> (metadata)
+
+%% Description
+% Prints four html pages for each entry :
+%
+% * i_my_pet.html 
+% * i_results_my_pet.html
+% * i_left_my_pet.html 
+% * i_top_my_pet.html 
+%
+% Input:
+%
+% * metadata: structure
+
+%% Remarks
+% Keep in mind that this function is specifically designed for created the
+% webpage of add-my-pet - this function is called when local directory is
+% html and when we go one level up it supposes the existance of a
+% subdirectory called results ! see 
+%<http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/art/websitemaintenance.html *maintanance webpage*>
+
+%% Example of use
+% load('results_my_pet.mat');
+% print_pet_frames_html(metadata)
+
+
+% Removes underscores and makes first letter of english name be
+% in capital:
+speciesprintnm = strrep(metadata.species, '_', ' ');
+
+speciesprintnm_en = strrep(metadata.species_en, '_', ' ');
+if speciesprintnm_en(1)>='a' && speciesprintnm_en(1)<='z'
+  speciesprintnm_en(1)=char(speciesprintnm_en(1)-32);
+end
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+
+%%% read and write i_my_pet
+oid = fopen(['i_', metadata.species, '.html'], 'w+'); % % open file for writing, delete existing content
+  fprintf(oid, '%s\n' ,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+  fprintf(oid, '%s\n' ,'<HTML>');
+  fprintf(oid, '%s\n' ,'  <HEAD>');
+  fprintf(oid,['    <TITLE>add-my-pet: ', speciesprintnm, '</TITLE>\n']);
+  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+  fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+  fprintf(oid, '%s\n' , ' </HEAD>'); 
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 cols="150,*">\n');
+fprintf(oid, ['<FRAME SRC="i_left_',metadata.species,'.html" NAME="left">\n']);
+fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 rows="100,*">\n');
+fprintf(oid, ['<FRAME SRC="i_top_',metadata.species,'.html" NAME="top">\n']);
+fprintf(oid, ['<FRAME SRC="../html/',metadata.species,'.html" NAME="main">\n']);
+fprintf(oid, '</FRAMESET>\n');
+fprintf(oid, '  </FRAMESET>\n');
+fprintf(oid, '<NOFRAMES>\n');
+fprintf(oid, '  <BODY>\n');    
+fprintf(oid, ['<A HREF="../html/',metadata.species,'.html"></A>']);    
+fprintf(oid, '  </BODY>\n');
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH close i_my_pet.html REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH   
+fprintf(oid, '  </NOFRAMES>\n');
+fprintf(oid, '  </HTML>\n');
+fclose(oid);
+
+%%% read and write i_results_my_pet
+oid = fopen(['i_results_', metadata.species, '.html'], 'w+'); % % open file for writing, delete existing content
+  fprintf(oid, '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">\n');
+  fprintf(oid, '%s\n' ,'<HTML>');
+  fprintf(oid, '%s\n' ,'  <HEAD>');
+  fprintf(oid,['    <TITLE>add-my-pet: results ', speciesprintnm, '</TITLE>\n']);
+  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+  fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+  fprintf(oid, '%s\n' , ' </HEAD>'); 
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 cols="150,*">\n');
+fprintf(oid, ['<FRAME SRC="i_left_',metadata.species,'.html" NAME="left">\n']);
+fprintf(oid, '<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 rows="100,*">\n');
+fprintf(oid, ['<FRAME SRC="i_top_',metadata.species,'.html" NAME="top">\n']);
+fprintf(oid, ['<FRAME SRC="../results/results_',metadata.species,'.html" NAME="main">\n']);
+fprintf(oid, '</FRAMESET>\n');
+fprintf(oid, '  </FRAMESET>\n');
+fprintf(oid, '<NOFRAMES>\n');
+fprintf(oid, '  <BODY>\n');    
+fprintf(oid, ['<A HREF="../html/',metadata.species,'.html"></A>']);    
+fprintf(oid, '  </BODY>\n');
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH close i_results_my_pet.html REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH   
+fprintf(oid, '  </NOFRAMES>\n');
+fprintf(oid, '  </HTML>\n');
+fclose(oid);
+
+%%% read and write i_top_my_pet:
+oid = fopen(['i_top_', metadata.species, '.html'], 'w+'); % % open file for writing, delete existing content
+  fprintf(oid, '%s\n' ,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+  fprintf(oid, '%s\n' ,'<HTML>');
+  fprintf(oid, '%s\n' ,'  <HEAD>');
+  fprintf(oid,['    <TITLE>add-my-pet: ', speciesprintnm, '</TITLE>\n']);
+  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+  fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+  fprintf(oid, '<LINK REL="stylesheet" TYPE="text/css" HREF="../css/mypet_frame_style.css"> \n'); 
+  fprintf(oid, '%s\n' , ' </HEAD>'); 
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+fprintf(oid, '  <BODY>\n');    
+fprintf(oid, ['<p class="specieshead">',speciesprintnm,':  ',speciesprintnm_en,' &nbsp;\n']);
+fprintf(oid, '<img src = "../img/bannercycle.png" style="height:50px;">\n');
+fprintf(oid, '</p>\n');
+fprintf(oid, '  </BODY>\n');
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH close i_top_my_pet.html REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH   
+fprintf(oid, '  </HTML>\n');
+fclose(oid);
+
+
+%%% rad and write i_left_my_pet
+oid = fopen(['i_left_', metadata.species, '.html'], 'w+'); % % open file for writing, delete existing content
+  fprintf(oid, '%s\n' ,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+  fprintf(oid, '%s\n' ,'<HTML>');
+  fprintf(oid, '%s\n' ,'  <HEAD>');
+  fprintf(oid,['    <TITLE>add-my-pet: ', speciesprintnm, '</TITLE>\n']);
+  fprintf(oid, '%s'   ,'    <META NAME = "keywords" ');
+  fprintf(oid, '%s\n' ,'     CONTENT="add-my-pet, Dynamic Energy Budget theory, DEBtool">');
+  fprintf(oid, '<LINK REL="stylesheet" TYPE="text/css" HREF="../css/mypet_frame_style.css"> \n'); 
+  fprintf(oid, '%s\n' , ' </HEAD>'); 
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+fprintf(oid, '  <BODY>\n');    
+fprintf(oid, '<BR><BR>');
+fprintf(oid, '<BR><BR>');
+
+fprintf(oid, '<P><DIV ALIGN=CENTER VALIGN="top">\n');
+fprintf(oid, '<A HREF="../index_species.html" TARGET="_top" onMouseOver="window.status=');
+fprintf(oid, ['Close submenu','; return true;">  <IMG SRC="../img/collection.png" WIDTH="110px"  BORDER="0" ALT="*"> </A>\n']);
+fprintf(oid, '</DIV><BR>\n');
+fprintf(oid, '<DIV ALIGN=CENTER VALIGN="top">\n');
+fprintf(oid, '<TABLE>\n');
+fprintf(oid, ['<TR> <TD style="text-align:center" > <A  class="link" TARGET="_top"  HREF="i_',metadata.species,'.html"> Parameters <BR> & <BR> Implied properties </A></TD></TR>\n']);
+fprintf(oid, '<TR> <TD> &nbsp;  </TD> </TR>\n');
+fprintf(oid, ['<TR> <TD style="text-align:center"> <A  class="link" TARGET="_top"  HREF="i_results_',metadata.species,'.html" >  Predictions <BR> & <BR> Data</A></TD></TR>\n']);
+fprintf(oid, '<TR> <TD> &nbsp;  </TD> </TR>\n');
+fprintf(oid, '<TR> <TD> Download files:</TD> </TR>\n');
+fprintf(oid, ['<TR> <TD><A class="link" href = "../mydata/mydata_',metadata.species,'.m" target = "_blank">mydata</A>  </TD></TR>\n']);
+fprintf(oid, ['<TR> <TD><A class="link" href = "../predict/predict_',metadata.species,'.m" target = "_blank">predict</A> </TD> </TR>\n']);
+fprintf(oid, ['<TR> <TD><A class="link" href = "../parsinit/pars_init_',metadata.species,'.m" target = "_blank">pars_init</A> </TD> </TR>\n']);
+cd ../results % go up one level and then to add-my-pet/results
+if exist(['results_',metadata.species,'.m'], 'file') % check and see if there is a cusumised results_my_pet.m file
+fprintf(oid, ['<TR> <TD><A class="link" href = "../results/results_',metadata.species,'.m" target = "_blank">results</A> </TD> </TR>\n']); % if there is then make a link to it
+end
+cd ../html % go up one level and back to the html subdirectory
+fprintf(oid, '<TR> <TD><A class="link" href = "../mat/" target = "_blank"> mat file </A>  </TR> \n');
+fprintf(oid, '</TABLE>\n');
+fprintf(oid, '</DIV>\n');
+
+fprintf(oid, '  </BODY>\n');
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH close i_left_my_pet.html REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH   
+fprintf(oid, '  </HTML>\n');
+fclose(oid);
+
+##### SOURCE END #####
+--></body></html>

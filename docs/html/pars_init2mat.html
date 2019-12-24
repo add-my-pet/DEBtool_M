@@ -1,0 +1,143 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pars_init2mat</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-12"><meta name="DC.source" content="pars_init2mat.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>pars_init2mat</h1><!--introduction--><p>writes  a .mat file from one or more pars_init files</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../pars_init2mat.m"><b>pars_init2mat</b></a> (petsGrp)</p><h2 id="4">Description</h2><p>Makes a results_pets.mat file from one or more pars_init_pets files, where 'pets' is replaces by names of entries The intended use is to create a pars_init_group.m file from a set of pars_init_my_pet-files and then edit the result:</p><pre class="language-matlab">pars_init2mat({<span class="string">'pet_1'</span>,<span class="string">'pet_2'</span>,<span class="string">'pet_3'</span>}); mat2pars_init
+</pre><p>The function assumes the local presence of the mydata and pars_init files of the species mentioned in pets</p><p>Input:</p><div><ul><li>petsGrp: optional cell or character string with the species names (default: all species with mydata and pars_init files in the local directory)</li></ul></div><h2 id="5">Remarks</h2><p>Keep in mind that the files will be saved in your local directory; use the cd command BEFORE running this function to save files in the desired place. With only one pet, pars_init2mat is inverse to mat2pars_init, and catenated  "pars_init2mat('my_pet'); mat2pars_init;" results in the same file pars_init_my_pet.m. If all pets belong to a taxon, and all taxon members are represented in the group, it is possible to use pars_init2mat(select('taxon')); mat2pars_init. Warning: this function modifies global pets.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% pars_init2mat
+% writes  a .mat file from one or more pars_init files
+
+%%
+function pars_init2mat(petsGrp)
+% created 2019/03121 by  Bas Kooijman
+
+%% Syntax
+% <../pars_init2mat.m *pars_init2mat*> (petsGrp) 
+
+%% Description
+% Makes a results_pets.mat file from one or more pars_init_pets files, where 'pets' is replaces by names of entries
+% The intended use is to create a pars_init_group.m file from a set of pars_init_my_pet-files and then edit the result:
+%
+%   pars_init2mat({'pet_1','pet_2','pet_3'}); mat2pars_init
+%
+% The function assumes the local presence of the mydata and pars_init files of the species mentioned in pets
+%
+% Input:
+%
+% * petsGrp: optional cell or character string with the species names (default: all species with mydata and pars_init files in the local directory)
+
+%% Remarks
+% Keep in mind that the files will be saved in your local directory; 
+% use the cd command BEFORE running this function to save files in the desired place.
+% With only one pet, pars_init2mat is inverse to mat2pars_init, and catenated  "pars_init2mat('my_pet'); mat2pars_init;" results in the same file pars_init_my_pet.m.
+% If all pets belong to a taxon, and all taxon members are represented in the group, it is possible to use pars_init2mat(select('taxon')); mat2pars_init.
+% Warning: this function modifies global pets.
+   
+  global pets
+
+  if ~exist('petsGrp', 'var')
+    mydata = ls('*mydata_*.m'); n_mydata = size(mydata,1); pets_mydata = cell(n_mydata,1);
+    for i = 1:n_mydata
+      pet = mydata(i,:); pet = strsplit(pet,'.'); pet = pet{1}; pet(1:7) = []; pets_mydata{i} = pet;
+    end
+    pars_init = ls('*pars_init_*.m'); n_pars_init = size(pars_init,1); pets_pars_init = cell(n_pars_init,1);
+    for i = 1:n_pars_init
+      pet = pars_init(i,:); pet = strsplit(pet,'.'); pet = pet{1}; pet(1:10) = []; pets_pars_init{i} = pet;
+    end
+    pets = pets_mydata(ismember(pets_mydata, pets_pars_init)); pets = pets(ismember(pets_mydata, pets));
+  elseif ~iscell(petsGrp) % single species
+    pets = {petsGrp}; n_pets = 1;
+  else % grp memebers are specified
+    pets = petsGrp; n_pets = length(pets);
+  end
+
+  for i = 1:n_pets
+    eval(['[data, auxData, metaDatai] = mydata_', pets{i}, ';']);
+    metaData.(pets{i}).phylum = metaDatai.phylum; metaData.(pets{i}).class = metaDatai.class; % required for assinging default chemical parameters via addchem
+    if n_pets == 1
+      eval(['[par, metaPar, txtPar] = pars_init_', pets{i}, '(metaDatai);']);
+    else
+      eval(['[par.(pets{i}), metaPar.(pets{i}), txtPar] = pars_init_', pets{i}, '(metaDatai);']);
+    end
+  end
+
+  if n_pets == 1
+    save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
+  else
+    par = parPets2Grp(par, metaData);
+    % metaPar
+    model = cell(n_pets,1);
+    for i = 1:n_pets
+      model{i} = metaPar.(pets{i}).model;
+    end
+    metaPar = []; metaPar.model = model; metaPar.cov_rules = '';
+    save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
+  end
+
+##### SOURCE END #####
+--></body></html>

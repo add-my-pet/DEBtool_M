@@ -1,0 +1,172 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mydata2predict</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="mydata2predict.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>mydata2predict</h1><!--introduction--><p>writes a predict file from a mydat file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../mydata2predict.m"><b>mydata2predict</b></a> (speciesnm)</p><h2 id="4">Description</h2><p>Makes a predict file from a mydata_'speciesnm' file</p><p>Input:</p><div><ul><li>speciesnm: string with the species name</li></ul></div><h2 id="5">Remarks</h2><p>Keep in mind that the files will be saved in your local directory; use the cd command BEFORE running this function to save files in the desired place.</p><h2 id="6">Example of use</h2><p>mydata2predict(speciesnm)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% mydata2predict
+% writes a predict file from a mydat file
+
+%%
+function mydata2predict(speciesnm)
+% created 2016/06/18 by Goncalo Marques
+
+%% Syntax
+% <../mydata2predict.m *mydata2predict*> (speciesnm) 
+
+%% Description
+% Makes a predict file from a mydata_'speciesnm' file
+%
+% Input:
+%
+% * speciesnm: string with the species name
+
+%% Remarks
+% Keep in mind that the files will be saved in your local directory; 
+% use the cd command BEFORE running this function to save files in the desired place.
+
+%% Example of use
+% mydata2predict(speciesnm)
+
+mydataFile = ['mydata_', speciesnm, '.m'];
+
+% check that mydata actually exists
+if exist(mydataFile, 'file') == 0
+  fprintf([mydataFile, ' not found.\n']);
+  return
+end
+
+predictFile = ['predict_', speciesnm, '.m'];
+
+if exist(predictFile, 'file') == 2
+  prompt = [predictFile, ' already exists. Do you want to overwrite it? (y/n) '];
+  overwr = lower(input(prompt, 's'));
+  if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
+    fprintf([predictFile, ' was not overwritten.\n']);
+    return
+  end
+end
+
+[data, auxData, metaData, txtData, weights] = feval(['mydata_', speciesnm]);
+
+% open pars_init file
+predict_id = fopen(['predict_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
+
+fprintf(predict_id, ['%%%% predict_', speciesnm,'\n']);
+fprintf(predict_id, '%% Obtains predictions, using parameters and data\n\n');
+fprintf(predict_id, ['function [prdData, info] = predict_', speciesnm,'(par, data, auxData)\n\n']);
+fprintf(predict_id, '  %% unpack par, data, auxData\n');
+fprintf(predict_id, '  cPar = parscomp_st(par); vars_pull(par);\n');
+fprintf(predict_id, '  vars_pull(cPar);  vars_pull(data);  vars_pull(auxData);\n\n');
+fprintf(predict_id, '  %% area for customized filters for allowed parameters\n\n\n');
+
+if isfield(auxData, 'temp')
+  fprintf(predict_id, '  %% compute temperature correction factors\n');
+  tempFields = fields(auxData.temp);
+  for i = 1:length(tempFields)
+    currentTemp = tempFields{i};
+    fprintf(predict_id, ['  TC_', currentTemp, ' = tempcorr(temp.', currentTemp, ', T_ref, T_A);\n']);
+  end
+end
+fprintf(predict_id, '\n\n');
+
+dataFields = fields(data);
+
+fprintf(predict_id, '  %% zero-variate data\n');
+fprintf(predict_id, '\n\n\n\n');
+
+
+fprintf(predict_id, '  %% pack to output\n');
+fprintf(predict_id, '  %% the names of the fields in the structure must be the same as the data names in the mydata file\n');
+for i = 1:length(dataFields)
+  currentData = dataFields{i};
+  if length(data.(currentData)) == 1
+    fprintf(predict_id, ['  prdData.', currentData, ' = ????;\n']);
+  end
+end
+fprintf(predict_id, '\n\n');
+
+fprintf(predict_id, '  %% uni-variate data\n');
+fprintf(predict_id, '\n\n\n\n');
+
+fprintf(predict_id, '  %% pack to output\n');
+fprintf(predict_id, '  %% the names of the fields in the structure must be the same as the data names in the mydata file\n');
+for i = 1:length(dataFields)
+  currentData = dataFields{i};
+  if length(data.(currentData)) > 1
+    fprintf(predict_id, ['  prdData.', currentData, ' = ????;\n']);
+  end
+end
+
+fclose(predict_id);
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

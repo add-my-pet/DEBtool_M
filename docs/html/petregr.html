@@ -1,0 +1,332 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>petregr</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-07-19"><meta name="DC.source" content="petregr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>petregr</h1><!--introduction--><p>Calculates least squares estimates using Nelder Mead's simplex</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">prepare variables</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[q, info] = <a href="../petregr.m"><b>petregr</b></a> (func, par, chem, T_ref, data)</p><h2>Description<a name="4"></a></h2><p>Calculates least squares estimates using Nelder Mead's simplex method.</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;      see nrregr_st or nrregr</li><li>par: structure with parameters</li><li>chem: structure with biochemical parameters</li><li>T_ref: scalar with refeerence temperature</li><li>data: structure with</li></ul></div><pre>  data values and
+  field 'weight' with the weights of the data values
+  field 'temp' with the temperature of some of the data values</pre><p>Output</p><div><ul><li>q: structure with parameters, result of the least squares estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Set options with <a href="nmregr_options.html"><b>nmregr_options</b></a>. Similar to <a href="nrregr_st.html"><b>nrregr_st</b></a>, but slower and a larger bassin of attraction. The number of fields in data is variable</p><h2>prepare variables<a name="6"></a></h2><p>st: structure with data vaules wst: structure with weghts (identical to st) data4pred: data ready to send to predict files</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% petregr
+% Calculates least squares estimates using Nelder Mead's simplex
+
+%%
+function [q, info] = petregr(func, par, chem, T_ref, data)
+% created 2001/09/07 by Bas Kooijman; 
+% modified 2015/03/30 by Goncalo Marques
+
+%% Syntax
+% [q, info] = <../petregr.m *petregr*> (func, par, chem, T_ref, data)
+
+%% Description
+% Calculates least squares estimates using Nelder Mead's simplex method.
+%
+% Input
+%
+% * func: character string with name of user-defined function;
+%      see nrregr_st or nrregr  
+% * par: structure with parameters
+% * chem: structure with biochemical parameters
+% * T_ref: scalar with refeerence temperature
+% * data: structure with 
+%
+%    data values and
+%    field 'weight' with the weights of the data values
+%    field 'temp' with the temperature of some of the data values
+%  
+% Output
+% 
+% * q: structure with parameters, result of the least squares estimates
+% * info: 1 if convergence has been successful; 0 otherwise
+
+%% Remarks
+% Set options with <nmregr_options.html *nmregr_options*>.
+% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction.
+% The number of fields in data is variable
+   
+   
+  global report max_step_number max_fun_evals tol_simplex tol_fun
+
+  % option settings
+  info = 1; % initiate info setting
+  
+  %% prepare variables
+  % st: structure with data vaules
+  % wst: structure with weghts (identical to st)
+  % data4pred: data ready to send to predict files
+  nmweight = fieldnm_wtxt(data, 'weight');
+  nmwst = strrep(nmweight, '.weight', '');
+  nmwst = strcat('wst.', nmwst);
+  for i = 1:length(nmweight)
+    eval([nmwst{i}, ' = data.', nmweight{i}, ';']);
+  end
+  data4pred = rmfield_wtxt(data, 'weight');
+  st = rmfield_wtxt(data4pred, 'temp');
+  [nm nst] = fieldnmnst_st(st); % nst: number of data sets
+  
+  listst = strjoin(strcat('st.', nm)', '; ');
+  listwst = strjoin(strcat('wst.', nm)', '; ');
+  listf = strjoin(strcat('f.', nm)', '; ');
+  
+  for i = 1:nst   % makes st only with dependent variables
+    eval(['[~, k] = size(st.', nm{i}, ');']); 
+    if k == 2
+      eval(['st.', nm{i}, ' = st.', nm{i},'(:,2);']);
+    end
+  end
+  
+  % Y: vector with all dependent data
+  % W: vector with all weights
+  eval(['Y = [', listst, '];']);
+  eval(['W = [', listwst, '];']);
+  
+  parnm = fieldnames(par.free);
+  np = numel(parnm);
+  n_par = sum(cell2mat(struct2cell(par.free)));
+  if (n_par == 0)
+    return; % no parameters to iterate
+  end
+  index = 1:np;
+  index = index(cell2mat(struct2cell(par.free)) == 1);  % indices of free parameters
+
+  free = par.free; % free is here removed, and after iteration added again
+  q = rmfield(par, 'free'); % copy input parameter matrix into output
+  qvec = cell2mat(struct2cell(q));
+  info = 1; % convergence has been successful
+  
+  % set options if necessary
+  if ~exist('max_step_number','var') || isempty(max_step_number)
+    nmregr_options('max_step_number', 200 * n_par);
+  end
+  if ~exist('max_fun_evals','var') || isempty(max_fun_evals)
+    nmregr_options('max_fun_evals', 200 * n_par);
+  end
+  if ~exist('tol_simplex','var') || isempty(tol_simplex)
+    nmregr_options('tol_simplex', 1e-4);
+  end
+  if ~exist('tol_fun','var') || isempty(tol_fun)
+    nmregr_options('tol_fun', 1e-4);
+  end
+  if ~exist('report','var') || isempty(report)
+    nmregr_options('report', 1);
+  end
+
+  % Initialize parameters
+  rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
+  onesn = ones(1, n_par);
+  two2np1 = 2:n_par + 1;
+  one2n = 1:n_par;
+  np1 = n_par + 1;
+
+  % Set up a simplex near the initial guess.
+  xin = qvec(index);    % Place input guess in the simplex
+  v(:,1) = xin;
+  eval(['f = ', func, '(q, chem, T_ref, data4pred);']);
+  eval(['fv(:,1) = W'' * ([', listf, '] - Y).^2;']);
+  % Following improvement suggested by L.Pfeffer at Stanford
+  usual_delta = 0.05;             % 5 percent deltas for non-zero terms
+  zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
+  for j = 1:n_par
+    y = xin;
+    if y(j) ~= 0
+      y(j) = (1 + usual_delta) * y(j);
+    else 
+      y(j) = zero_term_delta;
+    end
+    qvec(index) = y; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+    eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+    v(:,j+1) = y;
+    eval(['fv(:,j+1) = W'' * ([', listf, '] - Y).^2;']);
+  end     
+
+  % sort so v(1,:) has the lowest function value 
+  [fv,j] = sort(fv);
+  v = v(:,j);
+
+  how = 'initial';
+  itercount = 1;
+  func_evals = n_par + 1;
+  if report == 1
+    fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), '-', ...
+	    num2str(max(fv)), ' ', how, '\n']);
+  end
+  info = 1;
+
+  % Main algorithm
+  % Iterate until the diameter of the simplex is less than tol_simplex
+  %   AND the function values differ from the min by less than tol_fun,
+  %   or the max function evaluations are exceeded. (Cannot use OR instead of AND.)
+  while func_evals < max_fun_evals & itercount < max_step_number
+    if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex & ...
+       max(abs(fv(1)-fv(two2np1))) <= tol_fun
+    break
+  end
+  how = '';
+   
+  % Compute the reflection point
+   
+  % xbar = average of the n (NOT n+1) best points
+  xbar = sum(v(:,one2n), 2)/ n_par;
+  xr = (1 + rho) * xbar - rho * v(:,np1);
+  qvec(index) = xr; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+  eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+  eval(['fxr = W'' * ([', listf, '] - Y).^2;']);
+  func_evals = func_evals + 1;
+   
+   if fxr < fv(:,1)
+      % Calculate the expansion point
+      xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
+      qvec(index) = xe; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+      eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+      eval(['fxe = W'' * ([', listf, '] - Y).^2;']);
+      func_evals = func_evals + 1;
+      if fxe < fxr
+         v(:,np1) = xe;
+         fv(:,np1) = fxe;
+         how = 'expand';
+      else
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      end
+   else % fv(:,1) <= fxr
+      if fxr < fv(:,n_par)
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      else % fxr >= fv(:,n_par) 
+         % Perform contraction
+         if fxr < fv(:,np1)
+            % Perform an outside contraction
+            xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
+            qvec(index) = xc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+            eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+            eval(['fxc = W'' * ([', listf, '] - Y).^2;']);
+            func_evals = func_evals + 1;
+            
+            if fxc <= fxr
+               v(:,np1) = xc; 
+               fv(:,np1) = fxc;
+               how = 'contract outside';
+            else
+               % perform a shrink
+               how = 'shrink'; 
+            end
+         else
+            % Perform an inside contraction
+            xcc = (1 - psi) * xbar + psi * v(:,np1);
+            qvec(index) = xcc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+            eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+            eval(['fxcc = W'' * ([', listf, '] - Y).^2;']);
+            func_evals = func_evals + 1;
+            if fxcc < fv(:,np1)
+               v(:,np1) = xcc;
+               fv(:,np1) = fxcc;
+               how = 'contract inside';
+            else
+               % perform a shrink
+               how = 'shrink';
+            end
+         end
+         if strcmp(how,'shrink')
+            for j = two2np1
+               f_test = 0;
+               step_reducer = 1;             % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
+               while ~f_test
+                  v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
+                  qvec(index) = v_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+                  eval(['[f, f_test] = ', func, '(q, chem, T_ref, data4pred);']);
+               end
+               v(:,j) = v_test;
+               eval(['fv(:,j) = W'' * ([', listf, '] - Y).^2;']);
+            end
+            func_evals = func_evals + n_par;
+         end
+      end
+   end
+   [fv,j] = sort(fv);
+   v = v(:,j);
+   itercount = itercount + 1;
+   if report == 1
+     fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
+	     '-', num2str(max(fv)), ' ', how, '\n']);
+   end  
+   end   % while
+
+
+   qvec(index) = v(:,1); q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+   q.free = free; % add substructure free to q,
+
+   fval = min(fv); 
+   if func_evals >= max_fun_evals
+     if report > 0
+       fprintf(['No convergences with ', ...
+		num2str(max_fun_evals), ' function evaluations\n']);
+     end
+     info = 0;
+   elseif itercount >= max_step_number 
+     if report > 0
+       fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
+     end
+     info = 0; 
+   else
+     if report > 0
+       fprintf('Successful convergence \n');              
+     end
+     info = 1;
+   end
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,159 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>parGrp2Pets</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-27"><meta name="DC.source" content="parGrp2Pets.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>parGrp2Pets</h1><!--introduction--><p>converts parameter-structure for a group of pets to a structure of parameters for each pet</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>parPets = <a href="../parGrp2Pets.m"><b>parGrp2Pets</b></a> (parGrp)</p><h2 id="4">Description</h2><p>Converts parameter-structure for a group of pets to a structure of parameters for each pet. First-level field names of output-structure are the pets. parPets.my_pet is the single-species parameter specification for my_pet, where all parameters are scalar</p><p>Input:</p><div><ul><li>parGrp: stucture with parameters for the group of pets (as in pars_init_group) that can be either scalar or vector-valued of length n_pets</li></ul></div><p>Output:</p><div><ul><li>parPets: structure with structures of parameters for each pet that are all scalar</li></ul></div><h2 id="5">Remarks</h2><p>In the case of no covariation rule, this function only copies group-specifications to single-species specifications. In other cases, however, the total number of parameters can be further reduced by assuming relationships between parameters for different species. Function <a href="parPets2Grp.html"><b>parPets2Grp</b></a> maps from structure of parameters for each pet to that of a group</p><h2 id="6">Example of use</h2><p>parPets = parGrp2Pets(parGrp)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% parGrp2Pets
+% converts parameter-structure for a group of pets to a structure of parameters for each pet
+
+%%
+function parPets = parGrp2Pets(parGrp)
+% created 2018/05/23 by Bas Kooijman
+
+%% Syntax
+% parPets = <../parGrp2Pets.m *parGrp2Pets*> (parGrp)
+
+%% Description
+% Converts parameter-structure for a group of pets to a structure of parameters for each pet. 
+% First-level field names of output-structure are the pets.
+% parPets.my_pet is the single-species parameter specification for my_pet, where all parameters are scalar
+%
+% Input:
+%
+% * parGrp: stucture with parameters for the group of pets (as in pars_init_group) that can be either scalar or vector-valued of length n_pets
+%
+% Output: 
+%
+% * parPets: structure with structures of parameters for each pet that are all scalar
+
+%% Remarks
+% In the case of no covariation rule, this function only copies group-specifications to single-species specifications.
+% In other cases, however, the total number of parameters can be further reduced by assuming relationships between parameters for different species.
+% Function <parPets2Grp.html *parPets2Grp*> maps from structure of parameters for each pet to that of a group
+
+%% Example of use
+% parPets = parGrp2Pets(parGrp)
+
+  global pets cov_rules
+
+  n_pets = length(pets);
+  if n_pets == 1
+    parPets.(pets{1}) = parGrp;
+    return
+  end
+  
+  parNms = fieldnames(parGrp); n_parNms = length(parNms);
+  vec_zeros = zeros(n_pets,1); % for expansion of free settings
+  
+  % map group-specification to single-species specification
+  for i = 1:n_pets         % scan pets
+    pari = parGrp;         % prepare pararameters for pet i
+    % parameter value setting (skipping free setting)
+    for j = 1:n_parNms     % scan parameters for each pet
+      if ~strcmp(parNms{j},'free') 
+        val = parGrp.(parNms{j}); n_val = length(val); % determine length 1 or n_pets
+        pari.(parNms{j}) =  val(min(n_val,i));         % select value i for pet i
+      end
+    end
+    % free setting
+    if exist('pari.free','var') % if called from groupregr_f, parGrp has no field 'free'
+      freeNms = fieldnames(pari.free); n_freeNms = length(freeNms);
+      for k = 1:n_freeNms
+        % in the case of scalar setting, use free = 0 for all species other than the first one
+        % the corresponding parameter can still change, since this function is called after each change in any parameter, before predictions are computed
+        val = pari.free.(freeNms{k}) + vec_zeros; % make sure that element j is defined
+        pari.free.(freeNms{k}) =  val(i);         % select value i for pet i 
+      end
+    end
+    parPets.(pets{i}) = pari; % copy parameters for pet i to output
+  end
+
+  switch cov_rules % global cov_rules specifies the co-variation rules that should be applied
+  
+    case 'no'
+    % do nothing 
+  
+    case 'maturities' % modify maturity levels according to zoom factor z, using pets{1} as reference
+    % the free-setting and the initial values of these parameters for pets{2} till pets.{n_pets} are ignored with this cov_rule
+    for i = 2:n_pets         % scan pets, using pets{1} as reference
+      for j = 1:n_parNms     % scan parameters for each pet
+        if strcmp(parNms{j},'E_H') % identify maturity levels
+          parPets.(pets{i}).(parNms{j}) = parPets.(pets{1}).(parNms{j}) * parPets.(pets{i}).z^3/ parPets.(pets{1}).z^3; 
+        end
+      end
+    end
+    
+    case 'bla'
+    % add here your user-defined co-variation rules (replacing 'bla'), using case 'maturities' as example
+    % insert 'estim_options('cov_rules','bla');' in the run-file for the group to actually use them
+            
+  end
+
+  
+##### SOURCE END #####
+--></body></html>

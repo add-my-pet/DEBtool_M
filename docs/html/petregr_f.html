@@ -1,0 +1,412 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>petregr_f</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="petregr_f.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>petregr_f</h1><!--introduction--><p>Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info, itercount] = <a href="../petregr_f.m"><b>petregr_f</b></a> (func, par, data, auxData, weights, filternm)</p><h2 id="4">Description</h2><p>Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter. The filter gives always a pass in the case that no filter has been selected in <a href="estim_options.html"><b>estim_options</b></a>.</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;      see nrregr_st or nrregr</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>weights: structure with weights</li><li>filternm: character string with name of user-defined filter function</li></ul></div><p>Output</p><div><ul><li>q: structure with parameters, result of the least squares estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>itercount: nummber if iterations</li></ul></div><h2 id="5">Remarks</h2><p>Set options with <a href="nmregr_options.html"><b>nmregr_options</b></a>. Similar to <a href="nrregr_st.html"><b>nrregr_st</b></a>, but slower and a larger bassin of attraction and uses a filter. The number of fields in data is variable. See <a href="groupregr_f.html"><b>groupregr_f</b></a> for the multi-species situation.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% petregr_f
+% Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter
+
+%%
+function [q, info, itercount] = petregr_f(func, par, data, auxData, weights, filternm)
+% created 2001/09/07 by Bas Kooijman; 
+% modified 2015/01/29 by Goncalo Marques, 
+%   2015/03/21 by Bas Kooijman, 
+%   2015/03/30, 2015/04/27, 2015/07/29, 2016/05/05 by Goncalo Marques
+%   2018/05/23 by Bas Kooijman
+
+%% Syntax
+% [q, info, itercount] = <../petregr_f.m *petregr_f*> (func, par, data, auxData, weights, filternm)
+
+%% Description
+% Finds parameter values for a pet that minimizes the lossfunction using Nelder Mead's simplex method using a filter.
+% The filter gives always a pass in the case that no filter has been selected in <estim_options.html *estim_options*>.
+%
+% Input
+%
+% * func: character string with name of user-defined function;
+%      see nrregr_st or nrregr  
+% * par: structure with parameters
+% * data: structure with data
+% * auxData: structure with auxiliary data
+% * weights: structure with weights
+% * filternm: character string with name of user-defined filter function
+%  
+% Output
+% 
+% * q: structure with parameters, result of the least squares estimates
+% * info: 1 if convergence has been successful; 0 otherwise
+% * itercount: nummber if iterations
+
+%% Remarks
+% Set options with <nmregr_options.html *nmregr_options*>.
+% Similar to <nrregr_st.html *nrregr_st*>, but slower and a larger bassin of attraction and uses a filter.
+% The number of fields in data is variable.
+% See <groupregr_f.html *groupregr_f*> for the multi-species situation.
+
+  global lossfunction report max_step_number max_fun_evals tol_simplex tol_fun simplex_size
+
+  % option settings
+  info = 1; % initiate info setting
+  fileLossfunc = ['lossfunction_', lossfunction];
+  
+  % prepare variable
+  %   st: structure with dependent data values only
+  st = data;
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
+    
+  for i = 1:nst   % makes st only with dependent variables
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    k = size(auxVar, 2);
+    if k >= 2
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    end
+  end
+  
+  % Y: vector with all dependent data
+  % W: vector with all weights
+  [Y, meanY] = struct2vector(st, nm);
+  W = struct2vector(weights, nm);
+  
+  parnm = fieldnames(par.free);
+  np = numel(parnm);
+  n_par = sum(cell2mat(struct2cell(par.free)));
+  if (n_par == 0)
+    return; % no parameters to iterate
+  end
+  index = 1:np;
+  index = index(cell2mat(struct2cell(par.free)) == 1);  % indices of free parameters
+
+  free = par.free; % free is here removed, and after iteration added again
+  q = rmfield(par, 'free'); % copy input parameter matrix into output
+  qvec = cell2mat(struct2cell(q));
+  
+  % set options if necessary
+  if ~exist('max_step_number','var') || isempty(max_step_number)
+    nmregr_options('max_step_number', 200 * n_par);
+  end
+  if ~exist('max_fun_evals','var') || isempty(max_fun_evals)
+    nmregr_options('max_fun_evals', 200 * n_par);
+  end
+  if ~exist('tol_simplex','var') || isempty(tol_simplex)
+    nmregr_options('tol_simplex', 1e-4);
+  end
+  if ~exist('tol_fun','var') || isempty(tol_fun)
+    nmregr_options('tol_fun', 1e-4);
+  end
+  if ~exist('simplex_size','var') || isempty(simplex_size)
+    nmregr_options('simplex_size', 0.05);
+  end
+  if ~exist('report','var') || isempty(report)
+    nmregr_options('report', 1);
+  end
+
+  % Initialize parameters
+  rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
+  onesn = ones(1, n_par);
+  two2np1 = 2:n_par + 1;
+  one2n = 1:n_par;
+  np1 = n_par + 1;
+
+  % Set up a simplex near the initial guess.
+  xin = qvec(index);    % Place input guess in the simplex
+  v(:,1) = xin;
+  f = feval(func, q, data, auxData);
+  [P, meanP] = struct2vector(f, nm);
+  fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+  % Following improvement suggested by L.Pfeffer at Stanford
+  usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
+  zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
+  for j = 1:n_par
+    y = xin;
+    f_test = 0;
+    step_reducer = 1;             % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
+    y_test = y;
+    while ~f_test
+      if y(j) ~= 0
+        y_test(j) = (1 + usual_delta / step_reducer) * y(j);
+      else 
+        y_test(j) = zero_term_delta / step_reducer;
+      end
+      qvec(index) = y_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+      f_test = feval(filternm, q);
+      if ~f_test 
+        fprintf('The parameter set for the simplex construction is not realistic. \n');
+        step_reducer = 2 * step_reducer;
+      else
+        [f, f_test] = feval(func, q, data, auxData);
+        if ~f_test 
+          fprintf('The parameter set for the simplex construction is not realistic. \n');
+          step_reducer = 2 * step_reducer;
+        end
+      end
+    end  
+    v(:,j+1) = y_test;
+    [P, meanP] = struct2vector(f, nm);
+    fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+  end     
+
+  % sort so v(1,:) has the lowest function value 
+  [fv,j] = sort(fv);
+  v = v(:,j);
+
+  how = 'initial';
+  itercount = 1;
+  func_evals = n_par + 1;
+  if report == 1
+    fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), '-', ...
+	    num2str(max(fv)), ' ', how, '\n']);
+  end
+  info = 1;
+
+  % Main algorithm
+  % Iterate until the diameter of the simplex is less than tol_simplex
+  %   AND the function values differ from the min by less than tol_fun,
+  %   or the max function evaluations are exceeded. (Cannot use OR instead of AND.)
+  while func_evals < max_fun_evals & itercount < max_step_number
+    if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex & ...
+       max(abs(fv(1)-fv(two2np1))) <= tol_fun
+      break
+    end
+    how = '';
+   
+    % Compute the reflection point
+   
+    % xbar = average of the n (NOT n+1) best points
+    xbar = sum(v(:,one2n), 2)/ n_par;
+    xr = (1 + rho) * xbar - rho * v(:,np1);
+    qvec(index) = xr; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+    f_test = feval(filternm, q);
+    if ~f_test
+      fxr = fv(:,np1) + 1;
+    else
+      [f, f_test] = feval(func, q, data, auxData);
+      if ~f_test 
+        fxr = fv(:,np1) + 1;
+      else
+        [P, meanP] = struct2vector(f, nm);
+        fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
+      end
+    end
+    func_evals = func_evals + 1;
+   
+    if fxr < fv(:,1)
+      % Calculate the expansion point
+      xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
+      qvec(index) = xe; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+      f_test = feval(filternm, q);
+      if ~f_test
+         fxe = fxr + 1;
+      else
+        [f, f_test] = feval(func, q, data, auxData);
+        if ~f_test 
+          fxe = fv(:,np1) + 1;
+        else
+          [P, meanP] = struct2vector(f, nm);
+          fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
+        end
+      end
+      func_evals = func_evals + 1;
+      if fxe < fxr
+         v(:,np1) = xe;
+         fv(:,np1) = fxe;
+         how = 'expand';
+      else
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      end
+    else % fv(:,1) <= fxr
+      if fxr < fv(:,n_par)
+         v(:,np1) = xr; 
+         fv(:,np1) = fxr;
+         how = 'reflect';
+      else % fxr >= fv(:,n_par) 
+         % Perform contraction
+         if fxr < fv(:,np1)
+            % Perform an outside contraction
+            xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
+            qvec(index) = xc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+            f_test = feval(filternm, q);
+            if ~f_test
+              fxc = fxr + 1;
+            else            
+              [f, f_test] = feval(func, q, data, auxData);
+              if ~f_test 
+                fxc = fv(:,np1) + 1;
+              else
+                [P, meanP] = struct2vector(f, nm);
+                fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              end
+            end
+            func_evals = func_evals + 1;
+            
+            if fxc <= fxr
+               v(:,np1) = xc; 
+               fv(:,np1) = fxc;
+               how = 'contract outside';
+            else
+               % perform a shrink
+               how = 'shrink'; 
+            end
+         else
+            % Perform an inside contraction
+            xcc = (1 - psi) * xbar + psi * v(:,np1);
+            qvec(index) = xcc; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+            f_test = feval(filternm, q);
+            if ~f_test
+              fxcc = fv(:,np1) + 1;
+            else
+              [f, f_test] = feval(func, q, data, auxData);
+              if ~f_test 
+                fxcc = fv(:,np1) + 1;
+              else
+                [P, meanP] = struct2vector(f, nm);
+                fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
+              end
+            end
+            func_evals = func_evals + 1;
+            
+            if fxcc < fv(:,np1)
+               v(:,np1) = xcc;
+               fv(:,np1) = fxcc;
+               how = 'contract inside';
+            else
+               % perform a shrink
+               how = 'shrink';
+            end
+         end
+         if strcmp(how,'shrink')
+            for j = two2np1
+               f_test = 0;
+               step_reducer = 1;             % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
+               while ~f_test
+                  v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
+                  qvec(index) = v_test; q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+                  f_test = feval(filternm, q);
+                  if ~f_test 
+                     fprintf('The parameter set for the simplex shrinking is not realistic. \n');
+                     step_reducer = 2 * step_reducer;
+                  else
+                    [f, f_test] = feval(func, q, data, auxData);
+                    if ~f_test 
+                      fprintf('The parameter set for the simplex shrinking is not realistic. \n');
+                      step_reducer = 2 * step_reducer;
+                    end
+                  end
+               end
+               v(:,j) = v_test;
+               [P, meanP] = struct2vector(f, nm);
+               fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+            end
+            func_evals = func_evals + n_par;
+         end
+      end
+    end
+    [fv,j] = sort(fv);
+    v = v(:,j);
+    itercount = itercount + 1;
+    if report == 1 && mod(itercount, 10) == 0
+      fprintf(['step ', num2str(itercount), ' ssq ', num2str(min(fv)), ...
+	     '-', num2str(max(fv)), ' ', how, '\n']);
+    end  
+  end   % while
+
+
+  qvec(index) = v(:,1); q = cell2struct(mat2cell(qvec, ones(np, 1), [1]), parnm);
+  q.free = free; % add substructure free to q,
+
+  fval = min(fv); 
+  if func_evals >= max_fun_evals
+    %if report > 0
+    fprintf(['No convergences with ', ...
+    	num2str(max_fun_evals), ' function evaluations\n']);
+    %end
+    info = 0;
+  elseif itercount >= max_step_number 
+    %if report > 0
+    fprintf(['No convergences with ', num2str(max_step_number), ' steps\n']);
+    %end
+    info = 0; 
+  else
+    %if report > 0
+    fprintf('Successful convergence \n');              
+    %end
+    info = 1;
+  end
+   
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:});
+    vec = [vec; aux];
+    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
+  end
+##### SOURCE END #####
+--></body></html>
