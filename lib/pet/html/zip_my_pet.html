@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>zip_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="zip_my_pet.m"><style type="text/css">
+      --><title>zip_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-12-25"><meta name="DC.source" content="zip_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,18 +66,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>zip_my_pet</h1><!--introduction--><p>Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../zip_my_pet.m"><b>zip_my_pet</b></a>(my_pet)</p><h2 id="4">Description</h2><p>zips all my_pet .m and .csv files in folder "my_pet". If full path to the my_pet folder is not specified, the current folder is '.\' (one level up)</p><p>Input</p><div><ul><li>my_pet: string with name of species</li></ul></div><div><ul><li>basefolder : String that specifies the root of the paths              for the files to zip (optional)              Default folder:  '.\'</li></ul></div><p>Output</p><div><ul><li>zip files in the current folder:</li></ul></div><pre>  -- my_pet, '\mydata_', my_pet, '.m'
+  </style></head><body><div class="content"><h1>zip_my_pet</h1><!--introduction--><p>Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../zip_my_pet.m"><b>zip_my_pet</b></a>(my_pet)</p><h2 id="4">Description</h2><p>zips all my_pet .m and .csv files in folder "my_pet". If full path to the my_pet folder is not specified, the current folder is '.\' (one level up)</p><p>Input</p><div><ul><li>my_pet: string with name of species</li></ul></div><div><ul><li>basefolder : String that specifies the root of the paths              for the files to zip (optional)              Default folder:  '.\'</li></ul></div><p>Output</p><div><ul><li>filenm: character string with name of zip-file that has been written</li><li>zip files in the current folder:</li></ul></div><pre>  -- my_pet, '\mydata_', my_pet, '.m'
   -- my_pet, '\predict_', my_pet, '.m'
   -- my_pet, '\pars_init_', my_pet, '.m'
   -- my_pet, '\run_', my_pet, '.m'
   -- any csv files</pre><h2 id="5">Remarks</h2><p>compress all my_pet files; See also <a href="zip_pets.html"><b>zip_pets</b></a></p><h2 id="6">Example of use</h2><p>zip_my_pet('my_pet', basefolder)</p><p>Check number of arguments</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% zip_my_pet
-% Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip.
+% Compress all my_pet .m and .mat files in the current folder to the file my_pet.zip
 
 %%
-function zip_my_pet(my_pet, basefolder)
-% created by Dina Lika 2015/08/07, modified by Bas Kooijman 2017/09/29
+function filenm = zip_my_pet(my_pet, basefolder)
+% created by Dina Lika 2015/08/07, modified by Bas Kooijman 2017/09/29, 2018/08/17
 
 %% Syntax
 % <../zip_my_pet.m *zip_my_pet*>(my_pet)
@@ -96,6 +96,7 @@ function zip_my_pet(my_pet, basefolder)
 %
 % Output 
 %
+% * filenm: character string with name of zip-file that has been written
 % * zip files in the current folder:
 % 
 %    REPLACE_WITH_DASH_DASH my_pet, '\mydata_', my_pet, '.m'

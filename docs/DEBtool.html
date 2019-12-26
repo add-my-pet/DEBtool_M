@@ -34,15 +34,18 @@
 
 <H2><A NAME="Purpose">Purpose</A></H2> 
  
-  DEBtool is a software package written in Matlab (version DEBtool_M) and  Octave (version DEBtool_O, which is no longer maintained) and that can be used to illustrate some implications of the <A HREF="http://www.bio.vu.nl/thb/deb/" TARGET="_top">Dynamic Energy Budget theory</A> and to apply this theory in the analysis of eco-physiological data.
+  DEBtool is a software package written in Matlab (version DEBtool_M) and  Octave (version DEBtool_O, which is no longer maintained) and 
+    that can be used to illustrate some implications of the <A HREF="http://www.bio.vu.nl/thb/deb/" TARGET="_top">Dynamic Energy Budget theory</A> and 
+    to apply this theory in the analysis of eco-physiological data.
   The manual and the code follow the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010_n.pdf" TARGET="_top">DEB notation</A>.
   It has script-files for almost all figures of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html" TARGET="_top">
   DEB book</A>, with many references to the formulae in the book, and explaining remarks.
-  <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPtool.html" TARGET="_top">Add_my_pet</a> (AmP) is an example of application of DEBtool.<BR> 
+  <a href="https://add-my-pet.github.io/AmPtool/docs/index.html" TARGET="_top">AmPtool</a>, as used to support the
+  <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET="_top">Add-my-Pet (AmP)</a> collection is an example of application of DEBtool.<BR> 
   Although DEBtool continues to expand, many implications of DEB theory will remain beyond the capacities of this package.
 
   <P>
-  DEBtool is freely available via GitHub, see <A HREF="/thb/deb/deblab/" TARGET="_top"> DEB laboratory</A> (Octave and Matlab versions).
+  DEBtool is freely available via GitHub, see the <A HREF="/thb/deb/deblab/" TARGET="_top">DEB laboratory</A> (Octave and Matlab versions).
 
   <P>
   This release focuses on
@@ -59,7 +62,7 @@
 
 <H2><A NAME="Local_manual"> Local manual</A></H2>
 
-  The manual for DEBtool is included in the package in subdirectory DEBtool/manual and is written in HTML. 
+  The manual for DEBtool is included in the package in subdirectory DEBtool_M/docs and is written in HTML. 
   To read it, run a browser on file <code>index.html</code>.
 
 <H2><A NAME="Use"> Use and recommendations</A></H2>
@@ -81,15 +84,10 @@
   If you have this just besides DEBtool you set the path to DEBtool and all its subdirectories by <code>addpath(genpath('../DEBtool_O/'))</code> in Octave or in the menu-bar in Matlab.
   Use <code>pwd</code> under Octave or Matlab for getting the current prosition in to directory-tree, and <code>ls</code> for the list of files in the current directory.
   Use <code>cd</code> for changing directories, where <code>..</code> means the parent-directory. 
-  Example if you are in a sister-directory of DEBtool: <code>cd ../DEBtool/animal/</code> will bring you to toolbox animal.
+  Example if you are in a sister-directory of DEBtool_M: <code>cd ../DEBtool_M/animal/</code> will bring you to toolbox animal.
 
   <P>
   The routines in each subdirectory can call other routines from that subdirectory, or from the library DEBtool/lib, which has three subdirectories. 
-
-<H4>Rename functions if you modify them</H4>
-
-  Since <a href="DEBtool_new.html" TARGET="_top">DEBtool is updated every now and then</a>, existing routines can be changed. 
-  If you modified a function, and want to install a new version of DEBtool, it can save a lot of work if your modified functions have other names and have been stored outside DEBtool.
 
 <H4>Erase variables</H4>
 
