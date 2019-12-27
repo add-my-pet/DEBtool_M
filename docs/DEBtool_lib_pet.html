@@ -111,7 +111,8 @@ Make sure that all data specified in the mydata-file are predicted, but no more.
 
 <p>
 The predict-file starts with extracting all parameters, as set in the pars_init-file, and all data, as set in the mydata-file.
-Matlab function <a href="../lib/pet/html/parscom_st.html">parscomp_st</a> is run to compute frequently used (simple) functions of the parameters, called compound-parameter, that do not depend on food level.
+Matlab function <a href="../lib/pet/html/parscom_st.html">parscomp_st</a> is run to compute frequently used (simple) functions of the parameters, called compound-parameter, 
+  that do not depend on food level.
 
 <p>
 Then temperature correction factors, <code>TC</code>, are computed for all data sets.
@@ -120,7 +121,7 @@ This has to be done for all variables that have time in their dimensions.
 
 <p>
 The predictions start with a number of scaled times, scaled lengths and scaled rates that concern the full life cycle, followed by required expectations for 
-  zero-variate data following the life-cycle, which are outputted to output-structure <code>prdData</code>.
+  zero-variate data following the life-cycle, which are outputted to structure <code>prdData</code>.
 Notice that the sequence reflect dimensions of variables. 
 This is not essential, but convenient for checking.
 
