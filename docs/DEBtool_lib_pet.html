@@ -33,7 +33,7 @@ The aim is to
 
 Make sure that the path to DEBtool_M and AmPtool and their subdirectories has been set in Matlab.
 An AmP entry consists of a set of 4 files, 3 Matlab functions (<code>mydata_my_pet.m</code>, <code>predict_my_pet.m</code>, <code>pars_init_my_pet.m</code>) and 
-  a Matlab script (<code>run_my_pet.m</code>), where <code>my_pet</code> is replaced by the latin name of your species with spaces replaced by <code>_</code>.
+  a Matlab script (<code>run_my_pet.m</code>), where <code>my_pet</code> is replaced by the scientific name of your species with spaces replaced by <code>_</code>.
 The mydata-file sets data and references, 
 the pars_init-file specifies the model type and initial parameter values, 
 the predict-file computes expectations for the data, given parameter values and 
@@ -132,9 +132,11 @@ Auxiliary data can be used for a similar purpose.
 <p>
 Most entries assume data-specific constant temperatures and/or food levels.
 Quite a few entries, however, work with time-varying temperatures and food levels.
-In that case predictions must be based on specifications in terms of ordinary differential equations.
+In that case predictions must be based on specifications in terms of ordinary differential equations (ode's), which must be integrated with one of Matlab's ode-solvers.
+Entries that integrate ode's can be located with AmPtool function <a href="https://add-my-pet.github.io/AmPtool/html/select_predict.html" target="_blank">select_predict</a>, 
+by searching for the string "ode" with code <code>[species, nm] = select_predict('ode')</code>.
 Some entries even reconstruct temperature and/or food level trajectories from other data.
-Search the data-base for examples.
+Search the data-base for examples, see the <a href="https://add-my-pet.github.io/AmPtool/docs/index.html" target="_blank">AmPtool manual</a> for doing it efficiently.
 
 <h5><A NAME="pars_init">pars_init</h5>
 
