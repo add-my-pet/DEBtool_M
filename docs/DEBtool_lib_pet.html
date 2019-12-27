@@ -56,6 +56,10 @@ The fields <code>data_0</code> and <code>data_1</code> refer the the zero- and u
 
 <p>
 The zero-variate data (in sequence of the units) are filled first, then the uni-variate data.
+Contrary to the above-mentioned fields, the data-fields can be entry-specific, but all data must have units, label, bibkey and, if time is in the units, also
+temp, units.temp, label.temp. 
+The comment-field is optional but we stimulate frequent use, e.g. with remarks about accuracy. 
+Remove empty fields.
 
 <p>
 The weights only need to be changed if more or less emphasis in terms of goodness of fit is desired.
@@ -64,6 +68,12 @@ The weights for the pseudo-data generally do not require editing; the default va
 
 <p>
 Plots with the same labels and units can be combined into one plot, by assigning datasets to a group and setting a caption.
+Please observe that AmP follows the lava-colour scheme form high to low: white, via red and blue, to black.
+Female data first, followed male data, which the consequence the female data is plotted in red, male data in blue.
+For data at several temperatures: high temperatures first.
+The presentation of results can (optionally) be customized with function <a href="../lib/pet/html/custom_results_template.html"><code>custom_results_my_pet</code></a>.
+A detailed account of the method is presented in <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure" 
+TARGET = "_top">the add_my_pet estimation Wiki manual</a>.
 
 <p>
 Discussion points can have optional references, set by <code>metaData.bibkey.D1 = bibkey;<code>, with bibkey replaced by the correct key.
@@ -150,10 +160,6 @@ If you are satified by the results use <code>mat2pars_init</code> to copy the re
 Then active the line <code>estim_options('method', 'no');</code> again, and select <code>estim_options('results_output', 4);</code> to see the implied properties in your browser, 
 or <code>estim_options('results_output', 5);</code> for comparison with related species.
 If all seems fine, your entry is ready for submission.
-
-<p>
-The presentation of results can (optionally) be customized with function <a href="../lib/pet/html/custom_results_template.html"><code>custom_results_my_pet</code></a>.
-A detailed account of the method is presented in <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure" TARGET = "_top">the add_my_pet estimation Wiki manual</a>
 
 <H4><A NAME="curators">For curators only</H4>
 
