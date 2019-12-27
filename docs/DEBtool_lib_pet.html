@@ -33,7 +33,7 @@ The aim is to
 
 Make sure that the path to DEBtool_M and AmPtool and their subdirectories has been set in Matlab.
 An AmP entry consists of a set of 4 files, 3 Matlab functions (<code>mydata_my_pet.m</code>, <code>predict_my_pet.m</code>, <code>pars_init_my_pet.m</code>) and 
-  a Matlab script (<code>run_my_pet</code>), where <code>my_pet</code> is replaced by the latin name of your species with spaces replaced by <code>_</code>.
+  a Matlab script (<code>run_my_pet.m</code>), where <code>my_pet</code> is replaced by the latin name of your species with spaces replaced by <code>_</code>.
 The mydata-file sets data and references, 
 the pars_init-file specifies the model type and initial parameter values, 
 the predict-file computes expectations for the data, given parameter values and 
@@ -52,6 +52,10 @@ Bibkeys follow the structure: max 4 characters for the first author, max 4 for t
 <p>
 Consult Wikipedia for taxonomic info, and <a href = "https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html">AmPeco</a> of available eco-codes.
 The fields <code>data_0</code> and <code>data_1</code> refer the the zero- and uni-variate data sets that are specified in the mydata-file.
+See <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure#Data_and_data_types"> the DEBwiki manual</a> for allowed codes; 
+the data sets themselved don't need to have these names.
+E.g., while data-code  <code>ap</code>, for age at puberty, is in the list, our advice is to work, instead, with <code>tp</code> for time since birth at puberty,
+to avoid that uncertainty about age at birth (due to uncertainty about the start of development), affects the results too much.
 <a href="http://www.debtheory.org/wiki/index.php?title=Completeness"><code>COMPLETE</code></a> quantifies the level of data-completeness.
 
 <p>
