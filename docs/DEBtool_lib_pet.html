@@ -114,9 +114,9 @@ The predict-file starts with extracting all parameters, as set in the pars_init-
 Matlab function <a href="../lib/pet/html/parscom_st.html">parscomp_st</a> is run to compute frequently used (simple) functions of the parameters, called compound-parameter, that do not depend on food level.
 
 <p>
-Then temperature correction factors, <code>TC</code> are computed for all data sets.
-All parameters are specified at the reference temperature of 20 C, and the <code>T</code> is added to the name of the variable to indicate that it is temperature-corrected. 
-This has to be done for all variables that have time in the dimensions.
+Then temperature correction factors, <code>TC</code>, are computed for all data sets.
+All parameters are specified at the reference temperature of 20 C, and code <code>T</code> is added to the name of the variable to indicate that it is temperature-corrected. 
+This has to be done for all variables that have time in their dimensions.
 
 <p>
 The predictions start with a number of scaled times, scaled lengths and scaled rates that concern the full life cycle, followed by required expectations for 
@@ -125,7 +125,8 @@ Notice that the sequence reflect dimensions of variables.
 This is not essential, but convenient for checking.
 
 <p>
-The final step is the specification of all required expectations of uni-variate data-sets.
+The final step is the specification of all required expectations of uni-variate data-sets; notice how the first column is used to modify expectations for the second one.
+Auxiliary data can be used for a similar purpose.
 
 <p>
 Most entries assume data-specific constant temperatures and/or food levels.
