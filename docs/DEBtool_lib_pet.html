@@ -150,7 +150,7 @@ You start parameter estimation from  the initial setting as specified in <code>p
 using a rather small number of maximum iteration steps (we frequently use 500).
 Then continuate estimation with <code>estim_options('pars_init_method', 1);</code>, in which case the initial parameter values are taken from <code>results_my_pet.mat</code>, 
 which was created in the previous run.
-Then continuate just by reapeting the last comment (arrow-up + enter) till convergence, or lack of further progress.
+Then continuate just by repeating the last comment (arrow-up + enter) till convergence, or lack of further progress.
 The significance of this sequence is that during the estimation iteration, the simplex shrinks, and a re-start restores the original size.
 In this way you reduce (but not eliminate) the propability of arriving at a local minimum of the loss function that is not global. 
 
