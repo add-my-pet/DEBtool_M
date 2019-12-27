@@ -43,7 +43,7 @@ The 4 files are now discussed in some more detail:
 
 <h5><A NAME="mydata">mydata</h5>
 
-Copy-and-rename template-file <code>/DEBtool_M/lib/pet/mydata_my_pet.m</code> in your current directory, 
+Copy-and-rename template-file <code>DEBtool_M/lib/pet/mydata_my_pet.m</code> in your current directory, 
   and have a look at mydata-files for related species as examples for editing inspiration.
 Temperatures have to be specified in Kelvin, while function <code>C2K</code> converts Celsius to Kelvin.
 Since Celsius is more intuitive, all entries use this function.
@@ -52,8 +52,8 @@ Bibkeys follow the structure: max 4 characters for the first author, max 4 for t
 <p>
 Consult Wikipedia for taxonomic info, and <a href = "https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html">AmPeco</a> of available eco-codes.
 The fields <code>data_0</code> and <code>data_1</code> refer the the zero- and uni-variate data sets that are specified in the mydata-file.
-See <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure#Data_and_data_types"> the DEBwiki manual</a> for allowed codes; 
-the data sets themselved don't need to have these names.
+See <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure#Data_and_data_types"> the DEBwiki manual</a> for allowed codes;.
+the data sets themselves don't need to have these names; the concepts matter.
 E.g., while data-code  <code>ap</code>, for age at puberty, is in the list, our advice is to work, instead, with <code>tp</code> for time since birth at puberty,
 to avoid that uncertainty about age at birth (due to uncertainty about the start of development), affects the results too much.
 <a href="http://www.debtheory.org/wiki/index.php?title=Completeness"><code>COMPLETE</code></a> quantifies the level of data-completeness.
@@ -102,6 +102,8 @@ Do something similar for personal communications.
 <h5><A NAME="predict">predict</h5>
 
 Copy-and-edit a predict-file from a related species.
+The <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/species_list.html">species-list</a> shows the data-types for all entries, 
+  which can be used to find predict files of related species that specify additional predictions for your data.
 Notice that all assigned variables have a comment that starts with a specification of its units.
 Notice also that predictions can depend on the model-type, as specified in the pars_init-file.
 The model-type is, however, not a free choice: related species have the same model-type.
