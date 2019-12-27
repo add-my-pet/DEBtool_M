@@ -63,8 +63,10 @@ Remove empty fields.
 
 <p>
 The weights only need to be changed if more or less emphasis in terms of goodness of fit is desired.
-Avoid large number; the value zero means that the predictions for that dataset do not contribute to the loss-function.
-The weights for the pseudo-data generally do not require editing; the default values are chosen such that pseudo-data hardly affect parameter estimation in the case that real data determines parameters well.
+Avoid large numbers (weights multipliers by factor 3 of 5 already have a big effect); 
+value zero means that the predictions for that dataset do not contribute to the loss-function.
+The weights for the pseudo-data generally do not require editing; 
+the default values are chosen such that pseudo-data hardly affect parameter estimation in the case that real data determines parameters well.
 
 <p>
 Plots with the same labels and units can be combined into one plot, by assigning datasets to a group and setting a caption.
