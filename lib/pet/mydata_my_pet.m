@@ -1,38 +1,4 @@
-%% mydata_my_pet
-% Sets referenced data
-
-%%
 function [data, auxData, metaData, txtData, weights] = mydata_my_pet 
-  % created by Starrlight Augustine, Bas Kooijman, Dina Lika, Goncalo Marques and Laure Pecquerie 2015/03/31
-  % last modified: 2015/07/28 
-  
-  %% Syntax
-  % [data, auxData, metaData, txtData, weights] = <../mydata_my_pet.m *mydata_my_pet*>
-  
-  %% Description
-  % Sets data, pseudodata, metadata, auxdata, explanatory text, weights coefficients.
-  % Meant to be a template in add-my-pet
-  %
-  % Output
-  %
-  % * data: structure with data
-  % * auxData: structure with auxilliairy data that is required to compute predictions of data (e.g. temperature, food.). 
-  %   auxData is unpacked in predict and the user needs to construct predictions accordingly.
-  % * txtData: text vector for the presentation of results
-  % * metaData: structure with info about this entry
-  % * weights: structure with weights for each data set
-  
-  %% Remarks
-  % Plots with the same labels and units can be combined into one plot by assigning a cell string with dataset names to metaData.grp.sets, and a caption to metaData.grp.comment. 
-  
-  %% To do (remove these remarks after editing this file)
-  % * copy this template; replace 'my_pet' by the name of your species (Genus_species)
-  % * fill in metaData fields with the proper information
-  % * insert references for each data (an example is given), for multiple references, please use commas to separate references
-  % * edit real data; remove all data that to not belong to your pet
-  % * list facts - this is where you can add relevant/interesting information on its biology
-  % * edit discussion concerning e.g. choice of model, assumptions needed to model certain data sets etc. 
-  % * fill in all of the references
 
 %% set metaData
 
@@ -40,48 +6,43 @@ metaData.phylum     = 'my_pet_phylum';
 metaData.class      = 'my_pet_class'; 
 metaData.order      = 'my_pet_order'; 
 metaData.family     = 'my_pet_family';
-metaData.species    = 'my_pet'; % 
+metaData.species    = 'my_pet'; 
 metaData.species_en = 'my_pet_english_name'; 
-metaData.T_typical  = C2K(20); % K, body temp
-metaData.data_0     = {'ab'; 'ap'; 'am'; 'Lb'; 'Lp'; 'Li'; 'Wdb'; 'Wdp'; 'Wdi'; 'Ri'};  % tags for different types of zero-variate data
-metaData.data_1     = {'t-L'; 'L-W'}; % tags for different types of uni-variate data
+metaData.ecoCode.climate = {?};
+metaData.ecoCode.ecozone = {?};
+metaData.ecoCode.habitat = {?};
+metaData.ecoCode.embryo  = {?};
+metaData.ecoCode.migrate = {?};
+metaData.ecoCode.food    = {?};
+metaData.ecoCode.gender  = {?};
+metaData.ecoCode.reprod  = {?};
+metaData.T_typical  = C2K(?); % K, typical body temp
+metaData.data_0     = {?}; 
+metaData.data_1     = {?};
 
-metaData.COMPLETE = 2.5; % using criteria of LikaKear2011
+metaData.COMPLETE = ?; % using criteria of LikaKear2011
 
-metaData.author   = {'FirstName1 LastName1'};            % put names as authors as separate strings:  {'FirstName1 LastName2','FirstName2 LastName2'} , with corresponding author in first place 
-metaData.date_subm = [2015 04 20];                       % [year month day], date at which the entry is submitted
-metaData.email    = {'myname@myuniv.univ'};              % e-mail of corresponding author
-metaData.address  = {'affiliation, zipcode, country'};   % affiliation, postcode, country of the corresponding author
+metaData.author   = {'FirstName1 LastName1', 'FirstName2 LastName2'};  
+metaData.date_subm = [yyyy mm dd];  
+metaData.email    = {'myname@myuniv.univ'}; 
+metaData.address  = {'affiliation, zipcode, country'}; 
 
-% uncomment and fill in the following fields when the entry is updated:
-% metaData.author_mod_1  = {'FirstName3 LastName3'};          % put names as authors as separate strings:  {'author1','author2'} , with corresponding author in first place 
-% metaData.date_mod_1    = [2017 09 18];                      % [year month day], date modified entry is accepted into the collection
-% metaData.email_mod_1   = {'myname@myuniv.univ'};            % e-mail of corresponding author
-% metaData.address_mod_1 = {'affiliation, zipcode, country'}; % affiliation, postcode, country of the corresponding author
-
-% for curators only ------------------------------
 % metaData.curator     = {'FirstName LastName'};
 % metaData.email_cur   = {'myname@myuniv.univ'}; 
-% metaData.date_acc    = [2015 04 22]; 
-%-------------------------------------------------
+% metaData.date_acc    = [yyyy mm dd]; 
 
 %% set data
 % zero-variate data;
-% typically depend on scaled functional response f.
-% here assumed to be equal for all real data; the value of f is specified in pars_init_my_pet.
-% add an optional comment structure to give any additional explanations on
-% how the value was chosen, see the last column of the ab data set for an
-% example
 
 % age 0 is at onset of embryo development
-data.ab = 15;      units.ab = 'd';    label.ab = 'age at birth';  bibkey.ab = 'MollCano2010';   comment.ab  = 'mean value taken from several measurements'; 
+data.ab = ?;      units.ab = 'd';    label.ab = 'age at birth';  bibkey.ab = 'MollCano2010';   comment.ab  = 'mean value taken from several measurements'; 
   temp.ab = C2K(20);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
   % observed age at birth is frequently larger than ab, because of diapauzes during incubation
-data.ap = 261;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = 'Anon2015';
+data.ap = ?;     units.ap = 'd';    label.ap = 'age at puberty'; bibkey.ap = 'Anon2015';
   temp.ap = C2K(20);  units.temp.ap = 'K'; label.temp.ap = 'temperature';
   % observed age at puberty is frequently larger than ap, 
   %   because allocation to reproduction starts before first eggs appear
-data.am = 591;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
+data.am = ?;     units.am = 'd';    label.am = 'life span';     bibkey.am = 'Wiki';   
   temp.am = C2K(20);  units.temp.am = 'K'; label.temp.am = 'temperature'; 
 % (accounting for aging only) 
 
@@ -148,23 +109,26 @@ if exist('comment','var')
 end
 
 %% Discussion points
-D1 = 'Author_mod_1: I found information on the number of eggs per female as a function of length in Anon2013 that was much higher than in Anon2015 but chose to not include it as the temperature was not provided';
-% optional bibkey: metaData.bibkey.D1 = 'Anon2013';
-D2 = 'Author_mod_1: I was surprised to observe that the weights coefficient for ab changed so much the parameter values';     
-% optional bibkey: metaData.bibkey.D2 = 'Kooy2010';
+D1 = '';
+D2 = '';     
+metaData.bibkey.D2 = 'Kooy2010';
 metaData.discussion = struct('D1', D1, 'D2', D2);
 
 %% Facts
-% list facts: F1, F2, etc.
-% make sure each fact has a corresponding bib key
-% do not put any DEB modelling assumptions here, only relevant information on
-% biology and life-cycles etc.
-F1 = 'The larval stage lasts 202 days and no feeding occurs';
-metaData.bibkey.F1 = 'Wiki'; % optional bibkey
+F1 = '';
+metaData.bibkey.F1 = 'bibkey'; 
 metaData.facts = struct('F1',F1);
 
+%% Links
+metaData.links.id_CoL = ''; % Cat of Life
+metaData.links.id_EoL = ''; % Ency of Life
+metaData.links.id_Wiki = ''; % Wikipedia
+metaData.links.id_ADW = ''; % ADW
+metaData.links.id_Taxo = ''; % Taxonomicon
+metaData.links.id_WoRMS = ''; % WoRMS
+metaData.links.id_fishbase = ''; % fishbase
+
 %% References
-% the following reference should be kept for chemical parameter settings -----------------------------
 bibkey = 'Kooy2010'; type = 'Book'; bib = [ ...  % used in setting of chemical parameters and pseudodata
 'author = {Kooijman, S.A.L.M.}, ' ...
 'year = {2010}, ' ...
