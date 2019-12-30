@@ -1,6 +1,6 @@
 function [data, auxData, metaData, txtData, weights] = mydata_my_pet 
 
-%% set metaData
+%% set metaData % see http://www.debtheory.org/wiki/index.php?title=Mydata_file for metaData field descriptions
 
 metaData.phylum     = 'my_pet_phylum'; 
 metaData.class      = 'my_pet_class'; 
