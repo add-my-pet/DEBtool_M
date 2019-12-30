@@ -152,7 +152,7 @@ The first block of parameters is obligatory for the chosen model type, the secon
 
 <h5><A NAME="run">run</h5>
 
-Copy-and-edit a pars_init-file from any species.
+Copy-and-edit a run-file from any species.
 The run-files starts with setting a global variable for the species that will be estimated and with checking the entry for consistency.
 
 <p>
@@ -169,7 +169,7 @@ Then continuate estimation with <code>estim_options('pars_init_method', 1);</cod
 which was created in the previous run.
 Then continuate just by repeating the last comment (arrow-up + enter) till convergence, or lack of further progress.
 The significance of this sequence is that during the estimation iteration, the simplex shrinks, and a re-start restores the original size.
-In this way you reduce (but not eliminate) the propability of arriving at a local minimum of the loss function that is not global. 
+In this way you reduce (but not eliminate) the probability of arriving at a local minimum of the loss function that is not global. 
 
 <p>
 You can reduce or enhance the effect of particular data sets/points by changing weight coefficients in the mydata-file.
