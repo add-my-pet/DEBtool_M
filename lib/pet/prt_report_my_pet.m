@@ -71,7 +71,7 @@ path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
   focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
-  datePrintNm = ['allStat version: ', datestr(datenum(date_allStat), 'yyyy/mm/dd')];
+  datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 0; n_spec = 1; % number of focus species, initiate total number of species
     
 elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or more) focusSpecies
@@ -84,7 +84,7 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     end
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datenum(date_allStat), 'yyyy/mm/dd')];
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
     end  
   else % multispecies; no color coding, so color = 0
     focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); % number of focus species, initiate total number of species
@@ -94,13 +94,13 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     parList = par;
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datenum(date_allStat), 'yyyy/mm/dd')];
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
     end  
   end
 
 else  % use allStat.mat as parameter source for focusSpecies (always single species)
   specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
-  datePrintNm = ['allStat version: ', datestr(datenum(date_allStat), 'yyyy/mm/dd')];
+  datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
 
