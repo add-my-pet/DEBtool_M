@@ -3,7 +3,7 @@
 
 %%
 function printpar(varargin)
-  % created by Bas Kooijman, modified 2009/02/18, 2010/08/05
+  % created by Bas Kooijman, modified 2009/02/18, 2010/08/05, 2020/01/12
   
   %% Syntax 
   % <../printpar.m *printpar*>(varargin)
@@ -65,9 +65,13 @@ function printpar(varargin)
      
   [r,c] = size(nm);
   fprintf(fid, [txt, ' \n']);
-  if nargin == 2 || isempty(sd)
+  if nargin == 2 && isnumeric(p)
     for i = 1:r
       fprintf(fid, '%s %8.4g \n', nm{i,:}, p(i,1));
+    end
+  elseif nargin == 2 
+    for i = 1:r
+      fprintf(fid, '%s %s \n', nm{i,:}, p(i,:));
     end
   else
     for i = 1:r
