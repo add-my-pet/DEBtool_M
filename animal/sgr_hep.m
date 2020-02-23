@@ -13,7 +13,7 @@ function [r, info] = sgr_hep (par, T_pop, f_pop)
   % Hazard includes 
   %
   %  * thinning (optional, default: 1; otherwise specified in par.thinning), 
-  %  * stage-specific background (optional, default: 0; otherwise specified in par.h_B0b, par.h_Bbp, par.h_Bpi)
+  %  * stage-specific background (optional, default: 0; otherwise specified in par.h_B0b, par.h_Bbp, par.h_Bpj, par.h_Bji)
   %  * ageing (controlled by par.h_a and par.s_G)
   %
   % With thinning the hazard rate is such that the feeding rate of a cohort does not change during growth, in absence of other causes of death.
@@ -61,8 +61,11 @@ function [r, info] = sgr_hep (par, T_pop, f_pop)
   if ~exist('h_Bbp', 'var')
     h_Bbp = 0;
   end
-  if ~exist('h_Bpi', 'var')
-    h_Bpi = 0;
+  if ~exist('h_Bpj', 'var')
+    h_Bpj = 0;
+  end
+  if ~exist('h_Bji', 'var')
+    h_Bji = 0;
   end
   if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
     kap_R = kap_R/2; % take cost of male production into account
@@ -95,10 +98,10 @@ function [r, info] = sgr_hep (par, T_pop, f_pop)
   
   % reproduction rate of imago
   N = kap_R * E_Rj * L_j^3/ E_0;      % #, number of eggs at emergence
-  R = N/ tT_im;                       % #/d, reproduction rate
+  RT = N/ tT_im;                       % #/d, reproduction rate
   tT_N0 = tT_j + tT_im;               % d, time since birth at which all eggs are produced
 
-  pars_qhSC = {f, kT_M, vT, g, k, R, L_b, L_p, L_j, L_i, L_m, tT_p, tT_j, tT_N0, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbp, h_Bpi, thinning};
+  pars_qhSC = {f, vT, RT, L_b, L_p, L_j, L_i, L_m, tT_p, tT_j, tT_N0, rT_j, rT_B, s_G, hT_a, h_Bbp, h_Bpj, h_Bji, thinning};
       
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
   if charEq(0, S_b, pars_qhSC{:}) > 0
@@ -109,7 +112,7 @@ function [r, info] = sgr_hep (par, T_pop, f_pop)
 end
 
 % reproduction is continuous
-function dqhSC = dget_qhSC(t, qhSC, sgr, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)
+function dqhSC = dget_qhSC(t, qhSC, sgr, f, v, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bji, thinning)
   % t: time since birth
   q   = max(0, qhSC(1)); % 1/d^2, aging acceleration
   h_A = max(0, qhSC(2)); % 1/d^2, hazard rate due to aging
@@ -123,14 +126,14 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i,
     dq = 0;
     dh_A = 0;
   elseif t < t_j
-    h_B = h_Bpi;
+    h_B = h_Bpj;
     L = L_i - (L_i - L_p) * exp(-r_B * (t - t_p));
     r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
     h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
     dq = 0;
     dh_A = 0;
   else % imago
-    h_B = h_Bpi;
+    h_B = h_Bji;
     s_M = L_p/ L_b;
     L = L_j;
     r = 0; % 1/d, spec growth rate of structure
@@ -147,8 +150,8 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i,
   dqhSC = [dq; dh_A; dS; dCharEq]; 
 end
 
-function value = charEq (sgr, S_b, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)
+function value = charEq (sgr, S_b, f, v, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bji, thinning)
   options = odeset('AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 t_N0], [0 0 S_b 0], options, sgr, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning);
+  [t, qhSC] = ode45(@dget_qhSC, [0 t_N0], [0 0 S_b 0], options, sgr, f, v, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bji, thinning);
   value = 1 - qhSC(end,4);
 end

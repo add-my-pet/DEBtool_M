@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-21"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
+      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-22"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">popStatistics_st</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">popStatistics_st</h2><p>Computes implied population properties of DEB models</p><h2 id="3">Syntax</h2><p>[stat txtStat] = <a href="../popStatistics_st.m"><b>popStatistics_st</b></a>(model, par, T, f)</p><h2 id="4">Description</h2><p>Computes quantities that depend on parameters, temperature and food level at population level. Field-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional) View results with prt_my_pet_pop, which is a shell around this function. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex. If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>F:     optional scalar scaled functional response (default 1), or character string representing a fraction</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, units and labels</li></ul></div><pre>   - f: scaled function response (set by input F)
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">popStatistics_st</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">popStatistics_st</h2><p>Computes implied population properties of DEB models</p><h2 id="3">Syntax</h2><p>[stat, Hfig_surv, Hfig_stab] = <a href="../popStatistics_st.m"><b>popStatistics_st</b></a>(model, par, T, f)</p><h2 id="4">Description</h2><p>Computes quantities that depend on parameters, temperature and food level at population level. First-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional) View results with prt_my_pet_pop, which is a shell around this function. The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex. If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)</p><p>Input</p><div><ul><li>model: string with name of model</li><li>par :  structure with primary parameters at reference temperature in time-length-energy frame</li><li>T:     optional scalar with temperature in Kelvin; default C2K(20)</li><li>F:     optional scalar scaled functional response (default 1), or character string representing a fraction</li></ul></div><p>Output</p><div><ul><li>stat: structure with statistics (see under remarks) with fields, units and labels</li></ul></div><pre>   - f: scaled function response (set by input F)
    - T: absolute temperature (set by input)
    - TC: temperature correction factor</pre><pre>   for with and without thinning, at f_min, f and f_max
    - f:  scaled functional response
@@ -74,35 +74,42 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
    - t2: population doubling time
    - S_b: survivor probability at birth
    - S_p: survivor probability at puberty
-   - theta_jn: fraction of post-natals that is juvenile
    - theta_e: fraction of individuals that is embryo
-   - del_ea: number of embryos per adult
-   - ER: mean reproduction rate of adults
-   - EL_n: mean structural length of post-natals
-   - EL2_n: mean squared structural length of post-natals
-   - EL3_n: mean cubed structural length of post-natals
-   - EL_a: mean structural length of adults
-   - EL2_a: mean squared structural length of adults
-   - EL3_a: mean cubed structural length of adults
-   - EWw_n: mean wet weight of post-natals
-   - EWw_a: mean wet weight of adults
-   - hWw_n: post-natal spec production of dead post-natals
-   - Ep_A: mean assimilation energy of post-natals
-   - EJ_X: mean ingestion rate of wet food by post-natals
-   - EJ_P: mean production rate of wet feces by post-natals</pre><div><ul><li>txtStat: structure with temp, fresp, units, labels for stat</li></ul></div><h2 id="5">Remarks</h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Ages exclude initial delay of development, if it would exist. Body weights exclude possible contribution of the reproduction buffer. The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref</p><p>For required model-specific fields, see <a href="get_parfields.html"><b>get_parfields</b></a>.</p><h2 id="6">Example of use</h2><p>load('results_species.mat'); [stat, txtStat] = popStatistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+   - theta_j: fraction of individuals that is juvenile
+   - theta_s: fraction of individuals that is adult
+   - L_bi: mean structural length of post-natals
+   - L2_bi: mean squared structural length of post-natals
+   - L3_bi: mean cubed structural length of post-natals
+   - Ww_bi: mean wet weight of post-natals
+   - L_pi: mean structural length of adults
+   - L2_pi: mean squared structural length of adults
+   - L3_pi: mean cubed structural length of adults
+   - Ww_pi: mean wet weight of adults
+   - Y_PX: yield of faeces on food
+   - Y_VX: yield of living structure on food
+   - Y_VX_d: yield of dead structure on food
+   - Y_EP: yield of living reserve on food
+   - Y_EP_d: yield of dead reserve on food
+   - mu_hx: yield of heat on food
+   - Y_CX: yield of CO2 on food
+   - Y_HX: yield of H2O on food
+   - Y_OX: yield of O2 on food
+   - Y_NX: yield of N-waste on food
+   - R: mean reproduction rate of adults
+   - J_X: mean ingestion rate of wet food by post-natals</pre><div><ul><li>txtStat: structure with labels and units</li></ul></div><h2 id="5">Remarks</h2><p>Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked! Ages exclude initial delay of development, if it would exist. Body weights exclude possible contribution of the reproduction buffer. The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref</p><p>For required model-specific fields, see <a href="get_parfields.html"><b>get_parfields</b></a>.</p><h2 id="6">Example of use</h2><p>load('results_species.mat'); [stat, txtStat] = popStatistics_st(metaPar.model, par); printstat_st(stat, txtStat)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% popStatistics_st
 % Computes implied population properties of DEB models
 
 function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F) 
-% created 2019/07/08 by Bas Kooijman
+% created 2019/07/08 by Bas Kooijman, modified 2020/02/21
 
 %% Syntax
-% [stat txtStat] = <../popStatistics_st.m *popStatistics_st*>(model, par, T, f)
+% [stat, Hfig_surv, Hfig_stab] = <../popStatistics_st.m *popStatistics_st*>(model, par, T, f)
 
 %% Description
 % Computes quantities that depend on parameters, temperature and food level at population level.
-% Field-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional)
+% First-level field is scaled func resp (f0, ff, f1, where ff is optional), second thinning (thin0, thin1), third gender(f,m, where m is optional)
 % View results with prt_my_pet_pop, which is a shell around this function.
 % The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex.
 % If 4th input is a character string, it should specify a fraction for f in the interval (f_min, 1), i.e. f_min + f * (1 - f_min)
@@ -128,24 +135,31 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
 %     - t2: population doubling time
 %     - S_b: survivor probability at birth
 %     - S_p: survivor probability at puberty
-%     - theta_jn: fraction of post-natals that is juvenile
 %     - theta_e: fraction of individuals that is embryo
-%     - del_ea: number of embryos per adult
-%     - ER: mean reproduction rate of adults
-%     - EL_n: mean structural length of post-natals
-%     - EL2_n: mean squared structural length of post-natals
-%     - EL3_n: mean cubed structural length of post-natals
-%     - EL_a: mean structural length of adults
-%     - EL2_a: mean squared structural length of adults
-%     - EL3_a: mean cubed structural length of adults
-%     - EWw_n: mean wet weight of post-natals
-%     - EWw_a: mean wet weight of adults
-%     - hWw_n: post-natal spec production of dead post-natals
-%     - Ep_A: mean assimilation energy of post-natals
-%     - EJ_X: mean ingestion rate of wet food by post-natals
-%     - EJ_P: mean production rate of wet feces by post-natals
+%     - theta_j: fraction of individuals that is juvenile
+%     - theta_s: fraction of individuals that is adult
+%     - L_bi: mean structural length of post-natals
+%     - L2_bi: mean squared structural length of post-natals
+%     - L3_bi: mean cubed structural length of post-natals
+%     - Ww_bi: mean wet weight of post-natals
+%     - L_pi: mean structural length of adults
+%     - L2_pi: mean squared structural length of adults
+%     - L3_pi: mean cubed structural length of adults
+%     - Ww_pi: mean wet weight of adults
+%     - Y_PX: yield of faeces on food
+%     - Y_VX: yield of living structure on food
+%     - Y_VX_d: yield of dead structure on food
+%     - Y_EP: yield of living reserve on food
+%     - Y_EP_d: yield of dead reserve on food
+%     - mu_hx: yield of heat on food
+%     - Y_CX: yield of CO2 on food
+%     - Y_HX: yield of H2O on food
+%     - Y_OX: yield of O2 on food
+%     - Y_NX: yield of N-waste on food
+%     - R: mean reproduction rate of adults
+%     - J_X: mean ingestion rate of wet food by post-natals
 %
-% * txtStat: structure with temp, fresp, units, labels for stat
+% * txtStat: structure with labels and units
 
 %% Remarks
 % Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked!
@@ -161,7 +175,7 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'};
   if ~any(strcmp(model,choices))
     fprintf('warning from statistics_st: invalid model key \n')
-    stat = []; txtStat = [];
+    stat = []; 
     return;
   end    
      
@@ -232,11 +246,8 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
-  TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
-
-  % initiate output with T, TC
-  stat.T = K2C(T);        units.T = 'C';       label.T = 'body temperature'; 
-  stat.c_T = TC;          units.c_T = '-';     label.c_T = 'temperature correction factor'; 
+  TC = tempcorr(T, T_ref, pars_T); % -, Temperature Correction factor
+  stat.T = K2C(T); stat.c_T = TC;  % add to stat, txtStat is updated below, since ssd_mod overwrites txtStat              
       
   % first females with and without thinning, possibly followed by males; 
   % for each thinning-setting: f_min, possibly f, and f_max (=1)
@@ -244,9 +255,9 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   [f_01, info_01] = f_ris0_mod (model, par); % get f for r = 0
   stat.f0.thin1.f.f = f_01; r_01 = 0; stat.f0.thin1.f.r = r_01; stat.f0.thin1.f.t2 = NaN; 
   if info_01 == 0
-    stat = ssd_mod(model, stat, '01f', NaN); f_01 = NaN; stat.f0.thin1.f.f = f_01;
+    [stat, txtStat] = ssd_mod(model, stat, '01f', NaN); f_01 = NaN; stat.f0.thin1.f.f = f_01;
   else % fill statistics
-    stat = ssd_mod(model, stat, '01f', par, T, f_01, 0);
+    [stat, txtStat] = ssd_mod(model, stat, '01f', par, T, f_01, 0);
   end 
   if n_fVal == 3
     if ischar(F)
@@ -265,34 +276,34 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       return
     end
     if isnan(f_f1)
-      stat = ssd_mod(model, stat, 'f1f', NaN); stat.ff.thin1.f.f = f_f1;
+      [stat, txtStat] = ssd_mod(model, stat, 'f1f', NaN); stat.ff.thin1.f.f = f_f1;
     else
       [r_f1, info_f1] = sgr_mod (model, par, T, f_f1); 
       stat.ff.thin1.f.f = f_f1; stat.ff.thin1.f.r = r_f1; stat.ff.thin1.f.t2 = (log(2))/ r_f1;
     end
     if ~exist('info_f1', 'var') || info_f1 == 0
-      stat = ssd_mod(model, stat, 'f1f', NaN); 
+      [stat, txtStat] = ssd_mod(model, stat, 'f1f', NaN); 
       stat.ff.thin1.f.r = NaN; stat.ff.thin1.f.t2 = NaN;
     else
-      stat = ssd_mod(model, stat, 'f1f', par, T, f_f1, r_f1);
+      [stat, txtStat] = ssd_mod(model, stat, 'f1f', par, T, f_f1, r_f1);
     end
   end
   [r_11, info_11] = sgr_mod (model, par, T, 1);
   stat.f1.thin1.f.f = 1; stat.f1.thin1.f.r = r_11; stat.f1.thin1.f.t2 = (log(2))/ r_11; 
   if info_11 == 0
-    stat = ssd_mod(model, stat, '11f', NaN); 
+    [stat, txtStat] = ssd_mod(model, stat, '11f', NaN); 
     stat.f1.thin1.f.r = NaN; stat.f1.thin1.f.t2 = NaN;
   else
-    stat = ssd_mod(model, stat, '11f', par, T, 1, r_11);
+    [stat, txtStat] = ssd_mod(model, stat, '11f', par, T, 1, r_11);
   end
             
   par.thinning = 0;
   [f_00, info_00] = f_ris0_mod (model, par); % get f for r = 0
   stat.f0.thin0.f.f = f_00; r_00 = 0; stat.f0.thin0.f.r = r_00; stat.f0.thin0.f.t2 = NaN; 
   if info_00 == 0
-    stat = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;
+    [stat, txtStat] = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;
   else
-    stat = ssd_mod(model, stat, '00f', par, T, f_00, 0);
+    [stat, txtStat] = ssd_mod(model, stat, '00f', par, T, f_00, 0);
   end
   if n_fVal == 3
     if ischar(F) && ~isnan(f_f1)
@@ -303,25 +314,25 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       f_f0 = F;
     end
     if isnan(f_f0)
-      stat = ssd_mod(model, stat, 'f0f', NaN); stat.ff.thin0.f.f = f_f0;
+      [stat, txtStat] = ssd_mod(model, stat, 'f0f', NaN); stat.ff.thin0.f.f = f_f0;
     else
       [r_f0, info_f0] = sgr_mod (model, par, T, f_f0);
       stat.ff.thin0.f.f = f_f0; stat.ff.thin0.f.r = r_f0; stat.ff.thin0.f.t2 = (log(2))/ r_f0;
     end
     if ~exist('info_f0', 'var') || info_f0 == 0
-      stat = ssd_mod(model, stat, 'f0f', NaN);
+      [stat, txtStat] = ssd_mod(model, stat, 'f0f', NaN);
       stat.ff.thin0.f.r = NaN; stat.ff.thin0.f.t2 = NaN;
     else
-      stat = ssd_mod(model, stat, 'f0f', par, T, f_f0, r_f0);
+      [stat, txtStat] = ssd_mod(model, stat, 'f0f', par, T, f_f0, r_f0);
     end
   end
   [r_10, info_10] = sgr_mod (model, par, T, 1); 
   stat.f1.thin0.f.f = 1; stat.f1.thin0.f.r = r_10; stat.f1.thin0.f.t2 = (log(2))/ r_10;
   if info_10 == 0
-    stat = ssd_mod(model, stat, '10f', NaN); 
+    [stat, txtStat] = ssd_mod(model, stat, '10f', NaN); 
     stat.f1.thin0.f.r = NaN; stat.f1.thin0.f.t2 = NaN;
   else
-    stat = ssd_mod(model, stat, '10f', par, T, 1, r_10);
+    [stat, txtStat] = ssd_mod(model, stat, '10f', par, T, 1, r_10);
   end
             
   if male % overwrite of par!!!! parameters become male parameters
@@ -341,70 +352,47 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
     par.thinning = 1; 
     stat.f0.thin1.m.f = stat.f0.thin1.f.f; stat.f0.thin1.m.r = stat.f0.thin1.f.r; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     if isnan(stat.f0.thin1.f.f) 
-      stat = ssd_mod(model, stat, '01m', NaN); 
+      [stat, txtStat] = ssd_mod(model, stat, '01m', NaN); 
       stat.f0.thin1.m.r = r_01; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     else
-      stat = ssd_mod(model, stat, '01m', par, T, f_01, 0); stat.f0.thin1.m.ER = [];
+      [stat, txtStat] = ssd_mod(model, stat, '01m', par, T, f_01, 0); stat.f0.thin1.m.ER = [];
     end
     if n_fVal == 3
       stat.ff.thin1.m.f = stat.ff.thin1.f.f; stat.ff.thin1.m.r = stat.ff.thin1.f.r; stat.ff.thin1.m.t2 = stat.ff.thin1.f.t2; stat.ff.thin1.m.ER = [];
       if isnan(stat.ff.thin1.f.f)
-        stat = ssd_mod(model, stat, 'f1m', NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
+        [stat, txtStat] = ssd_mod(model, stat, 'f1m', NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
       else
-        stat = ssd_mod(model, stat, 'f1m', par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
+        [stat, txtStat] = ssd_mod(model, stat, 'f1m', par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
       end
     end
     stat.f1.thin1.m.f = stat.f1.thin1.f.f; stat.f1.thin1.m.r = stat.f1.thin1.f.r; stat.f1.thin1.m.t2 = stat.f1.thin1.f.t2;
-    stat = ssd_mod(model, stat, '11m', par, T, 1, r_11); stat.f1.thin1.m.ER = [];
+    [stat, txtStat] = ssd_mod(model, stat, '11m', par, T, 1, r_11); stat.f1.thin1.m.ER = [];
             
     par.thinning = 0;
     stat.f0.thin0.m.f = stat.f0.thin0.f.f; stat.f0.thin0.m.r = stat.f0.thin0.f.r; stat.f0.thin0.m.t2 = stat.f0.thin0.f.t2;
     if isnan(stat.f0.thin0.f.f) 
-      stat = ssd_mod(model, stat, '00m', NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
+      [stat, txtStat] = ssd_mod(model, stat, '00m', NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
     else
-      stat = ssd_mod(model, stat, '00m', par, T, f_00, 0); stat.f0.thin0.m.ER = [];
+      [stat, txtStat] = ssd_mod(model, stat, '00m', par, T, f_00, 0); stat.f0.thin0.m.ER = [];
     end
     if n_fVal == 3
       stat.ff.thin0.m.f = stat.ff.thin0.f.f; stat.ff.thin0.m.r = stat.ff.thin0.f.r; stat.ff.thin0.m.t2 = stat.ff.thin0.f.t2;
       if isnan(stat.ff.thin0.f.f)
-        stat = ssd_mod(model, stat, 'f0m', NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
+        [stat, txtStat] = ssd_mod(model, stat, 'f0m', NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
       else
-        stat = ssd_mod(model, stat, 'f0m', par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
+        [stat, txtStat] = ssd_mod(model, stat, 'f0m', par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
       end
     end
     stat.f1.thin0.m.f = stat.f1.thin0.f.f; stat.f1.thin0.m.r = stat.f1.thin0.f.r; stat.f1.thin0.m.t2 = stat.f1.thin0.f.t2; 
-    stat = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
+    [stat, txtStat] = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
   end
   
   % add statistics to output structure
-  % fill units, label, adding to output structure is done below
-  units.f    = '-';      label.f   = 'scaled functional response';
-  units.r    = '1/d';    label.r   = 'spec pop growth rate';
-  units.t2   = 'd';      label.t2  = 'population doubling time';
-  units.S_b  = '-';      label.S_b = 'survival probability at birth';
-  units.S_p  = '-';      label.S_p = 'survival probability at puberty';
-  units.a_b  = 'd';      label.a_b = 'age at birth';
-  units.t_p  = 'd';      label.t_p = 'time since birth at puberty';
-  units.theta_jn = '-';  label.theta_jn = 'fraction of post-natals that is juvenile';
-  units.theta_e = '-';   label.theta_e = 'fraction of individuals that is embryo';
-  units.del_ea = '-';    label.del_ea = 'number of embryos per adult in population';
-  units.ER = '1/d';      label.ER  = 'mean reproduction rate per adult female';
-  units.EL_n   = 'cm';   label.EL_n   = 'mean structural length of post-natals';
-  units.EL2_n  = 'cm^2'; label.EL2_n  = 'mean squared structural length of post-natals';
-  units.EL3_n  = 'cm^3'; label.EL3_n  = 'mean cubed structural length of post-natals';
-  units.EL_a   = 'cm';   label.EL_a   = 'mean structural length of adults';
-  units.EL2_a  = 'cm^2'; label.EL2_a  = 'mean squared structural length of adults';
-  units.EL3_a  = 'cm^3'; label.EL3_a  = 'mean cubed structural length of adults';
-  units.EWw_n  = 'g';    label.EWw_n     = 'mean wet weight of post-natals';
-  units.EWw_a  = 'g';    label.EWw_a  = 'mean wet weight of adults';
-  units.hWw_n = 'g/d';   label.hWw_n  = 'post-natal spec production of dead post-natals';
-  units.Ep_A = 'J/d';    label.Ep_A = 'mean assimilation energy of post-natals';
-  units.EJ_X = 'g/d';    label.EJ_X = 'mean ingestion rate of wet food by post-natals';
-  units.EJ_P = 'g/d';    label.EJ_P = 'mean production rate of wet feces by post-natals';
-  
-  % packing to output
-  txtStat.units = units;
-  txtStat.label = label;
+  txtStat.units.f    = '-';     txtStat.label.f   = 'scaled functional response';
+  txtStat.units.r    = '1/d';   txtStat.label.r   = 'spec pop growth rate';
+  txtStat.units.t2   = 'd';     txtStat.label.t2  = 'population doubling time';
+  txtStat.units.T = 'C';        txtStat.label.T = 'body temperature'; 
+  txtStat.units.c_T = '-';      txtStat.label.c_T = 'temperature correction factor'; 
 
   % graphics
  

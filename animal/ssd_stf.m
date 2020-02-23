@@ -2,11 +2,11 @@
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
-  % created 2019/07/26 by Bas Kooijman
+function [stat, txtStat] = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
+  % created 2019/07/26 by Bas Kooijman, modified 2020/02/19
   
   %% Syntax
-  % stat = <../ssd_stf.m *ssd_stf*> (stat, code, par, T_pop, f_pop, sgr)
+  % [stat, txtStat] = <../ssd_stf.m *ssd_stf*> (stat, code, par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution.
@@ -28,31 +28,42 @@ function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
   % * f_pop: optional scalar with scaled functional response (overwrites value in par.f)
   % * sgr: specific population growth rate at T_pop
   %
-  % Output: stat: structure with fields
+  % Output: 
   %
-  % * EL: cm, mean structural length for post-natals
-  % * EL2: cm^2, mean squared structural length for post-natals
-  % * EL3: cm^3, mean cubed structural length for post-natals
-  % * EL_a: cm, mean structural length for adults
-  % * EL2_a: cm^2, mean squared structural length  for adults
-  % * EL3_a: cm^3, mean cubed structural length  for adults
-  % * EWw_n: g, mean wet weight of post-natals (excluding contributions from reproduction buffer)
-  % * EWw_a: g, mean wet weight of adults (excluding contributions from reproduction buffer)
-  % * hWw: 1/d, production of dead post-natals (excluding contributions from reproduction buffer)
-  % * theta_jn: -, fraction of the post-natal individuals that is juvenile
-  % * S_b: -, survival probability at birth
-  % * S_p: -, survival probability at puberty
-  % * tS: (n,2)-array with age (d), surivival probability (-)
-  % * tSs: (n,2)-array with age (d), survivor function of the stable age distribution (-)
-  % * ER: #/d, mean reproduction rate of adult female
-  % * del_ea: -, number of embryos per adult
-  % * theta_e: -, fraction of individuals that is embryo
-  % * Ep_A: J/d, mean assimilation rate for post-natals
-  % * EJ_X: g/d, mean feeding rate for post-natals
-  % * EJ_P: g/d, mean defacating rate for post-natals
-  % * a_b: d, age at birth
-  % * t_p: d, time since birth at puberty
+  % * stat: structure with fields
   %
+  %   - a_b: d, age at birth
+  %   - t_p: d, time since birth at puberty
+  %   - L_bi: cm, mean structural length for post-natals
+  %   - L2_bi: cm^2, mean squared structural length for post-natals
+  %   - L3_bi: cm^3, mean cubed structural length for post-natals
+  %   - L_pi: cm, mean structural length for adults
+  %   - L2_pi: cm^2, mean squared structural length  for adults
+  %   - L3_pi: cm^3, mean cubed structural length  for adults
+  %   - Ww_bi: g, mean wet weight of post-natals (excluding contributions from reproduction buffer)
+  %   - Ww_pi: g, mean wet weight of adults (excluding contributions from reproduction buffer)
+  %   - S_b: -, survival probability at birth
+  %   - S_p: -, survival probability at puberty
+  %   - tS: (n,2)-array with age (d), surivival probability (-)
+  %   - tSs: (n,2)-array with age (d), survivor function of the stable age distribution (-)
+  %   - theta_0b: -, fraction of individuals that is embryo
+  %   - theta_bp: -, fraction of individuals that is juvenile
+  %   - theta_pi: -, fraction of individuals that is adult
+  %   - Y_PX: mol/mol, yield of faeces on food
+  %   - Y_VX: mol/mol, yield of living structure on food
+  %   - Y_VX_d: mol/mol, yield of dead structure on food
+  %   - Y_EX: mol/mol, yield of living reserve on food
+  %   - Y_EX_d: mol/mol, yield of dead reserve on food
+  %   - mu_xH: J/mol, yield of heat on food
+  %   - Y_CX: mol/mol, yield of CO2 on food
+  %   - Y_HX: mol/mol, yield of H2O on food
+  %   - Y_OX: mol/mol, yield of O2 on food
+  %   - Y_NX: mol/mol, yield of N-waste on food
+  %   - R: #/d, mean reproduction rate of adult female
+  %   - J_X: g/d, mean feeding rate of post-natals
+  %
+  % * txtStat: structure with units and labels
+  
   %% Remarks
   % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
 
@@ -63,6 +74,7 @@ function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
   
   if ~isstruct(par) || isnan(sgr)
     stat = setNaN(stat, fldf, fldt, fldg); % set all statistics to NaN
+    txtStat = NaN;
     return
   end
 
@@ -103,55 +115,97 @@ function stat = ssd_stf(stat, code, par, T_pop, f_pop, sgr)
   kT_M = k_M * TC; kT_J = k_J * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate  
 
-  % get t_p
+  % supporting statistics
   [tau_p, tau_b, l_p, l_b] = get_tp_foetus([g k l_T v_Hb v_Hp], f);
-  tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
   aT_b = tau_b/ kT_M; % d, age at birth
+  stat.(fldf).(fldt).(fldg).a_b = aT_b; txtStat.units.a_b  = 'd'; txtStat.label.a_b = 'age at birth';
+  tT_p = (tau_p - tau_b)/ kT_M; % d, time since birth at puberty
+  stat.(fldf).(fldt).(fldg).t_p = tT_p; txtStat.units.t_p  = 'd'; txtStat.label.t_p = 'time since birth at puberty';
   L_b = L_m * l_b; % cm, structural length at birth
 
-  % work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
-  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(11,1), 'AbsTol',1e-8, 'RelTol',1e-8); 
-  [S_b, q_b, h_Ab, tau_b, l_b, u_E0] = get_Sb_foetus([g k v_Hb h_a/k_M^2 s_G h_B0b], f);
-  qhSL_0 = [q_b * kT_M^2; h_Ab * k_M; S_b; 0; 0; 0; 0; 0; 0; 0; 0]; % initial states
-  pars_qhSL = {sgr, f, L_b, L_m, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
-  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e6], qhSL_0, options, tT_p, pars_qhSL{:});
-  S_p = qhSL_event(1,3); % -, survival prob at puberty
-  EL0_i = qhSL(end,4); theta_jn = qhSL(end,4)/ EL0_i; 
-  stat.(fldf).(fldt).(fldg).theta_jn = theta_jn; % -, fraction of post-natals that is juvenile
-  theta_an = 1 - theta_jn; % -, fraction of post-natals that is adult
-  EL = qhSL(end,5)/ EL0_i; EL2 = qhSL(end,6)/ EL0_i; EL3 = qhSL(end,7)/ EL0_i; % mean L^1,2,3 for post-natals
-  if theta_an > 0
-    EL_a = qhSL(end,8)/ EL0_i/ theta_an; EL2_a = qhSL(end,9)/ EL0_i/ theta_an; EL3_a = qhSL(end,10)/ EL0_i/ theta_an; % mean L^1,2,3 for adults
-  else % no adults present
-    EL_a = NaN; EL2_a = NaN; EL3_a = NaN; % mean L^1,2,3 for adults
-  end
-  stat.(fldf).(fldt).(fldg).EWw_n = EL3 * (1 + f * ome); 
-  stat.(fldf).(fldt).(fldg).EWw_a = EL3_a * (1 + f * ome);% g, mean weight of post-natails, adults
-  stat.(fldf).(fldt).(fldg).hWw_n = qhSL(end,11)/ EL0_i * (1 + f * ome); % g/d, production of dead post-natal mass
-  stat.(fldf).(fldt).(fldg).S_b = S_b; % -, survival prob at birth
-  stat.(fldf).(fldt).(fldg).S_p = S_p; % -, survival prob at puberty
+  % embryos
+  [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0] = get_Sb_foetus([g; k; v_Hb; h_a/k_M^2; s_G; h_B0b/kT_M; sgr/kT_M], f);
+  stat.(fldf).(fldt).(fldg).S_b = S_b; txtStat.units.S_b  = '-'; txtStat.label.S_b = 'survival probability at birth';
+  E_0 = u_E0 * g * E_m * L_m^3;   % J, initial reserve
+  t_0b = tau_0b/ kT_M; % d, \int_0^a_b exp(-sgr*t)*S(t) dt 
+
+  % post-natals: work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
+  options = odeset('Events',@dead_for_sure, 'NonNegative', ones(9, 1), 'AbsTol',1e-7, 'RelTol',1e-7); 
+  qhSL_0 = [q_b * kT_M^2; h_Ab * kT_M; S_b; 0; 0; 0; 0; 0; 0]; % initial states
+  pars_qhSL = {aT_b, tT_p, sgr, f, L_b, L_m, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
+  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; 1e8], qhSL_0, options, pars_qhSL{:});  
+  t_bi = qhSL(end,4);   % d, \int_{a_b}^\infty S(t)*exp(-sgr*t) dt
+
+  S_p = qhSL_event(1,3);  % -, survival prob at puberty
+  stat.(fldf).(fldt).(fldg).S_p = S_p; txtStat.units.S_p  = '-'; txtStat.label.S_p = 'survival probability at puberty';
+
+  % survival probability (at individual level)
+  stat.(fldf).(fldt).(fldg).tS = [0 1; t + aT_b, min(1, qhSL(:,3))];    % d,-, convert time since birth to age for survivor probability
+  % survivor of stable age distr: \frac{\int_{a}^\infty S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
+  stat.(fldf).(fldt).(fldg).tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ t_bi]; % d,-, convert time since birth to age for survivor function of the stable age distribution
+
+  theta_0b = t_0b/ (t_0b + t_bi);               % -, fraction of individuals that is embryo
+  stat.(fldf).(fldt).(fldg).theta_0b = theta_0b; txtStat.units.theta_0b = '-'; txtStat.label.theta_0b = 'fraction of individuals that is embryo';
+  theta_bp = qhSL_event(1,4)/ (t_0b + t_bi);    % -, fraction of individuals that is juvenile
+  stat.(fldf).(fldt).(fldg).theta_bp = theta_bp; txtStat.units.theta_bp = '-'; txtStat.label.theta_bp = 'fraction of individuals that is juvenile';
+  theta_pi = 1 - theta_0b - theta_bp;           % -, fraction of individuals that is adult
+  stat.(fldf).(fldt).(fldg).theta_pi = theta_pi; txtStat.units.theta_pi = '-'; txtStat.label.theta_pi = 'fraction of individuals that is adult';
+  del_an = theta_pi/ (theta_bp + theta_pi); % fraction of post-natals that is adult
   
-  stat.(fldf).(fldt).(fldg).tS = [0 1; t + aT_b, qhSL(:,3)];             % d,-, convert time since birth to age for survivor probability
-  stat.(fldf).(fldt).(fldg).tSs = [0 1; t + aT_b, 1 - qhSL(:,4)/ EL0_i]; % d,-, convert time since birth to age for survivor function of the stable age distribution
-  
-  p_C = f * g/ (f + g) * E_m * (vT * EL2_a + kT_M * (EL3_a + L_T * EL2_a)); % J/d, mean mobilisation of adults
+  % mean L^i for post-natals: \frac{\int_{a_b}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
+  L_bi = qhSL(end,5)/ t_bi; L2_bi = qhSL(end,6)/ t_bi; L3_bi = qhSL(end,7)/ t_bi; % mean L^1,2,3 for post-natals
+  stat.(fldf).(fldt).(fldg).L_bi = L_bi; txtStat.units.L_bi = 'cm'; txtStat.label.L_bi   = 'mean structural length of post-natals';
+  stat.(fldf).(fldt).(fldg).L2_bi = L2_bi; txtStat.units.L2_bi  = 'cm^2'; txtStat.label.L2_bi  = 'mean squared structural length of post-natals';
+  stat.(fldf).(fldt).(fldg).L3_bi = L3_bi; txtStat.units.L3_bi  = 'cm^3'; txtStat.label.L3_bi  = 'mean cubed structural length of post-natals';
+  stat.(fldf).(fldt).(fldg).Ww_bi = L3_bi * (1 + f * ome); txtStat.units.Ww_bi  = 'g'; txtStat.label.Ww_bi  = 'mean wet weight of post-natals';
+  %
+  rL3_bi = qhSL(end,8)/ t_bi; % cm^3/d, \frac{\int_{a_b}^\infty r(t) L^3*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
+  hL3_bi = qhSL(end,9)/ t_bi; % cm^3/d, \frac{\int_{a_b}^\infty h(t) L^3*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
+
+  % mean L^i for adults: \frac{\int_{a_p}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_p}^\infty S(t)*exp(-sgr*t) dt}
+  t_pi = t_bi - qhSL_event(1,4); % d, \int_{a_p}^\infty S(t)*exp(-sgr*t) dt
+  L_pi = (qhSL(end,5)-qhSL_event(1,5))/ t_pi; L2_pi = (qhSL(end,6)-qhSL_event(1,6))/ t_pi; L3_pi = (qhSL(end,7)-qhSL_event(1,7))/ t_pi; % mean L^1,2,3 for adults
+  stat.(fldf).(fldt).(fldg).L_pi = L_pi; txtStat.units.L_pi = 'cm'; txtStat.label.L_pi  = 'mean structural length of adults';
+  stat.(fldf).(fldt).(fldg).L2_pi = L2_pi; txtStat.units.L2_pi = 'cm^2'; txtStat.label.L2_pi = 'mean squared structural length of adults';
+  stat.(fldf).(fldt).(fldg).L3_pi = L3_pi; txtStat.units.L3_pi = 'cm^3'; txtStat.label.L3_pi = 'mean cubed structural length of adults';
+  stat.(fldf).(fldt).(fldg).Ww_pi = L3_pi * (1 + f * ome); txtStat.units.Ww_pi  = 'g'; txtStat.label.Ww_pi  = 'mean wet weight of adults';
+    
+  % food intake and reprod rate
+  p_C = f * g/ (f + g) * E_m * (vT * L2_pi + kT_M * (L3_pi + L_T * L2_pi)); % J/d, mean mobilisation of adults
   p_R = max(0, (1 - kap) * p_C - kT_J * E_Hp); % J/d, mean allocation to reproduction of adults
-  E_0 = p_Am * initial_scaled_reserve_foetus(f, [V_Hb, g, k_J, k_M, v]); % J, energy costs of an egg
-  ER = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
-  stat.(fldf).(fldt).(fldg).ER = ER; 
-  del_ea = ER * aT_b * exp(h_B0b * aT_b/ 2); % -, number of embryos per adult
-  stat.(fldf).(fldt).(fldg).del_ea = del_ea; 
-  stat.(fldf).(fldt).(fldg).theta_e = del_ea/ (del_ea + 1/ theta_an); % -, fraction of individuals that is embryo
+  R = kap_R * p_R/ E_0; % 1/d, mean reproduction rate of adult female
+  stat.(fldf).(fldt).(fldg).R = R; txtStat.units.R = '1/d';  txtStat.label.R = 'mean reproduction rate of adults';
+  p_A = f * pT_Am * L2_bi; % J/d, mean assimilation of post-natals
+  p_X = p_A/ kap_X;  J_X = p_X/ mu_X;    % J/d, mol/d, mean food intake of post-natals
+  stat.(fldf).(fldt).(fldg).J_X = J_X * w_X/ d_X;  txtStat.units.J_X   = 'g/d';  txtStat.label.J_X = 'mean ingestion rate of wet food by post-natals';
 
-  Ep_A = EL2 * pT_Am * f;
-  stat.(fldf).(fldt).(fldg).Ep_A = Ep_A; 
-  stat.(fldf).(fldt).(fldg).EJ_X = Ep_A/ kap_X/ mu_X * w_X/ d_X; 
-  stat.(fldf).(fldt).(fldg).EJ_P = Ep_A/ kap_X * kap_P/ mu_P * w_P/ d_P;
+  % yield coefficients
+  p_P = p_X * kap_P; J_P = p_P/ mu_P;    % J/d, mol/d, mean faeces prod of post-natals
+  Y_PX = J_P/ J_X;                       % mol/mol, yield of faeces on food of post-natals
+  stat.(fldf).(fldt).(fldg).Y_PX = Y_PX; txtStat.units.Y_PX  = 'mol/mol'; txtStat.label.Y_PX  = 'yield of faeces on food';
+  %
+  Y_VX = M_V * (del_an * S_b * R * L_b^3 + rL3_bi)/ J_X;           % mol/mol, yield of living structure on food
+  stat.(fldf).(fldt).(fldg).Y_VX = Y_VX; txtStat.units.Y_VX  = 'mol/mol'; txtStat.label.Y_VX  = 'yield of living structure on food';
+  Y_VX_dead = M_V * (del_an * (1 - S_b) * R * L_b^3 + hL3_bi)/ J_X;% mol/mol, yield of dead structure on food
+  stat.(fldf).(fldt).(fldg).Y_VX_d = Y_VX_dead; txtStat.units.Y_VX_d  = 'mol/mol'; txtStat.label.Y_VX_d  = 'yield of dead structure on food';
+  %
+  Y_EX = f * E_m/ mu_E * (del_an * S_b * R * L_b^3 + rL3_bi)/ J_X; % mol/mol, yield of living reserve on food
+  stat.(fldf).(fldt).(fldg).Y_EX = Y_EX; txtStat.units.Y_EX  = 'mol/mol'; txtStat.label.Y_EX  = 'yield of living reserve on food';
+  Y_EX_dead = f * E_m/ mu_E * (del_an * (1 - S_b) * R * L_b^3 + hL3_bi)/ J_X; % mol/mol, yield of dead reserve on food
+  stat.(fldf).(fldt).(fldg).Y_EX_d = Y_EX_dead; txtStat.units.Y_EX_d  = 'mol/mol'; txtStat.label.Y_EX_d  = 'yield of dead reserve on food';
+  % 
+  n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_X]); n_O = n_O(:,[1 2 2 3 3 4]); % chemical indices for organics (in cols)  X V V_dead E E_dead P
+  Y_M = -(n_M\n_O) * [-1; Y_VX; Y_VX_dead; Y_EX; Y_EX_dead; Y_PX]; % mol/mol, yields for minerals on food
+  Y_CX = Y_M(1); Y_HX = Y_M(2); Y_OX = Y_M(3); Y_NX = Y_M(4);
+  %
+  stat.(fldf).(fldt).(fldg).Y_CX = Y_CX; txtStat.units.Y_CX  = 'mol/mol'; txtStat.label.Y_CX  = 'yield of CO2 on food';
+  stat.(fldf).(fldt).(fldg).Y_HX = Y_HX; txtStat.units.Y_HX  = 'mol/mol'; txtStat.label.Y_HX  = 'yield of H2O on food';
+  stat.(fldf).(fldt).(fldg).Y_OX = Y_OX; txtStat.units.Y_OX  = 'mol/mol'; txtStat.label.Y_OX  = 'yield of O2 on food';
+  stat.(fldf).(fldt).(fldg).Y_NX = Y_NX; txtStat.units.Y_NX  = 'mol/mol'; txtStat.label.Y_NX  = 'yield of N-waste on food';
+  %
+  mu_hX = mu_X - (Y_VX + Y_VX_dead) * mu_V - (Y_EX + Y_EX_dead) * mu_E - Y_PX * mu_P - Y_NX * mu_N; % J/mol, yield of heat on food
+  stat.(fldf).(fldt).(fldg).mu_hX = mu_hX; txtStat.units.mu_hX  = 'J/mol';  txtStat.label.mu_hX  = 'yield of heat on food';
 
-  % pack output
-  stat.(fldf).(fldt).(fldg).EL_n=EL; stat.(fldf).(fldt).(fldg).EL2_n=EL2; stat.(fldf).(fldt).(fldg).EL3_n=EL3; 
-  stat.(fldf).(fldt).(fldg).EL_a=EL_a; stat.(fldf).(fldt).(fldg).EL2_a=EL2_a; stat.(fldf).(fldt).(fldg).EL3_a=EL3_a; 
-  stat.(fldf).(fldt).(fldg).a_b = aT_b; stat.(fldf).(fldt).(fldg).t_p = tT_p;
 end
 
 % event dead_for_sure
@@ -161,15 +215,15 @@ function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_p, varargin)
   direction  = [];                    % get all the zeros
 end
 
-function dqhSL = dget_qhSL(t, qhSL, t_p, sgr, f, L_b, L_m, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
+function dqhSL = dget_qhSL(t, qhSL, a_b, t_p, sgr, f, L_b, L_m, r_B, v, g, s_G, h_a, h_Bbp, h_Bpi, thinning)
   % t: time since birth
   q   = max(0, qhSL(1)); % 1/d^2, aging acceleration
-  h_A = max(0, qhSL(2)); % 1/d^2, hazard rate due to aging
+  h_A = max(0, qhSL(2)); % 1/d, hazard rate due to aging
   S   = max(0, qhSL(3)); % -, survival prob
   
   L_i = L_m * f;
   L = L_i - (L_i - L_b) * exp(- t * r_B);
-  r = max(0, v * (f/ L - 1/ L_m)/ (f + g)); % 1/d, spec growth rate of structure
+  r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
   dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v/ L - r) - r * q; % 1/d^3
   dh_A = q - r * h_A;                                         % 1/d^2
   if t < t_p
@@ -181,31 +235,32 @@ function dqhSL = dget_qhSL(t, qhSL, t_p, sgr, f, L_b, L_m, r_B, v, g, s_G, h_a, 
   h = max(0, h_A + h_B + h_X); 
   dS = - h * S;
     
-  dEL0 = exp(- sgr * t) * S;
-  % EL0(t)/EL0(infty) equals distribution function of times since birth
+  dEL0 = exp(- sgr * (t + a_b)) * S; 
   % so dEL0(t)/EL0(infty) equals pdf of times since birth
   % division by EL0(infty) is done after integration
   dEL1 = L * dEL0; % d/dt L*pdf(t)
   dEL2 = L * dEL1; % d/dt L^2*pdf(t)
   dEL3 = L * dEL2; % d/dt L^3*pdf(t)
-  %
-  dEL1_a = (t > t_p) * L * dEL0; % d/dt L*pdf(t) of adults
-  dEL2_a = L * dEL1_a; % d/dt L^2*pdf(t) of adults
-  dEL3_a = L * dEL2_a; % d/dt L^3*pdf(t) of adults
   
-  dhV = h * dEL3; % cm^3/d, production of dead structure
+  dEL3_live = r * dEL3; % cm^3/d, production of living structure
+  dEL3_dead = h * dEL3; % cm^3/d, production of dead structure
   
-  dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL1_a; dEL2_a; dEL3_a; dhV]; 
+  dqhSL = [dq; dh_A; dS; dEL0; dEL1; dEL2; dEL3; dEL3_live; dEL3_dead]; 
 end
 
-% fill fieds with nan
+% fill fields with nan
 function stat = setNaN(stat, fldf, fldt, fldg)
-    stat.(fldf).(fldt).(fldg).EL_n = NaN;     stat.(fldf).(fldt).(fldg).EL2_n = NaN;  stat.(fldf).(fldt).(fldg).EL3_n = NaN;   
-    stat.(fldf).(fldt).(fldg).EL_a = NaN;     stat.(fldf).(fldt).(fldg).EL2_a = NaN;  stat.(fldf).(fldt).(fldg).EL3_a = NaN;   
-    stat.(fldf).(fldt).(fldg).EWw_n = NaN;    stat.(fldf).(fldt).(fldg).EWw_a = NaN;  stat.(fldf).(fldt).(fldg).hWw_n = NaN;   
-    stat.(fldf).(fldt).(fldg).theta_jn = NaN; stat.(fldf).(fldt).(fldg).S_b = NaN;    stat.(fldf).(fldt).(fldg).S_p = NaN; 
-    stat.(fldf).(fldt).(fldg).tS = [NaN NaN]; stat.(fldf).(fldt).(fldg).tSs = [NaN NaN];
-    stat.(fldf).(fldt).(fldg).ER = NaN;       stat.(fldf).(fldt).(fldg).del_ea = NaN; stat.(fldf).(fldt).(fldg).theta_e = NaN;   
-    stat.(fldf).(fldt).(fldg).Ep_A = NaN;     stat.(fldf).(fldt).(fldg).EJ_X = NaN;   stat.(fldf).(fldt).(fldg).EJ_P = NaN;   
+    stat.(fldf).(fldt).(fldg).L_bi = NaN;      stat.(fldf).(fldt).(fldg).L2_bi = NaN;  stat.(fldf).(fldt).(fldg).L3_bi = NaN;   
+    stat.(fldf).(fldt).(fldg).L_pi = NaN;      stat.(fldf).(fldt).(fldg).L2_pi = NaN;  stat.(fldf).(fldt).(fldg).L3_pi = NaN;   
+    stat.(fldf).(fldt).(fldg).Ww_bi = NaN;     stat.(fldf).(fldt).(fldg).Ww_pi = NaN;  
+    stat.(fldf).(fldt).(fldg).S_b = NaN;      stat.(fldf).(fldt).(fldg).S_p = NaN; 
     stat.(fldf).(fldt).(fldg).a_b = NaN;      stat.(fldf).(fldt).(fldg).t_p = NaN;   
+    stat.(fldf).(fldt).(fldg).tS = [NaN NaN]; stat.(fldf).(fldt).(fldg).tSs = [NaN NaN];
+    stat.(fldf).(fldt).(fldg).R = NaN;        stat.(fldf).(fldt).(fldg).J_X = NaN; 
+    stat.(fldf).(fldt).(fldg).theta_0b = NaN;  stat.(fldf).(fldt).(fldg).theta_bp = NaN; stat.(fldf).(fldt).(fldg).theta_pi = NaN;   
+    stat.(fldf).(fldt).(fldg).Y_VX = NaN;     stat.(fldf).(fldt).(fldg).Y_VX_d = NaN;   
+    stat.(fldf).(fldt).(fldg).Y_EX = NaN;     stat.(fldf).(fldt).(fldg).Y_EX_d = NaN;   
+    stat.(fldf).(fldt).(fldg).Y_PX = NaN;     stat.(fldf).(fldt).(fldg).Y_CX = NaN;   
+    stat.(fldf).(fldt).(fldg).Y_HX = NaN;     stat.(fldf).(fldt).(fldg).Y_OX = NaN;   
+    stat.(fldf).(fldt).(fldg).Y_NX = NaN;     stat.(fldf).(fldt).(fldg).mu_hX = NaN;   
 end

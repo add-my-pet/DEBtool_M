@@ -42,13 +42,16 @@ function [f, info] = f_ris0_hep (par)
   if ~exist('h_Bbp', 'var')
     h_Bbp = 0;
   end
-  if ~exist('h_Bpi', 'var')
-    h_Bpi = 0;
+  if ~exist('h_Bpj', 'var')
+    h_Bpj = 0;
+  end
+  if ~exist('h_Bji', 'var')
+    h_Bji = 0;
   end
   
   % set lower boundary of f
   f_0 = 1e-5 + get_ep_min_j([g, k, l_T, v_Hb, (v_Hp-1e-8), v_Hp]); % -, scaled functional response at which puberty can just be reached
-  pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning};
+  pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpj, h_Bji, thinning};
   if charEq0(f_0, pars_charEq0{:}) > 0
     fprintf('Warning from f_ris0_hep: f for which r = 0 is very close to that for R_i = 0\n');
     f = f_0; info = 1; return
@@ -88,7 +91,7 @@ function [f, info] = f_ris0_hep (par)
   
 end
 
-function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpi, thinning)
+function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpj, h_Bji, thinning)
   % val = char eq in f, for r = 0
   u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
   v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
@@ -112,12 +115,12 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, 
   t_N0 = t_j + t_im;                  % d, time since birth at which all eggs are produced
 
   options = odeset('AbsTol',1e-9, 'RelTol',1e-9); 
-  pars_qhSC = {f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning};
+  pars_qhSC = {f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpj, h_Bji, thinning};
   [t, qhSC] = ode45(@dget_qhSC, [0; t_N0], [0, 0, S_b, 0], options, pars_qhSC{:});
   val = qhSC(end, 4) - 1;
 end
     
-function dqhSC = dget_qhSC(t, qhSC, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpi, thinning)  
+function dqhSC = dget_qhSC(t, qhSC, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m, t_p, t_j, t_N0, r_j, r_B, v_Hp, s_G, h_a, h_Bbp, h_Bpj, h_Bji, thinning)  
   q   = max(0,qhSC(1)); % 1/d^2, aging acceleration
   h_A = max(0,qhSC(2)); % 1/d^2, hazard rate due to aging
   S   = max(0,qhSC(3)); % -, survival prob
@@ -130,14 +133,14 @@ function dqhSC = dget_qhSC(t, qhSC, f, k_M, v, g, k, R, L_b, L_p, L_j, L_i, L_m,
     dq = 0;
     dh_A = 0;
   elseif t < t_j
-    h_B = h_Bpi;
+    h_B = h_Bpj;
     L = L_i - (L_i - L_p) * exp(-r_B * (t - t_p));
     r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
     h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
     dq = 0;
     dh_A = 0;
   else % imago
-    h_B = h_Bpi;
+    h_B = h_Bji;
     s_M = L_p/ L_b;
     L = L_j;
     r = 0; % 1/d, spec growth rate of structure

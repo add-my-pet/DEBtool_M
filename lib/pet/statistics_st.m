@@ -2,7 +2,7 @@
 % Computes implied properties of DEB models 
 
 %%
-function [stat txtStat] = statistics_st(model, par, T, f) 
+function [stat, txtStat] = statistics_st(model, par, T, f) 
 % created 2000/11/02 by Bas Kooijman, modified 2014/03/17 
 % modified 2015/03/25 by Starrlight Augustine & Goncalo Marques, 
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
@@ -11,7 +11,7 @@ function [stat txtStat] = statistics_st(model, par, T, f)
 % modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18, 2018/08/22, 2019/04/25 by Bas Kooijman
 
 %% Syntax
-% [stat txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
+% [stat, txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
 
 %% Description
 % Computes quantites that depend on parameters, temperature and food level.
