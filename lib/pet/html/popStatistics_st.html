@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-22"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
+      --><title>popStatistics_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-02"><meta name="DC.source" content="popStatistics_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -255,9 +255,9 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
   [f_01, info_01] = f_ris0_mod (model, par); % get f for r = 0
   stat.f0.thin1.f.f = f_01; r_01 = 0; stat.f0.thin1.f.r = r_01; stat.f0.thin1.f.t2 = NaN; 
   if info_01 == 0
-    [stat, txtStat] = ssd_mod(model, stat, '01f', NaN); f_01 = NaN; stat.f0.thin1.f.f = f_01;
+    stat = ssd_mod(model, stat, '01f', NaN); f_01 = NaN; stat.f0.thin1.f.f = f_01;
   else % fill statistics
-    [stat, txtStat] = ssd_mod(model, stat, '01f', par, T, f_01, 0);
+    stat = ssd_mod(model, stat, '01f', par, T, f_01, 0);
   end 
   if n_fVal == 3
     if ischar(F)
@@ -276,34 +276,34 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       return
     end
     if isnan(f_f1)
-      [stat, txtStat] = ssd_mod(model, stat, 'f1f', NaN); stat.ff.thin1.f.f = f_f1;
+      stat = ssd_mod(model, stat, 'f1f', NaN); stat.ff.thin1.f.f = f_f1;
     else
       [r_f1, info_f1] = sgr_mod (model, par, T, f_f1); 
       stat.ff.thin1.f.f = f_f1; stat.ff.thin1.f.r = r_f1; stat.ff.thin1.f.t2 = (log(2))/ r_f1;
     end
     if ~exist('info_f1', 'var') || info_f1 == 0
-      [stat, txtStat] = ssd_mod(model, stat, 'f1f', NaN); 
+      stat = ssd_mod(model, stat, 'f1f', NaN); 
       stat.ff.thin1.f.r = NaN; stat.ff.thin1.f.t2 = NaN;
     else
-      [stat, txtStat] = ssd_mod(model, stat, 'f1f', par, T, f_f1, r_f1);
+      stat = ssd_mod(model, stat, 'f1f', par, T, f_f1, r_f1);
     end
   end
   [r_11, info_11] = sgr_mod (model, par, T, 1);
   stat.f1.thin1.f.f = 1; stat.f1.thin1.f.r = r_11; stat.f1.thin1.f.t2 = (log(2))/ r_11; 
   if info_11 == 0
-    [stat, txtStat] = ssd_mod(model, stat, '11f', NaN); 
+    stat = ssd_mod(model, stat, '11f', NaN); 
     stat.f1.thin1.f.r = NaN; stat.f1.thin1.f.t2 = NaN;
   else
-    [stat, txtStat] = ssd_mod(model, stat, '11f', par, T, 1, r_11);
+    stat = ssd_mod(model, stat, '11f', par, T, 1, r_11);
   end
             
   par.thinning = 0;
   [f_00, info_00] = f_ris0_mod (model, par); % get f for r = 0
   stat.f0.thin0.f.f = f_00; r_00 = 0; stat.f0.thin0.f.r = r_00; stat.f0.thin0.f.t2 = NaN; 
   if info_00 == 0
-    [stat, txtStat] = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;
+    stat = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;
   else
-    [stat, txtStat] = ssd_mod(model, stat, '00f', par, T, f_00, 0);
+    stat = ssd_mod(model, stat, '00f', par, T, f_00, 0);
   end
   if n_fVal == 3
     if ischar(F) && ~isnan(f_f1)
@@ -314,16 +314,16 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
       f_f0 = F;
     end
     if isnan(f_f0)
-      [stat, txtStat] = ssd_mod(model, stat, 'f0f', NaN); stat.ff.thin0.f.f = f_f0;
+      stat = ssd_mod(model, stat, 'f0f', NaN); stat.ff.thin0.f.f = f_f0;
     else
       [r_f0, info_f0] = sgr_mod (model, par, T, f_f0);
       stat.ff.thin0.f.f = f_f0; stat.ff.thin0.f.r = r_f0; stat.ff.thin0.f.t2 = (log(2))/ r_f0;
     end
     if ~exist('info_f0', 'var') || info_f0 == 0
-      [stat, txtStat] = ssd_mod(model, stat, 'f0f', NaN);
+      stat = ssd_mod(model, stat, 'f0f', NaN);
       stat.ff.thin0.f.r = NaN; stat.ff.thin0.f.t2 = NaN;
     else
-      [stat, txtStat] = ssd_mod(model, stat, 'f0f', par, T, f_f0, r_f0);
+      stat = ssd_mod(model, stat, 'f0f', par, T, f_f0, r_f0);
     end
   end
   [r_10, info_10] = sgr_mod (model, par, T, 1); 
@@ -352,47 +352,47 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
     par.thinning = 1; 
     stat.f0.thin1.m.f = stat.f0.thin1.f.f; stat.f0.thin1.m.r = stat.f0.thin1.f.r; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     if isnan(stat.f0.thin1.f.f) 
-      [stat, txtStat] = ssd_mod(model, stat, '01m', NaN); 
+      stat = ssd_mod(model, stat, '01m', NaN); 
       stat.f0.thin1.m.r = r_01; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     else
-      [stat, txtStat] = ssd_mod(model, stat, '01m', par, T, f_01, 0); stat.f0.thin1.m.ER = [];
+      stat = ssd_mod(model, stat, '01m', par, T, f_01, 0); stat.f0.thin1.m.ER = [];
     end
     if n_fVal == 3
       stat.ff.thin1.m.f = stat.ff.thin1.f.f; stat.ff.thin1.m.r = stat.ff.thin1.f.r; stat.ff.thin1.m.t2 = stat.ff.thin1.f.t2; stat.ff.thin1.m.ER = [];
       if isnan(stat.ff.thin1.f.f)
-        [stat, txtStat] = ssd_mod(model, stat, 'f1m', NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
+        stat = ssd_mod(model, stat, 'f1m', NaN); stat.ff.thin1.m.f = NaN; stat.ff.thin1.m.ER = [];
       else
-        [stat, txtStat] = ssd_mod(model, stat, 'f1m', par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
+        stat = ssd_mod(model, stat, 'f1m', par, T, f_f1, r_f1); stat.ff.thin1.m.ER = [];
       end
     end
     stat.f1.thin1.m.f = stat.f1.thin1.f.f; stat.f1.thin1.m.r = stat.f1.thin1.f.r; stat.f1.thin1.m.t2 = stat.f1.thin1.f.t2;
-    [stat, txtStat] = ssd_mod(model, stat, '11m', par, T, 1, r_11); stat.f1.thin1.m.ER = [];
+    stat = ssd_mod(model, stat, '11m', par, T, 1, r_11); stat.f1.thin1.m.ER = [];
             
     par.thinning = 0;
     stat.f0.thin0.m.f = stat.f0.thin0.f.f; stat.f0.thin0.m.r = stat.f0.thin0.f.r; stat.f0.thin0.m.t2 = stat.f0.thin0.f.t2;
     if isnan(stat.f0.thin0.f.f) 
-      [stat, txtStat] = ssd_mod(model, stat, '00m', NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
+      stat = ssd_mod(model, stat, '00m', NaN); stat.f0.thin0.m.f = NaN; stat.f0.thin0.m.ER = [];
     else
-      [stat, txtStat] = ssd_mod(model, stat, '00m', par, T, f_00, 0); stat.f0.thin0.m.ER = [];
+      stat = ssd_mod(model, stat, '00m', par, T, f_00, 0); stat.f0.thin0.m.ER = [];
     end
     if n_fVal == 3
       stat.ff.thin0.m.f = stat.ff.thin0.f.f; stat.ff.thin0.m.r = stat.ff.thin0.f.r; stat.ff.thin0.m.t2 = stat.ff.thin0.f.t2;
       if isnan(stat.ff.thin0.f.f)
-        [stat, txtStat] = ssd_mod(model, stat, 'f0m', NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
+        stat = ssd_mod(model, stat, 'f0m', NaN); stat.ff.thin0.m.f = NaN; stat.ff.thin0.m.ER = [];
       else
-        [stat, txtStat] = ssd_mod(model, stat, 'f0m', par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
+        stat = ssd_mod(model, stat, 'f0m', par, T, f_f0, r_f0); stat.ff.thin0.m.ER = [];
       end
     end
     stat.f1.thin0.m.f = stat.f1.thin0.f.f; stat.f1.thin0.m.r = stat.f1.thin0.f.r; stat.f1.thin0.m.t2 = stat.f1.thin0.f.t2; 
-    [stat, txtStat] = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
+    stat = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
   end
   
   % add statistics to output structure
-  txtStat.units.f    = '-';     txtStat.label.f   = 'scaled functional response';
-  txtStat.units.r    = '1/d';   txtStat.label.r   = 'spec pop growth rate';
-  txtStat.units.t2   = 'd';     txtStat.label.t2  = 'population doubling time';
-  txtStat.units.T = 'C';        txtStat.label.T = 'body temperature'; 
-  txtStat.units.c_T = '-';      txtStat.label.c_T = 'temperature correction factor'; 
+  txtStat.units.f   = '-';   txtStat.label.f   = 'scaled functional response';
+  txtStat.units.r   = '1/d'; txtStat.label.r   = 'spec pop growth rate';
+  txtStat.units.t2  = 'd';   txtStat.label.t2  = 'population doubling time';
+  txtStat.units.T   = 'C';   txtStat.label.T = 'body temperature'; 
+  txtStat.units.c_T = '-';   txtStat.label.c_T = 'temperature correction factor'; 
 
   % graphics
  
