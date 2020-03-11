@@ -130,15 +130,20 @@ function dXvars = dcpm_std(t, Xvars, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_B0b, 
   dL = r .* L/ 3; % cm/d, growth rate of structure
   dL_max = max(0, dL);
   
-  p_J = kT_J * E_H;       % J/d, maturity maintenance
-  p_C = p_A - L3 .* (dE + E .* r); % J/d, reserve mobilisation rate
-  p_R = (1 - kap) * p_C - p_J; % J/d, flux to maturation/ reprod
+  p_J = kT_J * E_H;             % J/d, maturity maintenance
+  p_C = L3 .* E .* (vT ./ L - r); % J/d, reserve mobilisation rate
+  p_R = (1 - kap) * p_C - p_J;  % J/d, flux to maturation/ reprod
   
-  dE_H = max(0, p_R) .* (E_H <= E_Hp) - kT_JX * E_H .* (p_R < 0) .* (E_R <= 0);
-  % rejuvenate if E_R = 0 and p_R < 0
-  dE_R = p_R .* (E_H > E_Hp) + 0.000*min(0, kap * p_C - p_M * L3) .* (E_R > 0);
-  % 2nd term accounts for paying som maint from reprod buffer, if necessary and possible
-
+  if 1 % omit shrinking module
+    dE_H = max(0, p_R) .* (E_H <= E_Hp);
+    dE_R = p_R .* (E_H > E_Hp);
+  else % use shrinking module
+    dE_H = max(0, p_R) .* (E_H <= E_Hp) - kT_JX * E_H .* (p_R < 0) .* (E_R <= 0);
+    % rejuvenate if E_R = 0 and p_R < 0
+    dE_R = p_R .* (E_H > E_Hp) + min(0, kap * p_C - p_M * L3) .* (E_R > 0);
+    % 2nd term accounts for paying som maint from reprod buffer, if necessary and possible
+  end
+  
   % aging
   dq = (q * s_G .* L3/ L_m^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
   dh_A = q - r .* h_A; % 1/d, aging hazard

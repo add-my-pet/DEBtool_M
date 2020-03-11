@@ -2,11 +2,11 @@
 % get cohort trajectories
 
 %%
-function [tXN, tXW] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
+function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% [tXN, tXW] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, n_R, t_R)
+% [tXN, tXW, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, n_R, t_R)
   
 %% Description
 % integrates cohorts with synchronized reproduction events, called by cpm, 
@@ -41,8 +41,10 @@ function [tXN, tXW] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 %
 % * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
 % * tXW: (n,m)-array with times, food density and total wet weights of the various cohorts
+% * info: bolean with failure (0) of success (1)
 
   options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9);
+  info = 1;
   
   % unpack par and compute compound pars
   vars_pull(par); vars_pull(parscomp_st(par));  
@@ -83,6 +85,7 @@ function [tXN, tXW] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
   
   if t_R < aT_b
     fprintf('Warning from get_cpm: age at birth is larger than reproduction interval\n');
+    info = 0; tXN = []; tXW = []; return
   end
   
   % initial states with number of cohorts n_c = 1;
@@ -140,10 +143,10 @@ function [t, Xvars_0, tXN, tXW] = cohorts(t, Xvars, tXN, tXW, t_R, E_0, kap_R, L
     tXN = [tXN; [t, X, N']]; % append to output
     tXW = [tXW; [t, X, W']]; % append to output
   end
-  Xvars_0 = [X; q(:); h_A(:); L(:); L_max(:); E(:); E_R(:); E_H(:); N(:)]; % pack state vars
+  Xvars_0 = max(0,[X; q; h_A; L; L_max; E; E_R; E_H; N]); % pack state vars
 end
 
-function [value,isterminal,direction] = puberty(t, Xvars, tTC, tX, V_X, J_XI, h_D, h_J, q_b, h_Ab, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, L_b, L_m, E_Hb, E_Hp, E_m, k_M, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
+function [value,isterminal,direction] = puberty(t, Xvars, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, L_b, L_m, E_Hb, E_Hp, E_m, k_M, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
   n_c = (length(Xvars) - 1)/ 8; % #, number of cohorts
   E_H = Xvars(1+4*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
   value = min(abs(E_H - E_Hp)); % trigger 

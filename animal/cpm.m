@@ -52,10 +52,8 @@ function [tXN, tXW] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * cmp('Rana_temporaria')
-% * cmp('Rana_temporaria', C2K(22))
-% * cmp('Rana_temporaria', [0 .25 .75; C2K([10 25 7])]', 5)
-% * cmp('Rana_temporaria', [], [0 .25 .75; 6 8 .8]')
+% * cpm('Torpedo_marmorata');
+% * cpm('Torpedo_marmorata', C2K(18));
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
@@ -94,11 +92,21 @@ end
 % temperature
 if ~exist('tT','var') || isempty(tT)
   tT = metaData.T_typical;
+elseif length(tT) > 1 & sum(tT(:,1) > 1) > 0
+  fprintf('abcissa of temp knots must be between 0 and 1\n');
+  tXN=[]; tXW=[]; return
+elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
+  tT = [tT; 1 tT(1,2)];    
 end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX)
   tJX = 50 * J_X_Am * L_m^2 ;
+elseif length(tJX) > 1 & sum(tJX(:,1) > 1) > 0
+  fprintf('abcissa of food supply knots must be between 0 and 1\n');
+  tXN=[]; tXW=[]; return
+elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
+  tJX = [tJX; 1 tJX(1,2)];    
 end
 
 % initial scaled food density
@@ -108,7 +116,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0; thin = 0; 
+  h_D = 0.01; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -175,7 +183,7 @@ end
 
 % number of reproduction events to be simulated
 if ~exist('n_R','var') || isempty(n_R)
-  n_R = 500; % -, total simulation time: n_R * t_R
+  n_R = 250; % -, total simulation time: n_R * t_R
 end
 
 % time between reproduction events
@@ -184,7 +192,10 @@ if ~exist('t_R','var') || isempty(t_R)
 end
 
 % get trajectories
-[tXN, tXW] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+if info==0
+  return
+end
 t = tXN(:,1)/ t_R; X = tXN(:,2); N = cumsum(tXN(:,3:end),2); W = cumsum(tXW(:,3:end),2); n_c = size(N,2);
 
 %% plotting
@@ -222,17 +233,11 @@ set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(4)
 hold on
-tW1 = zeros(n_c,2); tW2 = tW1; tW3 = tW2; tW4 = tW3;
+W = zeros(n_c,1); 
 for i = 1:n_c
-  tW1(i,:) = [t(i), tXW(i,2+i)/tXN(i,2+i)];
-  tW2(i,:) = [t(i), tXW(i,min(n_c,3+i))/tXN(i,min(n_c,3+i))];
-  tW3(i,:) = [t(i), tXW(i,min(n_c,4+i))/tXN(i,min(n_c,4+i))];
-  tW4(i,:) = [t(i), tXW(i,min(n_c,5+i))/tXN(i,min(n_c,5+i))];
+  W(i,:) = tXW(i,2+i)/tXN(i,2+i);
 end
-plot(tW1(:,1),tW1(:,2), 'k', 'Linewidth', 2) 
-plot(tW2(:,1),tW2(:,2), 'b', 'Linewidth', 2) 
-plot(tW3(:,1),tW3(:,2), 'm', 'Linewidth', 2) 
-plot(tW3(:,1),tW4(:,2), 'r', 'Linewidth', 2) 
+plot(t(1:n_c), W, 'k', 'Linewidth', 2) 
 title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('indiv. wet weight, g');
