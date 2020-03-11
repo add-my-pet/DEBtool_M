@@ -1,0 +1,162 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>dcpm_std</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-11"><meta name="DC.source" content="dcpm_std.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>dcpm_std</h1><!--introduction--><p>changes in cohort states for std model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>dXvars = <a href="../dcpm_std.m"><b>dcpm_std</b></a> (t, Xvars, par, tTC, tX)</p><h2 id="4">Description</h2><pre>ode's for changes in cohorts with std model</pre><p>Input:</p><div><ul><li>t: time, with 0&lt;t&lt;t_R</li><li>Xvars: vector with states of cohorts</li><li>par: structure with parameter values</li><li>tTC: (nT,2)-array with time and temperature correction factors</li><li>tX: (nX,2)-array with time and food density in supply</li></ul></div><p>Output:</p><div><ul><li>dXvars: changes in states of cohorts</li></ul></div><h2 id="5">Remarks</h2><p>aT_b &lt; t_R should apply; changes in embryo states are ignored, and embryo states are set at birth values</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% dcpm_std
+% changes in cohort states for std model
+
+%%
+function dXvars = dcpm_std(t, Xvars, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, L_b, L_m, E_Hb, E_Hp, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
+% created 2020/03/09 by Bob Kooi & Bas Kooijman
+  
+%% Syntax
+% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, par, tTC, tX)
+  
+%% Description
+%  ode's for changes in cohorts with std model
+%
+% Input:
+%
+% * t: time, with 0<t<t_R
+% * Xvars: vector with states of cohorts
+% * par: structure with parameter values
+% * tTC: (nT,2)-array with time and temperature correction factors
+% * tX: (nX,2)-array with time and food density in supply 
+%
+% Output:
+%
+% * dXvars: changes in states of cohorts
+
+%% Remarks
+% aT_b < t_R should apply; changes in embryo states are ignored, and embryo states are set at birth values 
+    
+  [X, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(Xvars); 
+  e = E/ E_m; L2 = L .* L; L3 = L .* L2; 
+  
+  if t < aT_b % set embryos at birth value, since changes are too fast, below the embryo changes are set to 0
+    q(1) = q_b; h_A(1) = h_Ab; L(1) = L_b; L_max(1) = L_b; E(1) = E_m; E_R(1) = 0; E_H(1) = E_Hb; N(1) = N(1) * S_b;
+    e(1) = 1; L2(1) = L(1) * L(1); L3(1) = L(1) * L2(1); 
+  end
+  
+  if length(tJX) == 1
+    J_XI = tJX;
+  else
+    J_XI = spline1(t, tJX); % food supply flux
+  end
+  if length(tTC) == 1
+    TC = tTC;
+  else
+    TC = spline1(t, tTC); % temperature correction factor
+  end
+  
+  % temp correction
+  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC;     pT_Am = TC * p_Am;
+  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; JT_X_Am = TC * J_X_Am; 
+  
+  f = X/ (X + K); % -, scaled func response
+  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f * sum((E_H >= E_Hb) .* N .* L.^2)/ V_X; % food dynamics
+    
+  kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
+  p_A = (E_H >= E_Hb) * pT_Am * f .* L2;
+  dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
+  r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
+  r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
+  dL = r .* L/ 3; % cm/d, growth rate of structure
+  dL_max = max(0, dL);
+  
+  p_J = kT_J * E_H;       % J/d, maturity maintenance
+  p_C = p_A - L3 .* (dE + E .* r); % J/d, reserve mobilisation rate
+  p_R = (1 - kap) * p_C - p_J; % J/d, flux to maturation/ reprod
+  
+  dE_H = max(0, p_R) .* (E_H <= E_Hp) - kT_JX * E_H .* (p_R < 0) .* (E_R <= 0);
+  % rejuvenate if E_R = 0 and p_R < 0
+  dE_R = p_R .* (E_H > E_Hp) + 0.000*min(0, kap * p_C - p_M * L3) .* (E_R > 0);
+  % 2nd term accounts for paying som maint from reprod buffer, if necessary and possible
+
+  % aging
+  dq = (q * s_G .* L3/ L_m^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
+  dh_A = q - r .* h_A; % 1/d, aging hazard
+
+  % stage-specific background hazards
+  h_B = h_Bbp * (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
+  h_X = thin * r * 2/3; % thinning hazard
+  % using hazard of 0.01 per day in case shrinking exceeds max fraction of del_X
+  h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
+  dN = - h .* N;
+  
+  
+  if t < aT_b % set changes of embryo states to zero
+    dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dL_max(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
+  end
+
+  dXvars = [dX; dq; dh_A; dL; dL_max; dE; dE_R; dE_H; dN]; % pack output
+
+end
+##### SOURCE END #####
+--></body></html>

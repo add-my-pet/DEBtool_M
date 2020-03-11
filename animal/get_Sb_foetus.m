@@ -2,11 +2,11 @@
 % Gets scaled survival probability at birth
 
 %%
-function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb_foetus(p, f)
+function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b, info] = get_Sb_foetus(p, f)
   % created 2019/10/09 by Bas Kooijman, modified 2020/02/21
   
   %% Syntax
-  % [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = <../get_Sb.m *get_Sb*>(p, f)
+  % [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b, info] = <../get_Sb.m *get_Sb*>(p, f)
   
   %% Description
   % Obtains survival probability at birth by integration survival prob over age. 
@@ -25,6 +25,7 @@ function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb_foetus(p, f)
   % * tau_0b: \int_0^{tau_b} S(tau) exp(- rho_N tau) dtau
   % * l3_0b: mean cibed length
   % * u_E0: scaled energy cost for foetus
+  % * l_b: scaled length at birth
   % * info: boolean with success (true) or failure (false)
 
   %% Remarks

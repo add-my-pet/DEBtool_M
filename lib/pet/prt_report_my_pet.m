@@ -78,7 +78,10 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
   par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData);
   if isempty(strfind(metaDataFldNm{1}, '_')) % single species; name of species is recognized by the presence of "_"
     focusSpecies = metaData.species; specList = {focusSpecies}; color = 1; n_spec = length(specList); % number of focus species, initiate total number of species
-    par = rmfield (par, 'free'); fldsPar = get_parfields(metaPar.model, 1);
+    if isfield('par', 'free')
+      par = rmfield (par, 'free'); 
+    end
+    fldsPar = get_parfields(metaPar.model, 1);
     for i=1:length(fldsPar)
       parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
     end

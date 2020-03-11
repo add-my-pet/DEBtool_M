@@ -2,11 +2,11 @@
 % Gets survival probability at birth and scaled variables
 
 %%
-function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb(p, f)
+function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b, info] = get_Sb(p, f)
   % created 2019/10/09 by Bas Kooijman, modified 2020/02/21
   
   %% Syntax
-  % [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = <../get_Sb.m *get_Sb*>(p, f)
+  % [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b, info] = <../get_Sb.m *get_Sb*>(p, f)
   
   %% Description
   % Obtains survival probability at birth by integration survival prob over scaled age. All variables/parameters  are dimensionless.
@@ -25,6 +25,7 @@ function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb(p, f)
   % * tau_b: scalar scaled age at birth
   % * tau_0b: % \int_0^tau_b exp(-rho_N*tau) S(tau) dtau
   % * u_E0: scaled initial reserve
+  % * l_b: scaled length at birth
   % * info: boolean with success (true) or failure (false)
 
   %% Remarks
@@ -39,7 +40,7 @@ function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb(p, f)
   % See get_Sb_foetus for foetal development
 
   %% Example
-  % [S_b, q_b, h_Ab, tau_b, tau_0b, l3_0b, u_E0b, u_E0, info] = get_Sb([1.1 .3 0.01 1e-7 1e-4])
+  % [S_b, q_b, h_Ab, tau_b, tau_0b, l3_0b, u_E0b, u_E0, l_b, info] = get_Sb([1.1 .3 0.01 1e-7 1e-4])
 
   if ~exist('f','var')
     f = 1;
@@ -55,7 +56,7 @@ function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, info] = get_Sb(p, f)
   ulvqhS_0 = [1.001*u_E0; 1e-5; 0; 0; 0; 1; 0;]; % initial value
   options = odeset('Events',@birth, 'NonNegative',ones(10,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
   [tau, ulvqhS] = ode45(@dget_ulvqhS, [0 1e8], ulvqhS_0, options, p);
-  tau_b = tau(end); q_b = max(0,ulvqhS(end,4)); h_Ab = max(0,ulvqhS(end,5)); S_b = max(0,ulvqhS(end,6));
+  tau_b = tau(end); q_b = max(0,ulvqhS(end,4)); h_Ab = max(0,ulvqhS(end,5)); S_b = max(0,ulvqhS(end,6)); 
   tau_0b = ulvqhS(end,7); % \int_0^tau_b exp(-rho_N*tau) S(tau) dtau; 
   % stable-age pdf for embryo's equals exp(-rho_N*tau) S(tau)/ l0 
   
