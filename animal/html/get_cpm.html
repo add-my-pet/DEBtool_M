@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_cpm</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-11"><meta name="DC.source" content="get_cpm.m"><style type="text/css">
+      --><title>get_cpm</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-12"><meta name="DC.source" content="get_cpm.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,13 +66,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_cpm</h1><!--introduction--><p>get cohort trajectories</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[tXN, tXW, info] = <a href="../get_cpm.m"><b>get_cpm</b></a> (model, par, tT, tJX, x_0, n_R, t_R)</p><h2 id="4">Description</h2><p>integrates cohorts with synchronized reproduction events, called by cpm,</p><p>variables to be integrated, packed in Xvars:  X: mol/vol or mol/surface, food density    for each cohort:  q: 1/d^2, aging acceleration  h_a: 1/d, hazard for aging  L: cm, struc length  L_max: cm, struc length before start shrinking  E: J/cm^3, reserve density [E]  E_R: J, reprod buffer  E_H: J, maturity  N: #, number of individuals in cohort</p><p>number of current cohorts n_c = (length(Xvars) - 1)/8 n_c increases for 1 till some max value, determined by number of oldest cohort &lt; 1e-4, which depends on ageing and other hazards</p><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with scaled initial food density</li><li>V_X: scalar with volume of reactor</li><li>n_R: scalar with number of reproduction events to be simulated</li><li>t_R: scalar with time period between reproduction events</li></ul></div><p>Output:</p><div><ul><li>tXN: (n,m)-array with times, food density and number of individuals in the various cohorts</li><li>tXW: (n,m)-array with times, food density and total wet weights of the various cohorts</li><li>info: bolean with failure (0) of success (1)</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_cpm</h1><!--introduction--><p>get cohort trajectories</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[tXN, tXW, info] = <a href="../get_cpm.m"><b>get_cpm</b></a> (model, par, tT, tJX, x_0, n_R, t_R)</p><h2 id="4">Description</h2><p>integrates cohorts with synchronized reproduction events, called by cpm,</p><p>variables to be integrated, packed in Xvars:  X: mol/vol or mol/surface, food density    for each cohort:  q: 1/d^2, aging acceleration  h_a: 1/d, hazard for aging  L: cm, struc length  L_max: cm, struc length before start shrinking  E: J/cm^3, reserve density [E]  E_R: J, reprod buffer  E_H: J, maturity  N: #, number of individuals in cohort</p><p>number of current cohorts n_c = (length(Xvars) - 1)/8 n_c increases for 1 till some max value, determined by number of oldest cohort &lt; 1e-4, which depends on ageing and other hazards</p><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with scaled initial food density</li><li>V_X: scalar with volume of reactor</li><li>n_R: scalar with number of reproduction events to be simulated</li><li>t_R: scalar with time period between reproduction events</li></ul></div><p>Output:</p><div><ul><li>tXN: (n,m)-array with times, food density and number of individuals in the various cohorts</li><li>tXW: (n,m)-array with times, food density and total wet weights of the various cohorts</li><li>M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t), where N(t) is the vector of numbers of individuals in the cohorts at t</li><li>M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t), where W(t) is the vector of total wet weights in the cohorts at t</li><li>info: boolean with failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_cpm
 % get cohort trajectories
 
 %%
-function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
+function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
@@ -111,7 +111,12 @@ function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 %
 % * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
 % * tXW: (n,m)-array with times, food density and total wet weights of the various cohorts
-% * info: bolean with failure (0) of success (1)
+% * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t), where N(t) is the vector of numbers of individuals in the cohorts at t
+% * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t), where W(t) is the vector of total wet weights in the cohorts at t
+% * info: boolean with failure (0) or success (1)
+
+%% Remarks
+% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
 
   options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9);
   info = 1;
@@ -189,6 +194,13 @@ function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
     end
     [t, Xvars_0, tXN, tXW] = cohorts(t(end), Xvars(end,:), tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); % catenate output and possibly insert new cohort
     [i, (length(Xvars_0)-1)/8]
+  end
+  
+  % maps
+  M_N = []; M_W = []; n_c =(length(Xvars_0)-1)/8; % number of cohorts
+  if length(tXN) > n_c && tXN(end - n_c - 1, end) > 0
+    M_N = tXN(end-n_c:end,3:end)'/tXN(end-n_c-1:end-1,3:end)';
+    M_W = tXW(end-n_c:end,3:end)'/tXW(end-n_c-1:end-1,3:end)';
   end
 end
 

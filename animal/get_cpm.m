@@ -2,7 +2,7 @@
 % get cohort trajectories
 
 %%
-function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
+function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
@@ -41,7 +41,12 @@ function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 %
 % * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
 % * tXW: (n,m)-array with times, food density and total wet weights of the various cohorts
-% * info: bolean with failure (0) of success (1)
+% * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t), where N(t) is the vector of numbers of individuals in the cohorts at t
+% * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t), where W(t) is the vector of total wet weights in the cohorts at t
+% * info: boolean with failure (0) or success (1)
+
+%% Remarks
+% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
 
   options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9);
   info = 1;
@@ -119,6 +124,13 @@ function [tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
     end
     [t, Xvars_0, tXN, tXW] = cohorts(t(end), Xvars(end,:), tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); % catenate output and possibly insert new cohort
     [i, (length(Xvars_0)-1)/8]
+  end
+  
+  % maps
+  M_N = []; M_W = []; n_c =(length(Xvars_0)-1)/8; % number of cohorts
+  if length(tXN) > n_c && tXN(end - n_c - 1, end) > 0
+    M_N = tXN(end-n_c:end,3:end)'/tXN(end-n_c-1:end-1,3:end)';
+    M_W = tXW(end-n_c:end,3:end)'/tXW(end-n_c-1:end-1,3:end)';
   end
 end
 

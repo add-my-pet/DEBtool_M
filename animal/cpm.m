@@ -2,7 +2,7 @@
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [tXN, tXW] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
@@ -40,12 +40,15 @@ function [tXN, tXW] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %
 % * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
 % * tXW: (n,m)-array with times, food density and cohort wet weights
+% * M_N: (n_c,n_c)-array with map for N: N(t+1) = M_N * N(t)
+% * M_W: (n_c,n_c)-array with map for W: W(t+1) = M_W * W(t)
 %
 %% Remarks
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page with traits uses the possibly modified parameter values. 
+% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
 % cpm only controls input/output; computations are done in get_cpm, which calls dcpm_mod.
 
 %% Example of use
@@ -192,7 +195,7 @@ if ~exist('t_R','var') || isempty(t_R)
 end
 
 % get trajectories
-[tXN, tXW, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
   return
 end
