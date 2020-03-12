@@ -40,8 +40,8 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %
 % * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
 % * tXW: (n,m)-array with times, food density and cohort wet weights
-% * M_N: (n_c,n_c)-array with map for N: N(t+1) = M_N * N(t)
-% * M_W: (n_c,n_c)-array with map for W: W(t+1) = M_W * W(t)
+% * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
+% * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
 %
 %% Remarks
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
