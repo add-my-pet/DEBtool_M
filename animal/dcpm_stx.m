@@ -1,17 +1,17 @@
-%% dcpm_std
-% changes in cohort states for std model
+%% dcpm_stx
+% changes in cohort states for stx model
 
 %%
-function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+function dXvars = dcpm_stx(t, Xvars, E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
     L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-%   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
+% dXvars = <../dcpm_stx.m *dcpm_stx*> (t, Xvars, E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+%    L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with stx model
 %
 % Input:
 %
@@ -81,7 +81,7 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   dh_A = q - r .* h_A; % 1/d, aging hazard
 
   % stage-specific background hazards
-  h_B = h_Bbp * (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
+  h_B = h_Bbx * (E_H <= E_Hx) + h_Bxp * (E_H <= E_Hp) .* (E_H > E_Hx) + h_Bpi * (E_H > E_Hp);
   h_X = thin * r * 2/3; % thinning hazard
   % using hazard of 0.01 per day in case shrinking exceeds max fraction of del_X
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 

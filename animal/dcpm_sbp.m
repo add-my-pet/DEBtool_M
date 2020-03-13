@@ -1,17 +1,17 @@
-%% dcpm_std
-% changes in cohort states for std model
+%% dcpm_sbp
+% changes in cohort states for sbp model
 
 %%
-function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+function dXvars = dcpm_sbp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
     L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+% dXvars = <../dcpm_sbp.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
 %   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with sbp model
 %
 % Input:
 %
@@ -58,7 +58,8 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   p_A = (E_H > E_Hb) * pT_Am * f .* L2;
   dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
   r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
-  r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
+  % don't grow after puberty
+  r = (E_H >= E_Hp) .* r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
   dL_max = max(0, dL);
   
@@ -87,11 +88,10 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
   dN = - h .* N;
   
-  
   if t < a_b % set changes of embryo states to zero
     dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dL_max(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
-
+ 
   dXvars = [dX; dq; dh_A; dL; dL_max; dE; dE_R; dE_H; dN]; % pack output
 
 end

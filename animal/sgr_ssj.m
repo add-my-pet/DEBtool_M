@@ -3,7 +3,7 @@
 
 %%
 function [r, info] = sgr_ssj (par, T_pop, f_pop)
-  % created 2019/07/31 by Bas Kooijman
+  % created 2019/07/31 by Bas Kooijman, modified 2020/03/12
   
   %% Syntax
   % [r, info] = <../sgr_ssj.m *sgr_ssj*> (par, T_pop, f_pop)
@@ -93,7 +93,7 @@ function [r, info] = sgr_ssj (par, T_pop, f_pop)
   end
   pars_ts = [g k 0 v_Hb v_Hs]; [tau_s, tau_b, l_s, l_b] = get_tp(pars_ts, 1);
   pars_tp = [g k 0 v_Hs v_Hp]; [tau_p, tau_ss, l_p, l_ss] = get_tp(pars_tp, 1);
-  aT_b = tau_b/ kT_M; tT_s = (tau_p - tau_s)/ kT_M; tT_j = tT_s + t_sj; tT_p = tT_j + (tau_p - tau_ss)/ kT_M; % d, unscale times
+  aT_b = tau_b/ kT_M; tT_s = (tau_s - tau_b)/ kT_M; tT_j = tT_s + t_sj; tT_p = tT_j + (tau_p - tau_ss)/ kT_M; % d, unscale times
   L_b = L_m * l_b; L_s = L_m * l_s; L_j = L_s * exp(- k_E * t_sj); L_p = L_m * l_p;                           % -, cm, struc lengths
   S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
   rT_B = kT_M/ 3/ (1 + f/ g); % 1/d, von Bert growth rate

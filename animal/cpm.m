@@ -6,7 +6,7 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [tXN, tXW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tx, x_0, V_X, h, n_R, t_R) 
+% [tXN, tXW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
@@ -104,7 +104,7 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX)
-  tJX = 50 * J_X_Am * L_m^2 ;
+  tJX = 500 * J_X_Am * L_m^2 ;
 elseif length(tJX) > 1 & sum(tJX(:,1) > 1) > 0
   fprintf('abcissa of food supply knots must be between 0 and 1\n');
   tXN=[]; tXW=[]; return
@@ -119,7 +119,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.01; thin = 0; 
+  h_D = 0.5; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -215,9 +215,9 @@ set(gca, 'FontSize', 15, 'Box', 'on')
 figure(2)
 hold on
 for i = 1:n_c-1
-  plot(t,N(:,i),'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+  plot(t, N(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
 end
-plot(t,N(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+plot(t, N(:,n_c), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('# of individuals');
@@ -226,7 +226,7 @@ set(gca, 'FontSize', 15, 'Box', 'on')
 figure(3)
 hold on
 for i = 1:n_c-1
-  plot(t,W(:,i),'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+  plot(t, W(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
 end
 plot(t,W(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
