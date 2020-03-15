@@ -50,6 +50,7 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % The (first) html-page with traits uses the possibly modified parameter values. 
 % The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
 % cpm only controls input/output; computations are done in get_cpm, which calls dcpm_mod.
+% Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 
 %% Example of use
 %
@@ -193,6 +194,7 @@ end
 if ~exist('t_R','var') || isempty(t_R)
   t_R = 365; % d
 end
+
 
 % get trajectories
 [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);

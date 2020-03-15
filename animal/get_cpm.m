@@ -88,6 +88,22 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   end
   L_b = l_b * L_m; % cn, length at birth
   
+  switch model
+    case 'abj'
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hj v_Hp]); % -, scaled ages and lengths
+      L_j = l_j * L_m;
+    case 'asj'
+      [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_ts([g, k, 0, v_Hb, v_Hs, v_Hj, v_Hp]); 
+      L_s = l_s * L_m; L_j = l_j * L_m;
+    case 'abp'
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hp-1e-6 v_Hp]); % -, scaled ages and lengths
+      L_p = l_j * L_m;
+    case 'hep'
+      v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep(pars_tj); 
+      L_p = l_p * L_m; L_j = l_j * L_m;
+  end
+  
   if t_R < aT_b
     fprintf('Warning from get_cpm: age at birth is larger than reproduction interval\n');
     info = 0; tXN = []; tXW = []; return
@@ -97,7 +113,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
     tT_s = tau_s/ kT_M; tT_j = tT_s + t_sj; kT_E = k_E * TC;
     if t_R < tT_j
       fprintf('Warning from get_cpm: age at metam is larger than reproduction interval\n');
-      info = 0; tXN = []; tXW = []; return
+      info = 0; tXN = []; tXW = []; M_N = []; M_W = []; return
     end
   end
   
@@ -117,7 +133,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
             L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
         [t, Xvars] = ode45(@dcpm_stx, [0; aT_b; t_R], Xvars_0, options, par_stx{:});
       case 'ssj'
-        par_ssj = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, t_sj, ...
+        par_ssj = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
         % treat shrinking at E_H(t) = E_Hs of first cohort as event
         [t, Xvars] = ode45(@dcpm_ssj, [0; aT_b; tT_s], Xvars_0, options, par_ssj{:});
@@ -130,15 +146,20 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
             L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
         [t, Xvars] = ode45(@dcpm_sbp, [0; aT_b; t_R], Xvars_0, options, par_sbp{:});
       case 'abj'
-        [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par, tTC, tX);
+        par_abj = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+            L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+        [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par_abj, tTC, tX);
       case 'asj'
-        [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par, tTC, tX);
+        par_asj = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+            L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+        [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par_asj, tTC, tX);
       case 'abp'
-        [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par, tTC, tX);
-      case 'hep'
-        [t, Xvars] = ode45(@dcpm_hep, [0; aT_b; t_R], Xvars_0, options, par, tTC, tX);
-      case 'hex'
-        [t, Xvars] = ode45(@dcpm_hex, [0; aT_b; t_R], Xvars_0, options, par, tTC, tX);
+        par_abp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+            L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+        [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par_abp, tTC, tX);
+      case {'hep','hex'}
+        fprintf('Warning from get_cpm: this species does not sport periodic reproduction\n');
+        info = 0; tXN = []; tXW = []; M_N = []; M_W = []; return
     end
     % catenate output and possibly insert new cohort
     [t, Xvars_0, tXN, tXW] = cohorts(t(end), Xvars(end,:), tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
@@ -148,7 +169,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   
   % maps
   M_N = []; M_W = []; n_c =(length(Xvars_0)-1)/8; % number of cohorts
-  if length(tXN) > n_c && tXN(end - n_c - 1, end) > 0
+  if length(tXN) > n_c 
     M_N = tXN(end-n_c:end,3:end)'/tXN(end-n_c-1:end-1,3:end)';
     M_W = tXW(end-n_c:end,3:end)'/tXW(end-n_c-1:end-1,3:end)';
   end

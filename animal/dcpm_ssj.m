@@ -2,7 +2,7 @@
 % changes in cohort states for ssj model
 
 %%
-function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, t_sj, ...
+function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
             L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   

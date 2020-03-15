@@ -1,17 +1,17 @@
-%% dcpm_std
-% changes in cohort states for std model
+%% dcpm_abj
+% changes in cohort states for abj model
 
 %%
-function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-    L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
-% created 2020/03/09 by Bob Kooi & Bas Kooijman
+function dXvars = dcpm_abj(t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+    L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
+% created 2020/03/15 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-%   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
+% dXvars = <../dcpm_abj.m *dcpm_abj*> (t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+%   L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with abj model
 %
 % Input:
 %
@@ -46,18 +46,23 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   else
     TC = spline1(t, tTC); % temperature correction factor
   end
-  
-  % temp correction
-  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC;     pT_Am = TC * p_Am;
-  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; JT_X_Am = TC * J_X_Am; 
-  
-  f = X/ (X + K); % -, scaled func response
-  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
     
-  kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
-  p_A = (E_H > E_Hb) * pT_Am * f .* L2;
-  dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
-  r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
+  % temp correction
+  kT_J = k_J * TC; kT_JX = k_JX * TC; 
+  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; 
+  % account for acceleration
+  s_M = min(L_j, L)/ L_b;
+  vT = TC * v .* s_M;
+  pT_Am = TC * p_Am .* s_M;
+  JT_X_Am = TC * J_X_Am .* s_M; 
+
+  f = X/ (X + K); % -, scaled func response
+  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f .* sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
+    
+  kapG = max(kap_G, e >= L ./ s_M/ L_m); % kap_G if shrinking, else 1
+  p_A = (E_H > E_Hb) .* pT_Am * f .* L2;
+  dE = p_A ./ L3 - vT .* E ./ L; % J/d.cm^3, change in reserve density
+  r = vT .* (e./ L - 1 ./ s_M/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
   r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
   dL_max = max(0, dL);
@@ -77,12 +82,12 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   end
   
   % aging
-  dq = (q * s_G .* L3/ L_m^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
+  dq = (q * s_G .* L3/ (s_M * L_m).^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
   dh_A = q - r .* h_A; % 1/d, aging hazard
 
   % stage-specific background hazards
-  h_B = h_Bbp * (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
-  h_X = thin * r * 2/3; % thinning hazard
+  h_B = h_Bbj * (E_H <= E_Hj) + h_Bjp * (E_H > E_Hj) .* (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
+  sel = (L >= L_j); h_X = thin * r .* (sel * 2/3 + ~sel); % thinning hazard
   % using hazard of 0.01 per day in case shrinking exceeds max fraction of del_X
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
   dN = - h .* N;

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>dcpm_std</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-15"><meta name="DC.source" content="dcpm_std.m"><style type="text/css">
+      --><title>dcpm_abj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-15"><meta name="DC.source" content="dcpm_abj.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,22 +66,22 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>dcpm_std</h1><!--introduction--><p>changes in cohort states for std model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>dXvars = <a href="../dcpm_std.m"><b>dcpm_std</b></a> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))</p><h2 id="4">Description</h2><pre>ode's for changes in cohorts with std model</pre><p>Input:</p><div><ul><li>t: time, with 0&lt;t&lt;t_R</li><li>Xvars: vector with states of cohorts</li><li>par: structure with parameter values</li><li>tTC: (nT,2)-array with time and temperature correction factors</li><li>tJX: (nX,2)-array with time and food supply</li></ul></div><p>Output:</p><div><ul><li>dXvars: changes in states of cohorts</li></ul></div><h2 id="5">Remarks</h2><p>aT_b &lt; t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>dcpm_abj</h1><!--introduction--><p>changes in cohort states for abj model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>dXvars = <a href="../dcpm_abj.m"><b>dcpm_abj</b></a> (t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...   L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))</p><h2 id="4">Description</h2><pre>ode's for changes in cohorts with abj model</pre><p>Input:</p><div><ul><li>t: time, with 0&lt;t&lt;t_R</li><li>Xvars: vector with states of cohorts</li><li>par: structure with parameter values</li><li>tTC: (nT,2)-array with time and temperature correction factors</li><li>tJX: (nX,2)-array with time and food supply</li></ul></div><p>Output:</p><div><ul><li>dXvars: changes in states of cohorts</li></ul></div><h2 id="5">Remarks</h2><p>aT_b &lt; t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% dcpm_std
-% changes in cohort states for std model
+%% dcpm_abj
+% changes in cohort states for abj model
 
 %%
-function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-    L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
-% created 2020/03/09 by Bob Kooi & Bas Kooijman
+function dXvars = dcpm_abj(t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+    L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
+% created 2020/03/15 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-%   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
+% dXvars = <../dcpm_abj.m *dcpm_abj*> (t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+%   L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with abj model
 %
 % Input:
 %
@@ -116,18 +116,23 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   else
     TC = spline1(t, tTC); % temperature correction factor
   end
-  
-  % temp correction
-  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC;     pT_Am = TC * p_Am;
-  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; JT_X_Am = TC * J_X_Am; 
-  
-  f = X/ (X + K); % -, scaled func response
-  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
     
-  kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
-  p_A = (E_H > E_Hb) * pT_Am * f .* L2;
-  dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
-  r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
+  % temp correction
+  kT_J = k_J * TC; kT_JX = k_JX * TC; 
+  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; 
+  % account for acceleration
+  s_M = min(L_j, L)/ L_b;
+  vT = TC * v .* s_M;
+  pT_Am = TC * p_Am .* s_M;
+  JT_X_Am = TC * J_X_Am .* s_M; 
+
+  f = X/ (X + K); % -, scaled func response
+  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f .* sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
+    
+  kapG = max(kap_G, e >= L ./ s_M/ L_m); % kap_G if shrinking, else 1
+  p_A = (E_H > E_Hb) .* pT_Am * f .* L2;
+  dE = p_A ./ L3 - vT .* E ./ L; % J/d.cm^3, change in reserve density
+  r = vT .* (e./ L - 1 ./ s_M/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
   r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
   dL_max = max(0, dL);
@@ -147,12 +152,12 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   end
   
   % aging
-  dq = (q * s_G .* L3/ L_m^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
+  dq = (q * s_G .* L3/ (s_M * L_m).^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
   dh_A = q - r .* h_A; % 1/d, aging hazard
 
   % stage-specific background hazards
-  h_B = h_Bbp * (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
-  h_X = thin * r * 2/3; % thinning hazard
+  h_B = h_Bbj * (E_H <= E_Hj) + h_Bjp * (E_H > E_Hj) .* (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
+  sel = (L >= L_j); h_X = thin * r .* (sel * 2/3 + ~sel); % thinning hazard
   % using hazard of 0.01 per day in case shrinking exceeds max fraction of del_X
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
   dN = - h .* N;

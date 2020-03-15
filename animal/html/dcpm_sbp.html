@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>dcpm_std</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-15"><meta name="DC.source" content="dcpm_std.m"><style type="text/css">
+      --><title>dcpm_sbp</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-15"><meta name="DC.source" content="dcpm_sbp.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,22 +66,22 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>dcpm_std</h1><!--introduction--><p>changes in cohort states for std model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>dXvars = <a href="../dcpm_std.m"><b>dcpm_std</b></a> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))</p><h2 id="4">Description</h2><pre>ode's for changes in cohorts with std model</pre><p>Input:</p><div><ul><li>t: time, with 0&lt;t&lt;t_R</li><li>Xvars: vector with states of cohorts</li><li>par: structure with parameter values</li><li>tTC: (nT,2)-array with time and temperature correction factors</li><li>tJX: (nX,2)-array with time and food supply</li></ul></div><p>Output:</p><div><ul><li>dXvars: changes in states of cohorts</li></ul></div><h2 id="5">Remarks</h2><p>aT_b &lt; t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>dcpm_sbp</h1><!--introduction--><p>changes in cohort states for sbp model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>dXvars = <a href="../dcpm_sbp.m"><b>dcpm_std</b></a> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))</p><h2 id="4">Description</h2><pre>ode's for changes in cohorts with sbp model</pre><p>Input:</p><div><ul><li>t: time, with 0&lt;t&lt;t_R</li><li>Xvars: vector with states of cohorts</li><li>par: structure with parameter values</li><li>tTC: (nT,2)-array with time and temperature correction factors</li><li>tJX: (nX,2)-array with time and food supply</li></ul></div><p>Output:</p><div><ul><li>dXvars: changes in states of cohorts</li></ul></div><h2 id="5">Remarks</h2><p>aT_b &lt; t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% dcpm_std
-% changes in cohort states for std model
+%% dcpm_sbp
+% changes in cohort states for sbp model
 
 %%
-function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+function dXvars = dcpm_sbp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
     L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_std.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+% dXvars = <../dcpm_sbp.m *dcpm_std*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
 %   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with sbp model
 %
 % Input:
 %
@@ -128,7 +128,8 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   p_A = (E_H > E_Hb) * pT_Am * f .* L2;
   dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
   r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
-  r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
+  % don't grow after puberty
+  r = (E_H >= E_Hp) .* r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
   dL_max = max(0, dL);
   
@@ -160,7 +161,7 @@ function dXvars = dcpm_std(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   if t < a_b % set changes of embryo states to zero
     dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dL_max(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
-
+ 
   dXvars = [dX; dq; dh_A; dL; dL_max; dE; dE_R; dE_H; dN]; % pack output
 
 end

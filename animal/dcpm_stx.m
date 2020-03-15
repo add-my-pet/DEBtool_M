@@ -87,11 +87,10 @@ function dXvars = dcpm_stx(t, Xvars, E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
   dN = - h .* N;
   
-  
   if t < a_b % set changes of embryo states to zero
     dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dL_max(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
-
+  
   dXvars = [dX; dq; dh_A; dL; dL_max; dE; dE_R; dE_H; dN]; % pack output
 
 end
