@@ -57,7 +57,7 @@ function dXvars = dcpm_abj(t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   JT_X_Am = TC * J_X_Am .* s_M; 
 
   f = X/ (X + K); % -, scaled func response
-  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f .* sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
+  dX = J_XI/ V_X - hT_D * X - f .* sum((E_H > E_Hb) .* JT_X_Am .* N .* L.^2)/ V_X; % food dynamics
     
   kapG = max(kap_G, e >= L ./ s_M/ L_m); % kap_G if shrinking, else 1
   p_A = (E_H > E_Hb) .* pT_Am * f .* L2;
@@ -82,7 +82,7 @@ function dXvars = dcpm_abj(t, Xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   end
   
   % aging
-  dq = (q * s_G .* L3/ (s_M * L_m).^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
+  dq = (q * s_G .* L3 ./ (s_M * L_m).^3 + hT_a) .* e .* (vT ./ L - r) - r .* q;
   dh_A = q - r .* h_A; % 1/d, aging hazard
 
   % stage-specific background hazards

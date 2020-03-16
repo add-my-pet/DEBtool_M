@@ -326,7 +326,7 @@ switch model
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
   case 'abj'
       fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
-      fprintf(oid, str, 'h_Bbj', '1/d', h_B0j, 'background hazard rate from b to j');
+      fprintf(oid, str, 'h_Bbj', '1/d', h_Bbj, 'background hazard rate from b to j');
       fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
   case 'asj'
@@ -335,16 +335,6 @@ switch model
       fprintf(oid, str, 'h_Bsj', '1/d', h_Bsj, 'background hazard rate from s to j');
       fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
-  case 'hep'
-      fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
-      fprintf(oid, str, 'h_Bbp', '1/d', h_Bbp, 'background hazard rate from b to p');
-      fprintf(oid, str, 'h_Bpj', '1/d', h_Bpj, 'background hazard rate from p to j');
-      fprintf(oid, str, 'h_Bji', '1/d', h_Bji, 'background hazard rate from j to i');
-  case 'hex'
-      fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
-      fprintf(oid, str, 'h_Bbj', '1/d', h_Bbj, 'background hazard rate from b to j');
-      fprintf(oid, str, 'h_Bje', '1/d', h_Bje, 'background hazard rate from j to e');
-      fprintf(oid, str, 'h_Bei', '1/d', h_Bei, 'background hazard rate from e to i');
 end
 fprintf(oid, str, 'X_0', 'mol/L', x_0 * K, 'initial food density');
 fprintf(oid, str, 'V_X', 'L', V_X, 'volume of reactor');

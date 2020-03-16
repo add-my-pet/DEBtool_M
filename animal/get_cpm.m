@@ -148,15 +148,15 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
       case 'abj'
         par_abj = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
-        [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par_abj, tTC, tX);
+        [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par_abj{:});
       case 'asj'
         par_asj = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
-        [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par_asj, tTC, tX);
+        [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par_asj{:});
       case 'abp'
         par_abp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
-        [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par_abp, tTC, tX);
+        [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par_abp{:});
       case {'hep','hex'}
         fprintf('Warning from get_cpm: this species does not sport periodic reproduction\n');
         info = 0; tXN = []; tXW = []; M_N = []; M_W = []; return
