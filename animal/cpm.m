@@ -67,9 +67,12 @@ if iscell(species)
   par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
+  [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
+  if info == 0
+    tXN=[]; tXW=[]; M_N=[]; M_W=[]; return
+  end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
-  [par, metaPar, txtPar, metaData] = allStat2par(species); 
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
 end
 model = metaPar.model;
