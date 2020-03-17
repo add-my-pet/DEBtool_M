@@ -98,10 +98,6 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
     case 'abp'
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hp-1e-6 v_Hp]); % -, scaled ages and lengths
       L_p = l_j * L_m;
-    case 'hep'
-      v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g k v_Hb v_Hp v_Rj];
-      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep(pars_tj); 
-      L_p = l_p * L_m; L_j = l_j * L_m;
   end
   
   if t_R < aT_b
@@ -119,22 +115,23 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   
   % initial states with number of cohorts n_c = 1;
   X_0 = x_0 * K; % unscale initial food density
-  Xvars_0 = [X_0; 0; 0; L_b; L_b; E_m; 0; E_Hb; 1]; % X q h L L_max [E] E_R E_H N
+  Xvars_0 = [X_0; 0; 0; L_b; E_m; 0; E_Hb; 1]; % X q h L [E] E_R E_H N
   tXN = [0, X_0, 1]; tXW = [0, X_0, E_0/ mu_E * w_E/ d_E];% initialise output
+  M_N = []; M_W = [];  
   
   for i = 1:n_R
     switch model
       case {'std','stf'}
         par_std = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_std, [0; aT_b; t_R], Xvars_0, options, par_std{:});
       case 'stx'
         par_stx = {E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_stx, [0; aT_b; t_R], Xvars_0, options, par_stx{:});
       case 'ssj'
         par_ssj = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         % treat shrinking at E_H(t) = E_Hs of first cohort as event
         [t, Xvars] = ode45(@dcpm_ssj, [0; aT_b; tT_s], Xvars_0, options, par_ssj{:});
         [X, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(Xvars(end,:)); 
@@ -143,19 +140,19 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
         [t, Xvars] = ode45(@dcpm_ssj, [tT_s; t_R], Xvars_0, options, par_ssj{:});
       case 'sbp'
         par_sbp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_sbp, [0; aT_b; t_R], Xvars_0, options, par_sbp{:});
       case 'abj'
         par_abj = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par_abj{:});
       case 'asj'
         par_asj = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par_asj{:});
       case 'abp'
         par_abp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
-            L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X};
+            L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par_abp{:});
       case {'hep','hex'}
         fprintf('Warning from get_cpm: this species does not sport periodic reproduction\n');
@@ -163,12 +160,11 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
     end
     % catenate output and possibly insert new cohort
     [t, Xvars_0, tXN, tXW] = cohorts(t(end), Xvars(end,:), tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
-    n_c = (length(Xvars_0)-1)/8; 
+    n_c = (length(Xvars_0)-1)/7; % number of cohorts
     [i, n_c]
   end
   
   % maps
-  M_N = []; M_W = []; n_c =(length(Xvars_0)-1)/8; % number of cohorts
   if length(tXN) > n_c 
     M_N = tXN(end-n_c:end,3:end)'/tXN(end-n_c-1:end-1,3:end)';
     M_W = tXW(end-n_c:end,3:end)'/tXW(end-n_c-1:end-1,3:end)';
@@ -178,38 +174,38 @@ end
 
 function [t, Xvars_0, tXN, tXW] = cohorts(t, Xvars, tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E)
   t = tXN(end,1) + t_R; Xvars_t = Xvars(end,:); % last value of t, Xvars
-  [X, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(Xvars_t);
+  [X, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(Xvars_t);
 
   % reproduction event
   dN = kap_R * sum(N .* floor(E_R/ E_0)); % #, number of new eggs
   E_R = mod(E_R, E_0); % reduce reprod buffer to fractions of eggs
     
   % build new initial state vectors and append t, X, N and W to output
-  q = [0; q]; h_A = [0; h_A]; L = [L_b; L]; L_max = [L_b; L_max]; E = [E_m; E]; E_R = [0; E_R]; E_H = [E_Hb; E_H]; N = [dN; N]; 
+  q = [0; q]; h_A = [0; h_A]; L = [L_b; L]; E = [E_m; E]; E_R = [0; E_R]; E_H = [E_Hb; E_H]; N = [dN; N]; 
   % most values for cohort 0 will be overwritten in dget_mod during embryo stage
   W = N .* L.^3 .* (1 + E/ mu_E * w_E/ d_E) + E_R/ mu_E * w_E/ d_E; % g, wet weights
   if N(end) > 1e-4 % add new youngest cohort
     tXN = [[tXN, zeros(size(tXN,1),1)]; [t, X, N']]; % append to output
     tXW = [[tXW, zeros(size(tXW,1),1)]; [t, X, W']]; % append to output
   else % add new youngest cohort and remove oldest
-    q(end)=[]; h_A(end)=[]; L(end)=[]; L_max(end)=[]; E(end)=[]; E_R(end)=[]; E_H(end)=[]; N(end)=[]; W(end)=[];
+    q(end)=[]; h_A(end)=[]; L(end)=[]; E(end)=[]; E_R(end)=[]; E_H(end)=[]; N(end)=[]; W(end)=[];
     tXN = [tXN; [t, X, N']]; % append to output
     tXW = [tXW; [t, X, W']]; % append to output
   end
-  Xvars_0 = max(0,[X; q; h_A; L; L_max; E; E_R; E_H; N]); % pack state vars
+  Xvars_0 = max(0,[X; q; h_A; L; E; E_R; E_H; N]); % pack state vars
 end
 
 function [value,isterminal,direction] = puberty(t, Xvars, E_Hp, varargin)
-  n_c = (length(Xvars) - 1)/ 8; % #, number of cohorts
-  E_H = Xvars(1+4*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
+  n_c = (length(Xvars) - 1)/ 7; % #, number of cohorts
+  E_H = Xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
   value = min(abs(E_H - E_Hp)); % trigger 
   isterminal = 0;  % continue after event
   direction  = []; % get all the zeros
 end
 
 function [value,isterminal,direction] = leptoPub(t, Xvars, E_Hp, E_Hs, varargin)
-  n_c = (length(Xvars) - 1)/ 8; % #, number of cohorts
-  E_H = Xvars(1+4*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
+  n_c = (length(Xvars) - 1)/ 7; % #, number of cohorts
+  E_H = Xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
   value = [E_H(1) - E_Hs,  min(abs(E_H - E_Hp))]; % triggers 
   isterminal = [1 1];  % stop at event
   direction  = []; % get all the zeros

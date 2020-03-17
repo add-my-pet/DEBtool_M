@@ -3,12 +3,12 @@
 
 %%
 function dXvars = dcpm_abp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-    L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X)
+    L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
 % created 2020/03/15 by Bob Kooi & Bas Kooijman
   
 %% Syntax
 % dXvars = <../dcpm_abp.m *dcpm_abp*> (t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-%   L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, del_X))
+%   L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
   
 %% Description
 %  ode's for changes in cohorts with abp model
@@ -28,11 +28,11 @@ function dXvars = dcpm_abp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
 %% Remarks
 % aT_b < t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes 
     
-  [X, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(Xvars);  % all vars >=0
+  [X, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(Xvars);  % all vars >=0
   E_H = min(E_Hp, E_H); E = min(E, E_m); e = E/ E_m; L = min(L_p, L); L2 = L .* L; L3 = L .* L2; 
   
   if t < a_b % set embryos at birth value, since changes are too fast, below the embryo changes are set to 0
-    q(1) = q_b; h_A(1) = h_Ab; L(1) = L_b; L_max(1) = L_b; E(1) = E_m; E_R(1) = 0; E_H(1) = E_Hb; N(1) = N(1) * S_b;
+    q(1) = q_b; h_A(1) = h_Ab; L(1) = L_b; E(1) = E_m; E_R(1) = 0; E_H(1) = E_Hb; N(1) = N(1) * S_b;
     e(1) = 1; L2(1) = L(1) * L(1); L3(1) = L(1) * L2(1); 
   end
   
@@ -63,9 +63,8 @@ function dXvars = dcpm_abp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   p_A = (E_H > E_Hb) .* pT_Am * f .* L2;
   dE = p_A ./ L3 - vT .* E ./ L; % J/d.cm^3, change in reserve density
   r = (L < L_p) .* vT .* (e./ L - 1 ./ s_M/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
-  r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
+  %r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
-  dL_max = max(0, dL);
   
   p_J = kT_J * E_H;             % J/d, maturity maintenance
   p_C = L3 .* E .* (vT ./ L - r); % J/d, reserve mobilisation rate
@@ -88,14 +87,13 @@ function dXvars = dcpm_abp(t, Xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   % stage-specific background hazards
   h_B = h_Bbp * (E_H < E_Hp)  + h_Bpi * (E_H >= E_Hp);
   sel = (L < L_p); h_X = thin * r .* (sel * 2/3 + ~sel); % thinning hazard
-  % using hazard of 0.01 per day in case shrinking exceeds max fraction of del_X
-  h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J) + 0.01 * (L ./ L_max < del_X); 
+  h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J); 
   dN = - h .* N;
   
   if t < a_b % set changes of embryo states to zero
-    dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dL_max(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
+    dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
 
-  dXvars = [dX; dq; dh_A; dL; dL_max; dE; dE_R; dE_H; dN]; % pack output
+  dXvars = [dX; dq; dh_A; dL; dE; dE_R; dE_H; dN]; % pack output
 
 end

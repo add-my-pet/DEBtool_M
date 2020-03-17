@@ -19,7 +19,7 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
 % The initial population is a single fertilized (female) egg. 
 % Starvation parameters are added to parameter structure, if not present.
-% Like all parameters, default settings can be changed by chnaging structure par in cell-string input.
+% Like all parameters, default settings can be changed by changing structure par in cell-string input.
 % If specified background hazards in 4th input are too high, the population goes extinct.
 %
 % Input:
@@ -85,10 +85,7 @@ if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2; % reprod efficiency is halved, assuming sex ratio 1:1
 end
 
-% starvation parameters
-if ~isfield('par', 'del_X')
-  del_X = 0.8; par.del_X = del_X;
-end
+% rejuvenation parameters
 if ~isfield('par', 'k_JX')
   k_JX = k_J/ 100; par.k_JX = k_JX;
 end
@@ -301,12 +298,10 @@ fprintf(oid, '  <div class="par">\n');
 fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>\n');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'model', '-', model, 'model type');
-reprodCode = reprodCode{1}; genderCode = genderCode{1};
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode{1}, 'ecoCode reprod');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
 
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
-fprintf(oid, str, 'del_X', '-', del_X, 'max shrinking fraction for structure');
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
 fprintf(oid, str, 'h_J', '1/d', h_J, 'hazard rate for rejuvenation');
 fprintf(oid, str, 'h_D', '1/d', h_D, 'hazard rate for food from reactor');
