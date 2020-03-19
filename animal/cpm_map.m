@@ -2,7 +2,7 @@
 % plot cohorts using linear mapping
 
 %%
-function cpm_map(tXN, tXW, M_N, M_W)
+function cpm_map(tXN, tXW, M_N, M_W, n_R)
 % created 2020/03/16 by Bob Kooi & Bas Kooijman
   
 %% Syntax
@@ -17,8 +17,15 @@ function cpm_map(tXN, tXW, M_N, M_W)
 % * tXW: (n,m)-array with times, food density and cohort wet weights
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
+% * n_R: optional scalar with number of iterations
 
-n_R = 250; n_c = size(M_N,1); t = 1:n_R;
+%% Remark
+% inputs are outputs for cpm
+
+if ~exist('n_R','var') || isempty(n_R)
+  n_R = 250; 
+end
+n_c = size(M_N,1); t = 1:n_R;
 Nt = tXN(end,3:end)'; N = Nt'; 
 Wt = tXW(end,3:end)'; W = Wt';
 for i=2:n_R
@@ -30,8 +37,7 @@ end
 N = cumsum(N,2); W = cumsum(W,2);
 title_txt = 'Linear map';
 
-close(5)
-figure(5)
+figure
 hold on
 for i = 1:n_c-1
   plot(t, N(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
@@ -42,8 +48,7 @@ xlabel('time in reprod event periods');
 ylabel('# of individuals');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-close(6)
-figure(6)
+figure
 hold on
 for i = 1:n_c-1
   plot(t, W(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 

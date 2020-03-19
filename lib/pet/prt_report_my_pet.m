@@ -70,7 +70,10 @@ path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
-  focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
+  focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
+  if info == 0
+    return
+  end
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 0; n_spec = 1; % number of focus species, initiate total number of species
     
@@ -102,7 +105,10 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
   end
 
 else  % use allStat.mat as parameter source for focusSpecies (always single species)
-  specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
+  specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
+  if info == 0
+    return
+  end
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
