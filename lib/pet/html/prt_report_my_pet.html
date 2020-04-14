@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-19"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
+      --><title>prt_report_my_pet</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-14"><meta name="DC.source" content="prt_report_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,14 +66,562 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html in specified directory</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (focusSpecies, comparisonSpecies, T, f, destinationFolder)</p><h2 id="4">Description</h2><p>Writes report_my_pet.html with a list of parameters and implied model properties for selected species. focusSpecies can be empty, or a single species; comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries. The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet</b></a>, <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> and <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> respectively, as part of the parameter estimation process.</p><p>Input:</p><div><ul><li>focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty</li><li>comparisonSpecies: cell string with entry names, might be empty</li><li>T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)</li><li>f: optional scalar scaled functional response (default: 1); it applies to all species</li><li>destinationFolder: optional string with destination folder the output html-file (default: current folder)</li></ul></div><p>Output:</p><div><ul><li>no Malab output, but a html-file is written with report-table and opens automatically in the system browser</li></ul></div><h2 id="5">Remarks</h2><p>If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report. AmPtool has allStat.mat, and is available via GitHub. AmPtool functions <a href="../../../../../AmPtool/html/select.html"><b>select</b></a> or <a href="../../../../../AmPtool/html/clade.html"><b>clade</b></a> can be used to create a cell string of comparison species.</p><p>The difference between focus and comparison species only becomes important in the case of more than one comparison species and   color-coding is used to indicate how eccentric the focus-species is from the comparison-species. The lava color-scheme is used, from white (high) to black (low), via red and blue, to show the value of the eccentricity. This quantity is computed for each statistic and parameter and is the squared distance to the mean of the comparison species as a hyperbolically-transformed fraction   of the variance for the comparison-species. Function <a href="../../misc/html/color_lava.html"><b>color_lava</b></a> is used to convert the eccentricity to rgb-colors. If the focus species also occurs in the comparison species, it is removed from that list. So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers. If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty. If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown. In absence of a focus species, the first comparison specie serves this role.</p><p>The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from   the statictics and/or the parameters. NA means "not applicable": the parameter or statistic does not depend on temperature or food. nan means "not a number": the model for that species does not have that field.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_report_my_pet({par, metaPar, txtPar, metaData}, [], T, f, destinationFolder)</li><li>prt_report_my_pet('Daphnia_magna')</li><li>prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)</li><li>prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))</li><li>prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_report_my_pet</h1><!--introduction--><p>Creates report_my_pet.html in specified directory</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
+</pre><pre class="codeinput"><span class="comment">% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman</span>
+<span class="comment">% description modified 2020/04/14 Nina</span>
+</pre><h2>Syntax<a name="3"></a></h2><p><a href="../prt_report_my_pet.m"><b>prt_report_my_pet</b></a> (focusSpecies, comparisonSpecies, T, f, destinationFolder)</p><h2>Description<a name="4"></a></h2><p>Writes report_my_pet.html with a list of parameters and implied model properties for selected species. focusSpecies can be empty, or a single species; comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries. The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet</b></a>, <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> and <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a> respectively, as part of the parameter estimation process.</p><p>Input:</p><div><ul><li>focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty</li><li>comparisonSpecies: cell string with entry names, might be empty</li><li>T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)</li><li>f: optional scalar scaled functional response (default: 1); it applies to all species</li><li>destinationFolder: optional string with destination folder the output html-file (default: current folder)</li><li>filename: optional string with name of output file (default report_My_pet.html)</li></ul></div><p>Output:</p><div><ul><li>no Malab output, but a html-file is written with report-table and opens automatically in the system browser</li></ul></div><h2>Remarks<a name="5"></a></h2><p>If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report. The allStat.mat is available via the Collection tab of the Add-my-pet webpage (https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/), and needs to be in the work folder or on a path. AmPtool functions <a href="../../../../../AmPtool/html/select.html"><b>select</b></a> or <a href="../../../../../AmPtool/html/clade.html"><b>clade</b></a> can be used to create a cell string of comparison species.</p><p>The difference between focus and comparison species only becomes important in the case of more than one comparison species and   color-coding is used to indicate how eccentric the focus-species is from the comparison-species. The lava color-scheme is used, from white (high) to black (low), via red and blue, to show the value of the eccentricity. This quantity is computed for each statistic and parameter and is the squared distance to the mean of the comparison species as a hyperbolically-transformed fraction   of the variance for the comparison-species. Function <a href="../../misc/html/color_lava.html"><b>color_lava</b></a> is used to convert the eccentricity to rgb-colors. If the focus species also occurs in the comparison species, it is removed from that list. So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers. If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty. If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown. In absence of a focus species, the first comparison specie serves this role. The default name of the output file is report_My_pet, but this name is replaced by filename, if specified, which is not opened automatically. If filename is specified, destinationFolder must be specified as well</p><p>The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from   the statictics and/or the parameters. NA means "not applicable": the parameter or statistic does not depend on temperature or food. nan means "not a number": the model for that species does not have that field.</p><h2>Example of use<a name="6"></a></h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_report_my_pet({par, metaPar, txtPar, metaData}, [], T, f, destinationFolder)</li><li>prt_report_my_pet('Daphnia_magna')</li><li>prt_report_my_pet('Daphnia_pulex', [],  C2K(22), 0.8)</li><li>prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))</li><li>prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))</li></ul></div><pre class="codeinput">path_entries_web = <span class="string">'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/'</span>; <span class="comment">% links of species names to AmP collection in table head</span>
+
+<span class="comment">% focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)</span>
+<span class="keyword">if</span> isempty(focusSpecies) <span class="comment">% only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding</span>
+  focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1});
+  <span class="keyword">if</span> info == 0
+    <span class="keyword">return</span>
+  <span class="keyword">end</span>
+  datePrintNm = [<span class="string">'allStat version: '</span>, datestr(date_allStat, <span class="string">'yyyy/mm/dd'</span>)];
+  color = 0; n_spec = 1; <span class="comment">% number of focus species, initiate total number of species</span>
+
+<span class="keyword">elseif</span> iscell(focusSpecies) <span class="comment">%  use metaData, metaPar and par to specify (one or more) focusSpecies</span>
+  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData);
+  <span class="keyword">if</span> isempty(strfind(metaDataFldNm{1}, <span class="string">'_'</span>)) <span class="comment">% single species; name of species is recognized by the presence of "_"</span>
+    focusSpecies = metaData.species; specList = {focusSpecies}; color = 1; n_spec = length(specList); <span class="comment">% number of focus species, initiate total number of species</span>
+    <span class="keyword">if</span> isfield(<span class="string">'par'</span>, <span class="string">'free'</span>)
+      par = rmfield (par, <span class="string">'free'</span>);
+    <span class="keyword">end</span>
+    fldsPar = get_parfields(metaPar.model, 1);
+    <span class="keyword">for</span> i=1:length(fldsPar)
+      parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
+    <span class="keyword">end</span>
+    datePrintNm = [<span class="string">'date: '</span>,datestr(date, <span class="string">'yyyy/mm/dd'</span>)];
+    <span class="keyword">if</span> exist(<span class="string">'comparisonSpecies'</span>, <span class="string">'var'</span>) &amp;&amp; ~isempty(comparisonSpecies)
+      datePrintNm = [datePrintNm, <span class="string">'; allStat version: '</span>, datestr(date_allStat, <span class="string">'yyyy/mm/dd'</span>)];
+    <span class="keyword">end</span>
+  <span class="keyword">else</span> <span class="comment">% multispecies; no color coding, so color = 0</span>
+    focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); <span class="comment">% number of focus species, initiate total number of species</span>
+    <span class="keyword">for</span> k = 1:n_spec
+      par.(specList{k}) = rmfield (par.(specList{k}), <span class="string">'free'</span>);
+    <span class="keyword">end</span>
+    parList = par;
+    datePrintNm = [<span class="string">'date: '</span>,datestr(date, <span class="string">'yyyy/mm/dd'</span>)];
+    <span class="keyword">if</span> exist(<span class="string">'comparisonSpecies'</span>, <span class="string">'var'</span>) &amp;&amp; ~isempty(comparisonSpecies)
+      datePrintNm = [datePrintNm, <span class="string">'; allStat version: '</span>, datestr(date_allStat, <span class="string">'yyyy/mm/dd'</span>)];
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+<span class="keyword">else</span>  <span class="comment">% use allStat.mat as parameter source for focusSpecies (always single species)</span>
+  specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1});
+  <span class="keyword">if</span> info == 0
+    <span class="keyword">return</span>
+  <span class="keyword">end</span>
+  datePrintNm = [<span class="string">'allStat version: '</span>, datestr(date_allStat, <span class="string">'yyyy/mm/dd'</span>)];
+  color = 1; n_spec = 1; <span class="comment">% number of focus species, initiate total number of species</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> n_spec == 1
+  modelList = {metaPar.model}; <span class="comment">% initiate cell string for model</span>
+  tempList.(specList{1}) = metaData.T_typical; <span class="comment">% initiate cell string for typical body temperature</span>
+  specListPrintNm = {strrep(specList{1}, <span class="string">'_'</span>, <span class="string">' '</span>)}; <span class="comment">% initiate cell string for species names as they appear above the table</span>
+<span class="keyword">else</span>
+  modelList = metaPar.model; <span class="comment">% initiate cell string for model</span>
+  specListPrintNm = cell(n_spec,1);
+  <span class="keyword">for</span> k = 1: n_spec
+    tempList.(specList{k}) = metaData.(specList{k}).T_typical; <span class="comment">% initiate cell string for typical body temperature</span>
+    specListPrintNm(k) = {strrep(specList{k}, <span class="string">'_'</span>, <span class="string">' '</span>)}; <span class="comment">% initiate cell string for species names as they appear above the table</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fldsPar = fieldnmnst_st(parList.(specList{1})); <span class="comment">% fieldnames of all pars are taken from first species only</span>
+
+<span class="keyword">if</span> exist(<span class="string">'T'</span>, <span class="string">'var'</span>) <span class="comment">% fix temperature for all species</span>
+  T_free = 0;
+<span class="keyword">else</span>
+  T_free = 1; <span class="comment">% temperature for each species equals typical body temperature</span>
+<span class="keyword">end</span>
+
+<span class="comment">% scaled functional response for all species</span>
+<span class="keyword">if</span> ~exist(<span class="string">'f'</span>, <span class="string">'var'</span>) || isempty(f)
+  f = 1;
+<span class="keyword">end</span>
+
+<span class="comment">% path+filename of output file</span>
+<span class="keyword">if</span> ~exist(<span class="string">'filename'</span>,<span class="string">'var'</span>) || isempty(filename)
+  fnm = [<span class="string">'report_'</span>, specList{1}, <span class="string">'.html'</span>];
+<span class="keyword">else</span>
+  fnm = filename;
+<span class="keyword">end</span>
+<span class="keyword">if</span> exist(<span class="string">'destinationFolder'</span>,<span class="string">'var'</span>)
+  fileName = [destinationFolder, fnm];
+<span class="keyword">else</span>
+  fileName = [<span class="string">'report_'</span>, specList{1}, <span class="string">'.html'</span>];
+<span class="keyword">end</span>
+
+<span class="comment">% focus species: get statistics</span>
+<span class="keyword">for</span> k = 1:n_spec
+  <span class="keyword">if</span> T_free
+    Ti = tempList.(specList{k}); <span class="comment">% temperature for statistics</span>
+  <span class="keyword">else</span>
+    Ti = T;
+  <span class="keyword">end</span>
+  [statList.(specList{k}), txtStat.(specList{k})] = statistics_st(modelList{k}, parList.(specList{k}), Ti, f);
+  statList.(specList{k}) = rmfield(statList.(specList{k}), {<span class="string">'T'</span>,<span class="string">'f'</span>}); <span class="comment">% remove fields T and f, because it is already in txtStat</span>
+<span class="keyword">end</span>
+
+fldsStat = fieldnmnst_st(statList.(specList{1})); <span class="comment">% fieldnames of all statistics are taken from first species only</span>
+
+<span class="comment">% comparison species</span>
+<span class="keyword">if</span> exist(<span class="string">'comparisonSpecies'</span>, <span class="string">'var'</span>) &amp;&amp; ~isempty(comparisonSpecies)
+  comparisonSpecies = comparisonSpecies(~ismember(comparisonSpecies,focusSpecies)); <span class="comment">% remove focus species from comparison species</span>
+  specList = [specList; comparisonSpecies(:)]; n_spec = length(specList); <span class="comment">% list of all entries to be shown in the table</span>
+  <span class="keyword">for</span> k = 2:n_spec
+    <span class="comment">% parameters</span>
+    [parList.(specList{k}), metaPark, txtPark, metaDatak] = allStat2par(specList{k});
+    modelList{k} = metaPark.model;
+    <span class="keyword">if</span> ~strcmp(modelList{1},modelList{k})
+      fldsPark = get_parfields(modelList{k}, 1);
+      <span class="keyword">for</span> j = 1:length(fldsPar)
+        <span class="keyword">if</span> ~ismember(fldsPar{j}, fldsPark)
+          parList.(specList{k}).(fldsPar{j}) = NaN;
+        <span class="keyword">end</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    tempList.(specList{k}) = metaDatak.T_typical;
+    <span class="keyword">if</span> T_free
+      Ti = tempList.(specList{k}); <span class="comment">% temperature for statistics</span>
+    <span class="keyword">else</span>
+      Ti = T;
+    <span class="keyword">end</span>
+    <span class="comment">% statistics</span>
+    [statList.(specList{k}), txtStat.(specList{k})] = statistics_st(modelList{k}, parList.(specList{k}), Ti, f);
+    specListPrintNm{k} = strrep(specList{k}, <span class="string">'_'</span>, <span class="string">' '</span>); <span class="comment">% list of all species names to be shown in the table</span>
+    <span class="keyword">if</span> ~strcmp(modelList{1},modelList{k})
+      statList.(specList{k}) = rmfield(statList.(specList{k}), {<span class="string">'T'</span>,<span class="string">'f'</span>}); <span class="comment">% remove fields T and f, because it is already in txtStat</span>
+      fldsStatk = fieldnmnst_st(statList.(specList{k})); <span class="comment">% fieldnames of all statistics</span>
+      <span class="keyword">for</span> j = 1:length(fldsStat)
+        <span class="keyword">if</span> ~ismember(fldsStat{j}, fldsStatk)
+          statList.(specList{k}).(fldsStat{j}) = NaN;
+          txtStat.(specList{k}).temp.(fldsStat{j}) = NaN;
+        <span class="keyword">end</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% font color-coding, based on eccentricity of focus species, relative to comparison species</span>
+<span class="keyword">if</span> color == 1 &amp;&amp; n_spec &gt; 2
+  <span class="comment">% parameters</span>
+  eccPar = zeros(length(fldsPar),1); <span class="comment">% initiate eccentricity quantifyer</span>
+  <span class="keyword">for</span> i = 1:length(fldsPar)
+    pari = zeros(n_spec-1,1);
+    <span class="keyword">for</span> k = 2:n_spec <span class="comment">% fill parameters</span>
+      pari(k-1) = parList.(specList{k}).(fldsPar{i});
+    <span class="keyword">end</span>
+    pariMean = mean(pari); pariVar = max(1e-4, var(pari));
+    eccPar(i) = (parList.(specList{1}).(fldsPar{i}) - pariMean)^2/ pariVar;
+    eccPar(i) = 0.9 * eccPar(i)/(1 + eccPar(i)); <span class="comment">% make sure that eccentricity is between 0 and 0.9 (avoiding white for eccentricity 1)</span>
+    <span class="keyword">if</span> isnan(eccPar(i))
+      eccPar(i) = 0;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  <span class="comment">% statistics</span>
+  eccStat = zeros(length(fldsStat),1); <span class="comment">% initiate eccentricity quantifyer</span>
+  <span class="keyword">for</span> i = 1:length(fldsStat)
+    stati = zeros(n_spec-1,1);
+    <span class="keyword">for</span> k = 2:n_spec <span class="comment">% fill statistics</span>
+      stati(k-1) = statList.(specList{k}).(fldsStat{i});
+    <span class="keyword">end</span>
+    statMean = mean(stati); statVar = max(1e-4, var(stati));
+    eccStat(i) = (statList.(specList{1}).(fldsStat{i}) - statMean)^2/ statVar;
+    eccStat(i) = 0.9 * eccStat(i)/(1 + eccStat(i)); <span class="comment">% make sure that eccentricity is between 0 and 0.9 (avoiding white for eccentricity 1)</span>
+    <span class="keyword">if</span> isnan(eccStat(i))
+      eccStat(i) = 0;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% write table</span>
+oid = fopen(fileName, <span class="string">'w+'</span>); <span class="comment">% open file for writing, delete existing content</span>
+
+fprintf(oid, <span class="string">'&lt;!DOCTYPE html&gt;\n'</span>);
+fprintf(oid, <span class="string">'&lt;HTML&gt;\n'</span>);
+fprintf(oid, <span class="string">'&lt;HEAD&gt;\n'</span>);
+fprintf(oid,[<span class="string">'  &lt;TITLE&gt;'</span>, specList{1}, <span class="string">'&lt;/TITLE&gt;\n'</span>]);
+fprintf(oid, <span class="string">'  &lt;style&gt;\n'</span>);
+
+fprintf(oid, <span class="string">'    #InputSymbol {\n'</span>);
+fprintf(oid, <span class="string">'      width: 10%%; /* Width of search field */\n'</span>);
+fprintf(oid, <span class="string">'      font-size: 14px; /* Increase font-size */\n'</span>);
+fprintf(oid, <span class="string">'      border: 1px solid #ddd; /* Add a grey border */\n'</span>);
+fprintf(oid, <span class="string">'      margin-bottom: 12px; /* Add some space below the input */\n'</span>);
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #InputUnits {\n'</span>);
+fprintf(oid, <span class="string">'      width: 10%%; /* Width of search field */\n'</span>);
+fprintf(oid, <span class="string">'      font-size: 14px; /* Increase font-size */\n'</span>);
+fprintf(oid, <span class="string">'      border: 1px solid #ddd; /* Add a grey border */\n'</span>);
+fprintf(oid, <span class="string">'      margin-bottom: 12px; /* Add some space below the input */\n'</span>);
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #InputLabel {\n'</span>);
+fprintf(oid, <span class="string">'      width: 10%%; /* Width of search field */\n'</span>);
+fprintf(oid, <span class="string">'      font-size: 14px; /* Increase font-size */\n'</span>);
+fprintf(oid, <span class="string">'      border: 1px solid #ddd; /* Add a grey border */\n'</span>);
+fprintf(oid, <span class="string">'      margin-bottom: 12px; /* Add some space below the input */\n'</span>);
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #InputShort {\n'</span>);
+fprintf(oid, <span class="string">'      width: 15%%; /* Width of toggle field */\n'</span>);
+fprintf(oid, <span class="string">'      font-size: 14px; /* Increase font-size */\n'</span>);
+fprintf(oid, <span class="string">'      border: 1px solid #ddd; /* Add a grey border */\n'</span>);
+fprintf(oid, <span class="string">'      margin-bottom: 12px; /* Add some space below the input */\n'</span>);
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #specPrintNm {\n'</span>);
+fprintf(oid, <span class="string">'      background-color: #f2f2f2\n'</span>);                          <span class="comment">% grey species background</span>
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #species {\n'</span>);
+fprintf(oid, <span class="string">'      color: rgb(0,0,255)\n'</span>);                                <span class="comment">% blue font for species names</span>
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    #head {\n'</span>);
+fprintf(oid, <span class="string">'      background-color: #FFE7C6\n'</span>);                          <span class="comment">% pink header background</span>
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+
+fprintf(oid, <span class="string">'    tr:nth-child(even){background-color: #f2f2f2}\n'</span>);        <span class="comment">% grey on even rows</span>
+fprintf(oid, <span class="string">'    td:nth-child(odd){border-left: solid 1px black}\n\n'</span>);  <span class="comment">% lines between species</span>
+
+<span class="keyword">if</span> color == 1 &amp;&amp; n_spec &gt; 2 <span class="comment">% font colors if focus species and more than one comparison species are present</span>
+  <span class="comment">% parameters</span>
+  <span class="keyword">for</span> i = 1:length(fldsPar)
+    rgb = round(255 * color_lava(eccPar(i)));
+fprintf(oid,[<span class="string">'    #'</span>, fldsPar{i}, <span class="string">' {\n'</span>]);
+fprintf(oid,[<span class="string">'      color: rgb('</span>, num2str(rgb(1)), <span class="string">','</span>, num2str(rgb(2)), <span class="string">','</span>, num2str(rgb(3)), <span class="string">')\n'</span>]); <span class="comment">% font color for parameter i</span>
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+  <span class="keyword">end</span>
+  <span class="comment">% statistics</span>
+  <span class="keyword">for</span> i = 1:length(fldsStat)
+    rgb = round(255 * color_lava(eccStat(i)));
+fprintf(oid,[<span class="string">'    #'</span>, fldsStat{i}, <span class="string">' {\n'</span>]);
+fprintf(oid,[<span class="string">'      color: rgb('</span>, num2str(rgb(1)), <span class="string">','</span>, num2str(rgb(2)), <span class="string">','</span>, num2str(rgb(3)), <span class="string">')\n'</span>]); <span class="comment">% font color for parameter i</span>
+fprintf(oid, <span class="string">'    }\n\n'</span>);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf(oid, <span class="string">'  &lt;/style&gt;\n\n'</span>);
+
+fprintf(oid, <span class="string">'&lt;/HEAD&gt;\n\n'</span>);
+fprintf(oid, <span class="string">'&lt;BODY&gt;\n\n'</span>);
+
+<span class="comment">% search boxes above the table</span>
+fprintf(oid, <span class="string">'      &lt;div&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;input type="text" id="InputSymbol" onkeyup="FunctionSymbol()" placeholder="Search for symbol .."&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;input type="text" id="InputUnits"  onkeyup="FunctionUnits()"  placeholder="Search for units .."&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;input type="text" id="InputLabel"  onkeyup="FunctionLabel()"  placeholder="Search for label .."&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;input type="text" id="InputShort"  onkeyup="FunctionShort()"  placeholder="Short/Medium/Long/Pars" title="Type S or M or L or P"&gt;\n'</span>);
+fprintf(oid, <span class="string">'      &lt;/div&gt;\n\n'</span>);
+
+<span class="comment">% open table</span>
+fprintf(oid, <span class="string">'      &lt;TABLE id="Table"&gt;\n'</span>);
+
+<span class="comment">% table head:</span>
+<span class="comment">% row with species print names and source dates</span>
+fprintf(oid, <span class="string">'        &lt;TR id="species"&gt; &lt;TH colspan="2"&gt;&lt;/TH&gt;\n'</span>);
+<span class="keyword">for</span> k = 1:n_spec
+    <span class="keyword">if</span> k == 1 &amp;&amp; ~isempty(strfind(datePrintNm, <span class="string">'date'</span>)) <span class="comment">% no link if focusSpecies is specified by data, rather than by string</span>
+fprintf(oid, <span class="string">'          &lt;TH colspan="2" id="specPrintNm"&gt;%s&lt;/TH&gt;\n'</span>, specListPrintNm{k});
+    <span class="keyword">else</span> <span class="comment">% links to AmP entries</span>
+fprintf(oid, <span class="string">'          &lt;TH colspan="2" id="specPrintNm"&gt;&lt;a href="%s%s/%s_res.html"&gt;%s&lt;/a&gt;&lt;/TH&gt;\n'</span>, path_entries_web, specList{k}, specList{k}, specListPrintNm{k});
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TH&gt;&lt;/TH&gt; &lt;TH&gt;%s&lt;/TH&gt;\n'</span>, datePrintNm);
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n\n'</span>);
+<span class="comment">% row with table header</span>
+fprintf(oid, <span class="string">'        &lt;TR id="head"&gt; &lt;TH&gt;symbol&lt;/TH&gt; &lt;TH&gt;units&lt;/TH&gt;\n'</span>);
+<span class="keyword">for</span> k = 1:n_spec
+fprintf(oid, <span class="string">'          &lt;TH&gt;value&lt;/TH&gt; &lt;TH&gt;&amp;deg;C&lt;/TH&gt;\n'</span>);
+<span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TH&gt;func resp&lt;/TH&gt; &lt;TH&gt;description&lt;/TH&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n\n'</span>);
+<span class="comment">% row with model</span>
+fprintf(oid, <span class="string">'        &lt;TR id="model"&gt; &lt;TD style="font-weight:bold"&gt;model&lt;/TD&gt; &lt;TD&gt;-&lt;/TD&gt;\n'</span>);
+<span class="keyword">for</span> k = 1:n_spec
+fprintf(oid,[<span class="string">'          &lt;TD&gt;'</span>, modelList{k}, <span class="string">'&lt;/TD&gt; &lt;TD&gt;NA&lt;/TD&gt;\n'</span>]);
+<span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TD align="center"&gt;NA&lt;/TD&gt; &lt;TD&gt;typified model&lt;/TD&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n\n'</span>);
+<span class="comment">% row with typical body temperature</span>
+fprintf(oid, <span class="string">'        &lt;TR id="T_typical"&gt; &lt;TD style="font-weight:bold"&gt;T_typical&lt;/TD&gt; &lt;TD&gt;&amp;deg;C&lt;/TD&gt;\n'</span>);
+<span class="keyword">for</span> k = 1:n_spec
+fprintf(oid,[<span class="string">'          &lt;TD&gt;'</span>, num2str(K2C(tempList.(specList{k}))), <span class="string">'&lt;/TD&gt; &lt;TD&gt;NA&lt;/TD&gt;\n'</span>]);
+<span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TD align="center"&gt;NA&lt;/TD&gt; &lt;TD&gt;typical body temperature&lt;/TD&gt;\n'</span>);
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n\n'</span>);
+
+<span class="comment">% parameters:</span>
+<span class="keyword">for</span> i = 1:length(fldsPar)
+  txtPar.fresp.(fldsPar{i}) = <span class="string">'NA'</span>; <span class="comment">% no parameter depends on functional response</span>
+  <span class="keyword">if</span> isempty(strfind(txtPar.units.(fldsPar{i}),<span class="string">'d'</span>))
+    txtPar.temp.(fldsPar{i}) = <span class="string">'NA'</span>;
+  <span class="keyword">else</span>
+    txtPar.temp.(fldsPar{i}) = num2str(20); <span class="comment">% time-dependent pars are at T_ref</span>
+  <span class="keyword">end</span>
+fprintf(oid, <span class="string">'        &lt;TR id="%s"&gt; &lt;TD style="font-weight:bold"&gt;%s&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>, fldsPar{i}, fldsPar{i}, txtPar.units.(fldsPar{i}));
+  <span class="keyword">for</span> k = 1:n_spec
+    <span class="keyword">if</span> ~isfield(parList.(specList{k}),(fldsPar{i}))
+      parList.(specList{k}).(fldsPar{i}) = NaN; txtPar.temp.(fldsPar{i}) = <span class="string">'NA'</span>;
+    <span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TD&gt;%g&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>, parList.(specList{k}).(fldsPar{i}), txtPar.temp.(fldsPar{i}));
+  <span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TD align="center"&gt;%s&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>, txtPar.fresp.(fldsPar{i}), txtPar.label.(fldsPar{i}));
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n\n'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% statistics</span>
+<span class="keyword">for</span> i = 1:length(fldsStat)
+  <span class="keyword">if</span> isnan(txtStat.(specList{1}).fresp.(fldsStat{i}))
+    txtStat.(specList{1}).fresp.(fldsStat{i}) = <span class="string">'NA'</span>;
+  <span class="keyword">else</span>
+    txtStat.(specList{1}).fresp.(fldsStat{i}) = num2str(txtStat.(specList{1}).fresp.(fldsStat{i}));
+  <span class="keyword">end</span>
+fprintf(oid, <span class="string">'        &lt;TR id="%s"&gt; &lt;TD style="font-weight:bold"&gt;%s&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>, fldsStat{i}, fldsStat{i}, txtStat.(specList{1}).units.(fldsStat{i}));
+  <span class="keyword">for</span> k = 1:n_spec
+  <span class="keyword">if</span> isnan(txtStat.(specList{k}).temp.(fldsStat{i}))
+    txtStat.(specList{k}).temp.(fldsStat{i}) = <span class="string">'NA'</span>;
+  <span class="keyword">else</span>
+    txtStat.(specList{k}).temp.(fldsStat{i}) = num2str(K2C(txtStat.(specList{k}).temp.(fldsStat{i})));
+  <span class="keyword">end</span>
+fprintf(oid, <span class="string">'          &lt;TD&gt;%g&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>,  statList.(specList{k}).(fldsStat{i}), txtStat.(specList{k}).temp.(fldsStat{i}));
+  <span class="keyword">end</span>
+  label = txtStat.(specList{1}).label.(fldsStat{i}); label = strrep(label, <span class="string">'&lt;'</span>, <span class="string">'&amp;lt;'</span>); label = strrep(label, <span class="string">'&gt;'</span>, <span class="string">'&amp;gt;'</span>); <span class="comment">% html cannot show &lt; or &gt;</span>
+fprintf(oid, <span class="string">'          &lt;TD align="center"&gt;%s&lt;/TD&gt; &lt;TD&gt;%s&lt;/TD&gt;\n'</span>, txtStat.(specList{1}).fresp.(fldsStat{i}), label);
+fprintf(oid, <span class="string">'        &lt;/TR&gt;\n'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% close table</span>
+fprintf(oid, <span class="string">'      &lt;/TABLE&gt;\n\n'</span>);
+
+<span class="comment">% search/selection facilities</span>
+<span class="comment">% symbol</span>
+fprintf(oid, <span class="string">'      &lt;script&gt;\n'</span>);
+fprintf(oid, <span class="string">'        function FunctionSymbol() {\n'</span>);
+fprintf(oid, <span class="string">'          // Declare variables\n'</span>);
+fprintf(oid, <span class="string">'          var input, filter, table, tr, td, i;\n'</span>);
+fprintf(oid, <span class="string">'          input = document.getElementById("InputSymbol");\n'</span>);
+fprintf(oid, <span class="string">'          filter = input.value.toUpperCase();\n'</span>);
+fprintf(oid, <span class="string">'          table = document.getElementById("Table");\n'</span>);
+fprintf(oid, <span class="string">'          tr = table.getElementsByTagName("tr");\n\n'</span>);
+<span class="comment">%</span>
+fprintf(oid, <span class="string">'          // Loop through all table rows, and hide those who don''t match the search query\n'</span>);
+fprintf(oid, <span class="string">'          for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'          td = tr[i].getElementsByTagName("td")[0];\n'</span>);
+fprintf(oid, <span class="string">'          if (td) {\n'</span>);
+fprintf(oid, <span class="string">'            if (td.innerHTML.toUpperCase().indexOf(filter) &gt; -1) {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'            } else {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+fprintf(oid, <span class="string">'          }\n'</span>);
+fprintf(oid, <span class="string">'        }\n\n'</span>);
+<span class="comment">% units</span>
+fprintf(oid, <span class="string">'        function FunctionUnits() {\n'</span>);
+fprintf(oid, <span class="string">'          // Declare variables\n'</span>);
+fprintf(oid, <span class="string">'          var input, filter, table, tr, td, i;\n'</span>);
+fprintf(oid, <span class="string">'          input = document.getElementById("InputUnits");\n'</span>);
+fprintf(oid, <span class="string">'          filter = input.value.toUpperCase();\n'</span>);
+fprintf(oid, <span class="string">'          table = document.getElementById("Table");\n'</span>);
+fprintf(oid, <span class="string">'          tr = table.getElementsByTagName("tr");\n\n'</span>);
+<span class="comment">%</span>
+fprintf(oid, <span class="string">'          // Loop through all table rows, and hide those who don''t match the search query\n'</span>);
+fprintf(oid, <span class="string">'          for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'          td = tr[i].getElementsByTagName("td")[1];\n'</span>);
+fprintf(oid, <span class="string">'          if (td) {\n'</span>);
+fprintf(oid, <span class="string">'            if (td.innerHTML.toUpperCase().indexOf(filter) &gt; -1) {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'            } else {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+fprintf(oid, <span class="string">'          }\n'</span>);
+fprintf(oid, <span class="string">'        }\n\n'</span>);
+<span class="comment">% label (= description)</span>
+fprintf(oid, <span class="string">'        function FunctionLabel() {\n'</span>);
+fprintf(oid, <span class="string">'          // Declare variables\n'</span>);
+fprintf(oid, <span class="string">'          var input, filter, table, tr, td, i;\n'</span>);
+fprintf(oid, <span class="string">'          input = document.getElementById("InputLabel");\n'</span>);
+fprintf(oid, <span class="string">'          filter = input.value.toUpperCase();\n'</span>);
+fprintf(oid, <span class="string">'          table = document.getElementById("Table");\n'</span>);
+fprintf(oid, <span class="string">'          tr = table.getElementsByTagName("tr");\n\n'</span>);
+<span class="comment">%</span>
+fprintf(oid, <span class="string">'          // Loop through all table rows, and hide those who don''t match the search query\n'</span>);
+fprintf(oid, <span class="string">'          for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'          td = tr[i].getElementsByTagName("td")[5];\n'</span>);
+fprintf(oid, <span class="string">'          if (td) {\n'</span>);
+fprintf(oid, <span class="string">'            if (td.innerHTML.toUpperCase().indexOf(filter) &gt; -1) {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'            } else {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+fprintf(oid, <span class="string">'          }\n'</span>);
+fprintf(oid, <span class="string">'        }\n\n'</span>);
+<span class="comment">% selection for short/medium/long/pars</span>
+fprintf(oid, <span class="string">'        function FunctionShort() {\n'</span>);
+fprintf(oid, <span class="string">'          // Declare variables\n'</span>);
+fprintf(oid, <span class="string">'          var input, filter, table, tr, td, i;\n'</span>);
+fprintf(oid, <span class="string">'          input = document.getElementById("InputShort");\n'</span>);
+fprintf(oid, <span class="string">'          filter = input.value.toUpperCase();\n'</span>);
+fprintf(oid, <span class="string">'          table = document.getElementById("Table");\n'</span>);
+fprintf(oid, <span class="string">'          tr = table.getElementsByTagName("tr");\n\n'</span>);
+<span class="comment">%</span>
+fprintf(oid, <span class="string">'          // Loop through all table rows, and show some from the long list\n'</span>);
+<span class="comment">% filter S: popular short selection of some statistics</span>
+fprintf(oid, <span class="string">'          if (filter == "S") {\n'</span>);
+fprintf(oid, <span class="string">'            for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'              td = tr[i].getElementsByTagName("td")[0];\n'</span>);
+fprintf(oid, <span class="string">'              if (td) {\n'</span>);
+fprintf(oid, <span class="string">'                if (\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "model" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "T_typical" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "c_T" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_0" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_b" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_p" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_i" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_b" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_p" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_m" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "t_starve" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Ci" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Hi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Oi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Ni" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Xi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Pi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "p_Ti" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "r_B" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "R_i" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "del_V"\n'</span>);
+fprintf(oid, <span class="string">'                  ) {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'                } else {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'                }\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+<span class="comment">% filter M: statistics as printed on AmP website on pages my_pet_stat.html</span>
+fprintf(oid, <span class="string">'          } else if (filter == "M") {\n'</span>);
+fprintf(oid, <span class="string">'            for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'              td = tr[i].getElementsByTagName("td")[0];\n'</span>);
+fprintf(oid, <span class="string">'              if (td) {\n'</span>);
+fprintf(oid, <span class="string">'                if (\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "model" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "T_typical" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "z" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "c_T" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "s_M" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "s_Hbp" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "s_s" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "E_0" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_0" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_b" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_p" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "Ww_i" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_b" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_p" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_99" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "a_m" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "t_starve" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Ci" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Hi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Oi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Ni" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Xi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "J_Pi" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "p_Ti" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "r_B" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "R_i" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "N_i" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "del_V" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "W_dWm" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "dWm" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "del_Wb" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "del_Wp" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "t_E" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "xi_WE"\n'</span>);
+fprintf(oid, <span class="string">'                  ) {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'                } else {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'                }\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+<span class="comment">% filter L: all statistics</span>
+fprintf(oid, <span class="string">'          } else if (filter == "L") {\n'</span>);
+fprintf(oid, <span class="string">'            for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'              td = tr[i].getElementsByTagName("td")[0];\n'</span>);
+fprintf(oid, <span class="string">'              if (td) {\n'</span>);
+fprintf(oid, <span class="string">'                if (\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "model" ||\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "T_typical" ||\n'</span>);
+<span class="keyword">for</span> j = 1:length(fldsStat)-1
+fprintf(oid,[<span class="string">'                    td.innerHTML == "'</span>, fldsStat{j},<span class="string">'" ||\n'</span>]);
+<span class="keyword">end</span>
+fprintf(oid,[<span class="string">'                    td.innerHTML == "'</span>, fldsStat{end},<span class="string">'"\n'</span>]);
+fprintf(oid, <span class="string">'                  ) {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'                } else {\n'</span>); <span class="comment">% show all</span>
+fprintf(oid, <span class="string">'                  tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'                }\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+<span class="comment">% filter P: parameters only</span>
+fprintf(oid, <span class="string">'          } else if (filter == "P") {\n'</span>);
+fprintf(oid, <span class="string">'            for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'              td = tr[i].getElementsByTagName("td")[0];\n'</span>);
+fprintf(oid, <span class="string">'              if (td) {\n'</span>);
+fprintf(oid, <span class="string">'                if (\n'</span>);
+fprintf(oid, <span class="string">'                    td.innerHTML == "model" ||\n'</span>);
+<span class="keyword">for</span> j = 1:length(fldsPar)-1
+fprintf(oid,[<span class="string">'                    td.innerHTML == "'</span>, fldsPar{j},<span class="string">'" ||\n'</span>]);
+<span class="keyword">end</span>
+fprintf(oid,[<span class="string">'                    td.innerHTML == "'</span>, fldsPar{end},<span class="string">'"\n'</span>]);
+fprintf(oid, <span class="string">'                  ) {\n'</span>);
+fprintf(oid, <span class="string">'                  tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'                } else {\n'</span>); <span class="comment">% show all</span>
+fprintf(oid, <span class="string">'                  tr[i].style.display = "none";\n'</span>);
+fprintf(oid, <span class="string">'                }\n'</span>);
+fprintf(oid, <span class="string">'              }\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+<span class="comment">% no filter: parameters and statistics</span>
+fprintf(oid, <span class="string">'          } else {\n'</span>); <span class="comment">% complete list</span>
+fprintf(oid, <span class="string">'            for (i = 0; i &lt; tr.length; i++) {\n'</span>);
+fprintf(oid, <span class="string">'              tr[i].style.display = "";\n'</span>);
+fprintf(oid, <span class="string">'            }\n'</span>);
+fprintf(oid, <span class="string">'          }\n'</span>);
+fprintf(oid, <span class="string">'        }\n\n'</span>);
+
+fprintf(oid, <span class="string">'      &lt;/script&gt;\n'</span>);
+
+fprintf(oid, <span class="string">'&lt;/BODY&gt;\n'</span>);
+fprintf(oid, <span class="string">'&lt;/HTML&gt;\n'</span>);
+
+fclose(oid);
+
+<span class="keyword">if</span> ~exist(<span class="string">'filename'</span>)
+  web(fileName,<span class="string">'-browser'</span>) <span class="comment">% open html in systems browser</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Error using prt_report_my_pet (line 73)
+Not enough input arguments.
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_report_my_pet
 % Creates report_my_pet.html in specified directory
 
 %%
-function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder)
+function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
 % created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
+% description modified 2020/04/14 Nina
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder) 
@@ -95,6 +643,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
 % * destinationFolder: optional string with destination folder the output html-file (default: current folder) 
+% * filename: optional string with name of output file (default report_My_pet.html)
 %
 % Output:
 %
@@ -103,7 +652,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 
 % The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
-% AmPtool has allStat.mat, and is available via GitHub.
+% The allStat.mat is available via the Collection tab of the Add-my-pet webpage (https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/), and needs to be in the work folder or on a path.
 % AmPtool functions <../../../../../AmPtool/html/select.html *select*> or <../../../../../AmPtool/html/clade.html *clade*> can be used to create a cell string of comparison species.
 %
 % The difference between focus and comparison species only becomes important in the case of more than one comparison species and
@@ -117,6 +666,8 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty.
 % If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown.
 % In absence of a focus species, the first comparison specie serves this role.
+% The default name of the output file is report_My_pet, but this name is replaced by filename, if specified, which is not opened automatically.
+% If filename is specified, destinationFolder must be specified as well
 % 
 % The search boxes in the top-line of the report can be used to symbols, units, descriptions, but also (on the top-right) to make selections from
 %   the statictics and/or the parameters.
@@ -137,23 +688,27 @@ path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
-  focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
-  allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
-  datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
+  focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
+  if info == 0
+    return
+  end
+  datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 0; n_spec = 1; % number of focus species, initiate total number of species
     
 elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or more) focusSpecies
   par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData);
   if isempty(strfind(metaDataFldNm{1}, '_')) % single species; name of species is recognized by the presence of "_"
     focusSpecies = metaData.species; specList = {focusSpecies}; color = 1; n_spec = length(specList); % number of focus species, initiate total number of species
-    par = rmfield (par, 'free'); fldsPar = get_parfields(metaPar.model, 1);
+    if isfield('par', 'free')
+      par = rmfield (par, 'free'); 
+    end
+    fldsPar = get_parfields(metaPar.model, 1);
     for i=1:length(fldsPar)
       parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
     end
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-      allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
-      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
     end  
   else % multispecies; no color coding, so color = 0
     focusSpecies = metaDataFldNm; specList = focusSpecies; color = 0; n_spec = length(specList); % number of focus species, initiate total number of species
@@ -163,17 +718,19 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     parList = par;
     datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
-      allStatInfo = dir(which('allStat.mat')); datePrint = strsplit(allStatInfo.date, ' '); 
-      datePrintNm = [datePrintNm, '; allStat version: ', datestr(datePrint(1), 'yyyy/mm/dd')];
+      datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
     end  
   end
 
 else  % use allStat.mat as parameter source for focusSpecies (always single species)
-  specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData] = allStat2par(specList{1}); 
-  allStatInfo = dir(which('allStat.mat')); datePrintNm = strsplit(allStatInfo.date, ' '); 
-  datePrintNm = ['allStat version: ', datestr(datePrintNm(1), 'yyyy/mm/dd')];
+  specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
+  if info == 0
+    return
+  end
+  datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 1; n_spec = 1; % number of focus species, initiate total number of species
 end
+
 if n_spec == 1
   modelList = {metaPar.model}; % initiate cell string for model
   tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
@@ -201,8 +758,13 @@ if ~exist('f', 'var') || isempty(f)
 end
 
 % path+filename of output file
+if ~exist('filename','var') || isempty(filename)
+  fnm = ['report_', specList{1}, '.html'];
+else
+  fnm = filename;
+end
 if exist('destinationFolder','var')
-  fileName = [destinationFolder, 'report_', focusSpecies, '.html'];
+  fileName = [destinationFolder, fnm];
 else
   fileName = ['report_', specList{1}, '.html'];
 end
@@ -661,8 +1223,9 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 
-web(fileName,'-browser') % open html in systems browser
-%web(fileName)
+if ~exist('filename')
+  web(fileName,'-browser') % open html in systems browser
+end
 
 
 ##### SOURCE END #####

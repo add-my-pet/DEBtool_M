@@ -4,6 +4,7 @@
 %%
 function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
 % created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
+% description modified 2020/04/14 Nina
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder) 
@@ -34,7 +35,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %% Remarks
 % If the focus species is specified by string (rather than by data), its parameters are obtained from allStat.mat. 
 % The parameters of the comparison species are obtained from allStat.mat, and the data of creation of that file is indicated on the top of the report.
-% AmPtool has allStat.mat, and is available via GitHub.
+% The allStat.mat is available via the Collection tab of the Add-my-pet webpage (https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/), and needs to be in the work folder or on a path.
 % AmPtool functions <../../../../../AmPtool/html/select.html *select*> or <../../../../../AmPtool/html/clade.html *clade*> can be used to create a cell string of comparison species.
 %
 % The difference between focus and comparison species only becomes important in the case of more than one comparison species and
