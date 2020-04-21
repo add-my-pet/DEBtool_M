@@ -1,15 +1,15 @@
-%% cpm
-% Cohort Projection Model: runs a cohort projection model using a generalized reactor
+%% ebt
+% escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
-% created 2020/03/02 by Bob Kooi and Bas Kooijman
+function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+% created 2020/04/03 by Bas Kooijman
 
 %% Syntax
-% [tXN, tXW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [tXN, tXW] = <../ebt.m *ebt*> (species, tT, tJX, x_0, V_X, h, t_max, options) 
 
 %% Description
-% Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
+% Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. 
 % Opens 2 html-pages in system browser to report species traits and ebt parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
@@ -32,31 +32,50 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
 % * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 2)
-% * n_R: optional scalar with number of reproduction events to be simulated (default 250).
-% * t_R: optional scalar with time period between reproduction events (default 1 yr)
+% * t_max: optional scalar with simulation time (d, default 250*365).
+% * numPar: optional structure with numerical parameter settings.
+%      Possible fields: 
+%
+%        TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
+%        relTol_q,relTol_h_a,relTol_L,relTol_E,relTol_E_R,relTol_E_H,relTol_W, ...
+%        absTol_q,absTol_h_a,absTol_L,absTol_E,absTol_E_R,absTol_E_H,absTol_W
+%
+%      Possible values for TIME_METHOD: 
+%     	- rk2: the 2nd order Runge-Kutta integration method with fixed step size,
+%    	- rk4: the 4th order Runge-Kutta integration method with fixed step size,
+%    	- rkf45: the Runge-Kutta-Fehlberg 4/5th order integration method with an adaptive step size,
+%    	- rkck: the Cash-Karp Runga-Kutta integration method with adaptive step size, 
+%    	- DOPRI5: an explicit Runge-Kutta method of order (4)5 due to Dormand & Prince with step size control and dense output.
+%   	- DOPRI8: an explicit Runge-Kutta method of order 8(5,3) due to Dormand & Prince with step size control and dense output.
+%   	- RADAU5: an implicit Runge-Kutta method of order 5 with step size  control and dense output.
+%
+%     The DOPRI5, DOPRI8 and RADAU5 methods can detect and locate discontinuities or events. 
+%     These events are signalled by the routine	EventLocation() in the program definition file. 
+%     Integration will be carried out exactly up to the moment that the event takes place and will be restarted subsequently.
 %
 % Output:
 %
-% * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
-% * tXW: (n,m)-array with times, food density and cohort wet weights
-% * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
-% * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
+% * txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight
+% * info: boolean with failure (0) or success (1) 
 %
 %% Remarks
+% The function assumes that a c-compiler has been installed and a path to it specified.
+% Andre de Roos supports EBTtool only including a graphical shell in the Qt-environment, which is not free software.
+% This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool
+%
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page with traits uses the possibly modified parameter values. 
-% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
-% cpm only controls input/output; computations are done in get_cpm, which calls dcpm_mod.
+% cebt only controls input/output; computations are done in EBTtool of Andre de Roos.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 
 %% Example of use
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * cpm('Torpedo_marmorata');
-% * cpm('Torpedo_marmorata', C2K(18));
+% * ebt('Torpedo_marmorata');
+% * ebt('Torpedo_marmorata', C2K(18));
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
@@ -67,9 +86,6 @@ if iscell(species)
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
-  if info == 0
-    tXN=[]; tXW=[]; M_N=[]; M_W=[]; return
-  end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
@@ -81,7 +97,7 @@ vars_pull(par); vars_pull(parscomp_st(par));
 
 % account for cost of male production
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
-  kap_R = kap_R/2; par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
+  kap_R = kap_R/2;  par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
 
 % rejuvenation parameters
@@ -92,34 +108,12 @@ if ~isfield('par', 'h_J')
   h_J = 1e-4; par.h_J = h_J;
 end
 
-% temperature
-if ~exist('tT','var') || isempty(tT)
-  tT = metaData.T_typical;
-elseif length(tT) > 1 & sum(tT(:,1) > 1) > 0
-  fprintf('abcissa of temp knots must be between 0 and 1\n');
-  tXN=[]; tXW=[]; return
-elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
-  tT = [tT; 1 tT(1,2)];    
-end
-
-% supply food 
-if ~exist('tJX','var') || isempty(tJX)
-  tJX = 500 * J_X_Am * L_m^2 ;
-elseif length(tJX) > 1 & sum(tJX(:,1) > 1) > 0
-  fprintf('abcissa of food supply knots must be between 0 and 1\n');
-  tXN=[]; tXW=[]; return
-elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
-  tJX = [tJX; 1 tJX(1,2)];    
-end
-
-% initial scaled food density
-if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0; % -, X/K at t=0
-end
-
 % hazard rates, thinning
+
+par.h_a = par.h_a*1e-8; % test!test!test!
+
 if ~exist('h','var') || isempty(h)
-  h_D = 0.5; thin = 0; 
+  h_D = 0.0; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -128,49 +122,49 @@ par.h_D = h_D; par.thin = thin;
 switch model
   case {'std','stf','sbp','abp'}
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbp = 0; h_Bpi = 0; 
+      h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(3); h_Bbp = h(3); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpi = h_Bpi; 
   case 'stx'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbx = 0; h_Bxp = 0; h_Bpi = 0; 
+      h_B0b = 1e-35; h_Bbx = 1e-35; h_Bxp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(3); h_Bbx = h(4); h_Bxp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbs = 0; h_Bsj = 0; h_Bjp = 0; h_Bpi = 0; 
+      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(3); h_Bbs = h(4); h_Bsp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbj = 0; h_Bjp = 0; h_Bpi = 0; 
+      h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(3); h_Bbj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbs = 0; h_Bsj = 0; h_Bjp = 0; h_Bpi = 0; 
+      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(3); h_Bbs = h(4); h_Bsj = h(5); h_Bjp = h(6); h_Bpi = h(7);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbp = 0; h_Bpj = 0; h_Bji = 0; 
+      h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
       h_B0b = h(3); h_Bbp = h(4); h_Bpj = h(5);  h_Bji = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 0; h_Bbj = 0; h_Bje = 0; h_Bei = 0; 
+      h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
       h_B0b = h(3); h_Bbj = h(4); h_Bje = h(5); h_Bei = h(6);    
     end
@@ -184,78 +178,118 @@ if ~exist('V_X','var') || isempty(V_X)
   V_X = 1e3 * L_m^3; % cm^3, volume of reactor
 end
 
-% number of reproduction events to be simulated
-if ~exist('n_R','var') || isempty(n_R)
-  n_R = 250; % -, total simulation time: n_R * t_R
+% time to be simulated
+if ~exist('t_max','var') || isempty(t_max)
+  t_max = 1e3*365; % -, total simulation time
 end
 
-% time between reproduction events
-if ~exist('t_R','var') || isempty(t_R)
-  t_R = 365; % d
+% initial scaled food density
+if ~exist('x_0','var') || isempty(x_0)
+  x_0 = 0;  % -, X/K at t=0
+end
+
+% supply food 
+if ~exist('tJX','var') || isempty(tJX)
+  J_X = 500 * J_X_Am * L_m^2; tJX = [0 J_X; t_max J_X];
+else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tJX = [tJX; t_max tJX(end,2)];    
+end
+
+% temperature
+if ~exist('tT','var') || isempty(tT)
+  T = metaData.T_typical; tT = [0 T; t_max T];
+else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tT = [tT; t_max tT(end,2)];    
+end
+
+% fields for numerical parameters
+flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
+    'relTol_n','relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
+    'absTol_n','absTol_n','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W'};
+n_flds = length(flds);
+% set default numerical parameters
+opt.TIME_METHOD = 'RKF45';   opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
+opt.integr_accurary = 1e-8;  opt.txt.integr_accurary = 'Fixed step size or integration accuracy when adaptive';
+opt.cycle_interval = 7;      opt.txt.cycle_interval = 'Cohort/Integration cycle time interval'; 
+opt.tol_zero = 1e-5;         opt.txt.tol_zero = 'Tolerance value, determining identity with zero';
+opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time interval';
+opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
+opt.min_cohort_nr = 1e-3;    opt.txt.min_cohort_nr = 'Minimum allowable number of individuals in cohort';
+
+opt.relTol_n = 1e-6;         opt.txt.relTol_n = 'Relative tolerance for number n'; 
+opt.relTol_a = 1e-6;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
+opt.relTol_q = 1e-6;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
+opt.relTol_h_a = 1e-6;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
+opt.relTol_L = 1e-6;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
+opt.relTol_E = 1e-6;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
+opt.relTol_E_R = 1e-6;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
+opt.relTol_E_H = 1e-6;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
+opt.relTol_W = 1e-6;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
+
+opt.absTol_n = 1e-6;         opt.txt.absTol_n = 'Absolute tolerance for number n'; 
+opt.absTol_a = 1e-6;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
+opt.absTol_q = 1e-6;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
+opt.absTol_h_a = 1e-6;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
+opt.absTol_L = 1e-6;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
+opt.absTol_E = 1e-6;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
+opt.absTol_E_R = 1e-6;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
+opt.absTol_E_H = 1e-6;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
+opt.absTol_W = 1e-6;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
+
+% overwrite with specified numerical parameters
+if exist('numPar', 'var') && ~isempty(numPar)
+  for i=1:n_flds
+    if isfield(numPar,flds{i})
+      opt.(flds{i}) = numPar.(flds{i});
+    end
+  end
 end
 
 % get trajectories
-[tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
-if info==0
-  return
-end
-t = tXN(:,1)/ t_R; X = tXN(:,2); N = cumsum(tXN(:,3:end),2); W = cumsum(tXW(:,3:end),2); n_c = size(N,2);
+txNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
 figure(1)
-plot(t, X/K, 'k', 'Linewidth', 2)
+plot(txNW(:,1), txNW(:,2), 'k', 'Linewidth', 2)
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('scaled food density, X/K');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(2)
-hold on
-for i = 1:n_c-1
-  plot(t, N(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
-end
-plot(t, N(:,n_c), 'color', [1 0 0], 'Linewidth', 2) 
+plot(txNW(:,1), txNW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('# of individuals');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(3)
-hold on
-for i = 1:n_c-1
-  plot(t, W(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
-end
-plot(t,W(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+plot(txNW(:,1), txNW(:,4),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('total wet weight, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(4)
-hold on
-W = zeros(n_c,1); 
-for i = 1:n_c
-  W(i,:) = tXW(i,2+i)/tXN(i,2+i);
-end
-plot(t(1:n_c), W, 'k', 'Linewidth', 2) 
+plot(txNW(:,1), txNW(:,4)./txNW(:,3), 'k', 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
-ylabel('indiv. wet weight, g');
+xlabel('time, d');
+ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
 
-%% report_my_pet
+%% report_my_pet.html
 
 fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
-%%  cpm_my_pet
+%%  ebt_my_pet.html
 
-fileName = ['cpm_', species, '.html'];
+fileName = ['ebt_', species, '.html'];
 oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
 fprintf(oid, '<!DOCTYPE html>\n');
@@ -265,6 +299,10 @@ fprintf(oid, '  <TITLE>CPM %s</TITLE>\n', strrep(species, '_', ' '));
 fprintf(oid, '  <style>\n');
 fprintf(oid, '    .newspaper {\n');
 fprintf(oid, '      column-count: 3;\n');
+fprintf(oid, '    }\n\n');
+
+fprintf(oid, '    div.temp {\n');
+fprintf(oid, '      width: 100%%;\n');
 fprintf(oid, '    }\n\n');
 
 fprintf(oid, '    div.par {\n');
@@ -335,9 +373,7 @@ switch model
 end
 fprintf(oid, str, 'X_0', 'mol/L', x_0 * K, 'initial food density');
 fprintf(oid, str, 'V_X', 'L', V_X, 'volume of reactor');
-fprintf(oid, str, 'n_R', '-', n_R, 'number of simulated reproduction events');
-fprintf(oid, str, 't_R', 'd', t_R, 'time between reproduction events');
-fprintf(oid, str, 'n_c', '-', n_c, 'ultimate number of cohorts');
+fprintf(oid, str, 't_max', '-', t_max, 'maximum integration time');
 
 fprintf(oid, '  </TABLE>\n'); % close prdData table
 fprintf(oid, '  </div>\n\n');
@@ -372,6 +408,19 @@ for i=1:n_JX
   fprintf(oid, '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD></TR>\n', tJX(i,1), tJX(i,2));
 end
 fprintf(oid, '  </TABLE>\n');
+fprintf(oid, '  </div>\n\n');
+
+% Table with numerical parameters
+
+fprintf(oid, '  <div class="par">\n');
+fprintf(oid, '  <TABLE id="par">\n');
+fprintf(oid, '    <TR  class="head"> <TH>Numerical parameters</TH> <TH>value</TH> </TR>\n');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD>\n', opt.txt.(flds{1}), opt.(flds{1}));
+for i=2:n_flds
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%3.4g</TD>\n', opt.txt.(flds{i}), opt.(flds{i}));
+end
+
+fprintf(oid, '  </TABLE>\n'); % close numPar table
 fprintf(oid, '  </div>\n\n');
 fprintf(oid, '  </div>\n\n'); % end div newspaper
 

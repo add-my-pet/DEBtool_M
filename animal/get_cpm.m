@@ -6,7 +6,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% [tXN, tXW, M_N, M_W,, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, n_R, t_R)
+% [tXN, tXW, M_N, M_W, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, V_X, n_R, t_R)
   
 %% Description
 % integrates cohorts with synchronized reproduction events, called by cpm, 
@@ -17,7 +17,6 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 %  q: 1/d^2, aging acceleration
 %  h_a: 1/d, hazard for aging
 %  L: cm, struc length
-%  L_max: cm, struc length before start shrinking
 %  E: J/cm^3, reserve density [E]
 %  E_R: J, reprod buffer
 %  E_H: J, maturity
