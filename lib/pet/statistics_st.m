@@ -776,7 +776,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
     case {'stf', 'stx'}
       pars_R = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp]; 
       R_i = TC * reprod_rate_foetus(L_i, f, pars_R);   
-      N_i = cum_reprod(a_m * TC, f, pars_R) * R_i/ TC/ reprod_rate(L_i, f, pars_R);
+      N_i = cum_reprod(a_m * TC, f, pars_R);
     case 'abj'
       pars_R = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp]; 
       R_i = TC * reprod_rate_j(L_i, f, pars_R);                    
