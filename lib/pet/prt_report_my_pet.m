@@ -26,7 +26,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
 % * destinationFolder: optional string with destination folder the output html-file (default: current folder) 
-% * filename: optional string with name of output file (default report_My_pet.html, with My_pet replaced by first species_name)
+% * filename: optional string with name of output file (default report_My_pet.html, with My_pet replaced by the first species_name)
 %
 % Output:
 %
