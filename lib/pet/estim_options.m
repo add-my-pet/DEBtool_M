@@ -37,13 +37,13 @@ function estim_options (key, val)
   %      2:  read initial estimates from pars_init file (default)
   %
   %    'results_output':
-  %      0 - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
-  %      1, -1 - no saving to .mat file, prints results to html (1) or screen (-1)
-  %      2, -2 - saves to .mat file, prints results to html (2) or screen (-2)
+  %      0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
+  %      1, -1 - no saving to .mat file, prints results to html (1) or screen (-1), shows figures but does not save them
+  %      2, -2 - saves to .mat file, prints results to html (2) or screen (-2), shows figures but does not save them
   %      3, -3 - like 2 (or -2), but also prints graphs to .png files (default is 3)
   %      4, -4 - like 3 (or -3), but also prints html with implied traits
-  %      5, -5 - like 4 (or -4), but also prints html with implied traits including related species
-  %      6 - like 5, but also prints html with population traits
+  %      5, -5 - like 4 (or -4), but includes related species in the implied traits
+  %      6     - like 5, but also prints html with population traits
   %   
   %    'method': 
   %      'nm': use Nelder-Mead method; 
@@ -57,7 +57,12 @@ function estim_options (key, val)
   % For other options see corresponding options file of the minimazation  algorithm, e.g. <../../regr/html/nmregr_options.html *nmregr_options*>.
   % See <estim_pars.html *estim_pars*> for application of the option settings.
   % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
-  %
+  % A typical estimation procedure is
+  % 
+  % * first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),
+  % * then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)
+  % * type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file
+  
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
  
