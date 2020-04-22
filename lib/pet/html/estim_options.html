@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-02"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-22"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -73,14 +73,16 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     'su': multiplicative symmetric unbounded;</pre><pre>  'filter':
     1: use filter (default);
     0: do not;</pre><pre>  'pars_init_method':
-    0:  get initial estimates from automatized computation (default)
+    0:  get initial estimates from automatized computation
     1:  read initial estimates from .mat file (for continuation)
-    2:  read initial estimates from pars_init file</pre><pre>  'results_output':
-    0:      only saves data results to .mat, no figures, no writing to html or screen
-    1, -1:  saves data to .mat file, prints results to html or screen
-    2, -2:  saves data to .mat file and graphs to .png files, writes results to html or screen
-    3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
-    4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species</pre><pre>  'method':
+    2:  read initial estimates from pars_init file (default)</pre><pre>  'results_output':
+    0 - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations
+    1, -1 - no saving to .mat file, prints results to html (1) or screen (-1)
+    2, -2 - saves to .mat file, prints results to html (2) or screen (-2)
+    3, -3 - like 2 (or -2), but also prints graphs to .png files (default is 3)
+    4, -4 - like 3 (or -3), but also prints html with implied traits
+    5, -5 - like 4 (or -4), but also prints html with implied traits including related species
+    6 - like 5, but also prints html with population traits</pre><pre>  'method':
     'nm': use Nelder-Mead method;
     'no': do not estimate;</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>For other options see corresponding options file of the minimazation  algorithm, e.g. <a href="../../regr/html/nmregr_options.html"><b>nmregr_options</b></a>. See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -90,6 +92,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman
+  % 2019/12/20 by Nina Marn
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -117,17 +120,19 @@ function estim_options (key, val)
   %      0: do not;
   %
   %    'pars_init_method':
-  %      0:  get initial estimates from automatized computation (default)
+  %      0:  get initial estimates from automatized computation 
   %      1:  read initial estimates from .mat file (for continuation)
-  %      2:  read initial estimates from pars_init file
+  %      2:  read initial estimates from pars_init file (default)
   %
   %    'results_output':
-  %      0:      only saves data results to .mat, no figures, no writing to html or screen
-  %      1, -1:  saves data to .mat file, prints results to html or screen 
-  %      2, -2:  saves data to .mat file and graphs to .png files, writes results to html or screen
-  %      3, -3:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file
-  %      4, -4:  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species
-  %
+  %      0 - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
+  %      1, -1 - no saving to .mat file, prints results to html (1) or screen (-1)
+  %      2, -2 - saves to .mat file, prints results to html (2) or screen (-2)
+  %      3, -3 - like 2 (or -2), but also prints graphs to .png files (default is 3)
+  %      4, -4 - like 3 (or -3), but also prints html with implied traits
+  %      5, -5 - like 4 (or -4), but also prints html with implied traits including related species
+  %      6 - like 5, but also prints html with population traits
+  %   
   %    'method': 
   %      'nm': use Nelder-Mead method; 
   %      'no': do not estimate;
@@ -159,7 +164,7 @@ function estim_options (key, val)
       lossfunction = 'sb';
       filter = 1;
       pars_init_method  = 2;
-      results_output = 0;
+      results_output = 3;
       method = 'nm';
       nmregr_options('default');
 
@@ -211,10 +216,12 @@ function estim_options (key, val)
           fprintf('results_output = unknown \n');
         end	 
         fprintf(' 0      only saves data results to .mat, no figures, no writing to html or screen\n');
-        fprintf('1, -1  saves data to .mat file, prints results to html or screen\n');
-        fprintf('2, -2  saves data to .mat file and graphs to .png files, writes results to html or screen\n');
-        fprintf('3, -3  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file\n');
-        fprintf('4, -4  saves data to .mat file and graphs to .png files, writes results to html or screen, writes report to .html file including related species\n');
+        fprintf('1, -1  no saving to .mat file, prints results to html (1) or screen (-1)\n');
+        fprintf('2, -2  saves to .mat file, prints results to html (2) or screen (-2) \n');
+        fprintf('3, -3  like 2 (or -2), but also prints graphs to .png files (default is 3)\n');
+        fprintf('4, -4  like 3 (or -3), but also prints html with implied traits \n');
+        fprintf('5, -5  like 3 (or -3), but also prints html with implied traits including related species \n');
+        fprintf('6, -6  like 5, but also prints html with population traits \n');         
       else
         results_output = val;
       end

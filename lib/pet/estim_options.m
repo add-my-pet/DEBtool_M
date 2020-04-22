@@ -42,7 +42,7 @@ function estim_options (key, val)
   %      2, -2 - saves to .mat file, prints results to html (2) or screen (-2)
   %      3, -3 - like 2 (or -2), but also prints graphs to .png files (default is 3)
   %      4, -4 - like 3 (or -3), but also prints html with implied traits
-  %      5, -5 - like 3 (or -3), but also prints html with implied traits including related species
+  %      5, -5 - like 4 (or -4), but also prints html with implied traits including related species
   %      6 - like 5, but also prints html with population traits
   %   
   %    'method': 
