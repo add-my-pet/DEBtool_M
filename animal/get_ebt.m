@@ -157,7 +157,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define I_CONST_DIM     0\n');
   fprintf(oid, '#define ENVIRON_DIM     2 /* time, scaled food density */\n'); 
   fprintf(oid, '#define OUTPUT_VAR_NR   3 /* (time,) scaled food density, nr ind, tot weight */\n');
-  fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
+  fprintf(oid, '#define PARAMETER_NR    %d\n', 2+n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
   if strcmp(numPar.TIME_METHOD, 'DOPRI5')
     events = 2;

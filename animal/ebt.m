@@ -109,9 +109,6 @@ if ~isfield('par', 'h_J')
 end
 
 % hazard rates, thinning
-
-par.h_a = par.h_a*1e-8; % test!test!test!
-
 if ~exist('h','var') || isempty(h)
   h_D = 0.0; thin = 0; 
 else
