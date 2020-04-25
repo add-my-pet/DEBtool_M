@@ -2,16 +2,16 @@
 % get cohort trajectories
 
 %%
-function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
+function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% [tXN, tXW, M_N, M_W, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, V_X, n_R, t_R)
+% [txN, txW, M_N, M_W, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, V_X, n_R, t_R)
   
 %% Description
 % integrates cohorts with synchronized reproduction events, called by cpm, 
 %
-% variables to be integrated, packed in Xvars:
+% variables to be integrated, packed in xvars:
 %  X/K: scaled food density
 %    for each cohort:
 %  q: 1/d^2, aging acceleration
@@ -22,7 +22,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 %  E_H: J, maturity
 %  N: #, number of individuals in cohort
 %
-% number of current cohorts n_c = (length(Xvars) - 1)/8
+% number of current cohorts n_c = (length(xvars) - 1)/8
 % n_c increases for 1 till some max value, determined by number of oldest cohort < 1e-4, which depends on ageing and other hazards  
 %
 % Input:
@@ -38,8 +38,8 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 %
 % Output:
 %
-% * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
-% * tXW: (n,m)-array with times, food density and total wet weights of the various cohorts
+% * txN: (n,m)-array with times, scaled food density and number of individuals in the various cohorts
+% * txW: (n,m)-array with times, scaled food density and total wet weights of the various cohorts
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t), where N(t) is the vector of numbers of individuals in the cohorts at t
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t), where W(t) is the vector of total wet weights in the cohorts at t
 % * info: boolean with failure (0) or success (1)
@@ -101,21 +101,20 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   
   if t_R < aT_b
     fprintf('Warning from get_cpm: age at birth is larger than reproduction interval\n');
-    info = 0; tXN = []; tXW = []; return
+    info = 0; txN = []; txW = []; return
   end
   if strcmp(model,'ssj')
     pars_ts = [g k 0 v_Hb v_Hs]; [tau_s, tau_b, l_s, l_b] = get_tp(pars_ts, 1);
     tT_s = tau_s/ kT_M; tT_j = tT_s + t_sj; kT_E = k_E * TC;
     if t_R < tT_j
       fprintf('Warning from get_cpm: age at metam is larger than reproduction interval\n');
-      info = 0; tXN = []; tXW = []; M_N = []; M_W = []; return
+      info = 0; txN = []; txW = []; M_N = []; M_W = []; return
     end
   end
   
   % initial states with number of cohorts n_c = 1;
-  X_0 = x_0 * K; % unscale initial food density
-  Xvars_0 = [X_0; 0; 0; L_b; E_m; 0; E_Hb; 1]; % X q h L [E] E_R E_H N
-  tXN = [0, X_0, 1]; tXW = [0, X_0, E_0/ mu_E * w_E/ d_E];% initialise output
+  xvars_0 = [x_0; 0; 0; L_b; E_m; 0; E_Hb; 1]; % x q h L [E] E_R E_H N
+  txN = [0, x_0, 1]; txW = [0, x_0, E_0/ mu_E * w_E/ d_E];% initialise output
   M_N = []; M_W = [];  
   
   for i = 1:n_R
@@ -123,88 +122,88 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
       case {'std','stf'}
         par_std = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_std, [0; aT_b; t_R], Xvars_0, options, par_std{:});
+        [t, xvars] = ode45(@dcpm_std, [0; aT_b; t_R], xvars_0, options, par_std{:});
       case 'stx'
         par_stx = {E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_stx, [0; aT_b; t_R], Xvars_0, options, par_stx{:});
+        [t, xvars] = ode45(@dcpm_stx, [0; aT_b; t_R], xvars_0, options, par_stx{:});
       case 'ssj'
         par_ssj = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
         % treat shrinking at E_H(t) = E_Hs of first cohort as event
-        [t, Xvars] = ode45(@dcpm_ssj, [0; aT_b; tT_s], Xvars_0, options, par_ssj{:});
-        [X, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(Xvars(end,:)); 
+        [t, xvars] = ode45(@dcpm_ssj, [0; aT_b; tT_s], xvars_0, options, par_ssj{:});
+        [x, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(xvars(end,:)); 
         L(1) = L(1) * exp(- t_sj * kT_E); N(1) = N(1) * exp( - t_sj * h_Bsj);
-        Xvars_0 = max(0,[X; q; h_A; L; L_max; E; E_R; E_H; N]); % pack state vars
-        [t, Xvars] = ode45(@dcpm_ssj, [tT_s; t_R], Xvars_0, options, par_ssj{:});
+        xvars_0 = max(0,[x; q; h_A; L; L_max; E; E_R; E_H; N]); % pack state vars
+        [t, xvars] = ode45(@dcpm_ssj, [tT_s; t_R], xvars_0, options, par_ssj{:});
       case 'sbp'
         par_sbp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_sbp, [0; aT_b; t_R], Xvars_0, options, par_sbp{:});
+        [t, xvars] = ode45(@dcpm_sbp, [0; aT_b; t_R], xvars_0, options, par_sbp{:});
       case 'abj'
         par_abj = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], Xvars_0, options, par_abj{:});
+        [t, xvars] = ode45(@dcpm_abj, [0; aT_b; t_R], xvars_0, options, par_abj{:});
       case 'asj'
         par_asj = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], Xvars_0, options, par_asj{:});
+        [t, xvars] = ode45(@dcpm_asj, [0; aT_b; t_R], xvars_0, options, par_asj{:});
       case 'abp'
         par_abp = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
             L_b, L_p, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G};
-        [t, Xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], Xvars_0, options, par_abp{:});
+        [t, xvars] = ode45(@dcpm_abp, [0; aT_b; t_R], xvars_0, options, par_abp{:});
       case {'hep','hex'}
         fprintf('Warning from get_cpm: this species does not sport periodic reproduction\n');
-        info = 0; tXN = []; tXW = []; M_N = []; M_W = []; return
+        info = 0; txN = []; txW = []; M_N = []; M_W = []; return
     end
     % catenate output and possibly insert new cohort
-    [t, Xvars_0, tXN, tXW] = cohorts(t(end), Xvars(end,:), tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
-    n_c = (length(Xvars_0)-1)/7; % number of cohorts
+    [t, xvars_0, txN, txW] = cohorts(t(end), xvars(end,:), txN, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
+    n_c = (length(xvars_0)-1)/7; % number of cohorts
     [i, n_c]
   end
   
   % maps
-  if length(tXN) > n_c 
-    M_N = tXN(end-n_c:end,3:end)'/tXN(end-n_c-1:end-1,3:end)';
-    M_W = tXW(end-n_c:end,3:end)'/tXW(end-n_c-1:end-1,3:end)';
+  if length(txN) > n_c 
+    M_N = txN(end-n_c:end,3:end)'/txN(end-n_c-1:end-1,3:end)';
+    M_W = txW(end-n_c:end,3:end)'/txW(end-n_c-1:end-1,3:end)';
   end
 end
 
 
-function [t, Xvars_0, tXN, tXW] = cohorts(t, Xvars, tXN, tXW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E)
-  t = tXN(end,1) + t_R; Xvars_t = Xvars(end,:); % last value of t, Xvars
-  [X, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(Xvars_t);
+function [t, xvars_0, txN, txW] = cohorts(t, xvars, txN, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E)
+  t = txN(end,1) + t_R; xvars_t = xvars(end,:); % last value of t, xvars
+  [x, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(xvars_t);
 
   % reproduction event
   dN = kap_R * sum(N .* floor(E_R/ E_0)); % #, number of new eggs
   E_R = mod(E_R, E_0); % reduce reprod buffer to fractions of eggs
     
-  % build new initial state vectors and append t, X, N and W to output
+  % build new initial state vectors and append t, x, N and W to output
   q = [0; q]; h_A = [0; h_A]; L = [L_b; L]; E = [E_m; E]; E_R = [0; E_R]; E_H = [E_Hb; E_H]; N = [dN; N]; 
   % most values for cohort 0 will be overwritten in dget_mod during embryo stage
   W = N .* L.^3 .* (1 + E/ mu_E * w_E/ d_E) + E_R/ mu_E * w_E/ d_E; % g, wet weights
   if N(end) > 1e-4 % add new youngest cohort
-    tXN = [[tXN, zeros(size(tXN,1),1)]; [t, X, N']]; % append to output
-    tXW = [[tXW, zeros(size(tXW,1),1)]; [t, X, W']]; % append to output
+    txN = [[txN, zeros(size(txN,1),1)]; [t, x, N']]; % append to output
+    txW = [[txW, zeros(size(txW,1),1)]; [t, x, W']]; % append to output
   else % add new youngest cohort and remove oldest
     q(end)=[]; h_A(end)=[]; L(end)=[]; E(end)=[]; E_R(end)=[]; E_H(end)=[]; N(end)=[]; W(end)=[];
-    tXN = [tXN; [t, X, N']]; % append to output
-    tXW = [tXW; [t, X, W']]; % append to output
+    txN = [txN; [t, x, N']]; % append to output
+    txW = [txW; [t, x, W']]; % append to output
   end
-  Xvars_0 = max(0,[X; q; h_A; L; E; E_R; E_H; N]); % pack state vars
+  xvars_0 = max(0,[x; q; h_A; L; E; E_R; E_H; N]); % pack state vars
 end
 
-function [value,isterminal,direction] = puberty(t, Xvars, E_Hp, varargin)
-  n_c = (length(Xvars) - 1)/ 7; % #, number of cohorts
-  E_H = Xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
+function [value,isterminal,direction] = puberty(t, xvars, E_Hp, varargin)
+  n_c = (length(xvars) - 1)/ 7; % #, number of cohorts
+  E_H = xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
   value = min(abs(E_H - E_Hp)); % trigger 
   isterminal = 0;  % continue after event
   direction  = []; % get all the zeros
 end
 
-function [value,isterminal,direction] = leptoPub(t, Xvars, E_Hp, E_Hs, varargin)
-  n_c = (length(Xvars) - 1)/ 7; % #, number of cohorts
-  E_H = Xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
+function [value,isterminal,direction] = leptoPub(t, xvars, E_Hp, E_Hs, varargin)
+  n_c = (length(xvars) - 1)/ 7; % #, number of cohorts
+  E_H = xvars(1+5*n_c+(1:n_c)); % J, maturities, cf cpm_unpack
   value = [E_H(1) - E_Hs,  min(abs(E_H - E_Hp))]; % triggers 
   isterminal = [1 1];  % stop at event
   direction  = []; % get all the zeros

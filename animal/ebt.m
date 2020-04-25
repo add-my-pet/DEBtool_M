@@ -59,9 +59,9 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % * txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight
 %
 %% Remarks
-% The function assumes that a c-compiler has been installed and a path to it specified.
+% The function assumes that a c-compiler has been installed with the name gcc.exe and a path to it specified.
 % This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software.
-% This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool
+% This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.

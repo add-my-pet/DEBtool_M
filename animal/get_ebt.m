@@ -44,7 +44,6 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 %% Remarks
 %
-% * Creates directory EBTtool, with subdir Odesolvers, if not already there
 % * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
 % * writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models
 % * runs ebtmod.exe in PowerShell, which writes ebtmod.out
@@ -137,9 +136,10 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     
  %% EBTtool: load ebt program, if necessary
  
-  if ~exist('EBTtool','dir') % create EBTtool if not already there
-    unzip('EBTtool')
-  end
+  % EBTtool is a subdir of DEBtool_M
+  % if ~exist('EBTtool','dir') % create EBTtool if not already there
+  %  unzip('EBTtool')
+  % end
   
 %% ebtmod.h: header file 
 
@@ -225,20 +225,22 @@ fclose(oid);
 
 %% ebtmod.exe: run EBTtool
 
-  path_ebt = './EBTtool/'; 
-  txt = ['!gcc -I', path_ebt, ' -DPROBLEMFILE="<', pwd, '/ebt', model, '.h>" -o '];
-  TXT = ['!gcc -I', path_ebt, ' -I', path_ebt, 'Odesolvers/ -DPROBLEMFILE="<', pwd, '/ebt', model, '.h>" -o '];
-  eval([txt, 'ebtmain.o  -c ', path_ebt, 'ebtmain.c']);
-  eval([txt, 'ebtinit.o  -c ', path_ebt, 'ebtinit.c']);
-  eval([TXT, 'ebttint.o  -c ', path_ebt, 'ebttint.c']);
-  eval([txt, 'ebtcohrt.o -c ', path_ebt, 'ebtcohrt.c']);
-  eval([txt, 'ebtutils.o -c ', path_ebt, 'ebtutils.c']);
-  eval([txt, 'ebtstop.o  -c ', path_ebt, 'ebtstop.c']);
-  eval([txt, 'ebtstd.o -c ebtstd.c']);
+  WD = cdEBTtool;  
+  txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  eval([txt, 'ebtmain.o  -c fns\ebtmain.c']);
+  eval([txt, 'ebtinit.o  -c fns\ebtinit.c']);
+  eval([TXT, 'ebttint.o  -c fns\ebttint.c']);
+  eval([txt, 'ebtcohrt.o -c fns\ebtcohrt.c']);
+  eval([txt, 'ebtutils.o -c fns\ebtutils.c']);
+  eval([txt, 'ebtstop.o  -c fns\ebtstop.c']);
+  eval([TxT, 'ebtstd.o   -c deb\ebtstd.c']);
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
 
+  cd(WD);
 %% ebtmod.out: read output variable file 
 
   out = fopen(['ebt', model, '.out'], 'r');

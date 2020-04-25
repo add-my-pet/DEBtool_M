@@ -9,7 +9,7 @@
  *==========================================================================
  */
 
-#include "EBTtool/escbox.h"
+#include "escbox.h"
 #include "spline_TC.c"
 #include "spline_JX.c"
 

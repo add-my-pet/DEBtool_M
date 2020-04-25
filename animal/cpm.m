@@ -2,11 +2,11 @@
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [txN, txW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [tXN, tXW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [txN, txW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
@@ -37,8 +37,8 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %
 % Output:
 %
-% * tXN: (n,m)-array with times, food density and number of individuals in the various cohorts
-% * tXW: (n,m)-array with times, food density and cohort wet weights
+% * txN: (n,m)-array with times, food density and number of individuals in the various cohorts
+% * txW: (n,m)-array with times, food density and cohort wet weights
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
 %
@@ -68,7 +68,7 @@ if iscell(species)
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
   if info == 0
-    tXN=[]; tXW=[]; M_N=[]; M_W=[]; return
+    txN=[]; txW=[]; M_N=[]; M_W=[]; return
   end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
@@ -97,7 +97,7 @@ if ~exist('tT','var') || isempty(tT)
   tT = metaData.T_typical;
 elseif length(tT) > 1 & sum(tT(:,1) > 1) > 0
   fprintf('abcissa of temp knots must be between 0 and 1\n');
-  tXN=[]; tXW=[]; return
+  txN=[]; txW=[]; return
 elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
   tT = [tT; 1 tT(1,2)];    
 end
@@ -107,7 +107,7 @@ if ~exist('tJX','var') || isempty(tJX)
   tJX = 500 * J_X_Am * L_m^2 ;
 elseif length(tJX) > 1 & sum(tJX(:,1) > 1) > 0
   fprintf('abcissa of food supply knots must be between 0 and 1\n');
-  tXN=[]; tXW=[]; return
+  txN=[]; txW=[]; return
 elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
   tJX = [tJX; 1 tJX(1,2)];    
 end
@@ -119,7 +119,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.5; thin = 0; 
+  h_D = 0; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -195,18 +195,18 @@ if ~exist('t_R','var') || isempty(t_R)
 end
 
 % get trajectories
-[tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
   return
 end
-t = tXN(:,1)/ t_R; X = tXN(:,2); N = cumsum(tXN(:,3:end),2); W = cumsum(tXW(:,3:end),2); n_c = size(N,2);
+t = txN(:,1)/ t_R; x = txN(:,2); N = cumsum(txN(:,3:end),2); W = cumsum(txW(:,3:end),2); n_c = size(N,2);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
 figure(1)
-plot(t, X/K, 'k', 'Linewidth', 2)
+plot(t, x, 'k', 'Linewidth', 2)
 title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('scaled food density, X/K');
@@ -238,7 +238,7 @@ figure(4)
 hold on
 W = zeros(n_c,1); 
 for i = 1:n_c
-  W(i,:) = tXW(i,2+i)/tXN(i,2+i);
+  W(i,:) = txW(i,2+i)/txN(i,2+i);
 end
 plot(t(1:n_c), W, 'k', 'Linewidth', 2) 
 title(title_txt);
@@ -333,7 +333,7 @@ switch model
       fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
 end
-fprintf(oid, str, 'X_0', 'mol/L', x_0 * K, 'initial food density');
+fprintf(oid, str, 'x_0', '-', x_0, 'initial scaled food density');
 fprintf(oid, str, 'V_X', 'L', V_X, 'volume of reactor');
 fprintf(oid, str, 'n_R', '-', n_R, 'number of simulated reproduction events');
 fprintf(oid, str, 't_R', 'd', t_R, 'time between reproduction events');

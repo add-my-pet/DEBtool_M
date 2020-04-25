@@ -74,7 +74,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 - E: J/cm^3, reserve density [E]
 - E_R: J, reprod buffer
 - E_H: J, maturity
-- W: g, wet weight</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with initial scaled food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>numPar: structure with numerical parameter settings</li></ul></div><p>Output:</p><div><ul><li>tXNW: (n,4)-array with times, food density, number of individuals, population weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>Creates directory EBTtool, with subdir Odesolvers, if not already there</li><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models</li><li>runs ebtmod.exe in PowerShell, which writes ebtmod.out</li><li>reads ebtmod.out for output</li></ul></div><h2 id="6">spline_JX, spline_TC: for environmental variables</h2><h2 id="7">DEB model parameters</h2><h2 id="8">EBTtool: load ebt program, if necessary</h2><h2 id="9">ebtmod.h: header file</h2><h2 id="10">ebtmod.cvf: control variable file</h2><h2 id="11">ebtmod.isf: initial state file</h2><h2 id="12">Detlete existin out-file</h2><h2 id="13">ebtmod.exe: run EBTtool</h2><h2 id="14">ebtmod.out: read output variable file</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+- W: g, wet weight</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with initial scaled food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>numPar: structure with numerical parameter settings</li></ul></div><p>Output:</p><div><ul><li>tXNW: (n,4)-array with times, food density, number of individuals, population weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models</li><li>runs ebtmod.exe in PowerShell, which writes ebtmod.out</li><li>reads ebtmod.out for output</li></ul></div><h2 id="6">spline_JX, spline_TC: for environmental variables</h2><h2 id="7">DEB model parameters</h2><h2 id="8">EBTtool: load ebt program, if necessary</h2><h2 id="9">ebtmod.h: header file</h2><h2 id="10">ebtmod.cvf: control variable file</h2><h2 id="11">ebtmod.isf: initial state file</h2><h2 id="12">Detlete existin out-file</h2><h2 id="13">ebtmod.exe: run EBTtool</h2><h2 id="14">ebtmod.out: read output variable file</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_ebt
 % get population trajectories from Escalaor Boxcar Train
@@ -122,7 +122,6 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 %% Remarks
 %
-% * Creates directory EBTtool, with subdir Odesolvers, if not already there
 % * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
 % * writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models
 % * runs ebtmod.exe in PowerShell, which writes ebtmod.out
@@ -215,9 +214,10 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     
  %% EBTtool: load ebt program, if necessary
  
-  if ~exist('EBTtool','dir') % create EBTtool if not already there
-    unzip('EBTtool')
-  end
+  % EBTtool is a subdir of DEBtool_M
+  % if ~exist('EBTtool','dir') % create EBTtool if not already there
+  %  unzip('EBTtool')
+  % end
   
 %% ebtmod.h: header file 
 
@@ -303,20 +303,22 @@ fclose(oid);
 
 %% ebtmod.exe: run EBTtool
 
-  path_ebt = './EBTtool/'; 
-  txt = ['!gcc -I', path_ebt, ' -DPROBLEMFILE="<', pwd, '/ebt', model, '.h>" -o '];
-  TXT = ['!gcc -I', path_ebt, ' -I', path_ebt, 'Odesolvers/ -DPROBLEMFILE="<', pwd, '/ebt', model, '.h>" -o '];
-  eval([txt, 'ebtmain.o  -c ', path_ebt, 'ebtmain.c']);
-  eval([txt, 'ebtinit.o  -c ', path_ebt, 'ebtinit.c']);
-  eval([TXT, 'ebttint.o  -c ', path_ebt, 'ebttint.c']);
-  eval([txt, 'ebtcohrt.o -c ', path_ebt, 'ebtcohrt.c']);
-  eval([txt, 'ebtutils.o -c ', path_ebt, 'ebtutils.c']);
-  eval([txt, 'ebtstop.o  -c ', path_ebt, 'ebtstop.c']);
-  eval([txt, 'ebtstd.o -c ebtstd.c']);
+  WD = cdEBTtool;  
+  txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
+  eval([txt, 'ebtmain.o  -c fns\ebtmain.c']);
+  eval([txt, 'ebtinit.o  -c fns\ebtinit.c']);
+  eval([TXT, 'ebttint.o  -c fns\ebttint.c']);
+  eval([txt, 'ebtcohrt.o -c fns\ebtcohrt.c']);
+  eval([txt, 'ebtutils.o -c fns\ebtutils.c']);
+  eval([txt, 'ebtstop.o  -c fns\ebtstop.c']);
+  eval([TxT, 'ebtstd.o   -c deb\ebtstd.c']);
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
 
+  cd(WD);
 %% ebtmod.out: read output variable file 
 
   out = fopen(['ebt', model, '.out'], 'r');
