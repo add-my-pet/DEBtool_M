@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>cpm</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-16"><meta name="DC.source" content="cpm.m"><style type="text/css">
+      --><title>cpm</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-25"><meta name="DC.source" content="cpm.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>cpm</h1><!--introduction--><p>Cohort Projection Model: runs a cohort projection model using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">reporting</a></li></ul></div><h2 id="3">Syntax</h2><p>[tXN, tXW, M_N, M_W] = <a href="../cpm.m"><b>cpm</b></a> (species, tT, tJX, x_0, V_X, h, n_R, t_R)</p><h2 id="4">Description</h2><p>Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. Opens 2 html-pages in system browser to report species traits and cmp parameter settings. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are output structures of <a href="http://www.debtheory.org/wiki/index.php?title=Mydata_file"><b>mydata_my_pet</b></a> and <a href="http://www.debtheory.org/wiki/index.php?title=Pars_init_file"><b>pars_init_my_pet</b></a>, as part of the parameter estimation process. Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 4th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time scaled between 0 (= start) and 1 (= end of cycle)     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 2)</li><li>n_R: optional scalar with number of reproduction events to be simulated (default 250).</li><li>t_R: optional scalar with time period between reproduction events (default 1 yr)</li></ul></div><p>Output:</p><div><ul><li>tXN: (n,m)-array with times, food density and number of individuals in the various cohorts</li><li>tXW: (n,m)-array with times, food density and cohort wet weights</li><li>M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)</li><li>M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)</li></ul></div><h2 id="5">Remarks</h2><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page with traits uses the possibly modified parameter values. The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough. cpm only controls input/output; computations are done in get_cpm, which calls dcpm_mod. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>cpm('Torpedo_marmorata');</li><li>cpm('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">reporting</h2><p>report_my_pet</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>cpm</h1><!--introduction--><p>Cohort Projection Model: runs a cohort projection model using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">report_my_pet</a></li><li><a href="#9">cpm_my_pet</a></li></ul></div><h2 id="3">Syntax</h2><p>[tXN, tXW, M_N, M_W] = <a href="../cpm.m"><b>cpm</b></a> (species, tT, tJX, x_0, V_X, h, n_R, t_R)</p><h2 id="4">Description</h2><p>Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. Opens 2 html-pages in system browser to report species traits and ebt parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 4th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time scaled between 0 (= start) and 1 (= end of cycle)     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)</li><li>n_R: optional scalar with number of reproduction events to be simulated (default 250).</li><li>t_R: optional scalar with time period between reproduction events (default 1 yr)</li></ul></div><p>Output:</p><div><ul><li>tXN: (n,m)-array with times, food density and number of individuals in the various cohorts</li><li>tXW: (n,m)-array with times, food density and cohort wet weights</li><li>M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)</li><li>M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)</li></ul></div><h2 id="5">Remarks</h2><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page with traits uses the possibly modified parameter values. The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough. cpm only controls input/output; computations are done in get_cpm, which calls dcpm_mod. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>cpm('Torpedo_marmorata');</li><li>cpm('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet</h2><h2 id="9">cpm_my_pet</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% cpm
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
@@ -80,10 +80,9 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
-% Opens 2 html-pages in system browser to report species traits and cmp parameter settings.
+% Opens 2 html-pages in system browser to report species traits and ebt parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
-% The 3 cells are output structures of <http://www.debtheory.org/wiki/index.php?title=Mydata_file *mydata_my_pet*> and
-% <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*>, as part of the parameter estimation process.
+% The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model.
 % If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
 % The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
@@ -102,7 +101,7 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 2)
+% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)
 % * n_R: optional scalar with number of reproduction events to be simulated (default 250).
 % * t_R: optional scalar with time period between reproduction events (default 1 yr)
 %
@@ -152,7 +151,7 @@ vars_pull(par); vars_pull(parscomp_st(par));
 
 % account for cost of male production
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
-  kap_R = kap_R/2; % reprod efficiency is halved, assuming sex ratio 1:1
+  kap_R = kap_R/2; par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
 
 % rejuvenation parameters
@@ -265,7 +264,6 @@ if ~exist('t_R','var') || isempty(t_R)
   t_R = 365; % d
 end
 
-
 % get trajectories
 [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
@@ -319,13 +317,14 @@ ylabel('indiv. wet weight, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
 
-%% reporting
-% report_my_pet
+%% report_my_pet
+
 fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
-%  cpm_my_pet
+%%  cpm_my_pet
+
 fileName = ['cpm_', species, '.html'];
 oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
@@ -338,12 +337,9 @@ fprintf(oid, '    .newspaper {\n');
 fprintf(oid, '      column-count: 3;\n');
 fprintf(oid, '    }\n\n');
 
-fprintf(oid, '    div.temp {\n');
-fprintf(oid, '      width: 100%%;\n');
-fprintf(oid, '    }\n\n');
-
 fprintf(oid, '    div.par {\n');
 fprintf(oid, '      width: 100%%;\n');
+fprintf(oid, '      padding-bottom: 100px;\n');
 fprintf(oid, '    }\n\n');
 
 fprintf(oid, '    .head {\n');
@@ -365,10 +361,12 @@ fprintf(oid, '  </div>\n\n');
 
 fprintf(oid, '  <div class="newspaper">\n');
 fprintf(oid, '  <div class="par">\n');
+
+% Table with DEB parameters
+
 fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>\n');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'model', '-', model, 'model type');
-reprodCode = reprodCode{1}; genderCode = genderCode{1};
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode{1}, 'ecoCode reprod');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
 
@@ -414,22 +412,28 @@ fprintf(oid, str, 'n_c', '-', n_c, 'ultimate number of cohorts');
 fprintf(oid, '  </TABLE>\n'); % close prdData table
 fprintf(oid, '  </div>\n\n');
 
-fprintf(oid, '  <div class="temp">\n');
-fprintf(oid, '  <h3>Knots for<br> temperature (K)</h3>\n');
-fprintf(oid, '  <TABLE id="temp">\n');
+fprintf(oid, '  <div class="par">\n');
+
+% Table with knots for temperature
+
+fprintf(oid, '  <TABLE id="par">\n');
+fprintf(oid, '    <TR  class="head"> <TH>Knots for<br>temperature</TH> <TH>units<br>&deg;C</TH> </TR>\n');
 n_T = size(tT,1);
 if n_T == 1
     tT = [0 tT; 1 tT]; n_T = 2;
 end
 for i=1:n_T
-  fprintf(oid, '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD></TR>\n', tT(i,1), tT(i,2));
+  fprintf(oid, '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD></TR>\n', tT(i,1), K2C(tT(i,2)));
 end
 fprintf(oid, '  </TABLE>\n');
 fprintf(oid, '  </div>\n\n');
 
-fprintf(oid, '  <div class="temp">\n');
-fprintf(oid, '  <h3>Knots for<br> food supply (mol/d)</h3>\n');
-fprintf(oid, '  <TABLE id="food">\n');
+fprintf(oid, '  <div class="par">\n');
+
+% Table with knots for food input
+
+fprintf(oid, '  <TABLE id="par">\n');
+fprintf(oid, '    <TR  class="head"> <TH>Knots for<br>food supply</TH> <TH>units<br>mol/d</TH> </TR>\n');
 n_JX = size(tJX,1);
 if n_JX == 1
   tJX = [0 tJX; 1 tJX]; n_JX = 2;

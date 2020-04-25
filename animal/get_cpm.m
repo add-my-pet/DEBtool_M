@@ -12,7 +12,7 @@ function [tXN, tXW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 % integrates cohorts with synchronized reproduction events, called by cpm, 
 %
 % variables to be integrated, packed in Xvars:
-%  X: mol/vol or mol/surface, food density
+%  X/K: scaled food density
 %    for each cohort:
 %  q: 1/d^2, aging acceleration
 %  h_a: 1/d, hazard for aging

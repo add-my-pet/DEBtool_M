@@ -31,7 +31,7 @@ function [tXN, tXW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 2)
+% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)
 % * n_R: optional scalar with number of reproduction events to be simulated (default 250).
 % * t_R: optional scalar with time period between reproduction events (default 1 yr)
 %
