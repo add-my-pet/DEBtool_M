@@ -1,7 +1,7 @@
 /***
   NAME
-    ebtstd.c
-    std DEB model with reprod buffer handling: lay egg as soon as buffer allows
+    ebtstf.c
+    stf DEB model with reprod buffer handling: produce offspring as soon as buffer allows
 ***/
 
 /*==========================================================================

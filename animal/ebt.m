@@ -117,7 +117,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.0001; thin = 0; 
+  h_D = 0.05; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end

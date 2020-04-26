@@ -1,7 +1,7 @@
 /***
   NAME
-    ebtstd.c
-    std DEB model with reprod buffer handling: lay egg as soon as buffer allows
+    ebtssj.c
+    ssj DEB model with reprod buffer handling: produce offspring as soon as buffer allows
 ***/
 
 /*==========================================================================
@@ -38,37 +38,38 @@
  */
 
 #define E_Hp   parameter[0]   /*    J       */
-#define E_Hb   parameter[1]   /*    J       */
-#define V_X    parameter[2]   /*    L       */
-#define h_D    parameter[3]   /*   1/d      */
-#define h_J    parameter[4]   /*   1/d      */
-#define h_B0b  parameter[5]   /*   1/d      */
-#define h_Bbp  parameter[6]   /*   1/d      */
-#define h_Bpi  parameter[7]   /*   1/d      */
-#define h_a    parameter[8]   /*   1/d      */
-#define s_G    parameter[9]   /*    -       */
-#define thin   parameter[10]  /*    -       */
-#define L_m    parameter[11]  /*   cm       */
-#define E_m    parameter[12]  /*  J/cm^3    */
-#define k_J    parameter[13]  /*   1/d      */
-#define k_JX   parameter[14]  /*   1/d      */
-#define v      parameter[15]  /*   cm/d     */
-#define g      parameter[16]  /*    -       */
-#define p_M    parameter[17]  /* J/d.cm^3   */
-#define p_Am   parameter[18]  /* J/d.cm^2   */
-#define J_X_Am parameter[19]  /* mol/d.cm^2 */
-#define K      parameter[20]  /*   mol/L    */
-#define kap    parameter[21]  /*     -      */
-#define kap_G  parameter[22]  /*     -      */
-#define ome    parameter[23]  /*     -      */
-#define E_0    parameter[24]  /*     J      */
-#define L_b    parameter[25]  /*    cm      */
-#define a_b    parameter[26]  /*     d      */
-#define aT_b   parameter[27]  /*     d      */
-#define q_b    parameter[28]  /*    1/d^2   */
-#define qT_b   parameter[29]  /*    1/d^2   */
-#define h_Ab   parameter[30]  /*    1/d     */
-#define hT_Ab  parameter[31]  /*    1/d     */
+#define E_Hs   parameter[1]   /*    J       */
+#define E_Hb   parameter[2]   /*    J       */
+#define V_X    parameter[3]   /*    L       */
+#define h_D    parameter[4]   /*   1/d      */
+#define h_J    parameter[5]   /*   1/d      */
+#define h_B0b  parameter[6]   /*   1/d      */
+#define h_Bbp  parameter[7]   /*   1/d      */
+#define h_Bpi  parameter[8]   /*   1/d      */
+#define h_a    parameter[9]   /*   1/d      */
+#define s_G    parameter[10]  /*    -       */
+#define thin   parameter[11]  /*    -       */
+#define L_m    parameter[12]  /*   cm       */
+#define E_m    parameter[13]  /*  J/cm^3    */
+#define k_J    parameter[14]  /*   1/d      */
+#define k_JX   parameter[15]  /*   1/d      */
+#define v      parameter[16]  /*   cm/d     */
+#define g      parameter[17]  /*    -       */
+#define p_M    parameter[18]  /* J/d.cm^3   */
+#define p_Am   parameter[19]  /* J/d.cm^2   */
+#define J_X_Am parameter[20]  /* mol/d.cm^2 */
+#define K      parameter[21]  /*   mol/L    */
+#define kap    parameter[22]  /*     -      */
+#define kap_G  parameter[23]  /*     -      */
+#define ome    parameter[24]  /*     -      */
+#define E_0    parameter[25]  /*     J      */
+#define L_b    parameter[26]  /*    cm      */
+#define a_b    parameter[27]  /*     d      */
+#define aT_b   parameter[28]  /*     d      */
+#define q_b    parameter[29]  /*    1/d^2   */
+#define qT_b   parameter[30]  /*    1/d^2   */
+#define h_Ab   parameter[31]  /*    1/d     */
+#define hT_Ab  parameter[32]  /*    1/d     */
 
 /*
  *==========================================================================

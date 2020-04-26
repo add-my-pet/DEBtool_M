@@ -1,7 +1,7 @@
 /***
   NAME
-    ebtstd.c
-    std DEB model with reprod buffer handling: lay egg as soon as buffer allows
+    ebtstx.c
+    stx DEB model with reprod buffer handling: produce offspring as soon as buffer allows
 ***/
 
 /*==========================================================================
@@ -38,37 +38,39 @@
  */
 
 #define E_Hp   parameter[0]   /*    J       */
-#define E_Hb   parameter[1]   /*    J       */
-#define V_X    parameter[2]   /*    L       */
-#define h_D    parameter[3]   /*   1/d      */
-#define h_J    parameter[4]   /*   1/d      */
-#define h_B0b  parameter[5]   /*   1/d      */
-#define h_Bbp  parameter[6]   /*   1/d      */
-#define h_Bpi  parameter[7]   /*   1/d      */
-#define h_a    parameter[8]   /*   1/d      */
-#define s_G    parameter[9]   /*    -       */
-#define thin   parameter[10]  /*    -       */
-#define L_m    parameter[11]  /*   cm       */
-#define E_m    parameter[12]  /*  J/cm^3    */
-#define k_J    parameter[13]  /*   1/d      */
-#define k_JX   parameter[14]  /*   1/d      */
-#define v      parameter[15]  /*   cm/d     */
-#define g      parameter[16]  /*    -       */
-#define p_M    parameter[17]  /* J/d.cm^3   */
-#define p_Am   parameter[18]  /* J/d.cm^2   */
-#define J_X_Am parameter[19]  /* mol/d.cm^2 */
-#define K      parameter[20]  /*   mol/L    */
-#define kap    parameter[21]  /*     -      */
-#define kap_G  parameter[22]  /*     -      */
-#define ome    parameter[23]  /*     -      */
-#define E_0    parameter[24]  /*     J      */
-#define L_b    parameter[25]  /*    cm      */
-#define a_b    parameter[26]  /*     d      */
-#define aT_b   parameter[27]  /*     d      */
-#define q_b    parameter[28]  /*    1/d^2   */
-#define qT_b   parameter[29]  /*    1/d^2   */
-#define h_Ab   parameter[30]  /*    1/d     */
-#define hT_Ab  parameter[31]  /*    1/d     */
+#define E_Hx   parameter[1]   /*    J       */
+#define E_Hb   parameter[2]   /*    J       */
+#define V_X    parameter[3]   /*    L       */
+#define h_D    parameter[4]   /*   1/d      */
+#define h_J    parameter[5]   /*   1/d      */
+#define h_B0b  parameter[6]   /*   1/d      */
+#define h_Bbx  parameter[7]   /*   1/d      */
+#define h_Bxp  parameter[8]   /*   1/d      */
+#define h_Bpi  parameter[9]   /*   1/d      */
+#define h_a    parameter[10]  /*   1/d      */
+#define s_G    parameter[11]  /*    -       */
+#define thin   parameter[12]  /*    -       */
+#define L_m    parameter[13]  /*   cm       */
+#define E_m    parameter[14]  /*  J/cm^3    */
+#define k_J    parameter[15]  /*   1/d      */
+#define k_JX   parameter[16]  /*   1/d      */
+#define v      parameter[17]  /*   cm/d     */
+#define g      parameter[18]  /*    -       */
+#define p_M    parameter[19]  /* J/d.cm^3   */
+#define p_Am   parameter[20]  /* J/d.cm^2   */
+#define J_X_Am parameter[21]  /* mol/d.cm^2 */
+#define K      parameter[22]  /*   mol/L    */
+#define kap    parameter[23]  /*     -      */
+#define kap_G  parameter[24]  /*     -      */
+#define ome    parameter[25]  /*     -      */
+#define E_0    parameter[26]  /*     J      */
+#define L_b    parameter[27]  /*    cm      */
+#define a_b    parameter[28]  /*     d      */
+#define aT_b   parameter[29]  /*     d      */
+#define q_b    parameter[30]  /*    1/d^2   */
+#define qT_b   parameter[31]  /*    1/d^2   */
+#define h_Ab   parameter[32]  /*    1/d     */
+#define hT_Ab  parameter[33]  /*    1/d     */
 
 /*
  *==========================================================================
@@ -116,11 +118,12 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 { 
   register int i;
   
-  events[0] = 1.0; events[1] = 1.0;
+  events[0] = 1.0; events[1] = 1.0; events[2] = 1.0;
   for (i=0; i<cohort_no[0]; i++)
   {
     events[0] = fabs(pop[0][i][age]-aT_b)<fabs(events[0]) ? pop[0][i][age] - aT_b : events[0];
-    events[1] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[1]) ? pop[0][i][maturity] - E_Hp : events[1];
+    events[1] = fabs(pop[0][i][maturity]-E_Hx)<fabs(events[1]) ? pop[0][i][maturity] - E_Hx : events[1];
+    events[2] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[2]) ? pop[0][i][maturity] - E_Hp : events[2];
   }
 }
 
@@ -173,8 +176,11 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation/ reprod */
       p_A = pT_Am * f * L2;                                       /* J/d, assimilation flux (overwritten for embryo's) */
       h_thin = thin==0. ? 0. : r * 2./3.;                         /* 1/d, thinning hazard */
-      hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bbp + h_thin :  pop[0][i][ageHaz] + h_Bpi + h_thin;
-      
+      if (pop[0][i][maturity]<E_Hx)
+        hazard = pop[0][i][ageHaz] + h_Bbx + h_thin;
+      else
+        hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bxp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
+ 
       popgrad[0][i][number]    = - hazard * pop[0][i][number];                                                                 /*   */
       popgrad[0][i][age]       = 1.0;                                                                                          /* 0 */
       popgrad[0][i][accel]     = (pop[0][i][accel] * s_G * L3/ L_m/ L_m/ L_m + hT_a) * e * (vT/ L - r) - r * pop[0][i][accel]; /* 1 */

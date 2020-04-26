@@ -81,9 +81,9 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b] = get_Sb([g k v_Hb h_a s_G h_B0b 0]);
   end
   E_0 = g * E_m * L_m^3 * u_E0; % J, initial reserve
-  kT_M = k_M * TC; a_b = tau_b/ k_M;  % d, age at birth
-  q_b = q_b * k_M^2; 
-  h_Ab = h_Ab * k_M; 
+  kT_M = k_M * TC; a_b = tau_b/ k_M;  aT_b = a_b/ TC; % d, age at birth
+  q_b = q_b * k_M^2; qT_b = q_b * TC^2;
+  h_Ab = h_Ab * k_M; hT_Ab = h_Ab * TC;
   L_b = l_b * L_m; % cm, length at birth
   Ww_b = L_b^3 * (1 + ome); % g, wet weight at birth
   
@@ -106,17 +106,25 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   switch model
     case {'std','stf'}
       par = {E_Hp, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
-         L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, q_b, h_Ab};
-      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', 's_G, -', 'thin, -', ...
-          'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
-          '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
-          'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'q_b, 1/d^2', 'h_Ab, 1/d'};
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'stx'
-      par = {E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+      par = {E_Hp, E_Hx, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hx, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbx, 1/d', 'h_Bxp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'ssj'
-      par = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+      par = {E_Hp, E_Hs, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hs, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'sbp'
       par = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
           L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
@@ -140,6 +148,17 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       
 %% ebtmod.h: header file 
 
+  if strcmp(numPar.TIME_METHOD, {'DOPRI5','DOPRI8', 'RADAU5'})
+    switch model
+      case {'std','stf'}
+        n_events = 2;
+      case {'stx','ssj'}
+        n_events = 3;
+    end
+  else
+    n_events = 0;
+  end
+
   fileName = ['deb\ebt', model,'.h'];
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   fprintf(oid, '/***\n');
@@ -157,12 +176,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define OUTPUT_VAR_NR   3 /* (time,) scaled food density, nr ind, tot weight */\n');
   fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
-  if strcmp(numPar.TIME_METHOD, 'DOPRI5')
-    events = 2;
-  else
-    events = 0;
-  end
-  fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', events);
+  fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', n_events);
   fprintf(oid, '#define DYNAMIC_COHORTS 0\n');
   fclose(oid);
   
@@ -214,31 +228,31 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   % initial #, a, q, h_a, L, E, E_R, E_H, W; length equals 1+I_STATE_DIM, empty line added
   fprintf(oid, '%5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e\n\n', 1, 0, q_b, h_Ab, L_b, E_m, 0, E_Hb, Ww_b); 
 
-fclose(oid);
+  fclose(oid);
   % initial i-states are values at birth, but for t < a_b, changes in i-states are set to 0
   
-%% Detlete existin out-file
+%% Detlete existing out-file
   
   delete('*.out')
 
-%% ebtmod.exe: run EBTtool
+%% ebtmod.exe: compile and run EBTtool
 
   WD = cdEBTtool;  
-  txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
-  TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
-  TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>" -o '];
-  eval([txt, 'ebtmain.o  -c fns\ebtmain.c']);
-  eval([txt, 'ebtinit.o  -c fns\ebtinit.c']);
-  eval([TXT, 'ebttint.o  -c fns\ebttint.c']);
-  eval([txt, 'ebtcohrt.o -c fns\ebtcohrt.c']);
-  eval([txt, 'ebtutils.o -c fns\ebtutils.c']);
-  eval([txt, 'ebtstop.o  -c fns\ebtstop.c']);
-  eval([TxT, 'ebtstd.o   -c deb\ebtstd.c']);
+  txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
+  TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
+  TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
+  eval([txt, ' -o ebtmain.o  -c fns\ebtmain.c']);
+  eval([txt, ' -o ebtinit.o  -c fns\ebtinit.c']);
+  eval([TXT, ' -o ebttint.o  -c fns\ebttint.c']);
+  eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
+  eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
+  eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
+  eval([TxT, ' -o ebtstd.o   -c deb\ebtstd.c']);
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
-
   cd(WD);
+  
 %% ebtmod.out: read output variable file 
 
   out = fopen(['ebt', model, '.out'], 'r');
