@@ -2,7 +2,7 @@
 % escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % created 2020/04/03 by Bas Kooijman
 
 %% Syntax
@@ -57,9 +57,10 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % Output:
 %
 % * txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight
+% * info: booelean with failure (0) of success (1)
 %
 %% Remarks
-% The function assumes that a c-compiler has been installed with the name gcc.exe and a path to it specified.
+% The function assumes that a c-compiler with name gcc.exe has been installed with the name gcc.exe and a path to it specified.
 % This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software.
 % This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
@@ -67,8 +68,9 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page with traits uses the possibly modified parameter values. 
-% This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via get_ebt.
+% This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_ebt.html *get_ebt*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
+% Notice that background mortalities do not depend on temperature.
 % For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf *manual*>
 
 %% Example of use
@@ -81,12 +83,16 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
   metaData = species{1}; metaPar = species{2}; par = species{3};  
-  species = metaData.species;
+  species = metaData.species; info = 1;
   par.reprodCode = metaData.ecoCode.reprod{1};
   par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
-  [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
+  [par, metaPar, txtPar, metaData, info] = allStat2par(species);
+  if info == 0
+    fprintf('Species not recognized\n');
+    txNW = []; return
+  end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
@@ -111,7 +117,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.0; thin = 0; 
+  h_D = 0.0001; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -214,23 +220,24 @@ opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time int
 opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
 opt.min_cohort_nr = 1e-3;    opt.txt.min_cohort_nr = 'Minimum allowable number of individuals in cohort';
 
-opt.relTol_a = 1e-7;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
-opt.relTol_q = 1e-7;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
-opt.relTol_h_a = 1e-7;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
-opt.relTol_L = 1e-7;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
-opt.relTol_E = 1e-7;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
-opt.relTol_E_R = 1e-7;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
-opt.relTol_E_H = 1e-7;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
-opt.relTol_W = 1e-7;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
+tol = 1e-6;
+opt.relTol_a = tol;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
+opt.relTol_q = tol;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
+opt.relTol_h_a = tol;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
+opt.relTol_L = tol;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
+opt.relTol_E = tol;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
+opt.relTol_E_R = tol;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
+opt.relTol_E_H = tol;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
+opt.relTol_W = tol;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
 
-opt.absTol_a = 1e-7;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
-opt.absTol_q = 1e-7;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
-opt.absTol_h_a = 1e-7;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
-opt.absTol_L = 1e-7;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
-opt.absTol_E = 1e-7;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
-opt.absTol_E_R = 1e-7;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
-opt.absTol_E_H = 1e-7;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
-opt.absTol_W = 1e-7;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
+opt.absTol_a = tol;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
+opt.absTol_q = tol;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
+opt.absTol_h_a = tol;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
+opt.absTol_L = tol;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
+opt.absTol_E = tol;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
+opt.absTol_E_R = tol;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
+opt.absTol_E_H = tol;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
+opt.absTol_W = tol;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
 
 % overwrite with specified numerical parameters
 if exist('numPar', 'var') && ~isempty(numPar)

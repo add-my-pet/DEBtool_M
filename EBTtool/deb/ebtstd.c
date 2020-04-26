@@ -22,15 +22,14 @@
 #define time env[0] /* d */
 #define food env[1] /* -, scaled food density x = X/K */
 
-
-#define age i_state(0)         /* 1/d */
-#define accel i_state(1)       /* 1/d^2 */
-#define ageHaz i_state(2)      /* 1/d */
-#define length i_state(3)      /* cm */
+#define age i_state(0)         /*  1/d   */
+#define accel i_state(1)       /* 1/d^2  */
+#define ageHaz i_state(2)      /*  1/d   */
+#define length i_state(3)      /*   cm   */
 #define resDens i_state(4)     /* J/cm^3 */
-#define reprodBuf i_state(5)   /* J */
-#define maturity i_state(6)    /* J */
-#define weight i_state(7)      /* g */
+#define reprodBuf i_state(5)   /*   J    */
+#define maturity i_state(6)    /*   J    */
+#define weight i_state(7)      /*   g    */
 
 /*
  *==========================================================================
@@ -38,33 +37,35 @@
  *==========================================================================
  */
 
-#define E_Hp   parameter[0] 
-#define E_Hb   parameter[1] 
-#define V_X    parameter[2] 
-#define h_D    parameter[3] 
-#define h_J    parameter[4] 
-#define h_B0b  parameter[5] 
-#define h_Bbp  parameter[6] 
-#define h_Bpi  parameter[7] 
-#define h_a    parameter[8] 
-#define s_G    parameter[9] 
-#define thin   parameter[10] 
-#define L_m    parameter[11] 
-#define E_m    parameter[12] 
-#define k_J    parameter[13] 
-#define k_JX   parameter[14] 
-#define v      parameter[15] 
-#define g      parameter[16] 
-#define p_M    parameter[17] 
-#define p_Am   parameter[18] 
-#define J_X_Am parameter[19] 
-#define K      parameter[20] 
-#define kap    parameter[21] 
-#define kap_G  parameter[22] 
-#define E_0    parameter[23] 
-#define L_b    parameter[24]
-#define a_b    parameter[25]
-#define ome    parameter[26]
+#define E_Hp   parameter[0]   /*    J       */
+#define E_Hb   parameter[1]   /*    J       */
+#define V_X    parameter[2]   /*    L       */
+#define h_D    parameter[3]   /*   1/d      */
+#define h_J    parameter[4]   /*   1/d      */
+#define h_B0b  parameter[5]   /*   1/d      */
+#define h_Bbp  parameter[6]   /*   1/d      */
+#define h_Bpi  parameter[7]   /*   1/d      */
+#define h_a    parameter[8]   /*   1/d      */
+#define s_G    parameter[9]   /*    -       */
+#define thin   parameter[10]  /*    -       */
+#define L_m    parameter[11]  /*   cm       */
+#define E_m    parameter[12]  /*  J/cm^3    */
+#define k_J    parameter[13]  /*   1/d      */
+#define k_JX   parameter[14]  /*   1/d      */
+#define v      parameter[15]  /*   cm/d     */
+#define g      parameter[16]  /*    -       */
+#define p_M    parameter[17]  /* J/d.cm^3   */
+#define p_Am   parameter[18]  /* J/d.cm^2   */
+#define J_X_Am parameter[19]  /* mol/d.cm^2 */
+#define K      parameter[20]  /*   mol/L    */
+#define kap    parameter[21]  /*     -      */
+#define kap_G  parameter[22]  /*     -      */
+#define ome    parameter[23]  /*     -      */
+#define E_0    parameter[24]  /*     J      */
+#define L_b    parameter[25]  /*    cm      */
+#define a_b    parameter[26]  /*     d      */
+#define q_b    parameter[27]  /*    1/d^2   */
+#define h_Ab   parameter[28]  /*    1/d     */
 
 /*
  *==========================================================================
@@ -94,9 +95,13 @@ void SetBpointNo(double *env, population *pop, int *bpoint_no)
 
 void SetBpoints(double *env, population *pop, population *bpoints)
 {
-  bpoints[0][0][age]       = 0.0; /* all individuals start with the same age */
-  bpoints[0][0][accel]     = 0.0;
-  bpoints[0][0][ageHaz]    = 0.0;
+  double TC;
+          
+  TC = spline_TC(time); 
+  
+  bpoints[0][0][age]       = 0.0;
+  bpoints[0][0][accel]     = q_b * TC * TC;
+  bpoints[0][0][ageHaz]    = h_Ab * TC;
   bpoints[0][0][length]    = L_b;
   bpoints[0][0][resDens]   = E_m;
   bpoints[0][0][maturity]  = E_Hb;
@@ -135,25 +140,16 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
+  double sumL2, TC, aT_b, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
   register int i;
 
   /* temp correction */
   TC = spline_TC(time); 
-  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC;          pT_Am = TC * p_Am;
-  hT_D = h_D * TC; hT_J = TC * h_J;   hT_a = h_a * TC * TC; JT_X_Am = TC * J_X_Am; 
+  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC; pT_Am = TC * p_Am; aT_b = a_b/ TC;
+  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC * TC; JT_X_Am = TC * J_X_Am; 
   
   /* scaled functional response, food = scaled food density */
-  f = food/ (food + 1); 
-
-  /*
-  if (fmod(time,10.) < 1e-9) 
-  {
-    printf("t = %5.4g; n = %5.4g; a = %5.4g; q = %5.4g; h_A = %5.4g; L = %5.4g; [E] = %5.4g; E_R = %5.4g; E_H = %5.4g; W = %5.4g;\n", 
-          time, pop[0][0][number], pop[0][0][age], pop[0][0][accel], pop[0][0][ageHaz], pop[0][0][length], pop[0][0][resDens], pop[0][0][reprodBuf], pop[0][0][maturity], pop[0][0][weight]);
-  }
-  */
- 
+  f = food/ (food + 1);  
 
   /* The derivatives for the boundary cohort */
   ofsgrad[0][0][number]    = - h_B0b * ofs[0][0][number];        /*   */
@@ -165,7 +161,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
   ofsgrad[0][0][maturity]  = 0.0;                                /* 5 */
   ofsgrad[0][0][reprodBuf] = 0.0;                                /* 6 */
   ofsgrad[0][0][weight]    = 0.0;                                /* 7 */
-
+          
   /* The derivatives for all internal cohorts */
   for(i=0; i<cohort_no[0]; i++) 
     { 
@@ -192,7 +188,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */
-      if (pop[0][i][age] < a_b)
+      if (pop[0][i][age] < aT_b)
         {
           popgrad[0][i][number]    = - h_B0b * pop[0][i][number]; /* background hazard only */
           popgrad[0][i][accel]     = 0.;
@@ -221,7 +217,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
 
 void InstantDynamics(double *env, population *pop, population *ofs)
 {
-  double eggs;
+  double eggs, TC;
   register int i;
 
   for (i=0, eggs=0.0; i<cohort_no[0]; i++)
@@ -231,18 +227,19 @@ void InstantDynamics(double *env, population *pop, population *ofs)
         pop[0][i][reprodBuf] = 0.0; /* reset reproduction buffer */
       }
 
+  TC = spline_TC(time); 
+  
   /* specify i-states at birth, because changes are set to 0, except for age */
   ofs[0][0][number]    = eggs; /* put eggs into ofs cohort */
   ofs[0][0][age]       = 0.0;  
-  ofs[0][0][accel]     = 0.0;
-  ofs[0][0][ageHaz]    = 0.0;
+  ofs[0][0][accel]     = q_b * TC * TC;
+  ofs[0][0][ageHaz]    = h_Ab * TC;
   ofs[0][0][length]    = L_b;
   ofs[0][0][resDens]   = E_m;
   ofs[0][0][maturity]  = E_Hb;
   ofs[0][0][reprodBuf] = 0.0;
   ofs[0][0][weight]    = L_b * L_b * L_b * (1 + ome);
   
-
   return;
 }
 

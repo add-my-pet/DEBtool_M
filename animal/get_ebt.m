@@ -46,7 +46,8 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %
 % * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
 % * writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models
-% * runs ebtmod.exe in PowerShell, which writes ebtmod.out
+% * uses deb/ebtmod.c, which is written in C directly
+% * runs ebtmod.exe in Window's PowerShell, which writes ebtmod.out
 % * reads ebtmod.out for output
 
   % unpack par and compute compound pars
@@ -80,7 +81,9 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b] = get_Sb([g k v_Hb h_a s_G h_B0b 0]);
   end
   E_0 = g * E_m * L_m^3 * u_E0; % J, initial reserve
-  kT_M = k_M * TC; aT_b = tau_b/ kT_M; % d, age at birth (temp corrected)
+  kT_M = k_M * TC; a_b = tau_b/ k_M;  % d, age at birth
+  q_b = q_b * k_M^2; 
+  h_Ab = h_Ab * k_M; 
   L_b = l_b * L_m; % cm, length at birth
   Ww_b = L_b^3 * (1 + ome); % g, wet weight at birth
   
@@ -99,51 +102,45 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       L_p = l_j * L_m;
   end
    
+  % if you make changes in par & txtPar, do that also in deb/ebtmod.c
   switch model
     case {'std','stf'}
       par = {E_Hp, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
-         L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, L_b, aT_b, ome};
+         L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, q_b, h_Ab};
       txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', 's_G, -', 'thin, -', ...
           'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
           '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
-          'E_0, J', 'L_b, cm', 'a_b, d', 'ome, -'};
+          'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'q_b, 1/d^2', 'h_Ab, 1/d'};
     case 'stx'
       par = {E_Hp, E_Hx, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbx, h_Bxp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'ssj'
       par = {E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'sbp'
       par = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'abj'
       par = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'asj'
       par = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'abp'
       par = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'hep' % nog updaten
       par = {E_Hj, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpj, h_Bji, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, aT_b};
+          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
     case 'hex' % nog updaten
       par = {E_He, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
           L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0};
   end
   n_par = length(par); % number of parameters
-    
- %% EBTtool: load ebt program, if necessary
- 
-  % EBTtool is a subdir of DEBtool_M
-  % if ~exist('EBTtool','dir') % create EBTtool if not already there
-  %  unzip('EBTtool')
-  % end
-  
+      
 %% ebtmod.h: header file 
 
-  fileName = ['ebt', model,'.h'];
+  fileName = ['deb\ebt', model,'.h'];
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   fprintf(oid, '/***\n');
   fprintf(oid, '  NAME\n');
@@ -176,13 +173,13 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.integr_accurary, numPar.integr_accurary); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.cycle_interval, numPar.cycle_interval); 
-  fprintf(oid, '"%s" %5.3e\n\n',  numPar.txt.tol_zero, numPar.tol_zero); 
+  fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.tol_zero, numPar.tol_zero); 
 
   fprintf(oid, '"%s" %5.3e\n',  'Maximum integration time', t_max); 
-  fprintf(oid, '"%s" %5.3e\n\n',  numPar.txt.time_interval_out, numPar.time_interval_out); 
+  fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.time_interval_out, numPar.time_interval_out); 
 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.state_out_interval, numPar.state_out_interval); 
-  fprintf(oid, '"%s" %5.3e\n\n',  numPar.txt.min_cohort_nr, numPar.min_cohort_nr); 
+  fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.min_cohort_nr, numPar.min_cohort_nr); 
 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_a, numPar.relTol_a); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_q, numPar.relTol_q); 
@@ -191,7 +188,8 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_E, numPar.relTol_E); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_E_R, numPar.relTol_E_R); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_E_H, numPar.relTol_E_H); 
-  fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_W, numPar.absTol_W); 
+  fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_W, numPar.relTol_W);
+  
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_a, numPar.absTol_a); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_q, numPar.absTol_q); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_h_a, numPar.absTol_h_a); 
@@ -199,7 +197,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_E, numPar.absTol_E); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_E_R, numPar.absTol_E_R); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_E_H, numPar.absTol_E_H); 
-  fprintf(oid, '"%s" %5.3e\n\n',  numPar.txt.absTol_W, numPar.absTol_W); 
+  fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.absTol_W, numPar.absTol_W); 
 
   for i=1:n_par
   fprintf(oid, '"%s" %5.4g\n',  txtPar{i}, par{i});
