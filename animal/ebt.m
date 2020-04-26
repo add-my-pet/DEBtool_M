@@ -69,7 +69,7 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The (first) html-page with traits uses the possibly modified parameter values. 
 % This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via get_ebt.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
-% For modification of EBTtool, see <EBTmanual *manual*>
+% For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual *manual*>
 
 %% Example of use
 %
