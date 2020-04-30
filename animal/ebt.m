@@ -2,7 +2,7 @@
 % escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function [txNW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNVW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % created 2020/04/03 by Bas Kooijman
 
 %% Syntax
@@ -56,7 +56,7 @@ function [txNW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %
 % Output:
 %
-% * txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight
+% * txNVW: (n,5)-array with times, scaled food density, number of individuals, population structural volume, population wet weight
 % * info: booelean with failure (0) of success (1)
 %
 %% Remarks
@@ -80,6 +80,8 @@ function [txNW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % * ebt('Torpedo_marmorata');
 % * ebt('Torpedo_marmorata', C2K(18));
 
+WD = cdEBTtool;
+
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
   metaData = species{1}; metaPar = species{2}; par = species{3};  
@@ -102,6 +104,36 @@ model = metaPar.model;
 % unpack par and compute compound pars
 vars_pull(par); vars_pull(parscomp_st(par)); 
 
+% time to be simulated
+if ~exist('t_max','var') || isempty(t_max)
+  t_max = 150*365; % -, total simulation time
+end
+
+% temperature
+if ~exist('tT','var') || isempty(tT)
+  T = metaData.T_typical; tT = [0 T; t_max T];
+else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tT = [tT; t_max tT(end,2)];    
+end
+
+% volume of reactor
+if ~exist('V_X','var') || isempty(V_X)
+  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+end
+
+% supply food 
+if ~exist('tJX','var') || isempty(tJX)
+  J_X = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max J_X]; 
+else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tJX = [tJX; t_max tJX(end,2)];    
+end
+
+% initial scaled food density
+if ~exist('x_0','var') || isempty(x_0)
+  x_0 = 0.2793; % -, X/K at t=0
+end
+
 % account for cost of male production
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2;  par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
@@ -117,7 +149,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.05; thin = 0; 
+  h_D = 0.1; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -177,35 +209,6 @@ switch model
     return
 end
 
-% volume of reactor
-if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
-end
-
-% time to be simulated
-if ~exist('t_max','var') || isempty(t_max)
-  t_max = 250*365; % -, total simulation time
-end
-
-% initial scaled food density
-if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0;  % -, X/K at t=0
-end
-
-% supply food 
-if ~exist('tJX','var') || isempty(tJX)
-  J_X = 500 * J_X_Am * L_m^2; tJX = [0 J_X; t_max J_X];
-else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
-end
-
-% temperature
-if ~exist('tT','var') || isempty(tT)
-  T = metaData.T_typical; tT = [0 T; t_max T];
-else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];    
-end
-
 % fields for numerical parameters
 flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
     'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
@@ -215,12 +218,12 @@ n_flds = length(flds);
 opt.TIME_METHOD = 'DOPRI5';  opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
 opt.integr_accurary = 1e-8;  opt.txt.integr_accurary = 'Fixed step size or integration accuracy when adaptive';
 opt.cycle_interval = 7;      opt.txt.cycle_interval = 'Cohort/Integration cycle time interval'; 
-opt.tol_zero = 1e-5;         opt.txt.tol_zero = 'Tolerance value, determining identity with zero';
+opt.tol_zero = 1e-6;         opt.txt.tol_zero = 'Tolerance value, determining identity with zero';
 opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time interval';
 opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
 opt.min_cohort_nr = 1e-3;    opt.txt.min_cohort_nr = 'Minimum allowable number of individuals in cohort';
 
-tol = 1e-6;
+tol = 1e-7;
 opt.relTol_a = tol;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
 opt.relTol_q = tol;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
 opt.relTol_h_a = tol;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
@@ -249,35 +252,42 @@ if exist('numPar', 'var') && ~isempty(numPar)
 end
 
 % get trajectories
-txNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
+txNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
 figure(1)
-plot(txNW(:,1), txNW(:,2), 'k', 'Linewidth', 2)
+plot(txNVW(:,1), txNVW(:,2), 'k', 'Linewidth', 2)
 title(title_txt);
 xlabel('time, d');
-ylabel('scaled food density, X/K');
+ylabel('scaled food density X/K, -');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(2)
-plot(txNW(:,1), txNW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
-ylabel('# of individuals');
+ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(3)
-plot(txNW(:,1), txNW(:,4),'color', [1 0 0], 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,4),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
-ylabel('total wet weight, g');
+ylabel('total structural volume, cm^3/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(4)
-plot(txNW(:,1), txNW(:,4)./txNW(:,3), 'k', 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,5),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time, d');
+ylabel('total wet weight, g/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(5)
+plot(txNVW(:,1), txNVW(:,5)./txNVW(:,3), 'k', 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('mean wet weight per individual, g');
@@ -433,4 +443,5 @@ fprintf(oid, '</HTML>\n');
 fclose(oid);
 web(fileName,'-browser') % open html in systems browser
 
+cd(WD);
 

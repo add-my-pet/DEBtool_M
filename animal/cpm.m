@@ -2,11 +2,11 @@
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [txN, txW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [txN, txV, txW, M_N, M_V, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [txN, txW, M_N, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [txN, txV, txW, M_N, N_V, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
@@ -37,9 +37,11 @@ function [txN, txW, M_N, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 %
 % Output:
 %
-% * txN: (n,m)-array with times, food density and number of individuals in the various cohorts
+% * txN: (n,m)-array with times, food density and denity of individuals in the various cohorts
+% * txV: (n,m)-array with times, food density and cohort structural volumes
 % * txW: (n,m)-array with times, food density and cohort wet weights
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
+% * M_V: (n_c,n_c)-array with map for V: V(t+t_R) = M_N * V(t)
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
 %
 %% Remarks
@@ -80,6 +82,46 @@ model = metaPar.model;
 % unpack par and compute compound pars
 vars_pull(par); vars_pull(parscomp_st(par)); 
 
+% number of reproduction events to be simulated
+if ~exist('n_R','var') || isempty(n_R)
+  n_R = 150; % -, total simulation time: n_R * t_R
+end
+
+% time between reproduction events
+if ~exist('t_R','var') || isempty(t_R)
+  t_R = 365; % d
+end
+
+% temperature
+if ~exist('tT','var') || isempty(tT)
+  tT = metaData.T_typical;
+elseif length(tT) > 1 && sum(tT(:,1) > 1) > 0
+  fprintf('abcissa of temp knots must be between 0 and 1\n');
+  txN=[]; txW=[]; return
+elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
+  tT = [tT; 1 tT(1,2)];    
+end
+
+% volume of reactor
+if ~exist('V_X','var') || isempty(V_X)
+  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+end
+
+% supply food 
+if ~exist('tJX','var') || isempty(tJX)
+  tJX = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
+elseif length(tJX) > 1 && sum(tJX(:,1) > 1) > 0
+  fprintf('abcissa of food supply knots must be between 0 and 1\n');
+  txN=[]; txW=[]; return
+elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
+  tJX = [tJX; 1 tJX(1,2)];    
+end
+
+% initial scaled food density
+if ~exist('x_0','var') || isempty(x_0)
+  x_0 = 0.2793; % -, X/K at t=0
+end
+
 % account for cost of male production
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2; par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
@@ -93,34 +135,9 @@ if ~isfield('par', 'h_J')
   h_J = 1e-4; par.h_J = h_J;
 end
 
-% temperature
-if ~exist('tT','var') || isempty(tT)
-  tT = metaData.T_typical;
-elseif length(tT) > 1 & sum(tT(:,1) > 1) > 0
-  fprintf('abcissa of temp knots must be between 0 and 1\n');
-  txN=[]; txW=[]; return
-elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
-  tT = [tT; 1 tT(1,2)];    
-end
-
-% supply food 
-if ~exist('tJX','var') || isempty(tJX)
-  tJX = 500 * J_X_Am * L_m^2 ;
-elseif length(tJX) > 1 & sum(tJX(:,1) > 1) > 0
-  fprintf('abcissa of food supply knots must be between 0 and 1\n');
-  txN=[]; txW=[]; return
-elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
-  tJX = [tJX; 1 tJX(1,2)];    
-end
-
-% initial scaled food density
-if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0; % -, X/K at t=0
-end
-
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0; thin = 0; 
+  h_D = 0.1; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -180,40 +197,25 @@ switch model
     return
 end
 
-% volume of reactor
-if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
-end
-
-% number of reproduction events to be simulated
-if ~exist('n_R','var') || isempty(n_R)
-  n_R = 250; % -, total simulation time: n_R * t_R
-end
-
-% time between reproduction events
-if ~exist('t_R','var') || isempty(t_R)
-  t_R = 365; % d
-end
-
 % get trajectories
-[txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[txN, txV, txW, M_N, M_V, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
   return
 end
-t = txN(:,1)/ t_R; x = txN(:,2); N = cumsum(txN(:,3:end),2); W = cumsum(txW(:,3:end),2); n_c = size(N,2);
+t = txN(:,1)/ t_R; x = txN(:,2); N = cumsum(txN(:,3:end),2); V =  cumsum(txV(:,3:end),2); W = cumsum(txW(:,3:end),2); n_c = size(N,2);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
-figure(1)
+figure(1) % t-x
 plot(t, x, 'k', 'Linewidth', 2)
 title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('scaled food density, X/K');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(2)
+figure(2) % t-N_tot
 hold on
 for i = 1:n_c-1
   plot(t, N(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
@@ -221,10 +223,21 @@ end
 plot(t, N(:,n_c), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time in reprod event periods');
-ylabel('# of individuals');
+ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(3)
+figure(3) % t-V_tot
+hold on
+for i = 1:n_c-1
+  plot(t, V(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+end
+plot(t,V(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time in reprod event periods');
+ylabel('total structural volume, cm^3/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(4) % t-Ww_tot
 hold on
 for i = 1:n_c-1
   plot(t, W(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
@@ -232,10 +245,10 @@ end
 plot(t,W(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time in reprod event periods');
-ylabel('total wet weight, g');
+ylabel('total wet weight, g/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(4)
+figure(5) % t- mean Ww of individual
 hold on
 W = zeros(n_c,1); 
 for i = 1:n_c

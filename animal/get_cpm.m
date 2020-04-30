@@ -2,11 +2,11 @@
 % get cohort trajectories
 
 %%
-function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
+function [txN, txV, txW, M_N, M_V, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R)
 % created 2020/03/03 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% [txN, txW, M_N, M_W, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, V_X, n_R, t_R)
+% [txN, txV, txW, M_N, M_V, M_W, info] = <../get_cpm.m *get_cpm*> (model, par, tT, tJX, x_0, V_X, n_R, t_R)
   
 %% Description
 % integrates cohorts with synchronized reproduction events, called by cpm, 
@@ -39,15 +39,17 @@ function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
 % Output:
 %
 % * txN: (n,m)-array with times, scaled food density and number of individuals in the various cohorts
+% * txV: (n,m)-array with times, scaled food density and structural volume of the various cohorts
 % * txW: (n,m)-array with times, scaled food density and total wet weights of the various cohorts
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t), where N(t) is the vector of numbers of individuals in the cohorts at t
+% * M_V: (n_c,n_c)-array with map for V: V(t+t_R) = M_V * N(t), where V(t) is the vector of total structural volumes in the cohorts at t
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t), where W(t) is the vector of total wet weights in the cohorts at t
 % * info: boolean with failure (0) or success (1)
 
 %% Remarks
-% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
+% The last 3 outputs (the maps for N, V and W) are only not-empty if the number of cohorts did not change long enough.
 
-  options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9);
+  options = odeset('Events',@puberty, 'AbsTol',1e-8, 'RelTol',1e-8);
   info = 1;
   
   % unpack par and compute compound pars
@@ -114,8 +116,8 @@ function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   
   % initial states with number of cohorts n_c = 1;
   xvars_0 = [x_0; 0; 0; L_b; E_m; 0; E_Hb; 1]; % x q h L [E] E_R E_H N
-  txN = [0, x_0, 1]; txW = [0, x_0, E_0/ mu_E * w_E/ d_E];% initialise output
-  M_N = []; M_W = [];  
+  txN = [0, x_0, 1]; txV = [0, x_0, 0]; txW = [0, x_0, E_0/ mu_E * w_E/ d_E];% initialise output
+  M_N = []; M_V = []; M_W = [];  
   
   for i = 1:n_R
     switch model
@@ -133,7 +135,7 @@ function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
         % treat shrinking at E_H(t) = E_Hs of first cohort as event
         [t, xvars] = ode45(@dcpm_ssj, [0; aT_b; tT_s], xvars_0, options, par_ssj{:});
         [x, q, h_A, L, L_max, E, E_R, E_H, N] = cpm_unpack(xvars(end,:)); 
-        L(1) = L(1) * exp(- t_sj * kT_E); N(1) = N(1) * exp( - t_sj * h_Bsj);
+        L(1) = L(1) * exp(- t_sj * kT_E/ 3); N(1) = N(1) * exp( - t_sj * h_Bsj);
         xvars_0 = max(0,[x; q; h_A; L; L_max; E; E_R; E_H; N]); % pack state vars
         [t, xvars] = ode45(@dcpm_ssj, [tT_s; t_R], xvars_0, options, par_ssj{:});
       case 'sbp'
@@ -157,7 +159,7 @@ function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
         info = 0; txN = []; txW = []; M_N = []; M_W = []; return
     end
     % catenate output and possibly insert new cohort
-    [t, xvars_0, txN, txW] = cohorts(t(end), xvars(end,:), txN, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
+    [t, xvars_0, txN, txV, txW] = cohorts(t(end), xvars(end,:), txN, txV, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E); 
     n_c = (length(xvars_0)-1)/7; % number of cohorts
     [i, n_c]
   end
@@ -165,12 +167,13 @@ function [txN, txW, M_N, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R
   % maps
   if length(txN) > n_c 
     M_N = txN(end-n_c:end,3:end)'/txN(end-n_c-1:end-1,3:end)';
+    M_V = txV(end-n_c:end,3:end)'/txV(end-n_c-1:end-1,3:end)';
     M_W = txW(end-n_c:end,3:end)'/txW(end-n_c-1:end-1,3:end)';
   end
 end
 
 
-function [t, xvars_0, txN, txW] = cohorts(t, xvars, txN, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E)
+function [t, xvars_0, txN, txV, txW] = cohorts(t, xvars, txN, txV, txW, t_R, E_0, kap_R, L_b, E_m, E_Hb, mu_E, w_E, d_E)
   t = txN(end,1) + t_R; xvars_t = xvars(end,:); % last value of t, xvars
   [x, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(xvars_t);
 
@@ -181,13 +184,16 @@ function [t, xvars_0, txN, txW] = cohorts(t, xvars, txN, txW, t_R, E_0, kap_R, L
   % build new initial state vectors and append t, x, N and W to output
   q = [0; q]; h_A = [0; h_A]; L = [L_b; L]; E = [E_m; E]; E_R = [0; E_R]; E_H = [E_Hb; E_H]; N = [dN; N]; 
   % most values for cohort 0 will be overwritten in dget_mod during embryo stage
-  W = N .* L.^3 .* (1 + E/ mu_E * w_E/ d_E) + E_R/ mu_E * w_E/ d_E; % g, wet weights
+  V = N .* L.^3; % cm^3, structural volume
+  W = V .* (1 + E/ mu_E * w_E/ d_E) + E_R/ mu_E * w_E/ d_E; % g, wet weights
   if N(end) > 1e-4 % add new youngest cohort
     txN = [[txN, zeros(size(txN,1),1)]; [t, x, N']]; % append to output
+    txV = [[txV, zeros(size(txV,1),1)]; [t, x, V']]; % append to output
     txW = [[txW, zeros(size(txW,1),1)]; [t, x, W']]; % append to output
   else % add new youngest cohort and remove oldest
-    q(end)=[]; h_A(end)=[]; L(end)=[]; E(end)=[]; E_R(end)=[]; E_H(end)=[]; N(end)=[]; W(end)=[];
+    q(end)=[]; h_A(end)=[]; L(end)=[]; E(end)=[]; E_R(end)=[]; E_H(end)=[]; N(end)=[]; V(end)=[]; W(end)=[];
     txN = [txN; [t, x, N']]; % append to output
+    txV = [txV; [t, x, V']]; % append to output
     txW = [txW; [t, x, W']]; % append to output
   end
   xvars_0 = max(0,[x; q; h_A; L; E; E_R; E_H; N]); % pack state vars

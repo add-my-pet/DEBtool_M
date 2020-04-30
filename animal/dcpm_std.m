@@ -52,7 +52,7 @@ function dxvars = dcpm_std(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; JT_X_Am = TC * J_X_Am; 
   
   f = x/ (x + 1); % -, scaled func response
-  dx = J_XI/ V_X/ K - hT_D * x - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ V_X/ K; % food dynamics
+  dx = J_XI/ V_X/ K - hT_D * x - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ K; % food dynamics
     
   kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
   p_A = (E_H > E_Hb) * pT_Am * f .* L2;

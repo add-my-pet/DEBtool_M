@@ -173,13 +173,11 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       r = vT * (e/ L - 1./ L_m)/ (e + kapG * g);                  /* 1/d, spec growth rate of structure */
       p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (vT/ L - r);                           /* J/d, reserve mobilisation rate */
-      p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation/ reprod */
+      p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
       p_A = pT_Am * f * L2;                                       /* J/d, assimilation flux (overwritten for embryo's) */
       h_thin = thin==0. ? 0. : r * 2./3.;                         /* 1/d, thinning hazard */
-      if (pop[0][i][maturity]<E_Hx)
-        hazard = pop[0][i][ageHaz] + h_Bbx + h_thin;
-      else
-        hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bxp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
+      if  (pop[0][i][maturity]<E_Hx) hazard = pop[0][i][ageHaz] + h_Bbx + h_thin;
+      else hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bxp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
  
       popgrad[0][i][number]    = - hazard * pop[0][i][number];                                                                 /*   */
       popgrad[0][i][age]       = 1.0;                                                                                          /* 0 */
@@ -254,18 +252,20 @@ void InstantDynamics(double *env, population *pop, population *ofs)
 void DefineOutput(double *env, population *pop, double *output)
 {
 
-  double totN, totW;
+  double totN, totV, totW;
   register int i;
 
-  for(i=0, totN=0.0, totW=0.0; i<cohort_no[0]; i++)
+  for(i=0, totN=0.0, totV=0.0, totW=0.0; i<cohort_no[0]; i++)
     {
       totN += pop[0][i][number];
+      totV += pop[0][i][number] * pow(pop[0][i][length], 3);
       totW += pop[0][i][number] * pop[0][i][weight];
     }
 
   output[0] = food;
   output[1] = totN;
-  output[2] = totW;
+  output[2] = totV;
+  output[3] = totW;
 
   return;
 }

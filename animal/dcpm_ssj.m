@@ -2,12 +2,12 @@
 % changes in cohort states for ssj model
 
 %%
-function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+function dxvars = dcpm_ssj(t, xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
             L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dXvars = <../dcpm_ssj.m *dcpm_std*> (t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, t_sj, ...
+% dxvars = <../dcpm_ssj.m *dcpm_std*> (t, xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, aT_b, t_sj, ...
 %            L_b, L_m, E_m, k_E, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
   
 %% Description
@@ -16,19 +16,19 @@ function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, 
 % Input:
 %
 % * t: time, with 0<t<t_R
-% * Xvars: vector with states of cohorts
+% * xvars: vector with states of cohorts
 % * par: structure with parameter values
 % * tTC: (nT,2)-array with time and temperature correction factors
 % * tJX: (nX,2)-array with time and food supply 
 %
 % Output:
 %
-% * dXvars: changes in states of cohorts
+% * dxvars: changes in states of cohorts
 
 %% Remarks
 % aT_b < t_R and aT_s < t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes 
 
-  [X, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(Xvars); % all vars >=0
+  [x, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(xvars); % all vars >=0
   E_H = min(E_Hp, E_H); E = min(E, E_m); e = E/ E_m; L2 = L .* L; L3 = L .* L2; 
   
   if t < a_b % set embryos at birth value, since changes are too fast, below the embryo changes are set to 0
@@ -51,8 +51,8 @@ function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC;     pT_Am = TC * p_Am; kT_E = k_E * TC;
   hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; JT_X_Am = TC * J_X_Am; 
   
-  f = X/ (X + K); % -, scaled func response
-  dX = J_XI/ V_X - hT_D * X - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ V_X; % food dynamics
+  f = x/ (x + 1); % -, scaled func response
+  dx = J_XI/ V_X/ K - hT_D * x - JT_X_Am * f * sum((E_H > E_Hb) .* N .* L.^2)/ K; % food dynamics
     
   kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
   p_A = (E_H > E_Hb) * pT_Am * f .* L2;
@@ -89,6 +89,6 @@ function dXvars = dcpm_ssj(t, Xvars, E_Hp, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, 
     dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
 
-  dXvars = [dX; dq; dh_A; dL; dE; dE_R; dE_H; dN]; % pack output
+  dxvars = [dx; dq; dh_A; dL; dE; dE_R; dE_H; dN]; % pack output
 
 end

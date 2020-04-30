@@ -2,11 +2,12 @@
 % get population trajectories from Escalaor Boxcar Train
 
 %%
-function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+
 % created 2020/04/03 by Bas Kooijman
   
 %% Syntax
-% tXNW = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
+% tXNVW = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
 %% Description
 % integrates changes in food density and populations, called by ebt, 
@@ -40,7 +41,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %
 % Output:
 %
-% * tXNW: (n,4)-array with times, food density, number of individuals, population weight
+% * tXNVW: (n,5)-array with times, food density, density of number of individuals, of total structural volume, of total wet weight
 
 %% Remarks
 %
@@ -104,7 +105,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
    
   % if you make changes in par & txtPar, do that also in deb/ebtmod.c
   switch model
-    case {'std','stf'}
+    case {'std','stf','sbp'}
       par = {E_Hp, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
         L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
       txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
@@ -118,25 +119,35 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
         's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
         '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
         'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
-    case 'ssj'
+    case 'ssj' 
+      del_sj = exp(-k_E * t_sj/ 3); % reduction factor for structural length at end of leptocephalus stage
       par = {E_Hp, E_Hs, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
-        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, del_sj, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
       txtPar = {'E_Hp, J', 'E_Hs, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_j, cm', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'del_s, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
+    case 'abj'
+      par = {E_Hp, E_Hj, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hj, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbj, 1/d', 'h_Bjp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
         's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
         '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
-        'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
-    case 'sbp'
-      par = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
-    case 'abj'
-      par = {E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+        'ome, -', 'E_0, J', 'L_b, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'asj'
-      par = {E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+      par = {E_Hp, E_Hj, E_Hs, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, L_s, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hj, J', 'E_Hs, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbs, 1/d','h_Bsj, 1/d', 'h_Bjp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'L_b, cm', 'L_s, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'abp'
-      par = {E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+      par = {E_Hp, E_Hb, V_X, h_D, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, L_b, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_D, 1/d', 'h_J, 1/d', 'h_B0b, 1/d', 'h_Bbj, 1/d', 'h_Bjp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_j, cm', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'hep' % nog updaten
       par = {E_Hj, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpj, h_Bji, h_a, s_G, thin, ...
           L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
@@ -148,12 +159,14 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       
 %% ebtmod.h: header file 
 
-  if strcmp(numPar.TIME_METHOD, {'DOPRI5','DOPRI8', 'RADAU5'})
+  if strcmp(numPar.TIME_METHOD, 'DOPRI5') || strcmp(numPar.TIME_METHOD, 'DOPRI8') || strcmp(numPar.TIME_METHOD, 'RADAU5')
     switch model
-      case {'std','stf'}
+      case {'std','stf','sbp','abp'}
         n_events = 2;
-      case {'stx','ssj'}
+      case {'stx','ssj','abj'}
         n_events = 3;
+      case 'asj'
+        n_events = 4;
     end
   else
     n_events = 0;
@@ -173,7 +186,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define I_STATE_DIM     8 /* a, q, h_a, L, E, E_R, E_H, W */\n');
   fprintf(oid, '#define I_CONST_DIM     0\n');
   fprintf(oid, '#define ENVIRON_DIM     2 /* time, scaled food density */\n'); 
-  fprintf(oid, '#define OUTPUT_VAR_NR   3 /* (time,) scaled food density, nr ind, tot weight */\n');
+  fprintf(oid, '#define OUTPUT_VAR_NR   4 /* (time,) scaled food density, nr ind, tot struc vol, tot weight */\n');
   fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
   fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', n_events);
@@ -231,7 +244,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fclose(oid);
   % initial i-states are values at birth, but for t < a_b, changes in i-states are set to 0
   
-%% Detlete existing out-file
+%% Delete existing out-file
   
   delete('*.out')
 
@@ -259,7 +272,7 @@ function tXNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   data = fscanf(out,'%e');
   fclose(out);
   n = length(data);
-  tXNW = wrap(data, floor(n/4), 4); % output (n,4)-array
+  tXNVW = wrap(data, floor(n/5), 5); % output (n,5)-array
   
   % read report file run.rep
   % read end state file run.esf

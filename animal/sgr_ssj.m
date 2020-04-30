@@ -127,7 +127,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, kap, kap_R, k_M, k_E, v, g, k, u_E0,
     r = v * (f/ L - 1/ L_m)/ (f + g); % 1/d, spec growth rate of structure
     h_B = h_Bbs;
   elseif t < t_j
-    L = L_s * exp( - k_E * (t - t_s));  % cm, structural length
+    L = L_s * exp( - k_E * (t - t_s)/ 3);  % cm, structural length
     r = 0; % 1/d, spec growth rate of structure; it actually is -k_E, but h_X cannot become < 0
     h_B = h_Bsp;
   elseif t < t_p

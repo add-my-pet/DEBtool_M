@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ebt</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-26"><meta name="DC.source" content="ebt.m"><style type="text/css">
+      --><title>ebt</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-30"><meta name="DC.source" content="ebt.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -78,13 +78,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
  	- RADAU5: an implicit Runge-Kutta method of order 5 with step size  control and dense output.</pre><pre>   The DOPRI5, DOPRI8 and RADAU5 methods can detect and locate discontinuities or events.
    These events are signalled by the routine	EventLocation() in the program definition file.
    Integration will be carried out exactly up to the moment that the event takes place and will be restarted subsequently.
-   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a c-compiler has been installed with the name gcc.exe and a path to it specified. This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software. This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page with traits uses the possibly modified parameter values. This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via get_ebt. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>ebt('Torpedo_marmorata');</li><li>ebt('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">ebt_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNVW: (n,5)-array with times, scaled food density, number of individuals, population structural volume, population wet weight</li><li>info: booelean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a c-compiler with name gcc.exe has been installed with the name gcc.exe and a path to it specified. This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software. This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page with traits uses the possibly modified parameter values. This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via <a href="../html/get_ebt.html"><b>get_ebt</b></a>. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Notice that background mortalities do not depend on temperature. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>ebt('Torpedo_marmorata');</li><li>ebt('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">ebt_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% ebt
 % escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNVW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % created 2020/04/03 by Bas Kooijman
 
 %% Syntax
@@ -138,10 +138,11 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %
 % Output:
 %
-% * txNW: (n,4)-array with times, scaled food density, number of individuals, population wet weight
+% * txNVW: (n,5)-array with times, scaled food density, number of individuals, population structural volume, population wet weight
+% * info: booelean with failure (0) of success (1)
 %
 %% Remarks
-% The function assumes that a c-compiler has been installed with the name gcc.exe and a path to it specified.
+% The function assumes that a c-compiler with name gcc.exe has been installed with the name gcc.exe and a path to it specified.
 % This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software.
 % This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
@@ -149,8 +150,9 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page with traits uses the possibly modified parameter values. 
-% This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via get_ebt.
+% This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_ebt.html *get_ebt*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
+% Notice that background mortalities do not depend on temperature.
 % For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf *manual*>
 
 %% Example of use
@@ -160,15 +162,51 @@ function txNW = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % * ebt('Torpedo_marmorata');
 % * ebt('Torpedo_marmorata', C2K(18));
 
+WD = cdEBTtool;
+
+% time to be simulated
+if ~exist('t_max','var') || isempty(t_max)
+  t_max = 150*365; % -, total simulation time
+end
+
+% temperature
+if ~exist('tT','var') || isempty(tT)
+  T = metaData.T_typical; tT = [0 T; t_max T];
+else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tT = [tT; t_max tT(end,2)];    
+end
+
+% volume of reactor
+if ~exist('V_X','var') || isempty(V_X)
+  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+end
+
+% supply food 
+if ~exist('tJX','var') || isempty(tJX)
+  J_X = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max J_X]; 
+else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tJX = [tJX; t_max tJX(end,2)];    
+end
+
+% initial scaled food density
+if ~exist('x_0','var') || isempty(x_0)
+  x_0 = 0.2793; % -, X/K at t=0
+end
+
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
   metaData = species{1}; metaPar = species{2}; par = species{3};  
-  species = metaData.species;
+  species = metaData.species; info = 1;
   par.reprodCode = metaData.ecoCode.reprod{1};
   par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
-  [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
+  [par, metaPar, txtPar, metaData, info] = allStat2par(species);
+  if info == 0
+    fprintf('Species not recognized\n');
+    txNW = []; return
+  end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
@@ -193,7 +231,7 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.0; thin = 0; 
+  h_D = 0.1; thin = 0; 
 else
   h_D = h(1); thin = h(end);
 end
@@ -253,35 +291,6 @@ switch model
     return
 end
 
-% volume of reactor
-if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
-end
-
-% time to be simulated
-if ~exist('t_max','var') || isempty(t_max)
-  t_max = 250*365; % -, total simulation time
-end
-
-% initial scaled food density
-if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0;  % -, X/K at t=0
-end
-
-% supply food 
-if ~exist('tJX','var') || isempty(tJX)
-  J_X = 500 * J_X_Am * L_m^2; tJX = [0 J_X; t_max J_X];
-else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
-end
-
-% temperature
-if ~exist('tT','var') || isempty(tT)
-  T = metaData.T_typical; tT = [0 T; t_max T];
-else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];    
-end
-
 % fields for numerical parameters
 flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
     'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
@@ -296,23 +305,24 @@ opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time int
 opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
 opt.min_cohort_nr = 1e-3;    opt.txt.min_cohort_nr = 'Minimum allowable number of individuals in cohort';
 
-opt.relTol_a = 1e-7;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
-opt.relTol_q = 1e-7;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
-opt.relTol_h_a = 1e-7;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
-opt.relTol_L = 1e-7;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
-opt.relTol_E = 1e-7;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
-opt.relTol_E_R = 1e-7;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
-opt.relTol_E_H = 1e-7;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
-opt.relTol_W = 1e-7;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
+tol = 1e-6;
+opt.relTol_a = tol;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
+opt.relTol_q = tol;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
+opt.relTol_h_a = tol;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
+opt.relTol_L = tol;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
+opt.relTol_E = tol;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
+opt.relTol_E_R = tol;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
+opt.relTol_E_H = tol;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
+opt.relTol_W = tol;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
 
-opt.absTol_a = 1e-7;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
-opt.absTol_q = 1e-7;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
-opt.absTol_h_a = 1e-7;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
-opt.absTol_L = 1e-7;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
-opt.absTol_E = 1e-7;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
-opt.absTol_E_R = 1e-7;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
-opt.absTol_E_H = 1e-7;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
-opt.absTol_W = 1e-7;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
+opt.absTol_a = tol;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
+opt.absTol_q = tol;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
+opt.absTol_h_a = tol;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
+opt.absTol_L = tol;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
+opt.absTol_E = tol;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
+opt.absTol_E_R = tol;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
+opt.absTol_E_H = tol;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
+opt.absTol_W = tol;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
 
 % overwrite with specified numerical parameters
 if exist('numPar', 'var') && ~isempty(numPar)
@@ -324,35 +334,42 @@ if exist('numPar', 'var') && ~isempty(numPar)
 end
 
 % get trajectories
-txNW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
+txNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
 figure(1)
-plot(txNW(:,1), txNW(:,2), 'k', 'Linewidth', 2)
+plot(txNVW(:,1), txNVW(:,2), 'k', 'Linewidth', 2)
 title(title_txt);
 xlabel('time, d');
-ylabel('scaled food density, X/K');
+ylabel('scaled food density X/K, -');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(2)
-plot(txNW(:,1), txNW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
-ylabel('# of individuals');
+ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(3)
-plot(txNW(:,1), txNW(:,4),'color', [1 0 0], 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,4),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
-ylabel('total wet weight, g');
+ylabel('total structural volume, cm^3/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(4)
-plot(txNW(:,1), txNW(:,4)./txNW(:,3), 'k', 'Linewidth', 2) 
+plot(txNVW(:,1), txNVW(:,5),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time, d');
+ylabel('total wet weight, g/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(5)
+plot(txNVW(:,1), txNVW(:,5)./txNVW(:,3), 'k', 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('mean wet weight per individual, g');
@@ -508,6 +525,7 @@ fprintf(oid, '</HTML>\n');
 fclose(oid);
 web(fileName,'-browser') % open html in systems browser
 
+cd(WD);
 
 
 ##### SOURCE END #####

@@ -1,7 +1,7 @@
 /***
   NAME
-    ebtstf.c
-    stf DEB model with reprod buffer handling: produce offspring as soon as buffer allows
+    ebtsbp.c
+    sbp DEB model with reprod buffer handling: lay egg as soon as buffer allows
 ***/
 
 /*==========================================================================
@@ -167,7 +167,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       e = pop[0][i][resDens]/ E_m;                                /* -, scaled reserve density e = [E]/[E_m] */
       L = pop[0][i][length]; L2 = L * L; L3 = L * L2;             /* cm, struc length */
       kapG = e>=L/L_m ? 1. : kap_G;                               /* kap_G if shrinking, else 1 */
-      r = vT * (e/ L - 1./ L_m)/ (e + kapG * g);                  /* 1/d, spec growth rate of structure */
+      r = pop[0][i][maturity]<E_Hp ? vT * (e/ L - 1./ L_m)/ (e + kapG * g) : 0; /* 1/d, spec growth rate of structure */
       p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (vT/ L - r);                           /* J/d, reserve mobilisation rate */
       p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
