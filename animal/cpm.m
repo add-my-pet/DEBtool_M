@@ -2,11 +2,11 @@
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [txN, txV, txW, M_N, M_V, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [txNL23W, M_N, M_L, M_L2, M_L3, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [txN, txV, txW, M_N, N_V, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [txNL23W, M_N, M_L, M_L2, M_L3, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
@@ -37,22 +37,22 @@ function [txN, txV, txW, M_N, M_V, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R
 %
 % Output:
 %
-% * txN: (n,m)-array with times, food density and denity of individuals in the various cohorts
-% * txV: (n,m)-array with times, food density and cohort structural volumes
-% * txW: (n,m)-array with times, food density and cohort wet weights
+% * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
 % * M_N: (n_c,n_c)-array with map for N: N(t+t_R) = M_N * N(t)
-% * M_V: (n_c,n_c)-array with map for V: V(t+t_R) = M_N * V(t)
+% * M_L: (n_c,n_c)-array with map for N: L(t+t_R) = M_N * L(t)
+% * M_L2: (n_c,n_c)-array with map for N: L^2(t+t_R) = M_N * L^2(t)
+% * M_L3: (n_c,n_c)-array with map for V: L^3(t+t_R) = M_N * L^3(t)
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
 %
 %% Remarks
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
-% The (first) html-page with traits uses the possibly modified parameter values. 
-% The last 2 outputs (the maps for N and W) are only not-empty if the number of cohorts did not change long enough.
+% The (first) html-page has traits at individual level using the possibly modified parameter values. 
+% The last 5 outputs (the linear maps for N, L, L^2, L^3 and W) are only not-empty if the number of cohorts did not change long enough.
 % cpm only controls input/output; computations are done in get_cpm, which calls <../html/dpm_mod.html *dcpm_mod*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
-% Notice that background mortalities do not depend on temperature.
+% Background hazards do not depend on temperature, ageing hazards do.
 
 %% Example of use
 %
@@ -198,11 +198,17 @@ switch model
 end
 
 % get trajectories
-[txN, txV, txW, M_N, M_V, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[txN, txL, txL2, txL3, txW, M_N, M_L, M_L2, M_L3, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
   return
 end
-t = txN(:,1)/ t_R; x = txN(:,2); N = cumsum(txN(:,3:end),2); V =  cumsum(txV(:,3:end),2); W = cumsum(txW(:,3:end),2); n_c = size(N,2);
+t = txN(:,1)/ t_R; x = txN(:,2); 
+N = cumsum(txN(:,3:end),2); n_c = size(N,2);
+L =  cumsum(txL(:,3:end),2); 
+L2 =  cumsum(txL2(:,3:end),2); 
+L3 =  cumsum(txL3(:,3:end),2); 
+W = cumsum(txW(:,3:end),2);
+txNL23W = [txN(:,1:2), N(:,end), L(:,end), L2(:,end), L3(:,end), W(:,end)]; 
 
 %% plotting
 close all
@@ -226,18 +232,40 @@ xlabel('time in reprod event periods');
 ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(3) % t-V_tot
+figure(3) % t-L_tot
 hold on
 for i = 1:n_c-1
-  plot(t, V(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+  plot(t, L(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
 end
-plot(t,V(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+plot(t,L(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time in reprod event periods');
+ylabel('total structural length, cm/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(4) % t-L^2_tot
+hold on
+for i = 1:n_c-1
+  plot(t, L2(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+end
+plot(t,L2(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time in reprod event periods');
+ylabel('total structural surface area, cm^2/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(5) % t-L^3_tot
+hold on
+for i = 1:n_c-1
+  plot(t, L3(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
+end
+plot(t,L3(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('total structural volume, cm^3/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(4) % t-Ww_tot
+figure(6) % t-Ww_tot
 hold on
 for i = 1:n_c-1
   plot(t, W(:,i), 'color', color_lava(i/n_c), 'Linewidth', 0.5) 
@@ -248,7 +276,7 @@ xlabel('time in reprod event periods');
 ylabel('total wet weight, g/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(5) % t- mean Ww of individual
+figure(7) % t- mean Ww of individual
 hold on
 W = zeros(n_c,1); 
 for i = 1:n_c
@@ -259,7 +287,6 @@ title(title_txt);
 xlabel('time in reprod event periods');
 ylabel('indiv. wet weight, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
-
 
 %% report_my_pet
 

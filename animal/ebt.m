@@ -2,11 +2,11 @@
 % escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function [txNVW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNL23W, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % created 2020/04/03 by Bas Kooijman
 
 %% Syntax
-% txNW = <../ebt.m *ebt*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
+% txL23W = <../ebt.m *ebt*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
 
 %% Description
 % Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. 
@@ -56,21 +56,21 @@ function [txNVW, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %
 % Output:
 %
-% * txNVW: (n,5)-array with times, scaled food density, number of individuals, population structural volume, population wet weight
+% * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
 % * info: booelean with failure (0) of success (1)
 %
 %% Remarks
-% The function assumes that a c-compiler with name gcc.exe has been installed with the name gcc.exe and a path to it specified.
-% This c-code was written by Andre de Roos, who supports EBTtool only including a graphical shell in the Qt-environment, which is not free software.
+% The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified.
+% This C-code was written by Andre de Roos.
 % This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
-% The (first) html-page with traits uses the possibly modified parameter values. 
+% The (first) html-page has traits at inidvidual level using the possibly modified parameter values. 
 % This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_ebt.html *get_ebt*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
-% Notice that background mortalities do not depend on temperature.
+% Background hazards do not depend on temperature, ageing hazards do.
 % For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf *manual*>
 
 %% Example of use
@@ -93,7 +93,7 @@ else  % use allStat.mat as parameter source
   [par, metaPar, txtPar, metaData, info] = allStat2par(species);
   if info == 0
     fprintf('Species not recognized\n');
-    txNW = []; return
+    txNL23W = []; return
   end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
@@ -252,42 +252,56 @@ if exist('numPar', 'var') && ~isempty(numPar)
 end
 
 % get trajectories
-txNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
+txNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 %% plotting
 close all
 title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 %
 figure(1)
-plot(txNVW(:,1), txNVW(:,2), 'k', 'Linewidth', 2)
+plot(txNL23W(:,1), txNL23W(:,2), 'k', 'Linewidth', 2)
 title(title_txt);
 xlabel('time, d');
 ylabel('scaled food density X/K, -');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(2)
-plot(txNVW(:,1), txNVW(:,3), 'color', [1 0 0], 'Linewidth', 2) 
+plot(txNL23W(:,1), txNL23W(:,3), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(3)
-plot(txNVW(:,1), txNVW(:,4),'color', [1 0 0], 'Linewidth', 2) 
+plot(txNL23W(:,1), txNL23W(:,4),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time, d');
+ylabel('total structural length, cm^/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(4)
+plot(txNL23W(:,1), txNL23W(:,5),'color', [1 0 0], 'Linewidth', 2) 
+title(title_txt);
+xlabel('time, d');
+ylabel('total structural surface area, cm^2/L');
+set(gca, 'FontSize', 15, 'Box', 'on')
+%
+figure(5)
+plot(txNL23W(:,1), txNL23W(:,6),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('total structural volume, cm^3/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(4)
-plot(txNVW(:,1), txNVW(:,5),'color', [1 0 0], 'Linewidth', 2) 
+figure(6)
+plot(txNL23W(:,1), txNL23W(:,7),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('total wet weight, g/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
-figure(5)
-plot(txNVW(:,1), txNVW(:,5)./txNVW(:,3), 'k', 'Linewidth', 2) 
+figure(7)
+plot(txNL23W(:,1), txNL23W(:,7)./txNL23W(:,3), 'k', 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
 ylabel('mean wet weight per individual, g');

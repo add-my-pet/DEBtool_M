@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_ebt</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-04-30"><meta name="DC.source" content="get_ebt.m"><style type="text/css">
+      --><title>get_ebt</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-05-05"><meta name="DC.source" content="get_ebt.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_ebt</h1><!--introduction--><p>get population trajectories from Escalaor Boxcar Train</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">spline_JX, spline_TC: for environmental variables</a></li><li><a href="#7">DEB model parameters</a></li><li><a href="#8">ebtmod.h: header file</a></li><li><a href="#9">ebtmod.cvf: control variable file</a></li><li><a href="#10">ebtmod.isf: initial state file</a></li><li><a href="#11">Delete existing out-file</a></li><li><a href="#12">ebtmod.exe: compile and run EBTtool</a></li><li><a href="#13">ebtmod.out: read output variable file</a></li></ul></div><h2 id="3">Syntax</h2><p>tXNVW = <a href="../get_ebt.m"><b>get_ebt</b></a> (model, par, tT, tJX, x_0, V_X, t_max, numPar)</p><h2 id="4">Description</h2><p>integrates changes in food density and populations, called by ebt,</p><p>environmental variables</p><pre>- TC: temp corr factor
+  </style></head><body><div class="content"><h1>get_ebt</h1><!--introduction--><p>get population trajectories from Escalaor Boxcar Train</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">spline_JX, spline_TC: for environmental variables</a></li><li><a href="#7">DEB model parameters</a></li><li><a href="#8">ebtmod.h: header file</a></li><li><a href="#9">ebtmod.cvf: control variable file</a></li><li><a href="#10">ebtmod.isf: initial state file</a></li><li><a href="#11">Delete existing out-file</a></li><li><a href="#12">ebtmod.exe: compile and run EBTtool</a></li><li><a href="#13">ebtmod.out: read output variable file</a></li></ul></div><h2 id="3">Syntax</h2><p>tXNL23W = <a href="../get_ebt.m"><b>get_ebt</b></a> (model, par, tT, tJX, x_0, V_X, t_max, numPar)</p><h2 id="4">Description</h2><p>integrates changes in food density and populations, called by ebt,</p><p>environmental variables</p><pre>- TC: temp corr factor
 - X: food density X</pre><p>i-states</p><pre>- a: t, age
 - q: 1/d^2, aging acceleration
 - h_a: 1/d, hazard for aging
@@ -74,18 +74,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 - E: J/cm^3, reserve density [E]
 - E_R: J, reprod buffer
 - E_H: J, maturity
-- W: g, wet weight</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with initial scaled food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>numPar: structure with numerical parameter settings</li></ul></div><p>Output:</p><div><ul><li>tXNVW: (n,5)-array with times, food density, density of number of individuals, of total structural volume, of total wet weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models</li><li>uses deb/ebtmod.c, which is written in C directly</li><li>runs ebtmod.exe in Window's PowerShell, which writes ebtmod.out</li><li>reads ebtmod.out for output</li></ul></div><h2 id="6">spline_JX, spline_TC: for environmental variables</h2><h2 id="7">DEB model parameters</h2><h2 id="8">ebtmod.h: header file</h2><h2 id="9">ebtmod.cvf: control variable file</h2><h2 id="10">ebtmod.isf: initial state file</h2><h2 id="11">Delete existing out-file</h2><h2 id="12">ebtmod.exe: compile and run EBTtool</h2><h2 id="13">ebtmod.out: read output variable file</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+- W: g, wet weight</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>x_0: scalar with initial scaled food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>numPar: structure with numerical parameter settings</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models</li><li>uses deb/ebtmod.c, which is written in C directly</li><li>runs ebtmod.exe in Window's PowerShell, which writes ebtmod.out</li><li>reads ebtmod.out for output</li></ul></div><h2 id="6">spline_JX, spline_TC: for environmental variables</h2><h2 id="7">DEB model parameters</h2><h2 id="8">ebtmod.h: header file</h2><h2 id="9">ebtmod.cvf: control variable file</h2><h2 id="10">ebtmod.isf: initial state file</h2><h2 id="11">Delete existing out-file</h2><h2 id="12">ebtmod.exe: compile and run EBTtool</h2><h2 id="13">ebtmod.out: read output variable file</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_ebt
 % get population trajectories from Escalaor Boxcar Train
 
 %%
-function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 % created 2020/04/03 by Bas Kooijman
   
 %% Syntax
-% tXNVW = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
+% tXNL23W = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
 %% Description
 % integrates changes in food density and populations, called by ebt, 
@@ -119,7 +119,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %
 % Output:
 %
-% * tXNVW: (n,5)-array with times, food density, density of number of individuals, of total structural volume, of total wet weight
+% * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
 
 %% Remarks
 %
@@ -264,7 +264,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define I_STATE_DIM     8 /* a, q, h_a, L, E, E_R, E_H, W */\n');
   fprintf(oid, '#define I_CONST_DIM     0\n');
   fprintf(oid, '#define ENVIRON_DIM     2 /* time, scaled food density */\n'); 
-  fprintf(oid, '#define OUTPUT_VAR_NR   3 /* (time,) scaled food density, nr ind, tot weight */\n');
+  fprintf(oid, '#define OUTPUT_VAR_NR   6 /* (time,) scaled food density, nr ind, tot struc length, surface, vol, weight */\n');
   fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
   fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', n_events);
@@ -338,7 +338,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
   eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
   eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
-  eval([TxT, ' -o ebtstd.o   -c deb\ebtstd.c']);
+  eval([TxT, ' -o ebt', model, '.o   -c deb\ebt', model, '.c']);
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
@@ -350,7 +350,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   data = fscanf(out,'%e');
   fclose(out);
   n = length(data);
-  tXNVW = wrap(data, floor(n/5), 5); % output (n,5)-array
+  tXNL23W = wrap(data, floor(n/7), 7); % output (n,5)-array
   
   % read report file run.rep
   % read end state file run.esf

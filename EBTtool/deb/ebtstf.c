@@ -248,20 +248,24 @@ void InstantDynamics(double *env, population *pop, population *ofs)
 void DefineOutput(double *env, population *pop, double *output)
 {
 
-  double totN, totV, totW;
+  double totN, totL, totL2, totL3, totW;
   register int i;
 
-  for(i=0, totN=0.0, totV=0.0, totW=0.0; i<cohort_no[0]; i++)
+  for(i=0, totN=0.0, totL=0.0, totL2=0.0, totL3=0.0, totW=0.0; i<cohort_no[0]; i++)
     {
       totN += pop[0][i][number];
-      totV += pop[0][i][number] * pow(pop[0][i][length], 3);
+      totL += pop[0][i][number] * pop[0][i][length];
+      totL2 += pop[0][i][number] * pow(pop[0][i][length], 2);
+      totL3 += pop[0][i][number] * pow(pop[0][i][length], 3);
       totW += pop[0][i][number] * pop[0][i][weight];
     }
 
   output[0] = food;
   output[1] = totN;
-  output[2] = totV;
-  output[3] = totW;
+  output[2] = totL;
+  output[3] = totL2;
+  output[4] = totL3;
+  output[5] = totW;
 
   return;
 }

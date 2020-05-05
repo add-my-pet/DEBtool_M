@@ -2,12 +2,12 @@
 % get population trajectories from Escalaor Boxcar Train
 
 %%
-function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 % created 2020/04/03 by Bas Kooijman
   
 %% Syntax
-% tXNVW = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
+% tXNL23W = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
 %% Description
 % integrates changes in food density and populations, called by ebt, 
@@ -41,7 +41,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %
 % Output:
 %
-% * tXNVW: (n,5)-array with times, food density, density of number of individuals, of total structural volume, of total wet weight
+% * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
 
 %% Remarks
 %
@@ -186,7 +186,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define I_STATE_DIM     8 /* a, q, h_a, L, E, E_R, E_H, W */\n');
   fprintf(oid, '#define I_CONST_DIM     0\n');
   fprintf(oid, '#define ENVIRON_DIM     2 /* time, scaled food density */\n'); 
-  fprintf(oid, '#define OUTPUT_VAR_NR   4 /* (time,) scaled food density, nr ind, tot struc vol, tot weight */\n');
+  fprintf(oid, '#define OUTPUT_VAR_NR   6 /* (time,) scaled food density, nr ind, tot struc length, surface, vol, weight */\n');
   fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
   fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', n_events);
@@ -260,7 +260,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
   eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
   eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
-  eval([TxT, ' -o ebtstd.o   -c deb\ebtstd.c']);
+  eval([TxT, ' -o ebt', model, '.o   -c deb\ebt', model, '.c']);
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
@@ -272,7 +272,7 @@ function tXNVW = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   data = fscanf(out,'%e');
   fclose(out);
   n = length(data);
-  tXNVW = wrap(data, floor(n/5), 5); % output (n,5)-array
+  tXNL23W = wrap(data, floor(n/7), 7); % output (n,5)-array
   
   % read report file run.rep
   % read end state file run.esf
