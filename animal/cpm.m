@@ -6,7 +6,7 @@ function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = cpm(species, tT, tJX, x_
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [txNL23W, M_N, M_L, M_L2, M_L3, M_W] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
