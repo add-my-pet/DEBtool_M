@@ -72,7 +72,7 @@ if iscell(species)
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
   if info == 0
-    txN=[]; txW=[]; M_N=[]; M_W=[]; return
+    txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
   end
   reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
   genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
@@ -98,7 +98,7 @@ if ~exist('tT','var') || isempty(tT)
   tT = metaData.T_typical;
 elseif length(tT) > 1 && sum(tT(:,1) > 1) > 0
   fprintf('abcissa of temp knots must be between 0 and 1\n');
-  txN=[]; txW=[]; return
+  txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
   tT = [tT; 1 tT(1,2)];    
 end
@@ -113,7 +113,7 @@ if ~exist('tJX','var') || isempty(tJX)
   tJX = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
 elseif length(tJX) > 1 && sum(tJX(:,1) > 1) > 0
   fprintf('abcissa of food supply knots must be between 0 and 1\n');
-  txN=[]; txW=[]; return
+  txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
   tJX = [tJX; 1 tJX(1,2)];    
 end
@@ -195,13 +195,13 @@ switch model
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bje = h_Bje; par.h_Bei = h_Bei; 
   otherwise
-    return
+    txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 end
 
 % get trajectories
 [txN, txL, txL2, txL3, txW, M_N, M_L, M_L2, M_L3, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
-  return
+  txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 end
 t = txN(:,1)/ t_R; x = txN(:,2); 
 N = cumsum(txN(:,3:end),2); n_c = size(N,2);
