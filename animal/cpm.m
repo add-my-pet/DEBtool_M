@@ -2,7 +2,7 @@
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [txNL23W, M_N, M_L, M_L2, M_L3, M_W] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
@@ -43,6 +43,7 @@ function [txNL23W, M_N, M_L, M_L2, M_L3, M_W] = cpm(species, tT, tJX, x_0, V_X, 
 % * M_L2: (n_c,n_c)-array with map for N: L^2(t+t_R) = M_N * L^2(t)
 % * M_L3: (n_c,n_c)-array with map for V: L^3(t+t_R) = M_N * L^3(t)
 % * M_W: (n_c,n_c)-array with map for W: W(t+t_R) = M_W * W(t)
+% * NL23Wt: (n_c.5)-array with values for N, L, L^2, L^3, W of cohorts at final time
 %
 %% Remarks
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
@@ -209,6 +210,7 @@ L2 =  cumsum(txL2(:,3:end),2);
 L3 =  cumsum(txL3(:,3:end),2); 
 W = cumsum(txW(:,3:end),2);
 txNL23W = [txN(:,1:2), N(:,end), L(:,end), L2(:,end), L3(:,end), W(:,end)]; 
+NL23Wt = [txN(end,3:end); txL(end,3:end); txL2(end,3:end); txL3(end,3:end); txW(end,3:end)]';
 
 %% plotting
 close all
