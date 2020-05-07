@@ -123,6 +123,10 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
     [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
   end
   [lj, lp, lb, info_tj] = get_lj(p, f, lb);
+  if info_tj == 0
+     tau_j = [];  tau_p = [];  tau_b = []; lj = []; lp = []; lb = []; li = []; rj = []; rB = [];
+     info = 0; return
+  end
   sM = lj/ lb;                       % acceleration factor
   rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
   tau_j = tau_b + log(sM) * 3/ rj;        % scaled age at metamorphosis
@@ -152,7 +156,7 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   info = min(info_tb, info_tj);
   if ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
     info = 0;
-  elseif tau_p < 0 || tau_j < 0
+  elseif tau_p < 0 || tau_j < 0 || rj <= 0 || rB <=0
     info = 0;
   end
   
