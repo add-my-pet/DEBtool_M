@@ -257,11 +257,11 @@ void DefineOutput(double *env, population *pop, double *output)
 
   for(i=0, totN=0.0, totL=0.0, totL2=0.0, totL3=0.0, totW=0.0; i<cohort_no[0]; i++)
     {
-      totN += pop[0][i][number];
-      totL += pop[0][i][number] * pop[0][i][length];
+      totN  += pop[0][i][number];
+      totL  += pop[0][i][number] * pop[0][i][length];
       totL2 += pop[0][i][number] * pow(pop[0][i][length], 2);
       totL3 += pop[0][i][number] * pow(pop[0][i][length], 3);
-      totW += pop[0][i][number] * pop[0][i][weight];
+      totW  += pop[0][i][number] * pop[0][i][weight];
     }
 
   output[0] = food;
