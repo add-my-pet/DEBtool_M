@@ -23,4 +23,4 @@ if ismac
 else
  ind = strfind(path,'\');
 end
-endcd(path(1:ind(end)));
+cd(path(1:ind(end)));
