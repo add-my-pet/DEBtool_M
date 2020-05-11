@@ -17,4 +17,10 @@ function WD = cdEBTtool
 %% Remarks
 % Intended use: WD = cdEBTtool; ..code.. cd(WD)
 
-WD = pwd; path = which('cdEBTtool'); ind = strfind(path,'\'); cd(path(1:ind(end)));
+WD = pwd; path = which('cdEBTtool'); 
+if ismac
+ ind = strfind(path,'/'); 
+else
+ ind = strfind(path,'\');
+end
+endcd(path(1:ind(end)));
