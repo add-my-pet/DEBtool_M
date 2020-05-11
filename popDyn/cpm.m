@@ -110,7 +110,7 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX)
-  tJX = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
+  tJX = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
 elseif length(tJX) > 1 && sum(tJX(:,1) > 1) > 0
   fprintf('abcissa of food supply knots must be between 0 and 1\n');
   txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
@@ -120,7 +120,7 @@ end
 
 % initial scaled food density
 if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0.2793; % -, X/K at t=0
+  x_0 = 10; % -, X/K at t=0
 end
 
 % account for cost of male production
@@ -203,7 +203,7 @@ end
 if info==0
   txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 end
-t = txN(:,1)/ t_R; x = txN(:,2); 
+t = txN(:,1); x = txN(:,2); 
 N = cumsum(txN(:,3:end),2); n_c = size(N,2);
 L =  cumsum(txL(:,3:end),2); 
 L2 =  cumsum(txL2(:,3:end),2); 
@@ -219,7 +219,7 @@ title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 figure(1) % t-x
 plot(t, x, 'k', 'Linewidth', 2)
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('scaled food density, X/K');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -230,7 +230,7 @@ for i = 1:n_c-1
 end
 plot(t, N(:,n_c), 'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('# of individuals, #/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -241,7 +241,7 @@ for i = 1:n_c-1
 end
 plot(t,L(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('total structural length, cm/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -252,7 +252,7 @@ for i = 1:n_c-1
 end
 plot(t,L2(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('total structural surface area, cm^2/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -263,7 +263,7 @@ for i = 1:n_c-1
 end
 plot(t,L3(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('total structural volume, cm^3/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -274,7 +274,7 @@ for i = 1:n_c-1
 end
 plot(t,W(:,n_c),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('total wet weight, g/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -286,7 +286,7 @@ for i = 1:n_c
 end
 plot(t(1:n_c), W, 'k', 'Linewidth', 2) 
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('indiv. wet weight, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 

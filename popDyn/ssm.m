@@ -1,12 +1,12 @@
-%% ssm
+%% SSM
 % Semi Structured Model: runs a semi stage-structured model using a generalized reactor
 
 %%
-function txNL23W = ssm(species, tT, tJX, x_0, V_X, h, t_max)
+function txNL23W = SSM(species, tT, tJX, x_0, V_X, h, t_max)
 % created 2020/05/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../ssm.m *ssm*> (species, tT, tJX, x_0, V_X, h, t_max) 
+% txNL23W = <../SSM.m *SSM*> (species, tT, tJX, x_0, V_X, h, t_max) 
 
 %% Description
 % Semi Structured Model: Plots population trajectories in a generalised reactor for a selected species that reproduce as a continuous flux. 
@@ -23,14 +23,13 @@ function txNL23W = ssm(species, tT, tJX, x_0, V_X, h, t_max)
 % Input:
 %
 % * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}
-% * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time scaled between 0 (= start) and 1 (= end of cycle)
+% * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical)
 %     If scalar, the temperature is assumed to be constant
-% * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)
+% * tJX: optional (nX,2)-array with time and food supply; 
 %     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate) 
-% * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
-%     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
+% * h: optional vector with dilution and background hazards (default [h_X, h_B] = [0 0])
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)
+% * x_0: optional scalar with initial food density as fraction of half saturation constant (default: 0)
 % * t_max: optional scalar with simulation time (d, default 250*365).
 %
 % Output:
@@ -39,7 +38,6 @@ function txNL23W = ssm(species, tT, tJX, x_0, V_X, h, t_max)
 %
 %% Remarks
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
-% The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page has traits at individual level using the possibly modified parameter values. 
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
@@ -49,8 +47,8 @@ function txNL23W = ssm(species, tT, tJX, x_0, V_X, h, t_max)
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * ssm('Torpedo_marmorata');
-% * ssm('Torpedo_marmorata', C2K(18));
+% * SSM('Torpedo_marmorata');
+% * SSM('Torpedo_marmorata', C2K(18));
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
@@ -74,18 +72,13 @@ model = metaPar.model;
 vars_pull(par); vars_pull(parscomp_st(par)); 
 
 % number of reproduction events to be simulated
-if ~exist('t_max','var') || isempty(n_R)
+if ~exist('t_max','var') 
   t_max = 150 * 365; % -, total simulation time
 end
 
 % temperature
 if ~exist('tT','var') || isempty(tT)
   tT = metaData.T_typical;
-elseif length(tT) > 1 && sum(tT(:,1) > 1) > 0
-  fprintf('abcissa of temp knots must be between 0 and 1\n');
-  txNL23W=[]; return
-elseif tT(1,1) == 0 && ~(tT(end,1) == 1)
-  tT = [tT; 1 tT(1,2)];    
 end
 
 % volume of reactor
@@ -95,17 +88,12 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX)
-  tJX = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-elseif length(tJX) > 1 && sum(tJX(:,1) > 1) > 0
-  fprintf('abcissa of food supply knots must be between 0 and 1\n');
-  txNL23W=[]; return
-elseif tJX(1,1) == 0 && ~(tJX(end,1) == 1)
-  tJX = [tJX; 1 tJX(1,2)];    
+  tJX = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
 end
 
 % initial scaled food density
 if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0.2793; % -, X/K at t=0
+  x_0 = 10; % -, X/K at t=0
 end
 
 % account for cost of male production
@@ -113,21 +101,13 @@ if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2; par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
 
-% rejuvenation parameters
-if ~isfield('par', 'k_JX')
-  k_JX = k_J/ 100; par.k_JX = k_JX;
-end
-if ~isfield('par', 'h_J')
-  h_J = 1e-4; par.h_J = h_J;
-end
-
 % hazard rates
 if ~exist('h','var') || isempty(h)
-  h_D = 0.1; 
+  h_X = 0.1; 
 else
-  h_D = h(1); 
+  h_X = h(1); 
 end
-par.h_D = h_D; 
+par.h_X = h_X; 
 %
 if ~exist('h','var') || isempty(h)
   h_B = 0; 
@@ -137,7 +117,7 @@ end
 par.h_B = h_B; 
 
 % get trajectories
-txNL23W = get_ssm(model, par, tT, tJX, x_0, V_X, t_max);
+txNL23W = get_SSM(model, par, tT, tJX, x_0, V_X, t_max);
 t = txNL23W(:,1); x = txNL23W(:,2); N = txNL23W(:,3); L = txNL23W(:,4); L2 = txNL23W(:,5); L3 = txNL23W(:,6); W = txNL23W(:,7); 
 
 %% plotting
@@ -147,7 +127,7 @@ title_txt = [strrep(species, '_', ' '), ' ', datePrintNm];
 figure(1) % t-x
 plot(t, x, 'k', 'Linewidth', 2)
 title(title_txt);
-xlabel('time in reprod event periods');
+xlabel('time, d');
 ylabel('scaled food density, X/K');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
@@ -241,10 +221,8 @@ fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', '
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
 
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
-fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
-fprintf(oid, str, 'h_J', '1/d', h_J, 'hazard rate for rejuvenation');
-fprintf(oid, str, 'h_D', '1/d', h_D, 'hazard rate for food from reactor');
-fprintf(oid, str, 'h_B', '1/d', h_B0b, 'background hazard rate from');
+fprintf(oid, str, 'h_X', '1/d', h_X, 'hazard rate for food from reactor');
+fprintf(oid, str, 'h_B', '1/d', h_B, 'background hazard rate');
 fprintf(oid, str, 'x_0', '-', x_0, 'initial scaled food density');
 fprintf(oid, str, 'V_X', 'L', V_X, 'volume of reactor');
 fprintf(oid, str, 't_max', 'd', t_max, 'simulation time');
@@ -260,7 +238,7 @@ fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"> <TH>Knots for<br>temperature</TH> <TH>units<br>&deg;C</TH> </TR>\n');
 n_T = size(tT,1);
 if n_T == 1
-    tT = [0 tT; 1 tT]; n_T = 2;
+  tT = [0 tT; t_max tT]; n_T = 2;
 end
 for i=1:n_T
   fprintf(oid, '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD></TR>\n', tT(i,1), K2C(tT(i,2)));
@@ -276,7 +254,7 @@ fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"> <TH>Knots for<br>food supply</TH> <TH>units<br>mol/d</TH> </TR>\n');
 n_JX = size(tJX,1);
 if n_JX == 1
-  tJX = [0 tJX; 1 tJX]; n_JX = 2;
+  tJX = [0 tJX; t_max tJX]; n_JX = 2;
 end
 for i=1:n_JX
   fprintf(oid, '    <TR><TD>%3.4g</TD> <TD>%3.4g</TD></TR>\n', tJX(i,1), tJX(i,2));

@@ -123,7 +123,7 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX)
-  J_X = 10*144.5*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
+  J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max J_X]; 
 else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
   tJX = [tJX; t_max tJX(end,2)];    
@@ -131,7 +131,7 @@ end
 
 % initial scaled food density
 if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 0.2793; % -, X/K at t=0
+  x_0 = 10; % -, X/K at t=0
 end
 
 % account for cost of male production
@@ -276,7 +276,7 @@ figure(3)
 plot(txNL23W(:,1), txNL23W(:,4),'color', [1 0 0], 'Linewidth', 2) 
 title(title_txt);
 xlabel('time, d');
-ylabel('total structural length, cm^/L');
+ylabel('total structural length, cm/L');
 set(gca, 'FontSize', 15, 'Box', 'on')
 %
 figure(4)

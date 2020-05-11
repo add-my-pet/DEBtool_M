@@ -194,7 +194,7 @@ function [t, xvars_0, txN, txL, txL2, txL3, txW] = cohorts(t, xvars, txN, txL, t
   NL = N .* L; % cm/L, structural length
   NL2 = N .* L.^2; % cm^2/L, structural surface area
   NL3 = N .* L.^3; % cm^3/L, structural volume
-  NW = NL3 .* (1 + E/ mu_E * w_E/ d_E) + E_R/ mu_E * w_E/ d_E; % g, wet weights
+  NW = NL3 .* (1 + E/ mu_E * w_E/ d_E); % g, wet weights excluding reprod buffer 
   if N(end) > 1e-4 % add new youngest cohort
     txN = [[txN, zeros(size(txN,1),1)]; [t, x, N']]; % append to output
     txL = [[txL, zeros(size(txL,1),1)]; [t, x, NL']]; % append to output
