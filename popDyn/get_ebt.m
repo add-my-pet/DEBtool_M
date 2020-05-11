@@ -253,14 +253,15 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   WD = cdEBTtool;  
   if ismac
     txt = ['!gcc -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
-    TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
-    TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
+    TXT = ['!gcc -IOdesolvers/ -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
+    TxT = ['!gcc -I. -I./fns -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
     eval([txt, ' -o ebtmain.o  -c fns/ebtmain.c']);
     eval([txt, ' -o ebtinit.o  -c fns/ebtinit.c']);
     eval([TXT, ' -o ebttint.o  -c fns/ebttint.c']);
     eval([txt, ' -o ebtcohrt.o -c fns/ebtcohrt.c']);
     eval([txt, ' -o ebtutils.o -c fns/ebtutils.c']);
     eval([txt, ' -o ebtstop.o  -c fns/ebtstop.c']);
+    eval([TxT, ' -o ebt', model, '.o   -c deb/ebt', model, '.c']);
   else
     txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
     TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
@@ -271,8 +272,8 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
     eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
     eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
-  end
   eval([TxT, ' -o ebt', model, '.o   -c deb\ebt', model, '.c']);
+  end
   eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
   delete('*.o')
   if ismac
