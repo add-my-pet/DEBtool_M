@@ -346,7 +346,7 @@ fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n',
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
 fprintf(oid, str, 'h_J', '1/d', h_J, 'hazard rate for rejuvenation');
-fprintf(oid, str, 'h_D', '1/d', h_D, 'hazard rate for food from reactor');
+fprintf(oid, str, 'h_X', '1/d', h_X, 'hazard rate for food from reactor');
 fprintf(oid, str, 'thin', '-', thin, 'boolean for thinning');
 switch model
   case {'std','stf','sbp','abp'}

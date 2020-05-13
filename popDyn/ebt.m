@@ -29,7 +29,7 @@ function [txNL23W, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max
 %     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate) 
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
-%     Default value for the std model: [h_D, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
+%     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
 % * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)
 % * t_max: optional scalar with simulation time (d, default 250*365).
@@ -149,11 +149,11 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.1; thin = 0; 
+  h_X = 0.1; thin = 0; 
 else
-  h_D = h(1); thin = h(end);
+  h_X = h(1); thin = h(end);
 end
-par.h_D = h_D; par.thin = thin; 
+par.h_X = h_X; par.thin = thin; 
 %
 switch model
   case {'std','stf','sbp','abp'}
@@ -217,7 +217,7 @@ n_flds = length(flds);
 % set default numerical parameters
 opt.TIME_METHOD = 'DOPRI5';  opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
 opt.integr_accurary = 1e-8;  opt.txt.integr_accurary = 'Fixed step size or integration accuracy when adaptive';
-opt.cycle_interval = 7;      opt.txt.cycle_interval = 'Cohort/Integration cycle time interval'; 
+opt.cycle_interval = 2;      opt.txt.cycle_interval = 'Cohort/Integration cycle time interval'; 
 opt.tol_zero = 1e-6;         opt.txt.tol_zero = 'Tolerance value, determining identity with zero';
 opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time interval';
 opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
@@ -326,6 +326,7 @@ fprintf(oid, '  <TITLE>EBT %s</TITLE>\n', strrep(species, '_', ' '));
 fprintf(oid, '  <style>\n');
 fprintf(oid, '    .newspaper {\n');
 fprintf(oid, '      column-count: 3;\n');
+fprintf(oid, '      height: 500px;\n');
 fprintf(oid, '    }\n\n');
 
 fprintf(oid, '    div.temp {\n');
@@ -368,7 +369,7 @@ fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n',
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
 fprintf(oid, str, 'h_J', '1/d', h_J, 'hazard rate for rejuvenation');
-fprintf(oid, str, 'h_D', '1/d', h_D, 'hazard rate for food from reactor');
+fprintf(oid, str, 'h_X', '1/d', h_X, 'hazard rate for food from reactor');
 fprintf(oid, str, 'thin', '-', thin, 'boolean for thinning');
 switch model
   case {'std','stf','sbp','abp'}

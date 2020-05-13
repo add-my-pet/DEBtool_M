@@ -42,7 +42,7 @@
 #define E_Hs   parameter[2]   /*    J       */
 #define E_Hb   parameter[3]   /*    J       */
 #define V_X    parameter[4]   /*    L       */
-#define h_D    parameter[5]   /*   1/d      */
+#define h_X    parameter[5]   /*   1/d      */
 #define h_J    parameter[6]   /*   1/d      */
 #define h_B0b  parameter[7]   /*   1/d      */
 #define h_Bbs  parameter[8]   /*   1/d      */
@@ -146,13 +146,13 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
+  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
   register int i;
 
   /* temp correction */
   TC = spline_TC(time); 
   kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC; pT_Am = TC * p_Am; JT_X_Am = TC * J_X_Am; aT_b = a_b/ TC;
-  hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC * TC; hT_Ab = h_Ab * TC; qT_b = q_b * TC * TC; 
+  hT_X = h_X * TC; hT_J = TC * h_J; hT_a = h_a * TC * TC; hT_Ab = h_Ab * TC; qT_b = q_b * TC * TC; 
   
   /* scaled functional response, food = scaled food density */
   f = food/ (food + 1);  
@@ -217,7 +217,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
   /* The derivatives of environmental vars: time & scaled food density */
   envgrad[0] = 1.0; /* 1/d, change in time */
   for(i=0, sumL2 = 0.; i<cohort_no[0]; i++) sumL2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) : 0; 
-  envgrad[1] = spline_JX(time)/ V_X/ K - hT_D * food - JT_X_Am * f * sumL2/ V_X/ K; /* 1/d, change in scaled food density */
+  envgrad[1] = spline_JX(time)/ V_X/ K - hT_X * food - JT_X_Am * f * sumL2/ V_X/ K; /* 1/d, change in scaled food density */
     
   return;
 }
