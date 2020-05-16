@@ -101,6 +101,10 @@ function tXNL23W = get_EBY(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     case 'abp'
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hp-1e-6 v_Hp]); % -, scaled ages and lengths
       L_p = l_j * L_m;
+    case 'hep';
+      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj]);
+      L_j = l_j * L_m; 
+      t_m = (get_tm_s([g; l_T; h_a/ k_M^2; s_G]) - tau_j)/ k_M;      % -, mean life span as imago at T_ref
   end
    
   % if you make changes in par & txtPar, do that also in deb/EBTmod.c
@@ -150,14 +154,18 @@ function tXNL23W = get_EBY(model, par, tT, tJX, x_0, V_X, t_max, numPar)
         'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'hep' 
       par = {E_Hp, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbp, h_Bpj, h_Bji, h_a, s_G, thin,  ...
-        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_s, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
-      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_X, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbs, 1/d','h_Bsj, 1/d', 'h_Bjp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
-        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab, numPar.cycle_interval}/ t_m;
+      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_X, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbp, 1/d', 'h_Bpj, 1/d', 'h_Bji, 1/d', 'h_a, 1/d', 's_G, -', 'thin, -', ...
+        'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
         '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
-        'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_s, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
-    case 'hex' % nog updaten
-      par = {E_He, E_Hj, E_Hb, tTC, tJX, V_X, h_X, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0};
+        'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d', 'N_batch, -'};
+    case 'hex' 
+      par = {E_He, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbj, h_Bje, h_Bei, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_j, L_e, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab, numPar.cycle_interval}/ t_m;
+      txtPar = {'E_He, J', 'E_Hb, J', 'V_X, L', 'h_X, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbj, 1/d', 'h_Bje, 1/d', 'h_Bei, 1/d', 'h_a, 1/d', 's_G, -', 'thin, -', ...
+        'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_j, cm', 'L_e, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d', 'N_batch, -'};
   end
   n_par = length(par); % number of parameters
       
@@ -167,7 +175,7 @@ function tXNL23W = get_EBY(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     switch model
       case {'std','stf','sbp','abp'}
         n_events = 2;
-      case {'stx','ssj','abj','hep'}
+      case {'stx','ssj','abj','hep','hex'}
         n_events = 3;
       case 'asj'
         n_events = 4;

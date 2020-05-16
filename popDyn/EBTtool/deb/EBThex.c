@@ -1,7 +1,7 @@
 /***
   NAME
-    ebthep.c
-    hep DEB model with reprod buffer handling: lay egg as soon as buffer allows
+    EBThex.c
+    hex DEB model with reprod buffer handling: lay egg in batches
 ***/
 
 /*==========================================================================
@@ -37,15 +37,15 @@
  *==========================================================================
  */
 
-#define E_Hp   parameter[0]   /*    J       */
+#define E_He   parameter[0]   /*    J       */
 #define E_Hb   parameter[1]   /*    J       */
 #define V_X    parameter[2]   /*    L       */
 #define h_X    parameter[3]   /*   1/d      */
 #define h_J    parameter[4]   /*   1/d      */
 #define h_B0b  parameter[5]   /*   1/d      */
-#define h_Bbp  parameter[6]   /*   1/d      */
-#define h_Bpj  parameter[7]   /*   1/d      */
-#define h_Bji  parameter[8]   /*   1/d      */
+#define h_Bbj  parameter[6]   /*   1/d      */
+#define h_Bje  parameter[7]   /*   1/d      */
+#define h_Bei  parameter[8]   /*   1/d      */
 #define h_a    parameter[9]   /*   1/d      */
 #define s_G    parameter[10]  /*    -       */
 #define thin   parameter[11]  /*    -       */
@@ -65,12 +65,15 @@
 #define E_0    parameter[25]  /*     J      */
 #define E_Rj   parameter[26]  /*   J/cm^3   */
 #define L_b    parameter[27]  /*    cm      */
-#define a_b    parameter[28]  /*     d      */
-#define aT_b   parameter[29]  /*     d      */
-#define q_b    parameter[30]  /*    1/d^2   */
-#define qT_b   parameter[31]  /*    1/d^2   */
-#define h_Ab   parameter[32]  /*    1/d     */
-#define hT_Ab  parameter[33]  /*    1/d     */
+#define L_j    parameter[28]  /*    cm      */
+#define L_e    parameter[28]  /*    cm      */
+#define a_b    parameter[29]  /*     d      */
+#define aT_b   parameter[30]  /*     d      */
+#define q_b    parameter[31]  /*    1/d^2   */
+#define qT_b   parameter[32]  /*    1/d^2   */
+#define h_Ab   parameter[33]  /*    1/d     */
+#define hT_Ab  parameter[34]  /*    1/d     */
+#define N_batch parameter[35] /*     -      */
 
 /*
  *==========================================================================
@@ -118,11 +121,11 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 { 
   register int i;
   
-  events[0] = 1.0; events[1] = 1.0; events[2] = 1.0; 
+  events[0] = 1.0; events[1] = 1.0;  events[2] = 1.0; 
   for (i=0; i<cohort_no[0]; i++)
   {
     events[0] = fabs(pop[0][i][age]-aT_b)<fabs(events[0]) ? pop[0][i][age] - aT_b : events[0];
-    events[1] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[1]) ? pop[0][i][maturity] - E_Hp : events[1];
+    events[1] = fabs(pop[0][i][maturity]-E_He)<fabs(events[1]) ? pop[0][i][maturity] - E_He : events[1];
     events[2] = fabs(pop[0][i][reprodBuf]-E_Rj*pow(pop[0][i][length],3))<fabs(events[2]) ? pop[0][i][reprodBuf] - E_Rj * pow(pop[0][i][length],3) : events[2];
   }
 }
@@ -141,12 +144,12 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
+  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
   TC = spline_TC(time); 
-  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC; pT_Am = TC * p_Am; JT_X_Am = TC * J_X_Am; aT_b = a_b/ TC;
+  kT_J = k_J * TC; kT_JX = k_JX * TC; vT = v * TC; pT_Am = TC * p_Am; JT_X_Am = TC * J_X_Am; aT_b = a_b/ TC; 
   hT_X = h_X * TC; hT_J = TC * h_J; hT_a = h_a * TC * TC; hT_Ab = h_Ab * TC; qT_b = q_b * TC * TC; 
   
   /* scaled functional response, food = scaled food density */
@@ -169,17 +172,18 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       /* help quantities */
       e = pop[0][i][resDens]/ E_m;                                /* -, scaled reserve density e = [E]/[E_m] */
       L = pop[0][i][length]; L2 = L * L; L3 = L * L2;             /* cm, struc length */
-      s_M = L<L_p ? L/ L_b : L_p/ L_b;                            /* -, acceleration factor */
+      s_M = L<L_e ? L/ L_b : L_e/ L_b;                            /* -, acceleration factor */
       kapG = e>=L/L_m ? 1. : kap_G;                               /* kap_G if shrinking, else 1 */
-      r = pop[0][i][maturity]<E_Hp ? s_M * vT * (e/ L - 1./ L_m)/ (e + kapG * g) : 0; /* 1/d, spec growth rate of structure */
+      r = L>=L_e ? s_M * vT * (e/ L - 1./ L_m)/ (e + kapG * g) : 0; /* 1/d, spec growth rate of structure */
       p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (s_M * vT/ L - r);                     /* J/d, reserve mobilisation rate */
       p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
       p_A = s_M * pT_Am * f * L2;                                 /* J/d, assimilation flux (overwritten for embryo's) */
       h_thin = 0.;                                                /* 1/d, thinning hazard */
       if (thin==1.) h_thin = pop[0][i][maturity]<E_Hp ? r : 0.;   /* 1/d, thinning hazard */
-      if      (pop[0][i][maturity]<E_Hp) hazard = pop[0][i][ageHaz] + h_Bbp + h_thin; 
-      else                               hazard = pop[0][i][ageHaz] + h_Bpi + h_thin;
+      if      (pop[0][i][length]<L_j) hazard = pop[0][i][ageHaz] + h_Bbj + h_thin; 
+      else                            hazard = pop[0][i][ageHaz] + h_Bje + h_thin;
+      if      (L >= L_e)              hazard = pop[0][i][ageHaz] + h_Bei; 
       
       popgrad[0][i][number]    = - hazard * pop[0][i][number];                                                                 /*   */
       popgrad[0][i][age]       = 1.0;                                                                                          /* 0 */
@@ -187,8 +191,8 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][ageHaz]    = pop[0][i][accel] - r * pop[0][i][ageHaz];                                                     /* 2 */
       popgrad[0][i][length]    = L * r/ 3.;                                                                                    /* 3 */
       popgrad[0][i][resDens]   = s_M * (p_A/ L3 - vT * e * E_m/ L); /* J/d.cm^3, change in reserve density [E] */              /* 4 */
-      popgrad[0][i][maturity]  = pop[0][i][maturity] < E_Hp ? p_R : 0.;                                                        /* 5 */
-      popgrad[0][i][reprodBuf] = pop[0][i][maturity] >= E_Hp ? p_R : 0.;                                                       /* 6 */
+      popgrad[0][i][maturity]  = pop[0][i][maturity]<E_He ? p_R : 0.;                                                        /* 5 */
+      popgrad[0][i][reprodBuf] = pop[0][i][maturity]>=E_Hp ? p_R : 0.;                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */
@@ -221,14 +225,15 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
 
 void InstantDynamics(double *env, population *pop, population *ofs)
 {
-  double eggs;
+  double eggs, N;
   register int i;
 
   for (i=0, eggs=0.0; i<cohort_no[0]; i++)
-    if (pop[0][i][reprodBuf] > E_0)
+    if (pop[0][i][length] >= L_j)
       {
-        eggs += pop[0][i][number] * pop[0][i][reprodBuf]/ E_0; /* add all eggs */
-        pop[0][i][reprodBuf] = 0.0; /* reset reproduction buffer */
+        N = min(pop[0][i][reprodBuf]/ E_0, pow(pop[0][i][length],3) * E_Rj/ E_0 * N_batch);
+        eggs += pop[0][i][number] * pop[0][i][reprodBuf] * N;  /* add all eggs */
+        pop[0][i][reprodBuf] = pop[0][i][reprodBuf] - N * E_0; /* reduce reproduction buffer */
       }
   
   /* specify i-states at birth, because changes are set to 0, except for age */

@@ -1,6 +1,6 @@
 /***
   NAME
-    ebtstf.c
+    EBTstf.c
     stf DEB model with reprod buffer handling: produce offspring as soon as buffer allows
 ***/
 
@@ -138,7 +138,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG, totNum;
+  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
