@@ -1,6 +1,6 @@
 txNL23W_ssm = SSM('Torpedo_marmorata');
-txNL23W_cpm = cpm('Torpedo_marmorata');
-txNL23W_ebt = ebt('Torpedo_marmorata');
+txNL23W_cpm = CPM('Torpedo_marmorata');
+txNL23W_ebt = EBT('Torpedo_marmorata');
 
 close all
 path = 'C:\Users\Bas\Documents\deb3\eps\ch9_c\';

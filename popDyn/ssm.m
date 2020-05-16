@@ -1,5 +1,5 @@
 %% SSM
-% Semi Structured Model: runs a semi stage-structured model using a generalized reactor
+% Semi Structured Model: runs a semi stage-structured population model in a generalized reactor
 
 %%
 function txNL23W = SSM(species, tT, tJX, x_0, V_X, h, t_max)
@@ -23,13 +23,13 @@ function txNL23W = SSM(species, tT, tJX, x_0, V_X, h, t_max)
 % Input:
 %
 % * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}
-% * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical)
-%     If scalar, the temperature is assumed to be constant
-% * tJX: optional (nX,2)-array with time and food supply; 
-%     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate) 
-% * h: optional vector with dilution and background hazards (default [h_X, h_B] = [0 0])
-% * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * x_0: optional scalar with initial food density as fraction of half saturation constant (default: 0)
+% * tT: optional (nT,2)-array with time (d) and temperature (K).
+%     If scalar, the temperature is assumed to be constant (K, default scalar: T_typical)
+% * tJX: optional (nX,2)-array with time (d) and food supply (mol/d); 
+%     If scalar, the food supply is assumed to be constant (mol/d, default scalar: 100 times max ingestion rate) 
+% * h: optional vector with dilution and background hazards (1/d, default [h_X, h_B] = [0 0])
+% * V_X: optional scalar with reactor volume (L, default 1000*V_m, where V_m is max struct volume)
+% * x_0: optional scalar with initial food density as fraction of half saturation constant (-, default: 0)
 % * t_max: optional scalar with simulation time (d, default 250*365).
 %
 % Output:

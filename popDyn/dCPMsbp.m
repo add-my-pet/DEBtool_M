@@ -1,17 +1,17 @@
-%% dcpm_std
-% changes in cohort states for std model
+%% dCPMsbp
+% changes in cohort states for sbp model
 
 %%
-function dxvars = dcpm_std(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+function dxvars = dCPMsbp(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
     L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dxvars = <../dcpm_std.m *dcpm_std*> (t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
+% dxvars = <../dCPMsbp.m *dCPMsbp*> (t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, S_b, aT_b, ...
 %   L_b, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G))
   
 %% Description
-%  ode's for changes in cohorts with std model
+%  ode's for changes in cohorts with sbp model
 %
 % Input:
 %
@@ -28,7 +28,7 @@ function dxvars = dcpm_std(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
 %% Remarks
 % aT_b < t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes 
     
-  [x, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(xvars);  % all vars >=0
+  [x, q, h_A, L, E, E_R, E_H, N] = CPMunpack(xvars);  % all vars >=0
   E_H = min(E_Hp, E_H); E = min(E, E_m); e = E/ E_m; L2 = L .* L; L3 = L .* L2; 
   
   if t < a_b % set embryos at birth value, since changes are too fast, below the embryo changes are set to 0
@@ -57,7 +57,8 @@ function dxvars = dcpm_std(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   kapG = max(kap_G, e >= L/ L_m); % kap_G if shrinking, else 1
   p_A = (E_H > E_Hb) * pT_Am * f .* L2;
   dE = p_A ./ L3 - vT * E ./ L; % J/d.cm^3, change in reserve density
-  r = vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
+  r = (E_H >= E_Hp) .* vT * (e./ L - 1/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
+  % don't grow after puberty
   %r = r .* (E_R <= 0) + max(0, r) .* (E_R > 0); % don't shrink on non-empty reprod buffer
   dL = r .* L/ 3; % cm/d, growth rate of structure
   
@@ -88,7 +89,7 @@ function dxvars = dcpm_std(t, xvars, E_Hp, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h
   if t < a_b % set changes of embryo states to zero
     dq(1) = 0; dh_A(1) = 0; dL(1) = 0; dE(1) = 0; dE_R(1) = 0; dE_H(1) = 0; dN(1) = 0;
   end
-
+ 
   dxvars = [dx; dq; dh_A; dL; dE; dE_R; dE_H; dN]; % pack output
 
 end

@@ -1,12 +1,12 @@
-%% cpm_map
+%% CPMmap
 % plot cohorts using linear mapping
 
 %%
-function cpm_map(tXN, tXW, M_N, M_W, n_R)
+function CPMmap(tXN, tXW, M_N, M_W, n_R)
 % created 2020/03/16 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% <../cpm_map.m *cpm_map*> (tXN, tXW, M_N, M_W)
+% <../CPMmap.m *CPMmap*> (tXN, tXW, M_N, M_W)
   
 %% Description
 %  plot cohorts using N(t+T_R) = M_N * N(t) and W(t+T_R) = M_N * W(t)

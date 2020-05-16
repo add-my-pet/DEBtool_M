@@ -1,16 +1,16 @@
-%% get_ebt
+%% get_EBT
 % get population trajectories from Escalaor Boxcar Train
 
 %%
-function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+function tXNL23W = get_EBY(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 % created 2020/04/03 by Bas Kooijman
   
 %% Syntax
-% tXNL23W = <../get_ebt.m *get_ebt*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
+% tXNL23W = <../get_EBT.m *get_EBT*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
 %% Description
-% integrates changes in food density and populations, called by ebt, 
+% integrates changes in food density and populations, called by EBT, 
 %
 % environmental variables 
 %
@@ -46,10 +46,10 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %% Remarks
 %
 % * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
-% * writes ebtmod.exe ebtmod.h, ebtmod.cvf and ebtmod.isf where mod is one of 10 DEB models
-% * uses deb/ebtmod.c, which is written in C directly
-% * runs ebtmod.exe in Window's PowerShell, which writes ebtmod.out
-% * reads ebtmod.out for output
+% * writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 10 DEB models
+% * uses deb/EBTmod.c, which is written in C directly
+% * runs EBTmod.exe in Window's PowerShell, which writes EBTmod.out
+% * reads EBTmod.out for output
 
   % unpack par and compute compound pars
   vars_pull(par); vars_pull(parscomp_st(par));  
@@ -103,7 +103,7 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
       L_p = l_j * L_m;
   end
    
-  % if you make changes in par & txtPar, do that also in deb/ebtmod.c
+  % if you make changes in par & txtPar, do that also in deb/EBTmod.c
   switch model
     case {'std','stf','sbp'}
       par = {E_Hp, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbp, h_Bpi, h_a, s_G, thin,  ...
@@ -148,22 +148,26 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
         's_G, -', 'thin, -', 'L_j, cm', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
         '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
         'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
-    case 'hep' % nog updaten
-      par = {E_Hj, E_Hp, E_Hb, tTC, tJX, V_X, h_X, h_J, q_b, h_Ab, h_Bbp, h_Bpj, h_Bji, h_a, s_G, thin, ...
-          L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0, a_b};
+    case 'hep' 
+      par = {E_Hp, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbp, h_Bpj, h_Bji, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_s, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab};
+      txtPar = {'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_X, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbs, 1/d','h_Bsj, 1/d', 'h_Bjp, 1/d', 'h_Bpi, 1/d', 'h_a, 1/d', ...
+        's_G, -', 'thin, -', 'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_s, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
     case 'hex' % nog updaten
       par = {E_He, E_Hj, E_Hb, tTC, tJX, V_X, h_X, h_J, q_b, h_Ab, h_Bbp, h_Bpi, h_a, s_G, thin, ...
           L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, E_0};
   end
   n_par = length(par); % number of parameters
       
-%% ebtmod.h: header file 
+%% EBTmod.h: header file 
 
   if strcmp(numPar.TIME_METHOD, 'DOPRI5') || strcmp(numPar.TIME_METHOD, 'DOPRI8') || strcmp(numPar.TIME_METHOD, 'RADAU5')
     switch model
       case {'std','stf','sbp','abp'}
         n_events = 2;
-      case {'stx','ssj','abj'}
+      case {'stx','ssj','abj','hep'}
         n_events = 3;
       case 'asj'
         n_events = 4;
@@ -172,7 +176,7 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     n_events = 0;
   end
 
-  fileName = ['deb\ebt', model,'.h'];
+  fileName = ['deb\EBT', model,'.h'];
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   fprintf(oid, '/***\n');
   fprintf(oid, '  NAME\n');
@@ -180,7 +184,7 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '  PURPOSE\n');
   fprintf(oid, '    header file used by the Escalator Boxcar Train program for DEB models\n\n');
   fprintf(oid, '  HISTORY\n');
-  fprintf(oid, '    SK - 2020/04/13: Created by DEBtool_M/animal/get_ebt\n');
+  fprintf(oid, '    SK - 2020/04/13: Created by DEBtool_M/animal/get_EBT\n');
   fprintf(oid, '***/\n\n');
   fprintf(oid, '#define POPULATION_NR   1\n');
   fprintf(oid, '#define I_STATE_DIM     8 /* a, q, h_a, L, E, E_R, E_H, W */\n');
@@ -193,9 +197,9 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '#define DYNAMIC_COHORTS 0\n');
   fclose(oid);
   
- %% ebtmod.cvf: control variable file 
+ %% EBTmod.cvf: control variable file 
  
-  fileName = ['ebt', model, '.cvf'];
+  fileName = ['EBT', model, '.cvf'];
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.integr_accurary, numPar.integr_accurary); 
@@ -231,9 +235,9 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   end
   fclose(oid);
   
- %% ebtmod.isf: initial state file 
+ %% EBTmod.isf: initial state file 
  
-  fileName = ['ebt', model, '.isf'];
+  fileName = ['EBT', model, '.isf'];
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   % initial time, scaled food density; length equals ENVIRON_DIM, empty line added
   fprintf(oid, '%5.4e %5.4e\n\n', 0, x_0); 
@@ -248,44 +252,44 @@ function tXNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   
   delete('*.out')
 
-%% ebtmod.exe: compile and run EBTtool
+%% EBTmod.exe: compile and run EBTtool
 
   WD = cdEBTtool;  
   if ismac
-    txt = ['!gcc -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
-    TXT = ['!gcc -IOdesolvers/ -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
-    TxT = ['!gcc -I. -I./fns -DPROBLEMFILE="<', pwd, '/deb/ebt', model, '.h>"'];
+    txt = ['!gcc -DPROBLEMFILE="<', pwd, '/deb/EBT', model, '.h>"'];
+    TXT = ['!gcc -IOdesolvers/ -DPROBLEMFILE="<', pwd, '/deb/EBT', model, '.h>"'];
+    TxT = ['!gcc -I. -I./fns -DPROBLEMFILE="<', pwd, '/deb/EBT', model, '.h>"'];
     eval([txt, ' -o ebtmain.o  -c fns/ebtmain.c']);
     eval([txt, ' -o ebtinit.o  -c fns/ebtinit.c']);
     eval([TXT, ' -o ebttint.o  -c fns/ebttint.c']);
     eval([txt, ' -o ebtcohrt.o -c fns/ebtcohrt.c']);
     eval([txt, ' -o ebtutils.o -c fns/ebtutils.c']);
     eval([txt, ' -o ebtstop.o  -c fns/ebtstop.c']);
-    eval([TxT, ' -o ebt', model, '.o   -c deb/ebt', model, '.c']);
+    eval([TxT, ' -o EBT', model, '.o   -c deb/EBT', model, '.c']);
   else
-    txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
-    TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
-    TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\ebt', model, '.h>"'];
+    txt = ['!gcc -DPROBLEMFILE="<', pwd, '\deb\EBT', model, '.h>"'];
+    TXT = ['!gcc -IOdesolvers\ -DPROBLEMFILE="<', pwd, '\deb\EBT', model, '.h>"'];
+    TxT = ['!gcc -I. -I.\fns -DPROBLEMFILE="<', pwd, '\deb\EBT', model, '.h>"'];
     eval([txt, ' -o ebtmain.o  -c fns\ebtmain.c']);
     eval([txt, ' -o ebtinit.o  -c fns\ebtinit.c']);
     eval([TXT, ' -o ebttint.o  -c fns\ebttint.c']);
     eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
     eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
     eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
-  eval([TxT, ' -o ebt', model, '.o   -c deb\ebt', model, '.c']);
+  eval([TxT, ' -o EBT', model, '.o   -c deb\EBT', model, '.c']);
   end
-  eval(['!gcc -o ebt', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o ebt', model, '.o -lm']); % link o-files in ebtmod.exe
+  eval(['!gcc -o EBT', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o EBT', model, '.o -lm']); % link o-files in EBTmod.exe
   delete('*.o')
   if ismac
-    eval(['!./ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
+    eval(['!./EBT', model, '.exe EBT', model]); % run EBTtool using input files run.cvf and run.isf
   else
-    eval(['!.\ebt', model, '.exe ebt', model]); % run EBTtool using input files run.cvf and run.isf
+    eval(['!.\EBT', model, '.exe EBT', model]); % run EBTtool using input files run.cvf and run.isf
   end
   cd(WD);
   
-%% ebtmod.out: read output variable file 
+%% EBTmod.out: read output variable file 
 
-  out = fopen(['ebt', model, '.out'], 'r');
+  out = fopen(['EBT', model, '.out'], 'r');
   data = fscanf(out,'%e');
   fclose(out);
   n = length(data);

@@ -1,12 +1,12 @@
-%% cpm_unpack
+%% CPMunpack
 % unpack states of cohorts
 
 %%
-function [X, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(Xvars)
+function [X, q, h_A, L, E, E_R, E_H, N] = CPMunpack(Xvars)
 % created 2020/03/09 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% [X, q, h_A, L, E, E_R, E_H, N] = <../cpm_unpack.m *cpm_unpack*> (Xvars)
+% [X, q, h_A, L, E, E_R, E_H, N] = <../CPMunpack.m *CPMunpack*> (Xvars)
   
 %% Description
 %  unpack states of cohorts

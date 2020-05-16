@@ -1,16 +1,16 @@
-%% ebt
+%% EBT
 % escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
 
 %%
-function [txNL23W, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % created 2020/04/03 by Bas Kooijman
 
 %% Syntax
-% txL23W = <../ebt.m *ebt*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
+% txL23W = <../EBT.m *EBT*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
 
 %% Description
 % Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. 
-% Opens 2 html-pages in system browser to report species traits and ebt parameter settings, and plots 4 figures.
+% Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model.
@@ -68,7 +68,7 @@ function [txNL23W, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page has traits at inidvidual level using the possibly modified parameter values. 
-% This function ebt only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_ebt.html *get_ebt*>.
+% This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBT*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
 % For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf *manual*>
@@ -77,8 +77,8 @@ function [txNL23W, info] = ebt(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * ebt('Torpedo_marmorata');
-% * ebt('Torpedo_marmorata', C2K(18));
+% * EBT('Torpedo_marmorata');
+% * EBT('Torpedo_marmorata', C2K(18));
 
 WD = cdEBTtool;
 
@@ -252,7 +252,20 @@ if exist('numPar', 'var') && ~isempty(numPar)
 end
 
 % get trajectories
-txNL23W = get_ebt(model, par, tT, tJX, x_0, V_X, t_max, opt);
+txNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, opt);
+
+% delete created files
+delete(['EBT', model, '.csb'])
+delete(['EBT', model, '.cvf'])
+delete(['EBT', model, '.esf'])
+delete(['EBT', model, '.exe'])
+delete(['EBT', model, '.isf'])
+delete(['EBT', model, '.out'])
+delete(['EBT', model, '.rep'])
+delete('spline_JX.c')
+delete('spline_TC.c')
+
+cd(WD);
 
 %% plotting
 close all
@@ -314,9 +327,9 @@ fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
-%%  ebt_my_pet.html
+%%  EBT_my_pet.html
 
-fileName = ['ebt_', species, '.html'];
+fileName = ['EBT_', species, '.html'];
 oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
 fprintf(oid, '<!DOCTYPE html>\n');
@@ -457,6 +470,4 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 web(fileName,'-browser') % open html in systems browser
-
-cd(WD);
 

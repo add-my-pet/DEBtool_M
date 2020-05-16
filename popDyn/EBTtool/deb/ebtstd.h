@@ -1,12 +1,12 @@
 /***
   NAME
-    deb\ebtstd.h
+    deb\EBTstd.h
 
   PURPOSE
     header file used by the Escalator Boxcar Train program for DEB models
 
   HISTORY
-    SK - 2020/04/13: Created by DEBtool_M/animal/get_ebt
+    SK - 2020/04/13: Created by DEBtool_M/animal/get_EBT
 ***/
 
 #define POPULATION_NR   1

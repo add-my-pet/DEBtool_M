@@ -1,17 +1,17 @@
-%% dcpm_abj
-% changes in cohort states for abj model
+%% dCPMasj
+% changes in cohort states for asj model
 
 %%
-function dxvars = dcpm_abj(t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-    L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
+function dxvars = dCPMasj(t, xvars, E_Hp, E_Hj, E_Hs, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Bsj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+    L_b, L_s, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
 % created 2020/03/15 by Bob Kooi & Bas Kooijman
   
 %% Syntax
-% dxvars = <../dcpm_abj.m *dcpm_abj*> (t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbj, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
-%   L_b, L_j, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
+% dxvars = <../dCPMasj.m *dCPMasj*> (t, xvars, E_Hp, E_Hj, E_Hs,  E_Hb, tTC, tJX, V_X, h_D, h_J, q_b, h_Ab, h_Bbs, h_Hjp, h_Bjp, h_Bpi, h_a, s_G, thin, S_b, a_b, ...
+%   L_b, L_j, L_s, L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G)
   
 %% Description
-%  ode's for changes in cohorts with abj model
+%  ode's for changes in cohorts with asj model
 %
 % Input:
 %
@@ -28,7 +28,7 @@ function dxvars = dcpm_abj(t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
 %% Remarks
 % aT_b < t_R should apply; changes in embryo states are evaluated separately, and embryo states are set at birth values in the cohort changes 
     
-  [x, q, h_A, L, E, E_R, E_H, N] = cpm_unpack(xvars);  % all vars >=0
+  [x, q, h_A, L, E, E_R, E_H, N] = CPMunpack(xvars);  % all vars >=0
   E_H = min(E_Hp, E_H); E = min(E, E_m); e = E/ E_m; L2 = L .* L; L3 = L .* L2; 
   
   if t < a_b % set embryos at birth value, since changes are too fast, below the embryo changes are set to 0
@@ -51,7 +51,7 @@ function dxvars = dcpm_abj(t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   kT_J = k_J * TC; kT_JX = k_JX * TC; 
   hT_D = h_D * TC; hT_J = TC * h_J; hT_a = h_a * TC^2; 
   % account for acceleration
-  s_M = min(L_j, L)/ L_b;
+  s_M = min(L_j, max(L, L_s))/ L_s;
   vT = TC * v .* s_M;
   pT_Am = TC * p_Am .* s_M;
   JT_X_Am = TC * J_X_Am .* s_M; 
@@ -59,7 +59,7 @@ function dxvars = dcpm_abj(t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   f = x/ (x + 1); % -, scaled func response
   dx = J_XI/ V_X/ K - hT_D * x - f .* sum((E_H > E_Hb) .* JT_X_Am .* N .* L.^2)/ K; % food dynamics
     
-  kapG = max(kap_G, e >= L ./ s_M/ L_m); % kap_G if shrinking, else 1
+  kapG = max(kap_G, e >= L ./ s_M / L_m); % kap_G if shrinking, else 1
   p_A = (E_H > E_Hb) .* pT_Am * f .* L2;
   dE = p_A ./ L3 - vT .* E ./ L; % J/d.cm^3, change in reserve density
   r = vT .* (e./ L - 1 ./ s_M/ L_m) ./ (e + kapG * g);  % 1/d, spec growth rate of structure
@@ -85,8 +85,8 @@ function dxvars = dcpm_abj(t, xvars, E_Hp, E_Hj, E_Hb, tTC, tJX, V_X, h_D, h_J, 
   dh_A = q - r .* h_A; % 1/d, aging hazard
 
   % stage-specific background hazards
-  h_B = h_Bbj * (E_H <= E_Hj) + h_Bjp * (E_H > E_Hj) .* (E_H <= E_Hp) + h_Bpi * (E_H > E_Hp);
-  sel = (L >= L_j); h_X = thin * r .* (sel * 2/3 + ~sel); % thinning hazard
+  h_B = h_Bbs * (E_H <= E_Hs) + h_Bsj * (E_H > E_Hs) .* (E_H <= E_Hj) + h_Bjp * (E_H > E_Hj) .* (E_H < E_Hp) + h_Bpi * (E_H >= E_Hp);
+  sel = (L < L_s) .* (L >= L_j); h_X = thin * r .* (sel * 2/3 + ~sel); % thinning hazard
   h = h_A + h_B + h_X + hT_J * max(0, - p_R ./ p_J); 
   dN = - h .* N;
   

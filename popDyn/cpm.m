@@ -1,12 +1,12 @@
-%% cpm
+%% CPM
 % Cohort Projection Model: runs a cohort projection model using a generalized reactor
 
 %%
-function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = cpm(species, tT, tJX, x_0, V_X, h, n_R, t_R)
+function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = CPM(species, tT, tJX, x_0, V_X, h, n_R, t_R)
 % created 2020/03/02 by Bob Kooi and Bas Kooijman
 
 %% Syntax
-% [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = <../cpm.m *cpm*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
+% [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = <../CPM.m *CPM*> (species, tT, tJX, x_0, V_X, h, n_R, t_R) 
 
 %% Description
 % Cohort Projection Model: Plots population trajectories in a generalised reactor for a selected species of cohorts that periodically reproduce synchroneously. 
@@ -51,7 +51,7 @@ function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = cpm(species, tT, tJX, x_
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page has traits at individual level using the possibly modified parameter values. 
 % The last 5 outputs (the linear maps for N, L, L^2, L^3 and W) are only not-empty if the number of cohorts did not change long enough.
-% cpm only controls input/output; computations are done in get_cpm, which calls <../html/dpm_mod.html *dcpm_mod*>.
+% CPM only controls input/output; computations are done in get_CPM, which calls <../html/dpm_mod.html *dCPMmod*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
 
@@ -59,8 +59,8 @@ function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = cpm(species, tT, tJX, x_
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * cpm('Torpedo_marmorata');
-% * cpm('Torpedo_marmorata', C2K(18));
+% * CPM('Torpedo_marmorata');
+% * CPM('Torpedo_marmorata', C2K(18));
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
@@ -199,7 +199,7 @@ switch model
 end
 
 % get trajectories
-[txN, txL, txL2, txL3, txW, M_N, M_L, M_L2, M_L3, M_W, info] = get_cpm(model, par, tT, tJX, x_0, V_X, n_R, t_R);
+[txN, txL, txL2, txL3, txW, M_N, M_L, M_L2, M_L3, M_W, info] = get_CPM(model, par, tT, tJX, x_0, V_X, n_R, t_R);
 if info==0
   txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
 end
@@ -296,9 +296,9 @@ fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
-%%  cpm_my_pet
+%%  CPM_my_pet
 
-fileName = ['cpm_', species, '.html'];
+fileName = ['CPM_', species, '.html'];
 oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
 fprintf(oid, '<!DOCTYPE html>\n');
