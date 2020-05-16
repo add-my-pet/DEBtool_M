@@ -138,11 +138,11 @@ end
 
 % hazard rates, thinning
 if ~exist('h','var') || isempty(h)
-  h_D = 0.1; thin = 0; 
+  h_X = 0.1; thin = 0; 
 else
-  h_D = h(1); thin = h(end);
+  h_X = h(1); thin = h(end);
 end
-par.h_D = h_D; par.thin = thin; 
+par.h_X = h_X; par.thin = thin; 
 %
 switch model
   case {'std','stf','sbp','abp'}
