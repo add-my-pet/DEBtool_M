@@ -2,7 +2,7 @@
 % get population trajectories from Escalaor Boxcar Train
 
 %%
-function tXNL23W = get_EBY(model, par, tT, tJX, x_0, V_X, t_max, numPar)
+function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
 % created 2020/04/03 by Bas Kooijman
   
