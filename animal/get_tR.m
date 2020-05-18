@@ -78,6 +78,10 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     [tau_b, lb, info] = get_tb ([g, k, vHb] , f, lb0); 
     options = odeset('Events', @event_xpR); 
     [tau, vHlR, tau_xpR, vHlR_xpR] = ode45(@dget_vHlR, [0; 1e20], [vHb; lb; 0], options, f, g, k, lT, vHx, vHp, tN);
+    if length(tau_xpR)<3
+       tau_R = []; tau_p = []; tau_x = []; tau_b =[]; lR = [];  lp = [];  lx = [];  lb = [];  info = 0;
+       return
+    end
     tau_x = tau_b + tau_xpR(1); tau_p = tau_b + tau_xpR(2); tau_R = tau_b + tau_xpR(3); 
     lx = vHlR_xpR(1,2); lp = vHlR_xpR(2,2); lR = vHlR_xpR(3,2);
     if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 || isreal(tau_R) == 0 % tb, tx, tp and tR must be real and positive
