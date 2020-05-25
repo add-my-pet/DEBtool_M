@@ -112,7 +112,7 @@ end
 % temperature
 if ~exist('tT','var') || isempty(tT)
   T = metaData.T_typical; tT = [0 T; t_max T];
-else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
   tT = [tT; t_max tT(end,2)];    
 end
 
