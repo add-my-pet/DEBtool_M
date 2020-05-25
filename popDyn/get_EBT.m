@@ -66,12 +66,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     par_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
   % knots for temperature
-  tTC = tT; 
-  if size(tT,2) == 1
-    tTC = tempcorr(tT, T_ref, par_T);
-  else
-    tTC(:,2) = tempcorr(tT(:,2), T_ref, par_T);
-  end
+  tTC = tT;  tTC(:,2) = tempcorr(tT(:,2), T_ref, par_T);
   write_spline('TC', tTC); TC = tTC(1,2);
   %
   % knots for food density in supply flux

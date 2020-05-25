@@ -110,10 +110,10 @@ if ~exist('t_max','var') || isempty(t_max)
 end
 
 % temperature
-if ~exist('tT','var') || isempty(tT)
+if ~exist('tT','var') || isempty(tT) || size(tT,2) == 1
   T = metaData.T_typical; tT = [0 T; t_max T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];    
+  tT = [tT; t_max tT(end,2)];
 end
 
 % volume of reactor
@@ -122,7 +122,7 @@ if ~exist('V_X','var') || isempty(V_X)
 end
 
 % supply food 
-if ~exist('tJX','var') || isempty(tJX)
+if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
   J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max J_X]; 
 else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
