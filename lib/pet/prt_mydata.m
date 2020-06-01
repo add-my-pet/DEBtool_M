@@ -221,8 +221,8 @@ if isfield(metaData, 'facts')
   fld = fieldnames(metaData.facts); n = length(fld); str = [];
   for i = 1:n
     str = [str, '''', fld{i}, ''', ', fld{i}, ','];
-    fprintf(fid, '%s  = %s;\n', fld{i}, fld{i});
-    fprintf(fid, 'metaData.bibkey.%s = %s;\n', fld{i}, metaData.bibkey.(fld{i}));
+    fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.facts.(fld{i}));
+    fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, metaData.bibkey.(fld{i}));
   end
   str(end)=[];
   fprintf(fid, 'metaData.facts = struct(%s);', str);
