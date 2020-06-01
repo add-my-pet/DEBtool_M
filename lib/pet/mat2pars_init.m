@@ -2,19 +2,19 @@
 % writes a pars_init file from a .mat file
 
 %%
-function mat2pars_init(speciesnm, varargin)
+function mat2pars_init(my_pet, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
 % modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21 by Bas Kooijman
 
 %% Syntax
-% <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
+% <../mat2pars_init.m *mat2pars_init*> (my_pet, varargin) 
 
 %% Description
-% Makes a pars_init file from a results_'speciesnm'.mat file
+% Writes a pars_init_my_pet.m file from a results_my_pet.mat file
 %
 % Input:
 %
-% * speciesnm: optional string with the species name (default pets{1} for single species or group for multiple species)
+% * my_pet: optional string with the species name (default pets{1} for single species or group for multiple species)
 % * varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file
 
 %% Remarks
@@ -28,11 +28,11 @@ global pets cov_rules
 
 n_pets = length(pets);
 
-if ~exist('speciesnm','var')
+if ~exist('my_pet','var')
   if n_pets == 1
-    speciesnm = pets{1}; 
+    my_pet = pets{1}; 
   else
-    speciesnm = 'group';
+    my_pet = 'group';
   end
   fix = 0;
 elseif nargin > 2
@@ -43,7 +43,7 @@ else
   fix = 1;  % all parameters fixed 
 end
 
-matFile = ['results_', speciesnm, '.mat'];
+matFile = ['results_', my_pet, '.mat'];
 
 % check that mydata actually exists
 if exist(matFile, 'file') == 0
@@ -51,7 +51,7 @@ if exist(matFile, 'file') == 0
   return
 end
 
-pars_initFile = ['pars_init_', speciesnm, '.m'];
+pars_initFile = ['pars_init_', my_pet, '.m'];
 
 if exist(pars_initFile, 'file') == 2
   prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
@@ -65,8 +65,8 @@ end
 load(matFile);
 
 % open pars_init file
-pars_init_id = fopen(['pars_init_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
-fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', speciesnm,'(metaData)\n\n']);
+pars_init_id = fopen(['pars_init_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
+fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', my_pet,'(metaData)\n\n']);
 
 if ~iscell(metaPar.model)
   fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n']);
