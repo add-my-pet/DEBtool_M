@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_mydata</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-01"><meta name="DC.source" content="prt_mydata.m"><style type="text/css">
+      --><title>prt_mydata</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-02"><meta name="DC.source" content="prt_mydata.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,10 +66,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_mydata</h1><!--introduction--><p>writes a mydata_my_pet.m file from data structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">set metaData</a></li><li><a href="#8">set zero-variate data</a></li><li><a href="#9">set uni-variate data</a></li><li><a href="#10">set weights</a></li><li><a href="#11">set pseudodata and respective weights</a></li><li><a href="#12">pack auxData and txtData for output</a></li><li><a href="#13">Group plots</a></li><li><a href="#14">Discussion points</a></li><li><a href="#15">Facts</a></li><li><a href="#16">Acknowledgment</a></li><li><a href="#17">Links</a></li><li><a href="#18">References</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_mydata.m"><b>prt_mydata</b></a> (data, auxData, metaData, txtData)</p><h2 id="4">Description</h2><p>Writes a mydata_my_pet.m file from 4 data-structures; it is inverse to mydata_my_pet.m.</p><p>Input:</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilirary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><h2 id="5">Remarks</h2><p>The files will be saved in your local directory; use the cd command to the dir of your choice BEFORE running this function to save files in the desired place. All weights are set at default values in the resulting file; you might want to change them in the file during the estimation process. This version ignores auxData other than temperature.</p><h2 id="6">Example of use</h2><h2 id="7">set metaData</h2><h2 id="8">set zero-variate data</h2><h2 id="9">set uni-variate data</h2><h2 id="10">set weights</h2><h2 id="11">set pseudodata and respective weights</h2><h2 id="12">pack auxData and txtData for output</h2><h2 id="13">Group plots</h2><h2 id="14">Discussion points</h2><h2 id="15">Facts</h2><h2 id="16">Acknowledgment</h2><h2 id="17">Links</h2><h2 id="18">References</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_mydata</h1><!--introduction--><p>writes file mydata_my_pet.m from 4 structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">set metaData</a></li><li><a href="#8">set zero-variate data</a></li><li><a href="#9">set uni-variate data</a></li><li><a href="#10">set weights</a></li><li><a href="#11">set pseudodata and respective weights</a></li><li><a href="#12">pack auxData and txtData for output</a></li><li><a href="#13">Group plots</a></li><li><a href="#14">Discussion points</a></li><li><a href="#15">Facts</a></li><li><a href="#16">Acknowledgment</a></li><li><a href="#17">Links</a></li><li><a href="#18">References</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_mydata.m"><b>prt_mydata</b></a> (data, auxData, metaData, txtData)</p><h2 id="4">Description</h2><p>Writes file mydata_my_pet.m from 4 data-structures; it is inverse to mydata_my_pet.m.</p><p>Input:</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilirary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><h2 id="5">Remarks</h2><p>The file will be saved in your local directory; use the cd command to the dir of your choice BEFORE running this function to save files in the desired place. All weights are set at default values in the resulting file; you might want to change them in the file during the estimation process. This version ignores auxData other than temperature.</p><h2 id="6">Example of use</h2><h2 id="7">set metaData</h2><h2 id="8">set zero-variate data</h2><h2 id="9">set uni-variate data</h2><h2 id="10">set weights</h2><h2 id="11">set pseudodata and respective weights</h2><h2 id="12">pack auxData and txtData for output</h2><h2 id="13">Group plots</h2><h2 id="14">Discussion points</h2><h2 id="15">Facts</h2><h2 id="16">Acknowledgment</h2><h2 id="17">Links</h2><h2 id="18">References</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_mydata
-% writes a mydata_my_pet.m file from data structures
+% writes file mydata_my_pet.m from 4 structures
 
 %%
 function prt_mydata(data, auxData, metaData, txtData)
@@ -79,7 +79,7 @@ function prt_mydata(data, auxData, metaData, txtData)
 % <../prt_mydata.m *prt_mydata*> (data, auxData, metaData, txtData) 
 
 %% Description
-% Writes a mydata_my_pet.m file from 4 data-structures; it is inverse to mydata_my_pet.m.
+% Writes file mydata_my_pet.m from 4 data-structures; it is inverse to mydata_my_pet.m.
 %
 % Input:
 %
@@ -89,7 +89,7 @@ function prt_mydata(data, auxData, metaData, txtData)
 % * txtData: structure with text for data 
 
 %% Remarks
-% The files will be saved in your local directory; 
+% The file will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % All weights are set at default values in the resulting file; 
 % you might want to change them in the file during the estimation process.
@@ -291,8 +291,8 @@ if isfield(metaData, 'facts')
   fld = fieldnames(metaData.facts); n = length(fld); str = [];
   for i = 1:n
     str = [str, '''', fld{i}, ''', ', fld{i}, ','];
-    fprintf(fid, '%s  = %s;\n', fld{i}, fld{i});
-    fprintf(fid, 'metaData.bibkey.%s = %s;\n', fld{i}, metaData.bibkey.(fld{i}));
+    fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.facts.(fld{i}));
+    fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, metaData.bibkey.(fld{i}));
   end
   str(end)=[];
   fprintf(fid, 'metaData.facts = struct(%s);', str);

@@ -8,7 +8,7 @@ function prt_run_my_pet(my_pet)
 % <../prt_run_my_pet.m *prt_run_my_pet*> (my_pet) 
 
 %% Description
-% Writes file run_my_pet.m d in run_group
+% Writes file run_my_pet.m in your local directory.
 %
 % Input:
 %
@@ -19,7 +19,7 @@ function prt_run_my_pet(my_pet)
 % * no explicit output, but writes run_my_pet.m
 
 %% Remarks
-% The files will be saved in your local directory; 
+% The file will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % Out comment "method, no" to start running esptimation, if mydata_my_pet, pars_init_my_pet and predict_my_pet exist
 

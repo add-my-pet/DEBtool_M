@@ -1,5 +1,5 @@
 %% prt_mydata
-% writes a mydata_my_pet.m file from data structures
+% writes file mydata_my_pet.m from 4 structures
 
 %%
 function prt_mydata(data, auxData, metaData, txtData)
@@ -9,7 +9,7 @@ function prt_mydata(data, auxData, metaData, txtData)
 % <../prt_mydata.m *prt_mydata*> (data, auxData, metaData, txtData) 
 
 %% Description
-% Writes a mydata_my_pet.m file from 4 data-structures; it is inverse to mydata_my_pet.m.
+% Writes file mydata_my_pet.m from 4 data-structures; it is inverse to mydata_my_pet.m.
 %
 % Input:
 %
@@ -19,7 +19,7 @@ function prt_mydata(data, auxData, metaData, txtData)
 % * txtData: structure with text for data 
 
 %% Remarks
-% The files will be saved in your local directory; 
+% The file will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % All weights are set at default values in the resulting file; 
 % you might want to change them in the file during the estimation process.
