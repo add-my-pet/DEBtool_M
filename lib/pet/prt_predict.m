@@ -30,9 +30,9 @@ function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
 %
 % Structure prdCode has model name as first field names
 %
-% * load with path: load([path,prdCode])
-% * For zero-variate field names, field res has the name of output variable; field aux the cell string with auxPar for that code.
-% * Names of univariate data must have structure fld_index, where fld must occur in prdCode 
+% * Field res has the name of output variable for zero-variate field names, and header text for uni-variate data
+% * Field aux has the cell string with auxPar for that code.
+% * The name of a univariate data set called is fldi in the code; it will be back-substituded before printing
 % * Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');
 % * Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i'); 
 % * Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)
