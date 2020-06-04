@@ -2,11 +2,11 @@
 % writes file predict_my_pet.m 
 
 %%
-function auxPar = prt_predict(par, metaPar, data, auxData, metaData)
+function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
 % created 2020/06/02 by  Bas Kooijman
 
 %% Syntax
-% auxPar = <../prt_predict.m *prt_predict*> (par, metaPar, data, auxData) 
+% [auxPar, info] = <../prt_predict.m *prt_predict*> (par, metaPar, data, auxData) 
 
 %% Description
 % Writes file predict_my_pet.m from pars, data, auxData and metaData. Uses code as specified in predict.mat
@@ -22,15 +22,23 @@ function auxPar = prt_predict(par, metaPar, data, auxData, metaData)
 % Output:
 %
 % * auxPar: cell string with names of auxiliary parameters that are used
+% * info: boolean for success of filling all code (1), or failure (0)
 
 %% Remarks
 % The file will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
+%
 % Structure prdCode has model name as first field names
-% For zero-variate field names, field res has the name of output variable; field aux the cell string with auxPar for that code.
-% Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i'); save('prdCode.mat','prdCode')
-% Modify code-line i of variable tWw with: prdCode.std.tWw{i} = 'something'; save('prdCode.mat','prdCode')
-% Names of univariate data must have structure fld_index, where fld must occur in prdCode
+%
+% * load with path: load([path,prdCode])
+% * For zero-variate field names, field res has the name of output variable; field aux the cell string with auxPar for that code.
+% * Names of univariate data must have structure fld_index, where fld must occur in prdCode 
+% * Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');
+% * Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i'); 
+% * Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)
+% * Modify code-line i of variable tWw with: prdCode.std.tWw{i} = % 'something';
+% * Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD)
+%
 % The intended use of this function in the context of AmPeps
 %  
 % * first compose a mydata-file
@@ -41,8 +49,7 @@ function auxPar = prt_predict(par, metaPar, data, auxData, metaData)
 % * finally: you are ready to start the estimation procedure
 
 auxPar = {}; model = metaPar.model; my_pet = metaData.species; 
-path = which('prt_predict'); i = strfind(path,'\'); path = path(1:i(end));
-load([path, 'prdCode']);
+WD = cdPet; load prdCode; cd(WD);
 
 %fid = fopen(['predict_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
 fid = fopen('predict.m', 'w+'); % open file for reading and writing, delete existing content
@@ -86,7 +93,7 @@ fprintf(fid, '\n');
 
 % life cycle
 fprintf(fid, '%% life cycle\n');
-if strcmp(model,'std') || isfield(data, 'tR')
+if strcmp(model,'std') && isfield(data, 'tR')
   fprintf(fid, '%s', cell2str(prdCode.(model).lcR));
   auxPar = [auxPar, 't_N'];
 else
@@ -142,7 +149,7 @@ if any(sel_j)
 end
 
 % puberty
-fld_p = {'ap', 'Lp', 'Wwp', 'Wdp'}; % fields for section puberty
+fld_p = {'tp', 'Lp', 'Wwp', 'Wdp'}; % fields for section puberty
 sel_p = ismember(fld0,fld_p);
 if any(sel_p)
   fprintf(fid, '%% puberty\n');
@@ -184,11 +191,15 @@ if any(sel_R)
 end
 
 % males
-fld_m = {'tpm', 'Lim', 'Wwim', 'Wdim'}; % fields for section males
+fld_m = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wdpm', 'Wwim', 'Wdim', 'tWw_m', 'tWd_m', 'tL_m', 'LdL_m'}; % fields for section males
 sel_m = ismember(fld0,fld_m);
 if any(sel_m)
   fprintf(fid, '%% males\n');
+  fprintf(fid, '%s', cell2str(prdCode.(model).L_mm));
   fld_m = fld_m(ismember(fld_m,fld0)); n_fldm = length(fld_m);
+  if any(ismember(fld_m, {'tpm', 'Lpm', 'Wwpm', 'Wdpm'}))
+    fprintf(fid, '%s', cell2str(prdCode.(model).L_pm));
+  end
   for i = 1:n_fldm
     fprintf(fid, '%s', cell2str(prdCode.(model).(fld_m{i})));
   end
@@ -221,16 +232,22 @@ fprintf(fid, '\n');
 sel_1 = true(n_fld1,1);
 for i = 1:n_fld1
   try
-    fldi = fld1{i}; sep = strfind(fldi, '_'); 
+    fldi = fld1{i}; sep = strfind(fldi, '_'); sep1 = sep(1); sep = sep(end);
     if isempty(sep)
-      fld = fldi; 
+      fld = fldi; fld_index = []; % data-type 
     else
-      fld = fldi(1:sep-1); fldi = fldi(sep+1:end);
+      fld = fldi(1:sep1-1); % data-type
+      fld_index = fldi(sep+1:end); % data index
+    end
+    if strcmp(fld_index,'m')
+      fld = [fld, '_m'];
     end
     code = cell2str(prdCode.(model).(fld));
-    code = strrep(code, 'fldi', fldi); 
-    code = strrep(code, 'fld', fld);
-    code = strrep(code, fld, fld1{i});    
+    code = strrep(code, 'fldi', fldi); % replace data index
+    if isempty(fld_index)
+      code = strrep(code, [fld, '_'], fld); % remove underscore of fld
+    end
+    fprintf(fid, '%% %s\n', prdCode.(model).res.(fld));
     fprintf(fid, '%s', code);
   catch
     sel_1(i) = false;
@@ -260,6 +277,17 @@ end
 fprintf(fid, '\n');
 
 fclose(fid);
+
+% auxPar
+fld = [fld0(sel_0); fld1(sel_1)]; n_fld = length(fld); 
+for i =1:n_fld
+  if isfield(prdCode.(model).aux, fld{i})
+    auxPari = prdCode.(model).aux.(fld{i});
+    auxPar = [auxPar; auxPari(:)];
+  end
+end
+auxPar = unique(auxPar);
+info = n_rfld0 == 0 && n_rfld1 == 0;
 
 end
 
