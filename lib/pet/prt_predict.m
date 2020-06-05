@@ -30,14 +30,15 @@ function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
 %
 % Structure prdCode has model name as first field names
 %
-% * Field res has the name of output variable for zero-variate field names, and header text for uni-variate data
-% * Field aux has the cell string with auxPar for that code.
-% * The name of a univariate data set called is fldi in the code; it will be back-substituded before printing
+% * Under the model field, field res has the name of output variable for zero-variate field names or header text for uni-variate data
+% * Under the model field, field aux has the cell string with auxPar for that code.
+% * Other fields under the model field are names of variables with a cell string of code, each cell containg one code line
+% * The name of a univariate data set is called fldi in the code; it will be back-substituded before printing
 % * Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');
 % * Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i'); 
 % * Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)
-% * Modify code-line i of variable tWw with: prdCode.std.tWw{i} = % 'something';
-% * Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD)
+% * Modify code-line i of variable tWw with: prdCode.std.tWw{i} = 'something';
+% * Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD) 
 %
 % The intended use of this function in the context of AmPeps
 %  
@@ -102,6 +103,34 @@ end
 fprintf(fid, '\n');
 
 % initial
+fld_0 = {'E0', 'Ww0', 'Wd0', 'Wwh', 'Wdh', 'Lh'}; % fields for section initial
+sel_0 = ismember(fld0,fld_0);
+if any(sel_0)
+  fprintf(fid, '%% initial\n');
+  fld_0 = fld_0(ismember(fld_0,fld0)); n_fld0 = length(fld_0);
+  if any(ismember(fld_0, {'E0', 'Ww0', 'Wd0'}))
+    fprintf(fid, '%s', cell2str(prdCode.(model).U_E0));
+  end
+  for i = 1:n_fld0
+    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_0{i})));
+  end
+  fprintf(fid, '\n');
+end
+
+% hatch
+fld_h = {'ah', 'Lh', 'Wwh', 'Wdh'}; % fields for section hatch
+sel_h = ismember(fld0,fld_h);
+if any(sel_h)
+  fprintf(fid, '%% hatch\n');
+  fld_h = fld_h(ismember(fld_h,fld0)); n_fldh = length(fld_h);
+  if any(ismember(fld_0, {'ah', 'Lh', 'Wwh', 'Wdh'}))
+    fprintf(fid, '%s', cell2str(prdCode.(model).aUL_h));
+  end
+  for i = 1:n_fldh
+    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_h{i})));
+  end
+  fprintf(fid, '\n');
+end
 
 % birth
 fld_b = {'ab', 'Lb', 'Wwb', 'Wdb'}; % fields for section birth
@@ -207,7 +236,7 @@ if any(sel_m)
 end
 
 % remaining zero-variate fields
-sel_0 = any([sel_b, sel_x, sel_j, sel_p, sel_i, sel_R, sel_m], 2); 
+sel_0 = any([sel_0, sel_h, sel_b, sel_x, sel_j, sel_p, sel_i, sel_R, sel_m], 2); 
 rfld0 = fld0(~sel_0); n_rfld0 = length(rfld0);
 if n_rfld0 > 0
   fprintf(fid, '%% Warning: The following zero-variate data fields were not recognized\n');
