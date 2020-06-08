@@ -21,11 +21,12 @@ function AmPgui(action)
 % * txtData: structure with text for data 
 
 %% Remarks
-% set metaData on global before use of this function.
-% Files will be saved in your local directory, wich should not contain results_my_pet.mat files, other than written my this function 
-% Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
-% All weights are set at default values in the resulting file; 
-% This function is called in AmPeps
+%
+% * set metaData on global before use of this function.
+% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function 
+% * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
+% * All weights are set at default values in the resulting file; 
+% * This function is called in AmPeps
 
 global eco_types
 global data auxData metaData txtData color select_id id_links
@@ -600,7 +601,7 @@ function linksCb(source, eventdata)
    color.hl = [0 .6 0]; set(hl, 'ForegroundColor', color.hl);
 end
 
-%% Other support functions
+%% other support functions
 function str = cell2str(cell)
   if isempty(cell)
     str = []; return

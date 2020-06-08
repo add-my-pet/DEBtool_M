@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">initiation</a></li><li><a href="#7">setup gui</a></li><li><a href="#9">fill fields</a></li><li><a href="#12">callback functions</a></li><li><a href="#13">Other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p>[data, auxData, metaData, txtData] = <a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>Like mydata_my_pet.m, it writes 4 data-structures from scratch</p><p>Input: will be entered during the GUI session</p><p>Output:</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilirary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><h2 id="5">Remarks</h2><p>set metaData on global before use of this function. Files will be saved in your local directory, wich should not contain results_my_pet.mat files, other than written my this function Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place. All weights are set at default values in the resulting file; This function is called in AmPeps</p><h2 id="6">initiation</h2><h2 id="7">setup gui</h2><h2 id="9">fill fields</h2><h2 id="12">callback functions</h2><h2 id="13">Other support functions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">initiation</a></li><li><a href="#7">setup gui</a></li><li><a href="#9">fill fields</a></li><li><a href="#12">callback functions</a></li><li><a href="#13">other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p>[data, auxData, metaData, txtData] = <a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>Like mydata_my_pet.m, it writes 4 data-structures from scratch</p><p>Input: will be entered during the GUI session</p><p>Output:</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilirary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>set metaData on global before use of this function.</li><li>Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function</li><li>Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</li><li>All weights are set at default values in the resulting file;</li><li>This function is called in AmPeps</li></ul></div><h2 id="6">initiation</h2><h2 id="7">setup gui</h2><h2 id="9">fill fields</h2><h2 id="12">callback functions</h2><h2 id="13">other support functions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% AmPgui
 % a GUI to create 4 structures
@@ -91,11 +91,12 @@ function AmPgui(action)
 % * txtData: structure with text for data 
 
 %% Remarks
-% set metaData on global before use of this function.
-% Files will be saved in your local directory, wich should not contain results_my_pet.mat files, other than written my this function 
-% Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
-% All weights are set at default values in the resulting file; 
-% This function is called in AmPeps
+%
+% * set metaData on global before use of this function.
+% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function 
+% * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
+% * All weights are set at default values in the resulting file; 
+% * This function is called in AmPeps
 
 global eco_types
 global data auxData metaData txtData color select_id id_links
@@ -670,7 +671,7 @@ function linksCb(source, eventdata)
    color.hl = [0 .6 0]; set(hl, 'ForegroundColor', color.hl);
 end
 
-%% Other support functions
+%% other support functions
 function str = cell2str(cell)
   if isempty(cell)
     str = []; return
