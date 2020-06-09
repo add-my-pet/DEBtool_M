@@ -9,8 +9,8 @@ function AmPeps
 % <../AmPeps.m *AmPeps*>
 
 %% Description
-% The function has no direct input or output. It is a shell around several other functions, that eventually write:
-%   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.
+% The function has no explicit input or output. It is a shell around several other functions, that eventually write:
+%   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.m.
 % Guidance is presented at <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html *AmPeps.html*>
 
 web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
@@ -21,6 +21,8 @@ hecozones    = figure('Name','Land ecozone', 'Position',[200  50 500 300]); imag
 hoceans      = figure('Name','Sea ecozone',  'Position',[800  50 500 300]); image(imread('oceans.jpg'));
 AmPgui
 close(hclimateLand,hclimateSea,hecozones,hoceans)
+
+return
 % clean_mydata: flatten biblist, remove empty fields
 
 % prt_mydata(data, auxData, metaData, txtData)
