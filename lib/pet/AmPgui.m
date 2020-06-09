@@ -26,13 +26,11 @@ function AmPgui(action)
 % * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function 
 % * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % * All weights are set at default values in the resulting file; 
-% * This function is called in AmPeps
+% * This function is called in run_AmPeps
 
-global eco_types
-global data auxData metaData txtData color select_id id_links
-global hs he hT ha hc hg hd hf hk hb 
+global data auxData metaData txtData color select_id id_links eco_types
+global hs he hT ha hc hg hd hf hk hb dS dD dF
 global Hauthor Hemail Haddress Hspecies Hacknowledgment HD HBD HF HBF HT HL
-global dS dD dF dl
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %% initiation
@@ -106,11 +104,15 @@ if nargin == 0 % create the GUI
   h1  = uicontrol('Parent', dmd, 'Callback', 'AmPgui 1varData', 'Position',      [10 110 100 20], 'String', '1-var data', 'Style', 'pushbutton');
   
   hr  = uicontrol('Parent', dmd, 'Callback', 'AmPgui resume', 'Position',        [10  65 100 20], 'String', 'resume', 'Style', 'pushbutton');
-  hp  = uicontrol('Parent', dmd, 'Callback', 'AmPgui pause', 'Position',         [10  40 100 20], 'String', 'pause', 'Style', 'pushbutton');
+  hp  = uicontrol('Parent', dmd, 'Callback', 'AmPgui pause', 'Position',         [10  40 100 20], 'String', 'pause/save', 'Style', 'pushbutton');
   
   set(hs, 'ForegroundColor', color.hs); set(he, 'ForegroundColor', color.he); set(hT, 'ForegroundColor', color.hT); set(ha, 'ForegroundColor', color.ha); 
   set(hc, 'ForegroundColor', color.hc); set(hg, 'ForegroundColor', color.hg); set(hd, 'ForegroundColor', color.hd); set(hf, 'ForegroundColor', color.hf); 
   set(hk, 'ForegroundColor', color.hk); set(hl, 'ForegroundColor', color.hl); set(hb, 'ForegroundColor', color.hb);
+  
+  %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
+  %set(0, 'DefaultUIControlFontSize', 9);
+  %set(0, 'DefaultUIControlFontSize', UIControl_FontSize_bak);
   
 else % perform action
 %% fill fields
@@ -282,6 +284,20 @@ else % perform action
     case 'biblist'
         
     case '0varData' 
+        if ~isfield(metaData, 'data')
+          metaData.data = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
+        end
+        dD = dialog('Position',[150 150 950 550],'Name','discussion dlg');
+        HD = uicontrol('Parent',dD, 'Callback', @addDiscussionCb, 'Position', [110 500 150 20], 'String', 'add discussion point', 'Style', 'pushbutton');
+        uicontrol('Parent',dD, 'Position', [790 500 146 20], 'String', 'bibkey', 'Style', 'text');
+        
+        fldnm = fieldnames(metaData.discussion); n = length(fldnm);
+        for i = 1:n
+          hight = 475 - i * 25; nm = ['D', num2str(n)];
+          uicontrol('Parent', dD, 'Position', [10, hight, 146, 20], 'String', nm, 'Style', 'text');
+          HD(i)  = uicontrol('Parent', dD, 'Callback', @discussionCb, 'Position', [110, hight, 650, 20], 'Style', 'edit', 'String', metaData.discussion.(nm)); 
+          HBD(i) = uicontrol('Parent', dD, 'Callback', @discussionCb, 'Position', [850, hight, 80, 20], 'Style', 'edit', 'String', metaData.bibkey.(nm)); 
+        end
 
     case '1varData' 
 
@@ -524,7 +540,7 @@ function T_typicalCb(source, eventdata)
  
  function authorCb(source, eventdata)  
    global metaData Hauthor ha color
-   metaData.author = get(Hauthor, 'string');
+   metaData.author = str2cell(get(Hauthor, 'string'));
    if ~isempty(metaData.author)
      color.ha = [0 .6 0]; set(ha, 'ForegroundColor', color.ha);
    end
@@ -546,7 +562,7 @@ function T_typicalCb(source, eventdata)
    for i = 1:n
      nm = ['D', num2str(n)];
      metaData.discussion.(nm) = get(HD(i), 'string');
-     metaData.bibkey.(nm) = get(HBD(i), 'string');
+     metaData.bibkey.(nm) = str2cell(get(HBD(i), 'string'));
    end
    if ~isempty(metaData.discussion.D1)
      color.hd = [0 .6 0]; set(hd, 'ForegroundColor', color.hd);
@@ -559,7 +575,7 @@ function T_typicalCb(source, eventdata)
    metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
    uicontrol('Parent', dD, 'Position', [10, hight, 146, 20], 'String', nm, 'Style', 'text');
    HD(n)  = uicontrol('Parent',dD, 'Callback', @discussionCb, 'Position', [110, hight, 650, 20], 'Style', 'edit', 'String', metaData.discussion.(nm)); 
-   HBD(n) = uicontrol('Parent',dD, 'Callback', @discussionCb, 'Position', [850, hight, 80, 20],  'Style', 'edit', 'String', metaData.bibkey.(nm)); 
+   HBD(n) = uicontrol('Parent',dD, 'Callback', @discussionCb, 'Position', [850, hight, 80, 20],  'Style', 'edit', 'String', cell2str(metaData.bibkey.(nm))); 
  end
  
  function factsCb(source, eventdata)  
@@ -568,7 +584,7 @@ function T_typicalCb(source, eventdata)
    for i = 1:n
      nm = ['F', num2str(n)];
      metaData.facts.(nm) = get(HF(i), 'string');
-     metaData.bibkey.(nm) = get(HBF(i), 'string');
+     metaData.bibkey.(nm) = str2cell(get(HBF(i), 'string'));
    end
    if ~isempty(metaData.facts.F1)
      color.hf = [0 .6 0]; set(hf, 'ForegroundColor', color.hf);
@@ -581,7 +597,7 @@ function T_typicalCb(source, eventdata)
    metaData.facts.(nm) = []; metaData.bibkey.(nm) = [];
    uicontrol('Parent', dF, 'Position', [10, hight, 146, 20], 'String', nm, 'Style', 'text');
    HF(n)  = uicontrol('Parent',dF, 'Callback', @factsCb, 'Position', [110, hight, 650, 20], 'Style', 'edit', 'String', metaData.facts.(nm)); 
-   HBF(n) = uicontrol('Parent',dF, 'Callback', @factsCb, 'Position', [850, hight, 80, 20],  'Style', 'edit', 'String', metaData.bibkey.(nm)); 
+   HBF(n) = uicontrol('Parent',dF, 'Callback', @factsCb, 'Position', [850, hight, 80, 20],  'Style', 'edit', 'String', cell2str(metaData.bibkey.(nm))); 
  end
 
  function acknowledgmentCb(source, eventdata)  
@@ -613,8 +629,24 @@ function str = cell2str(cell)
   str(end) = [];
 end
 
+function c = str2cell(str)
+  if isempty(str)
+    c = []; return
+  end
+  str = strsep(str, ',');
+  n = length(str); 
+  if n == 1
+    c = str;
+  else
+    c = cell(1,n);
+    for i=1:n
+      c{i} = str(i);
+     end
+  end
+end
+
 function code = prependStage(code)
-  stageList = {'0b', '0j', '0p', '0i', 'bj', 'bp', 'bi', 'jp', 'ji', 'pi'};
+  stageList = {'0b', '0j', '0x', '0p', '0i', 'bj', 'bx', 'bp', 'bi', 'jp', 'ji', 'xp', 'xi', 'pi'};
   n = length(code);
   for i = 1:n
     fprintf(['Prepend stage for code ', code{i},'\n']);
