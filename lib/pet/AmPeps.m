@@ -13,7 +13,7 @@ function AmPeps
 %   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.m.
 % Guidance is presented at <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html *AmPeps.html*>
 
-global metaData 
+global metaData txtData auxData 
 
 web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
 web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');

@@ -32,7 +32,7 @@ function info = AmPgui(action)
 
 global data auxData metaData txtData color select_id id_links eco_types
 global hs he hT ha hc hg hd hf hk hb dS dmd dD dF dP d0
-global Hauthor Hemail Haddress Hspecies Hacknowledgment HD HDb HF HFb HT HL H0e H0n H0v H0u H0T H0l H0b H0c
+global Hauthor Hemail Haddress Hspecies Hacknowledgment HD HDb HF HFb HT HL H0n H0v H0u H0T H0l H0b H0c
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %% initiation
@@ -112,11 +112,11 @@ if nargin == 0 % create the GUI
   hl  = uicontrol('Parent',dmd, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
   hb  = uicontrol('Parent',dmd, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
   
-  h0  = uicontrol('Parent',dmd, 'Callback','AmPgui 0varData',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
-  h1  = uicontrol('Parent',dmd, 'Callback','AmPgui 1varData',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmd, 'Callback','AmPgui 0varData',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmd, 'Callback','AmPgui 1varData',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
-  hr  = uicontrol('Parent',dmd, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
-  hp  = uicontrol('Parent',dmd, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
+        uicontrol('Parent',dmd, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
+        uicontrol('Parent',dmd, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
   
   set(hs, 'ForegroundColor', color.hs); set(he, 'ForegroundColor', color.he); set(hT, 'ForegroundColor', color.hT); set(ha, 'ForegroundColor', color.ha); 
   set(hc, 'ForegroundColor', color.hc); set(hg, 'ForegroundColor', color.hg); set(hd, 'ForegroundColor', color.hd); set(hf, 'ForegroundColor', color.hf); 
@@ -208,7 +208,7 @@ else % perform action
       case 'curator'
         curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
         emailList = {'starrlight.augustine@akvaplan.niva.no', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
-        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 80], 'InitialValue', 5);
+        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 80], 'InitialValue',1);
         metaData.curator = curList{i_cur}; metaData.email_cur = emailList{i_cur}; 
         Datevec = datevec(datenum(date)); metaData.date_acc = Datevec(1:3);
         color.hc = [0 .6 0]; set(hc, 'ForegroundColor', color.hc);
@@ -227,8 +227,8 @@ else % perform action
         for i = 1:n
           hight = 475 - i * 25; nm = ['D', num2str(n)];
           uicontrol('Parent',dD, 'Position',[10, hight, 146, 20], 'String',nm, 'Style','text');
-          HD(i)  = uicontrol('Parent',dD, 'Callback',@discussionCb, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(nm)); 
-          HDb(i) = uicontrol('Parent',dD, 'Callback',@discussionCb, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(nm)); 
+          HD(i)  = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(nm)); 
+          HDb(i) = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(nm)); 
         end
 
       case 'facts'
@@ -243,8 +243,8 @@ else % perform action
         for i = 1:n
           hight = 475 - i * 25; nm = ['F', num2str(n)];
           uicontrol('Parent',dF, 'Position',[10, hight, 146, 20], 'String',nm, 'Style','text');
-          HF(i)  = uicontrol('Parent',dF, 'Callback',@factsCb, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
-          HFb(i) = uicontrol('Parent',dF, 'Callback',@factsCb, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
+          HF(i)  = uicontrol('Parent',dF, 'Callback',{@factsCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
+          HFb(i) = uicontrol('Parent',dF, 'Callback',{@factsCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
         end
 
       case 'acknowledgment'
@@ -293,12 +293,12 @@ else % perform action
         
     case '0varData' 
       d0 = dialog('Position',[150 150 1000 620], 'Name','0-variate data dlg');
-      uicontrol('Parent',d0, 'Position',[300 580 150 20], 'Callback',@add0Cb, 'String','add 0-var data', 'Style','pushbutton');
+      uicontrol('Parent',d0, 'Position',[400 580 150 20], 'Callback',@add0Cb, 'String','add 0-var data', 'Style','pushbutton');
       uicontrol('Parent',d0, 'Position',[ 60 550 70 20], 'String','name', 'Style','text');
       uicontrol('Parent',d0, 'Position',[150 550 70 20], 'String','value', 'Style','text');
       uicontrol('Parent',d0, 'Position',[250 550 70 20], 'String','units', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[325 550 70 20], 'String','temp in C', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[450 550 70 20], 'String','label', 'Style','text');
+      uicontrol('Parent',d0, 'Position',[335 550 70 20], 'String','temp in C', 'Style','text');
+      uicontrol('Parent',d0, 'Position',[430 550 70 20], 'String','label', 'Style','text');
       uicontrol('Parent',d0, 'Position',[550 550 70 20], 'String','bibkey', 'Style','text');
       uicontrol('Parent',d0, 'Position',[650 550 70 20], 'String','comment', 'Style','text');
 
@@ -357,7 +357,7 @@ else % perform action
   else
     color.h0 = [0 0.6 0]; set(he, 'ForegroundColor', color.h0);
   end
-end
+  end
 end
 
 %% callback functions
@@ -582,21 +582,15 @@ function T_typicalCb(source, eventdata)
   n = 1 + length(fieldnames(metaData.discussion)); nm = ['D', num2str(n)]; hight = 475 - n * 25;
   metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
   uicontrol('Parent',dD, 'Position', [10, hight, 146, 20], 'String',nm, 'Style','text');
-  HD(n)  = uicontrol('Parent',dD, 'Callback',@discussionCb, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(nm)); 
-  HDb(n) = uicontrol('Parent',dD, 'Callback',@discussionCb, 'Position',[850, hight, 80, 20],  'Style','edit', 'String',metaData.bibkey.(nm)); 
+  HD(n)  = uicontrol('Parent',dD, 'Callback',{@discussionCb, n}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(nm)); 
+  HDb(n) = uicontrol('Parent',dD, 'Callback',{@discussionCb, n}, 'Position',[850, hight, 80, 20],  'Style','edit', 'String',metaData.bibkey.(nm)); 
  end
   
- function discussionCb(source, eventdata)
-   global metaData hd HD HDb 
-   fldnm = fieldnames(metaData.discussion); n = length(fldnm);
-   for i = 1:n
-     nm = ['D', num2str(n)];
-     metaData.discussion.(nm) = get(HD(i), 'string');
-     metaData.bibkey.(nm) = str2cell(get(HDb(i), 'string'));
-   end
-   if ~isempty(metaData.discussion.D1)
-     color.hd = [0 .6 0]; set(hd, 'ForegroundColor', color.hd);
-   end
+ function discussionCb(source, eventdata, i)
+   global metaData HD HDb 
+   nm = ['D', num2str(i)];
+   metaData.discussion.(nm) = get(HD(i), 'string');
+   metaData.bibkey.(nm) = str2cell(get(HDb(i), 'string'));
  end
  
  function addFactCb(source, eventdata)
@@ -604,21 +598,15 @@ function T_typicalCb(source, eventdata)
    n = 1 + length(fieldnames(metaData.facts)); nm = ['F', num2str(n)]; hight = 475 - n * 25; 
    metaData.facts.(nm) = []; metaData.bibkey.(nm) = [];
    uicontrol('Parent', dF, 'Position', [10, hight, 146, 20], 'String', nm, 'Style', 'text');
-   HF(n)  = uicontrol('Parent',dF, 'Callback',@factsCb, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
-   HFb(n) = uicontrol('Parent',dF, 'Callback',@factsCb, 'Position',[850, hight, 80, 20],  'Style','edit', 'String',metaData.facts.(nm)); 
+   HF(n)  = uicontrol('Parent',dF, 'Callback',{@factsCb, n}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(nm)); 
+   HFb(n) = uicontrol('Parent',dF, 'Callback',{@factsCb, n}, 'Position',[850, hight, 80, 20],  'Style','edit', 'String',metaData.facts.(nm)); 
  end
 
- function factsCb(source, eventdata)  
+ function factsCb(source, eventdata, i)  
    global metaData hf HF HFb 
-   fldnm = fieldnames(metaData.facts); n = length(fldnm);
-   for i = 1:n
-     nm = ['F', num2str(n)];
-     metaData.facts.(nm) = get(HF(i), 'string');
-     metaData.bibkey.(nm) = str2cell(get(HFb(i), 'string'));
-   end
-   if ~isempty(metaData.facts.F1)
-     color.hf = [0 .6 0]; set(hf, 'ForegroundColor', color.hf);
-   end
+   nm = ['F', num2str(i)];
+   metaData.facts.(nm) = get(HF(i), 'string');
+   metaData.bibkey.(nm) = str2cell(get(HFb(i), 'string'));
  end
  
  function acknowledgmentCb(source, eventdata)  
