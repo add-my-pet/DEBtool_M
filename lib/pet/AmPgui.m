@@ -47,9 +47,6 @@ end
 if ~isfield('auxData', 'temp') 
   auxData.temp = [];
 end
-if ~isfield('metaData', 'comment') 
-  metaData.comment = [];
-end
 if ~isfield('txtData', 'units')
   txtData.units = []; txtData.label = [];
 end
@@ -80,6 +77,12 @@ if ~isfield(metaData.ecoCode, 'gender')
 end
 if ~isfield(metaData.ecoCode, 'reprod')
   metaData.ecoCode.reprod = [];
+end
+if ~isfield(metaData, 'bibkey')
+  metaData.bibkey = [];
+end
+if ~isfield('metaData', 'comment') 
+  metaData.comment = [];
 end
 
 if isempty(color)
@@ -291,7 +294,6 @@ else % perform action
     case '0varData' 
       d0 = dialog('Position',[150 150 1000 620], 'Name','0-variate data dlg');
       uicontrol('Parent',d0, 'Position',[300 580 150 20], 'Callback',@add0Cb, 'String','add 0-var data', 'Style','pushbutton');
-      uicontrol('Parent',d0, 'Position',[ 20 550 35 35], 'String',['edit', char(10), 'name'], 'Style','text');
       uicontrol('Parent',d0, 'Position',[ 60 550 70 20], 'String','name', 'Style','text');
       uicontrol('Parent',d0, 'Position',[150 550 70 20], 'String','value', 'Style','text');
       uicontrol('Parent',d0, 'Position',[250 550 70 20], 'String','units', 'Style','text');
@@ -304,12 +306,13 @@ else % perform action
         fld = fieldnames(data.data_0); n = length(fld);
         for i = 1:n
           hight = 550 - i * 25; 
-          H0v(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[150, hight, 70, 20], 'Style','edit', 'String',num2str(data.data_0.(fld{i}))); 
-          H0u(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[250, hight, 70, 20], 'Style','edit', 'String',txtData.units.(fld{i})); 
-          H0T(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[350, hight, 40, 20], 'Style','edit', 'String',num2str(K2C(auxData.temp.(fld{i})))); 
-          H0l(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[410, hight, 120, 20], 'Style','edit', 'String',txtData.label.(fld{i})); 
-          H0b(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[550, hight, 70, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
-          H0c(i) = uicontrol('Parent',d0, 'Callback',@d0Cb, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',metaData.comment.(fld{i})); 
+          H0n(i) = uicontrol('Parent',d0, 'Callback',{@d0NmCb, i}, 'Position',[ 60, hight,  70, 20], 'Style','edit', 'String',fld{i}); 
+          H0v(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[150, hight,  70, 20], 'Style','edit', 'String',num2str(data.data_0.(fld{i}))); 
+          H0u(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[250, hight,  70, 20], 'Style','edit', 'String',txtData.units.(fld{i})); 
+          H0T(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[350, hight,  40, 20], 'Style','edit', 'String',num2str(K2C(auxData.temp.(fld{i})))); 
+          H0l(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[410, hight, 120, 20], 'Style','edit', 'String',txtData.label.(fld{i})); 
+          H0b(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[550, hight,  70, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+          H0c(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb, i},   'Position',[650, hight, 300, 20], 'Style','edit', 'String',metaData.comment.(fld{i})); 
         end
       end
 
@@ -643,40 +646,21 @@ function add0Cb(source, eventdata)
      n = 1 + length(fieldnames(data.data_0));
    end
    data.data_0.new = []; hight = 550 - n * 25; 
-   H0n(n) = uicontrol('Parent',d0, 'Callback',@d0NameCb, 'Position',[ 60, hight,  70, 20], 'Style','edit', 'String','');
-   H0v(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[150, hight,  70, 20], 'Style','edit', 'String',''); 
-   H0u(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[250, hight,  70, 20], 'Style','edit', 'String',''); 
-   H0T(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[350, hight,  40, 20], 'Style','edit', 'String',''); 
-   H0l(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[410, hight, 120, 20], 'Style','edit', 'String',''); 
-   H0b(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[550, hight,  70, 20], 'Style','edit', 'String',''); 
-   H0c(n) = uicontrol('Parent',d0, 'Callback',@d0Cb,     'Position',[650, hight, 300, 20], 'Style','edit', 'String',''); 
+   H0n(n) = uicontrol('Parent',d0, 'Callback',{@d0NmCb, n}, 'Position',[ 60, hight,  70, 20], 'Style','edit', 'String','');
+   H0v(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[150, hight,  70, 20], 'Style','edit', 'String',''); 
+   H0u(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[250, hight,  70, 20], 'Style','edit', 'String',''); 
+   H0T(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[350, hight,  40, 20], 'Style','edit', 'String',''); 
+   H0l(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[410, hight, 120, 20], 'Style','edit', 'String',''); 
+   H0b(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[550, hight,  70, 20], 'Style','edit', 'String',''); 
+   H0c(n) = uicontrol('Parent',d0, 'Callback',{@d0Cb, n},   'Position',[650, hight, 300, 20], 'Style','edit', 'String',''); 
 end 
 
-function d0NameCb(source, eventdata)
-   global data d0 H0e H0n 
-   fld = fieldnames(data.data_0); n = length(fld); hight = 550 - n * 25;
-   if strcmp(fld{n}, 'new')
-    fld{n} = get(H0n(n), 'string'); data.data_0 = renameStructField(data.data_0, 'new', fld{n}); 
-    delete(H0n(n));
-    H0e(n) = uicontrol('Parent',d0, 'Callback',{@d0EditCb, n}, 'Position',[ 20, hight, 20, 20], 'Style','pushbutton');
-    uicontrol('Parent',d0, 'Position',[ 60, hight, 70, 20], 'Style','text', 'String',fld{n});
-   end
-end
-
-function d0EditCb(scource, eventdata, i)
-   global data H0en d0e
-   fld = fieldnames(data.data_0);
-   d0e = dialog('Position',[500 300 350 80], 'Name','edit 0-var data name dlg');
-   uicontrol('Parent',d0e, 'Position',[10 20 220 20], 'Style','text', 'String',['New name for 0-var data set ', fld{i}]);
-   H0en = uicontrol('Parent',d0e, 'Position',[230 20 70 20], 'Callback',{@d0EditNmCb, i}, 'String','', 'Style','edit');
-end
-
-function d0EditNmCb(source, eventdata, i)
-   global data txtData auxData d0 H0en d0e
-   nm = get(H0en, 'string');
-   fld = fieldnames(data.data_0);
-   delete(d0e);
-   data.data_0 = renameStructField(data.data_0, fld{i}, nm);
+function d0NmCb(source, eventdata, i)
+   global data auxData txtData metaData d0 H0e H0n 
+   fld = fieldnames(data.data_0); n = length(fld);
+   nm = get(H0n(i), 'string'); 
+   data.data_0 = renameStructField(data.data_0, fld{i}, nm); 
+   
    if isfield(txtData.units, fld{i})
      txtData.units = renameStructField(txtData.units, fld{i}, nm);  
      txtData.label = renameStructField(txtData.label, fld{i}, nm);  
@@ -684,21 +668,21 @@ function d0EditNmCb(source, eventdata, i)
    if isfield(auxData.temp, fld{i})
      auxData.temp = renameStructField(auxData.temp, fld{i}, nm);  
    end 
-   hight = 550 - i * 25;
-   uicontrol('Parent',d0, 'Position',[ 60, hight, 70, 20], 'Style','text', 'String',nm);
+   if isfield(metaData.bibkey, fld{i})
+     metaData.bibkey = renameStructField(metaData.bibkey, fld{i}, nm);  
+   end 
+
 end
 
-function d0Cb(source, eventdata)  
-   global data auxData txtData metaData d0 H0e H0n H0v H0u H0T H0l H0b H0c
-   fld = fieldnames(data.data_0); n = length(fld); hight = 550 - n * 25;
-   for i = 1:n
-     data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
-     txtData.units.(fld{i}) = get(H0u(i), 'string'); 
-     auxData.temp.(fld{i}) = C2K(str2double(get(H0T(i), 'string')));
-     txtData.label.(fld{i}) = get(H0l(i), 'string'); 
-     metaData.bibkey.(fld{i}) = str2cell(get(H0b(i), 'string'));
-     txtData.comment.(fld{i}) = str2cell(get(H0c(i), 'string'));
-   end
+function d0Cb(source, eventdata, i)  
+   global data auxData txtData metaData H0v H0u H0T H0l H0b H0c
+   fld = fieldnames(data.data_0);
+   data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
+   txtData.units.(fld{i}) = get(H0u(i), 'string'); 
+   auxData.temp.(fld{i}) = C2K(str2double(get(H0T(i), 'string')));
+   txtData.label.(fld{i}) = get(H0l(i), 'string'); 
+   metaData.bibkey.(fld{i}) = str2cell(get(H0b(i), 'string'));
+   txtData.comment.(fld{i}) = str2cell(get(H0c(i), 'string'));
 end
  
 function returnCb(source, eventdata) 
