@@ -27,20 +27,18 @@ if infoAmPgui == 0 || isempty(infoAmPgui)
 end
 close(hclimateLand,hclimateSea,hecozones,hoceans)
 if infoAmPgui == 2
-  %path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_zip/';
-  %eval(['!powershell wget ', path]);
-  WD = cdCur; 
-    list = cellstr(ls('../../add_my_pet/entries_zip')); 
-    my_pet_zip = list(contains(list,metaData.species));
-    unzip(['../../add_my_pet/entries_zip/', my_pet_zip]);
-  cd(WD)
+  path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/';
+  eval(['!powershell wget ', path, 'mydata_', metaData.species,  ' -O ', 'mydata_', metaData.species])
+  eval(['!powershell wget ', path, 'pars_init_', metaData.species,  ' -O ', 'pars_init_', metaData.species])
+  eval(['!powershell wget ', path, 'predict_', metaData.species,  ' -O ', 'predict_', metaData.species])
+  eval(['!powershell wget ', path, 'run_', metaData.species,  ' -O ', 'run_', metaData.species])
   edit(['mydata_', metaData.species, '.m'], ...
        ['pars_init_', metaData.species, '.m'], ...
        ['predict_', metaData.species, '.m'], ...
        ['run_', metaData.species, '.m'])
   return
 end
-% AmPflat: flatten biblist, data, remove empty fields
+% AmPpostEdit: flatten biblist, data, remove empty fields
 
 % prt_mydata(data, auxData, metaData, txtData)
 % prt_run_my_pet(metaData.species)
