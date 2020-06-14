@@ -40,14 +40,16 @@ function AmPgui(action)
 % Notice that font colors only represent intennal consistency, ireespective of content.
 
 global data auxData metaData txtData select_id id_links eco_types
-global Hauthor Hemail Haddress Hspecies HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 
+global Hspecies Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
-
-%% initiation
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
 set(0, 'DefaultUIControlFontSize', 9);
 %set(0, 'DefaultUIControlFontSize', UIControl_FontSize_bak);
+
+if nargin == 0 % initiate structures and create the GUI
+
+%% initiation
 
 if ~isfield(data, 'data_0') 
   data.data_0 = [];
@@ -137,6 +139,9 @@ end
 if ~isfield(metaData, 'acknowledgment')
   metaData.acknowledgment = [];
 end
+if ~isfield(metaData, 'biblist')
+  metaData.biblist = [];
+end
 
 if ~exist('color','var')
   color = []; % font colors for items in main AmPgui
@@ -150,28 +155,28 @@ if isempty(eco_types)
   get_eco_types;
 end
 
-if nargin == 0 % create the GUI
 %% setup gui
-  dmd = dialog('Position',[150 100 120 460], 'Name','AmPgui');
-  hs  = uicontrol('Parent',dmd, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
-  he  = uicontrol('Parent',dmd, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
-  hT  = uicontrol('Parent',dmd, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
-  ha  = uicontrol('Parent',dmd, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
-  hc  = uicontrol('Parent',dmd, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
-  hg  = uicontrol('Parent',dmd, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
-  hd  = uicontrol('Parent',dmd, 'Callback','AmPgui discussion',     'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
-  hf  = uicontrol('Parent',dmd, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
-  hk  = uicontrol('Parent',dmd, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
-  hl  = uicontrol('Parent',dmd, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
-  hb  = uicontrol('Parent',dmd, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
+  dmydata = dialog('Position',[150 100 120 460], 'Name','AmPgui');
+  hs  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
+  he  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
+  hT  = uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
+  ha  = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
+  hc  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
+  hg  = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
+  hd  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',     'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
+  hf  = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
+  hk  = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
+  hl  = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
+  hb  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
   
-        uicontrol('Parent',dmd, 'Callback','AmPgui 0varData',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
-        uicontrol('Parent',dmd, 'Callback','AmPgui 1varData',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback','AmPgui 0varData',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback','AmPgui 1varData',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
-        uicontrol('Parent',dmd, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
-        uicontrol('Parent',dmd, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
-        uicontrol('Parent',dmd, 'Callback',{@OKCb,dmd},             'Position',[50  15  20 20], 'String','OK',             'Style','pushbutton');
-  
+        uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback',{@OKCb,dmydata},         'Position',[50  15  20 20], 'String','OK',             'Style','pushbutton');
+        
+  % default colors
   set(hs, 'ForegroundColor', color.Hs); set(he, 'ForegroundColor', color.He); set(hT, 'ForegroundColor', color.HT); set(ha, 'ForegroundColor', color.Ha); 
   set(hc, 'ForegroundColor', color.Hc); set(hg, 'ForegroundColor', color.Hg); set(hd, 'ForegroundColor', color.Hd); set(hf, 'ForegroundColor', color.Hf); 
   set(hk, 'ForegroundColor', color.Hk); set(hl, 'ForegroundColor', color.Hl); set(hb, 'ForegroundColor', color.Hb);
@@ -181,7 +186,7 @@ else % perform action
   switch(action)
       case 'species'
         dS = dialog('Position',[150 150 600 150], 'Name','species dlg');
-        Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 30 350 20], 'Style','edit', 'String',metaData.species); 
+        Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
         dE = dialog('Position',[550 550 500 270], 'Name','ecoCode dlg');
@@ -252,6 +257,40 @@ else % perform action
         Datevec = datevec(datenum(date)); metaData.date_acc = Datevec(1:3);
         
       case 'grp'
+        sets = {{'tL_f', 'tL_m'}, {'tWw_f', 'tWw_m'}, {'tWd_f', 'tLWd_m'}, {'LWw_f', 'LWw_m'}, {'LWd_f', 'tWd_m'}, {'LdL_f', 'LdL_m'}}; 
+        comment = {'Data for females, males', 'Data for females, males', 'Data for females, males', 'Data for females, males', ...
+            'Data for females, males', 'Data for females, males'};
+        
+        n_sets = length(sets); setsList = sets; sel_stes = false(n_sets,1);
+        for i = 1:n_sets
+          setsList{1} = cell2str(sets{i});
+          seti = sets{i};
+          if isfield(data.data_1, seti{1}) && isfield(data.data_1, seti{2})
+            sel_sets(1) = true;
+          end
+        end
+                
+        dG = dialog('Position',[150 150 350 250], 'Name','grp dlg');
+        uicontrol('Parent',dG, 'Position',[20 210 30 20], 'Callback',{@OKCb,dG}, 'String','OK');
+                
+        if isempty(data.data_1)
+          uicontrol('Parent',dG, 'Position',[70 210 250 20], 'String','no 1-variate data found');
+          
+        elseif any(sel_sets)
+          setsList = setsList(sel_sets);
+          i_sets =  listdlg('ListString',setsList,  'Name','grp dlg', 'ListSize',[200 80], 'InitialValue',1);
+          n_sets = length(i_sets);
+          for i=1:n_sets
+            hight = 180 - i * 25;
+            uicontrol('Parent',dG, 'Position',[ 20 hight 150 20], 'String',['set', num2str(i), ': ', setsList{i}]);  
+            uicontrol('Parent',dG, 'Position',[170 hight 175 20], 'String',['comment', num2str(i), ': ', comment{i}]); 
+          end
+          metaData.grp.sets = sets(sel_sets);
+          metaData.grp.comment = comment(sel_sets);
+
+        else
+          uicontrol('Parent',dG, 'Position',[70 210 250 20], 'String','no 1-variate data found that can be grouped');
+        end
  
       case 'discussion'
         dD = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
@@ -314,13 +353,12 @@ else % perform action
          'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
      
         if isempty(select_id)
-          select_id = true(14,1);
+          select_id = true(14,1); select_id(7:14) = false; % selection vector for links
           for i = 1:14
             metaData.links.(id_links{i}) = [];
           end
         end
-        
-        select_id(7:14) = false; % selection vector for links
+       
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
           metaData.links.id_EoL =  'some number (replace)';
         end
@@ -403,6 +441,26 @@ else % perform action
         end
         
     case 'biblist'
+      bibTypeList.Article =       {'Author', 'Title', 'Journal',     'Year', 'Volume', 'Pages', 'DOI', 'url'};
+      bibTypeList.Book =          {'Author', 'Title', 'Publisher',   'Year', 'Series', 'Volume', 'ISBN', 'url'};
+      bibTypeList.InCollection =  {'Author', 'Title', 'Editor', 'Booktitle', 'Publisher', 'Year', 'Series', 'Volume', 'ISBN', 'url'};
+      bibTypeList.MastersThesis = {'Author', 'Title', 'School',      'Year', 'Address', 'DOI', 'ISBN', 'url'};
+      bibTypeList.PhdThesis =     {'Author', 'Title', 'School',      'Year', 'Address', 'DOI', 'ISBN', 'url'};
+      bibTypeList.TechReport =    {'Author', 'Title', 'Institution', 'Year', 'Address', 'DOI', 'ISBN', 'url'};
+      bibTypeList.Misc =          {'Author', 'note',                 'Year', 'DOI', 'ISBN', 'url'};
+        
+      db = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
+      uicontrol('Parent',db, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,db}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',db, 'Position',[70 370 100 20], 'Callback',{@addBibCb,db}, 'String','add bib item', 'Style','pushbutton');
+      
+      if ~isempty(metaData.biblist)
+        fld = fieldnames(metaData.biblist); n = length(fld);
+        for i = 1:n
+          hight = 350 - i * 25; 
+          Hb(i) = uicontrol('Parent',db,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
+          uicontrol('Parent',db, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+        end          
+      end
         
     case '0varData' 
         
@@ -543,7 +601,7 @@ else % perform action
       uicontrol('Parent',dP, 'Position',[250 60 100 20], 'Callback',{@OKCb,dP,1}, 'String','stay in AmPeps', 'Style','pushbutton');
   end
 end
-  % color settings
+  % color settings: run this part only with AmPgui('setColor')
   
   if exist('hs', 'var') && ~isempty(metaData.species)
     color.Hs = [0 .6 0]; set(hs, 'ForegroundColor', color.Hs);
@@ -556,10 +614,6 @@ end
     color.He = [0 0.6 0]; set(he, 'ForegroundColor', color.He);
   end
 
-  if exist('h0', 'var') && ~isempty(data.data_0)
-    color.H0 = [0 0.6 0]; set(h0, 'ForegroundColor', color.H0);
-  end
-  
   if exist('hT', 'var') && isfield(metaData, 'T_typical') && ~isempty(metaData.T_typical)
     color.HT = [0 .6 0]; set(hT, 'ForegroundColor', color.HT);
   end
@@ -580,18 +634,22 @@ end
     color.Hl = [0 .6 0]; set(hl, 'ForegroundColor', color.Hl)
   end
   
+  if exist('h0', 'var') && ~isempty(data.data_0)
+    color.H0 = [0 0.6 0]; set(h0, 'ForegroundColor', color.H0);
+  end
+  
 end
 
 %% callback functions
 function speciesCb(~, ~, dS)  
   global metaData Hspecies select_id infoAmpgui
    
+  strWarn = ''; Hw = uicontrol('Parent',dS, 'Position',[110 60 350 20], 'Style','text', 'String',strWarn);
   Hf  = uicontrol('Parent',dS, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
   Ho  = uicontrol('Parent',dS, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
   Hc  = uicontrol('Parent',dS, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
   Hp  = uicontrol('Parent',dS, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
   Hcn = uicontrol('Parent',dS, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
-  strWarn = ''; Hw = uicontrol('Parent',dS, 'Position',[110 70 350 20], 'Style','text', 'String',strWarn);
   select_id = true(14,1);
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
@@ -613,7 +671,8 @@ function speciesCb(~, ~, dS)
     nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hc,'String',['class: ',metaData.class]);
     nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hp,'String',['phylum: ',metaData.phylum]); 
   end
-  uicontrol('Parent',dS, 'Position',[40 45 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+  uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+  AmPgui('setColor')
 end
 
 function climateCb(~, ~, Hclimate)  
@@ -628,6 +687,7 @@ function climateCb(~, ~, Hclimate)
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
+  AmPgui('setColor')
 end
 
 function ecozoneCb(~, ~, Hecozone)  
@@ -645,6 +705,7 @@ function ecozoneCb(~, ~, Hecozone)
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
+   AmPgui('setColor')
 end
  
 function habitatCb(~, ~, Hhabitat)  
@@ -664,6 +725,7 @@ function habitatCb(~, ~, Hhabitat)
   habitatCode = prependStage(habitatCode(i_habitat));
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
+  AmPgui('setColor')
 end
 
 function embryoCb(~, ~, Hembryo)  
@@ -681,7 +743,8 @@ function embryoCb(~, ~, Hembryo)
   end
   i_embryo =  listdlg('ListString',embryoCodeList, 'Name','embryo dlg', 'ListSize',[450 500], 'InitialValue',i_embryo);
   metaData.ecoCode.embryo = embryoCode(i_embryo); 
-  set(Hembryo, 'String', cell2str(metaData.ecoCode.embryo)); 
+  set(Hembryo, 'String', cell2str(metaData.ecoCode.embryo));
+  AmPgui('setColor')
 end
 
 function migrateCb(~, ~, Hmigrate)  
@@ -700,6 +763,7 @@ function migrateCb(~, ~, Hmigrate)
   i_migrate =  listdlg('ListString',migrateCodeList, 'Name','migrate dlg', 'ListSize',[550 140], 'InitialValue',i_migrate);
   metaData.ecoCode.migrate = migrateCode(i_migrate); 
   set(Hmigrate, 'String', cell2str(metaData.ecoCode.migrate)); 
+  AmPgui('setColor')
 end
 
 function foodCb(~, ~, Hfood)  
@@ -719,6 +783,7 @@ function foodCb(~, ~, Hfood)
   foodCode = prependStage(foodCode(i_food));
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
+  AmPgui('setColor')
 end
 
 function genderCb(~, ~, Hgender)  
@@ -737,6 +802,7 @@ function genderCb(~, ~, Hgender)
   i_gender =  listdlg('ListString',genderCodeList, 'Name','gender dlg', 'ListSize',[450 190], 'InitialValue',i_gender);
   metaData.ecoCode.gender = genderCode(i_gender); 
   set(Hgender, 'String', cell2str(metaData.ecoCode.gender)); 
+  AmPgui('setColor')
 end
 
 function reprodCb(~, ~, Hreprod)  
@@ -754,17 +820,20 @@ function reprodCb(~, ~, Hreprod)
   end
   i_reprod =  listdlg('ListString',reprodCodeList, 'Name','reprod dlg', 'ListSize',[450 120], 'InitialValue',i_reprod);
   metaData.ecoCode.reprod = reprodCode(i_reprod); 
-  set(Hreprod, 'String', cell2str(metaData.ecoCode.reprod)); 
+  set(Hreprod, 'String', cell2str(metaData.ecoCode.reprod));
+  AmPgui('setColor')
 end
 
 function T_typicalCb(~, ~)  
    global metaData HT
    metaData.T_typical = C2K(str2double(get(HT, 'string')));
+   AmPgui('setColor')
 end
  
  function authorCb(~, ~)  
    global metaData Hauthor
    metaData.author = str2cell(get(Hauthor, 'string'));
+   AmPgui('setColor')
  end
  
  function emailCb(~, ~) 
@@ -818,6 +887,56 @@ function linksCb(~, ~, id_links)
   for i = 2:n_links
     metaData.links.(id_links{i}) = get(HL(i), 'string');
   end
+  AmPgui('setColor')
+end
+
+function addBibCb(~, ~, db)
+   global metaData
+   metaData.biblist.new = [];
+   delete(db)
+   AmPgui('biblist')
+end
+
+function DbCb(~, ~, bibTypeList, bibkey, i_bibkey)
+   global metaData Dbb Dbi
+   Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
+   uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
+   uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
+   Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
+   if ~isempty(metaData.biblist) && isfield(metaData.biblist, bibkey) && ~strcmp(bibkey, 'new')
+     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['bibtype: ',metaData.biblist.(bibkey).bibtype], 'Style','text');
+     fld = bibTypeList.(metaData.biblist.(bibkey).bibtype); n_fld = length(fld);
+     for i=1:n_fld
+       hight = 260 - i * 25;
+       if ~isfield(metaData.biblist.(bibkey), fld{i})
+         metaData.biblist.(bibkey).(fld{i}) = [];
+       end
+       str = metaData.biblist.(bibkey).(fld{i});
+       uicontrol('Parent',Db, 'Position',[20 hight 80 20], 'Style','text', 'String',[fld{i},': ']); 
+       Dbi(i) = uicontrol('Parent',Db, 'Position',[100 hight 680 20], 'Callback',{@bibitemCb,bibkey,fld{i},i}, 'Style','edit', 'String',str); 
+     end
+   end
+end
+
+function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
+  global metaData Dbb Hb
+  bibkeyNew = get(Dbb(1), 'string');
+  metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
+  fld = fieldnames(bibTypeList);
+  i_bibtype =  listdlg('ListString',fieldnames(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
+  metaData.biblist.(bibkeyNew).bibtype = fld{i_bibtype};
+  fld = bibTypeList.(fld{i_bibtype}); n_fld = length(fld);
+  for i=1:n_fld
+    metaData.biblist.(bibkeyNew).(fld{i}) = [];
+  end
+  set(Hb(i_bibkey), 'String', bibkeyNew);
+  delete(Db);
+  DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
+end
+
+function bibitemCb(~, ~, bibkey, fld, i)
+  global metaData Dbi
+  metaData.biblist.(bibkey).(fld) = get(Dbi(i), 'string');
 end
 
 function add0Cb(~, ~, code0, d0)
@@ -930,14 +1049,7 @@ end
 
 function d1Cb(~, ~, fld, i)
   global data H1v
-  persistent keyB
-  if isempty(keyB) || keyB
-    keyboard
-    keyB = false;
-  else
-    data.data_1.(fld) = str2num(get(H1v(i), 'string'));
-    keyB = true;
-  end
+  data.data_1.(fld) = str2num(get(H1v(i), 'string'));
 end
 
   
@@ -1002,137 +1114,3 @@ function code = prependStage(code)
   end
 end
 
-function [ch, tim] = getkey(N,nonascii)
-
-% GETKEY - get a keypress
-%   CH = GETKEY waits for a single keypress and returns the ASCII code. It
-%   accepts all ascii characters, including backspace (8), space (32),
-%   enter (13), etc, that can be typed on the keyboard.
-%   Non-ascii keys (ctrl, alt, ..) return a NaN. CH is a double.
-%
-%   CH = GETKEY(N) waits for N keypresses and returns their ASCII codes.
-%   GETKEY(1) is the same as GETKEY without arguments.
-%
-%   GETKEY('non-ascii') or GETKEY(N,'non-ascii') uses non-documented
-%   matlab features to return a string describing the key pressed.
-%   In this way keys like ctrl, alt, tab etc. can also distinguished.
-%   The return is a string (when N = 1) or a cell array of strings.
-%
-%   [CH,T] = GETKEY(...) also returns the time between the start of the
-%   function and each keypress. This is, however, not that accurate.
-%
-%   This function is kind of a workaround for getch in C. It uses a modal,
-%   but non-visible window, which does show up in the taskbar.
-%   C-language keywords: KBHIT, KEYPRESS, GETKEY, GETCH
-%
-%   Examples:
-%
-%    fprintf('\nPress any key: ') ;
-%    ch = getkey ;
-%    fprintf('%c\n',ch) ;
-%
-%    fprintf('\nPress the Ctrl-key within 3 presses: ') ;
-%    ch = getkey(3,'non-ascii')
-%    if ismemmber('control', ch),
-%      fprintf('OK\n') ;
-%    else
-%      fprintf(' ... wrong keys ...\n') ;
-%    end
-%
-%  See also INPUT, UIWAIT
-%           GETKEYWAIT (File Exchange)
-
-% for Matlab 6.5 and higher
-% version 2.0 (jun 2012)
-% author : Jos van der Geest
-% email  : jos@jasen.nl
-%
-% History
-% 1.0 2005 - creation
-% 1.1 dec 2006 - modified lay-out and help
-% 1.2 apr 2009 - tested for more recent MatLab releases
-% 1.3 jan 2012 - modified a few properties, included check is figure still
-%            exists (after comment on FEX by Andrew).
-% 2.0 jun 2012 - added functionality to accept multiple key presses
-
-t00 = tic ; % start time of this function
-
-% check the input arguments
-error(nargchk(0,2,nargin))
-switch nargin
-    case 0
-        nonascii = '' ;
-        N = 1 ;
-    case 1
-        if ischar(N),
-            nonascii = N ;
-            N = 1 ;
-        else
-            nonascii = '' ;
-        end
-end
-
-if numel(N) ~= 1 || ~isnumeric(N) || N < 1 || fix(N) ~= N
-    error('N should be a positive integer scalar.') ;
-end
-
-% Determine the callback string to use
-if strcmpi(nonascii,'non-ascii'),
-    % non-ascii characters are accepted
-    nonascii = true ;
-    callstr = 'set(gcbf,''Userdata'',get(gcbf,''Currentkey'')) ; uiresume ' ;
-elseif isempty(nonascii)
-    nonascii = false ;
-    % only standard ascii characters are accepted
-    callstr = 'set(gcbf,''Userdata'',double(get(gcbf,''Currentcharacter''))) ; uiresume ' ;
-else
-    error('String argument should be the string ''non-ascii''') ;
-end
-
-% Set up the figure
-% May be the position property  should be individually tweaked to avoid visibility
-fh = figure(...
-    'name','Press a key', ...
-    'keypressfcn',callstr, ...
-    'windowstyle','modal',...
-    'numbertitle','off', ...
-    'position',[0 0  1 1],...
-    'userdata','timeout') ;
-try
-    ch = cell(1,N) ;
-    tim = zeros(1,N) ;
-    
-    % loop to get N keypresses
-    for k=1:N
-        % Wait for something to happen, usually a key press so uiresume is
-        % executed
-        uiwait ;
-        tim(k) = toc(t00) ; % get the time of the key press
-        ch{k} = get(fh,'Userdata') ;  % and the key itself
-        if isempty(ch{k}),
-            if nonascii
-                ch{k} = NaN ;
-            else
-                ch{k} = '' ;
-            end
-        end
-    end
-    if ~nonascii
-        ch = [ch{:}] ;
-    else
-        if N==1
-            ch = ch{1} ; % return as a string
-        end
-        % return as a cell array of strings
-    end
- catch
-    % Something went wrong, return empty matrices.
-    ch = [] ;
-    tim = [] ;
-end
-
-% clean up the figure, if it still exists
-if ishandle(fh)
-    delete(fh) ;
-end
-end
