@@ -458,13 +458,13 @@ else % perform action
         end
         
     case 'biblist'
-      bibTypeList.Article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'isbn', 'url'};
-      bibTypeList.Book =          {'author', 'title', 'publisher',   'year', 'series', 'volume', 'isbn', 'url'};
-      bibTypeList.Incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
-      bibTypeList.Mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
-      bibTypeList.Phdthesis =     {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
-      bibTypeList.Techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
-      bibTypeList.Misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
+      bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'dio', 'url'};
+      bibTypeList.book =          {'author', 'title', 'publisher',   'year', 'series', 'volume', 'isbn', 'url'};
+      bibTypeList.incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
+      bibTypeList.mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.phdthesis =     {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
       db = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
       uicontrol('Parent',db, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,db}, 'Style','pushbutton', 'String','OK'); 
