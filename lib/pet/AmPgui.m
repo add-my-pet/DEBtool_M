@@ -37,10 +37,12 @@ function AmPgui(action)
 %   - green: editing not necessary
 %   - black: editing facultative
 % 
-% Notice that font colors only represent intennal consistency, ireespective of content.
+% Notice that font colors only represent intennal consistency, irrespective of content.
 
 global data auxData metaData txtData select_id id_links eco_types
-global Hspecies Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb
+global hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist        
+global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -147,9 +149,9 @@ if ~exist('color','var')
   color = []; % font colors for items in main AmPgui
 end
 if isempty(color)
-  color.Hs = [1 0 0]; color.He = [1 0 0]; color.HT = [1 0 0]; color.Ha = [1 0 0]; color.Hc = [1 0 0];
-  color.Hg = [0 0 0]; color.Hd = [0 0 0]; color.Hf = [0 0 0]; color.Hk = [0 0 0]; color.Hl = [1 0 0];
-  color.Hb = [1 0 0]; color.H0 = [1 0 0]; color.H1 = [0 0 0]; color.Hr = [0 0 0]; color.Hp = [0 0 0];
+  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0]; color.author = [1 0 0];         color.curator = [1 0 0];
+  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];     color.acknowledgment = [0 0 0]; color.links = [1 0 0];
+  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.links = [0 0 0];     color.discussion = [0 0 0];     color.facts = [0 0 0]; 
 end
 if isempty(eco_types)
   get_eco_types;
@@ -157,35 +159,45 @@ end
 
 %% setup gui
   dmydata = dialog('Position',[150 100 120 460], 'Name','AmPgui');
-  hs  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
-  he  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
-  hT  = uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
-  ha  = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
-  hc  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
-  hg  = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
-  hd  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',     'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
-  hf  = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
-  hk  = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
-  hl  = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
-  hb  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
+  hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
+  hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
+  hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
+  hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
+  hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
+  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
+  hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',     'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
+  hfacts  = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
+  hacknowledgment  = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
+  hlinks  = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
+  hbiblist  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
   
-        uicontrol('Parent',dmydata, 'Callback','AmPgui 0varData',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
-        uicontrol('Parent',dmydata, 'Callback','AmPgui 1varData',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
+        uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
         uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
         uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
         uicontrol('Parent',dmydata, 'Callback',{@OKCb,dmydata},         'Position',[50  15  20 20], 'String','OK',             'Style','pushbutton');
         
-  % default colors
-  set(hs, 'ForegroundColor', color.Hs); set(he, 'ForegroundColor', color.He); set(hT, 'ForegroundColor', color.HT); set(ha, 'ForegroundColor', color.Ha); 
-  set(hc, 'ForegroundColor', color.Hc); set(hg, 'ForegroundColor', color.Hg); set(hd, 'ForegroundColor', color.Hd); set(hf, 'ForegroundColor', color.Hf); 
-  set(hk, 'ForegroundColor', color.Hk); set(hl, 'ForegroundColor', color.Hl); set(hb, 'ForegroundColor', color.Hb);
+  % set default colors
+  set(hspecies, 'ForegroundColor', color.species);       set(hecoCode, 'ForegroundColor', color.ecoCode); 
+  set(hT_typical, 'ForegroundColor', color.T_typical);   set(hauthor, 'ForegroundColor', color.author); 
+  set(hcurator, 'ForegroundColor', color.curator);       set(hgrp, 'ForegroundColor', color.grp); 
+  set(hdiscussion, 'ForegroundColor', color.discussion); set(hfacts, 'ForegroundColor', color.facts); 
+  set(hlinks, 'ForegroundColor', color.links);           set(hbiblist, 'ForegroundColor', color.biblist);
+  set(hacknowledgment, 'ForegroundColor', color.acknowledgment); 
     
 else % perform action
 %% fill fields
   switch(action)
       case 'species'
         dS = dialog('Position',[150 150 600 150], 'Name','species dlg');
+        Warning = ''; Hwarning = uicontrol('Parent',dS, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
+        Hfamily  = uicontrol('Parent',dS, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
+        Horder  = uicontrol('Parent',dS, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
+        Hclass  = uicontrol('Parent',dS, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
+        Hphylum  = uicontrol('Parent',dS, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
+        Hcommon = uicontrol('Parent',dS, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
+        select_id = true(14,1);
         Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
@@ -257,7 +269,8 @@ else % perform action
         Datevec = datevec(datenum(date)); metaData.date_acc = Datevec(1:3);
         
       case 'grp'
-        sets = {{'tL_f', 'tL_m'}, {'tWw_f', 'tWw_m'}, {'tWd_f', 'tLWd_m'}, {'LWw_f', 'LWw_m'}, {'LWd_f', 'tWd_m'}, {'LdL_f', 'LdL_m'}}; 
+        sets = {{'tL_f', 'tL_m'}, {'tWw_f', 'tWw_m'}, {'tWd_f', 'tLWd_m'}, {'LWw_f', 'LWw_m'}, ...
+            {'LWd_f', 'tWd_m'}, {'LdL_f', 'LdL_m'}}; 
         comment = {'Data for females, males', 'Data for females, males', 'Data for females, males', 'Data for females, males', ...
             'Data for females, males', 'Data for females, males'};
         
@@ -462,7 +475,7 @@ else % perform action
         end          
       end
         
-    case '0varData' 
+    case 'data_0' 
         
       code0 = { ...
           'ah',   'd', 1, 'age at hatch';          
@@ -476,6 +489,7 @@ else % perform action
           'Lh',  'cm', 0, 'length at hatch';
           'Lb',  'cm', 0, 'length at birth'
           'Lp',  'cm', 0, 'length at puberty';
+          'Lpm', 'cm', 0, 'length at puberty for males';
           'Li',  'cm', 0, 'ultimate length';
           'Lim', 'cm', 0, 'ultimate length for males';
 
@@ -527,7 +541,7 @@ else % perform action
         end
       end
 
-    case '1varData' 
+    case 'data_1' 
 
       code1 = { ...
           'tL',    {'d','cm'}, 1, {'time','length'}, '';
@@ -539,8 +553,8 @@ else % perform action
           'tWw_f', {'d', 'g'}, 1, {'time','wet weight'}, 'Data for males';
           
           'tWd',   {'d', 'g'}, 1, {'time','dry weight'}, ''; 
-          'tWd_m', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for females'; 
           'tWd_f', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for males';
+          'tWd_m', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for females'; 
           
           'LWw',   {'cm','g'}, 0, {'length','wet weight'}, '';
           'LWw_f', {'cm','g'}, 0, {'length','wet weight'}, 'Data for females';
@@ -603,73 +617,121 @@ else % perform action
 end
   % color settings: run this part only with AmPgui('setColor')
   
-  if exist('hs', 'var') && ~isempty(metaData.species)
-    color.Hs = [0 .6 0]; set(hs, 'ForegroundColor', color.Hs);
+  if ~isempty(metaData.species)
+    color.species = [0 .6 0]; set(hspecies, 'ForegroundColor', color.species);
   end
 
-  if exist('he', 'var') && any([isempty(metaData.ecoCode.climate), isempty(metaData.ecoCode.ecozone), isempty(metaData.ecoCode.habitat), ...
+  if any([isempty(metaData.ecoCode.climate), isempty(metaData.ecoCode.ecozone), isempty(metaData.ecoCode.habitat), ...
     isempty(metaData.ecoCode.embryo), isempty(metaData.ecoCode.food), isempty(metaData.ecoCode.gender), isempty(metaData.ecoCode.reprod)])
-    color.He = [1 0 0]; set(he, 'ForegroundColor', color.He);
-  elseif exist('he', 'var')
-    color.He = [0 0.6 0]; set(he, 'ForegroundColor', color.He);
+    color.ecoCode = [1 0 0]; set(hecoCode, 'ForegroundColor', color.ecoCode);
+  else
+    color.ecoCode = [0 0.6 0]; set(hecoCode, 'ForegroundColor', color.ecoCode);
   end
 
-  if exist('hT', 'var') && isfield(metaData, 'T_typical') && ~isempty(metaData.T_typical)
-    color.HT = [0 .6 0]; set(hT, 'ForegroundColor', color.HT);
+  if ~isempty(metaData.T_typical)
+    color.T_typical = [0 .6 0]; set(hT_typical, 'ForegroundColor', color.T_typical);
   end
 
-  if exist('ha', 'var') && isfield(metaData, 'author') && ~isempty(metaData.author)
-    color.Ha = [0 .6 0]; set(ha, 'ForegroundColor', color.Ha);
+  if isfield(metaData, 'author') && ~isempty(metaData.author)
+    color.author = [0 .6 0]; set(hauthor, 'ForegroundColor', color.author);
   end
   
-  if exist('hc', 'var') && isfield(metaData, 'curator') && ~isempty(metaData.curator)
-    color.Hc = [0 .6 0]; set(hc, 'ForegroundColor', color.Hc);
+  if isfield(metaData, 'curator') && ~isempty(metaData.curator)
+    color.curator = [0 .6 0]; set(hcurator, 'ForegroundColor', color.curator);
   end
+            
+  fld_male_0 = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wwim', 'Wdpm', 'Wdim'};
+  fld_male_1 = {'tL_m', 'tWw_m', 'tWd_m', 'LWd_m', 'LdL_m'};
+  if (~isempty(data.data_0) & ~ismember(fieldnames(data.data_0),fld_male_0)) | ...
+     (~isempty(data.data_1) & ~ismember(fieldnames(data.data_1),fld_male_1)) &  ~isfield(metaData.discussion)
+     color.discussion = [1 0 0]; 
+  else
+     color.discussion = [0 0 0]; 
+  end
+  set(hdiscussion, 'ForegroundColor', color.discussion);
+
+  if isfield(metaData, 'facts') && ~isempty(metaData.facts)
+    fld = fieldnames(metaData.facts); n_fld = length(fld); 
+    color.facts = [0 .6 0]; 
+    for i = 1:n_fld
+       if ~isfield(metaData.bibkey, fld{i}) & ~isempty(metaData.bibkey,(fld{i}))
+         color.facts = [1 0 0]; 
+       end
+    end
+  end
+  set(hfacts, 'ForegroundColor', color.facts);
  
-  if exist('hk', 'var') && isfield(metaData, 'acknowledgment') && ~isempty(metaData.acknowledgment)
-    color.Hk = [0 .6 0]; set(hk, 'ForegroundColor', color.Hk);
+  if isfield(metaData, 'acknowledgment') && ~isempty(metaData.acknowledgment)
+    color.acknowledgment = [0 .6 0]; set(hacknowledgment, 'ForegroundColor', color.acknowledgment);
   end
 
-  if exist('hl', 'var') && exist('select_id','var')
-    color.Hl = [0 .6 0]; set(hl, 'ForegroundColor', color.Hl)
+  if exist('select_id','var')
+    color.links = [0 .6 0]; set(hlinks, 'ForegroundColor', color.links)
   end
   
-  if exist('h0', 'var') && ~isempty(data.data_0)
-    color.H0 = [0 0.6 0]; set(h0, 'ForegroundColor', color.H0);
+  if ~isempty(data.data_0)
+    color.data_0 = [0 0.6 0]; set(data_0, 'ForegroundColor', color.data_0);
   end
   
+  if isfield(metaData, 'biblist')
+    bibitems = fieldnames(metaData.biblist);
+  else
+    bibitems = {};
+  end
+  bibkeys = {};
+  if ~isempty(data.data_0)
+    fld = fieldnames(data.data_0); n_fld = length(fld);
+    for i=1:n_fld
+      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+    end
+  end
+  if ~isempty(data.data_1)
+    fld = fieldnames(data.data_1); n_fld = length(fld);
+    for i=1:n_fld
+      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+    end
+    bibkeys = unique(bibkeys);
+  end 
+  if ~isempty(metaData.bibkey)
+    fld = fieldnames(metaData.bibkey); n_fld = length(fld);
+    for i=1:n_fld
+      bibkeys = [bibkeys, metaData.bibkey.(fld{i})];
+    end
+  end
+  bibkeys = unique(bibkeys);
+  if any(~ismember(bibkeys,bibitems))
+    color.biblist = [1 0 0];
+    fprintf(['Warning from AmPgui: missing bibitems are ', cell2str(bibkeys(~ismember(bibkeys,bibitems))),'\n']);
+  else
+    color.biblist = [0 0.6 0];
+  end
+  set(hbiblist, 'ForegroundColor', color.biblist);
 end
 
 %% callback functions
 function speciesCb(~, ~, dS)  
-  global metaData Hspecies select_id infoAmpgui
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning infoAmpgui color 
    
-  strWarn = ''; Hw = uicontrol('Parent',dS, 'Position',[110 60 350 20], 'Style','text', 'String',strWarn);
-  Hf  = uicontrol('Parent',dS, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
-  Ho  = uicontrol('Parent',dS, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
-  Hc  = uicontrol('Parent',dS, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
-  Hp  = uicontrol('Parent',dS, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
-  Hcn = uicontrol('Parent',dS, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
-  select_id = true(14,1);
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
-    set(Hf,'String',''); set(Ho,'String',''); set(Hc,'String',''); set(Hp,'String',''); set(Hcn,'String','');
-    set(Hw, 'String','species not recognized, search CoL');
+    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
+    set(Hwarning, 'String','species not recognized, search CoL');
   elseif ismember(my_pet,select)
-    set(Hf,'String',''); set(Ho,'String',''); set(Hc,'String',''); set(Hp,'String',''); set(Hcn,'String','');
+    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     uicontrol('Parent',dS, 'Position',[110 95 350 20], 'Style','text', 'String','species is already in AmP');
     uicontrol('Parent',dS, 'Position',[110 75 350 20], 'Style','text', 'String','close and proceed to post-editing phase of AmPeps');
-    set(Hw, 'String', ''); infoAmpgui = 2;
+    set(Hwarning, 'String', ''); infoAmpgui = 2;
   else
     [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
-    metaData.species_en = get_common_CoL(id_CoL); set(Hcn,'String',['common name: ',metaData.species_en]);
-    nm = lin(ismember(rank, 'Family')); metaData.family = nm{1}; set(Hf,'String',['family: ',metaData.family]);
-    nm = lin(ismember(rank, 'Order'));  metaData.order = nm{1};  set(Ho,'String',['order: ',metaData.order]);
-    nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hc,'String',['class: ',metaData.class]);
-    nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hp,'String',['phylum: ',metaData.phylum]); 
+    metaData.species_en = get_common_CoL(id_CoL); set(Hcommon,'String',['common name: ',metaData.species_en]);
+    nm = lin(ismember(rank, 'Family')); metaData.family = nm{1}; set(Hfamily,'String',['family: ',metaData.family]);
+    nm = lin(ismember(rank, 'Order'));  metaData.order = nm{1};  set(Horder,'String',['order: ',metaData.order]);
+    nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hclass,'String',['class: ',metaData.class]);
+    nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
+    color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
   end
   uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
   AmPgui('setColor')
@@ -963,7 +1025,7 @@ function add0Cb(~, ~, code0, d0)
      metaData.bibkey.(code0{i,1}) = [];
    end
    delete(d0);
-   AmPgui('0varData');
+   AmPgui('data_0');
 end 
 
 % function d0NmCb(~, ~, i)
@@ -1022,7 +1084,7 @@ function add1Cb(~, ~, code1, d1)
      metaData.bibkey.(code1{i,1}) = [];
    end 
    delete(d1);
-   AmPgui('1varData');
+   AmPgui('data_1');
 end 
 
 function D1Cb(~, ~, fld, i)  

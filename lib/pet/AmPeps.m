@@ -13,16 +13,23 @@ function AmPeps
 %   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.m.
 % Guidance is presented at <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html *AmPeps.html*>
 
-global data metaData txtData auxData infoAmPgui
+global data metaData txtData auxData infoAmPgui 
+persistent infoAmPeps
 
-web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
-web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
+if isempty(infoAmPeps)
+    infoAmPeps = 0;
+end
+if infoAmPeps == 0
+  web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
+  web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
+end
 hclimateLand = figure('Name','Land climate', 'Position',[200 450 500 300]); image(imread('climate_land.png'));
 hclimateSea  = figure('Name','Sea climate',  'Position',[800 450 500 300]); image(imread('climate_sea.jpg'));
 hecozones    = figure('Name','Land ecozone', 'Position',[200  50 500 300]); image(imread('ecozones.png'));
 hoceans      = figure('Name','Sea ecozone',  'Position',[800  50 500 300]); image(imread('oceans.jpg'));
 AmPgui;
-if infoAmPgui == 0 || isempty(infoAmPgui)
+if infoAmPgui == 0 | isempty(infoAmPgui)
+  infoAmPeps = 1;
   return % stay in gui  
 end
 close(hclimateLand,hclimateSea,hecozones,hoceans)
