@@ -680,7 +680,7 @@ end
     color.data_0 = [0 0.6 0]; set(hdata_0, 'ForegroundColor', color.data_0);
   end
  
-  if isfield(metaData, 'biblist')
+  if isfield(metaData, 'biblist') & ~isempty(metaData.biblist)
     bibitems = fieldnames(metaData.biblist);
   else
     bibitems = {};
