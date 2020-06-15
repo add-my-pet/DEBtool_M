@@ -202,7 +202,7 @@ else % perform action
         Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
-        dE = dialog('Position',[550 550 500 270], 'Name','ecoCode dlg');
+        dE = dialog('Position',[550 250 500 270], 'Name','ecoCode dlg');
         
         % climate
         uicontrol('Parent',dE, 'Position',[10 230 146 20], 'String','climate', 'Style','text');
