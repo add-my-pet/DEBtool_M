@@ -39,7 +39,7 @@ function AmPgui(action)
 % 
 % Notice that font colors only represent intennal consistency, irrespective of content.
 
-global data auxData metaData txtData select_id id_links eco_types
+global data auxData metaData txtData select_id id_links eco_types color
 global hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0        
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb d0
