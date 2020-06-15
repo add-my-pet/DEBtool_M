@@ -32,28 +32,37 @@ for i = 1:n_fld
      data_0.(fld{i}) = data.(fld{i});
    end
 end
+data_0 = rmfield(data_0, 'psd');
 data = []; data.data_0 = data_0; data.data_1 = data_1;
     
-bibkey = fieldnames(metaData.biblist); bibkey = fld(~ismember(bibkey, 'Kooy2010')); n_bibkey = length(bibkey); biblist = [];
+bibkey = fieldnames(metaData.biblist); bibkey = bibkey(~ismember(bibkey, 'Kooy2010')); n_bibkey = length(bibkey); biblist = [];
 for i = 1:n_bibkey
   bib = metaData.biblist.(bibkey{i}); biblist.(bibkey{i}) = [];
   bib(end) = []; i_head = strfind(bib, ','); head = bib(1:i_head(1)); 
-  i_type = strfind(head, '{'); type = head(2:i_type-1); biblist.(bibkey{i}).type = type;
+  i_type = strfind(head, '{'); type = head(3:i_type-1); biblist.(bibkey{i}).type = type;
   i_fld = strfind(bib, '= {'); n_fld = length(i_fld); i_sep = strfind(bib, ',');
   if n_fld > 1
     for j = 1:n_fld
       i_fld(j) = max(i_sep(i_sep < i_fld(j)));
     end
     for j = 1:n_fld-1
-      bibi = bib(2+i_fld(j):1+i_fld(j+1)); bibi = strrep(bibi, '''', '''''');
-      fldi = bib(:);
-      biblist.(bibkey{i}).(fldi) = bib1;
+      bibi = bib(2+i_fld(j):1+i_fld(j+1)); 
+      bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+      biblist.(bibkey{i}).(fldi) = str;
     end
-    bibi = bib(2+i_fld(end):end-2); bibi = strrep(bibi, '''', '''''');
-    fprintf(fid, '''%s''];\n', bibi);
+    bibi = bib(2+i_fld(end):end-2); 
+    bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+    biblist.(bibkey{i}).(fldi) = str;
   else
-    bibi = bib(2+i_sep(1):end-2); bibi = strrep(bibi, '''', '''''');
-    fprintf(fid, '''%s''];\n', bibi);
+    bibi = bib(2+i_sep(1):end-2); 
+    bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+    biblist.(bibkey{i}).(fldi) = str;
+  end
+  fld = fieldnames(biblist.(bibkey{i}));
+  if ismember('howpublished', fld) & strfind(biblist.(bibkey{i}).howpublished, '\url')
+    str = biblist.(bibkey{i}).howpublished; str([1:5, end]) = [];
+    biblist.(bibkey{i}) = rmfield(biblist.(bibkey{i}), 'howpublished');
+    biblist.(bibkey{i}).url = str;
   end
 end
 metaData.biblist = biblist;

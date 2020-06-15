@@ -40,9 +40,9 @@ function AmPgui(action)
 % Notice that font colors only represent intennal consistency, irrespective of content.
 
 global data auxData metaData txtData select_id id_links eco_types
-global hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist        
+global hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0        
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
-global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb d0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -157,6 +157,7 @@ if isempty(eco_types)
   get_eco_types;
 end
 
+
 %% setup gui
   dmydata = dialog('Position',[150 100 120 460], 'Name','AmPgui');
   hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
@@ -184,7 +185,7 @@ end
   set(hcurator, 'ForegroundColor', color.curator);       set(hgrp, 'ForegroundColor', color.grp); 
   set(hdiscussion, 'ForegroundColor', color.discussion); set(hfacts, 'ForegroundColor', color.facts); 
   set(hlinks, 'ForegroundColor', color.links);           set(hbiblist, 'ForegroundColor', color.biblist);
-  set(hacknowledgment, 'ForegroundColor', color.acknowledgment); 
+  set(hacknowledgment, 'ForegroundColor', color.acknowledgment); set(d0, 'ForegroundColor', color.data_0);
     
 else % perform action
 %% fill fields
@@ -274,7 +275,7 @@ else % perform action
         comment = {'Data for females, males', 'Data for females, males', 'Data for females, males', 'Data for females, males', ...
             'Data for females, males', 'Data for females, males'};
         
-        n_sets = length(sets); setsList = sets; sel_stes = false(n_sets,1);
+        n_sets = length(sets); setsList = sets; sel_sets = false(n_sets,1);
         for i = 1:n_sets
           setsList{1} = cell2str(sets{i});
           seti = sets{i};
@@ -285,7 +286,7 @@ else % perform action
                 
         dG = dialog('Position',[150 150 350 250], 'Name','grp dlg');
         uicontrol('Parent',dG, 'Position',[20 210 30 20], 'Callback',{@OKCb,dG}, 'String','OK');
-                
+        
         if isempty(data.data_1)
           uicontrol('Parent',dG, 'Position',[70 210 250 20], 'String','no 1-variate data found');
           
@@ -317,6 +318,9 @@ else % perform action
             hight = 475 - i * 25;
             uicontrol('Parent',dD, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
             HD(i)  = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
+            if ~isfield(metaData.bibkey, fld{i})
+              metaData.bibkey.(fld{i}) = [];
+            end
             HDb(i) = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
           end
         end
@@ -397,13 +401,13 @@ else % perform action
         if ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
           select_id(8) = true;
           if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
-            metaData.links.id_molluscabase = [strrepl(metaData.species,'_','-'), '? (replace)'];
+            metaData.links.id_molluscabase = [strrep(metaData.species,'_','-'), '? (replace)'];
           end
         end
         if strcmp(metaData.class, 'Amphibia')
           select_id(9) = true;
           if isfield(metaData.links, 'id_amphweb') && isempty(metaData.links.id_amphweb)
-            metaData.links.id_amphweb = [strrepl(metaData.species,'_','+'), '? (replace)'];
+            metaData.links.id_amphweb = [strrep(metaData.species,'_','+'), '? (replace)'];
           end
         end
         if strcmp(metaData.class, 'Reptilia')
@@ -434,7 +438,7 @@ else % perform action
             metaData.links.id_AnAge = [metaData.species, '? (replace)'];
           end
         end
-
+        
         selId_links = id_links(select_id); selLinks = links(select_id); n_selLinks = length(selId_links);
         for i= 1:n_selLinks 
           if i>1
@@ -454,13 +458,13 @@ else % perform action
         end
         
     case 'biblist'
-      bibTypeList.Article =       {'Author', 'Title', 'Journal',     'Year', 'Volume', 'Pages', 'DOI', 'url'};
-      bibTypeList.Book =          {'Author', 'Title', 'Publisher',   'Year', 'Series', 'Volume', 'ISBN', 'url'};
-      bibTypeList.InCollection =  {'Author', 'Title', 'Editor', 'Booktitle', 'Publisher', 'Year', 'Series', 'Volume', 'ISBN', 'url'};
-      bibTypeList.MastersThesis = {'Author', 'Title', 'School',      'Year', 'Address', 'DOI', 'ISBN', 'url'};
-      bibTypeList.PhdThesis =     {'Author', 'Title', 'School',      'Year', 'Address', 'DOI', 'ISBN', 'url'};
-      bibTypeList.TechReport =    {'Author', 'Title', 'Institution', 'Year', 'Address', 'DOI', 'ISBN', 'url'};
-      bibTypeList.Misc =          {'Author', 'note',                 'Year', 'DOI', 'ISBN', 'url'};
+      bibTypeList.Article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'isbn', 'url'};
+      bibTypeList.Book =          {'author', 'title', 'publisher',   'year', 'series', 'volume', 'isbn', 'url'};
+      bibTypeList.Incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
+      bibTypeList.Mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.Phdthesis =     {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.Techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.Misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
       db = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
       uicontrol('Parent',db, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,db}, 'Style','pushbutton', 'String','OK'); 
@@ -470,7 +474,7 @@ else % perform action
         fld = fieldnames(metaData.biblist); n = length(fld);
         for i = 1:n
           hight = 350 - i * 25; 
-          Hb(i) = uicontrol('Parent',db,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
+          Hb(i) = uicontrol('Parent',db,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
           uicontrol('Parent',db, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
         end          
       end
@@ -536,7 +540,10 @@ else % perform action
             H0T(i) = uicontrol('Parent',d0,                       'Position',[270, hight,  40, 20], 'Style','text', 'String','');         
           end
           H0l(i) = uicontrol('Parent',d0,                         'Position',[320, hight, 220, 20], 'Style','text', 'String',txtData.label.(fld{i})); % label
-          H0b(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(metaData.bibkey.(fld{i}))); % bibkey
+          H0b(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
+          if ~isfield(txtData.comment, fld{i})
+            txtData.comment.(fld{i}) = [];
+          end
           H0c(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
         end
       end
@@ -670,9 +677,9 @@ end
   end
   
   if ~isempty(data.data_0)
-    color.data_0 = [0 0.6 0]; set(data_0, 'ForegroundColor', color.data_0);
+    color.data_0 = [0 0.6 0]; set(hdata_0, 'ForegroundColor', color.data_0);
   end
-  
+ 
   if isfield(metaData, 'biblist')
     bibitems = fieldnames(metaData.biblist);
   else
@@ -966,8 +973,8 @@ function DbCb(~, ~, bibTypeList, bibkey, i_bibkey)
    uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
    Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
    if ~isempty(metaData.biblist) && isfield(metaData.biblist, bibkey) && ~strcmp(bibkey, 'new')
-     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['bibtype: ',metaData.biblist.(bibkey).bibtype], 'Style','text');
-     fld = bibTypeList.(metaData.biblist.(bibkey).bibtype); n_fld = length(fld);
+     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
+     fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
      for i=1:n_fld
        hight = 260 - i * 25;
        if ~isfield(metaData.biblist.(bibkey), fld{i})
@@ -985,9 +992,9 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
   bibkeyNew = get(Dbb(1), 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
   fld = fieldnames(bibTypeList);
-  i_bibtype =  listdlg('ListString',fieldnames(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
-  metaData.biblist.(bibkeyNew).bibtype = fld{i_bibtype};
-  fld = bibTypeList.(fld{i_bibtype}); n_fld = length(fld);
+  i_type =  listdlg('ListString',fieldnames(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
+  metaData.biblist.(bibkeyNew).type = fld{i_type};
+  fld = bibTypeList.(fld{i_type}); n_fld = length(fld);
   for i=1:n_fld
     metaData.biblist.(bibkeyNew).(fld{i}) = [];
   end
@@ -1104,7 +1111,7 @@ function D1Cb(~, ~, fld, i)
      H1T(i) = uicontrol('Parent',D1(i), 'Position',[325 300  50 20], 'Callback',{@d1TCb,fld,i}, 'String',auxData.temp.(fld), 'Style','edit');
    end
    uicontrol('Parent',D1(i), 'Position',[225 275  100 20], 'String','bibkey', 'Style','text');
-   H1b(i) = uicontrol('Parent',D1(i), 'Position',[300 275  100 20], 'Callback',{@d1bCb,fld,i}, 'String',metaData.bibkey.(fld), 'Style','edit');
+   H1b(i) = uicontrol('Parent',D1(i), 'Position',[300 275  100 20], 'Callback',{@d1bCb,fld,i}, 'String',txtData.bibkey.(fld), 'Style','edit');
    uicontrol('Parent',D1(i), 'Position',[225 250  70 20], 'String','comment', 'Style','text');
    H1c(i) = uicontrol('Parent',D1(i), 'Position',[225 225  240 20], 'Callback',{@d1cCb,fld,i}, 'String',txtData.comment.(fld), 'Style','edit');
 end
@@ -1142,6 +1149,10 @@ end
 function str = cell2str(cell)
   if isempty(cell)
     str = []; return
+  end
+  if ~iscell(cell)
+    str = cell;
+    return
   end
   n = length(cell); str = [];
   for i=1:n
