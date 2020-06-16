@@ -19,7 +19,7 @@ function AmPeps(infoAmPgui)
 
 global data metaData txtData auxData
 
-if ~exist('infoAmPgui', 'var')
+if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
   hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png'));
@@ -28,7 +28,7 @@ if ~exist('infoAmPgui', 'var')
   hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg'));
   AmPgui
   
-elseif ~infoAmPgui % finish AmPgui and proceed with AmPeps
+elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source files in Matlab editor
   close all
   path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
