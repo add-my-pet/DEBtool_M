@@ -2,11 +2,11 @@
 % writes file predict_my_pet.m 
 
 %%
-function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
+function [auxParFld, info] = prt_predict(par, metaPar, data, auxData, metaData)
 % created 2020/06/02 by  Bas Kooijman
 
 %% Syntax
-% [auxPar, info] = <../prt_predict.m *prt_predict*> (par, metaPar, data, auxData) 
+% [auxParFld, info] = <../prt_predict.m *prt_predict*> (par, metaPar, data, auxData) 
 
 %% Description
 % Writes file predict_my_pet.m from pars, data, auxData and metaData. Uses code as specified in predict.mat
@@ -21,7 +21,7 @@ function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
 %
 % Output:
 %
-% * auxPar: cell string with names of auxiliary parameters that are used
+% * auxParFld: cell string with names of auxiliary parameters that are used
 % * info: boolean for success of filling all code (1), or failure (0)
 
 %% Remarks
@@ -49,7 +49,7 @@ function [auxPar, info] = prt_predict(par, metaPar, data, auxData, metaData)
 % * use prt_run_my_pet to write a run-file
 % * finally: you are ready to start the estimation procedure
 
-auxPar = {}; model = metaPar.model; my_pet = metaData.species; 
+auxParFld = {}; model = metaPar.model; my_pet = metaData.species; 
 WD = cdPet; load prdCode; cd(WD);
 
 %fid = fopen(['predict_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
@@ -96,7 +96,7 @@ fprintf(fid, '\n');
 fprintf(fid, '%% life cycle\n');
 if strcmp(model,'std') && isfield(data, 'tR')
   fprintf(fid, '%s', cell2str(prdCode.(model).lcR));
-  auxPar = [auxPar, 't_N'];
+  auxParFld = [auxParFld, 't_N'];
 else
   fprintf(fid, '%s', cell2str(prdCode.(model).lc));
 end
@@ -307,15 +307,15 @@ fprintf(fid, '\n');
 
 fclose(fid);
 
-% auxPar
+% auxParFld
 fld = [fld0(sel_0); fld1(sel_1)]; n_fld = length(fld); 
 for i =1:n_fld
   if isfield(prdCode.(model).aux, fld{i})
-    auxPari = prdCode.(model).aux.(fld{i});
-    auxPar = [auxPar; auxPari(:)];
+    auxParFldi = prdCode.(model).aux.(fld{i});
+    auxParFld = [auxParFld; auxParFldi(:)];
   end
 end
-auxPar = unique(auxPar);
+auxParFld = unique(auxParFld);
 info = n_rfld0 == 0 && n_rfld1 == 0;
 
 end

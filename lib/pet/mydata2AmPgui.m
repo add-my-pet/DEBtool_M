@@ -47,15 +47,15 @@ for i = 1:n_bibkey
     end
     for j = 1:n_fld-1
       bibi = bib(2+i_fld(j):1+i_fld(j+1)); 
-      bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+      bibi = strsplit(bibi, '='); fldi = lower(strtrim(bibi{1})); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
       biblist.(bibkey{i}).(fldi) = str;
     end
     bibi = bib(2+i_fld(end):end-2); 
-    bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+    bibi = strsplit(bibi, '='); fldi = lower(strtrim(bibi{1})); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
     biblist.(bibkey{i}).(fldi) = str;
   else
     bibi = bib(2+i_sep(1):end-2); 
-    bibi = strsplit(bibi, '='); fldi = strtrim(bibi{1}); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
+    bibi = strsplit(bibi, '='); fldi = lower(strtrim(bibi{1})); str = strtrim(bibi{2}); str([1, end, end-1]) = [];
     biblist.(bibkey{i}).(fldi) = str;
   end
   fld = fieldnames(biblist.(bibkey{i}));
