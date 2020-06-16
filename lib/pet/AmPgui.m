@@ -618,8 +618,10 @@ else % perform action
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
       dP = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dP, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
-      uicontrol('Parent',dP, 'Position',[130 60 100 20], 'Callback',{@stayCb,dP},  'String','stay in AmPgui', 'Style','pushbutton');
-      uicontrol('Parent',dP, 'Position',[250 60 100 20], 'Callback',{@proceedCb,dP}, 'String','stay in AmPeps', 'Style','pushbutton');
+      uicontrol('Parent',dP, 'Position',[80 60 150 20], 'Callback',{@stayCb,dP},  'String','stay in AmPgui', 'Style','pushbutton');
+      uicontrol('Parent',dP, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dP}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
+      Hquit = uicontrol('Parent',dP, 'Position',[140 30 200 20], 'Callback',{@quitCb,{dP,dmydata}}, 'String','quit AmPgui and AmPeps', 'Style','pushbutton');
+      set(Hquit, 'ForegroundColor',[1 0 0]);
   end
 end
   % color settings: run this part only with AmPgui('setColor')
@@ -1153,6 +1155,11 @@ end
 function leaveCb(~, ~, H) 
   OKCb([], [], H);
   AmPeps(false);
+end
+
+function quitCb(~, ~, H) 
+  OKCb([], [], H);
+  close all;
 end
 
 function OKCb(~, ~, H) 
