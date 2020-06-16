@@ -39,7 +39,7 @@ function AmPgui(action)
 % 
 % Notice that font colors only represent intennal consistency, irrespective of content.
 
-global data auxData metaData txtData select_id id_links eco_types color
+global data auxData metaData txtData select_id id_links eco_types color 
 global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0        
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb d0
@@ -618,8 +618,8 @@ else % perform action
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
       dP = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dP, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
-      uicontrol('Parent',dP, 'Position',[130 60 100 20], 'Callback',{@OKCb,dP,0},  'String','stay in AmPgui', 'Style','pushbutton');
-      uicontrol('Parent',dP, 'Position',[250 60 100 20], 'Callback',{@OKCb,dP,1}, 'String','stay in AmPeps', 'Style','pushbutton');
+      uicontrol('Parent',dP, 'Position',[130 60 100 20], 'Callback',{@stayCb,dP},  'String','stay in AmPgui', 'Style','pushbutton');
+      uicontrol('Parent',dP, 'Position',[250 60 100 20], 'Callback',{@proceedCb,dP}, 'String','stay in AmPeps', 'Style','pushbutton');
   end
 end
   % color settings: run this part only with AmPgui('setColor')
@@ -717,7 +717,7 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dS)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning infoAmpgui color dmydata
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning color dmydata
    
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
@@ -726,13 +726,14 @@ function speciesCb(~, ~, dS)
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     set(Hwarning, 'String','species not recognized, search CoL');
     uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+    AmPgui('setColors')
   elseif ismember(my_pet,select)
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     uicontrol('Parent',dS, 'Position',[110 95 350 20], 'Style','text', 'String','species is already in AmP');
     uicontrol('Parent',dS, 'Position',[110 75 350 20], 'Style','text', 'String','OK proceeds to post-editing phase of AmPeps');
-    set(Hwarning, 'String', ''); infoAmpgui = 2;
-    hOK = uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dmydata}, 'Style','pushbutton', 'String','OK');
-    set(hOK, 'ForegroundColor', [1 0 0]);
+    set(Hwarning, 'String', '');
+    hleave = uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dS,dmydata}}, 'Style','pushbutton', 'String','OK');
+    set(hleave, 'ForegroundColor', [1 0 0]); 
   else
     [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
@@ -743,8 +744,8 @@ function speciesCb(~, ~, dS)
     nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+    AmPgui('links')
   end
-  AmPgui('links')
 end
 
 function climateCb(~, ~, Hclimate)  
@@ -1140,12 +1141,25 @@ function d1cCb(~, ~, fld, i)
   metaData.comment.(fld) = get(H1c(i), 'string');
 end  
 
-function OKCb(~, ~, H, i) 
-  global infoAmPgui
-  if exist('i','var')
-    infoAmPgui = i;
+function stayCb(~, ~, H) 
+  OKCb([], [], H);
+end
+
+function proceedCb(~, ~, H) 
+  OKCb([], [], H);
+  AmPeps(true);
+end
+
+function leaveCb(~, ~, H) 
+  OKCb([], [], H);
+  AmPeps(false);
+end
+
+function OKCb(~, ~, H) 
+  n = length(H);
+  for i = 1:n
+    delete(H{i});
   end
-  delete(H);
 end
 
 %% other support functions
