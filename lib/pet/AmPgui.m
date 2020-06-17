@@ -166,14 +166,14 @@ end
   hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
   hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
   hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
-  hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',     'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
+  hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',  'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
   hfacts    = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
-  hacknowledgment  = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
+  hacknowledgment = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
   hlinks    = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
   hbiblist  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
   
-  hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',       'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',       'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
+  hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',         'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',         'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
               uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
               uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
@@ -198,7 +198,6 @@ else % perform action
         Hclass  = uicontrol('Parent',dS, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
         Hphylum  = uicontrol('Parent',dS, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
         Hcommon = uicontrol('Parent',dS, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
-        select_id = true(14,1);
         Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
@@ -348,7 +347,7 @@ else % perform action
         HK = uicontrol('Parent',dK, 'Callback',@acknowledgmentCb, 'Position',[110 95 550 20], 'Style','edit', 'String',metaData.acknowledgment); 
         
       case 'links'
-        dL = dialog('Position',[150 150 350 350],'Name','links dlg');
+        dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
         links = {...
           'http://www.catalogueoflife.org/col/'; ...
           'http://eol.org/'; ...
@@ -392,9 +391,9 @@ else % perform action
           metaData.links.id_WoRMS =  'some number (replace)';
         end
 
-        if strcmp(metaData.class, 'Mollusca')
+        if strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
-          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase)
+          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_fishbase)
             metaData.links.id_molluscabase = 'some number (replace)';
           end
         end
@@ -404,20 +403,20 @@ else % perform action
             metaData.links.id_molluscabase = [strrep(metaData.species,'_','-'), '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Amphibia')
+        if strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
           select_id(9) = true;
           if isfield(metaData.links, 'id_amphweb') && isempty(metaData.links.id_amphweb)
             metaData.links.id_amphweb = [strrep(metaData.species,'_','+'), '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Reptilia')
+        if strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
           select_id(10) = true;
           nm = strspilt(metaData.species);
           if isfield(metaData.links, 'id_ReptileDB') && isempty(metaData.links.id_ReptileDB)
             metaData.links.id_ReptileDB = ['genus=',nm{1}, '&species=', nm{2}, '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Aves')
+        if strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
           select_id(11:12) = true;
           if isfield(metaData.links, 'id_avibase') && isempty(metaData.links.id_avibase)
             metaData.links.id_avibase = 'some code (replace)';
@@ -426,13 +425,13 @@ else % perform action
             metaData.links.id_birdlife = 'some sci. & common names (replace)';
           end
         end
-        if strcmp(metaData.class, 'Mammalia')
+        if strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
           select_id(13) = true;
           if isfield(metaData.links, 'id_MSW3') && isempty(metaData.links.id_MSW3)
             metaData.links.id_MSW3 = 'some number (replace)';
           end
         end
-        if ismember(metaData.class, {'Aves', 'Mammalia'})
+        if ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
           select_id(14) = true;
           if isfield(metaData.links, 'id_AnAge') && isempty(metaData.links.id_AnAge)
             metaData.links.id_AnAge = [metaData.species, '? (replace)'];
@@ -448,12 +447,12 @@ else % perform action
           if ~isfield(metaData.links, selId_links{i})
             metaData.links.(selId_links{i}) = [];
           end
-          uicontrol('Parent',dL, 'Position',[0, hight, 146, 20], 'String',selId_links{i}, 'Style','text');
-          uicontrol('Parent',dL, 'Callback',{@OKCb,dL}, 'Position',[110 10 20 20], 'Style','pushbutton', 'String','OK'); 
+          uicontrol('Parent',dlinks, 'Position',[0, hight, 146, 20], 'String',selId_links{i}, 'Style','text');
+          uicontrol('Parent',dlinks, 'Callback',{@OKCb,dlinks}, 'Position',[110 10 20 20], 'Style','pushbutton', 'String','OK'); 
           if i == 1
-            uicontrol('Parent',dL, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(selId_links{i})); 
+            uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(selId_links{i})); 
           else
-            HL(i)  = uicontrol('Parent',dL, 'Callback',{@linksCb,selId_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(selId_links{i})); 
+            HL(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,selId_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(selId_links{i})); 
           end
         end
         
@@ -1163,9 +1162,13 @@ function quitCb(~, ~, H)
 end
 
 function OKCb(~, ~, H) 
-  n = length(H);
-  for i = 1:n
-    delete(H{i});
+  if iscell(H)
+    n = length(H);
+    for i = 1:n
+      delete(H{i});
+    end
+  else
+    delete(H);
   end
 end
 
