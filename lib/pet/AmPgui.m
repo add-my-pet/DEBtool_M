@@ -42,7 +42,7 @@ function AmPgui(action)
 global data auxData metaData txtData select_id id_links eco_types color 
 global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0        
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
-global Hauthor Hemail Haddress HK HD HDb HF HFb HT HL H0v H0T H0b H0c D1 Hb d0
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -191,80 +191,85 @@ else % perform action
 %% fill fields
   switch(action)
       case 'species'
-        dS = dialog('Position',[150 150 600 150], 'Name','species dlg');
-        Warning = ''; Hwarning = uicontrol('Parent',dS, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
-        Hfamily  = uicontrol('Parent',dS, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
-        Horder  = uicontrol('Parent',dS, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
-        Hclass  = uicontrol('Parent',dS, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
-        Hphylum  = uicontrol('Parent',dS, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
-        Hcommon = uicontrol('Parent',dS, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
-        Hspecies = uicontrol('Parent',dS, 'Callback',{@speciesCb,dS}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
+        dspecies = dialog('Position',[150 150 600 150], 'Name','species dlg');
+        Warning = ''; Hwarning = uicontrol('Parent',dspecies, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
+        Hfamily  = uicontrol('Parent',dspecies, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
+        Horder  = uicontrol('Parent',dspecies, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
+        Hclass  = uicontrol('Parent',dspecies, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
+        Hphylum  = uicontrol('Parent',dspecies, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
+        Hcommon = uicontrol('Parent',dspecies, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
+        Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
-        dE = dialog('Position',[550 250 500 270], 'Name','ecoCode dlg');
+        decoCode = dialog('Position',[550 250 500 270], 'Name','ecoCode dlg');
         
         % climate
-        uicontrol('Parent',dE, 'Position',[10 230 146 20], 'String','climate', 'Style','text');
-        Hclimate = uicontrol('Parent',dE, 'Position',[110 230 250 20], 'String',cell2str(metaData.ecoCode.climate)); 
-        uicontrol('Parent',dE, 'Callback',{@climateCb,Hclimate}, 'Position',[370 230 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 230 146 20], 'String','climate', 'Style','text');
+        Hclimate = uicontrol('Parent',decoCode, 'Position',[110 230 250 20], 'String',cell2str(metaData.ecoCode.climate)); 
+        uicontrol('Parent',decoCode, 'Callback',{@climateCb,Hclimate}, 'Position',[370 230 50 20], 'Style','pushbutton', 'String','edit'); 
         
         % ecozone
-        uicontrol('Parent',dE, 'Position',[10 200 146 20], 'String','ecozone', 'Style','text');
-        Hecozone = uicontrol('Parent',dE, 'Position',[110 200 250 20], 'String',cell2str(metaData.ecoCode.ecozone));
-        uicontrol('Parent',dE, 'Callback',{@ecozoneCb,Hecozone}, 'Position',[370 200 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 200 146 20], 'String','ecozone', 'Style','text');
+        Hecozone = uicontrol('Parent',decoCode, 'Position',[110 200 250 20], 'String',cell2str(metaData.ecoCode.ecozone));
+        uicontrol('Parent',decoCode, 'Callback',{@ecozoneCb,Hecozone}, 'Position',[370 200 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % habitat
-        uicontrol('Parent',dE, 'Position',[10 170 146 20], 'String','habitat', 'Style','text');
-        Hhabitat = uicontrol('Parent',dE, 'Position',[110 170 250 20], 'String',cell2str(metaData.ecoCode.habitat)); 
-        uicontrol('Parent',dE, 'Callback',{@habitatCb,Hhabitat}, 'Position',[370 170 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 170 146 20], 'String','habitat', 'Style','text');
+        Hhabitat = uicontrol('Parent',decoCode, 'Position',[110 170 250 20], 'String',cell2str(metaData.ecoCode.habitat)); 
+        uicontrol('Parent',decoCode, 'Callback',{@habitatCb,Hhabitat}, 'Position',[370 170 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % embryo
-        uicontrol('Parent',dE, 'Position',[10 140 146 20], 'String','embryo', 'Style','text');
-        Hembryo = uicontrol('Parent',dE, 'Position',[110 140 250 20], 'String',cell2str(metaData.ecoCode.embryo));
-        uicontrol('Parent',dE, 'Callback',{@embryoCb,Hembryo}, 'Position',[370 140 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 140 146 20], 'String','embryo', 'Style','text');
+        Hembryo = uicontrol('Parent',decoCode, 'Position',[110 140 250 20], 'String',cell2str(metaData.ecoCode.embryo));
+        uicontrol('Parent',decoCode, 'Callback',{@embryoCb,Hembryo}, 'Position',[370 140 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % migrate
-        uicontrol('Parent',dE, 'Position',[10 110 146 20], 'String','migrate', 'Style','text');
-        Hmigrate = uicontrol('Parent',dE, 'Position',[110 110 250 20], 'String',cell2str(metaData.ecoCode.migrate)); 
-        uicontrol('Parent',dE, 'Callback',{@migrateCb,Hmigrate}, 'Position',[370 110 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 110 146 20], 'String','migrate', 'Style','text');
+        Hmigrate = uicontrol('Parent',decoCode, 'Position',[110 110 250 20], 'String',cell2str(metaData.ecoCode.migrate)); 
+        uicontrol('Parent',decoCode, 'Callback',{@migrateCb,Hmigrate}, 'Position',[370 110 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % food
-        uicontrol('Parent',dE, 'Position',[10 80 146 20], 'String','food', 'Style','text');
-        Hfood = uicontrol('Parent',dE, 'Position',[110 80 250 20], 'String',cell2str(metaData.ecoCode.food)); 
-        uicontrol('Parent',dE, 'Callback',{@foodCb,Hfood}, 'Position',[370 80 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 80 146 20], 'String','food', 'Style','text');
+        Hfood = uicontrol('Parent',decoCode, 'Position',[110 80 250 20], 'String',cell2str(metaData.ecoCode.food)); 
+        uicontrol('Parent',decoCode, 'Callback',{@foodCb,Hfood}, 'Position',[370 80 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % gender
-        uicontrol('Parent',dE, 'Position',[10 50 146 20], 'String','gender', 'Style','text');
-        Hgender = uicontrol('Parent',dE, 'Position',[110 50 250 20], 'String',cell2str(metaData.ecoCode.gender)); 
-        uicontrol('Parent',dE, 'Callback',{@genderCb,Hgender}, 'Position',[370 50 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Position',[10 50 146 20], 'String','gender', 'Style','text');
+        Hgender = uicontrol('Parent',decoCode, 'Position',[110 50 250 20], 'String',cell2str(metaData.ecoCode.gender)); 
+        uicontrol('Parent',decoCode, 'Callback',{@genderCb,Hgender}, 'Position',[370 50 50 20], 'Style','pushbutton', 'String','edit'); 
 
         % reprod
-        uicontrol('Parent',dE, 'Position',[10 20 146 20], 'String','reprod', 'Style','text');
-        Hreprod = uicontrol('Parent',dE, 'Position',[110 20 250 20], 'String',cell2str(metaData.ecoCode.reprod)); 
-        uicontrol('Parent',dE, 'Callback',{@reprodCb,Hreprod}, 'Position',[370 20 50 20], 'Style','pushbutton', 'String','edit'); 
-        uicontrol('Parent',dE, 'Callback',{@OKCb,dE}, 'Position',[430 20 50 20], 'Style','pushbutton', 'String','OK'); 
+        uicontrol('Parent',decoCode, 'Position',[10 20 146 20], 'String','reprod', 'Style','text');
+        Hreprod = uicontrol('Parent',decoCode, 'Position',[110 20 250 20], 'String',cell2str(metaData.ecoCode.reprod)); 
+        uicontrol('Parent',decoCode, 'Callback',{@reprodCb,Hreprod}, 'Position',[370 20 50 20], 'Style','pushbutton', 'String','edit'); 
+        uicontrol('Parent',decoCode, 'Callback',{@OKCb,decoCode}, 'Position',[430 20 50 20], 'Style','pushbutton', 'String','OK'); 
         
       case 'T_typical'
-        dT = dialog('Position',[300 250 300 100], 'Name','T_typical dlg');
-        uicontrol('Parent',dT, 'Position',[10 50 200 20], 'String','Typical body temperature in C', 'Style','text');
-        HT = uicontrol('Parent',dT, 'Callback',@T_typicalCb, 'Position',[200 50 50 20], 'Style','edit', 'String',num2str(K2C(metaData.T_typical))); 
-        uicontrol('Parent',dT, 'Callback',{@OKCb,dT}, 'Position',[100 20 20 20], 'String','OK', 'Style','pushbutton');
+        dT_typical = dialog('Position',[300 250 300 100], 'Name','T_typical dlg');
+        uicontrol('Parent',dT_typical, 'Position',[10 50 200 20], 'String','Typical body temperature in C', 'Style','text');
+        HT = uicontrol('Parent',dT_typical, 'Callback',@T_typicalCb, 'Position',[200 50 50 20], 'Style','edit', 'String',num2str(K2C(metaData.T_typical))); 
+        uicontrol('Parent',dT_typical, 'Callback',{@OKCb,dT_typical}, 'Position',[100 20 20 20], 'String','OK', 'Style','pushbutton');
 
       case 'author'
         Datevec = datevec(datenum(date)); metaData.date_subm = Datevec(1:3);
-        dA = dialog('Position',[150 150 500 150], 'Name','author dlg');
-        uicontrol('Parent',dA, 'Position',[10 95 146 20], 'String','Name', 'Style','text');
-        Hauthor  = uicontrol('Parent',dA, 'Callback',@authorCb, 'Position',[110 95 350 20], 'Style','edit', 'String',metaData.author); 
-        uicontrol('Parent',dA, 'Position',[10 70 146 20], 'String','email', 'Style','text');
-        Hemail   = uicontrol('Parent',dA, 'Callback',@emailCb, 'Position',[110 70 350 20], 'Style','edit', 'String',metaData.email); 
-        uicontrol('Parent',dA, 'Position',[10 45 146 20], 'String','address', 'Style','text');
-        Haddress = uicontrol('Parent',dA, 'Callback',@addressCb, 'Position',[110 45 350 20], 'Style','edit', 'String',metaData.address); 
-        uicontrol('Parent',dA, 'Callback',{@OKCb,dA}, 'Position',[110 20 20 20], 'String','OK', 'Style','pushbutton');
+        dauthor = dialog('Position',[150 150 500 150], 'Name','author dlg');
+        uicontrol('Parent',dauthor, 'Position',[10 95 146 20], 'String','Name', 'Style','text');
+        Hauthor  = uicontrol('Parent',dauthor, 'Callback',@authorCb, 'Position',[110 95 350 20], 'Style','edit', 'String',metaData.author); 
+        uicontrol('Parent',dauthor, 'Position',[10 70 146 20], 'String','email', 'Style','text');
+        Hemail   = uicontrol('Parent',dauthor, 'Callback',@emailCb, 'Position',[110 70 350 20], 'Style','edit', 'String',metaData.email); 
+        uicontrol('Parent',dauthor, 'Position',[10 45 146 20], 'String','address', 'Style','text');
+        Haddress = uicontrol('Parent',dauthor, 'Callback',@addressCb, 'Position',[110 45 350 20], 'Style','edit', 'String',metaData.address); 
+        uicontrol('Parent',dauthor, 'Callback',{@OKCb,dauthor}, 'Position',[110 20 20 20], 'String','OK', 'Style','pushbutton');
 
       case 'curator'
         curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
         emailList = {'starrlight.augustine@akvaplan.niva.no', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
-        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 80], 'InitialValue',1);
+        if ~isempty(metaData.curator)
+          i = 1:5; i = i(ismember(curList, metaData.curator));
+        else
+          i = 1;
+        end
+        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 80], 'InitialValue',i);
         metaData.curator = curList{i_cur}; metaData.email_cur = emailList{i_cur}; 
         Datevec = datevec(datenum(date)); metaData.date_acc = Datevec(1:3);
         
@@ -283,11 +288,11 @@ else % perform action
           end
         end
                 
-        dG = dialog('Position',[150 150 350 250], 'Name','grp dlg');
-        uicontrol('Parent',dG, 'Position',[20 210 30 20], 'Callback',{@OKCb,dG}, 'String','OK');
+        dgrp = dialog('Position',[150 150 350 250], 'Name','grp dlg');
+        uicontrol('Parent',dgrp, 'Position',[20 210 30 20], 'Callback',{@OKCb,dgrp}, 'String','OK');
         
         if isempty(data.data_1)
-          uicontrol('Parent',dG, 'Position',[70 210 250 20], 'String','no 1-variate data found');
+          uicontrol('Parent',dgrp, 'Position',[70 210 250 20], 'String','no 1-variate data found');
           
         elseif any(sel_sets)
           setsList = setsList(sel_sets);
@@ -295,56 +300,56 @@ else % perform action
           n_sets = length(i_sets);
           for i=1:n_sets
             hight = 180 - i * 25;
-            uicontrol('Parent',dG, 'Position',[ 20 hight 150 20], 'String',['set', num2str(i), ': ', setsList{i}]);  
-            uicontrol('Parent',dG, 'Position',[170 hight 175 20], 'String',['comment', num2str(i), ': ', comment{i}]); 
+            uicontrol('Parent',dgrp, 'Position',[ 20 hight 150 20], 'String',['set', num2str(i), ': ', setsList{i}]);  
+            uicontrol('Parent',dgrp, 'Position',[170 hight 175 20], 'String',['comment', num2str(i), ': ', comment{i}]); 
           end
           metaData.grp.sets = sets(sel_sets);
           metaData.grp.comment = comment(sel_sets);
 
         else
-          uicontrol('Parent',dG, 'Position',[70 210 250 20], 'String','no 1-variate data found that can be grouped');
+          uicontrol('Parent',dgrp, 'Position',[70 210 250 20], 'String','no 1-variate data found that can be grouped');
         end
  
       case 'discussion'
-        dD = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
-        uicontrol('Parent',dD, 'Callback',{@OKCb,dD}, 'Position',[30 500 20 20], 'String','OK');
-        uicontrol('Parent',dD, 'Callback',{@addDiscussionCb,dD}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
-        uicontrol('Parent',dD, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
+        ddiscussion = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
+        uicontrol('Parent',ddiscussion, 'Callback',{@OKCb,ddiscussion}, 'Position',[30 500 20 20], 'String','OK');
+        uicontrol('Parent',ddiscussion, 'Callback',{@adddiscussioniscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
+        uicontrol('Parent',ddiscussion, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
         
         if ~isempty(metaData.discussion)
           fld = fields(metaData.discussion); n = length(fld);
           for i = 1:n
             hight = 475 - i * 25;
-            uicontrol('Parent',dD, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
-            HD(i)  = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
+            uicontrol('Parent',ddiscussion, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
+            HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
             if ~isfield(metaData.bibkey, fld{i})
               metaData.bibkey.(fld{i}) = [];
             end
-            HDb(i) = uicontrol('Parent',dD, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+            HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
           end
         end
 
       case 'facts'
-        dF = dialog('Position',[150 150 950 550], 'Name','facts dlg');
-        uicontrol('Parent',dF, 'Callback',{@OKCb,dF}, 'Position',[30 500 20 20], 'String','OK');
-        HF = uicontrol('Parent',dF, 'Callback',{@addFactCb,dF}, 'Position',[110 500 150 20], 'String','add fact', 'Style','pushbutton');
-        uicontrol('Parent',dF, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
+        dfacts = dialog('Position',[150 150 950 550], 'Name','facts dlg');
+        uicontrol('Parent',dfacts, 'Callback',{@OKCb,dfacts}, 'Position',[30 500 20 20], 'String','OK');
+        HF = uicontrol('Parent',dfacts, 'Callback',{@addFactCb,dfacts}, 'Position',[110 500 150 20], 'String','add fact', 'Style','pushbutton');
+        uicontrol('Parent',dfacts, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
         
-        if ~isempty(metaData.discussion)
+        if ~isempty(metaData.facts)
           fld = fields(metaData.facts); n = length(fld);
           for i = 1:n
             hight = 475 - i * 25;
-            uicontrol('Parent',dF, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
-            HF(i)  = uicontrol('Parent',dF, 'Callback',{@factsCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
-            HFb(i) = uicontrol('Parent',dF, 'Callback',{@factsCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
+            uicontrol('Parent',dfacts, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
+            HF(i)  = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
+            HFb(i) = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
           end
         end
 
       case 'acknowledgment'
-        dK = dialog('Position',[150 150 700 150], 'Name','acknowledgment dlg');
-        uicontrol('Parent',dK, 'Position',[10 95 146 20], 'String','Text', 'Style','text');
-        uicontrol('Parent',dK, 'Callback',{@OKCb,dK}, 'Position',[110 70 20 20], 'String','OK');
-        HK = uicontrol('Parent',dK, 'Callback',@acknowledgmentCb, 'Position',[110 95 550 20], 'Style','edit', 'String',metaData.acknowledgment); 
+        dacknowledgment = dialog('Position',[150 150 700 150], 'Name','acknowledgment dlg');
+        uicontrol('Parent',dacknowledgment, 'Position',[10 95 146 20], 'String','Text', 'Style','text');
+        uicontrol('Parent',dacknowledgment, 'Callback',{@OKCb,dacknowledgment}, 'Position',[110 70 20 20], 'String','OK');
+        HK = uicontrol('Parent',dacknowledgment, 'Callback',@acknowledgmentCb, 'Position',[110 95 550 20], 'Style','edit', 'String',metaData.acknowledgment); 
         
       case 'links'
         dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
@@ -367,34 +372,30 @@ else % perform action
       
         id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
          'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
-     
-        if isempty(select_id)
-          select_id = true(14,1); select_id(7:14) = false; % selection vector for links
-          for i = 1:14
-            metaData.links.(id_links{i}) = [];
-          end
-        end
-       
+             
+      
+        select_id(1:6) = true;
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
-          metaData.links.id_EoL =  'some number (replace)';
+          metaData.links.id_EoL =  'some number (replace)'; 
         end
         if isfield(metaData.links, 'id_Wiki') && isempty(metaData.links.id_Wiki)
-          metaData.links.id_Wiki =  [metaData.species, '? (replace)'];
+          metaData.links.id_Wiki =  [metaData.species, '? (replace)']; 
         end
         if isfield(metaData.links, 'id_ADW') && isempty(metaData.links.id_ADW)
-          metaData.links.id_ADW =  [metaData.species, '? (replace)'];
+          metaData.links.id_ADW =  [metaData.species, '? (replace)']; 
         end
         if isfield(metaData.links, 'id_Taxo') && isempty(metaData.links.id_Taxo)
-          metaData.links.id_Taxo =  'some number (replace)';
+          metaData.links.id_Taxo =  'some number (replace)'; 
         end
         if isfield(metaData.links, 'id_WoRMS') && isempty(metaData.links.id_WoRMS)
-          metaData.links.id_WoRMS =  'some number (replace)';
+          metaData.links.id_WoRMS =  'some number (replace)'; 
         end
-
+        
+        select_id(7:14) = false;
         if strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
           if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_fishbase)
-            metaData.links.id_molluscabase = 'some number (replace)';
+            metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
           end
         end
         if ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
@@ -438,23 +439,24 @@ else % perform action
           end
         end
         
-        selId_links = id_links(select_id); selLinks = links(select_id); n_selLinks = length(selId_links);
-        for i= 1:n_selLinks 
+                 
+        select_id = logical(select_id); ID_links = id_links(select_id); Links = links(select_id); n_Links = length(ID_links);
+        for i= 1:n_Links 
           if i>1
-            web(selLinks{i},'-browser');
+            web(Links{i},'-browser');
           end
           hight = 275 - i * 25;
-          if ~isfield(metaData.links, selId_links{i})
-            metaData.links.(selId_links{i}) = [];
+          if ~isfield(metaData.links, ID_links{i})
+            metaData.links.(ID_links{i}) = [];
           end
-          uicontrol('Parent',dlinks, 'Position',[0, hight, 146, 20], 'String',selId_links{i}, 'Style','text');
+          uicontrol('Parent',dlinks, 'Position',[0, hight, 146, 20], 'String',ID_links{i}, 'Style','text');
           uicontrol('Parent',dlinks, 'Callback',{@OKCb,dlinks}, 'Position',[110 10 20 20], 'Style','pushbutton', 'String','OK'); 
           if i == 1
-            uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(selId_links{i})); 
+            Hlinks(1) = uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(ID_links{i})); 
           else
-            HL(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,selId_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(selId_links{i})); 
+            Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
           end
-        end
+       end
         
     case 'biblist'
       bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'dio', 'url'};
@@ -465,16 +467,16 @@ else % perform action
       bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      db = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
-      uicontrol('Parent',db, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,db}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',db, 'Position',[70 370 100 20], 'Callback',{@addBibCb,db}, 'String','add bib item', 'Style','pushbutton');
+      dbiblist = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
+      uicontrol('Parent',dbiblist, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',dbiblist, 'Position',[70 370 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
       if ~isempty(metaData.biblist)
         fld = fields(metaData.biblist); n = length(fld);
         for i = 1:n
           hight = 350 - i * 25; 
-          Hb(i) = uicontrol('Parent',db,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
-          uicontrol('Parent',db, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
+          uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
         end          
       end
         
@@ -515,35 +517,35 @@ else % perform action
           'Ri', '#/d', 1, 'ultimate reproduction rate';
           }; 
         
-      d0 = dialog('Position',[150 35 1000 620], 'Name','0-variate data dlg');
-      uicontrol('Parent',d0, 'Position',[ 60 580  50 20], 'Callback',{@OKCb,d0}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',d0, 'Position',[400 580 150 20], 'Callback',{@add0Cb,code0,d0}, 'String','add 0-var data', 'Style','pushbutton');
-      uicontrol('Parent',d0, 'Position',[ 60 550  70 20], 'String','name', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[140 550  70 20], 'String','value', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[200 550  70 20], 'String','units', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[260 550  70 20], 'String','temp in C', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[390 550  70 20], 'String','label', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[550 550  70 20], 'String','bibkey', 'Style','text');
-      uicontrol('Parent',d0, 'Position',[640 550  70 20], 'String','comment', 'Style','text');
+      ddata_0 = dialog('Position',[150 35 1000 620], 'Name','0-variate data dlg');
+      uicontrol('Parent',ddata_0, 'Position',[ 60 580  50 20], 'Callback',{@OKCb,ddata_0}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',ddata_0, 'Position',[400 580 150 20], 'Callback',{@add0Cb,code0,ddata_0}, 'String','add 0-var data', 'Style','pushbutton');
+      uicontrol('Parent',ddata_0, 'Position',[ 60 550  70 20], 'String','name', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[140 550  70 20], 'String','value', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[200 550  70 20], 'String','units', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[260 550  70 20], 'String','temp in C', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[390 550  70 20], 'String','label', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[550 550  70 20], 'String','bibkey', 'Style','text');
+      uicontrol('Parent',ddata_0, 'Position',[640 550  70 20], 'String','comment', 'Style','text');
 
       if ~isempty(data.data_0)
         fld = fields(data.data_0); n = size(fld);
         for i = 1:n
           hight = 550 - i * 25; 
-          uicontrol('Parent',d0,                                  'Position',[ 60, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
-          H0v(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[150, hight,  70, 20], 'Style','edit', 'String',num2str(data.data_0.(fld{i}))); % value
-          H0u(i) = uicontrol('Parent',d0,                         'Position',[230, hight,  30, 20], 'Style','text', 'String',txtData.units.(fld{i})); % units
+          uicontrol('Parent',ddata_0,                                  'Position',[ 60, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
+          H0v(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[150, hight,  70, 20], 'Style','edit', 'String',num2str(data.data_0.(fld{i}))); % value
+          H0u(i) = uicontrol('Parent',ddata_0,                         'Position',[230, hight,  30, 20], 'Style','text', 'String',txtData.units.(fld{i})); % units
           if isfield(auxData.temp, fld{i})
-            H0T(i) = uicontrol('Parent',d0, 'Callback',{@d0Cb,i}, 'Position',[270, hight,  40, 20], 'Style','edit', 'String',num2str(K2C(auxData.temp.(fld{i})))); % temp(C)
+            H0T(i) = uicontrol('Parent',ddata_0, 'Callback',{@d0Cb,i}, 'Position',[270, hight,  40, 20], 'Style','edit', 'String',num2str(K2C(auxData.temp.(fld{i})))); % temp(C)
           else
-            H0T(i) = uicontrol('Parent',d0,                       'Position',[270, hight,  40, 20], 'Style','text', 'String','');         
+            H0T(i) = uicontrol('Parent',ddata_0,                       'Position',[270, hight,  40, 20], 'Style','text', 'String','');         
           end
-          H0l(i) = uicontrol('Parent',d0,                         'Position',[320, hight, 220, 20], 'Style','text', 'String',txtData.label.(fld{i})); % label
-          H0b(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
+          H0l(i) = uicontrol('Parent',ddata_0,                         'Position',[320, hight, 220, 20], 'Style','text', 'String',txtData.label.(fld{i})); % label
+          H0b(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
           if ~isfield(txtData.comment, fld{i})
             txtData.comment.(fld{i}) = [];
           end
-          H0c(i) = uicontrol('Parent',d0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
+          H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
         end
       end
 
@@ -575,22 +577,22 @@ else % perform action
           'LdL_m', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for males';
           }; 
         
-      d1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');
-      uicontrol('Parent',d1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,d1}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',d1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,d1}, 'String','add 1-var data', 'Style','pushbutton');
-      uicontrol('Parent',d1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
-      uicontrol('Parent',d1, 'Position',[100 350  90 20], 'String','x-label', 'Style','text');
-      uicontrol('Parent',d1, 'Position',[200 350  90 20], 'String','y-label', 'Style','text');
+      ddata_1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@addD1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[100 350  90 20], 'String','x-label', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[200 350  90 20], 'String','y-label', 'Style','text');
 
       if ~isempty(data.data_1)
         fld = fields(data.data_1); n = size(fld);
         for i = 1:n
           hight = 350 - i * 25; 
-          uicontrol('Parent',d1,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
+          uicontrol('Parent',ddata_1,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
           label = txtData.label.(fld{i}); 
-          uicontrol('Parent',d1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
-          uicontrol('Parent',d1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
-          D1(i) = uicontrol('Parent',d1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',ddata_1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
+          uicontrol('Parent',ddata_1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
+          D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
         end
       end
 
@@ -615,11 +617,11 @@ else % perform action
         fprintf(['Warning from AmPgui: file ', list{1}, ' found; this will give problems when resuming\n']);
       end
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
-      dP = dialog('Position',[150 150 500 150],'Name','pause dlg');
-      uicontrol('Parent',dP, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
-      uicontrol('Parent',dP, 'Position',[80 60 150 20], 'Callback',{@stayCb,dP},  'String','stay in AmPgui', 'Style','pushbutton');
-      uicontrol('Parent',dP, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dP}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
-      Hquit = uicontrol('Parent',dP, 'Position',[140 30 200 20], 'Callback',{@quitCb,{dP,dmydata}}, 'String','quit AmPgui and AmPeps', 'Style','pushbutton');
+      dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
+      uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
+      uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
+      uicontrol('Parent',dpause, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dpause}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
+      Hquit = uicontrol('Parent',dpause, 'Position',[140 30 200 20], 'Callback',{@quitCb,{dpause,dmydata}}, 'String','quit AmPgui and AmPeps', 'Style','pushbutton');
       set(Hquit, 'ForegroundColor',[1 0 0]);
   end
 end
@@ -681,7 +683,7 @@ end
     color.data_0 = [0 0.6 0]; set(hdata_0, 'ForegroundColor', color.data_0);
   end
  
-  if isfield(metaData, 'biblist') & ~isempty(metaData.biblist)
+  if isfield(metaData, 'biblist') && ~isempty(metaData.biblist)
     bibitems = fields(metaData.biblist);
   else
     bibitems = {};
@@ -717,7 +719,7 @@ end
 end
 
 %% callback functions
-function speciesCb(~, ~, dS)  
+function speciesCb(~, ~, dspecies)  
   global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning color dmydata
    
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
@@ -726,14 +728,14 @@ function speciesCb(~, ~, dS)
     web('http://www.catalogueoflife.org/col/','-browser');
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     set(Hwarning, 'String','species not recognized, search CoL');
-    uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     AmPgui('setColors')
   elseif ismember(my_pet,select)
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
-    uicontrol('Parent',dS, 'Position',[110 95 350 20], 'Style','text', 'String','species is already in AmP');
-    uicontrol('Parent',dS, 'Position',[110 75 350 20], 'Style','text', 'String','OK proceeds to post-editing phase of AmPeps');
+    uicontrol('Parent',dspecies, 'Position',[110 95 350 20], 'Style','text', 'String','species is already in AmP');
+    uicontrol('Parent',dspecies, 'Position',[110 75 350 20], 'Style','text', 'String','OK proceeds to post-editing phase of AmPeps');
     set(Hwarning, 'String', '');
-    hleave = uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dS,dmydata}}, 'Style','pushbutton', 'String','OK');
+    hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
     set(hleave, 'ForegroundColor', [1 0 0]); 
   else
     [lin, rank] = lineage_CoL(my_pet);
@@ -744,7 +746,7 @@ function speciesCb(~, ~, dS)
     nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hclass,'String',['class: ',metaData.class]);
     nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
-    uicontrol('Parent',dS, 'Position',[40 15 20 20], 'Callback',{@OKCb,dS}, 'Style','pushbutton', 'String','OK');
+    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     AmPgui('links')
   end
 end
@@ -920,11 +922,11 @@ end
    metaData.address = get(Haddress, 'string');
  end
 
- function addDiscussionCb(~, ~, dD)
+ function addDiscussionCb(~, ~, ddiscussion)
   global metaData 
   n = 1 + length(fields(metaData.discussion)); nm = ['D', num2str(n)]; 
   metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
-  delete(dD)
+  delete(ddiscussion)
   AmPgui('discussion')
  end
   
@@ -935,11 +937,11 @@ end
    metaData.bibkey.(nm) = str2cell(get(HDb(i), 'string'));
  end
  
- function addFactCb(~, ~, dF)
+ function addFactCb(~, ~, dfacts)
    global metaData 
    n = 1 + length(fields(metaData.facts)); nm = ['F', num2str(n)]; 
    metaData.facts.(nm) = []; metaData.bibkey.(nm) = [];
-   delete(dF)
+   delete(dfacts)
    AmPgui('facts')
  end
 
@@ -956,18 +958,18 @@ end
  end
  
 function linksCb(~, ~, id_links)  
-  global metaData HL
-  fldnm = fields(metaData.links); n_links = length(fldnm);
+  global metaData Hlinks
+  fld = fields(metaData.links); n_links = length(fld);
   for i = 2:n_links
-    metaData.links.(id_links{i}) = get(HL(i), 'string');
+    metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
   end
   AmPgui('setColor')
 end
 
-function addBibCb(~, ~, db)
+function addBibCb(~, ~, dbiblist)
    global metaData
    metaData.biblist.new = [];
-   delete(db)
+   delete(dbiblist)
    AmPgui('biblist')
 end
 
@@ -1013,7 +1015,7 @@ function bibitemCb(~, ~, bibkey, fld, i)
   metaData.biblist.(bibkey).(fld) = get(Dbi(i), 'string');
 end
 
-function add0Cb(~, ~, code0, d0)
+function add0Cb(~, ~, code0, ddata_0)
    global data txtData auxData metaData
    n_code0 = size(code0,1); codeList0 = code0(:,1);
    for i = 1:n_code0
@@ -1036,7 +1038,7 @@ function add0Cb(~, ~, code0, d0)
      end
      metaData.bibkey.(code0{i,1}) = [];
    end
-   delete(d0);
+   delete(ddata_0);
    AmPgui('data_0');
 end 
 
@@ -1072,7 +1074,7 @@ function d0Cb(~, ~, i)
    txtData.comment.(fld{i}) = str2cell(get(H0c(i), 'string'));
 end
 
-function add1Cb(~, ~, code1, d1)
+function add1Cb(~, ~, code1, ddata_1)
    global data txtData auxData metaData
    n_code1 = size(code1,1); codeList1 = code1(:,1);
    for i = 1:n_code1
@@ -1095,7 +1097,7 @@ function add1Cb(~, ~, code1, d1)
      end
      metaData.bibkey.(code1{i,1}) = [];
    end 
-   delete(d1);
+   delete(ddata_1);
    AmPgui('data_1');
 end 
 
@@ -1213,4 +1215,3 @@ function code = prependStage(code)
     code{i} = [stageList{i_stage}, code{i}];
   end
 end
-
