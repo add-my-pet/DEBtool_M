@@ -39,20 +39,20 @@ if isfield(data, 'data_1')
   data = rmfield(data, 'data_1');
 end
     
-if isfield(metaData, 'acknowledgment') & isempty(metaData.acknowledgment)
+if isfield(metaData, 'acknowledgment') && isempty(metaData.acknowledgment)
   metaData = rmfield(metaData, 'acknowledgment');
 end
 %
-if isfield(metaData, 'facts') & isempty(metaData.facts)
+if isfield(metaData, 'facts') && isempty(metaData.facts)
   metaData = rmfield(metaData, 'facts');
 end 
 %
-if isfield(metaData, 'discussion') & isempty(metaData.discussion)
+if isfield(metaData, 'discussion') && isempty(metaData.discussion)
   metaData = rmfield(metaData, 'discussion');
 end 
 %
 if isempty(metaData.biblist)
-  fprintf('Warning from AmPpostEdit: empty biblist, no bibtimes specified\n');
+  fprintf('Warning from AmP2mydata: empty biblist, no bibtimes specified\n');
 else
   fld = fieldnames(metaData.biblist); n_fld = length(fld);
   for i = 1:n_fld
@@ -61,12 +61,13 @@ else
      bib = ['@', bibStruc.type, '{', fld{i}, ', '];
      for j = 2:n_bibfld
        if strcmp(bibfld{j},'url')
-         bib = [bib, 'howpublished = {\url{', bibStruc.bibfld{j}, '}}, '];
+         bib = [bib, 'howpublished = {\url{', bibStruc.(bibfld{j}), '}}, '];
        else
-         bib = [bib, bibfld{j}, ' = {', bibStruc.bibfld{j}, '}, '];
+         bib = [bib, bibfld{j}, ' = {', bibStruc.(bibfld{j}), '}, '];
        end
      end
-     bib(end,end-1) = []; bib = [bib, '}'];
-  end
+     %bib([end,end-1]) = []; 
+     bib = [bib, '}'];
   metaData.biblist.(fld{i}) = bib;
+  end
 end

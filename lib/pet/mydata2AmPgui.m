@@ -60,7 +60,7 @@ for i = 1:n_bibkey
   end
   fld = fieldnames(biblist.(bibkey{i}));
   if ismember('howpublished', fld) & strfind(biblist.(bibkey{i}).howpublished, '\url')
-    str = biblist.(bibkey{i}).howpublished; str([1:5, end]) = [];
+    str = biblist.(bibkey{i}).howpublished; str(1:5) = [];
     biblist.(bibkey{i}) = rmfield(biblist.(bibkey{i}), 'howpublished');
     biblist.(bibkey{i}).url = str;
   end

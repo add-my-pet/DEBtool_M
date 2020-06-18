@@ -9,7 +9,7 @@ function AmPeps(infoAmPgui)
 % <../AmPeps.m *AmPeps*>(infoAmPgui)
 
 %% Description
-% The function has no explicit input or output. It is a shell around several other functions, that eventually write:
+% The function is a shell around several other functions, including AmPgui, that eventually write:
 %   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.m.
 % Guidance is presented at <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html *AmPeps.html*>
 %
@@ -17,7 +17,7 @@ function AmPeps(infoAmPgui)
 %
 % * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
 
-global data metaData txtData auxData
+global data metaData txtData auxData pets
 
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
@@ -48,9 +48,9 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
        ['predict_', metaData.species, '.m'], ...
        ['run_', metaData.species, '.m'])
 
-else % proceed to writing 4 AmP source files for new species for AmP
+else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
   close all
-  path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
+  %path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
   [data, metaData] = AmPgui2mydata(data, metaData); % modify data and metaData to mydata format
   prt_mydata(data, auxData, metaData, txtData); % write mydata_my_pet.m file
@@ -60,10 +60,11 @@ else % proceed to writing 4 AmP source files for new species for AmP
   Clade = clade(metaData.species); % identify clade to which species belongs
   Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
   pars_initFn = ['pars_init_', Clade{1}, '.m']; % take the first clade species for initial par values
+  path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', Clade{1}, '/'];
   if ismac
     system([path, pars_initFn,  ' -O ', pars_initFn]);
   else
-    eval(['!powershell wget ', path, pars_initFn, '.m',  ' -O ', pars_initFn])
+    system(['powershell wget ', path, pars_initFn,  ' -O ', pars_initFn]);
   end
   eval(['[par, metaPar, txtPar] = pars_init_', Clade{1}, '(metaData);']); % use pars_init to produce structures par, metaPar, txtPar
   delete(pars_initFn); % delete the pars_init file of the related species
@@ -73,10 +74,11 @@ else % proceed to writing 4 AmP source files for new species for AmP
   % get auxiliary parameters
   parFields = fields(par); % current par fields
   EparFields = get_parfields(metaPar.model);  % core primary parameter fields for model
-  parFields = setdiff(parFields, {'T_ref'});  % remove pararameter T_ref from current-list
+  parFields = setdiff(parFields, {'T_ref'});  % remove parameter T_ref from current-list
   parFields = setdiff(parFields, EparFields); % non-core parameter fields
   chemParFields = fields(addchem([], [], [], [], metaData.phylum, metaData.class)); % par fields for chemical parameters
   otherParFields = setdiff(parFields, chemParFields); % current auxiliary parameter fields
+  otherParFields = setdiff(otherParFields, 'free');
   selPar = ismember(otherParFields, auxParFld);
   par = rmfield(par, otherParFields(~selPar)); % remove unnessasary parameters
   addParFields = auxParFld(~ismember(auxParFld, otherParFields(selPar))); % parameters fields that must be added
@@ -84,18 +86,21 @@ else % proceed to writing 4 AmP source files for new species for AmP
 
   if n_add > 0
     % edit par & txtPar
-    load prdPar
+    load auxPar
     for i = 1:n_add
-      par.(addParFields{i})          = prdPar.value.(addParFields{i});
-      par.free.(addParFields{i})     = prdPar.free.(addParFields{i});;
-      txtPar.units.(addParFields{i}) = prdPar.units.(addParFields{i});
-      txtPar.label.(addParFields{i}) = prdPar.label.(addParFields{i});
+      if isstr(auxPar.(addParFields{i}).value)
+        par.(addParFields{i})        = par.(auxPar.(addParFields{i}).value);
+      else
+        par.(addParFields{i})        = auxPar.(addParFields{i}).value;
+      end
+      par.free.(addParFields{i})     = auxPar.(addParFields{i}).free;
+      txtPar.units.(addParFields{i}) = auxPar.(addParFields{i}).units;
+      txtPar.label.(addParFields{i}) = auxPar.(addParFields{i}).label;
     end
   end
 
-  % save results_my_pet.mat write pars_init_my_pet.m file
   save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'par', 'metaPar', 'txtPar');
-  mat2pars_init(metaData.species)
+  pets = {metaData.species}; mat2pars_init; % this uses results_my_pet.mat to overwrite pars_init_my_pet.m
 
   % open 4 AmP source files in Matlab Editor
   edit(['mydata_',    metaData.species, '.m'], ...
