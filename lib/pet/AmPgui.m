@@ -165,7 +165,7 @@ end
   hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
   hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
   hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
-  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','grp',            'Style','pushbutton');
+  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','group',          'Style','pushbutton');
   hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',  'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
   hfacts    = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
   hacknowledgment = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
@@ -575,6 +575,15 @@ else % perform action
           'LdL',   {'cm','cm/d'}, 1, {'length','change in length'}, '';
           'LdL_f', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for females';
           'LdL_m', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for males';
+          
+          'LN',    {'cm','#'}, 1, {'length','yearly fecundity'},     '';
+          'WwN',   {'g','#'},  1, {'wet weight','yearly fecundity'}, '';
+          'WdN',   {'g','#'},  1, {'dry weight','yearly fecundity'}, '';
+
+          'LR',    {'cm','#/d'}, 1, {'length','reproduction rate'},     '';
+          'WR',    {'g','#/d'},  1, {'wet weight','reproduction rate'}, '';
+          'WR',    {'g','#/d'},  1, {'dry weight','reproduction rate'}, '';
+
           }; 
         
       ddata_1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');

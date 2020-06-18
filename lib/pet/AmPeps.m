@@ -52,6 +52,7 @@ else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species f
   close all
   %path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
+  fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
   [data, metaData] = AmPgui2mydata(data, metaData); % modify data and metaData to mydata format
   prt_mydata(data, auxData, metaData, txtData); % write mydata_my_pet.m file
   prt_run_my_pet(metaData.species); % write run_my_pet.m file
@@ -97,6 +98,14 @@ else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species f
       txtPar.units.(addParFields{i}) = auxPar.(addParFields{i}).units;
       txtPar.label.(addParFields{i}) = auxPar.(addParFields{i}).label;
     end
+  end
+  n_add = length(fld_data_1); % add scaled functional responses
+  for i = 1:n_add
+    nm = ['f_', fld_data_1{i}];
+    par.(nm)      = 1;
+    par.free.(nm) = 1;
+    txtPar.units.(nm) = '-';
+    txtPar.label.(nm) = ['scaled functional response for ',fld_data_1{i}, ' data'];
   end
 
   save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'par', 'metaPar', 'txtPar');
