@@ -22,7 +22,7 @@ function AmPgui(action)
 %
 % * 0 stay in AmPgui
 % * 1 stay in AmPeps
-% * 2 stay quit AmPeps, and proceed to load files in Matlab editor
+% * 2 quit AmPeps, and proceed to load files in Matlab editor
 
 %% Remarks
 %
