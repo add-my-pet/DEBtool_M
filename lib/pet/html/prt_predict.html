@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_predict</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-18"><meta name="DC.source" content="prt_predict.m"><style type="text/css">
+      --><title>prt_predict</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-19"><meta name="DC.source" content="prt_predict.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_predict</h1><!--introduction--><p>writes file predict_my_pet.m</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">unpack par, data, auxData</a></li><li><a href="#7">compute temperature correction factors</a></li><li><a href="#8">zero-variate data</a></li><li><a href="#9">pack to output</a></li><li><a href="#10">uni-variate data</a></li><li><a href="#11">pack to output</a></li></ul></div><h2 id="3">Syntax</h2><p>[auxParFld, info] = <a href="../prt_predict.m"><b>prt_predict</b></a> (par, metaPar, data, auxData)</p><h2 id="4">Description</h2><p>Writes file predict_my_pet.m from pars, data, auxData and metaData. Uses code as specified in predict.mat</p><p>Input:</p><div><ul><li>par: structure with parameters (from pars_init)</li><li>metaPar: structure with meta parameters (from pars_init)</li><li>data: structure with data (from mydata)</li><li>auxData: structure with auxiliary data (from mydata)</li><li>metaData: structure with meta data (from mydata)</li></ul></div><p>Output:</p><div><ul><li>auxParFld: cell string with names of auxiliary parameters that are used</li><li>info: boolean for success of filling all code (1), or failure (0)</li></ul></div><h2 id="5">Remarks</h2><p>The file will be saved in your local directory; use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</p><p>Structure prdCode has model name as first field names</p><div><ul><li>Under the model field, field res has the name of output variable for zero-variate field names or header text for uni-variate data</li><li>Under the model field, field aux has the cell string with auxPar for that code.</li><li>Other fields under the model field are names of variables with a cell string of code, each cell containg one code line</li><li>The name of a univariate data set is called fldi in the code; it will be back-substituded before printing</li><li>Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');</li><li>Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i');</li><li>Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)</li><li>Modify code-line i of variable tWw with: prdCode.std.tWw{i} = 'something';</li><li>Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD)</li></ul></div><p>The intended use of this function in the context of AmPeps</p><div><ul><li>first compose a mydata-file</li><li>copy-paste-modify a pars_init file of a related AmP species</li><li>use the outputs of the pars_init and mydata files as inputs of this function to write a predict-file</li><li>modify the aux parameters of pars_init file to the needs of this predict-file using mat2pars_init</li><li>use prt_run_my_pet to write a run-file</li><li>finally: you are ready to start the estimation procedure</li></ul></div><h2 id="6">unpack par, data, auxData</h2><h2 id="7">compute temperature correction factors</h2><h2 id="8">zero-variate data</h2><h2 id="9">pack to output</h2><h2 id="10">uni-variate data</h2><h2 id="11">pack to output</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_predict</h1><!--introduction--><p>writes file predict_my_pet.m</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">unpack par, data, auxData</a></li><li><a href="#7">compute temperature correction factors</a></li><li><a href="#8">zero-variate data</a></li><li><a href="#9">pack to output</a></li><li><a href="#10">uni-variate data</a></li><li><a href="#11">pack to output</a></li></ul></div><h2 id="3">Syntax</h2><p>[auxParFld, info] = <a href="../prt_predict.m"><b>prt_predict</b></a> (par, metaPar, data, auxData)</p><h2 id="4">Description</h2><p>Writes file predict_my_pet.m from pars, data, auxData and metaData. Uses code as specified in predict.mat</p><p>Input:</p><div><ul><li>par: structure with parameters (from pars_init)</li><li>metaPar: structure with meta parameters (from pars_init)</li><li>data: structure with data (from mydata)</li><li>auxData: structure with auxiliary data (from mydata)</li><li>metaData: structure with meta data (from mydata)</li></ul></div><p>Output:</p><div><ul><li>auxParFld: cell string with names of auxiliary parameters that are used</li><li>info: boolean for success of filling all code (1), or failure (0)</li></ul></div><h2 id="5">Remarks</h2><p>The file will be saved in your local directory; use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</p><p>Structure prdCode has model name as first field names</p><div><ul><li>Field res has the name of output variable for zero-variate field names or header text for uni-variate data</li><li>Field aux has the cell string with auxPar for that code.</li><li>Other fields under the model field are names of variables with a cell string of code, each cell containg one code line</li><li>The name of a univariate data set is called fldi in the code; it will be back-substituded before printing</li><li>Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');</li><li>Rename fields with: prdCode.std = renameStructField(prdCode.std, 'l_i', 'L_i');</li><li>Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)</li><li>Modify code-line i of variable tWw with: prdCode.std.tWw{i} = 'something';</li><li>Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD)</li></ul></div><p>The intended use of this function in the context of AmPeps</p><div><ul><li>first compose a mydata-file</li><li>copy-paste-modify a pars_init file of a related AmP species</li><li>use the outputs of the pars_init and mydata files as inputs of this function to write a predict-file</li><li>modify the aux parameters of pars_init file to the needs of this predict-file using mat2pars_init</li><li>use prt_run_my_pet to write a run-file</li><li>finally: you are ready to start the estimation procedure</li></ul></div><h2 id="6">unpack par, data, auxData</h2><h2 id="7">compute temperature correction factors</h2><h2 id="8">zero-variate data</h2><h2 id="9">pack to output</h2><h2 id="10">uni-variate data</h2><h2 id="11">pack to output</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_predict
 % writes file predict_my_pet.m 
@@ -100,8 +100,8 @@ function [auxParFld, info] = prt_predict(par, metaPar, data, auxData, metaData)
 %
 % Structure prdCode has model name as first field names
 %
-% * Under the model field, field res has the name of output variable for zero-variate field names or header text for uni-variate data
-% * Under the model field, field aux has the cell string with auxPar for that code.
+% * Field res has the name of output variable for zero-variate field names or header text for uni-variate data
+% * Field aux has the cell string with auxPar for that code.
 % * Other fields under the model field are names of variables with a cell string of code, each cell containg one code line
 % * The name of a univariate data set is called fldi in the code; it will be back-substituded before printing
 % * Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');
@@ -321,7 +321,7 @@ for i = 1:n_fld0
    if ismember(fld0{i}, rfld0)
      fprintf(fid, 'prdData.%s = ;\n', fld0{i});
    else
-     fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.(model).res.(fld0{i}));
+     fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.res.(fld0{i}));
    end
 end
 fprintf(fid, '\n');
@@ -345,7 +345,7 @@ for i = 1:n_fld1
     if isempty(fld_index)
       code = strrep(code, [fld, '_'], fld); % remove underscore of fld
     end
-    fprintf(fid, '%% %s\n', prdCode.(model).res.(fld));
+    fprintf(fid, '%% %s\n', prdCode.res.(fld));
     fprintf(fid, '%s', code);
   catch
     sel_1(i) = false;
@@ -379,8 +379,8 @@ fclose(fid);
 % auxParFld
 fld = [fld0(sel_0); fld1(sel_1)]; n_fld = length(fld); 
 for i =1:n_fld
-  if isfield(prdCode.(model).aux, fld{i})
-    auxParFldi = prdCode.(model).aux.(fld{i});
+  if isfield(prdCode.aux, fld{i})
+    auxParFldi = prdCode.aux.(fld{i});
     auxParFld = [auxParFld; auxParFldi(:)];
   end
 end

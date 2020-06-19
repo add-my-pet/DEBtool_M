@@ -90,7 +90,7 @@ else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     load auxPar
     for i = 1:n_add
       if isstr(auxPar.(addParFields{i}).value)
-        par.(addParFields{i})        = par.(auxPar.(addParFields{i}).value);
+        par.(addParFields{i})        = eval(auxPar.(addParFields{i}).value);
       else
         par.(addParFields{i})        = auxPar.(addParFields{i}).value;
       end

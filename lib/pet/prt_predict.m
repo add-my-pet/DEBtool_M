@@ -30,8 +30,8 @@ function [auxParFld, info] = prt_predict(par, metaPar, data, auxData, metaData)
 %
 % Structure prdCode has model name as first field names
 %
-% * Under the model field, field res has the name of output variable for zero-variate field names or header text for uni-variate data
-% * Under the model field, field aux has the cell string with auxPar for that code.
+% * Field res has the name of output variable for zero-variate field names or header text for uni-variate data
+% * Field aux has the cell string with auxPar for that code.
 % * Other fields under the model field are names of variables with a cell string of code, each cell containg one code line
 % * The name of a univariate data set is called fldi in the code; it will be back-substituded before printing
 % * Remove fields with: prdCode.std = rmfield(prdCode.std, 'Li');
@@ -69,7 +69,7 @@ fld = fieldnames(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel
 for i = 1:n_fld
   sel(i) = size(data.(fld{i}),1) > 1;
 end
-fld0 = fld(~sel); fld1 = fld(sel); n_fld0 = length(fld0); n_fld1 = length(fld1);
+fld0 = fld(~sel); fld1 = fld(sel); n_0 = length(fld0); n_1 = length(fld1);
 
 %% compute temperature correction factors
 fprintf(fid, '%% compute temperature correction factors\n');
@@ -247,23 +247,24 @@ end
 
 %% pack to output
 fprintf(fid, '%% pack to output\n');
-for i = 1:n_fld0
+for i = 1:n_0
    if ismember(fld0{i}, rfld0)
      fprintf(fid, 'prdData.%s = ;\n', fld0{i});
    else
-     fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.(model).res.(fld0{i}));
+     fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.res.(fld0{i}));
    end
 end
 fprintf(fid, '\n');
 
 %% uni-variate data
-sel_1 = true(n_fld1,1);
-for i = 1:n_fld1
+sel_1 = true(n_1,1);
+for i = 1:n_1
   try
-    fldi = fld1{i}; sep = strfind(fldi, '_'); sep1 = sep(1); sep = sep(end);
+    fldi = fld1{i}; sep = strfind(fldi, '_'); 
     if isempty(sep)
       fld = fldi; fld_index = []; % data-type 
     else
+      sep1 = sep(1); sep = sep(end);
       fld = fldi(1:sep1-1); % data-type
       fld_index = fldi(sep+1:end); % data index
     end
@@ -275,7 +276,7 @@ for i = 1:n_fld1
     if isempty(fld_index)
       code = strrep(code, [fld, '_'], fld); % remove underscore of fld
     end
-    fprintf(fid, '%% %s\n', prdCode.(model).res.(fld));
+    fprintf(fid, '%% %s\n', prdCode.res.(fld));
     fprintf(fid, '%s', code);
   catch
     sel_1(i) = false;
@@ -295,7 +296,7 @@ end
 
 %% pack to output
 fprintf(fid, '%% pack to output\n');
-for i = 1:n_fld1
+for i = 1:n_1
    if ismember(fld1{i}, rfld1)
      fprintf(fid, 'prdData.%s = ;\n', fld1{i});
    else
@@ -309,8 +310,8 @@ fclose(fid);
 % auxParFld
 fld = [fld0(sel_0); fld1(sel_1)]; n_fld = length(fld); 
 for i =1:n_fld
-  if isfield(prdCode.(model).aux, fld{i})
-    auxParFldi = prdCode.(model).aux.(fld{i});
+  if isfield(prdCode.aux, fld{i})
+    auxParFldi = prdCode.aux.(fld{i});
     auxParFld = [auxParFld; auxParFldi(:)];
   end
 end

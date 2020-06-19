@@ -552,6 +552,14 @@ else % perform action
     case 'data_1' 
 
       code1 = { ...
+          'LWw',   {'cm','g'}, 0, {'length','wet weight'}, '';
+          'LWw_f', {'cm','g'}, 0, {'length','wet weight'}, 'Data for females';
+          'LWw_m', {'cm','g'}, 0, {'length','wet weight'}, 'Data for males';
+          
+          'LWd',   {'cm','g'}, 0, {'length','dry weight'}, '';
+          'LWd_f', {'cm','g'}, 0, {'length','dry weight'}, 'Data for females';
+          'LWd_m', {'cm','g'}, 0, {'length','dry weight'}, 'Data for males';
+          
           'tL',    {'d','cm'}, 1, {'time','length'}, '';
           'tL_f'   {'d','cm'}, 1, {'time','length'}, 'Data for females'; 
           'tL_m'   {'d','cm'}, 1, {'time','length'}, 'Data for males'; 
@@ -563,15 +571,7 @@ else % perform action
           'tWd',   {'d', 'g'}, 1, {'time','dry weight'}, ''; 
           'tWd_f', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for males';
           'tWd_m', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for females'; 
-          
-          'LWw',   {'cm','g'}, 0, {'length','wet weight'}, '';
-          'LWw_f', {'cm','g'}, 0, {'length','wet weight'}, 'Data for females';
-          'LWw_m', {'cm','g'}, 0, {'length','wet weight'}, 'Data for males';
-          
-          'LWd',   {'cm','g'}, 0, {'length','dry weight'}, '';
-          'LWd_f', {'cm','g'}, 0, {'length','dry weight'}, 'Data for females';
-          'LWd_m', {'cm','g'}, 0, {'length','dry weight'}, 'Data for males';
-          
+                    
           'LdL',   {'cm','cm/d'}, 1, {'length','change in length'}, '';
           'LdL_f', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for females';
           'LdL_m', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for males';
