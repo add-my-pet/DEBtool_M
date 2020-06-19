@@ -662,7 +662,7 @@ end
   fld_male_0 = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wwim', 'Wdpm', 'Wdim'};
   fld_male_1 = {'tL_m', 'tWw_m', 'tWd_m', 'LWw_m', 'LWd_m', 'LdL_m'};
   if (~isempty(data.data_0) & ~ismember(fields(data.data_0),fld_male_0)) | ...
-     (~isempty(data.data_1) & ~ismember(fields(data.data_1),fld_male_1)) &  ~isfield(metaData.discussion)
+     (~isempty(data.data_1) & ~ismember(fields(data.data_1),fld_male_1)) &  ~isfield(metaData, 'discussion')
      color.discussion = [1 0 0]; 
   else
      color.discussion = [0 0 0]; 

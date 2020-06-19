@@ -24,11 +24,10 @@ function AmPimport(mydata_my_pet)
 % Files will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 
-clear all
-global data metaData 
+global data metaData txtData auxData
 
 
-eval(['[data, auxData, metaData, txtData] = ', mydata_my_pet, ';'];
+eval(['[data, auxData, metaData, txtData] = ', mydata_my_pet, ';']);
 [data, metaData] = mydata2AmPgui(data,metaData);
 
 AmPeps;
