@@ -17,14 +17,14 @@ function AmPeps(infoAmPgui)
 %
 % * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
 
-global data metaData txtData auxData pets
+global data metaData txtData auxData pets hclimateLand hecozone
 
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
   hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png'));
   hclimateSea  = figure('Name','Sea climate',  'Position',[900 450 500 300]); image(imread('climate_sea.jpg'));
-  hecozones    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png'));
+  hecozone    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png'));
   hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg'));
   AmPgui
   

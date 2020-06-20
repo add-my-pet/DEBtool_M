@@ -761,7 +761,8 @@ function speciesCb(~, ~, dspecies)
 end
 
 function climateCb(~, ~, Hclimate)  
-  global metaData eco_types 
+  global metaData eco_types hclimateLand
+  set(hclimateLand,'Position',[250 20 1200 850])
   climateCode = fields(eco_types.climate); n_climate = length(climateCode); i_climate = 1:n_climate;
   if isempty(metaData.ecoCode.climate)
     i_climate = 1;
@@ -772,11 +773,13 @@ function climateCb(~, ~, Hclimate)
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
+  set(hclimateLand,'Position',[300 450 500 300])
   AmPgui('setColor')
 end
 
 function ecozoneCb(~, ~, Hecozone)  
-  global metaData eco_types
+  global metaData eco_types hecozone
+  set(hecozone,'Position',[250 20 1200 850])
   ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); i_ecozone = 1:n_ecozone;
   ecozoneCodeList = ecozoneCode;
    for i=1:n_ecozone
@@ -790,6 +793,7 @@ function ecozoneCb(~, ~, Hecozone)
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
+   set(hecozone,'Position',[300  50 500 300])
    AmPgui('setColor')
 end
  
