@@ -64,6 +64,19 @@ fprintf(fid, 'v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData);\
 cPar = parscomp_st(par); vars_pull(par);
 v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData);
 
+% filters
+if exist('E_Hh','var')
+  fprintf(fid, 'if E_Hh < 0 || E_Hh > E_Hb\n');
+  fprintf(fid, '  prdData = []; info = 0; return\n');
+  fprintf(fid, 'end\n\n');
+end
+%
+if exist('E_Hx','var') && ~strcmp(metaPar.model, 'stx')
+  fprintf(fid, 'if E_Hx < E_Hb || E_Hx > E_Hp\n');
+  fprintf(fid, '  prdData = []; info = 0; return\n');
+  fprintf(fid, 'end\n\n');
+end
+
 % split zero- from uni-variate data
 fld = fieldnames(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel = false(n_fld,1);
 for i = 1:n_fld
@@ -100,6 +113,10 @@ else
   fprintf(fid, '%s', cell2str(prdCode.(model).lc));
 end
 fprintf(fid, '\n');
+
+fprintf(fid, 'if info == 0\n');
+fprintf(fid, '  prdData = []; return;\n');
+fprintf(fid, 'end\n\n');
 
 % initial
 fld_0 = {'E0', 'Ww0', 'Wd0', 'Wwh', 'Wdh', 'Lh'}; % fields for section initial
@@ -146,6 +163,22 @@ if any(sel_b)
   fprintf(fid, '\n');
 end
 
+% Leptocephalus stage
+fld_s = {'ts', 'Ls', 'Wws', 'Wds'}; % fields for section S1/S2 transition
+sel_s = ismember(fld0,fld_s);
+if any(sel_s) && strcmp(model, 'ssj')
+  fprintf(fid, '%% S1/S2 transition\n');
+  fprintf(fid, '%s', cell2str(prdCode.ssj.tl_s));
+  fld_s = fld_s(ismember(fld_s,fld0)); n_flds = length(fld_s);
+  if any(ismember(fld_s, {'Ls', 'Wws', 'Wds'}))
+    fprintf(fid, '%s', cell2str(prdCode.ssj.L_s));
+  end
+  for i = 1:n_flds
+    fprintf(fid, '%s', cell2str(prdCode.ssj.(fld_s{i})));
+  end
+  fprintf(fid, '\n');
+end
+
 % fledging/weaning 
 fld_x = {'tx', 'Lx', 'Wwx', 'Wdx'}; % fields for section fledging/weaning
 sel_x = ismember(fld0,fld_x);
@@ -161,11 +194,15 @@ if any(sel_x)
   fprintf(fid, '\n');
 end
 
-% metamorphosis 
-fld_j = {'aj', 'Lj', 'Wwj', 'Wdl'}; % fields for section metamorphosis
+% metamorphosis/pupation 
+fld_j = {'tj', 'Lj', 'Wwj', 'Wdl'}; % fields for section metamorphosis
 sel_j = ismember(fld0,fld_j);
 if any(sel_j)
-  fprintf(fid, '%% metamorphosis\n');
+  if strcmp(metaPar.model,'hex')
+    fprintf(fid, '%% pupation\n');
+  else
+    fprintf(fid, '%% end of acceleration\n');
+  end
   fld_j = fld_j(ismember(fld_j,fld0)); n_fldj = length(fld_j);
   if any(ismember(fld_j, {'Lj', 'Wwj', 'Wdj'}))
     fprintf(fid, '%s', cell2str(prdCode.(model).L_j));
@@ -187,6 +224,21 @@ if any(sel_p)
   end
   for i = 1:n_fldp
     fprintf(fid, '%s', cell2str(prdCode.(model).(fld_p{i})));
+  end
+  fprintf(fid, '\n');
+end
+
+% emergence
+fld_e = {'te', 'Le', 'Wwe', 'Wde'}; % fields for section emergence
+sel_e = ismember(fld0,fld_e);
+if any(sel_e)
+  fprintf(fid, '%% emergence\n');
+  fld_e = fld_e(ismember(fld_e,fld0)); n_flde = length(fld_e);
+  if any(ismember(fld_e, {'Le', 'Wwe', 'Wde'}))
+    fprintf(fid, '%s', cell2str(prdCode.(model).L_e));
+  end
+  for i = 1:n_flde
+    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_e{i})));
   end
   fprintf(fid, '\n');
 end
@@ -326,4 +378,3 @@ function str = cell2str(cell)
     str = [str, cell{i}, char(10)];
   end
 end
-

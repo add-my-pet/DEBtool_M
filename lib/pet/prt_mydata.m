@@ -51,8 +51,8 @@ if isempty(metaData.ecoCode.migrate)
 else
   fprintf(fid, 'metaData.ecoCode.migrate = %s;\n', cell2str(metaData.ecoCode.migrate));
 end
-fprintf(fid, 'metaData.ecoCode.food    = %s;\n', cell2str(metaData.ecoCode.food));
-fprintf(fid, 'metaData.ecoCode.gender  = %s;\n', cell2str(metaData.ecoCode.gender));
+fprintf(fid, 'metaData.ecoCode.food    = %s;\n',   cell2str(metaData.ecoCode.food));
+fprintf(fid, 'metaData.ecoCode.gender  = %s;\n',   cell2str(metaData.ecoCode.gender));
 fprintf(fid, 'metaData.ecoCode.reprod  = %s;\n\n', cell2str(metaData.ecoCode.reprod));
 
 fprintf(fid, 'metaData.T_typical  = C2K(%g); %% K, body temp\n\n', K2C(metaData.T_typical));
@@ -62,43 +62,32 @@ fprintf(fid, 'metaData.data_1     = %s;\n\n', cell2str(metaData.data_1));
 
 fprintf(fid, 'metaData.COMPLETE   = %g; %% using criteria of LikaKear2011\n\n', metaData.COMPLETE);
 
-if iscell(metaData.author)
-  fprintf(fid, 'metaData.author     = %s;\n',     cell2str(metaData.author)); 
-else
-  fprintf(fid, 'metaData.author     = ''%s'';\n', metaData.author); 
-end
-fprintf(fid,   'metaData.date_subm  = %s;\n',     vec2str(metaData.date_subm)); 
-fprintf(fid,   'metaData.email      = ''%s'';\n', metaData.email{:});
-fprintf(fid,   'metaData.address    = ''%s'';\n\n', metaData.address{:});
+fprintf(fid, 'metaData.author     = %s;\n',   cell2str(metaData.author)); 
+fprintf(fid, 'metaData.date_subm  = %s;\n',   vec2str(metaData.date_subm)); 
+fprintf(fid, 'metaData.email      = %s;\n',   cell2str(metaData.email));
+fprintf(fid, 'metaData.address    = %s;\n\n', cell2str(metaData.address));
 
 if isfield(metaData, 'author_mod')
-  if iscell(metaData.author_mod)
-    fprintf(fid, 'metaData.author_mod   = %s;\n',       cell2str(metaData.author_mod)); 
-  else
-    fprintf(fid, 'metaData.author_mod   = ''%s'';\n',   metaData.author_mod); 
-  end
-  fprintf(fid,   'metaData.date_mod     = %s;\n',       vec2str(metaData.date_mod)); 
-  fprintf(fid,   'metaData.email_mod    = ''%s'';\n',   metaData.email_mod{:});
-  fprintf(fid,   'metaData.address_mod  = ''%s'';\n\n', metaData.address_mod{:});
+  fprintf(fid, 'metaData.author_mod   = %s;\n',   cell2str(metaData.author_mod)); 
+  fprintf(fid, 'metaData.date_mod     = %s;\n',   vec2str(metaData.date_mod)); 
+  fprintf(fid, 'metaData.email_mod    = %s;\n',   cell2str(metaData.email_mod));
+  fprintf(fid, 'metaData.address_mod  = %s;\n\n', cell2str(metaData.address_mod));
 end
 
 for i=1:10 % max 10 modifications assumed
   fldnm = ['author_mod_', num2str(i)];
   if isfield(metaData, fldnm)
-    if iscell(metaData.(fldnm))
-      fprintf(fid, 'metaData.%s  = %s;\n', fldnm, cell2str(metaData.(fldnm))); 
-    else
-      fprintf(fid, 'metaData.%s  = ''%s'';\n', fldnm, metaData.(fldnm)); 
-    end
-    fldnm = ['date_mod_', num2str(i)]; fprintf(fid, 'metaData.%s    = %s;\n', fldnm, vec2str(metaData.(fldnm))); 
-    fldnm = ['email_mod_', num2str(i)]; fprintf(fid, 'metaData.%s   = ''%s'';\n', fldnm,  metaData.(fldnm){:});
-    fldnm = ['address_mod_', num2str(i)]; fprintf(fid, 'metaData.%s = ''%s'';\n\n', fldnm, metaData.(fldnm){:});
+    fprintf(fid, 'metaData.%s  = %s;\n', fldnm, cell2str(metaData.(fldnm))); 
+    fldnm = ['date_mod_', num2str(i)];    fprintf(fid, 'metaData.%s = %s;\n',   fldnm, vec2str(metaData.(fldnm)));
+    fldnm = ['email_mod_', num2str(i)];   fprintf(fid, 'metaData.%s = %s;\n',   fldnm, cell2str(metaData.(fldnm)));
+    fldnm = ['date_mod_', num2str(i)];    fprintf(fid, 'metaData.%s = %s;\n',   fldnm, vec2str(metaData.(fldnm)));
+    fldnm = ['address_mod_', num2str(i)]; fprintf(fid, 'metaData.%s = %s;\n\n', fldnm, cell2str(metaData.(fldnm)));
   end
 end
 
-fprintf(fid, 'metaData.curator    = ''%s'';\n', metaData.curator{:}); 
-fprintf(fid, 'metaData.email_cur  = ''%s'';\n',   metaData.email_cur{:}); 
-fprintf(fid, 'metaData.date_acc   = %s;\n\n',   vec2str(metaData.date_acc));
+fprintf(fid, 'metaData.curator    = %s;\n',   cell2str(metaData.curator)); 
+fprintf(fid, 'metaData.email_cur  = %s;\n',   cell2str(metaData.email_cur)); 
+fprintf(fid, 'metaData.date_acc   = %s;\n\n', vec2str(metaData.date_acc));
 
 %% set zero-variate data
 
@@ -154,7 +143,7 @@ for i = 1:n_fld1
   fprintf(fid, 'label.%s = {''%s'', ''%s''};\n', fld1{i}, label{1}, label{2});
   if isfield(auxData.temp, fld1{i})
      fprintf(fid, 'temp.%s = C2K(%g); ', fld1{i}, K2C(auxData.temp.(fld1{i})));
-     fprintf(fid, 'units.temp.%s = ''K''; label.%s = ''temperature'';\n', fld1{i}, fld1{i});
+     fprintf(fid, 'units.temp.%s = ''K''; label.temp.%s = ''temperature'';\n', fld1{i}, fld1{i});
   end
   if iscell(txtData.bibkey.(fld1{i}))
     fprintf(fid, 'bibkey.%s = %s;\n', fld1{i}, cell2str(txtData.bibkey.(fld1{i})));
@@ -215,7 +204,7 @@ if isfield(metaData, 'discussion')
 end
 
 %% Facts
-if isfield(metaData, 'facts')
+if isfield(metaData, 'facts') && ~isempty(metaData.facts.F1)
   fprintf(fid, '%%%% Facts\n');
   fld = fieldnames(metaData.facts); n = length(fld); str = [];
   for i = 1:n
@@ -224,7 +213,7 @@ if isfield(metaData, 'facts')
     fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, metaData.bibkey.(fld{i}));
   end
   str(end)=[];
-  fprintf(fid, 'metaData.facts = struct(%s);', str);
+  fprintf(fid, 'metaData.facts = struct(%s);\n\n;', str);
 end
 
 %% Acknowledgment
@@ -322,7 +311,14 @@ fclose(fid);
 end
 
 function str = cell2str(cell)
-n = length(cell); str = '{';
+if isstr(cell)
+  str = ['''', cell, '''']; return
+end
+n = length(cell);
+if n == 1
+  str = ['''', cell{1}, '''']; return
+end
+str = '{';
 for i=1:n
   str = [str,'''',cell{i}, ''','];
 end

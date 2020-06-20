@@ -629,9 +629,9 @@ else % perform action
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
-      uicontrol('Parent',dpause, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dpause}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
+      HAmPeps = uicontrol('Parent',dpause, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dpause}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
       Hquit = uicontrol('Parent',dpause, 'Position',[140 30 200 20], 'Callback',{@quitCb,{dpause,dmydata}}, 'String','quit AmPgui and AmPeps', 'Style','pushbutton');
-      set(Hquit, 'ForegroundColor',[1 0 0]);
+      set(HAmPeps, 'ForegroundColor',[0 0.6 0]); set(Hquit, 'ForegroundColor',[1 0 0]);
   end
 end
   % color settings: run this part only with AmPgui('setColor')
