@@ -17,14 +17,14 @@ function AmPeps(infoAmPgui)
 %
 % * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
 
-global data metaData txtData auxData pets hclimateLand hecozone
+global data metaData txtData auxData pets hclimateLand hecozones
 
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
   hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png'));
   hclimateSea  = figure('Name','Sea climate',  'Position',[900 450 500 300]); image(imread('climate_sea.jpg'));
-  hecozone    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png'));
+  hecozones    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png'));
   hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg'));
   AmPgui
   
@@ -58,19 +58,35 @@ else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species f
   prt_run_my_pet(metaData.species); % write run_my_pet.m file
 
   % get pars_init file of a related species to produce structure par, metaPar, txtPar
+  model_def = get_model(metaData.phylum, metaData.class, metaData.order); % default model for this taxon
+  % park data structures, because they will be overwritten by load(results_my_pet)
+  data_my_pet = data; txtData_my_pet = txtData; auxData_my_pet = auxData; metaData_my_pet = metaData;
   Clade = clade(metaData.species); % identify clade to which species belongs
   Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
-  pars_initFn = ['pars_init_', Clade{1}, '.m']; % take the first clade species for initial par values
-  path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', Clade{1}, '/'];
-  if ismac
-    system([path, pars_initFn,  ' -O ', pars_initFn]);
-  else
-    system(['powershell wget ', path, pars_initFn,  ' -O ', pars_initFn]);
+  n_Clade = length(Clade); criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
+  path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
+  for i = 1:n_Clade % scan clade members
+    resultsFn{i} = ['results_', Clade{i}, '.mat']; 
+    if ismac
+      system([path, Clade{i}, '/', resultsFn{i},  ' -O ', resultsFn{i}]);
+    else
+      system(['powershell wget ', path, Clade{i}, '/', resultsFn{i},  ' -O ', resultsFn{i}]);
+    end
+    load(resultsFn{i});
+    criterion(i) = metaData.COMPLETE/ metaPar.MRE; model_Clade{i} = metaPar.model;
   end
-  eval(['[par, metaPar, txtPar] = pars_init_', Clade{1}, '(metaData);']); % use pars_init to produce structures par, metaPar, txtPar
-  delete(pars_initFn); % delete the pars_init file of the related species
+  sel_Clade = ismember(model_Clade, model_def); [~, i_Clade] = sort(criterion);
+  if any(sel_Clade) % at least 1  clade species with default model
+    i_Clade = i_Clade(sel_Clade);
+  end
+  i_Clade = i_Clade(end); % index of "best" clade species
+  load(resultsFn{i_Clade}); 
+  fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
+  delete *.mat; % delete the results files of the related species
+  
+  data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
   auxParFld = prt_predict(par, metaPar, data, auxData, metaData); % write prefict file for model type taken from metaPar
-  % auxParFld conains names of required auxiliary parameter
+  % auxParFld contains names of required auxiliary parameter
 
   % get auxiliary parameters
   parFields = fields(par); % current par fields
@@ -89,7 +105,7 @@ else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     % edit par & txtPar
     load auxPar
     for i = 1:n_add
-      if isstr(auxPar.(addParFields{i}).value)
+      if ischar(auxPar.(addParFields{i}).value)
         par.(addParFields{i})        = eval(auxPar.(addParFields{i}).value);
       else
         par.(addParFields{i})        = auxPar.(addParFields{i}).value;

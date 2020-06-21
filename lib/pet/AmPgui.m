@@ -313,7 +313,7 @@ else % perform action
       case 'discussion'
         ddiscussion = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
         uicontrol('Parent',ddiscussion, 'Callback',{@OKCb,ddiscussion}, 'Position',[30 500 20 20], 'String','OK');
-        uicontrol('Parent',ddiscussion, 'Callback',{@adddiscussioniscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
+        uicontrol('Parent',ddiscussion, 'Callback',{@addDiscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
         uicontrol('Parent',ddiscussion, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
         
         if ~isempty(metaData.discussion)
@@ -588,7 +588,7 @@ else % perform action
         
       ddata_1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');
       uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@addD1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
+      uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
       uicontrol('Parent',ddata_1, 'Position',[100 350  90 20], 'String','x-label', 'Style','text');
       uicontrol('Parent',ddata_1, 'Position',[200 350  90 20], 'String','y-label', 'Style','text');
@@ -673,7 +673,7 @@ end
     fld = fields(metaData.facts); n_fld = length(fld); 
     color.facts = [0 .6 0]; 
     for i = 1:n_fld
-       if ~isfield(metaData.bibkey, fld{i}) & ~isempty(metaData.bibkey,(fld{i}))
+       if ~isfield(metaData.bibkey, fld{i}) && ~isempty(metaData.bibkey,(fld{i}))
          color.facts = [1 0 0]; 
        end
     end
@@ -778,8 +778,8 @@ function climateCb(~, ~, Hclimate)
 end
 
 function ecozoneCb(~, ~, Hecozone)  
-  global metaData eco_types hecozone
-  set(hecozone,'Position',[250 20 1200 850])
+  global metaData eco_types hecozones
+  set(hecozones,'Position',[250 20 1200 850])
   ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); i_ecozone = 1:n_ecozone;
   ecozoneCodeList = ecozoneCode;
    for i=1:n_ecozone
@@ -793,7 +793,7 @@ function ecozoneCb(~, ~, Hecozone)
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
-   set(hecozone,'Position',[300  50 500 300])
+   set(hecozones,'Position',[300  50 500 300])
    AmPgui('setColor')
 end
  
@@ -1115,9 +1115,9 @@ function add1Cb(~, ~, code1, ddata_1)
 end 
 
 function D1Cb(~, ~, fld, i)  
-   global data auxData txtData metaData D1 H1v H1T H1b H1c
+   global data auxData txtData D1 H1v H1T H1b H1c
    D1(i) = dialog('Position',[150 35 475 500], 'Name','1-variate data set dlg');
-   units = txtData.units.(fld); label = txtData.label.(fld); keyB = true;
+   units = txtData.units.(fld); label = txtData.label.(fld);
    uicontrol('Parent',D1(i), 'Position',[ 20 480  50 20], 'Callback',{@OKCb,D1(i)}, 'Style','pushbutton', 'String','OK'); 
    uicontrol('Parent',D1(i), 'Position',[ 80 480 150 20], 'String',['name: ', fld], 'Style','text');
    uicontrol('Parent',D1(i), 'Position',[225 480 100 20], 'String',['units: ', units{1},' , ',units{2}], 'Style','text');

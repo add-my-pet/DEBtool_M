@@ -120,6 +120,6 @@ switch phylum
               end
         end 
     otherwise
-        fprintf('warning from get_model: taxon could not be identified')
+        fprintf('warning from get_model: taxon could not be identified\n')
         model = []; info = 0;
 end
