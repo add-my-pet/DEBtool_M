@@ -194,12 +194,13 @@ if isfield(metaData, 'discussion')
   fprintf(fid, '%%%% Discussion points\n');
   fld = fieldnames(metaData.discussion); n = length(fld); str = [];
   for i = 1:n
-    str = [str, '''', fld{i}, ''', ', fld{i}, ','];
+    str = [str, '''', fld{i}, ''',', fld{i}, ', '];
     fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.discussion.(fld{i}));
     if isfield(metaData, 'bibkey') && isfield(metaData.bibkey, fld{i})
       fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, fld{i});
     end
   end
+  str([end,end-1])=[];
   fprintf(fid, 'metaData.discussion = struct(%s);\n\n', str(1:end-1));
 end
 
@@ -208,12 +209,12 @@ if isfield(metaData, 'facts') && ~isempty(metaData.facts.F1)
   fprintf(fid, '%%%% Facts\n');
   fld = fieldnames(metaData.facts); n = length(fld); str = [];
   for i = 1:n
-    str = [str, '''', fld{i}, ''', ', fld{i}, ','];
+    str = [str, '''', fld{i}, ''',', fld{i}, ', '];
     fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.facts.(fld{i}));
     fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, metaData.bibkey.(fld{i}));
   end
-  str(end)=[];
-  fprintf(fid, 'metaData.facts = struct(%s);\n\n;', str);
+  str([end,end-1])=[];
+  fprintf(fid, 'metaData.facts = struct(%s);\n\n', str);
 end
 
 %% Acknowledgment
