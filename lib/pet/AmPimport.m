@@ -28,6 +28,7 @@ global data metaData txtData auxData
 
 eval(['[data, auxData, metaData, txtData] = ', mydata_my_pet, ';']);
 
+% convert to default notation
 if isfield(data,'Wb')
   data = renameStructField(data, 'Wb', 'Wwb');
   txtData.units = renameStructField(txtData.units, 'Wb', 'Wwb');
@@ -97,6 +98,25 @@ if isfield(data,'Wdi_m')
   txtData.bibkey = renameStructField(txtData.bibkey, 'Wdi_m', 'Wdim');
 end
 
-[data, metaData] = mydata2AmPgui(data,metaData);
+if isfield(data,'LW')
+  data = renameStructField(data, 'LW', 'LWw');
+  txtData.units = renameStructField(txtData.units, 'LW', 'LWw');
+  txtData.label = renameStructField(txtData.label, 'LW', 'LWw');
+  txtData.bibkey = renameStructField(txtData.bibkey, 'LW', 'LWw');
+end
+if isfield(data,'LW_f')
+  data = renameStructField(data, 'LW_f', 'LWw_f');
+  txtData.units = renameStructField(txtData.units, 'LW_f', 'LWw_f');
+  txtData.label = renameStructField(txtData.label, 'LW_f', 'LWw_f');
+  txtData.bibkey = renameStructField(txtData.bibkey, 'LW_f', 'LWw_f');
+end
+if isfield(data,'LW_m')
+  data = renameStructField(data, 'LW_m', 'LWw_m');
+  txtData.units = renameStructField(txtData.units, 'LW_m', 'LWw_m');
+  txtData.label = renameStructField(txtData.label, 'LW_m', 'LWw_m');
+  txtData.bibkey = renameStructField(txtData.bibkey, 'LW_m', 'LWw_m');
+end
+
+[data, metaData] = mydata2AmPgui(data,metaData); % convert mydata standard to AmPgui standard
 
 AmPeps;

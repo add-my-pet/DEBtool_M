@@ -94,7 +94,7 @@ switch phylum
                         model = 'ssj';
                     case {'Osteoglossiformes', 'Hiodontiformes'}
                         model = 'std';
-                    case {'Clupeiformes', 'Gonorynchiformes', 'Cypriniformes', 'Characiformes'}
+                    case {'Clupeiformes', 'Gonorynchiformes', 'Cypriniformes', 'Characiformes', 'Myctophiformes'}
                         model = 'abj';
                     case {'Gymnotiformes', 'Siluriformes'}
                         model = 'std';
