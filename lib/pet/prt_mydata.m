@@ -201,7 +201,7 @@ if isfield(metaData, 'discussion')
     end
   end
   str([end,end-1])=[];
-  fprintf(fid, 'metaData.discussion = struct(%s);\n\n', str(1:end-1));
+  fprintf(fid, 'metaData.discussion = struct(%s);\n\n', str);
 end
 
 %% Facts
