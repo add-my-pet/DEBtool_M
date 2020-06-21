@@ -94,20 +94,52 @@ switch phylum
                         model = 'ssj';
                     case {'Osteoglossiformes', 'Hiodontiformes'}
                         model = 'std';
-                    case {'Clupeiformes', 'Gonorynchiformes', 'Cypriniformes', 'Characiformes', 'Myctophiformes'}
+                    case {'Clupeiformes', 'Alepocephaliformes', 'Gonorynchiformes', 'Cypriniformes', 'Characiformes'}
                         model = 'abj';
                     case {'Gymnotiformes', 'Siluriformes'}
                         model = 'std';
                     case 'Salmoniformes'
                         model = 'abj';
-                    case {'Esociformes', 'Osmeriformes', 'Percopsiformes', 'Batrachoidiformes'}
+                    case {'Esociformes', 'Osmeriformes'}
                         model = 'std';
-                    case {'Lophiiformes', 'Gadiformes', 'Atheriniformes', 'Pleuronectiformes', 'Scorpaeniformes', 'Perciformes'}
+                    case {'Stomiiformes', 'Aulopiformes', 'Myctophiformes'}
+                        model = abj;
+                    case {'Lampriformes', 'Percopsiformes', 'Zeiformes'}
+                        model = 'std';
+                    case {'Gadiformes', 'Polymixiiformes'}
                         model = 'abj';
-                    case 'Ophidiiformes'
-                        model = 'ssj';
-                    case {'Mugiliformes', 'Beloniformes', 'Cyprinodontiformes', 'Beryciformes', 'Zeiformes', 'Gobiesociformes', 'Gasterosteiformes', 'Syngnathiformes', 'Tetraodontiformes'}
+                    case {'Beryciformes', 'Holocentriformes'}
                         model = 'std';
+                    case {'Ophidiiforems'}
+                        model = 'ssj';
+                    case {'Batrachoidiformes'}
+                        model = 'std';
+                    case {'Kurtiformes'}
+                        model = 'abj';
+                    case {'Gobiiformes', 'Syngnathiformes'}
+                        model = 'std';
+                    case {'Scombriformes'}
+                        model = 'abj';
+                    case {'Synbranchiformes', 'Anabantiformes'}
+                        model = 'std';
+                    case{'Polynemiformes', 'Carangiformes', 'Sphyraeniformes', 'Istiophoriformes', 'Centropomiformes', 'Pleuronectiformes'}
+                        model = 'abj';
+                    case {'Cichliformes', 'Beloniformes', 'Cyprinodontiformes'} 
+                        model = 'std';
+                    case{'Atheriniformes',  'Pomacentriformes'}
+                        model = 'abj';
+                    case {'Mugiliformes'}
+                        model = 'std';
+                    case {'Embiotociformes', 'Pseudochromiformes'}
+                        model = 'abj';
+                    case {'Gobiesociformes'}
+                        model = 'std';
+                    case {'Blenniiformes', 'Gerreiformes', 'Uranoscopiformes', 'Labriformes', ...
+                          'Moroniformes', 'Ephippiformes', 'Gasterosteiformes', 'Chaetodontiformes', 'Sciaeniformes', ...
+                          'Acanthuriformes', 'Pomacanthiformes', 'Lutjaniformes', 'Lobotiformes', ...
+                          'Spariformes', 'Siganiformes', 'Scatophagiformes', 'Priacanthiformes', ...
+                          'Caproiformes', 'Lophiiformes', 'Tetraodontiformes', 'Pempheriformes', 'Centrarchiformes', 'Perciformes', 'Scorpaeniformes'}
+                        model = 'abj';
                 end
           case {'Sarcopterygii', 'Amphibia', 'Reptilia', 'Aves'}
               model = 'std';
