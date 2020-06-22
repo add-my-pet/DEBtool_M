@@ -132,6 +132,9 @@ end
 if ~isfield(metaData, 'address')
   metaData.address = [];
 end
+if ~isfield(metaData, 'curator')
+  metaData.curator = [];
+end
 if ~isfield(metaData, 'discussion')
   metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
 end
