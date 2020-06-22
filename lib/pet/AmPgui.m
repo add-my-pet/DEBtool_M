@@ -773,7 +773,7 @@ function climateCb(~, ~, Hclimate)
   else
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[200 600], 'InitialValue',i_climate);
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[300 600], 'InitialValue',i_climate);
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
