@@ -96,9 +96,9 @@ switch phylum
                         model = 'std';
                     case {'Clupeiformes', 'Alepocephaliformes', 'Gonorynchiformes', 'Cypriniformes', 'Characiformes'}
                         model = 'abj';
-                    case {'Gymnotiformes', 'Siluriformes'}
+                    case 'Gymnotiformes'
                         model = 'std';
-                    case 'Salmoniformes'
+                    case {'Siluriformes','Lepidogalaxiiformes','Argentiniformes','Galaxiiformes','Salmoniformes'}
                         model = 'abj';
                     case {'Esociformes', 'Osmeriformes'}
                         model = 'std';
