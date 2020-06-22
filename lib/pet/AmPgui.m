@@ -1,6 +1,5 @@
 %% AmPgui
 % a GUI to create 4 structures
-
 %%
 function AmPgui(action)
 % created 2020/06/05 by  Bas Kooijman
@@ -135,7 +134,9 @@ end
 if ~isfield(metaData, 'curator')
   metaData.curator = [];
 end
-if ~isfield(metaData, 'discussion')
+if ~isfield(metaData, 'COMPLETE')
+  metaData.COMPLETE = [];
+endif ~isfield(metaData, 'discussion')
   metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
 end
 if ~isfield(metaData, 'facts')
@@ -772,7 +773,7 @@ function climateCb(~, ~, Hclimate)
   else
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[100 600], 'InitialValue',i_climate);
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[200 600], 'InitialValue',i_climate);
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
