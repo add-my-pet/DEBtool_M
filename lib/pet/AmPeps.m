@@ -48,7 +48,7 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
        ['predict_', metaData.species, '.m'], ...
        ['run_', metaData.species, '.m'])
 
-else % indoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
+else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
   close all
   %path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
