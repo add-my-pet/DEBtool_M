@@ -135,7 +135,7 @@ if ~isfield(metaData, 'curator')
   metaData.curator = [];
 end
 if ~isfield(metaData, 'COMPLETE')
-  metaData.COMPLETE = [];
+  metaData.COMPLETE = 2.5;
 end
 if ~isfield(metaData, 'discussion')
   metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
@@ -164,25 +164,28 @@ end
 
 
 %% setup gui
-  dmydata = dialog('Position',[150 100 250 460], 'Name','AmPgui');
-  hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
-  hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
-  hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
-  hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 355 100 20], 'String','author',         'Style','pushbutton');
-  hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 330 100 20], 'String','curator',        'Style','pushbutton');
-  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10 305 100 20], 'String','group',          'Style','pushbutton');
-  hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',  'Position',[10 280 100 20], 'String','discussion',     'Style','pushbutton');
-  hfacts    = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10 255 100 20], 'String','facts',          'Style','pushbutton');
-  hacknowledgment = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[10 230 100 20], 'String','acknowledgment', 'Style','pushbutton');
-  hlinks    = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[10 205 100 20], 'String','links',          'Style','pushbutton');
-  hbiblist  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[10 180 100 20], 'String','biblist',        'Style','pushbutton');
+  dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
+  hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 230 100 20], 'String','species',        'Style','pushbutton');
+  hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 205 100 20], 'String','ecoCode',        'Style','pushbutton');
+  hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 180 100 20], 'String','T_typical',      'Style','pushbutton');
+
+  hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 135 100 20], 'String','author',         'Style','pushbutton');
+  hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 110 100 20], 'String','curator',        'Style','pushbutton');
+
+  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10  65 100 20], 'String','group',          'Style','pushbutton');
+  hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',  'Position',[10  40 100 20], 'String','discussion',     'Style','pushbutton');
+  hfacts    = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10  15 100 20], 'String','facts',          'Style','pushbutton');
+
+  hlinks    = uicontrol('Parent',dmydata, 'Callback','AmPgui links',          'Position',[130 230 100 20], 'String','links',          'Style','pushbutton');
+  hbiblist  = uicontrol('Parent',dmydata, 'Callback','AmPgui biblist',        'Position',[130 205 100 20], 'String','biblist',        'Style','pushbutton');
+  hacknowledgment = uicontrol('Parent',dmydata, 'Callback','AmPgui acknowledgment', 'Position',[130 180 100 20], 'String','acknowledgment', 'Style','pushbutton');
   
-  hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',         'Position',[10 135 100 20], 'String','0-var data',     'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',         'Position',[10 110 100 20], 'String','1-var data',     'Style','pushbutton');
+  hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',         'Position',[130 135 100 20], 'String','0-var data',     'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',         'Position',[130 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
-              uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[10  65 100 20], 'String','resume',         'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[10  40 100 20], 'String','pause/save',     'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback',{@OKCb,dmydata},         'Position',[50  15  20 20], 'String','OK',             'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[130  65 100 20], 'String','resume',         'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[130  40 100 20], 'String','pause/save',     'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback',{@OKCb,dmydata},         'Position',[170  15  20 20], 'String','OK',             'Style','pushbutton');
         
   % set default colors
   set(hspecies, 'ForegroundColor', color.species);       set(hecoCode, 'ForegroundColor', color.ecoCode); 
