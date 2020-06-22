@@ -136,7 +136,8 @@ if ~isfield(metaData, 'curator')
 end
 if ~isfield(metaData, 'COMPLETE')
   metaData.COMPLETE = [];
-endif ~isfield(metaData, 'discussion')
+end
+if ~isfield(metaData, 'discussion')
   metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
 end
 if ~isfield(metaData, 'facts')
