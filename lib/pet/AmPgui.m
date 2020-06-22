@@ -163,7 +163,7 @@ end
 
 
 %% setup gui
-  dmydata = dialog('Position',[150 100 120 460], 'Name','AmPgui');
+  dmydata = dialog('Position',[150 100 250 460], 'Name','AmPgui');
   hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 430 100 20], 'String','species',        'Style','pushbutton');
   hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 405 100 20], 'String','ecoCode',        'Style','pushbutton');
   hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 380 100 20], 'String','T_typical',      'Style','pushbutton');
@@ -773,7 +773,7 @@ function climateCb(~, ~, Hclimate)
   else
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[300 600], 'InitialValue',i_climate);
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[300 450], 'InitialValue',i_climate);
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
