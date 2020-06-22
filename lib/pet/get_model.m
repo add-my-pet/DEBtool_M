@@ -103,7 +103,7 @@ switch phylum
                     case {'Esociformes', 'Osmeriformes'}
                         model = 'std';
                     case {'Stomiiformes', 'Aulopiformes', 'Myctophiformes'}
-                        model = abj;
+                        model = 'abj';
                     case {'Lampriformes', 'Percopsiformes', 'Zeiformes'}
                         model = 'std';
                     case {'Gadiformes', 'Polymixiiformes'}
