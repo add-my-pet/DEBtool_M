@@ -628,7 +628,7 @@ else % perform action
         c9  = ' 9  Elemental balances for C, H, O and N at several body sizes and several food levels';
         c10 = '10 Energy balance at several body sizes and several food levels (including heat)';
         
-      dCOMPLETE = dialog('Position',[150 35 620 400], 'Name','COMPLETE dlg');
+      dCOMPLETE = dialog('Position',[450 200 620 400], 'Name','COMPLETE dlg');
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 365 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c, 'FontSize',11); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 325 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c0); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 300 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c1); 
@@ -641,8 +641,8 @@ else % perform action
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 125 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c8); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 100 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c9); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10  75 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c10); 
-      HCOMPLETE = uicontrol('Parent',dCOMPLETE, 'Position',[ 10 50  50 20], 'Callback',@COMPLETECb, 'Style','edit', 'String',''); 
-      uicontrol('Parent',dCOMPLETE, 'Position',[ 110 50  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
+      HCOMPLETE = uicontrol('Parent',dCOMPLETE, 'Position',[ 10 40  50 20], 'Callback',@COMPLETECb, 'Style','edit', 'String',''); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 110 40  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
 
     case 'resume'
       list = cellstr(ls);
