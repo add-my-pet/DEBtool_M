@@ -400,47 +400,47 @@ else % perform action
         end
         
         select_id(7:14) = false;
-        if strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
+        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
           if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_fishbase)
             metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
           end
         end
-        if ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
+        if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
           select_id(8) = true;
           if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
             metaData.links.id_molluscabase = [strrep(metaData.species,'_','-'), '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
+        if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
           select_id(9) = true;
           if isfield(metaData.links, 'id_amphweb') && isempty(metaData.links.id_amphweb)
             metaData.links.id_amphweb = [strrep(metaData.species,'_','+'), '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
+        if ~isempty(metaData.class) && strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
           select_id(10) = true;
           nm = strspilt(metaData.species);
           if isfield(metaData.links, 'id_ReptileDB') && isempty(metaData.links.id_ReptileDB)
             metaData.links.id_ReptileDB = ['genus=',nm{1}, '&species=', nm{2}, '? (replace)'];
           end
         end
-        if strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
+        if ~isempty(metaData.class) && strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
           select_id(11:12) = true;
           if isfield(metaData.links, 'id_avibase') && isempty(metaData.links.id_avibase)
             metaData.links.id_avibase = 'some code (replace)';
           end
-          if isfield(metaData.links, 'id_birdlife') && isempty(metaData.links.id_birdlife)
+          if ~isempty(metaData.class) && isfield(metaData.links, 'id_birdlife') && isempty(metaData.links.id_birdlife)
             metaData.links.id_birdlife = 'some sci. & common names (replace)';
           end
         end
-        if strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
+        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
           select_id(13) = true;
           if isfield(metaData.links, 'id_MSW3') && isempty(metaData.links.id_MSW3)
             metaData.links.id_MSW3 = 'some number (replace)';
           end
         end
-        if ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
+        if ~isempty(metaData.class) && ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
           select_id(14) = true;
           if isfield(metaData.links, 'id_AnAge') && isempty(metaData.links.id_AnAge)
             metaData.links.id_AnAge = [metaData.species, '? (replace)'];
