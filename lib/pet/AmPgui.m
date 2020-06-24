@@ -36,10 +36,10 @@ function AmPgui(action)
 %   - green: editing not necessary
 %   - black: editing facultative
 % 
-% Notice that font colors only represent intennal consistency, irrespective of content.
+% Notice that font colors only represent internal consistency, irrespective of content.
 
 global data auxData metaData txtData select_id id_links eco_types color 
-global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0        
+global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0  hCOMPLETE  HCOMPLETE    
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
@@ -135,7 +135,7 @@ if ~isfield(metaData, 'curator')
   metaData.curator = [];
 end
 if ~isfield(metaData, 'COMPLETE')
-  metaData.COMPLETE = 2.5;
+  metaData.COMPLETE = [];
 end
 if ~isfield(metaData, 'discussion')
   metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
@@ -156,7 +156,7 @@ end
 if isempty(color)
   color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0]; color.author = [1 0 0];         color.curator = [1 0 0];
   color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];     color.acknowledgment = [0 0 0]; color.links = [1 0 0];
-  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.links = [0 0 0];     color.discussion = [0 0 0];     color.facts = [0 0 0]; 
+  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.links = [0 0 0];     color.discussion = [0 0 0];     color.facts = [0 0 0]; color.COMPLETE = [1 0 0];
 end
 if isempty(eco_types)
   get_eco_types;
@@ -172,7 +172,7 @@ end
   hauthor   = uicontrol('Parent',dmydata, 'Callback','AmPgui author',         'Position',[10 135 100 20], 'String','author',         'Style','pushbutton');
   hcurator  = uicontrol('Parent',dmydata, 'Callback','AmPgui curator',        'Position',[10 110 100 20], 'String','curator',        'Style','pushbutton');
 
-  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10  65 100 20], 'String','group',          'Style','pushbutton');
+  hgrp      = uicontrol('Parent',dmydata, 'Callback','AmPgui grp',            'Position',[10  65 100 20], 'String','group plots',    'Style','pushbutton');
   hdiscussion  = uicontrol('Parent',dmydata, 'Callback','AmPgui discussion',  'Position',[10  40 100 20], 'String','discussion',     'Style','pushbutton');
   hfacts    = uicontrol('Parent',dmydata, 'Callback','AmPgui facts',          'Position',[10  15 100 20], 'String','facts',          'Style','pushbutton');
 
@@ -183,9 +183,9 @@ end
   hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',         'Position',[130 135 100 20], 'String','0-var data',     'Style','pushbutton');
               uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',         'Position',[130 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
-              uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[130  65 100 20], 'String','resume',         'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[130  40 100 20], 'String','pause/save',     'Style','pushbutton');
-              uicontrol('Parent',dmydata, 'Callback',{@OKCb,dmydata},         'Position',[170  15  20 20], 'String','OK',             'Style','pushbutton');
+ hCOMPLETE =  uicontrol('Parent',dmydata, 'Callback','AmPgui COMPLETE',       'Position',[130  65 100 20], 'String','COMPLETE',       'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[130  40 100 20], 'String','resume',         'Style','pushbutton');
+              uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[130  15 100 20], 'String','pause/save',     'Style','pushbutton');
         
   % set default colors
   set(hspecies, 'ForegroundColor', color.species);       set(hecoCode, 'ForegroundColor', color.ecoCode); 
@@ -612,6 +612,37 @@ else % perform action
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
         end
       end
+      
+    case 'COMPLETE'
+        
+        c   = 'COMPLETE levels for data: Each level includes previous levels (from LikaKear2011)';
+        c0  = ' 0  Maximum length and body weight; weight as function of length';
+        c1  = ' 1  Age, length and weight at birth and puberty for one food level; mean life span (due to ageing)';
+        c2  = ' 2  Growth (curve) at one food level: length and weight as functions of age at constant (or abundant) food level';
+        c3  = ' 3  Reproduction and feeding as functions of age, length and/or weight at one food level';
+        c4  = ' 4  Growth (curve) at several (>1) food levels; age, length and weight at birth and puberty at several food levels';
+        c5  = ' 5  Reproduction and feeding as functions of age, length and/or weight at several (>1) food levels';
+        c6  = ' 6  Respiration as function of length or weight and life span at several (>1) food levels';
+        c7  = ' 7  Elemental composition at one food level, survival due to ageing as function of age';
+        c8  = ' 8  Elemental composition at several (>1) food levels, including composition of food';
+        c9  = ' 9  Elemental balances for C, H, O and N at several body sizes and several food levels';
+        c10 = '10 Energy balance at several body sizes and several food levels (including heat)';
+        
+      dCOMPLETE = dialog('Position',[150 35 620 400], 'Name','COMPLETE dlg');
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 365 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c, 'FontSize',11); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 325 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c0); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 300 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c1); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 275 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c2); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 250 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c3); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 225 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c4); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 200 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c5); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 175 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c6); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 150 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c7); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 125 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c8); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10 100 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c9); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 10  75 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c10); 
+      HCOMPLETE = uicontrol('Parent',dCOMPLETE, 'Position',[ 10 50  50 20], 'Callback',@COMPLETECb, 'Style','edit', 'String',''); 
+      uicontrol('Parent',dCOMPLETE, 'Position',[ 110 50  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
 
     case 'resume'
       list = cellstr(ls);
@@ -699,6 +730,10 @@ end
   if ~isempty(data.data_0)
     color.data_0 = [0 0.6 0]; set(hdata_0, 'ForegroundColor', color.data_0);
   end
+  
+  if ~isempty(metaData.COMPLETE)
+    color.COMPLETE = [0 0.6 0]; set(hCOMPLETE, 'ForegroundColor', color.COMPLETE);
+  end
  
   if isfield(metaData, 'biblist') && ~isempty(metaData.biblist)
     bibitems = fields(metaData.biblist);
@@ -777,7 +812,7 @@ function climateCb(~, ~, Hclimate)
   else
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[300 450], 'InitialValue',i_climate);
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);
    
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
@@ -1164,6 +1199,12 @@ function d1cCb(~, ~, fld, i)
   global metaData H1c
   metaData.comment.(fld) = get(H1c(i), 'string');
 end  
+
+function COMPLETECb(~, ~)  
+  global metaData HCOMPLETE
+  metaData.COMPLETE = get(HCOMPLETE, 'string');
+  AmPgui('setColor')
+end
 
 function stayCb(~, ~, H) 
   OKCb([], [], H);
