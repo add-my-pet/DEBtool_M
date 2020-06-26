@@ -589,8 +589,12 @@ else % perform action
           'WdN',   {'g','#'},  1, {'dry weight','yearly fecundity'}, '';
 
           'LR',    {'cm','#/d'}, 1, {'length','reproduction rate'},     '';
-          'WR',    {'g','#/d'},  1, {'wet weight','reproduction rate'}, '';
-          'WR',    {'g','#/d'},  1, {'dry weight','reproduction rate'}, '';
+          'WwR',   {'g','#/d'},  1, {'wet weight','reproduction rate'}, '';
+          'WdR',   {'g','#/d'},  1, {'dry weight','reproduction rate'}, '';
+
+          'LJO',   {'cm','mol/d'}, 1, {'length','O2 consumption'},     '';
+          'WwJO',  {'g','mol/d'},  1, {'wet weight','O2 consumption'}, '';
+          'WdJO',  {'g','mod/d'},  1, {'dry weight','O2 consumption'}, '';
 
           }; 
         
