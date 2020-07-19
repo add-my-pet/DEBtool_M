@@ -64,6 +64,9 @@ end
 if ~isfield(txtData, 'units')
   txtData.units = []; txtData.label = [];
 end
+if ~isfield(txtData, 'bibkey')
+  txtData.bibkey = [];
+end
 
 if ~isfield(metaData, 'species') 
   metaData.species = [];
@@ -559,7 +562,7 @@ else % perform action
 
     case 'data_1' 
 
-      code1 = { ...
+      code1 = { ... % column 3 stands for yes-or-no temperature
           'LWw',   {'cm','g'}, 0, {'length','wet weight'}, '';
           'LWw_f', {'cm','g'}, 0, {'length','wet weight'}, 'Data for females';
           'LWw_m', {'cm','g'}, 0, {'length','wet weight'}, 'Data for males';
@@ -1092,11 +1095,11 @@ function add0Cb(~, ~, code0, ddata_0)
      data.data_0.(code0{i,1}) = []; 
      txtData.units.(code0{i,1}) = code0{i,2};
      txtData.label.(code0{i,1}) = code0{i,4};
+     txtData.bibkey.(code0{i,1}) = [];
      txtData.comment.(code0{i,1}) = '';
      if code0{i,3}
        auxData.temp.(code0{i,1}) = [];
      end
-     metaData.bibkey.(code0{i,1}) = [];
    end
    delete(ddata_0);
    AmPgui('data_0');
@@ -1122,7 +1125,7 @@ end
 % end
 
 function d0Cb(~, ~, i)  
-   global data auxData txtData metaData H0v H0T H0b H0c
+   global data auxData txtData H0v H0T H0b H0c
    fld = fields(data.data_0);
    data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
    if isfield(auxData.temp, fld{i})
@@ -1130,12 +1133,12 @@ function d0Cb(~, ~, i)
      txtData.units.temp = 'K';
      txtData.label.temp = 'temperature';
    end
-   metaData.bibkey.(fld{i}) = str2cell(get(H0b(i), 'string'));
+   txtData.bibkey.(fld{i}) = str2cell(get(H0b(i), 'string'));
    txtData.comment.(fld{i}) = str2cell(get(H0c(i), 'string'));
 end
 
 function add1Cb(~, ~, code1, ddata_1)
-   global data txtData auxData metaData
+   global data txtData auxData
    n_code1 = size(code1,1); codeList1 = code1(:,1);
    for i = 1:n_code1
      codeList1{i} = [code1{i,1}, ': ', cell2str(code1{i,4})];
@@ -1151,11 +1154,11 @@ function add1Cb(~, ~, code1, ddata_1)
      data.data_1.(code1{i,1}) = []; 
      txtData.units.(code1{i,1}) = code1{i,2};
      txtData.label.(code1{i,1}) = code1{i,4};
+     txtData.bibkey.(code1{i,1}) = [];
      txtData.comment.(code1{i,1}) = [];
      if code1{i,3}
        auxData.temp.(code1{i,1}) = [];
      end
-     metaData.bibkey.(code1{i,1}) = [];
    end 
    delete(ddata_1);
    AmPgui('data_1');
@@ -1195,13 +1198,13 @@ function d1TCb(~, ~, fld, i)
 end  
 
 function d1bCb(~, ~, fld, i)
-  global metaData H1b 
-  metaData.bibkey.(fld) = get(H1b(i), 'string');
+  global txtData H1b 
+  txtData.bibkey.(fld) = get(H1b(i), 'string');
 end  
 
 function d1cCb(~, ~, fld, i)
-  global metaData H1c
-  metaData.comment.(fld) = get(H1c(i), 'string');
+  global txtData H1c
+  txtData.comment.(fld) = get(H1c(i), 'string');
 end  
 
 function COMPLETECb(~, ~)  
