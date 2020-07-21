@@ -116,6 +116,12 @@ end
 if ~isfield(metaData, 'T_typical')
   metaData.T_typical = [];
 end
+if ~isfield(metaData, 'data_0')
+  metaData.data_0 = [];
+end
+if ~isfield(metaData, 'data_1')
+  metaData.data_1 = [];
+end
 if ~isfield(metaData, 'bibkey')
   metaData.bibkey = [];
 end
