@@ -673,7 +673,7 @@ else % perform action
       else
         list = cellstr(ls);
       end
-      list = list(contains(list,'results_'));
+      list = list(Contains(list,'results_'));
       if length(list) > 1
         fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
       elseif length(list) == 1 && strcmp(list{1}, nm)
