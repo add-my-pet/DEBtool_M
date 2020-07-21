@@ -652,7 +652,11 @@ else % perform action
       uicontrol('Parent',dCOMPLETE, 'Position',[ 110 40  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
 
     case 'resume'
-      list = cellstr(ls);
+      if ismac
+        list = ls;
+      else
+        list = cellstr(ls);
+      end
       list = list(contains(list,'results_'));
       if length(list) == 1
         load(list);
@@ -664,7 +668,11 @@ else % perform action
       
     case 'pause'
       nm = ['results_', metaData.species, '.mat'];
-      list = cellstr(ls);
+      if ismac
+        list = ls;
+      else
+        list = cellstr(ls);
+      end
       list = list(contains(list,'results_'));
       if length(list) > 1
         fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
