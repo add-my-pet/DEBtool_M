@@ -565,6 +565,7 @@ else % perform action
           H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
         end
       end
+      metaData.data_0 = fields(data.data_0);
 
     case 'data_1' 
 
@@ -625,7 +626,9 @@ else % perform action
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
         end
       end
-      
+            
+      metaData.data_1 = fields(data.data_1);
+
     case 'COMPLETE'
         
         c   = 'COMPLETE levels for data: Each level includes previous levels (from LikaKear2011)';
