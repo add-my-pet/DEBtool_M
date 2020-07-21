@@ -657,7 +657,7 @@ else % perform action
       else
         list = cellstr(ls);
       end
-      list = list(contains(list,'results_'));
+      list = list(Contains(list,'results_'));
       if length(list) == 1
         load(list);
       elseif isempty(list)
@@ -1290,5 +1290,12 @@ function code = prependStage(code)
     fprintf(['Prepend stage for code ', code{i},'\n']);
     i_stage =  listdlg('ListString',stageList, 'Name','stage dlg', 'SelectionMode','single', 'ListSize',[150 150], 'InitialValue',2);
     code{i} = [stageList{i_stage}, code{i}];
+  end
+end
+
+function sel = Contains(nm,str)
+  n = length(nm); sel = true(n,1);
+  for i=1:n
+    sel(i) = ~isempty(strfind(nm{i}, str));
   end
 end
