@@ -653,7 +653,7 @@ else % perform action
 
     case 'resume'
       if ismac
-        list = ls;
+        list = strsplit(ls, ' ');
       else
         list = cellstr(ls);
       end
@@ -669,7 +669,7 @@ else % perform action
     case 'pause'
       nm = ['results_', metaData.species, '.mat'];
       if ismac
-        list = ls;
+        list = strsplit(ls, ' ');
       else
         list = cellstr(ls);
       end
