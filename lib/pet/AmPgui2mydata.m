@@ -25,20 +25,20 @@ function [data, metaData] = AmPgui2mydata(data, metaData)
 % <../mydata2AmPgui.html *mydata2AmPgui*> is inverse to AmPgui2mydata
 
 if isfield(data, 'data_0')
-  fld = fieldnames(data.data_0); n_fld = length(fld);
+  fld = fields(data.data_0); n_fld = length(fld);
   for i = 1:n_fld
     data.(fld{i}) = data.data_0.(fld{i});
   end
   data = rmfield(data, 'data_0');
 end
-if isfield(data, 'data_1')
+if isfield(data, 'data_1') && ~isempty(data.data_1)
   fld = fieldnames(data.data_1); n_fld = length(fld);
   for i = 1:n_fld
     data.(fld{i}) = data.data_1.(fld{i});
   end
-  data = rmfield(data, 'data_1');
 end
-    
+data = rmfield(data, 'data_1');
+
 if isfield(metaData, 'acknowledgment') && isempty(metaData.acknowledgment)
   metaData = rmfield(metaData, 'acknowledgment');
 end

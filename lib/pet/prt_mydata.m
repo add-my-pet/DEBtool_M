@@ -117,8 +117,12 @@ for i = 1:n_fld0
     fprintf(fid, 'units.temp.%s = ''%s''; ', fld0{i}, txtData.units.temp.(fld0{i}));
     fprintf(fid, 'label.temp.%s = ''%s'';\n', fld0{i}, txtData.label.temp.(fld0{i}));
   end
-  if isfield(txtData.comment, fld0{i})
-    fprintf(fid, '  comment.%s = ''%s'';\n', fld0{i}, txtData.comment.(fld0{i}));
+  if isfield(txtData.comment, fld0{i}) && ~isempty(txtData.comment.(fld0{i}))
+    txt = txtData.comment.(fld0{i});
+    if iscell(txt)
+      txt = txt{1};
+    end
+    fprintf(fid, '  comment.%s = ''%s'';\n', fld0{i}, txt);
   end 
   if i < n_fld0 && ~strcmp(txtData.units.(fld0{i}), txtData.units.(fld0{i+1}))
     fprintf(fid, '\n');
@@ -150,7 +154,11 @@ for i = 1:n_fld1
   else
     fprintf(fid, 'bibkey.%s = ''%s'';\n', fld1{i}, txtData.bibkey.(fld1{i}));
   end
-  if isfield(txtData.comment, fld1{i})
+  if isfield(txtData.comment, fld1{i}) & ~isempty(txtData.comment.(fld1{i}))
+    txt = txtData.comment.(fld1{i});
+    if iscell(txt)
+      txt = txt{1};
+    end
     fprintf(fid, 'comment.%s = ''%s'';\n', fld1{i}, txtData.comment.(fld1{i}));
   end
   fprintf(fid, '\n');  
@@ -228,43 +236,43 @@ fprintf(fid, '%%%% Links\n');
 if isfield(metaData.links, 'id_CoL')
   fprintf(fid, 'metaData.links.id_CoL = ''%s''; %% Cat of Life\n', metaData.links.id_CoL);
 end
-if isfield(metaData.links, 'id_EoL')
+if isfield(metaData.links, 'id_EoL') && ~isempty(metaData.links.id_EoL)
   fprintf(fid, 'metaData.links.id_EoL = ''%s''; %% Ency of Life\n', metaData.links.id_EoL);
 end
-if isfield(metaData.links, 'id_Wiki')
+if isfield(metaData.links, 'id_Wiki') && ~isempty(metaData.links.id_Wiki)
   fprintf(fid, 'metaData.links.id_Wiki = ''%s''; %% Wikipedia\n', metaData.links.id_Wiki);
 end
-if isfield(metaData.links, 'id_ADW')
+if isfield(metaData.links, 'id_ADW') && ~isempty(metaData.links.id_ADW)
   fprintf(fid, 'metaData.links.id_ADW = ''%s''; %% Anim Div. Web\n', metaData.links.id_ADW);
 end
-if isfield(metaData.links, 'id_Taxo')
+if isfield(metaData.links, 'id_Taxo') && ~isempty(metaData.links.id_Taxo)
   fprintf(fid, 'metaData.links.id_Taxo = ''%s''; %% Taxonomicon\n', metaData.links.id_Taxo);
 end
-if isfield(metaData.links, 'id_WoRMS')
+if isfield(metaData.links, 'id_WoRMS') &&  ~isempty(metaData.links.id_WoRMS)
   fprintf(fid, 'metaData.links.id_WoRMS = ''%s'';\n', metaData.links.id_WoRMS);
 end
-if isfield(metaData.links, 'id_molluscabase')
+if isfield(metaData.links, 'id_molluscabase') && ~isempty(metaData.links.id_molluscabase)
   fprintf(fid, 'metaData.links.id_molluscabase = ''%s'';\n', metaData.links.id_molluscabase);
 end
-if isfield(metaData.links, 'id_fishbase')
+if isfield(metaData.links, 'id_fishbase') && ~isempty(metaData.links.id_fishbase)
   fprintf(fid, 'metaData.links.id_fishbase = ''%s'';\n', metaData.links.id_fishbase);
 end
-if isfield(metaData.links, 'id_amphweb')
+if isfield(metaData.links, 'id_amphweb') && ~isempty(metaData.links.id_amphweb)
   fprintf(fid, 'metaData.links.id_amphweb = ''%s'';\n', metaData.links.id_amphweb);
 end
-if isfield(metaData.links, 'id_ReptileDB')
+if isfield(metaData.links, 'id_ReptileDB') && ~isempty(metaData.links.id_ReptileDB)
   fprintf(fid, 'metaData.links.id_ReptileDB = ''%s'';\n', metaData.links.id_ReptileDB);
 end
-if isfield(metaData.links, 'id_avibase')
+if isfield(metaData.links, 'id_avibase') && ~isempty(metaData.links.id_avibase)
   fprintf(fid, 'metaData.links.id_avibase = ''%s'';\n', metaData.links.id_avibase);
 end
-if isfield(metaData.links, 'id_birdlife')
+if isfield(metaData.links, 'id_birdlife') && ~isempty(metaData.links.id_birdlife)
   fprintf(fid, 'metaData.links.id_birdlife = ''%s'';\n', metaData.links.id_birdlife);
 end
-if isfield(metaData.links, 'id_MSW3')
+if isfield(metaData.links, 'id_MSW3') && ~isempty(metaData.links.id_MSW3)
   fprintf(fid, 'metaData.links.id_MSW3 = ''%s''; %% Mammal Spec of the World\n', metaData.links.id_MSW3);
 end
-if isfield(metaData.links, 'id_AnAge')
+if isfield(metaData.links, 'id_AnAge') && ~isempty(metaData.links.id_AnAge)
   fprintf(fid, 'metaData.links.id_AnAge = ''%s''; %% Anim. Aging\n', metaData.links.id_AnAge);
 end
 fprintf(fid, '\n');
@@ -312,18 +320,21 @@ fclose(fid);
 end
 
 function str = cell2str(cell)
-if isstr(cell)
-  str = ['''', cell, '''']; return
-end
-n = length(cell);
-if n == 1
-  str = ['''', cell{1}, '''']; return
-end
-str = '{';
-for i=1:n
-  str = [str,'''',cell{i}, ''','];
-end
-str(end) = '}';
+  if isempty(cell)
+    str = '{}'; return
+  elseif ischar(cell)
+    str = ['''', cell, '''']; return
+  end
+  n = length(cell);
+  if n == 1
+    str = ['''', cell{1}, '''']; return
+  else
+    str = '{';
+    for i=1:n
+      str = [str,'''',cell{i}, ''','];
+    end
+    str(end) = '}';
+  end
 end
 
 function str = vec2str(vec)

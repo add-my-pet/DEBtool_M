@@ -50,9 +50,24 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
 
 else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
   close all
-  %path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
-  fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
+  % check for essential fields
+  if isempty(metaData.species)
+    fprintf('Warning from AmPeps: please enter species name\n');
+    AmPgui('species')
+  end
+  %
+  if isempty(data.data_0)
+    fprintf('Warning from AmPeps: please enter at least one 0-variate data point\n');
+    AmPgui('data_0')
+  end
+  
+  % no return from here: write mydata and run files
+  if ~isempty(data.data_1)
+    fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
+  else
+    fld_data_1 = {};
+  end
   [data, metaData] = AmPgui2mydata(data, metaData); % modify data and metaData to mydata format
   prt_mydata(data, auxData, metaData, txtData); % write mydata_my_pet.m file
   prt_run_my_pet(metaData.species); % write run_my_pet.m file
@@ -82,7 +97,7 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
   i_Clade = i_Clade(end); % index of "best" clade species
   load(resultsFn{i_Clade}); 
   fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
-  delete *.mat; % delete the results files of the related species
+  %delete *.mat; % delete the results files of the related species
   
   data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
   auxParFld = prt_predict(par, metaPar, data, auxData, metaData); % write prefict file for model type taken from metaPar
@@ -124,6 +139,7 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     txtPar.label.(nm) = ['scaled functional response for ',fld_data_1{i}, ' data'];
   end
 
+  % overwrite results_my_pet.mat in a way that it can no longer be used as substrate for AmPgui
   save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'par', 'metaPar', 'txtPar');
   pets = {metaData.species}; mat2pars_init; % this uses results_my_pet.mat to overwrite pars_init_my_pet.m
 

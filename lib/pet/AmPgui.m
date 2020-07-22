@@ -37,6 +37,7 @@ function AmPgui(action)
 %   - black: editing facultative
 % 
 % Notice that font colors only represent internal consistency, irrespective of content.
+% txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey
 
 global data auxData metaData txtData select_id id_links eco_types color 
 global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0  hCOMPLETE  HCOMPLETE    
@@ -63,73 +64,61 @@ if ~isfield(auxData, 'temp')
 end
 if ~isfield(txtData, 'units')
   txtData.units = []; txtData.label = [];
+  txtData.units.temp = []; txtData.label.temp = [];
 end
 if ~isfield(txtData, 'bibkey')
   txtData.bibkey = [];
 end
 
 if ~isfield(metaData, 'species') 
-  metaData.species = [];
+  metaData.species = '';
 end   
 if ~isfield(metaData, 'species_en') 
-  metaData.species_en = [];
+  metaData.species_en = '';
 end  
 if ~isfield(metaData, 'family') 
-  metaData.family = [];
+  metaData.family = '';
 end   
 if ~isfield(metaData, 'order') 
-  metaData.order = [];
+  metaData.order = '';
 end  
 if ~isfield(metaData, 'class') 
-  metaData.class = [];
+  metaData.class = '';
 end  
 if ~isfield(metaData, 'phylum') 
-  metaData.phylum = [];
+  metaData.phylum = '';
 end  
+ecoCode = {'climate', 'ecozone', 'habitat', 'embryo', 'migrate', 'food', 'gender', 'reprod'};
 if ~isfield(metaData, 'ecoCode')
   metaData.ecoCode = [];
-end
-if ~isfield(metaData.ecoCode, 'climate')
-  metaData.ecoCode.climate = [];
-end
-if ~isfield(metaData.ecoCode, 'ecozone')
-   metaData.ecoCode.ecozone = [];
-end
-if ~isfield(metaData.ecoCode, 'habitat')
-   metaData.ecoCode.habitat = [];
-end
-if ~isfield(metaData.ecoCode, 'embryo')
-  metaData.ecoCode.embryo = [];
-end
-if ~isfield(metaData.ecoCode, 'migrate')
-  metaData.ecoCode.migrate = [];
-end
-if ~isfield(metaData.ecoCode, 'food')
-  metaData.ecoCode.food = [];
-end
-if ~isfield(metaData.ecoCode, 'gender')
-  metaData.ecoCode.gender = [];
-end
-if ~isfield(metaData.ecoCode, 'reprod')
-  metaData.ecoCode.reprod = [];
+  n = length(ecoCode);
+  for i=1:n
+    metaData.ecoCode.(ecoCode{i}) = [];
+  end
 end
 if ~isfield(metaData, 'T_typical')
   metaData.T_typical = [];
 end
 if ~isfield(metaData, 'data_0')
-  metaData.data_0 = [];
+  metaData.data_0 = {};
 end
 if ~isfield(metaData, 'data_1')
-  metaData.data_1 = [];
+  metaData.data_1 = {};
 end
 if ~isfield(metaData, 'bibkey')
   metaData.bibkey = [];
 end
 if ~isfield(metaData, 'comment') 
-  metaData.comment = [];
+  metaData.comment = '';
 end
+id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
+  'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
 if ~isfield(metaData, 'links') 
   metaData.links = [];
+  n = length(id_links);
+  for i=1:n
+    metaData.links.(id_links{i}) = '';
+  end
 end
 if ~isfield(metaData, 'author')
   metaData.author = [];
@@ -192,7 +181,7 @@ end
   hdata_0   = uicontrol('Parent',dmydata, 'Callback','AmPgui data_0',         'Position',[130 135 100 20], 'String','0-var data',     'Style','pushbutton');
               uicontrol('Parent',dmydata, 'Callback','AmPgui data_1',         'Position',[130 110 100 20], 'String','1-var data',     'Style','pushbutton');
   
- hCOMPLETE =  uicontrol('Parent',dmydata, 'Callback','AmPgui COMPLETE',       'Position',[130  65 100 20], 'String','COMPLETE',       'Style','pushbutton');
+  hCOMPLETE = uicontrol('Parent',dmydata, 'Callback','AmPgui COMPLETE',       'Position',[130  65 100 20], 'String','COMPLETE',       'Style','pushbutton');
               uicontrol('Parent',dmydata, 'Callback','AmPgui resume',         'Position',[130  40 100 20], 'String','resume',         'Style','pushbutton');
               uicontrol('Parent',dmydata, 'Callback','AmPgui pause',          'Position',[130  15 100 20], 'String','pause/save',     'Style','pushbutton');
         
@@ -371,6 +360,7 @@ else % perform action
       case 'links'
         dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
         links = {...
+          % general links
           'http://www.catalogueoflife.org/col/'; ...
           'http://eol.org/'; ...
           'http://en.wikipedia.org/wiki/'; ...
@@ -385,11 +375,7 @@ else % perform action
           'https://avibase.bsc-eoc.org/'; ...
           'http://datazone.birdlife.org/'; ...
           'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
-          'http://genomics.senescence.info/'};
-      
-        id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
-         'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
-             
+          'http://genomics.senescence.info/'};             
       
         select_id(1:6) = true;
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
@@ -565,7 +551,6 @@ else % perform action
           H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
         end
       end
-      metaData.data_0 = fields(data.data_0);
 
     case 'data_1' 
 
@@ -627,8 +612,6 @@ else % perform action
         end
       end
             
-      metaData.data_1 = fields(data.data_1);
-
     case 'COMPLETE'
         
         c   = 'COMPLETE levels for data: Each level includes previous levels (from LikaKear2011)';
@@ -668,7 +651,8 @@ else % perform action
       end
       list = list(Contains(list,'results_'));
       if length(list) == 1
-        load(list);
+        load(list{1});
+        AmPgui('color')
       elseif isempty(list)
         fprintf('Warning from AmPgui: no results_my_pet.mat found\n');
       else
@@ -685,8 +669,6 @@ else % perform action
       list = list(Contains(list,'results_'));
       if length(list) > 1
         fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
-      elseif length(list) == 1 && strcmp(list{1}, nm)
-        fprintf(['Warning from AmPgui: file ', list{1}, ' found; this will give problems when resuming\n']);
       end
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
@@ -916,7 +898,7 @@ function migrateCb(~, ~, Hmigrate)
     i_migrate = 1:n_migrate;
     i_migrate = i_migrate(i_migrate(ismember(migrateCode,metaData.ecoCode.migrate)));
   end
-  i_migrate =  listdlg('ListString',migrateCodeList, 'Name','migrate dlg', 'ListSize',[550 140], 'InitialValue',i_migrate);
+  i_migrate =  listdlg('ListString',migrateCodeList, 'Name','migrate dlg', 'ListSize',[600 180], 'InitialValue',i_migrate);
   metaData.ecoCode.migrate = migrateCode(i_migrate); 
   set(Hmigrate, 'String', cell2str(metaData.ecoCode.migrate)); 
   AmPgui('setColor')
@@ -935,7 +917,7 @@ function foodCb(~, ~, Hfood)
     i_food = 1:n_food;
     i_food = i_food(i_food(ismember(foodCode,metaData.ecoCode.food)));
   end
-  i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[450 500], 'InitialValue',i_food);
+  i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[600 500], 'InitialValue',i_food);
   foodCode = prependStage(foodCode(i_food));
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
@@ -955,7 +937,7 @@ function genderCb(~, ~, Hgender)
     i_gender = 1:n_gender;
     i_gender = i_gender(i_gender(ismember(genderCode,metaData.ecoCode.gender)));
   end
-  i_gender =  listdlg('ListString',genderCodeList, 'Name','gender dlg', 'ListSize',[450 190], 'InitialValue',i_gender);
+  i_gender =  listdlg('ListString',genderCodeList, 'Name','gender dlg', 'ListSize',[600 190], 'InitialValue',i_gender);
   metaData.ecoCode.gender = genderCode(i_gender); 
   set(Hgender, 'String', cell2str(metaData.ecoCode.gender)); 
   AmPgui('setColor')
@@ -974,7 +956,7 @@ function reprodCb(~, ~, Hreprod)
     i_reprod = 1:n_reprod;
     i_reprod = i_reprod(i_reprod(ismember(reprodCode,metaData.ecoCode.reprod)));
   end
-  i_reprod =  listdlg('ListString',reprodCodeList, 'Name','reprod dlg', 'ListSize',[450 120], 'InitialValue',i_reprod);
+  i_reprod =  listdlg('ListString',reprodCodeList, 'Name','reprod dlg', 'ListSize',[600 120], 'InitialValue',i_reprod);
   metaData.ecoCode.reprod = reprodCode(i_reprod); 
   set(Hreprod, 'String', cell2str(metaData.ecoCode.reprod));
   AmPgui('setColor')
@@ -1117,6 +1099,7 @@ function add0Cb(~, ~, code0, ddata_0)
      if code0{i,3}
        auxData.temp.(code0{i,1}) = [];
      end
+     metaData.data_0 = [metaData.data_0 code0{i,1}];
    end
    delete(ddata_0);
    AmPgui('data_0');
@@ -1147,15 +1130,15 @@ function d0Cb(~, ~, i)
    data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
    if isfield(auxData.temp, fld{i})
      auxData.temp.(fld{i}) = C2K(str2double(get(H0T(i), 'string')));
-     txtData.units.temp = 'K';
-     txtData.label.temp = 'temperature';
+     txtData.units.temp.(fld{i}) = 'K';
+     txtData.label.temp.(fld{i}) = 'temperature';
    end
    txtData.bibkey.(fld{i}) = str2cell(get(H0b(i), 'string'));
-   txtData.comment.(fld{i}) = str2cell(get(H0c(i), 'string'));
+   txtData.comment.(fld{i}) = get(H0c(i), 'string');
 end
 
 function add1Cb(~, ~, code1, ddata_1)
-   global data txtData auxData
+   global data txtData auxData metaData
    n_code1 = size(code1,1); codeList1 = code1(:,1);
    for i = 1:n_code1
      codeList1{i} = [code1{i,1}, ': ', cell2str(code1{i,4})];
@@ -1176,6 +1159,7 @@ function add1Cb(~, ~, code1, ddata_1)
      if code1{i,3}
        auxData.temp.(code1{i,1}) = [];
      end
+     metaData.data_1 = [metaData.data_1 code1{i,1}];
    end 
    delete(ddata_1);
    AmPgui('data_1');
@@ -1210,8 +1194,10 @@ end
 
   
 function d1TCb(~, ~, fld, i)
-  global auxData H1T 
+  global auxData txtData H1T 
   auxData.temp.(fld) = C2K(str2double(get(H1T(i), 'string')));
+  txtData.units.temp.(fld) = 'K';
+  txtData.label.temp.(fld) = 'temperature';
 end  
 
 function d1bCb(~, ~, fld, i)
@@ -1278,7 +1264,9 @@ end
 
 function c = str2cell(str)
   if isempty(str)
-    c = []; return
+    c = {}; return
+  elseif iscell(str)
+    c = str; return
   end
   str = strsplit(str, ',');
   n = length(str); 
@@ -1297,12 +1285,13 @@ function code = prependStage(code)
   n = length(code);
   for i = 1:n
     fprintf(['Prepend stage for code ', code{i},'\n']);
-    i_stage =  listdlg('ListString',stageList, 'Name','stage dlg', 'SelectionMode','single', 'ListSize',[150 150], 'InitialValue',2);
+    i_stage =  listdlg('ListString',stageList, 'Name','stage dlg', 'SelectionMode','single', 'ListSize',[150 250], 'InitialValue',2);
     code{i} = [stageList{i_stage}, code{i}];
   end
 end
 
-function sel = Contains(nm,str)
+function sel = Contains(nm, str)
+  % this fuction is the same as Matlab built-in-function contains, but the R2016a version does not work with cell input
   n = length(nm); sel = true(n,1);
   for i=1:n
     sel(i) = ~isempty(strfind(nm{i}, str));
