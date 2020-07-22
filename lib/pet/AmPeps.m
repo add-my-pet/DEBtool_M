@@ -97,7 +97,7 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
   i_Clade = i_Clade(end); % index of "best" clade species
   load(resultsFn{i_Clade}); 
   fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
-  %delete *.mat; % delete the results files of the related species
+  delete *.mat; % delete the results files of the related species
   
   data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
   auxParFld = prt_predict(par, metaPar, data, auxData, metaData); % write prefict file for model type taken from metaPar
