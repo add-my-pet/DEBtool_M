@@ -40,8 +40,8 @@ function AmPgui(action)
 % txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
+persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE HCOMPLETE  
 global data auxData metaData txtData select_id id_links eco_types color 
-global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0  hCOMPLETE  HCOMPLETE    
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
@@ -397,14 +397,14 @@ else % perform action
         select_id(7:14) = false;
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
-          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_fishbase)
+          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_molluscabase)
             metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
           end
         end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
           select_id(8) = true;
           if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
-            metaData.links.id_molluscabase = [strrep(metaData.species,'_','-'), '? (replace)'];
+            metaData.links.id_fishbase = [strrep(metaData.species,'_','-'), '? (replace)'];
           end
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
@@ -1254,10 +1254,10 @@ function OKCb(~, ~, H)
   if iscell(H)
     n = length(H);
     for i = 1:n
-      delete(H{i});
+      close(H{i});
     end
   else
-    delete(H);
+    close(H);
   end
 end
 
@@ -1275,7 +1275,7 @@ switch type
         metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
       end
     end
-    delete(handle);
+    close(handle);
     AmPgui('facts');
     
   case 'discussion'
@@ -1289,12 +1289,12 @@ switch type
         metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
       end
     end
-    delete(handle);
+    close(handle);
     AmPgui('discussion');
     
   case 'biblist'
     metaData.biblist = rmfield(metaData.biblist, id); 
-    delete(handle);
+    close(handle);
     AmPgui('biblist');
 
   case 'data_0'
@@ -1306,7 +1306,7 @@ switch type
   case 'data_1'
     data.data_1 = rmfield(data.data_1, id); 
     txtData.bibkey = rmfield(txtData.bibkey, id); 
-    delete(handle);
+    close(handle);
     AmPgui('data_1');     
 end
 end

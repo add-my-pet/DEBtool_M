@@ -57,9 +57,60 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     AmPgui('species')
   end
   %
+  if isempty(metaData.T_typical)
+    fprintf('Warning from AmPeps: please specify typical body temperature\n');
+    AmPgui('T_typical')
+  end
+  %
+  if ~isempty(metaData.facts)
+    fld_F = fields(metaData.facts); n = length(fld_F);
+    for i= 1:n
+      if isempty(metaData.bibkey.(fld_F{i}))
+        fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
+        AmPgui('facts')
+      end
+    end
+  end
+  %
   if isempty(data.data_0)
     fprintf('Warning from AmPeps: please enter at least one 0-variate data point\n');
     AmPgui('data_0')
+  end
+  %
+  fld_0 = fields(data.data_0); n = length(fld_0);
+  for i= 1:n
+    if isempty(txtData.bibkey.(fld_0{i}))
+      fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
+      AmPgui('data_0')
+    end
+  end
+  %
+  fld_1 = {};
+  if ~isempty(data.data_1)
+    fld_1 = fields(data.data_1); n = length(fld_1);
+    for i= 1:n
+      if isempty(txtData.bibkey.(fld_1{i}))
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
+        AmPgui('data_1')
+      end
+    end
+  end
+  %
+  if isempty(metaData.biblist)
+    fprintf('Warning from AmPeps: empty biblist, please complete\n');
+    AmPgui('biblist')
+  else 
+    if isempty(metaData.bibkey)
+      fld = unique([fld_0; fld_1]);
+    else
+      fld = unique([fields(metaData.bibkey); fld_0; fld_1]);
+    end
+    fld = fld(ismember(fld, fields(metaData.biblist)));
+    if ~isempty(fld)
+      fprintf('Warning from AmPeps: the following bibkey were not found in the biblist\n');
+      fld
+    end 
+    AmPgui('biblist')
   end
   %
   if isempty(metaData.COMPLETE)
