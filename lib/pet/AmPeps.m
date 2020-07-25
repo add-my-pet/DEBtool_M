@@ -49,7 +49,6 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
        ['run_', metaData.species, '.m'])
 
 else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
-  close all
 
   % check for essential fields
   if isempty(metaData.species)
@@ -118,7 +117,9 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     AmPgui('COMPLETE')
   end
   
-  % no return from here: write mydata and run files, deleting mat-files
+  close all;   % no return from here: write mydata and run files, deleting mat-files
+
+  
   if ~isempty(data.data_1)
     fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
   else
