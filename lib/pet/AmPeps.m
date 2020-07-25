@@ -61,8 +61,13 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
     fprintf('Warning from AmPeps: please enter at least one 0-variate data point\n');
     AmPgui('data_0')
   end
+  %
+  if isempty(metaData.COMPLETE)
+    fprintf('Warning from AmPeps: please specify COMPLETE\n');
+    AmPgui('COMPLETE')
+  end
   
-  % no return from here: write mydata and run files
+  % no return from here: write mydata and run files, deleting mat-files
   if ~isempty(data.data_1)
     fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
   else

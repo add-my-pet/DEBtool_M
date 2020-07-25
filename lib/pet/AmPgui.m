@@ -37,7 +37,8 @@ function AmPgui(action)
 %   - black: editing facultative
 % 
 % Notice that font colors only represent internal consistency, irrespective of content.
-% txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey
+% txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
+% metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
 global data auxData metaData txtData select_id id_links eco_types color 
 global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0  hCOMPLETE  HCOMPLETE    
@@ -67,7 +68,7 @@ if ~isfield(txtData, 'units')
   txtData.units.temp = []; txtData.label.temp = [];
 end
 if ~isfield(txtData, 'bibkey')
-  txtData.bibkey = [];
+  txtData.bibkey = []; % for data
 end
 
 if ~isfield(metaData, 'species') 
@@ -106,7 +107,7 @@ if ~isfield(metaData, 'data_1')
   metaData.data_1 = {};
 end
 if ~isfield(metaData, 'bibkey')
-  metaData.bibkey = [];
+  metaData.bibkey = []; % for discussion, facts
 end
 if ~isfield(metaData, 'comment') 
   metaData.comment = '';
@@ -136,10 +137,10 @@ if ~isfield(metaData, 'COMPLETE')
   metaData.COMPLETE = [];
 end
 if ~isfield(metaData, 'discussion')
-  metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
+  metaData.discussion = []; 
 end
 if ~isfield(metaData, 'facts')
-  metaData.facts = []; metaData.facts.F1 = []; metaData.bibkey.F1 = [];
+  metaData.facts = []; 
 end
 if ~isfield(metaData, 'acknowledgment')
   metaData.acknowledgment = [];
@@ -317,7 +318,7 @@ else % perform action
         end
  
       case 'discussion'
-        ddiscussion = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
+        ddiscussion = dialog('Position',[150 150 1000 550], 'Name','discussion dlg');
         uicontrol('Parent',ddiscussion, 'Callback',{@OKCb,ddiscussion}, 'Position',[30 500 20 20], 'String','OK');
         uicontrol('Parent',ddiscussion, 'Callback',{@addDiscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
         uicontrol('Parent',ddiscussion, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
@@ -328,18 +329,16 @@ else % perform action
             hight = 475 - i * 25;
             uicontrol('Parent',ddiscussion, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
             HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
-            if ~isfield(metaData.bibkey, fld{i})
-              metaData.bibkey.(fld{i}) = [];
-            end
-            HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+            HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+            uicontrol('Parent',ddiscussion, 'Callback',{@deleteCb,'discussion',i,ddiscussion}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
         end
 
       case 'facts'
-        dfacts = dialog('Position',[150 150 950 550], 'Name','facts dlg');
+        dfacts = dialog('Position',[150 150 1000 550], 'Name','facts dlg');
         uicontrol('Parent',dfacts, 'Callback',{@OKCb,dfacts}, 'Position',[30 500 20 20], 'String','OK');
         HF = uicontrol('Parent',dfacts, 'Callback',{@addFactCb,dfacts}, 'Position',[110 500 150 20], 'String','add fact', 'Style','pushbutton');
-        uicontrol('Parent',dfacts, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
+        uicontrol('Parent',dfacts, 'Position',[760 500 146 20], 'String','bibkey', 'Style','text');
         
         if ~isempty(metaData.facts)
           fld = fields(metaData.facts); n = length(fld);
@@ -347,7 +346,8 @@ else % perform action
             hight = 475 - i * 25;
             uicontrol('Parent',dfacts, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
             HF(i)  = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
-            HFb(i) = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
+            HFb(i) = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i}));
+            uicontrol('Parent',dfacts, 'Callback',{@deleteCb,'facts',i,dfacts}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
         end
 
@@ -470,7 +470,7 @@ else % perform action
       bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      dbiblist = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
+      dbiblist = dialog('Position',[150 100 250 400], 'Name','biblist dlg');
       uicontrol('Parent',dbiblist, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',dbiblist, 'Position',[70 370 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
@@ -480,6 +480,7 @@ else % perform action
           hight = 350 - i * 25; 
           Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
           uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',dbiblist, 'Callback',{@deleteCb,'biblist',fld{i},dbiblist}, 'Position',[200, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end          
       end
         
@@ -520,7 +521,7 @@ else % perform action
           'Ri', '#/d', 1, 'ultimate reproduction rate';
           }; 
         
-      ddata_0 = dialog('Position',[150 35 1000 620], 'Name','0-variate data dlg');
+      ddata_0 = dialog('Position',[150 35 1050 620], 'Name','0-variate data dlg');
       uicontrol('Parent',ddata_0, 'Position',[ 60 580  50 20], 'Callback',{@OKCb,ddata_0}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_0, 'Position',[400 580 150 20], 'Callback',{@add0Cb,code0,ddata_0}, 'String','add 0-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_0, 'Position',[ 60 550  70 20], 'String','name', 'Style','text');
@@ -547,8 +548,9 @@ else % perform action
           H0b(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
           if ~isfield(txtData.comment, fld{i})
             txtData.comment.(fld{i}) = [];
-          end
+          end          
           H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
+          uicontrol('Parent',ddata_0, 'Callback',{@deleteCb,'data_0',fld{i},ddata_0}, 'Position',[1000, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
       end
 
@@ -593,7 +595,7 @@ else % perform action
 
           }; 
         
-      ddata_1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');
+      ddata_1 = dialog('Position',[150 35 520 400], 'Name','1-variate data dlg');
       uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
@@ -609,6 +611,7 @@ else % perform action
           uicontrol('Parent',ddata_1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
           uicontrol('Parent',ddata_1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',ddata_1, 'Callback',{@deleteCb,'data_1',fld{i},ddata_0}, 'Position',[480, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
       end
             
@@ -985,11 +988,16 @@ end
  end
 
  function addDiscussionCb(~, ~, ddiscussion)
-  global metaData 
-  n = 1 + length(fields(metaData.discussion)); nm = ['D', num2str(n)]; 
-  metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
-  delete(ddiscussion)
-  AmPgui('discussion')
+   global metaData 
+   if isfield(metaData.discussion, 'D1')
+     n = 1 + length(fields(metaData.discussion)); 
+   else
+     n = 1;
+   end
+   nm = ['D', num2str(n)]; 
+   metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
+   delete(ddiscussion)
+   AmPgui('discussion')
  end
   
  function discussionCb(~, ~, i)
@@ -1001,7 +1009,12 @@ end
  
  function addFactCb(~, ~, dfacts)
    global metaData 
-   n = 1 + length(fields(metaData.facts)); nm = ['F', num2str(n)]; 
+   if isfield(metaData.facts, 'F1')
+     n = 1 + length(fields(metaData.facts)); 
+   else
+     n = 1;
+   end
+   nm = ['F', num2str(n)]; 
    metaData.facts.(nm) = []; metaData.bibkey.(nm) = [];
    delete(dfacts)
    AmPgui('facts')
@@ -1060,12 +1073,14 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
   global metaData Dbb Hb
   bibkeyNew = get(Dbb(1), 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
-  fld = fields(bibTypeList);
-  i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
-  metaData.biblist.(bibkeyNew).type = fld{i_type};
-  fld = bibTypeList.(fld{i_type}); n_fld = length(fld);
-  for i=1:n_fld
-    metaData.biblist.(bibkeyNew).(fld{i}) = [];
+  if strcmp(bibkey, 'new')
+    fld = fields(bibTypeList);
+    i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
+    metaData.biblist.(bibkeyNew).type = fld{i_type};
+    fld = bibTypeList.(fld{i_type}); n_fld = length(fld);
+    for i=1:n_fld
+      metaData.biblist.(bibkeyNew).(fld{i}) = [];
+    end
   end
   set(Hb(i_bibkey), 'String', bibkeyNew);
   delete(Db);
@@ -1244,6 +1259,56 @@ function OKCb(~, ~, H)
   else
     delete(H);
   end
+end
+
+function deleteCb(~, ~, type, id, handle) 
+global data metaData txtData
+switch type
+  case 'facts'
+    fact = ['F', num2str(id)];
+    metaData.facts = rmfield(metaData.facts, fact); 
+    metaData.bibkey = rmfield(metaData.bibkey, fact);
+    if isfield(metaData.facts, ['F', num2str(id+1)])
+      n = length(fields(metaData.facts)) - id + 2;
+      for i = 1:n
+        metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
+        metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+      end
+    end
+    delete(handle);
+    AmPgui('facts');
+    
+  case 'discussion'
+    disc = ['D', num2str(id)];
+    metaData.discussion = rmfield(metaData.discussion, disc); 
+    metaData.bibkey = rmfield(metaData.bibkey, disc);
+    if isfield(metaData.discussion, ['D', num2str(id+1)])
+      n = length(fields(metaData.discussion)) - id + 2;
+      for i = 1:n
+        metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
+        metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+      end
+    end
+    delete(handle);
+    AmPgui('discussion');
+    
+  case 'biblist'
+    metaData.biblist = rmfield(metaData.biblist, id); 
+    delete(handle);
+    AmPgui('biblist');
+
+  case 'data_0'
+    data.data_0 = rmfield(data.data_0, id); 
+    txtData.bibkey = rmfield(txtData.bibkey, id); 
+    delete(handle);
+    AmPgui('data_0');
+      
+  case 'data_1'
+    data.data_1 = rmfield(data.data_1, id); 
+    txtData.bibkey = rmfield(txtData.bibkey, id); 
+    delete(handle);
+    AmPgui('data_1');     
+end
 end
 
 %% other support functions
