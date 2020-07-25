@@ -51,6 +51,16 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
 else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
 
   % check for essential fields
+  if isempty(metaData.author)
+    fprintf('Warning from AmPeps: please enter author name\n');
+    AmPgui('author')
+  end
+  %
+  if isempty(metaData.curator)
+    fprintf('Warning from AmPeps:select curator\n');
+    AmPgui('curator')
+  end
+  %
   if isempty(metaData.species)
     fprintf('Warning from AmPeps: please enter species name\n');
     AmPgui('species')
