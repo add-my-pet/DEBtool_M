@@ -6,7 +6,7 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   % created at 2016/11/24 by Bas Kooijman
   
   %% Syntax
-  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tp.m *get_tR*>(p, f, lb0)
+  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tR.m *get_tR*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age and length at 1st brood, puberty, fledging, birth.
@@ -15,7 +15,7 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   %
   % Input
   %
-  % * p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^x, v_H^p, tau_N 
+  % * p: 7-vector with parameters: g, k, l_T, v_H^b, v_H^x, v_H^p, tau_N 
   % * f: optional scalar with functional response (default f = 1)
   % * lb0: optional scalar with scaled length at birth
   %
@@ -23,7 +23,7 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   %
   % * tau_R: scaled with age at 1st brood \tau_R = a_R k_M
   % * tau_p: scaled with age at puberty \tau_p = a_p k_M
-  % * tau_x: scaled with age at birth \tau_x = a_x k_M
+  % * tau_x: scaled with age at fledge \tau_x = a_x k_M
   % * tau_b: scaled with age at birth \tau_b = a_b k_M
   % * lR: scaler length at 1st brood
   % * lp: scaler length at puberty
@@ -31,8 +31,11 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   % * lb: scaler length at birth
   % * info: indicator equals 1 if successful
   
+  %% Remarks
+  % Notice that scaled time between litters, tau_N = t_N * k_M, depends on temperature, so does lR
+
   %% Example of use
-  % get_tp([.5, .1, .1, .01, .2])
+  % get_tR([.5, .1, 0, .01, .02, .2, .6])
 
   %  unpack pars
   g   = p(1); % energy investment ratio

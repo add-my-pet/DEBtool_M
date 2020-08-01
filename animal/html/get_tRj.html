@@ -1,0 +1,170 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_tRj</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-07-30"><meta name="DC.source" content="get_tRj.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_tRj</h1><!--introduction--><p>Gets scaled age at 1st brood for abj model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2 id="3">Syntax</h2><p>[tR, tp, tj, tb, lR, lp, lj, lb, info] = <a href="../get_tRj.m"><b>get_tRj</b></a>(p, f)</p><h2 id="4">Description</h2><p>Obtains scaled age and length at 1st brood, puberty, metam, birth for abj model. Food density is assumed to be constant. Multiply the result with the somatic maintenance rate coefficient to arrive at ages.</p><p>Input</p><div><ul><li>p: 6-vector with parameters: g, k, v_H^b, v_H^j, v_H^p, tau_N</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_R: scaled with age at 1st brood \tau_R = a_R k_M</li><li>tau_p: scaled with age at puberty \tau_p = a_p k_M</li><li>tau_j: scaled with age at metam \tau_j = a_j k_M</li><li>tau_b: scaled with age at birth \tau_b = a_b k_M</li><li>lR: scaler length at 1st brood</li><li>lp: scaler length at puberty</li><li>lj: scaler length at metam</li><li>lb: scaler length at birth</li><li>info: indicator equals 1 if successful</li></ul></div><h2 id="5">Remarks</h2><p>Notice that scaled time between litters, tau_N = t_N * k_M, depends on temperature, so does lR</p><h2 id="6">Example of use</h2><p>get_tRj([.5, .1, .01, .02, .2, .6])</p><h2 id="8">subfunctions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_tRj
+% Gets scaled age at 1st brood for abj model
+
+%%
+function [tau_R, tau_p, tau_j, tau_b, lR, lp, lj, lb, info] = get_tRj(p, f)
+  % created at 2020/07/30 by Bas Kooijman
+  
+  %% Syntax
+  % [tR, tp, tj, tb, lR, lp, lj, lb, info] = <../get_tRj.m *get_tRj*>(p, f)
+  
+  %% Description
+  % Obtains scaled age and length at 1st brood, puberty, metam, birth for abj model.
+  % Food density is assumed to be constant.
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at ages. 
+  %
+  % Input
+  %
+  % * p: 6-vector with parameters: g, k, v_H^b, v_H^j, v_H^p, tau_N 
+  % * f: optional scalar with functional response (default f = 1)
+  %
+  % Output
+  %
+  % * tau_R: scaled with age at 1st brood \tau_R = a_R k_M
+  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
+  % * tau_j: scaled with age at metam \tau_j = a_j k_M
+  % * tau_b: scaled with age at birth \tau_b = a_b k_M
+  % * lR: scaler length at 1st brood
+  % * lp: scaler length at puberty
+  % * lj: scaler length at metam
+  % * lb: scaler length at birth
+  % * info: indicator equals 1 if successful
+  
+  %% Remarks
+  % Notice that scaled time between litters, tau_N = t_N * k_M, depends on temperature, so does lR
+  
+  %% Example of use
+  % get_tRj([.5, .1, .01, .02, .2, .6])
+
+  %  unpack pars
+  g   = p(1); % energy investment ratio
+  k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
+  vHb = p(3); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}
+  vHj = p(4); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = M_H^j/ {J_EAm} = E_H^j/ {p_Am}
+  vHp = p(5); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = M_H^p/ {J_EAm} = E_H^p/ {p_Am}
+  tN  = p(6); % tau_N = t_N * k_M, where t_N is time between clutches
+  
+  if ~exist('f', 'var') || isempty(f)
+    f = 1;
+  end
+
+  [tau_b, lb, info] = get_tb ([g, k, vHb] , f); 
+  if info == 0
+    tau_R = []; tau_p = []; tau_j = []; tau_b =[]; lR = []; lp = [];  lj = []; lb = []; return
+  end
+  options = odeset('Events', @event_jpR, 'RelTol', 1e-8, 'AbsTol', 1e-8); 
+  [tau, vHlR, tau_jpR, vHlR_jpR] = ode45(@dget_vHlR, [0; 1e20], [vHb; lb; 0], options, f, lb, g, k, vHj, vHp, tN);
+  if length(tau_jpR)<3
+    tau_R = []; tau_p = []; tau_j = []; tau_b =[]; lR = []; lp = []; lj = []; lb = []; info = 0; return
+  end
+
+  tau_j = tau_b + tau_jpR(1); tau_p = tau_b + tau_jpR(2); tau_R = tau_b + tau_jpR(3); 
+  lj = vHlR_jpR(1,2); lp = vHlR_jpR(2,2); lR = vHlR_jpR(3,2);
+  
+  if isreal(tau_b) == 0 || isreal(tau_j) == 0 || isreal(tau_p) == 0 || isreal(tau_R) == 0 % tb, tx, tp and tR must be real and positive
+    info = 0;
+  elseif tau_b < 0 || tau_j < 0 || tau_p < 0 || tau_R < 0 
+    info = 0;
+  end
+  
+end
+
+%% subfunctions
+
+function dvHlR = dget_vHlR (t, vHlR, f, lb, g, k, vHj, vHp, tN)
+  vH = vHlR(1); l = vHlR(2); R = vHlR(3);
+  if vH <= vHj
+    rho_j = (f/ lb - 1)/ (1 + f/ g);
+    dl = l * rho_j/ 3;  % d/d tau l
+    dvH = 3 * l^2 * dl + l^3 - k * vH; % d/d tau vH
+    dR = 0;
+  elseif vH <= vHp
+    dl = (g/ 3) * (f - l)/ (f + g);  % d/d tau l
+    dvH = 3 * l^2 * dl + l^3 - k * vH; % d/d tau vH
+    dR = 0;
+  else
+    dl = (g/ 3) * (f - l)/ (f + g);  % d/d tau l
+    dvH = 0;
+    dR = f * (1 + g/ l)/ (f + g) - k * vHp/ l^3;
+  end
+  dvHlR = [dvH; dl; dR]; % pack to output
+end
+
+function [value,isterminal,direction] = event_jpR(t, vHlR, f, lb, g, k, vHj, vHp, tN)
+  % vHlR: 3-vector with [vH; l; R]
+  value = [[vHj; vHp] - vHlR(1); vHlR(3) - tN * (1 - k * vHp/ f^3)];
+  isterminal = [0; 0; 1];
+  direction = [0; 0; 0]; 
+end
+##### SOURCE END #####
+--></body></html>
