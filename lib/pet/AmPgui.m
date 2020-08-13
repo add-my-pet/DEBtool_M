@@ -863,7 +863,7 @@ function habitatCb(~, ~, Hhabitat)
     i_habitat = i_habitat(i_habitat(ismember(habitatCode,metaData.ecoCode.habitat)));
   end
   i_habitat =  listdlg('ListString',habitatCodeList, 'Name','habitat dlg', 'ListSize',[400 500], 'InitialValue',i_habitat);
-  habitatCode = prependStage(habitatCode(i_habitat));
+  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList);
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
   AmPgui('setColor')
@@ -921,7 +921,7 @@ function foodCb(~, ~, Hfood)
     i_food = i_food(i_food(ismember(foodCode,metaData.ecoCode.food)));
   end
   i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[600 500], 'InitialValue',i_food);
-  foodCode = prependStage(foodCode(i_food));
+  foodCode = prependStage(i_food, foodCode, foodCodeList);
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
   AmPgui('setColor')
@@ -1345,13 +1345,14 @@ function c = str2cell(str)
   end
 end
 
-function code = prependStage(code)
+function stageCode = prependStage(ind, code, codeList)
   stageList = {'0b', '0j', '0x', '0p', '0i', 'bj', 'bx', 'bp', 'bi', 'jp', 'ji', 'xp', 'xi', 'pi'};
-  n = length(code);
+  stageCode = code(ind); n = length(ind); 
   for i = 1:n
-    fprintf(['Prepend stage for code ', code{i},'\n']);
-    i_stage =  listdlg('ListString',stageList, 'Name','stage dlg', 'SelectionMode','single', 'ListSize',[150 250], 'InitialValue',2);
-    code{i} = [stageList{i_stage}, code{i}];
+    fprintf(['Prepend stage for code ', code{ind(i)},'\n']);
+    name = ['stage code for ', codeList{ind(i)}];
+    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',2);
+    stageCode{i} = [stageList{i_stage}, code{ind(i)}];
   end
 end
 
