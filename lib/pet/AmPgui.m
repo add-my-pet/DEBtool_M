@@ -41,7 +41,7 @@ function AmPgui(action)
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
-global data auxData metaData txtData select_id id_links eco_types color 
+global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
@@ -49,6 +49,7 @@ global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
 set(0, 'DefaultUIControlFontSize', 9);
 %set(0, 'DefaultUIControlFontSize', UIControl_FontSize_bak);
+infoAmPgui = 0; % no wrting of source files by AmPeps
 
 if nargin == 0 % initiate structures and create the GUI
 
@@ -201,11 +202,11 @@ else % perform action
         dspecies = dialog('Position',[150 150 600 150], 'Name','species dlg');
         Warning = ''; Hwarning = uicontrol('Parent',dspecies, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
         WarningOK = ''; HwarningOK = uicontrol('Parent',dspecies, 'Position',[110 40 350 20], 'Style','text', 'String',WarningOK);
-        Hfamily  = uicontrol('Parent',dspecies, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
-        Horder  = uicontrol('Parent',dspecies, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
-        Hclass  = uicontrol('Parent',dspecies, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
-        Hphylum  = uicontrol('Parent',dspecies, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
-        Hcommon = uicontrol('Parent',dspecies, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
+        Hfamily  = uicontrol('Parent',dspecies, 'Position',[ 50 110 150 20], 'Style','text', 'String',['family: ',metaData.family]);
+        Horder   = uicontrol('Parent',dspecies, 'Position',[200 110 150 20], 'Style','text', 'String',['order: ', metaData.order]);
+        Hclass   = uicontrol('Parent',dspecies, 'Position',[350 110 150 20], 'Style','text', 'String',['class: ', metaData.class]);
+        Hphylum  = uicontrol('Parent',dspecies, 'Position',[ 50  80 150 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
+        Hcommon  = uicontrol('Parent',dspecies, 'Position',[200  80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
         Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
@@ -782,7 +783,7 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
   if isempty(id_CoL)
@@ -792,12 +793,14 @@ function speciesCb(~, ~, dspecies)
     set(Hwarning, 'String','species not recognized, search CoL');
     set(HwarningOK, 'String','OK proceeds to filling lineage manually');
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 0;
     AmPgui('setColors')
   elseif ismember(my_pet,select)
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     set(Hwarning, 'String', 'species is already in AmP');
     set(HwarningOK, 'String','OK proceeds to post-editing phase of AmPeps');
     hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 0;
     set(hleave, 'ForegroundColor', [1 0 0]); 
   else
     [lin, rank] = lineage_CoL(my_pet);
@@ -809,12 +812,13 @@ function speciesCb(~, ~, dspecies)
     nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 1;
     AmPgui('links')
   end
 end
 
 function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
   Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
@@ -829,7 +833,45 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
   set(Hwarning, 'String','lineage set manually, spelling not checked'); 
   set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
-  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  AmPgui('color')
+end
+
+function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
+  global metaData Hwarning HwarningOK infoAmPgui
+  set(Hwarning, 'String','checking lineage, see Matlab window'); 
+  set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
+  list_genus = list_taxa('',3); % all taxa from genus and beyond
+  genus = strsplit(metaData.species,'_'); genus = genus{1};
+  if ismember(genus, list_genus)
+    fprintf(['Warning from AmPgui: genus "', genus, '" is present in AmP\n'])
+    infoAmPgui = 2;
+    list_lin = lineage(metaData.family); 
+    list_order = list_taxa('',5); metaData.order = list_order(ismember(list_order,list_lin));
+    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
+    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
+  elseif ismember(metaData.family, list_genus)
+    fprintf(['Warning from AmPgui: family "', metaData.family, '" is present in AmP\n'])
+    infoAmPgui = 3;
+    list_lin = lineage(metaData.family); 
+    list_order = list_taxa('',5); metaData.order = list_order(ismember(list_order,list_lin));
+    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
+    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
+  elseif ismember(metaData.order, list_genus)
+    fprintf(['Warning from AmPgui: order "', metaData.order, '" is present in AmP\n'])
+    infoAmPgui = 4;
+    list_lin = lineage(metaData.order); 
+    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
+    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
+  elseif ismember(metaData.class, list)
+    fprintf(['Warning from AmPgui: class "', metaData.class, '" is present in AmP\n'])
+    infoAmPgui = 5;
+    list_lin = lineage(metaData.class); 
+    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
+  else % only the phylum is present in AmP
+    infoAmPgui = 6;
+  end
+  close(dspecies);
   AmPgui('color')
 end
 
@@ -850,7 +892,10 @@ end
 
 function phylumCb(~, ~)
  global metaData Hphylum
- metaData.phylum = get(Hphylum, 'string');
+ phyla = list_taxa('',7);
+ i_phylum =  listdlg('ListString',phyla, 'Name','phylum dlg', 'ListSize',[450 500], 'InitialValue',7);
+ metaData.phylum = phyla{i_phylum};
+ set(Hphylum, 'String', metaData.phylum);
 end
 
 function species_enCb(~, ~)
@@ -869,7 +914,6 @@ function climateCb(~, ~, Hclimate)
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); 
     i_climate = i_climate(sel_climate);
   end
-  i_climate
   i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);  
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
@@ -1286,14 +1330,16 @@ function stayCb(~, ~, H)
   OKCb([], [], H);
 end
 
-function proceedCb(~, ~, H) 
+function proceedCb(~, ~, H)
+  global infoAmPgui
   OKCb([], [], H);
-  AmPeps(true);
+  AmPeps(infoAmPgui);
 end
 
-function leaveCb(~, ~, H) 
+function leaveCb(~, ~, H)
+  global infoAmPgui
   OKCb([], [], H);
-  AmPeps(false);
+  AmPeps(infoAmPgui);
 end
 
 function quitCb(~, ~, H) 

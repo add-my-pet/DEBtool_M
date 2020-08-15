@@ -16,6 +16,13 @@ function AmPeps(infoAmPgui)
 % Input:
 %
 % * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
+% 
+%   - 0, skip writing 4 source files
+%   - 1, writing 4 source files with species in CoL
+%   - 2, writing 4 source files with species not in CoL, but genus is
+%   - 3, writing 4 source files with genus not in CoL, but family is
+%   - 4, writing 4 source files with family not in CoL, but order is
+%   - 5, writing 4 source files with order not in CoL, but class is
 
 global data metaData txtData auxData pets hclimateLand hecozones
 
@@ -28,7 +35,7 @@ if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg'));
   AmPgui
   
-elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source files in Matlab editor
+elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source files in Matlab editor
   close all
   path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
@@ -48,7 +55,7 @@ elseif ~infoAmPgui % skip the rest of AmPeps and proceed with opening source fil
        ['predict_', metaData.species, '.m'], ...
        ['run_', metaData.species, '.m'])
 
-else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species for AmP
+else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species for AmP
 
   % check for essential fields
   if isempty(metaData.author)
@@ -143,8 +150,21 @@ else % infoAmPgui=true:  proceed to writing 4 AmP source files for new species f
   model_def = get_model(metaData.phylum, metaData.class, metaData.order); % default model for this taxon
   % park data structures, because they will be overwritten by load(results_my_pet)
   data_my_pet = data; txtData_my_pet = txtData; auxData_my_pet = auxData; metaData_my_pet = metaData;
-  Clade = clade(metaData.species); % identify clade to which species belongs
-  Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
+  switch infoAmPgui
+    case 1 % species in CoL, not in AmP
+      Clade = clade(metaData.species); % identify clade to which species belongs
+      Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
+    case 2 % species not in CoL, genus in AmP
+      genus = strsplit(metaData.species,'_'); genus = genus{1};
+      Clade = select(genus);
+    case 3 % species not in CoL, genus not in AmP, family in AmP
+      Clade = select(metaData.family);
+    case 4 % species not in CoL, family not in AmP, order in AmP
+      Clade = select(metaData.order);
+    case 5 % species not in CoL, order not in AmP, class in AmP
+      Clade = select(metaData.order);
+    case 6 % species not in CoL, class not in AmP, phylum in AmP
+  end 
   n_Clade = length(Clade); criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
   path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
   for i = 1:n_Clade % scan clade members
