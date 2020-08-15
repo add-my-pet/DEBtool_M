@@ -153,9 +153,9 @@ if ~exist('color','var')
   color = []; % font colors for items in main AmPgui
 end
 if isempty(color)
-  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0]; color.author = [1 0 0];         color.curator = [1 0 0];
-  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];     color.acknowledgment = [0 0 0]; color.links = [1 0 0];
-  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.links = [0 0 0];     color.discussion = [0 0 0];     color.facts = [0 0 0]; color.COMPLETE = [1 0 0];
+  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
+  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
+  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
 end
 if isempty(eco_types)
   get_eco_types;
@@ -733,7 +733,7 @@ end
     color.acknowledgment = [0 .6 0]; set(hacknowledgment, 'ForegroundColor', color.acknowledgment);
   end
 
-  if exist('select_id','var')
+  if ~isempty(select_id)
     color.links = [0 .6 0]; set(hlinks, 'ForegroundColor', color.links)
   end
   
