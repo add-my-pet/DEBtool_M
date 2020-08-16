@@ -845,8 +845,8 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   uicontrol('Parent',dspecies, 'Position',[200 80 120 20], 'Style','text', 'String','common name: ');
   Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
   %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
-  set(Hwarning, 'String','lineage set manually'); 
-  set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
+  set(Hwarning, 'String',''); 
+  set(HwarningOK, 'String','OK proceeds to setting lineage manually');
   uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
   AmPgui('color')
 end
@@ -855,8 +855,8 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   persistent list_genus list_family list_order  list_class list_phylum
   global metaData Hwarning HwarningOK infoAmPgui 
   
-  set(Hwarning, 'String','checking lineage, please wait for closing dialog, see Matlab window'); 
-  set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
+  set(Hwarning, 'String','checking lineage, see Matlab window'); 
+  set(HwarningOK, 'String','please wait for closing dialog');
 
   if isempty(list_genus)
     list_genus  = list_taxa('',3); 
