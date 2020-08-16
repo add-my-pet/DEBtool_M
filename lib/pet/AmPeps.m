@@ -165,7 +165,8 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
       Clade = select(metaData.order);
     case 6 % species not in CoL, class not in AmP, phylum in AmP
   end 
-  n_Clade = length(Clade); criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
+  n_Clade = length(Clade); Clade = Clade(1:min(5,n_Clade)); n_Clade = length(Clade); % set max clade members at 5
+  criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
   path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
   for i = 1:n_Clade % scan clade members
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 

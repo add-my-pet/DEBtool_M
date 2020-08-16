@@ -40,7 +40,7 @@ function AmPgui(action)
 % txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
-persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
+persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
 global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
 global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
@@ -150,9 +150,6 @@ if ~isfield(metaData, 'biblist')
   metaData.biblist = [];
 end
 
-if ~exist('color','var')
-  color = []; % font colors for items in main AmPgui
-end
 if isempty(color)
   color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
   color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
@@ -162,6 +159,20 @@ if isempty(eco_types)
   get_eco_types;
 end
 
+% lists of taxon names in AmP
+
+if isempty(list_spec)
+  list_spec   = select; 
+end
+
+% if isempty(list_spec)
+%   list_spec   = list_taxa('',2); 
+%   list_genus  = list_taxa('',3); 
+%   list_family = list_taxa('',4); 
+%   list_order  = list_taxa('',5); 
+%   list_class  = list_taxa('',6); 
+%   list_phylum = list_taxa('',7); 
+% end
 
 %% setup gui
   dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
@@ -783,8 +794,18 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
+  if ismember(my_pet,list_spec) % species is already in AmP
+    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
+    set(Hwarning, 'String', 'species is already in AmP');
+    set(HwarningOK, 'String','OK proceeds to post-editing phase of AmPeps');
+    hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 0;
+    set(hleave, 'ForegroundColor', [1 0 0]); 
+    return
+  end
+
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
@@ -795,13 +816,6 @@ function speciesCb(~, ~, dspecies)
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 0;
     AmPgui('setColors')
-  elseif ismember(my_pet,select)
-    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
-    set(Hwarning, 'String', 'species is already in AmP');
-    set(HwarningOK, 'String','OK proceeds to post-editing phase of AmPeps');
-    hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
-    infoAmPgui = 0;
-    set(hleave, 'ForegroundColor', [1 0 0]); 
   else
     [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
@@ -831,43 +845,54 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   uicontrol('Parent',dspecies, 'Position',[200 80 120 20], 'Style','text', 'String','common name: ');
   Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
   %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
-  set(Hwarning, 'String','lineage set manually, spelling not checked'); 
+  set(Hwarning, 'String','lineage set manually'); 
   set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
   uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
   AmPgui('color')
 end
 
 function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
-  global metaData Hwarning HwarningOK infoAmPgui
-  set(Hwarning, 'String','checking lineage, see Matlab window'); 
+  persistent list_genus list_family list_order  list_class list_phylum
+  global metaData Hwarning HwarningOK infoAmPgui 
+  
+  set(Hwarning, 'String','checking lineage, please wait for closing dialog, see Matlab window'); 
   set(HwarningOK, 'String','OK proceeds to continuing AmPeps');
-  list_genus = list_taxa('',3); % all taxa from genus and beyond
+
+  if isempty(list_genus)
+    list_genus  = list_taxa('',3); 
+    list_family = list_taxa('',4); 
+    list_order  = list_taxa('',5); 
+    list_class  = list_taxa('',6); 
+    list_phylum = list_taxa('',7); 
+  end
+
   genus = strsplit(metaData.species,'_'); genus = genus{1};
   if ismember(genus, list_genus)
     fprintf(['Warning from AmPgui: genus "', genus, '" is present in AmP\n'])
     infoAmPgui = 2;
-    list_lin = lineage(metaData.family); 
-    list_order = list_taxa('',5); metaData.order = list_order(ismember(list_order,list_lin));
-    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
-    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
-  elseif ismember(metaData.family, list_genus)
+    list_lin = lineage(genus); 
+    metaData.family = cell2str(list_family(ismember(list_family,list_lin)));
+    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.family, list_family)
     fprintf(['Warning from AmPgui: family "', metaData.family, '" is present in AmP\n'])
     infoAmPgui = 3;
     list_lin = lineage(metaData.family); 
-    list_order = list_taxa('',5); metaData.order = list_order(ismember(list_order,list_lin));
-    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
-    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
-  elseif ismember(metaData.order, list_genus)
+    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.order, list_order)
     fprintf(['Warning from AmPgui: order "', metaData.order, '" is present in AmP\n'])
     infoAmPgui = 4;
     list_lin = lineage(metaData.order); 
-    list_class = list_taxa('',6); metaData.class = list_class(ismember(list_class,list_lin));
-    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
-  elseif ismember(metaData.class, list)
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.class, list_class)
     fprintf(['Warning from AmPgui: class "', metaData.class, '" is present in AmP\n'])
     infoAmPgui = 5;
     list_lin = lineage(metaData.class); 
-    list_phylum = list_taxa('',7); metaData.phylum = list_phylum(ismember(list_phylum,list_lin));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
   else % only the phylum is present in AmP
     infoAmPgui = 6;
   end
