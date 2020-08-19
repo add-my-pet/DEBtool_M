@@ -1,5 +1,5 @@
 %% AmPgui
-% a GUI to create 4 structures
+% a GUI to create 4 data-structures
 %%
 function AmPgui(action)
 % created 2020/06/05 by  Bas Kooijman, modified 2020/08/14
@@ -49,11 +49,14 @@ global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
 set(0, 'DefaultUIControlFontSize', 9);
 %set(0, 'DefaultUIControlFontSize', UIControl_FontSize_bak);
-infoAmPgui = 0; % no wrting of source files by AmPeps
 
 if nargin == 0 % initiate structures and create the GUI
 
 %% initiation
+
+if isempty(infoAmPgui)
+  infoAmPgui = 0; % no writing of source files by AmPeps
+end
 
 if ~isfield(data, 'data_0') 
   data.data_0 = [];
@@ -722,11 +725,16 @@ end
             
   fld_male_0 = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wwim', 'Wdpm', 'Wdim'};
   fld_male_1 = {'tL_m', 'tWw_m', 'tWd_m', 'LWw_m', 'LWd_m', 'LdL_m'};
-  if (~isempty(data.data_0) & ~ismember(fields(data.data_0),fld_male_0)) | ...
-     (~isempty(data.data_1) & ~ismember(fields(data.data_1),fld_male_1)) &  ~isfield(metaData, 'discussion')
-     color.discussion = [1 0 0]; 
+  if isempty(metaData.discussion)
+    if ~isempty(data.data_0) & ismember(fields(data.data_0),fld_male_0) 
+      color.discussion = [1 0 0];
+    elseif ~isempty(data.data_1) & ismember(fields(data.data_1),fld_male_1)
+     color.discussion = [1 0 0];
+    else
+      color.discussion = [0 0 0]; 
+    end
   else
-     color.discussion = [0 0 0]; 
+     color.discussion = [0 0.6 0]; 
   end
   set(hdiscussion, 'ForegroundColor', color.discussion);
 
@@ -868,7 +876,7 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
 
   genus = strsplit(metaData.species,'_'); genus = genus{1};
   if ismember(genus, list_genus)
-    fprintf(['Warning from AmPgui: genus "', genus, '" is present in AmP\n'])
+    fprintf(['Genus "', genus, '" is present in AmP\n'])
     infoAmPgui = 2;
     list_lin = lineage(genus); 
     metaData.family = cell2str(list_family(ismember(list_family,list_lin)));
@@ -876,25 +884,29 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
     metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
     metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
   elseif ismember(metaData.family, list_family)
-    fprintf(['Warning from AmPgui: family "', metaData.family, '" is present in AmP\n'])
+    fprintf(['Genus is not present in AmP, but family "', metaData.family, '" is\n'])
     infoAmPgui = 3;
     list_lin = lineage(metaData.family); 
     metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
     metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
     metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
   elseif ismember(metaData.order, list_order)
-    fprintf(['Warning from AmPgui: order "', metaData.order, '" is present in AmP\n'])
+    fprintf(['Family is not present in AmP, but order "', metaData.order, '" is\n'])
     infoAmPgui = 4;
     list_lin = lineage(metaData.order); 
     metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
     metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
   elseif ismember(metaData.class, list_class)
-    fprintf(['Warning from AmPgui: class "', metaData.class, '" is present in AmP\n'])
+    fprintf(['Order is not present in AmP, but class "', metaData.class, '" is\n'])
     infoAmPgui = 5;
     list_lin = lineage(metaData.class); 
     metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
-  else % only the phylum is present in AmP
+  elseif ismember(metaData.phylum, list_phylum)
+    fprintf(['Class is not present in AmP, but phylum "', metaData.phylum, '" is\n'])
     infoAmPgui = 6;
+  else
+    fprintf(['Phylum "', metaData.phylum, '" is not present in AmP!\n'])
+    infoAmPgui = 7;
   end
   close(dspecies);
   AmPgui('color')
@@ -917,10 +929,7 @@ end
 
 function phylumCb(~, ~)
  global metaData Hphylum
- phyla = list_taxa('',7);
- i_phylum =  listdlg('ListString',phyla, 'Name','phylum dlg', 'ListSize',[450 500], 'InitialValue',7);
- metaData.phylum = phyla{i_phylum};
- set(Hphylum, 'String', metaData.phylum);
+ metaData.phylum = get(Hphylum, 'string');
 end
 
 function species_enCb(~, ~)
@@ -1201,6 +1210,7 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
   set(Hb(i_bibkey), 'String', bibkeyNew);
   delete(Db);
   DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
+  AmPgui('set_color');
 end
 
 function bibitemCb(~, ~, bibkey, fld, i)

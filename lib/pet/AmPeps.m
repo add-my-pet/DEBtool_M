@@ -91,13 +91,13 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   if isempty(data.data_0)
     fprintf('Warning from AmPeps: please enter at least one 0-variate data point\n');
     AmPgui('data_0')
-  end
-  %
-  fld_0 = fields(data.data_0); n = length(fld_0);
-  for i= 1:n
-    if isempty(txtData.bibkey.(fld_0{i}))
-      fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
-      AmPgui('data_0')
+  else
+    fld_0 = fields(data.data_0); n = length(fld_0);
+    for i= 1:n
+      if isempty(txtData.bibkey.(fld_0{i}))
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
+        AmPgui('data_0')
+      end
     end
   end
   %
@@ -153,7 +153,6 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   switch infoAmPgui
     case 1 % species in CoL, not in AmP
       Clade = clade(metaData.species); % identify clade to which species belongs
-      Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
     case 2 % species not in CoL, genus in AmP
       genus = strsplit(metaData.species,'_'); genus = genus{1};
       Clade = select(genus);
@@ -164,7 +163,11 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     case 5 % species not in CoL, order not in AmP, class in AmP
       Clade = select(metaData.order);
     case 6 % species not in CoL, class not in AmP, phylum in AmP
+      Clade = select(metaData.class);
+    case 7 % species not in CoL, phylum not in AmP
+      Clade = select;        
   end 
+  Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
   n_Clade = length(Clade); Clade = Clade(1:min(5,n_Clade)); n_Clade = length(Clade); % set max clade members at 5
   criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
   path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
