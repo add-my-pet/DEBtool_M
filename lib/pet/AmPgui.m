@@ -470,7 +470,7 @@ else % perform action
           if i == 1
             Hlinks(1) = uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(ID_links{i})); 
           else
-            Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
+            Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links,i}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
           end
        end
         
@@ -1152,13 +1152,9 @@ end
    metaData.acknowledgment = get(HK, 'string');
  end
  
-function linksCb(~, ~, id_links)  
+function linksCb(~, ~, id_links,i)  
   global metaData Hlinks
-  fld = fields(metaData.links); n_links = length(fld);
-  for i = 2:n_links
-    metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
-  end
-  AmPgui('setColor')
+  metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
 end
 
 function addBibCb(~, ~, dbiblist)
