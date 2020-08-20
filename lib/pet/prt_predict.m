@@ -65,17 +65,17 @@ cPar = parscomp_st(par); vars_pull(par);
 v2struct(par); v2struct(cPar); v2struct(data); v2struct(auxData);
 
 % filters
-if exist('E_Hh','var')
-  fprintf(fid, 'if E_Hh < 0 || E_Hh > E_Hb\n');
-  fprintf(fid, '  prdData = []; info = 0; return\n');
-  fprintf(fid, 'end\n\n');
-end
+% if exist('E_Hh','var')
+%   fprintf(fid, 'if E_Hh < 0 || E_Hh > E_Hb\n');
+%   fprintf(fid, '  prdData = []; info = 0; return\n');
+%   fprintf(fid, 'end\n\n');
+% end
 %
-if exist('E_Hx','var') && ~strcmp(metaPar.model, 'stx')
-  fprintf(fid, 'if E_Hx < E_Hb || E_Hx > E_Hp\n');
-  fprintf(fid, '  prdData = []; info = 0; return\n');
-  fprintf(fid, 'end\n\n');
-end
+% if exist('E_Hx','var') && ~strcmp(metaPar.model, 'stx')
+%   fprintf(fid, 'if E_Hx < E_Hb || E_Hx > E_Hp\n');
+%   fprintf(fid, '  prdData = []; info = 0; return\n');
+%   fprintf(fid, 'end\n\n');
+% end
 
 % split zero- from uni-variate data
 fld = fieldnames(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel = false(n_fld,1);

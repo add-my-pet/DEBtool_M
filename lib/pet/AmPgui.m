@@ -1353,7 +1353,7 @@ end
 
 function COMPLETECb(~, ~)  
   global metaData HCOMPLETE
-  metaData.COMPLETE = get(HCOMPLETE, 'string');
+  metaData.COMPLETE = str2double(get(HCOMPLETE, 'string'));
   AmPgui('setColor')
 end
 
