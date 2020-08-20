@@ -15,7 +15,7 @@ function AmPeps(infoAmPgui)
 %
 % Input:
 %
-% * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
+% * infoAmPgui: optional boolean for skip writing (0) or writing (>0) 4 source files
 % 
 %   - 0, species is in AmP, skip writing 4 source files
 %   - 1, writing 4 source files with species in CoL
