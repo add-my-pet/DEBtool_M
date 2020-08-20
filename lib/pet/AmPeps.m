@@ -17,12 +17,14 @@ function AmPeps(infoAmPgui)
 %
 % * infoAmPgui: optional boolean for skip writing (0) or writing (1) 4 source files
 % 
-%   - 0, skip writing 4 source files
+%   - 0, species is in AmP, skip writing 4 source files
 %   - 1, writing 4 source files with species in CoL
-%   - 2, writing 4 source files with species not in CoL, but genus is
-%   - 3, writing 4 source files with genus not in CoL, but family is
-%   - 4, writing 4 source files with family not in CoL, but order is
-%   - 5, writing 4 source files with order not in CoL, but class is
+%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
+%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
 
 global data metaData txtData auxData pets hclimateLand hecozones
 
