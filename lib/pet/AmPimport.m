@@ -1,15 +1,16 @@
-%% import
+%% AmPimport
 % imports a mydata_my_pet.m file for editing in AmPeps
 
 %%
-function AmPimport(mydata_my_pet)
+function AmPimport(my_pet)
 % created 2020/06/19 by  Bas Kooijman
 
 %% Syntax
-% [<../AmPimport.m *AmPimport*> (mydata_my_pet) 
+% [<../AmPimport.m *AmPimport*> (my_pet) 
 
 %% Description
-% imports a mydata_my_pet.m file for editing in AmPeps, via AmPgui and writing of the 4 AmP sources files
+% imports a mydata_my_pet.m file for editing in AmPeps, via AmPgui and writing of the 4 AmP sources files.
+% if file mydata_my_pet.m is not available in the local directory, while my_pet is in AmP, the file will be copied from AmP. 
 %
 % Input:
 %
@@ -24,9 +25,29 @@ function AmPimport(mydata_my_pet)
 % Files will be saved in your local directory; 
 % use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 
+%% Example of use
+% 1) make new folder, with e.g. name "Cottus_gobio"
+% 2) cd in Matlab to this folder
+% 3) AmPimport('Cottus_gobio')
+
 global data metaData txtData auxData
 
-eval(['[data, auxData, metaData, txtData] = ', mydata_my_pet, ';']);
+% check if mydata_my_pet is present in local dir, else copy copy from AmP
+if ismac
+  list = strsplit(ls, ' ');
+else
+  list = cellstr(ls);
+end
+if isempty(list) | isempty(list(Contains(list,['mydata_', my_pet])))% not present in local dir
+  path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', my_pet, '/'];
+  if ismac
+    system(['curl ', path, 'mydata_', my_pet, '.m',  ' -O ', 'mydata_', my_pet, '.m']);
+  else
+    system(['powershell wget ', path, 'mydata_', my_pet, '.m',  ' -O ', 'mydata_', my_pet, '.m']);
+  end
+end
+      
+eval(['[data, auxData, metaData, txtData] = mydata_', my_pet, ';']);
 
 % convert to default notation
 if isfield(data,'Wb')
@@ -120,3 +141,12 @@ end
 [data, metaData] = mydata2AmPgui(data,metaData); % convert mydata standard to AmPgui standard
 
 AmPeps;
+end
+
+function sel = Contains(nm, str)
+  % this fuction is the same as Matlab built-in-function contains, but the R2016a version does not work with cell input
+  n = length(nm); sel = true(n,1);
+  for i=1:n
+    sel(i) = ~isempty(strfind(nm{i}, str));
+  end
+end

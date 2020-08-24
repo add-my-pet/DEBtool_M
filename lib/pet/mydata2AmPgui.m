@@ -39,7 +39,7 @@ bibkey = fieldnames(metaData.biblist); bibkey = bibkey(~ismember(bibkey, 'Kooy20
 for i = 1:n_bibkey
   bib = metaData.biblist.(bibkey{i}); biblist.(bibkey{i}) = [];
   bib(end) = []; i_head = strfind(bib, ','); head = bib(1:i_head(1)); 
-  i_type = strfind(head, '{'); type = head(3:i_type-1); biblist.(bibkey{i}).type = type;
+  i_type = strfind(head, '{'); type = head(3:i_type-1); biblist.(bibkey{i}).type = lower(type);
   i_fld = strfind(bib, '= {'); n_fld = length(i_fld); i_sep = strfind(bib, ',');
   if n_fld > 1
     for j = 1:n_fld

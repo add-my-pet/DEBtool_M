@@ -349,7 +349,10 @@ else % perform action
           for i = 1:n
             hight = 475 - i * 25;
             uicontrol('Parent',ddiscussion, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
-            HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
+            HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i}));
+            if ~isfield(metaData.bibkey, fld{i})
+              metaData.bibkey.(fld{i}) = [];
+            end
             HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
             uicontrol('Parent',ddiscussion, 'Callback',{@deleteCb,'discussion',i,ddiscussion}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
@@ -488,7 +491,7 @@ else % perform action
       bibTypeList.incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
       bibTypeList.mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
       bibTypeList.phdthesis =     {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
-      bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'series', 'volume', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
       dbiblist = dialog('Position',[150 100 250 400], 'Name','biblist dlg');
@@ -1024,11 +1027,12 @@ end
 
 function migrateCb(~, ~, Hmigrate)  
   global metaData eco_types 
-  migrateCode = fields(eco_types.migrate); n_migrate = length(migrateCode); 
+  migrateCode = fields(eco_types.migrate); n_migrate = length(migrateCode);
   migrateCodeList = migrateCode;
   for i=1:n_migrate
     migrateCodeList{i} = [migrateCodeList{i}, ': ', eco_types.migrate.(migrateCode{i})];
   end
+  migrateCode = [' '; migrateCode]; migrateCodeList = [' no migration/torpor'; migrateCodeList];
   if isempty(metaData.ecoCode.migrate)
     i_migrate = 1;
   else
