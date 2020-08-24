@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>AmPgui</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-07-22"><meta name="DC.source" content="AmPgui.m"><style type="text/css">
+      --><title>AmPgui</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-08-24"><meta name="DC.source" content="AmPgui.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,16 +66,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#7">initiation</a></li><li><a href="#8">setup gui</a></li><li><a href="#10">fill fields</a></li><li><a href="#13">callback functions</a></li><li><a href="#14">other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>Like mydata_my_pet.m, it writes 4 data-structures from scratch</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxilirary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><p>Input: no explicit input (facultative input is set by the function itself in multiple calls)</p><p>Output: no explicit output, but global exit-flag infoAmPgui is set with</p><div><ul><li>0 stay in AmPgui</li><li>1 stay in AmPeps</li><li>2 quit AmPeps, and proceed to load files in Matlab editor</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>Set metaData on global before use of this function.</li><li>Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function</li><li>Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</li><li>All weights are set at default values in the resulting file;</li><li>This function is called in AmPeps</li><li>Font colors in main AmPgui mean:</li></ul></div><pre class="language-matlab">- red: editing required
+  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 data-structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#7">initiation</a></li><li><a href="#8">setup gui</a></li><li><a href="#10">fill fields</a></li><li><a href="#13">callback functions</a></li><li><a href="#14">other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>Like mydata_my_pet.m, it writes 4 data-structures from scratch</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><p>Input: no explicit input (facultative input is set by the function itself in multiple calls)</p><p>Output: no explicit output, but global exit-flag infoAmPgui is set with</p><pre class="language-matlab">- 0, species <span class="string">is</span> <span class="string">in</span> <span class="string">AmP</span>, skip <span class="string">writing</span> <span class="string">4</span> <span class="string">source</span> <span class="string">files</span>
+- 1, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">in</span> <span class="string">CoL</span>
+- 2, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, but <span class="string">genus</span> <span class="string">is</span> <span class="string">in</span> <span class="string">AmP</span>
+- 3, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, genus <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>, but <span class="string">family</span> <span class="string">is</span>
+- 4, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, family <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>, but <span class="string">order</span> <span class="string">is</span>
+- 5, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, order <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>, but <span class="string">class</span> <span class="string">is</span>
+- 6, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, class <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>, but <span class="string">phylum</span> <span class="string">is</span>
+- 7, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, phylum <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>
+</pre><h2 id="5">Remarks</h2><div><ul><li>Set metaData on global before use of this function.</li><li>Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function</li><li>Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</li><li>All weights are set at default values in the resulting file;</li><li>This function is called in AmPeps</li><li>Font colors in main AmPgui mean:</li></ul></div><pre class="language-matlab">- red: editing required
 - green: editing not <span class="string">necessary</span>
 - black: editing facultative
-</pre><p>Notice that font colors only represent internal consistency, irrespective of content. txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey</p><h2 id="7">initiation</h2><h2 id="8">setup gui</h2><h2 id="10">fill fields</h2><h2 id="13">callback functions</h2><h2 id="14">other support functions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><p>Notice that font colors only represent internal consistency, irrespective of content. txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey. metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di</p><h2 id="7">initiation</h2><h2 id="8">setup gui</h2><h2 id="10">fill fields</h2><h2 id="13">callback functions</h2><h2 id="14">other support functions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% AmPgui
-% a GUI to create 4 structures
+% a GUI to create 4 data-structures
 %%
 function AmPgui(action)
-% created 2020/06/05 by  Bas Kooijman
+% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14
 
 %% Syntax
 % <../AmPgui.m *AmPgui*>
@@ -84,7 +92,7 @@ function AmPgui(action)
 % Like mydata_my_pet.m, it writes 4 data-structures from scratch
 %
 % * data: structure with data
-% * auxData: structure with auxilirary data 
+% * auxData: structure with auxiliary data 
 % * metaData: structure with metaData 
 % * txtData: structure with text for data 
 %
@@ -92,14 +100,19 @@ function AmPgui(action)
 %
 % Output: no explicit output, but global exit-flag infoAmPgui is set with
 %
-% * 0 stay in AmPgui
-% * 1 stay in AmPeps
-% * 2 quit AmPeps, and proceed to load files in Matlab editor
+%   - 0, species is in AmP, skip writing 4 source files
+%   - 1, writing 4 source files with species in CoL
+%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
+%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
 
 %% Remarks
 %
 % * Set metaData on global before use of this function.
-% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function 
+% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function 
 % * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % * All weights are set at default values in the resulting file; 
 % * This function is called in AmPeps
@@ -110,11 +123,12 @@ function AmPgui(action)
 %   - black: editing facultative
 % 
 % Notice that font colors only represent internal consistency, irrespective of content.
-% txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey
+% txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
+% metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
-global data auxData metaData txtData select_id id_links eco_types color 
-global dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0  hCOMPLETE  HCOMPLETE    
-global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning
+persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
+global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
+global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
@@ -125,6 +139,10 @@ set(0, 'DefaultUIControlFontSize', 9);
 if nargin == 0 % initiate structures and create the GUI
 
 %% initiation
+
+if isempty(infoAmPgui)
+  infoAmPgui = 0; % no writing of source files by AmPeps
+end
 
 if ~isfield(data, 'data_0') 
   data.data_0 = [];
@@ -140,7 +158,7 @@ if ~isfield(txtData, 'units')
   txtData.units.temp = []; txtData.label.temp = [];
 end
 if ~isfield(txtData, 'bibkey')
-  txtData.bibkey = [];
+  txtData.bibkey = []; % for data
 end
 
 if ~isfield(metaData, 'species') 
@@ -179,7 +197,7 @@ if ~isfield(metaData, 'data_1')
   metaData.data_1 = {};
 end
 if ~isfield(metaData, 'bibkey')
-  metaData.bibkey = [];
+  metaData.bibkey = []; % for discussion, facts
 end
 if ~isfield(metaData, 'comment') 
   metaData.comment = '';
@@ -209,10 +227,10 @@ if ~isfield(metaData, 'COMPLETE')
   metaData.COMPLETE = [];
 end
 if ~isfield(metaData, 'discussion')
-  metaData.discussion = []; metaData.discussion.D1 = []; metaData.bibkey.D1 = [];
+  metaData.discussion = []; 
 end
 if ~isfield(metaData, 'facts')
-  metaData.facts = []; metaData.facts.F1 = []; metaData.bibkey.F1 = [];
+  metaData.facts = []; 
 end
 if ~isfield(metaData, 'acknowledgment')
   metaData.acknowledgment = [];
@@ -221,18 +239,29 @@ if ~isfield(metaData, 'biblist')
   metaData.biblist = [];
 end
 
-if ~exist('color','var')
-  color = []; % font colors for items in main AmPgui
-end
 if isempty(color)
-  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0]; color.author = [1 0 0];         color.curator = [1 0 0];
-  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];     color.acknowledgment = [0 0 0]; color.links = [1 0 0];
-  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.links = [0 0 0];     color.discussion = [0 0 0];     color.facts = [0 0 0]; color.COMPLETE = [1 0 0];
+  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
+  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
+  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
 end
 if isempty(eco_types)
   get_eco_types;
 end
 
+% lists of taxon names in AmP
+
+if isempty(list_spec)
+  list_spec   = select; 
+end
+
+% if isempty(list_spec)
+%   list_spec   = list_taxa('',2); 
+%   list_genus  = list_taxa('',3); 
+%   list_family = list_taxa('',4); 
+%   list_order  = list_taxa('',5); 
+%   list_class  = list_taxa('',6); 
+%   list_phylum = list_taxa('',7); 
+% end
 
 %% setup gui
   dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
@@ -272,11 +301,12 @@ else % perform action
       case 'species'
         dspecies = dialog('Position',[150 150 600 150], 'Name','species dlg');
         Warning = ''; Hwarning = uicontrol('Parent',dspecies, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
-        Hfamily  = uicontrol('Parent',dspecies, 'Position',[50 110 140 20], 'Style','text', 'String',['family: ',metaData.family]);
-        Horder  = uicontrol('Parent',dspecies, 'Position',[200 110 140 20], 'Style','text', 'String',['order: ',metaData.order]);
-        Hclass  = uicontrol('Parent',dspecies, 'Position',[350 110 140 20], 'Style','text', 'String',['class: ',metaData.class]);
-        Hphylum  = uicontrol('Parent',dspecies, 'Position',[50 80 140 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
-        Hcommon = uicontrol('Parent',dspecies, 'Position',[200 80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
+        WarningOK = ''; HwarningOK = uicontrol('Parent',dspecies, 'Position',[110 40 350 20], 'Style','text', 'String',WarningOK);
+        Hfamily  = uicontrol('Parent',dspecies, 'Position',[ 50 110 150 20], 'Style','text', 'String',['family: ',metaData.family]);
+        Horder   = uicontrol('Parent',dspecies, 'Position',[200 110 150 20], 'Style','text', 'String',['order: ', metaData.order]);
+        Hclass   = uicontrol('Parent',dspecies, 'Position',[350 110 150 20], 'Style','text', 'String',['class: ', metaData.class]);
+        Hphylum  = uicontrol('Parent',dspecies, 'Position',[ 50  80 150 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
+        Hcommon  = uicontrol('Parent',dspecies, 'Position',[200  80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
         Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
          
       case 'ecoCode'
@@ -390,7 +420,7 @@ else % perform action
         end
  
       case 'discussion'
-        ddiscussion = dialog('Position',[150 150 950 550], 'Name','discussion dlg');
+        ddiscussion = dialog('Position',[150 150 1000 550], 'Name','discussion dlg');
         uicontrol('Parent',ddiscussion, 'Callback',{@OKCb,ddiscussion}, 'Position',[30 500 20 20], 'String','OK');
         uicontrol('Parent',ddiscussion, 'Callback',{@addDiscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
         uicontrol('Parent',ddiscussion, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
@@ -401,18 +431,16 @@ else % perform action
             hight = 475 - i * 25;
             uicontrol('Parent',ddiscussion, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
             HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
-            if ~isfield(metaData.bibkey, fld{i})
-              metaData.bibkey.(fld{i}) = [];
-            end
-            HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+            HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
+            uicontrol('Parent',ddiscussion, 'Callback',{@deleteCb,'discussion',i,ddiscussion}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
         end
 
       case 'facts'
-        dfacts = dialog('Position',[150 150 950 550], 'Name','facts dlg');
+        dfacts = dialog('Position',[150 150 1000 550], 'Name','facts dlg');
         uicontrol('Parent',dfacts, 'Callback',{@OKCb,dfacts}, 'Position',[30 500 20 20], 'String','OK');
         HF = uicontrol('Parent',dfacts, 'Callback',{@addFactCb,dfacts}, 'Position',[110 500 150 20], 'String','add fact', 'Style','pushbutton');
-        uicontrol('Parent',dfacts, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
+        uicontrol('Parent',dfacts, 'Position',[760 500 146 20], 'String','bibkey', 'Style','text');
         
         if ~isempty(metaData.facts)
           fld = fields(metaData.facts); n = length(fld);
@@ -420,7 +448,8 @@ else % perform action
             hight = 475 - i * 25;
             uicontrol('Parent',dfacts, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
             HF(i)  = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
-            HFb(i) = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[850, hight, 80, 20], 'Style','edit', 'String',metaData.facts.(fld{i})); 
+            HFb(i) = uicontrol('Parent',dfacts, 'Callback',{@factsCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i}));
+            uicontrol('Parent',dfacts, 'Callback',{@deleteCb,'facts',i,dfacts}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
         end
 
@@ -470,14 +499,14 @@ else % perform action
         select_id(7:14) = false;
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
-          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_fishbase)
+          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_molluscabase)
             metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
           end
         end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
           select_id(8) = true;
           if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
-            metaData.links.id_molluscabase = [strrep(metaData.species,'_','-'), '? (replace)'];
+            metaData.links.id_fishbase = [strrep(metaData.species,'_','-'), '? (replace)'];
           end
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
@@ -530,7 +559,7 @@ else % perform action
           if i == 1
             Hlinks(1) = uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(ID_links{i})); 
           else
-            Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
+            Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links,i}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
           end
        end
         
@@ -543,7 +572,7 @@ else % perform action
       bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      dbiblist = dialog('Position',[150 100 190 400], 'Name','biblist dlg');
+      dbiblist = dialog('Position',[150 100 250 400], 'Name','biblist dlg');
       uicontrol('Parent',dbiblist, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',dbiblist, 'Position',[70 370 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
@@ -553,6 +582,7 @@ else % perform action
           hight = 350 - i * 25; 
           Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
           uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',dbiblist, 'Callback',{@deleteCb,'biblist',fld{i},dbiblist}, 'Position',[200, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end          
       end
         
@@ -593,7 +623,7 @@ else % perform action
           'Ri', '#/d', 1, 'ultimate reproduction rate';
           }; 
         
-      ddata_0 = dialog('Position',[150 35 1000 620], 'Name','0-variate data dlg');
+      ddata_0 = dialog('Position',[150 35 1050 620], 'Name','0-variate data dlg');
       uicontrol('Parent',ddata_0, 'Position',[ 60 580  50 20], 'Callback',{@OKCb,ddata_0}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_0, 'Position',[400 580 150 20], 'Callback',{@add0Cb,code0,ddata_0}, 'String','add 0-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_0, 'Position',[ 60 550  70 20], 'String','name', 'Style','text');
@@ -620,8 +650,9 @@ else % perform action
           H0b(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
           if ~isfield(txtData.comment, fld{i})
             txtData.comment.(fld{i}) = [];
-          end
+          end          
           H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
+          uicontrol('Parent',ddata_0, 'Callback',{@deleteCb,'data_0',fld{i},ddata_0}, 'Position',[1000, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
       end
 
@@ -666,7 +697,7 @@ else % perform action
 
           }; 
         
-      ddata_1 = dialog('Position',[150 35 500 400], 'Name','1-variate data dlg');
+      ddata_1 = dialog('Position',[150 35 520 400], 'Name','1-variate data dlg');
       uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
@@ -682,6 +713,7 @@ else % perform action
           uicontrol('Parent',ddata_1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
           uicontrol('Parent',ddata_1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',ddata_1, 'Callback',{@deleteCb,'data_1',fld{i},ddata_0}, 'Position',[480, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
       end
             
@@ -754,7 +786,7 @@ else % perform action
 end
   % color settings: run this part only with AmPgui('setColor')
   
-  if ~isempty(metaData.species)
+  if ~any([isempty(metaData.species), isempty(metaData.family), isempty(metaData.order), isempty(metaData.class), isempty(metaData.phylum)])
     color.species = [0 .6 0]; set(hspecies, 'ForegroundColor', color.species);
   end
 
@@ -779,11 +811,16 @@ end
             
   fld_male_0 = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wwim', 'Wdpm', 'Wdim'};
   fld_male_1 = {'tL_m', 'tWw_m', 'tWd_m', 'LWw_m', 'LWd_m', 'LdL_m'};
-  if (~isempty(data.data_0) & ~ismember(fields(data.data_0),fld_male_0)) | ...
-     (~isempty(data.data_1) & ~ismember(fields(data.data_1),fld_male_1)) &  ~isfield(metaData, 'discussion')
-     color.discussion = [1 0 0]; 
+  if isempty(metaData.discussion)
+    if ~isempty(data.data_0) & ismember(fields(data.data_0),fld_male_0) 
+      color.discussion = [1 0 0];
+    elseif ~isempty(data.data_1) & ismember(fields(data.data_1),fld_male_1)
+     color.discussion = [1 0 0];
+    else
+      color.discussion = [0 0 0]; 
+    end
   else
-     color.discussion = [0 0 0]; 
+     color.discussion = [0 0.6 0]; 
   end
   set(hdiscussion, 'ForegroundColor', color.discussion);
 
@@ -802,7 +839,7 @@ end
     color.acknowledgment = [0 .6 0]; set(hacknowledgment, 'ForegroundColor', color.acknowledgment);
   end
 
-  if exist('select_id','var')
+  if ~isempty(select_id)
     color.links = [0 .6 0]; set(hlinks, 'ForegroundColor', color.links)
   end
   
@@ -851,23 +888,28 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning color dmydata
-   
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
+  if ismember(my_pet,list_spec) % species is already in AmP
+    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
+    set(Hwarning, 'String', 'species is already in AmP');
+    set(HwarningOK, 'String','OK proceeds to post-editing phase of AmPeps');
+    hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 0;
+    set(hleave, 'ForegroundColor', [1 0 0]); 
+    return
+  end
+
   [id_CoL, my_pet] = get_id_CoL(my_pet); 
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
-    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
+    set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
+    set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
     set(Hwarning, 'String','species not recognized, search CoL');
-    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    set(HwarningOK, 'String','OK proceeds to filling lineage manually');
+    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 0;
     AmPgui('setColors')
-  elseif ismember(my_pet,select)
-    set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
-    uicontrol('Parent',dspecies, 'Position',[110 95 350 20], 'Style','text', 'String','species is already in AmP');
-    uicontrol('Parent',dspecies, 'Position',[110 75 350 20], 'Style','text', 'String','OK proceeds to post-editing phase of AmPeps');
-    set(Hwarning, 'String', '');
-    hleave = uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@leaveCb,{dspecies,dmydata}}, 'Style','pushbutton', 'String','OK');
-    set(hleave, 'ForegroundColor', [1 0 0]); 
   else
     [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
@@ -878,49 +920,152 @@ function speciesCb(~, ~, dspecies)
     nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    infoAmPgui = 1;
     AmPgui('links')
   end
 end
 
+function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
+  uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
+  Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
+  uicontrol('Parent',dspecies, 'Position',[160 110 60 20], 'Style','text', 'String','order: ');
+  Horder  = uicontrol('Parent',dspecies, 'Callback',@orderCb, 'Position',[220 110 90 20], 'Style','edit', 'String',metaData.order);
+  uicontrol('Parent',dspecies, 'Position',[310 110 60 20], 'Style','text', 'String','class: ');
+  Hclass  = uicontrol('Parent',dspecies, 'Callback',@classCb, 'Position',[370 110 140 20], 'Style','edit', 'String',metaData.class);
+  uicontrol('Parent',dspecies, 'Position',[10 80 60 20], 'Style','text', 'String','phylum: ');
+  Hphylum  = uicontrol('Parent',dspecies, 'Callback',@phylumCb, 'Position',[80 80 90 20], 'Style','edit', 'String',metaData.phylum);
+  uicontrol('Parent',dspecies, 'Position',[200 80 120 20], 'Style','text', 'String','common name: ');
+  Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
+  %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
+  set(Hwarning, 'String',''); 
+  set(HwarningOK, 'String','OK proceeds to setting lineage manually');
+  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  AmPgui('color')
+end
+
+function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
+  persistent list_genus list_family list_order  list_class list_phylum
+  global metaData Hwarning HwarningOK infoAmPgui 
+  
+  set(Hwarning, 'String','checking lineage, see Matlab window'); 
+  set(HwarningOK, 'String','please wait for closing dialog');
+
+  if isempty(list_genus)
+    list_genus  = list_taxa('',3); 
+    list_family = list_taxa('',4); 
+    list_order  = list_taxa('',5); 
+    list_class  = list_taxa('',6); 
+    list_phylum = list_taxa('',7); 
+  end
+
+  genus = strsplit(metaData.species,'_'); genus = genus{1};
+  if ismember(genus, list_genus)
+    fprintf(['Genus "', genus, '" is present in AmP\n'])
+    infoAmPgui = 2;
+    list_lin = lineage(genus); 
+    metaData.family = cell2str(list_family(ismember(list_family,list_lin)));
+    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.family, list_family)
+    fprintf(['Genus is not present in AmP, but family "', metaData.family, '" is\n'])
+    infoAmPgui = 3;
+    list_lin = lineage(metaData.family); 
+    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.order, list_order)
+    fprintf(['Family is not present in AmP, but order "', metaData.order, '" is\n'])
+    infoAmPgui = 4;
+    list_lin = lineage(metaData.order); 
+    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.class, list_class)
+    fprintf(['Order is not present in AmP, but class "', metaData.class, '" is\n'])
+    infoAmPgui = 5;
+    list_lin = lineage(metaData.class); 
+    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+  elseif ismember(metaData.phylum, list_phylum)
+    fprintf(['Class is not present in AmP, but phylum "', metaData.phylum, '" is\n'])
+    infoAmPgui = 6;
+  else
+    fprintf(['Phylum "', metaData.phylum, '" is not present in AmP!\n'])
+    infoAmPgui = 7;
+  end
+  close(dspecies);
+  AmPgui('color')
+end
+
+function familyCb(~, ~)
+  global metaData Hfamily
+  metaData.family = get(Hfamily, 'string');
+end
+
+function orderCb(~, ~)
+ global metaData Horder
+ metaData.order = get(Horder, 'string');
+end
+
+function classCb(~, ~)
+ global metaData Hclass
+ metaData.class = get(Hclass, 'string');
+end
+
+function phylumCb(~, ~)
+ global metaData Hphylum
+ metaData.phylum = get(Hphylum, 'string');
+end
+
+function species_enCb(~, ~)
+ global metaData Hcommon
+ metaData.species_en = get(Hcommon, 'string');
+end
+ 
 function climateCb(~, ~, Hclimate)  
-  global metaData eco_types hclimateLand
-  set(hclimateLand,'Position',[250 20 1200 850])
-  climateCode = fields(eco_types.climate); n_climate = length(climateCode); i_climate = 1:n_climate;
+  global metaData eco_types hclimateLand 
+  set(hclimateLand,'Position',[250 20 1200 850]); % climate figure large size
+  climateCode = fields(eco_types.climate); n_climate = length(climateCode); 
   if isempty(metaData.ecoCode.climate)
     i_climate = 1;
   else
-    sel_climate = ismember(climateCode,metaData.ecoCode.climate); i_climate = i_climate(sel_climate);
+    i_climate = 1:n_climate;
+    sel_climate = ismember(climateCode,metaData.ecoCode.climate); 
+    i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);
-   
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);  
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
-  set(hclimateLand,'Position',[300 450 500 300])
+  set(hclimateLand,'Position',[300 450 500 300]); % climate figure normal size
   AmPgui('setColor')
 end
 
-function ecozoneCb(~, ~, Hecozone)  
-  global metaData eco_types hecozones
-  set(hecozones,'Position',[250 20 1200 850])
-  ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); i_ecozone = 1:n_ecozone;
+function ecozoneCb(~, ~, Hecozone)   
+  global metaData eco_types hecozones 
+  set(hecozones,'Position',[250 20 1200 850]); % ecozone figure large size
+  ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); 
   ecozoneCodeList = ecozoneCode;
    for i=1:n_ecozone
      ecozoneCodeList{i} = [ecozoneCodeList{i}, ': ', eco_types.ecozone.(ecozoneCode{i})];
    end
+   metaData.ecoCode.ecozone
    if isempty(metaData.ecoCode.ecozone)
      i_ecozone = 1;
    else
-     sel_ecozone = ismember(ecozoneCode,metaData.ecoCode.ecozone); i_ecozone = i_ecozone(sel_ecozone);
+     i_ecozone = 1:n_ecozone;
+     sel_ecozone = ismember(ecozoneCode,metaData.ecoCode.ecozone); 
+     i_ecozone = i_ecozone(sel_ecozone);
    end
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
-   set(hecozones,'Position',[300  50 500 300])
+   set(hecozones,'Position',[300  50 500 300]); % ecozone figure normal size
    AmPgui('setColor')
 end
  
 function habitatCb(~, ~, Hhabitat)  
-  global metaData eco_types
+  global metaData eco_types 
   habitatCode = fields(eco_types.habitat); n_habitat = length(habitatCode); 
   habitatCodeList = habitatCode;
   for i=1:n_habitat
@@ -933,14 +1078,14 @@ function habitatCb(~, ~, Hhabitat)
     i_habitat = i_habitat(i_habitat(ismember(habitatCode,metaData.ecoCode.habitat)));
   end
   i_habitat =  listdlg('ListString',habitatCodeList, 'Name','habitat dlg', 'ListSize',[400 500], 'InitialValue',i_habitat);
-  habitatCode = prependStage(habitatCode(i_habitat));
+  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList);
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
   AmPgui('setColor')
 end
 
 function embryoCb(~, ~, Hembryo)  
-  global metaData eco_types
+  global metaData eco_types 
   embryoCode = fields(eco_types.embryo); n_embryo = length(embryoCode); 
   embryoCodeList = embryoCode;
   for i=1:n_embryo
@@ -959,7 +1104,7 @@ function embryoCb(~, ~, Hembryo)
 end
 
 function migrateCb(~, ~, Hmigrate)  
-  global metaData eco_types
+  global metaData eco_types 
   migrateCode = fields(eco_types.migrate); n_migrate = length(migrateCode); 
   migrateCodeList = migrateCode;
   for i=1:n_migrate
@@ -978,7 +1123,7 @@ function migrateCb(~, ~, Hmigrate)
 end
 
 function foodCb(~, ~, Hfood)  
-  global metaData eco_types
+  global metaData eco_types 
   foodCode = fields(eco_types.food); n_food = length(foodCode); 
   foodCodeList = foodCode;
   for i=1:n_food
@@ -991,14 +1136,14 @@ function foodCb(~, ~, Hfood)
     i_food = i_food(i_food(ismember(foodCode,metaData.ecoCode.food)));
   end
   i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[600 500], 'InitialValue',i_food);
-  foodCode = prependStage(foodCode(i_food));
+  foodCode = prependStage(i_food, foodCode, foodCodeList);
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
   AmPgui('setColor')
 end
 
 function genderCb(~, ~, Hgender)  
-  global metaData eco_types
+  global metaData eco_types 
   genderCode = fields(eco_types.gender); n_gender = length(genderCode); 
   genderCodeList = genderCode;
   for i=1:n_gender
@@ -1017,7 +1162,7 @@ function genderCb(~, ~, Hgender)
 end
 
 function reprodCb(~, ~, Hreprod)  
-  global metaData eco_types
+  global metaData eco_types 
   reprodCode = fields(eco_types.reprod); n_reprod = length(reprodCode); 
   reprodCodeList = reprodCode;
   for i=1:n_reprod
@@ -1058,11 +1203,16 @@ end
  end
 
  function addDiscussionCb(~, ~, ddiscussion)
-  global metaData 
-  n = 1 + length(fields(metaData.discussion)); nm = ['D', num2str(n)]; 
-  metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
-  delete(ddiscussion)
-  AmPgui('discussion')
+   global metaData 
+   if isfield(metaData.discussion, 'D1')
+     n = 1 + length(fields(metaData.discussion)); 
+   else
+     n = 1;
+   end
+   nm = ['D', num2str(n)]; 
+   metaData.discussion.(nm) = []; metaData.bibkey.(nm) = [];
+   delete(ddiscussion)
+   AmPgui('discussion')
  end
   
  function discussionCb(~, ~, i)
@@ -1074,7 +1224,12 @@ end
  
  function addFactCb(~, ~, dfacts)
    global metaData 
-   n = 1 + length(fields(metaData.facts)); nm = ['F', num2str(n)]; 
+   if isfield(metaData.facts, 'F1')
+     n = 1 + length(fields(metaData.facts)); 
+   else
+     n = 1;
+   end
+   nm = ['F', num2str(n)]; 
    metaData.facts.(nm) = []; metaData.bibkey.(nm) = [];
    delete(dfacts)
    AmPgui('facts')
@@ -1092,13 +1247,9 @@ end
    metaData.acknowledgment = get(HK, 'string');
  end
  
-function linksCb(~, ~, id_links)  
+function linksCb(~, ~, id_links,i)  
   global metaData Hlinks
-  fld = fields(metaData.links); n_links = length(fld);
-  for i = 2:n_links
-    metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
-  end
-  AmPgui('setColor')
+  metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
 end
 
 function addBibCb(~, ~, dbiblist)
@@ -1133,16 +1284,19 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
   global metaData Dbb Hb
   bibkeyNew = get(Dbb(1), 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
-  fld = fields(bibTypeList);
-  i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
-  metaData.biblist.(bibkeyNew).type = fld{i_type};
-  fld = bibTypeList.(fld{i_type}); n_fld = length(fld);
-  for i=1:n_fld
-    metaData.biblist.(bibkeyNew).(fld{i}) = [];
+  if strcmp(bibkey, 'new')
+    fld = fields(bibTypeList);
+    i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
+    metaData.biblist.(bibkeyNew).type = fld{i_type};
+    fld = bibTypeList.(fld{i_type}); n_fld = length(fld);
+    for i=1:n_fld
+      metaData.biblist.(bibkeyNew).(fld{i}) = [];
+    end
   end
   set(Hb(i_bibkey), 'String', bibkeyNew);
   delete(Db);
   DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
+  AmPgui('set_color');
 end
 
 function bibitemCb(~, ~, bibkey, fld, i)
@@ -1285,7 +1439,7 @@ end
 
 function COMPLETECb(~, ~)  
   global metaData HCOMPLETE
-  metaData.COMPLETE = get(HCOMPLETE, 'string');
+  metaData.COMPLETE = str2double(get(HCOMPLETE, 'string'));
   AmPgui('setColor')
 end
 
@@ -1293,14 +1447,16 @@ function stayCb(~, ~, H)
   OKCb([], [], H);
 end
 
-function proceedCb(~, ~, H) 
+function proceedCb(~, ~, H)
+  global infoAmPgui
   OKCb([], [], H);
-  AmPeps(true);
+  AmPeps(infoAmPgui);
 end
 
-function leaveCb(~, ~, H) 
+function leaveCb(~, ~, H)
+  global infoAmPgui
   OKCb([], [], H);
-  AmPeps(false);
+  AmPeps(infoAmPgui);
 end
 
 function quitCb(~, ~, H) 
@@ -1312,11 +1468,61 @@ function OKCb(~, ~, H)
   if iscell(H)
     n = length(H);
     for i = 1:n
-      delete(H{i});
+      close(H{i});
     end
   else
-    delete(H);
+    close(H);
   end
+end
+
+function deleteCb(~, ~, type, id, handle) 
+global data metaData txtData
+switch type
+  case 'facts'
+    fact = ['F', num2str(id)];
+    metaData.facts = rmfield(metaData.facts, fact); 
+    metaData.bibkey = rmfield(metaData.bibkey, fact);
+    if isfield(metaData.facts, ['F', num2str(id+1)])
+      n = length(fields(metaData.facts)) - id + 2;
+      for i = 1:n
+        metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
+        metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+      end
+    end
+    close(handle);
+    AmPgui('facts');
+    
+  case 'discussion'
+    disc = ['D', num2str(id)];
+    metaData.discussion = rmfield(metaData.discussion, disc); 
+    metaData.bibkey = rmfield(metaData.bibkey, disc);
+    if isfield(metaData.discussion, ['D', num2str(id+1)])
+      n = length(fields(metaData.discussion)) - id + 2;
+      for i = 1:n
+        metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
+        metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+      end
+    end
+    close(handle);
+    AmPgui('discussion');
+    
+  case 'biblist'
+    metaData.biblist = rmfield(metaData.biblist, id); 
+    close(handle);
+    AmPgui('biblist');
+
+  case 'data_0'
+    data.data_0 = rmfield(data.data_0, id); 
+    txtData.bibkey = rmfield(txtData.bibkey, id); 
+    delete(handle);
+    AmPgui('data_0');
+      
+  case 'data_1'
+    data.data_1 = rmfield(data.data_1, id); 
+    txtData.bibkey = rmfield(txtData.bibkey, id); 
+    close(handle);
+    AmPgui('data_1');     
+end
 end
 
 %% other support functions
@@ -1353,13 +1559,14 @@ function c = str2cell(str)
   end
 end
 
-function code = prependStage(code)
+function stageCode = prependStage(ind, code, codeList)
   stageList = {'0b', '0j', '0x', '0p', '0i', 'bj', 'bx', 'bp', 'bi', 'jp', 'ji', 'xp', 'xi', 'pi'};
-  n = length(code);
+  stageCode = code(ind); n = length(ind); 
   for i = 1:n
-    fprintf(['Prepend stage for code ', code{i},'\n']);
-    i_stage =  listdlg('ListString',stageList, 'Name','stage dlg', 'SelectionMode','single', 'ListSize',[150 250], 'InitialValue',2);
-    code{i} = [stageList{i_stage}, code{i}];
+    fprintf(['Prepend stage for code ', code{ind(i)},'\n']);
+    name = ['stage code for ', codeList{ind(i)}];
+    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',2);
+    stageCode{i} = [stageList{i_stage}, code{ind(i)}];
   end
 end
 

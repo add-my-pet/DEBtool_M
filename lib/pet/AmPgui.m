@@ -11,7 +11,7 @@ function AmPgui(action)
 % Like mydata_my_pet.m, it writes 4 data-structures from scratch
 %
 % * data: structure with data
-% * auxData: structure with auxilirary data 
+% * auxData: structure with auxiliary data 
 % * metaData: structure with metaData 
 % * txtData: structure with text for data 
 %
@@ -19,14 +19,19 @@ function AmPgui(action)
 %
 % Output: no explicit output, but global exit-flag infoAmPgui is set with
 %
-% * 0 stay in AmPgui
-% * 1 stay in AmPeps
-% * 2 quit AmPeps, and proceed to load files in Matlab editor
+%   - 0, species is in AmP, skip writing 4 source files
+%   - 1, writing 4 source files with species in CoL
+%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
+%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
 
 %% Remarks
 %
 % * Set metaData on global before use of this function.
-% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written my this function 
+% * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function 
 % * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % * All weights are set at default values in the resulting file; 
 % * This function is called in AmPeps
