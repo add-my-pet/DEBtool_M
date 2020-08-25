@@ -273,7 +273,7 @@ end
 % males
 fld_m = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wdpm', 'Wwim', 'Wdim', 'tWw_m', 'tWd_m', 'tL_m', 'LdL_m'}; % fields for section males
 sel_m = ismember(fld0,fld_m);
-if any(sel_m)
+if any(sel_m) || any(ismember(fld1,fld_m))
   fprintf(fid, '%% males\n');
   fprintf(fid, '%s', cell2str(prdCode.(model).L_mm));
   fld_m = fld_m(ismember(fld_m,fld0)); n_fldm = length(fld_m);

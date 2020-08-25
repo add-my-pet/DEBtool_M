@@ -59,10 +59,6 @@ if nargin == 0 % initiate structures and create the GUI
 
 %% initiation
 
-if isempty(infoAmPgui)
-  infoAmPgui = 0; % no writing of source files by AmPeps
-end
-
 if ~isfield(data, 'data_0') 
   data.data_0 = [];
 end   
@@ -130,6 +126,12 @@ if ~isfield(metaData, 'links')
     metaData.links.(id_links{i}) = '';
   end
 end
+if isempty(metaData.species)
+  infoAmPgui = 0; % no writing of source files by AmPeps
+else
+  infoAmPgui = 1;
+end
+
 if ~isfield(metaData, 'author')
   metaData.author = [];
 end
@@ -830,7 +832,6 @@ function speciesCb(~, ~, dspecies)
     set(Hwarning, 'String','species not recognized, search CoL');
     set(HwarningOK, 'String','OK proceeds to filling lineage manually');
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
-    infoAmPgui = 0;
     AmPgui('setColors')
   else
     [lin, rank] = lineage_CoL(my_pet);
