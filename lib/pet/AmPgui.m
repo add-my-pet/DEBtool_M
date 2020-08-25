@@ -494,14 +494,14 @@ else % perform action
       bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'series', 'volume', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      dbiblist = dialog('Position',[150 100 250 400], 'Name','biblist dlg');
-      uicontrol('Parent',dbiblist, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',dbiblist, 'Position',[70 370 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
+      dbiblist = dialog('Position',[150 100 250 700], 'Name','biblist dlg');
+      uicontrol('Parent',dbiblist, 'Position',[ 10 670  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',dbiblist, 'Position',[70 670 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
       if ~isempty(metaData.biblist)
         fld = fields(metaData.biblist); n = length(fld);
         for i = 1:n
-          hight = 350 - i * 25; 
+          hight = 650 - i * 25; 
           Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
           uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
           uicontrol('Parent',dbiblist, 'Callback',{@deleteCb,'biblist',fld{i},dbiblist}, 'Position',[200, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
