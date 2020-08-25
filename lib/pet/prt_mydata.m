@@ -46,7 +46,7 @@ fprintf(fid, 'metaData.ecoCode.climate = %s;\n', cell2str(metaData.ecoCode.clima
 fprintf(fid, 'metaData.ecoCode.ecozone = %s;\n', cell2str(metaData.ecoCode.ecozone));
 fprintf(fid, 'metaData.ecoCode.habitat = %s;\n', cell2str(metaData.ecoCode.habitat));
 fprintf(fid, 'metaData.ecoCode.embryo  = %s;\n', cell2str(metaData.ecoCode.embryo));
-if isempty(metaData.ecoCode.migrate)
+if isempty(metaData.ecoCode.migrate) || strcmp(metaData.ecoCode.migrate{1}, ' ')
   fprintf(fid, 'metaData.ecoCode.migrate = {};\n');
 else
   fprintf(fid, 'metaData.ecoCode.migrate = %s;\n', cell2str(metaData.ecoCode.migrate));
