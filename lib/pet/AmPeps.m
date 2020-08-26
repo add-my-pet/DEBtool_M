@@ -42,10 +42,10 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
   path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
   if ismac
-    system(['curl ', path, 'mydata_', metaData.species, '.m',  ' -O ', 'mydata_', metaData.species, '.m']);
-    system(['curl ', path, 'pars_init_', metaData.species, '.m',  ' -O ', 'pars_init_', metaData.species, '.m']);
-    system(['curl ', path, 'predict_', metaData.species, '.m',  ' -O ', 'predict_', metaData.species, '.m']);
-    system(['curl ', path, 'run_', metaData.species, '.m',  ' -O ', 'run_', metaData.species, '.m']);
+    system(['curl ', path, 'mydata_', metaData.species, '.m',  ' -o ', 'mydata_', metaData.species, '.m']);
+    system(['curl ', path, 'pars_init_', metaData.species, '.m',  ' -o ', 'pars_init_', metaData.species, '.m']);
+    system(['curl ', path, 'predict_', metaData.species, '.m',  ' -o ', 'predict_', metaData.species, '.m']);
+    system(['curl ', path, 'run_', metaData.species, '.m',  ' -o ', 'run_', metaData.species, '.m']);
   else
     system(['powershell wget ', path, 'mydata_', metaData.species, '.m',  ' -O ', 'mydata_', metaData.species, '.m']);
     system(['powershell wget ', path, 'pars_init_', metaData.species, '.m',  ' -O ', 'pars_init_', metaData.species, '.m'])
@@ -176,7 +176,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   for i = 1:n_Clade % scan clade members
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 
     if ismac
-      system(['curl ', path, Clade{i}, '/', resultsFn{i},  ' -O ', resultsFn{i}]);
+      system(['curl ', path, Clade{i}, '/', resultsFn{i},  ' -o ', resultsFn{i}]);
     else
       system(['powershell wget ', path, Clade{i}, '/', resultsFn{i},  ' -O ', resultsFn{i}]);
     end
