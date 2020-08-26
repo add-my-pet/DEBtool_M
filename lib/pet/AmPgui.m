@@ -699,7 +699,7 @@ else % perform action
       if length(list) > 1
         fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
       end
-      biblist = metaData.biblist; % make a spare copy of biblist, in the case that something goes wring in AmPeps
+      biblist = metaData.biblist; % make a spare copy of biblist, in the case that something goes wrong in AmPeps
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types', 'biblist');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
