@@ -28,6 +28,16 @@ function AmPeps(infoAmPgui)
 
 global data metaData txtData auxData pets hclimateLand hecozones
 
+% check if wget exists on mac
+if ismac
+  status = system('which wget');
+  if ~(status == 0)
+    fprintf('Warning from AmPeps: system-function wget is not found, please install wget first and set a path to it \nl');
+    fprintf('See e.g.: https://www.fossmint.com/install-and-use-wget-on-mac/\nl');
+    return
+  end
+end
+
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
@@ -42,10 +52,10 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
   path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
   if ismac
-    system(['/usr/local/bin/wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
-    system(['/usr/local/bin/wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m']);
-    system(['/usr/local/bin/wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m']);
-    system(['/usr/local/bin/wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m']);
+    system(['wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
+    system(['wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m']);
+    system(['wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m']);
+    system(['wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m']);
   else
     system(['powershell wget -O mydata_', metaData.species, '.m', path, 'mydata_', metaData.species, '.m']);
     system(['powershell wget -O pars_init_', metaData.species, '.m', path, 'pars_init_', metaData.species, '.m'])
