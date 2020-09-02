@@ -31,7 +31,7 @@ global data metaData txtData auxData pets hclimateLand hecozones
 % check if wget exists on mac
 if ismac
   status = system('which wget');
-  if ~(status == 0)
+  if status == 0
     fprintf('Warning from AmPeps: system-function wget is not found, please install wget first and set a path to it \nl');
     fprintf('See e.g.: https://www.fossmint.com/install-and-use-wget-on-mac/\nl');
     return
