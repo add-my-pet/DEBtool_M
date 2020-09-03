@@ -30,9 +30,10 @@ global data metaData txtData auxData pets hclimateLand hecozones
 
 % check if wget exists on mac
 if ismac
+  PATH = getenv('PATH'); if isempty(strfind(PATH,':/usr/local/bin')); setenv('PATH', [PATH, ':/usr/local/bin']); end;
   status = system('which wget');
-  if status == 0
-    fprintf('Warning from AmPeps: system-function wget is not found, please install wget first and set a path to it \nl');
+  if ~(status == 0)
+    fprintf('Warning from AmPeps: system-function wget is not found, please install wget first\nl');
     fprintf('See e.g.: https://www.fossmint.com/install-and-use-wget-on-mac/\nl');
     return
   end
@@ -186,7 +187,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   for i = 1:n_Clade % scan clade members
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 
     if ismac
-      system(['/usr/local/bin/wget -O ', resultsFn{i}, path, Clade{i}, '/', resultsFn{i}]);
+      system(['wget -O ', resultsFn{i}, path, Clade{i}, '/', resultsFn{i}]);
     else
       system(['powershell wget -O ', resultsFn{i}, path, Clade{i}, '/', resultsFn{i}]);
     end
