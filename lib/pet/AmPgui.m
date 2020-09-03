@@ -621,21 +621,21 @@ else % perform action
 
           }; 
         
-      ddata_1 = dialog('Position',[150 35 520 400], 'Name','1-variate data dlg');
-      uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
-      uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
-      uicontrol('Parent',ddata_1, 'Position',[100 350  90 20], 'String','x-label', 'Style','text');
-      uicontrol('Parent',ddata_1, 'Position',[200 350  90 20], 'String','y-label', 'Style','text');
+      ddata_1 = dialog('Position',[150 35 520 800], 'Name','1-variate data dlg');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 780  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',ddata_1, 'Position',[150 780 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 750  60 20], 'String','name', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[100 750  90 20], 'String','x-label', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[200 750  90 20], 'String','y-label', 'Style','text');
 
       if ~isempty(data.data_1)
         fld = fields(data.data_1); n = size(fld);
         for i = 1:n
-          hight = 350 - i * 25; 
+          hight = 750 - i * 25; 
           uicontrol('Parent',ddata_1,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
           label = txtData.label.(fld{i}); 
-          uicontrol('Parent',ddata_1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
-          uicontrol('Parent',ddata_1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
+          uicontrol('Parent',ddata_1,  'Position',[100, hight, 100, 20], 'Style','text', 'String',label{1}); % x-label
+          uicontrol('Parent',ddata_1,  'Position',[200, hight, 100, 20], 'Style','text', 'String',label{2}); % y-label
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
           uicontrol('Parent',ddata_1, 'Callback',{@deleteCb,'data_1',fld{i},ddata_0}, 'Position',[480, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
