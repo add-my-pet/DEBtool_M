@@ -441,7 +441,7 @@ else % perform action
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
           select_id(10) = true;
-          nm = strsplit(metaData.species);
+          nm = strsplit(metaData.species,'_');
           if isfield(metaData.links, 'id_ReptileDB') && isempty(metaData.links.id_ReptileDB)
             metaData.links.id_ReptileDB = ['genus=',nm{1}, '&species=', nm{2}, '? (replace)'];
           end
