@@ -50,7 +50,7 @@ if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   
 elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source files in Matlab editor
   close all
-  path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
+  path = [' https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', metaData.species, '/'];
 
   if ismac
     system(['wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
@@ -183,7 +183,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself 
   n_Clade = length(Clade); Clade = Clade(1:min(5,n_Clade)); n_Clade = length(Clade); % set max clade members at 5
   criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
-  path = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
+  path = ' https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/'; % path for results_my_pet.mat files
   for i = 1:n_Clade % scan clade members
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 
     if ismac
