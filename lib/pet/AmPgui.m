@@ -678,12 +678,14 @@ else % perform action
       else
         list = cellstr(ls);
       end
-      list = list(Contains(list,'results_'));
-      if length(list) == 1
+      list = list(Contains(list,'results_')); n_list = length(list);
+      if n_list == 1
         load(list{1});
         AmPgui('color')
-      elseif isempty(list)
+      elseif n_list == 0
         fprintf('Warning from AmPgui: no results_my_pet.mat found\n');
+      elseif n_list == 2 && list(Contains(list,'_backup'))
+        load(list(Contains(list,'_backup')));  
       else
         fprintf('Warning from AmPgui: more than a single file results_my_pet.mat found, remove the wrong ones first\n');
       end

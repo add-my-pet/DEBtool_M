@@ -91,7 +91,6 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     AmPgui('T_typical')
   end
   % do all facts have bibkeys?
-  fld_F = {};
   if ~isempty(metaData.facts)
     fld_F = fields(metaData.facts); n = length(fld_F);
     for i= 1:n
@@ -115,7 +114,6 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     end
   end
   % do all data_1 have bibkeys?
-  fld_1 = {};
   if ~isempty(data.data_1)
     fld_1 = fields(data.data_1); n = length(fld_1);
     for i= 1:n
@@ -149,7 +147,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   end
   
   close all;   % no return from here: write mydata and run files, deleting mat-files
-
+  copyfile(['results_', metaData.species, '.mat'], ['results_', metaData.species, '_backup.mat'], 'f')
   
   if ~isempty(data.data_1)
     fld_data_1 = fields(data.data_1); % required to add data-specific scaled functional responses
