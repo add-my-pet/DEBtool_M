@@ -47,7 +47,7 @@ function AmPgui(action)
 
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
 global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
-global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
+global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
@@ -845,6 +845,7 @@ function speciesCb(~, ~, dspecies)
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
+    close(dspecies)
     AmPgui('links')
   end
 end
@@ -1393,7 +1394,7 @@ function OKCb(~, ~, H)
   if iscell(H)
     n = length(H);
     for i = 1:n
-      close(H{i});
+        close(H{i});
     end
   else
     close(H);

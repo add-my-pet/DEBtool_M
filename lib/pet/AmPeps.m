@@ -90,56 +90,57 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     fprintf('Warning from AmPeps: please specify typical body temperature\n');
     AmPgui('T_typical')
   end
-  %
+  % do all facts have bibkeys?
+  fld_F = {};
   if ~isempty(metaData.facts)
     fld_F = fields(metaData.facts); n = length(fld_F);
     for i= 1:n
-      if isempty(metaData.bibkey.(fld_F{i}))
+      if ~isfield(metaData.bibkey, fld_F{i})
         fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
         AmPgui('facts')
       end
     end
   end
-  %
-  if isempty(data.data_0)
-    fprintf('Warning from AmPeps: please enter at least one 0-variate data point\n');
+  % 
+  if isempty(data.data_0) | isempty(txtData.units.temp)
+    fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n');
     AmPgui('data_0')
-  else
+  else % do all data_0 have bibkeys?
     fld_0 = fields(data.data_0); n = length(fld_0);
     for i= 1:n
-      if isempty(txtData.bibkey.(fld_0{i}))
+      if ~isfield(txtData.bibkey, fld_0{i})
         fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
         AmPgui('data_0')
       end
     end
   end
-  %
+  % do all data_1 have bibkeys?
   fld_1 = {};
   if ~isempty(data.data_1)
     fld_1 = fields(data.data_1); n = length(fld_1);
     for i= 1:n
-      if isempty(txtData.bibkey.(fld_1{i}))
+      if ~isfield(txtData.bibkey, fld_1{i})
         fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
         AmPgui('data_1')
       end
     end
   end
-  %
+  % do all bibkeys have bibitems?
   if isempty(metaData.biblist)
     fprintf('Warning from AmPeps: empty biblist, please complete\n');
     AmPgui('biblist')
   else 
     if isempty(metaData.bibkey)
-      fld = unique([fld_0; fld_1]);
+      bibkeys = unique(fields(txtData.bibkey));
     else
-      fld = unique([fields(metaData.bibkey); fld_0; fld_1]);
+      bibkeys = unique([fields(metaData.bibkey); fields(txtData.bibkey)]);
     end
-    fld = fld(ismember(fld, fields(metaData.biblist)));
-    if ~isempty(fld)
-      fprintf('Warning from AmPeps: the following bibkey were not found in the biblist\n');
-      fld
+    bibkeys = bibkeys(~ismember(bibkeys, fields(metaData.biblist)));
+    if ~isempty(bibkeys)
+      fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
+      bibkeys
+      AmPgui('biblist')
     end 
-    AmPgui('biblist')
   end
   %
   if isempty(metaData.COMPLETE)
