@@ -1193,8 +1193,7 @@ function DbCb(~, ~, bibTypeList, bibkey, i_bibkey)
    uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
    uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
    Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
-%   if ~isempty(metaData.biblist) && isfield(metaData.biblist, bibkey) && ~strcmp(bibkey, 'new')
-   if ~isempty(metaData.biblist) && ~strcmp(bibkey, 'new')
+\   if ~isempty(metaData.biblist) && ~strcmp(bibkey, 'new')
      uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
      fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
      for i=1:n_fld
