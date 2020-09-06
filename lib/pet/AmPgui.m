@@ -48,7 +48,7 @@ function AmPgui(action)
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
 global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
 global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
-global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -174,15 +174,6 @@ end
 if isempty(list_spec)
   list_spec   = select; 
 end
-
-% if isempty(list_spec)
-%   list_spec   = list_taxa('',2); 
-%   list_genus  = list_taxa('',3); 
-%   list_family = list_taxa('',4); 
-%   list_order  = list_taxa('',5); 
-%   list_class  = list_taxa('',6); 
-%   list_phylum = list_taxa('',7); 
-% end
 
 %% setup gui
   dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
@@ -503,9 +494,9 @@ else % perform action
       if ~isempty(metaData.biblist)
         fld = fields(metaData.biblist); n = length(fld);
         for i = 1:n
-          hight = 650 - i * 25; 
+          hight = 650 - i * 25;
           Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
-          uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
           uicontrol('Parent',dbiblist, 'Callback',{@deleteCb,'biblist',fld{i},dbiblist}, 'Position',[200, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end          
       end
@@ -1187,12 +1178,13 @@ function addBibCb(~, ~, dbiblist) % create new bibitem in biblist with bibkey "n
   AmPgui('biblist')
 end
 
-function DbCb(~, ~, bibTypeList, bibkey, i_bibkey) % present bibitem to allow filling of fields
-  global metaData Dbb Dbi
+function DbCb(~, ~, bibTypeList, i_bibkey) % present bibitem to allow filling of fields
+  global metaData Dbb Dbi Db
+  bibkey = fields(metaData.biblist); bibkey = bibkey{i_bibkey};
   Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
   uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
   uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
-  Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
+  Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,i_bibkey}, 'Style','edit', 'String',bibkey); 
   if ~isempty(metaData.biblist) & ~strcmp(bibkey, 'new')
     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
     fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
@@ -1208,9 +1200,9 @@ function DbCb(~, ~, bibTypeList, bibkey, i_bibkey) % present bibitem to allow fi
   end
 end
 
-function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey) 
-  global metaData Dbb Hb
-  bibkeyNew = get(Dbb(1), 'string');
+function bibkeyCb(~, ~, bibTypeList, bibkey, i_bibkey) 
+  global metaData Dbb Db Hb
+  bibkeyNew = get(Dbb, 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
   if strcmp(bibkey, 'new') % set type and fill fields with empty if existing bibkey was new
     fld = fields(bibTypeList);
@@ -1223,7 +1215,7 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
   end
   set(Hb(i_bibkey), 'String',bibkeyNew);
   delete(Db);
-  DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
+  DbCb([], [], bibTypeList, i_bibkey)
   AmPgui('color');
 end
 
@@ -1398,7 +1390,7 @@ function OKCb(~, ~, H)
   if iscell(H)
     n = length(H);
     for i = 1:n
-        close(H{i});
+      close(H{i});
     end
   else
     close(H);
@@ -1406,53 +1398,53 @@ function OKCb(~, ~, H)
 end
 
 function deleteCb(~, ~, type, id, handle) 
-global data metaData txtData
-switch type
-  case 'facts'
-    fact = ['F', num2str(id)];
-    metaData.facts = rmfield(metaData.facts, fact); 
-    metaData.bibkey = rmfield(metaData.bibkey, fact);
-    if isfield(metaData.facts, ['F', num2str(id+1)])
-      n = length(fields(metaData.facts)) - id + 2;
-      for i = 1:n
-        metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
-        metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+  global data metaData txtData
+  switch type
+    case 'facts'
+      fact = ['F', num2str(id)];
+      metaData.facts = rmfield(metaData.facts, fact); 
+      metaData.bibkey = rmfield(metaData.bibkey, fact);
+      if isfield(metaData.facts, ['F', num2str(id+1)])
+        n = length(fields(metaData.facts)) - id + 2;
+        for i = 1:n
+          metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
+          metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+        end
       end
-    end
-    close(handle);
-    AmPgui('facts');
+      close(handle);
+      AmPgui('facts');
     
-  case 'discussion'
-    disc = ['D', num2str(id)];
-    metaData.discussion = rmfield(metaData.discussion, disc); 
-    metaData.bibkey = rmfield(metaData.bibkey, disc);
-    if isfield(metaData.discussion, ['D', num2str(id+1)])
-      n = length(fields(metaData.discussion)) - id + 2;
-      for i = 1:n
-        metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
-        metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+    case 'discussion'
+      disc = ['D', num2str(id)];
+      metaData.discussion = rmfield(metaData.discussion, disc); 
+      metaData.bibkey = rmfield(metaData.bibkey, disc);
+      if isfield(metaData.discussion, ['D', num2str(id+1)])
+        n = length(fields(metaData.discussion)) - id + 2;
+        for i = 1:n
+          metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
+          metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+        end
       end
-    end
-    close(handle);
-    AmPgui('discussion');
+      close(handle);
+      AmPgui('discussion');
     
-  case 'biblist'
-    metaData.biblist = rmfield(metaData.biblist, id); 
-    close(handle);
-    AmPgui('biblist');
+    case 'biblist'
+      metaData.biblist = rmfield(metaData.biblist, id); 
+      close(handle);
+      AmPgui('biblist');
 
-  case 'data_0'
-    data.data_0 = rmfield(data.data_0, id); 
-    txtData.bibkey = rmfield(txtData.bibkey, id); 
-    delete(handle);
-    AmPgui('data_0');
+    case 'data_0'
+      data.data_0 = rmfield(data.data_0, id); 
+      txtData.bibkey = rmfield(txtData.bibkey, id); 
+      delete(handle);
+      AmPgui('data_0');
       
-  case 'data_1'
-    data.data_1 = rmfield(data.data_1, id); 
-    txtData.bibkey = rmfield(txtData.bibkey, id); 
-    close(handle);
-    AmPgui('data_1');     
-end
+    case 'data_1'
+      data.data_1 = rmfield(data.data_1, id); 
+      txtData.bibkey = rmfield(txtData.bibkey, id); 
+      close(handle);
+      AmPgui('data_1');     
+  end
 end
 
 %% other support functions
