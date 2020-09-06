@@ -488,7 +488,7 @@ else % perform action
        end
         
     case 'biblist'
-      bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'dio', 'url'};
+      bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'doi', 'url'};
       bibTypeList.book =          {'author', 'title', 'publisher',   'year', 'series', 'volume', 'isbn', 'url'};
       bibTypeList.incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
       bibTypeList.mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
@@ -1180,39 +1180,39 @@ function linksCb(~, ~, id_links,i)
   metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
 end
 
-function addBibCb(~, ~, dbiblist)
-   global metaData
-   metaData.biblist.new = [];
-   delete(dbiblist)
-   AmPgui('biblist')
+function addBibCb(~, ~, dbiblist) % create new bibitem in biblist with bibkey "new"
+  global metaData
+  metaData.biblist.new = [];
+  delete(dbiblist)
+  AmPgui('biblist')
 end
 
-function DbCb(~, ~, bibTypeList, bibkey, i_bibkey)
-   global metaData Dbb Dbi
-   Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
-   uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
-   uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
-   Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
-   if ~isempty(metaData.biblist) & ~strcmp(bibkey, 'new')
-     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
-     fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
-     for i=1:n_fld
-       hight = 260 - i * 25;
-       if ~isfield(metaData.biblist.(bibkey), fld{i})
-         metaData.biblist.(bibkey).(fld{i}) = [];
-       end
-       str = metaData.biblist.(bibkey).(fld{i});
-       uicontrol('Parent',Db, 'Position',[20 hight 80 20], 'Style','text', 'String',[fld{i},': ']); 
-       Dbi(i) = uicontrol('Parent',Db, 'Position',[100 hight 680 20], 'Callback',{@bibitemCb,bibkey,fld{i},i}, 'Style','edit', 'String',str); 
-     end
-   end
+function DbCb(~, ~, bibTypeList, bibkey, i_bibkey) % present bibitem to allow filling of fields
+  global metaData Dbb Dbi
+  Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
+  uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
+  uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
+  Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
+  if ~isempty(metaData.biblist) & ~strcmp(bibkey, 'new')
+    uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
+    fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
+    for i=1:n_fld
+      hight = 260 - i * 25;
+      if ~isfield(metaData.biblist.(bibkey), fld{i})
+        metaData.biblist.(bibkey).(fld{i}) = [];
+      end
+      str = metaData.biblist.(bibkey).(fld{i});
+      uicontrol('Parent',Db, 'Position',[20 hight 80 20], 'Style','text', 'String',[fld{i},': ']); 
+      Dbi(i) = uicontrol('Parent',Db, 'Position',[100 hight 680 20], 'Callback',{@bibitemFldCb,bibkey,fld{i},i}, 'Style','edit', 'String',str); 
+    end
+  end
 end
 
-function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
+function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey) 
   global metaData Dbb Hb
   bibkeyNew = get(Dbb(1), 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
-  if strcmp(bibkey, 'new')
+  if strcmp(bibkey, 'new') % set type and fill fields with empty if existing bibkey was new
     fld = fields(bibTypeList);
     i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
     metaData.biblist.(bibkeyNew).type = fld{i_type};
@@ -1221,18 +1221,20 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
       metaData.biblist.(bibkeyNew).(fld{i}) = [];
     end
   end
-  set(Hb(i_bibkey), 'String', bibkeyNew);
+  set(Hb(i_bibkey), 'String',bibkeyNew);
   delete(Db);
   DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
-  AmPgui('set_color');
+  AmPgui('color');
 end
 
-function bibitemCb(~, ~, bibkey, fld, i)
+function bibitemFldCb(~, ~, bibkey, fld, i) % fill a field of a bibitem
   global metaData Dbi
   metaData.biblist.(bibkey).(fld) = get(Dbi(i), 'string');
 end
 
-function add0Cb(~, ~, code0, ddata_0)
+function add0Cb(~, ~, code0, ddata_0) % add 0-var data set to data_0
+   % code0: array of possible 0-var data sets: name, description
+   % ddata_0: handle for data_0 dialog
    global data txtData auxData metaData
    n_code0 = size(code0,1); codeList0 = code0(:,1);
    for i = 1:n_code0
@@ -1279,7 +1281,7 @@ end
 % 
 % end
 
-function d0Cb(~, ~, i)  
+function d0Cb(~, ~, i) % fill fields for 0-var data set i
    global data auxData txtData H0v H0T H0b H0c
    fld = fields(data.data_0);
    data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
