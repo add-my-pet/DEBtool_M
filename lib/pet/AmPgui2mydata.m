@@ -54,10 +54,10 @@ end
 if isempty(metaData.biblist)
   fprintf('Warning from AmP2mydata: empty biblist, no bibtimes specified\n');
 else
-  fld = fieldnames(metaData.biblist); n_fld = length(fld);
+  fld = fields(metaData.biblist); n_fld = length(fld);
   for i = 1:n_fld
      bibStruc = metaData.biblist.(fld{i}); 
-     bibfld = fieldnames(bibStruc); n_bibfld = length(bibfld);
+     bibfld = fields(bibStruc); n_bibfld = length(bibfld);
      bib = ['@', bibStruc.type, '{', fld{i}, ', '];
      for j = 2:n_bibfld
        if strcmp(bibfld{j},'url')

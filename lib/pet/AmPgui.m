@@ -48,7 +48,7 @@ function AmPgui(action)
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
 global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
 global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
-global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db 
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -669,14 +669,15 @@ else % perform action
       else
         list = cellstr(ls);
       end
-      list = list(Contains(list,'results_')); n_list = length(list);
-      if n_list == 1
-        load(list{1});
+      list_res = list(Contains(list,'results_')); n_res = length(list_res);
+      list_backup = list_res(Contains(list_res,'_backup')); n_backup = length(list_backup);
+      if n_backup > 0
+        load(list_backup{1})  
+      elseif (n_res - list_backup) == 1
+        load(list_res{1});
         AmPgui('color')
-      elseif n_list == 0
+      elseif n_res == 0
         fprintf('Warning from AmPgui: no results_my_pet.mat found\n');
-      elseif n_list == 2 && list(Contains(list,'_backup'))
-        load(list(Contains(list,'_backup')));  
       else
         fprintf('Warning from AmPgui: more than a single file results_my_pet.mat found, remove the wrong ones first\n');
       end
@@ -688,12 +689,7 @@ else % perform action
       else
         list = cellstr(ls);
       end
-      list = list(Contains(list,'results_'));
-      if length(list) > 1
-        fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
-      end
-      biblist = metaData.biblist; % make a spare copy of biblist, in the case that something goes wrong in AmPeps
-      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types', 'biblist');
+      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
@@ -1370,9 +1366,82 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui
-  OKCb([], [], H);
+  global infoAmPgui data txtData  metaData 
+  
+%   if isempty(metaData.author)
+%     fprintf('Warning from AmPeps: please enter author name\n');
+%     AmPgui('author')
+%   elseif isempty(metaData.curator)
+%     fprintf('Warning from AmPeps:select curator\n');
+%     AmPgui('curator')
+%   elseif isempty(metaData.species)
+%     fprintf('Warning from AmPeps: please enter species name\n');
+%     AmPgui('species')
+%   elseif isempty(metaData.T_typical)
+%     fprintf('Warning from AmPeps: please specify typical body temperature\n');
+%     AmPgui('T_typical')
+%       % do all facts have bibkeys?
+%   elseif ~isempty(metaData.facts)
+%     fld_F = fields(metaData.facts); n = length(fld_F);
+%     for i= 1:n
+%       if ~isfield(metaData.bibkey, fld_F{i})
+%         fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
+%         AmPgui('facts')
+%       end
+%     end
+%   elseif isempty(data.data_0) | isempty(txtData.units.temp)
+%     fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n');
+%     AmPgui('data_0')
+%   elseif isempty(metaData.COMPLETE)
+%     fprintf('Warning from AmPeps: please specify COMPLETE\n');
+%     AmPgui('COMPLETE'); 
+%   end
+%   
+%   % do all data_0 have bibkeys?
+%   fld_0 = fields(data.data_0); n = length(fld_0);
+%   for i= 1:n
+%     if ~isfield(txtData.bibkey, fld_0{i})
+%       fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
+%       AmPgui('data_0')
+%     end
+%   end
+% 
+%   % do all data_1 have bibkeys?
+%   if ~isempty(data.data_1)
+%     fld_1 = fields(data.data_1); n = length(fld_1);
+%     for i= 1:n
+%       if ~isfield(txtData.bibkey, fld_1{i})
+%         fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
+%         AmPgui('data_1') 
+%       end
+%     end
+%   end
+%   
+%   % do all bibkeys have bibitems?
+%   if isempty(metaData.biblist)
+%     fprintf('Warning from AmPeps: empty biblist, please complete\n');
+%     AmPgui('biblist')
+%   else 
+%     bibkeys = {};
+%     dataNm = fields(txtData.bibkey); n_data = length(dataNm);
+%     for i = 1:n_data
+%       bibkeys = [bibkeys, txtData.bibkey.(dataNm{i})];
+%     end
+%     if isempty(metaData.bibkey)
+%       bibkeys = unique(bibkeys);
+%     else
+%       bibkeys = unique([fields(metaData.bibkey); bibkeys]);
+%     end
+%     bibkeys = bibkeys(~ismember(bibkeys, fields(metaData.biblist)));
+%     if ~isempty(bibkeys)
+%       fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
+%       bibkeys
+%       AmPgui('biblist')
+%     end 
+%   end
+  
   AmPeps(infoAmPgui);
+  OKCb([], [], H);
 end
 
 function leaveCb(~, ~, H)

@@ -69,82 +69,6 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
        ['run_', metaData.species, '.m'])
 
 else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species for AmP
-
-  % check for essential fields
-  if isempty(metaData.author)
-    fprintf('Warning from AmPeps: please enter author name\n');
-    AmPgui('author')
-  end
-  %
-  if isempty(metaData.curator)
-    fprintf('Warning from AmPeps:select curator\n');
-    AmPgui('curator')
-  end
-  %
-  if isempty(metaData.species)
-    fprintf('Warning from AmPeps: please enter species name\n');
-    AmPgui('species')
-  end
-  %
-  if isempty(metaData.T_typical)
-    fprintf('Warning from AmPeps: please specify typical body temperature\n');
-    AmPgui('T_typical')
-  end
-  % do all facts have bibkeys?
-  if ~isempty(metaData.facts)
-    fld_F = fields(metaData.facts); n = length(fld_F);
-    for i= 1:n
-      if ~isfield(metaData.bibkey, fld_F{i})
-        fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
-        AmPgui('facts')
-      end
-    end
-  end
-  % 
-  if isempty(data.data_0) | isempty(txtData.units.temp)
-    fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n');
-    AmPgui('data_0')
-  else % do all data_0 have bibkeys?
-    fld_0 = fields(data.data_0); n = length(fld_0);
-    for i= 1:n
-      if ~isfield(txtData.bibkey, fld_0{i})
-        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
-        AmPgui('data_0')
-      end
-    end
-  end
-  % do all data_1 have bibkeys?
-  if ~isempty(data.data_1)
-    fld_1 = fields(data.data_1); n = length(fld_1);
-    for i= 1:n
-      if ~isfield(txtData.bibkey, fld_1{i})
-        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
-        AmPgui('data_1')
-      end
-    end
-  end
-  % do all bibkeys have bibitems?
-  if isempty(metaData.biblist)
-    fprintf('Warning from AmPeps: empty biblist, please complete\n');
-    AmPgui('biblist')
-  else 
-    if isempty(metaData.bibkey)
-      bibkeys = unique(fields(txtData.bibkey));
-    else
-      bibkeys = unique([fields(metaData.bibkey); fields(txtData.bibkey)]);
-    end
-    bibkeys = bibkeys(~ismember(bibkeys, fields(metaData.biblist)));
-    if ~isempty(bibkeys)
-      fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
-      bibkeys
-      AmPgui('biblist')
-    end 
-  end
-  %
-  if isempty(metaData.COMPLETE)
-    fprintf('Warning from AmPeps: please specify COMPLETE\n');
-    AmPgui('COMPLETE')
-  end
   
   close all;   % no return from here: write mydata and run files, deleting mat-files
   copyfile(['results_', metaData.species, '.mat'], ['results_', metaData.species, '_backup.mat'], 'f')
@@ -201,8 +125,8 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   i_Clade = i_Clade(end); % index of "best" clade species
   load(resultsFn{i_Clade}); 
   fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
-  for i = 1:n_Clade
-    delete(['results_', Clade{i}, '.mat']); % delete the results files of the related species
+  for i = 1:n_Clade % delete the results files of the related species, but keep results_my_pet_backup.mat
+    delete(['results_', Clade{i}, '.mat']); 
   end
   
   data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
