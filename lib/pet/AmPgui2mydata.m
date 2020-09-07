@@ -2,7 +2,7 @@
 % converts structures data and metaData produced by AmPgui, to those produced by mydata_my_pet
 
 %%
-function [data, metaData] = AmPgui2mydata(data, metaData)
+function [Data, metaData] = AmPgui2mydata(data, metaData)
 % created 2020/06/15 by  Bas Kooijman
 
 %% Syntax
@@ -18,26 +18,25 @@ function [data, metaData] = AmPgui2mydata(data, metaData)
 
 % Output: 
 %
-% * data: structure with data
+% * Data: structure with data
 % * metaData: structure with metaData 
 
 %% Remark
 % <../mydata2AmPgui.html *mydata2AmPgui*> is inverse to AmPgui2mydata
 
-if isfield(data, 'data_0')
+Data = []; 
+if isfield(data, 'data_0') && ~isempty(data.data_0)
   fld = fields(data.data_0); n_fld = length(fld);
   for i = 1:n_fld
-    data.(fld{i}) = data.data_0.(fld{i});
+    Data.(fld{i}) = data.data_0.(fld{i});
   end
-  data = rmfield(data, 'data_0');
 end
 if isfield(data, 'data_1') && ~isempty(data.data_1)
   fld = fieldnames(data.data_1); n_fld = length(fld);
   for i = 1:n_fld
-    data.(fld{i}) = data.data_1.(fld{i});
+    Data.(fld{i}) = data.data_1.(fld{i});
   end
 end
-data = rmfield(data, 'data_1');
 
 if isfield(metaData, 'acknowledgment') && isempty(metaData.acknowledgment)
   metaData = rmfield(metaData, 'acknowledgment');

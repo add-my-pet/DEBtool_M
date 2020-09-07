@@ -114,9 +114,6 @@ end
 if ~isfield(metaData, 'bibkey')
   metaData.bibkey = []; % for discussion, facts
 end
-if ~isfield(metaData, 'comment') 
-  metaData.comment = '';
-end
 id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
   'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
 if ~isfield(metaData, 'links') 
@@ -1366,7 +1363,7 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui data txtData  metaData 
+  global infoAmPgui 
   
 %   if isempty(metaData.author)
 %     fprintf('Warning from AmPeps: please enter author name\n');
@@ -1440,8 +1437,8 @@ function proceedCb(~, ~, H)
 %     end 
 %   end
   
-  AmPeps(infoAmPgui);
   OKCb([], [], H);
+  AmPeps(infoAmPgui);
 end
 
 function leaveCb(~, ~, H)
