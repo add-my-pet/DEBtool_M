@@ -1448,6 +1448,7 @@ function proceedCb(~, ~, H)
   elseif check_bibitem
     AmPgui('biblist');  
   else
+    save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
     OKCb([], [], H);
     AmPeps(infoAmPgui);
   end;
