@@ -149,7 +149,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   
   if n_add > 0 % edit par & txtPar
     load auxPar
-    % add possible missing parfields to auxPar
+    % add possibly missing parfields to auxPar
     if ~isfield(auxPar, 't_N')
       auxPar.t_N.value = 365; auxPar.t_N.free = 0; auxPar.t_N.units = 'd'; auxPar.t_N.label = 'period between broods';
     end

@@ -279,7 +279,7 @@ fprintf(fid, '\n');
 
 %% References
 fprintf(fid, '%%%% References\n');
-fld = fieldnames(metaData.biblist); fld = unique([fld; {'Kooy2010'}]); n = length(fld); 
+fld = fields(metaData.biblist); fld = unique([fld; {'Kooy2010'}]); n = length(fld); 
 for i = 1:n
   if strcmp(fld{i}, 'Kooy2010')
     fprintf(fid, '%s\n', 'bibkey = ''Kooy2010''; type = ''Book''; bib = [ ...  % used in setting of chemical parameters and pseudodata');

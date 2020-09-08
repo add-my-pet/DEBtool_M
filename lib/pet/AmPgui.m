@@ -1363,82 +1363,95 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui 
+  global infoAmPgui data metaData txtData
   
-%   if isempty(metaData.author)
-%     fprintf('Warning from AmPeps: please enter author name\n');
-%     AmPgui('author')
-%   elseif isempty(metaData.curator)
-%     fprintf('Warning from AmPeps:select curator\n');
-%     AmPgui('curator')
-%   elseif isempty(metaData.species)
-%     fprintf('Warning from AmPeps: please enter species name\n');
-%     AmPgui('species')
-%   elseif isempty(metaData.T_typical)
-%     fprintf('Warning from AmPeps: please specify typical body temperature\n');
-%     AmPgui('T_typical')
-%       % do all facts have bibkeys?
-%   elseif ~isempty(metaData.facts)
-%     fld_F = fields(metaData.facts); n = length(fld_F);
-%     for i= 1:n
-%       if ~isfield(metaData.bibkey, fld_F{i})
-%         fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
-%         AmPgui('facts')
-%       end
-%     end
-%   elseif isempty(data.data_0) | isempty(txtData.units.temp)
-%     fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n');
-%     AmPgui('data_0')
-%   elseif isempty(metaData.COMPLETE)
-%     fprintf('Warning from AmPeps: please specify COMPLETE\n');
-%     AmPgui('COMPLETE'); 
-%   end
-%   
-%   % do all data_0 have bibkeys?
-%   fld_0 = fields(data.data_0); n = length(fld_0);
-%   for i= 1:n
-%     if ~isfield(txtData.bibkey, fld_0{i})
-%       fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
-%       AmPgui('data_0')
-%     end
-%   end
-% 
-%   % do all data_1 have bibkeys?
-%   if ~isempty(data.data_1)
-%     fld_1 = fields(data.data_1); n = length(fld_1);
-%     for i= 1:n
-%       if ~isfield(txtData.bibkey, fld_1{i})
-%         fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
-%         AmPgui('data_1') 
-%       end
-%     end
-%   end
-%   
-%   % do all bibkeys have bibitems?
-%   if isempty(metaData.biblist)
-%     fprintf('Warning from AmPeps: empty biblist, please complete\n');
-%     AmPgui('biblist')
-%   else 
-%     bibkeys = {};
-%     dataNm = fields(txtData.bibkey); n_data = length(dataNm);
-%     for i = 1:n_data
-%       bibkeys = [bibkeys, txtData.bibkey.(dataNm{i})];
-%     end
-%     if isempty(metaData.bibkey)
-%       bibkeys = unique(bibkeys);
-%     else
-%       bibkeys = unique([fields(metaData.bibkey); bibkeys]);
-%     end
-%     bibkeys = bibkeys(~ismember(bibkeys, fields(metaData.biblist)));
-%     if ~isempty(bibkeys)
-%       fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
-%       bibkeys
-%       AmPgui('biblist')
-%     end 
-%   end
+  % do all data_0 have bibkeys?
+  check_bibkey0 = false;
+  if ~isempty(data.data_0)
+    fld_0 = fields(data.data_0); n = length(fld_0); check_bibkey0 = false(n,1);
+    for i= 1:n
+      if ~isfield(txtData.bibkey, fld_0{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
+        check_bibkey0{i} = true;
+      end
+    end
+  end
+
+  % do all data_1 have bibkeys?
+  check_bibkey1 = false;
+  if ~isempty(data.data_1)
+    fld_1 = fields(data.data_1); n = length(fld_1); check_bibkey1 = false(n,1);
+    for i= 1:n
+      if ~isfield(txtData.bibkey, fld_1{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
+        check_bibkey1{i} = true;
+      end
+    end
+  end
   
-  OKCb([], [], H);
-  AmPeps(infoAmPgui);
+  % do all facts have bibkeys?
+  check_facts = false;
+  if ~isempty(metaData.facts)
+    fld_F = fields(metaData.facts); n = length(fld_F); check_facts = false(n,1);
+    for i= 1:n
+      if ~isfield(metaData.bibkey, fld_F{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
+        check_facts(i) = true;
+      end
+    end
+  end
+
+  % do all bibkeys have bibitems?
+  check_bibitem = false;
+  if ~isempty(txtData.bibkey)
+    bibkeys = {};
+    dataNm = fields(txtData.bibkey); n_data = length(dataNm); check_bibitem = false(n_data,1);
+    for i = 1:n_data
+      bibkeys = [bibkeys, txtData.bibkey.(dataNm{i})];
+    end
+    if isempty(metaData.bibkey)
+      bibkeys = unique(bibkeys);
+    else
+      bibkeys = unique([fields(metaData.bibkey); bibkeys]);
+    end
+    bibkeys = bibkeys(~ismember(bibkeys, fields(metaData.biblist)));
+    if ~isempty(bibkeys)
+      fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
+      bibkeys
+      check_bibitem = true;
+    end 
+  end
+
+  % first check that all required fields are filled, if so proceed to AmPeps
+  if isempty(metaData.author); fprintf('Warning from AmPeps: please enter author details\n') 
+    AmPgui('author');
+  elseif isempty(metaData.curator); fprintf('Warning from AmPeps:select curator\n') 
+    AmPgui('curator'); 
+  elseif isempty(metaData.species); fprintf('Warning from AmPeps: please enter species name\n') 
+    AmPgui('species'); 
+  elseif isempty(metaData.T_typical); fprintf('Warning from AmPeps: please specify typical body temperature\n')
+    AmPgui('T_typical');
+  elseif isempty(metaData.COMPLETE); fprintf('Warning from AmPeps: please specify COMPLETE\n')
+    AmPgui('COMPLETE'); 
+  elseif isempty(data.data_0) | isempty(txtData.units.temp) 
+    fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n'); 
+    AmPgui('data_0');
+  elseif isempty(metaData.biblist)
+    fprintf('Warning from AmPeps: empty biblist, please complete\n');
+    AmPgui('biblist');
+  elseif any(check_facts)
+    AmPgui('facts');  
+  elseif any(check_bibkey0)
+    AmPgui('data_0');  
+  elseif any(check_bibkey1)
+    AmPgui('data_1');  
+  elseif check_bibitem
+    AmPgui('biblist');  
+  else
+    OKCb([], [], H);
+    AmPeps(infoAmPgui);
+  end;
+      
 end
 
 function leaveCb(~, ~, H)
