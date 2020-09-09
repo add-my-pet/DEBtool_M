@@ -788,9 +788,10 @@ end
     end
   end
   bibkeys = unique(bibkeys);
-  if any(~ismember(bibkeys,bibitems))
+  bibkeys_missing = bibkeys(~ismember(bibkeys,[bibitems; 'guess']));
+  if ~isempty(bibkeys_missing)
     color.biblist = [1 0 0];
-    fprintf(['Warning from AmPgui: missing bibitems are ', cell2str(bibkeys(~ismember(bibkeys,bibitems))),'\n']);
+    fprintf(['Warning from AmPgui: missing bibitems are ', cell2str(bibkeys_missing),'\n']);
   else
     color.biblist = [0 0.6 0];
   end
@@ -1403,7 +1404,7 @@ function proceedCb(~, ~, H)
 
   % do all bibkeys have bibitems?
   check_bibitem = false;
-  if ~isempty(txtData.bibkey)
+  if ~isempty(txtData.bibkey) & ~isempty(metaData.biblist)
     bibkeys = {};
     dataNm = fields(txtData.bibkey); n_data = length(dataNm); check_bibitem = false(n_data,1);
     for i = 1:n_data
