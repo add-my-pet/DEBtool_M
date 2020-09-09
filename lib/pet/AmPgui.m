@@ -1276,7 +1276,7 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui data metaData txtData auxData color select_id id_links eco_types
+  global infoAmPgui data metaData txtData auxData color select_id id_links eco_types 
   
   % do all data_0 have bibkeys?
   check_bibkey0 = false;
@@ -1303,13 +1303,13 @@ function proceedCb(~, ~, H)
   end
   
   % do all facts have bibkeys?
-  check_facts = false;
+  check_bibkeyF = false;
   if ~isempty(metaData.facts)
-    fld_F = fields(metaData.facts); n = length(fld_F); check_facts = false(n,1);
+    fld_F = fields(metaData.facts); n = length(fld_F); check_bibkeyF = false(n,1);
     for i= 1:n
       if ~isfield(metaData.bibkey, fld_F{i})
         fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
-        check_facts(i) = true;
+        check_bibkeyF(i) = true;
       end
     end
   end
@@ -1335,6 +1335,13 @@ function proceedCb(~, ~, H)
     end 
   end
 
+  % are all ecoCodes filled, except migrate?
+  eco = {'climate', 'ecozone', 'habitat', 'embryo', 'food', 'gender', 'reprod'}; n_eco = length(eco); 
+  check_eco = false(n_eco,1);
+  for i = 1 : n_eco
+    check_eco(i) = isempty(metaData.ecoCode.(eco{i}));
+  end
+  
   % first check that all required fields are filled, if so proceed to AmPeps
   if isempty(metaData.author); fprintf('Warning from AmPeps: please enter author details\n') 
     OKCb([], [], H); AmPgui('author'); 
@@ -1342,6 +1349,9 @@ function proceedCb(~, ~, H)
     OKCb([], [], H); AmPgui('curator'); 
   elseif isempty(metaData.species); fprintf('Warning from AmPeps: please enter species name\n') 
     OKCb([], [], H); AmPgui('species'); 
+  elseif any(check_eco)
+    fprintf('Warning from AmPeps: empty ecoCodes ', cell2str(eco(check_eco)),'\n');      
+    OKCb([], [], H); AmPgui('ecoCode')  
   elseif isempty(metaData.T_typical); fprintf('Warning from AmPeps: please specify typical body temperature\n')
     OKCb([], [], H); AmPgui('T_typical'); 
   elseif isempty(metaData.COMPLETE); fprintf('Warning from AmPeps: please specify COMPLETE\n')
@@ -1352,7 +1362,7 @@ function proceedCb(~, ~, H)
   elseif isempty(metaData.biblist)
     fprintf('Warning from AmPeps: empty biblist, please complete\n');
     OKCb([], [], H); AmPgui('biblist'); 
-  elseif any(check_facts)
+  elseif any(check_bibkeyF)
     OKCb([], [], H); AmPgui('facts');  
   elseif any(check_bibkey0)
     OKCb([], [], H); AmPgui('data_0'); 

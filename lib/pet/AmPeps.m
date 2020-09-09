@@ -42,10 +42,10 @@ end
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html','-browser');
   web('https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html','-browser');
-  hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png'));
-  hclimateSea  = figure('Name','Sea climate',  'Position',[900 450 500 300]); image(imread('climate_sea.jpg'));
-  hecozones    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png'));
-  hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg'));
+  hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png')); set(gca, 'Visible', 'off');
+  hclimateSea  = figure('Name','Sea climate',  'Position',[900 450 500 300]); image(imread('climate_sea.jpg')); set(gca, 'Visible', 'off');
+  hecozones    = figure('Name','Land ecozone', 'Position',[300  50 500 300]); image(imread('ecozones.png')); set(gca, 'Visible', 'off');
+  hoceans      = figure('Name','Sea ecozone',  'Position',[900  50 500 300]); image(imread('oceans.jpg')); set(gca, 'Visible', 'off');
   AmPgui
   
 elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source files in Matlab editor
