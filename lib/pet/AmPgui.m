@@ -1337,33 +1337,32 @@ function proceedCb(~, ~, H)
 
   % first check that all required fields are filled, if so proceed to AmPeps
   if isempty(metaData.author); fprintf('Warning from AmPeps: please enter author details\n') 
-    AmPgui('author'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('author'); 
   elseif isempty(metaData.curator); fprintf('Warning from AmPeps:select curator\n') 
-    AmPgui('curator'); OKCb([], [], H); 
+    OKCb([], [], H); AmPgui('curator'); 
   elseif isempty(metaData.species); fprintf('Warning from AmPeps: please enter species name\n') 
-    AmPgui('species'); OKCb([], [], H); 
+    OKCb([], [], H); AmPgui('species'); 
   elseif isempty(metaData.T_typical); fprintf('Warning from AmPeps: please specify typical body temperature\n')
-    AmPgui('T_typical'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('T_typical'); 
   elseif isempty(metaData.COMPLETE); fprintf('Warning from AmPeps: please specify COMPLETE\n')
-    AmPgui('COMPLETE'); OKCb([], [], H); 
+    OKCb([], [], H); AmPgui('COMPLETE'); 
   elseif isempty(data.data_0) | isempty(txtData.units.temp) 
     fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n'); 
-    AmPgui('data_0'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('data_0'); 
   elseif isempty(metaData.biblist)
     fprintf('Warning from AmPeps: empty biblist, please complete\n');
-    AmPgui('biblist'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('biblist'); 
   elseif any(check_facts)
-    AmPgui('facts'); OKCb([], [], H);  
+    OKCb([], [], H); AmPgui('facts');  
   elseif any(check_bibkey0)
-    AmPgui('data_0'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('data_0'); 
   elseif any(check_bibkey1)
-    AmPgui('data_1'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('data_1'); 
   elseif check_bibitem
-    AmPgui('biblist'); OKCb([], [], H);
+    OKCb([], [], H); AmPgui('biblist'); 
   else
     save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
-    OKCb([], [], H);
-    AmPeps(infoAmPgui);
+    OKCb([], [], H); AmPeps(infoAmPgui);
   end;
       
 end
