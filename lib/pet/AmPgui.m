@@ -1363,7 +1363,7 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui data metaData txtData
+  global infoAmPgui data metaData txtData auxData color select_id id_links eco_types
   
   % do all data_0 have bibkeys?
   check_bibkey0 = false;
@@ -1424,29 +1424,29 @@ function proceedCb(~, ~, H)
 
   % first check that all required fields are filled, if so proceed to AmPeps
   if isempty(metaData.author); fprintf('Warning from AmPeps: please enter author details\n') 
-    AmPgui('author');
+    AmPgui('author'); OKCb([], [], H);
   elseif isempty(metaData.curator); fprintf('Warning from AmPeps:select curator\n') 
-    AmPgui('curator'); 
+    AmPgui('curator'); OKCb([], [], H); 
   elseif isempty(metaData.species); fprintf('Warning from AmPeps: please enter species name\n') 
-    AmPgui('species'); 
+    AmPgui('species'); OKCb([], [], H); 
   elseif isempty(metaData.T_typical); fprintf('Warning from AmPeps: please specify typical body temperature\n')
-    AmPgui('T_typical');
+    AmPgui('T_typical'); OKCb([], [], H);
   elseif isempty(metaData.COMPLETE); fprintf('Warning from AmPeps: please specify COMPLETE\n')
-    AmPgui('COMPLETE'); 
+    AmPgui('COMPLETE'); OKCb([], [], H); 
   elseif isempty(data.data_0) | isempty(txtData.units.temp) 
     fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n'); 
-    AmPgui('data_0');
+    AmPgui('data_0'); OKCb([], [], H);
   elseif isempty(metaData.biblist)
     fprintf('Warning from AmPeps: empty biblist, please complete\n');
-    AmPgui('biblist');
+    AmPgui('biblist'); OKCb([], [], H);
   elseif any(check_facts)
-    AmPgui('facts');  
+    AmPgui('facts'); OKCb([], [], H);  
   elseif any(check_bibkey0)
-    AmPgui('data_0');  
+    AmPgui('data_0'); OKCb([], [], H);
   elseif any(check_bibkey1)
-    AmPgui('data_1');  
+    AmPgui('data_1'); OKCb([], [], H);
   elseif check_bibitem
-    AmPgui('biblist');  
+    AmPgui('biblist'); OKCb([], [], H);
   else
     save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
     OKCb([], [], H);
