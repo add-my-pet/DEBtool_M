@@ -3,7 +3,7 @@
 
 %%
 function [Data, metaData] = AmPgui2mydata(data, metaData)
-% created 2020/06/15 by  Bas Kooijman
+% created 2020/06/15 by  Bas Kooijman, modified 2020/09/12
 
 %% Syntax
 % [data, metaData] = <../AmPgui2mydata.m *AmPpostEdit*> (data, metaData)
@@ -56,6 +56,12 @@ else
   fld = fields(metaData.biblist); n_fld = length(fld);
   for i = 1:n_fld
      bibStruc = metaData.biblist.(fld{i}); 
+     % remove empty fields of bibStruc
+     bibfld = fields(bibStruc); n_bibfld = length(bibfld);
+     for j = 1:n_bibfld
+       if isempty(bibStruc.(bibfld{j})); bibStruc = rmfield(bibStruc, bibfld{j}); end;
+     end
+     % flatten structure bibStruc to string bib
      bibfld = fields(bibStruc); n_bibfld = length(bibfld);
      bib = ['@', bibStruc.type, '{', fld{i}, ', '];
      for j = 2:n_bibfld
