@@ -702,21 +702,38 @@ end
   if ~isempty(data.data_0)
     fld = fields(data.data_0); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+      addbibkey = txtData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
+    bibkeys = unique(bibkeys);
   end
   if ~isempty(data.data_1)
     fld = fields(data.data_1); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+      addbibkey = txtData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
     bibkeys = unique(bibkeys);
   end 
   if ~isempty(metaData.bibkey)
     fld = fields(metaData.bibkey); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, metaData.bibkey.(fld{i})];
+      addbibkey = metaData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
+    bibkeys = unique(bibkeys);
   end
   bibkeys = unique(bibkeys);
   bibkeys_missing = bibkeys(~ismember(bibkeys,[bibitems; 'guess']));
@@ -1257,7 +1274,7 @@ end
 
 function d1bCb(~, ~, fld, i)
   global txtData H1b 
-  txtData.bibkey.(fld) = get(H1b(i), 'string');
+  txtData.bibkey.(fld) = str2cell(get(H1b(i), 'string'));
 end  
 
 function d1cCb(~, ~, fld, i)
@@ -1320,7 +1337,12 @@ function proceedCb(~, ~, H)
     bibkeys = {};
     dataNm = fields(txtData.bibkey); n_data = length(dataNm); check_bibitem = false(n_data,1);
     for i = 1:n_data
-      bibkeys = [bibkeys, txtData.bibkey.(dataNm{i})];
+      addbibkey = txtData.bibkey.(dataNm{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
     if isempty(metaData.bibkey)
       bibkeys = unique(bibkeys);
@@ -1473,13 +1495,9 @@ function c = str2cell(str)
   end
   str = strsplit(str, ',');
   n = length(str); 
-  if n == 1
-    c = str;
-  else
-    c = cell(1,n);
-    for i=1:n
-      c{i} = str(i);
-     end
+  c = cell(1,n);
+  for i=1:n
+    c{i} = str{i};
   end
 end
 
