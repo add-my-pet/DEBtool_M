@@ -39,6 +39,7 @@ function [auxParFld, info] = prt_predict(par, metaPar, data, auxData, metaData)
 % * Reorder fields with: prdCode = orderfields(prdCode, cell string with ordered fld names)
 % * Modify code-line i of variable tWw with: prdCode.std.tWw{i} = 'something';
 % * Save: WD = cdPet; save('prdCode.mat','prdCode'); cd(WD) 
+% * Save: WD = cdPet; save('auxPar.mat','auxPar'); cd(WD)
 %
 % The intended use of this function in the context of AmPeps
 %  
