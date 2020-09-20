@@ -26,13 +26,13 @@ function [model, info] = get_model(phylum, class, order)
   % A few taxa have a deviating model.
   % Check spelling if info = 0
   
-info = 1;
+info = 1; model = [];
 switch phylum
     case 'Cnidaria'
         switch class
             case {'Cubozoa', 'Scyphozoa'}                 
                 model = 'abj';
-            case 'Hydrozoa'
+            case {'Hydrozoa','Anthozoa'}
                 model = 'stf';
         end
     case {'Ctenophora', 'Chaetognatha'}                 
