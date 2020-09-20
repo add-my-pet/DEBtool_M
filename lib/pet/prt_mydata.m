@@ -91,7 +91,7 @@ fprintf(fid, 'metaData.date_acc   = %s;\n\n', vec2str(metaData.date_acc));
 
 %% set zero-variate data
 
-% sort fields of data to sequence in prdCode
+% sort data fields to sequence in prdCode, based on units
 fld = fields(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel = false(n_fld, 1);
 model = get_model(metaData.phylum, metaData.class, metaData.order); if isempty(model); model = 'abj'; end;
 load prdCode; FLD = fields(prdCode.(model));
@@ -130,7 +130,7 @@ for i = 1:n_fld0
     fprintf(fid, '  comment.%s = ''%s'';\n', fld0{i}, txt);
   end 
   if i < n_fld0 && ~strcmp(txtData.units.(fld0{i}), txtData.units.(fld0{i+1}))
-    fprintf(fid, '\n');
+    fprintf(fid, '\n'); % write empty line if units change
   end
 end
 fprintf(fid, '\n'); 
