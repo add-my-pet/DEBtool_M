@@ -32,8 +32,10 @@ switch phylum
         switch class
             case {'Cubozoa', 'Scyphozoa'}                 
                 model = 'abj';
-            case {'Hydrozoa','Anthozoa'}
+            case {'Hydrozoa'}
                 model = 'stf';
+            case {'Anthozoa'}
+               model = 'std';
         end
     case {'Ctenophora', 'Chaetognatha'}                 
         model = 'abj';
