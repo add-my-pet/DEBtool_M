@@ -1356,7 +1356,7 @@ function proceedCb(~, ~, H)
       end
     end
     bibkeys = unique(bibkeys);
-    bibkeys = bibkeys(~ismember(bibkeys, [fields(metaData.biblist); 'guess']));
+    bibkeys = bibkeys(~ismember(bibkeys, [fields(metaData.biblist); 'guess'; 'Kooy2010']));
     if ~isempty(bibkeys)
       fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
       bibkeys

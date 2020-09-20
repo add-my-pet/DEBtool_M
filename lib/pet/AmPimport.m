@@ -138,6 +138,10 @@ if isfield(data,'LW_m')
   txtData.bibkey = renameStructField(txtData.bibkey, 'LW_m', 'LWw_m');
 end
 
+if isfield(metaData.biblist, 'Kooy2010')
+  metaData.biblist = rmfield(metaData.biblist, 'Kooy2010');
+end
+
 [data, metaData] = mydata2AmPgui(data,metaData); % convert mydata standard to AmPgui standard
 
 AmPeps;
