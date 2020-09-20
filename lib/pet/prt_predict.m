@@ -51,7 +51,7 @@ function [auxParFld, info] = prt_predict(par, metaPar, data, auxData, metaData)
 % * finally: you are ready to start the estimation procedure
 
 auxParFld = {}; model = metaPar.model; my_pet = metaData.species; 
-WD = cdPet; load prdCode; cd(WD);
+load prdCode
 
 fid = fopen(['predict_', metaData.species, '.m'], 'w+'); % open file for reading and writing, delete existing content
 fprintf(fid, 'function [prdData, info] = predict_%s(par, data, auxData)\n', my_pet);

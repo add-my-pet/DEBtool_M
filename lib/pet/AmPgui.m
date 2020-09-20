@@ -1190,7 +1190,7 @@ function add0Cb(~, ~, code0, ddata_0) % add 0-var data set to data_0
      if code0{i,3}
        auxData.temp.(code0{i,1}) = [];
      end
-     metaData.data_0 = [metaData.data_0 code0{i,1}];
+     metaData.data_0 = [metaData.data_0; code0{i,1}];
    end
    delete(ddata_0);
    AmPgui('data_0');
@@ -1231,7 +1231,7 @@ function add1Cb(~, ~, code1, ddata_1)
      if code1{i,3}
        auxData.temp.(code1{i,1}) = [];
      end
-     metaData.data_1 = [metaData.data_1 code1{i,1}];
+     metaData.data_1 = [metaData.data_1; code1{i,1}];
    end 
    delete(ddata_1);
    AmPgui('data_1');
@@ -1339,16 +1339,23 @@ function proceedCb(~, ~, H)
     for i = 1:n_data
       addbibkey = txtData.bibkey.(dataNm{i});
       if iscell(addbibkey)
-        bibkeys = [bibkeys, addbibkey{:}];
+        bibkeys = [bibkeys; addbibkey(:)];
       else
-        bibkeys = [bibkeys, addbibkey];
+        bibkeys = [bibkeys; addbibkey];
       end
     end
-    if isempty(metaData.bibkey)
-      bibkeys = unique(bibkeys);
-    else
-      bibkeys = unique([fields(metaData.bibkey); bibkeys]);
+    if ~isempty(metaData.bibkey) % bibkeys for facts and discussion points
+      fld = fields(metaData.bibkey); n_fld = length(fld);
+      for i=1:n_fld
+        addbibkey = metaData.bibkey.(fld{i});
+        if iscell(addbibkey)
+          bibkeys = [bibkeys; addbibkey(:)];
+        else
+          bibkeys = [bibkeys; addbibkey];
+        end
+      end
     end
+    bibkeys = unique(bibkeys);
     bibkeys = bibkeys(~ismember(bibkeys, [fields(metaData.biblist); 'guess']));
     if ~isempty(bibkeys)
       fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');

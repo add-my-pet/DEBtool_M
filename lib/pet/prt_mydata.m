@@ -91,8 +91,13 @@ fprintf(fid, 'metaData.date_acc   = %s;\n\n', vec2str(metaData.date_acc));
 
 %% set zero-variate data
 
+% sort fields of data to sequence in prdCode
+fld = fields(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel = false(n_fld, 1);
+model = get_model(metaData.phylum, metaData.class, metaData.order); if isempty(model); model = 'abj'; end;
+load prdCode; FLD = fields(prdCode.(model));
+[mem,ind] = ismember(fld, FLD); if ~any(~mem); [~, ind] = sort(ind); fld = fld(ind); end;
+
 % split zero- from uni-variate data
-fld = fieldnames(data); fld = fld(~strcmp(fld, 'psd')); n_fld = length(fld); sel = false(n_fld,1);
 for i = 1:n_fld
   sel(i) = size(data.(fld{i}),1) > 1;
 end
@@ -159,7 +164,7 @@ for i = 1:n_fld1
     if iscell(txt)
       txt = txt{1};
     end
-    fprintf(fid, 'comment.%s = ''%s'';\n', fld1{i}, txtData.comment.(fld1{i}));
+    fprintf(fid, 'comment.%s = ''%s'';\n', fld1{i}, txt);
   end
   fprintf(fid, '\n');  
 end
