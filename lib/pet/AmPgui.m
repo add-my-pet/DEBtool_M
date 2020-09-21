@@ -469,6 +469,7 @@ else % fill fields
           'E0',   'J', 0, 'initial energy content';
 
           'Ri', '#/d', 1, 'ultimate reproduction rate';
+          'GSI', 'mol E_R/mol W', 1, 'Gonado-Somatic Index as fraction'
           }; 
         
       ddata_0 = dialog('Position',[150 35 1050 620], 'Name','0-variate data dlg');
