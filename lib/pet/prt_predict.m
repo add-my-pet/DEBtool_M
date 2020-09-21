@@ -141,6 +141,7 @@ if any(sel_h)
   fprintf(fid, '%% hatch\n');
   fld_h = fld_h(ismember(fld_h,fld0)); n_fldh = length(fld_h);
   if any(ismember(fld_0, {'ah', 'Lh', 'Wwh', 'Wdh'}))
+    fprintf(fid, '%s', cell2str(prdCode.(model).U_E0));
     fprintf(fid, '%s', cell2str(prdCode.(model).aUL_h));
   end
   for i = 1:n_fldh
