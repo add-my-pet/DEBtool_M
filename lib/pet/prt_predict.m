@@ -261,7 +261,7 @@ if any(sel_i)
 end
 
 % reproduction
-fld_R = {'Ri', 'tR'}; % fields for section reproduction
+fld_R = {'Ri', 'tR', 'GSI'}; % fields for section reproduction
 sel_R = ismember(fld0,fld_R);
 if any(sel_R)
   fprintf(fid, '%% reproduction\n');

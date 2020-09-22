@@ -928,18 +928,20 @@ end
 function habitatCb(~, ~, Hhabitat)  
   global metaData eco_types 
   habitatCode = fields(eco_types.habitat); n_habitat = length(habitatCode); 
-  habitatCodeList = habitatCode;
+  habitatCodeList = habitatCode; 
   for i=1:n_habitat
     habitatCodeList{i} = [habitatCodeList{i}, ': ', eco_types.habitat.(habitatCode{i})];
   end
   if isempty(metaData.ecoCode.habitat)
     i_habitat = 1;
   else
+    code = metaData.ecoCode.habitat; n_code = length(code);
+    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end; % remove stage codes
     i_habitat = 1:n_habitat;
-    i_habitat = i_habitat(i_habitat(ismember(habitatCode,metaData.ecoCode.habitat)));
+    i_habitat = i_habitat(i_habitat(ismember(habitatCode,code)));
   end
   i_habitat =  listdlg('ListString',habitatCodeList, 'Name','habitat dlg', 'ListSize',[400 500], 'InitialValue',i_habitat);
-  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList);
+  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList, 'habitat');
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
   AmPgui('setColor')
@@ -994,11 +996,13 @@ function foodCb(~, ~, Hfood)
   if isempty(metaData.ecoCode.food)
     i_food = 1;
   else
+    code = metaData.ecoCode.food; n_code = length(code);
+    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end; % remove stage codes
     i_food = 1:n_food;
-    i_food = i_food(i_food(ismember(foodCode,metaData.ecoCode.food)));
+    i_food = i_food(i_food(ismember(foodCode,code)));
   end
   i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[600 500], 'InitialValue',i_food);
-  foodCode = prependStage(i_food, foodCode, foodCodeList);
+  foodCode = prependStage(i_food, foodCode, foodCodeList, 'food');
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
   AmPgui('setColor')
@@ -1509,14 +1513,32 @@ function c = str2cell(str)
   end
 end
 
-function stageCode = prependStage(ind, code, codeList)
-  stageList = {'0b', '0j', '0x', '0p', '0i', 'bj', 'bx', 'bp', 'bi', 'jp', 'ji', 'xp', 'xi', 'pi'};
+function stageCode = prependStage(ind, code, codeList, type)
+  stageList = { ...
+  '0b', '0j', ...
+  '0x          stage ij is the period', ...
+  '0p          between events i and j', ...
+  '0i', ...
+  'bj          0: start', ...
+  'bx          b: birth', ...
+  'bp          j: metamorphosis', ...
+  'bi           x: weaning/fledge', ...
+  'jp           p: puberty', ...
+  'ji            i: death', ... % this spacing gives the best outlining on the screen
+  'xp', 'xi', 'pi'};
   stageCode = code(ind); n = length(ind); 
+  switch type
+    case 'habitat'
+      init = 5; % stageCode 0i
+    case 'food'
+      init = 9; % stageCode bi
+  end
   for i = 1:n
     fprintf(['Prepend stage for code ', code{ind(i)},'\n']);
     name = ['stage code for ', codeList{ind(i)}];
-    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',2);
-    stageCode{i} = [stageList{i_stage}, code{ind(i)}];
+    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',init);
+    stage = stageList{i_stage};
+    stageCode{i} = [stage(1:2), code{ind(i)}];
   end
 end
 
