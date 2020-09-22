@@ -885,8 +885,9 @@ function species_enCb(~, ~)
 end
  
 function climateCb(~, ~, Hclimate)  
-  global metaData eco_types hclimateLand 
+  global metaData eco_types hclimateLand hclimateSea
   set(hclimateLand,'Position',[250 20 1200 850]); % climate figure large size
+  set(hclimateSea,'Position',[250 20 1200 850]); % climate figure large size
   climateCode = fields(eco_types.climate); n_climate = length(climateCode); 
   if isempty(metaData.ecoCode.climate)
     i_climate = 1;
@@ -899,12 +900,14 @@ function climateCb(~, ~, Hclimate)
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
   set(hclimateLand,'Position',[300 450 500 300]); % climate figure normal size
+  set(hclimateSea, 'Position',[900 450 500 300]); % climate figure normal size
   AmPgui('setColor')
 end
 
 function ecozoneCb(~, ~, Hecozone)   
-  global metaData eco_types hecozones 
-  set(hecozones,'Position',[250 20 1200 850]); % ecozone figure large size
+  global metaData eco_types hecozones hoceans
+  set(hecozones,'Position',[250 20 1200 850]); % ecozone figures large size
+  set(hoceans,  'Position',[250 20 1200 850]); % ecozone figures large size
   ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); 
   ecozoneCodeList = ecozoneCode;
    for i=1:n_ecozone
@@ -921,7 +924,8 @@ function ecozoneCb(~, ~, Hecozone)
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
-   set(hecozones,'Position',[300  50 500 300]); % ecozone figure normal size
+   set(hecozones,'Position',[300  50 500 300]); % ecozone figures normal size
+   set(hoceans,  'Position',[900  50 500 300]); % ecozone figures normal size
    AmPgui('setColor')
 end
  
