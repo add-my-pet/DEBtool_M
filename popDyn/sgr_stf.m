@@ -102,7 +102,7 @@ function [r, info] = sgr_stf (par, T_pop, f_pop)
   % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
   pars_charEq = {S_b, f, kap, kap_R, kT_M, k, v_Hp, u_E0, L_b, L_p, L_m, tT_p, rT_B, vT, g, s_G, hT_a, h_Bbp, h_Bpi, thinning};
   if charEq(0, pars_charEq{:}) > 0
-    fprintf(['Warning from sgr_stf: no root for the characteristic equation, thinning = ', num2str(thinnig), '\n']);
+    fprintf(['Warning from sgr_stf: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
     r = NaN; info = 0; % no positive r exists
   elseif charEq(r_max, pars_charEq{:}) < 0
     [r, info] = nmfzero(@charEq, 0, [], pars_charEq{:});
