@@ -34,15 +34,13 @@ function [lb, tb, info] = get_lb_foetus(p, tb0)
   info = 1;
   if ~exist('tb0', 'var')
     if length(p) < 3
-      fprintf('warning in get_lb_foetus: not enough input parameters, see get_tb_foetus \n');
+      fprintf('Warning from get_lb_foetus: not enough input parameters, see get_tb_foetus \n');
       lb = []; tb = []; info = 0; return;
     end
 
-    tb = get_tb_foetus(p); % get scaled age at birth
+    [tb lb] = get_tb_foetus(p); % get scaled age and length at birth
     info = 1;
   else
     tb = tb0;
   end
 
-  g = p(1);   % energy investment ratio
-  lb = g * tb/ 3;
