@@ -10,7 +10,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques,
 % modified 2015/08/25 by Dina Lika, 
 % modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
-% modified 2019/08/30, 2019/11/12, 2019/12/20  by Nina Marn 
+% modified 2019/08/30, 2019/11/12, 2019/12/20  by Nina Marn
+% modified 2020/10/27 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -38,12 +39,15 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % In grp-plots, colours are assigned from high to low.
 % Since the standard colour for females is red, and for males blue, compose set with females first, then males.
 %
+% If output options -5/5 or 6 are used, and comparison species are included in the traits-table, 
+%   function clade is used to identify related species, unless global refPets is defined in the run-file with names to species to compare with
+%
 % In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species
 % 
 % For curators: 
 % my_pet_res.html is written in the directory entries, and deleted by run_collection, which writes another file with that name in directory entries_web.
 
-  global pets results_output 
+  global pets refPets results_output 
   
   n_pets = length(pets);
   parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
@@ -300,16 +304,28 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        if isempty(refPets)
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))
+        else
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, refPets)  
+        end
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+        if isempty(refPets)
+          prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData))) 
+        else
+          prt_report_my_pet({parPets, metaPar, txtPar, metaData}, refPets) 
+        end
       end
     case -5 % save to .mat, save to png, print to screen, implied properties to html, including related species
       prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        if isempty(refPets)
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        else
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, refPets) 
+        end
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
@@ -318,11 +334,19 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        if isempty(refPets)
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, clade(metaData.species))  
+        else
+          prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, refPets) 
+        end
         prt_my_pet_pop({metaData, metaPar, par}, [], '0.5'); % my_pet_pop.html, assuming that reprodCode is 'O'
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
-        prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
+        if isempty(refPets)
+          prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))
+        else
+          prt_report_my_pet({parPets, metaPar, txtPar, metaData}, refPets)
+        end
       end
   end
    
