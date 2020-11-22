@@ -153,7 +153,7 @@ function page = fig(n)
       Berg2007
     case '4.30' % sim
       page = 176;
-      otolith
+      otolith_script
     case '5.1' % fit
       page = 183;
       PostSche89
@@ -192,7 +192,7 @@ function page = fig(n)
       hcb
     case '6.7' % fit
       page = 228;
-      mcn
+      mcn_script
     case '6.8' % fit
       page = 234;
       tox

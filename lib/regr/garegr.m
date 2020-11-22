@@ -56,7 +56,7 @@ function [q, info, endPop, bPop, traceInfo] = garegr(func, p, varargin)
   %  garegr calls for:
   %    User-defined function: 'func'
   %    Crossover Operators:
-  %      simplexover heuristicxover arithxover 
+  %      simplexover heuristicXover arithXover 
   %    Mutation Operators:
   %      boundarymutation multinonunifmutation nonunifmutation unifmutation
   %    Selection Functions:
@@ -160,7 +160,7 @@ function [q, info, endPop, bPop, traceInfo] = garegr(func, p, varargin)
   %   xOverOpts  - A matrix of options to pass to Xover.m files with the
   %                first column being the number of that xOver to perform
   %                similiarly for mutation ([2 0;2 3;2 0])
-  xOverFNs = char('arithxover', 'heuristicxover', 'simplexover');
+  xOverFNs = char('arithXover', 'heuristicXover', 'simpleXover');
   xOverOpts = [2 0; 2 3; 2 0];
 
   %   mutFNs     - a string containing blank seperated names of mutation.m 

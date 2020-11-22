@@ -86,7 +86,7 @@ subplot(1,2,1);
 %% gset output 'macabail29_al.ps'
 plot(a, LFS, 'r', a, LMS, 'b', ...
     aLF(:,1), aLF(:,2), '.r', aLM(:,1), aLM(:,2), '.b')
-legend('female', 'male',1)
+legend('female', 'male')
 xlabel('age, d')
 ylabel('length, mm')
 

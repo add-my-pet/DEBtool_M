@@ -1,4 +1,4 @@
-function [c1,c2] = simplexover(p1,p2,bounds,Ops)
+function [c1,c2] = simpleXover(p1,p2,bounds,Ops)
   %  Simple crossover takes two parents P1,P2 and performs simple single point
   %  crossover.  
   % 

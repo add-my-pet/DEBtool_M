@@ -164,7 +164,7 @@ par_txt = {'NEC'; 'tolerance conc'; 'elimination rate'; ...
 p_ha = [ .017 1;  .1003 1; 0.05 1;
 	   .8 0;   .95 0;  .15 0;
 	  3.6 0;   4.1 0; 1.62 0;
-	 .002 1;  .119 1;  0.8 0];
+	 .002 1;  .119 1;  0.8 0; 1 0];
 
 nrregr_options('max_step_number',20)
 nmregr_options('default')
@@ -187,7 +187,7 @@ pause;
 p_co = [ .017 1; .023 1;.0138 1;
 	   .8 0;  .95 0;  .15 0;
 	  3.6 0;  4.1 0; 1.62 0;
-	.0022 1; .126 1;  0.8 0];
+	.0022 1; .126 1;  0.8 0; 1 0];
 p_co = nmregr2('corep', p_co, t, c, R);
 [cov, cor, sd, ssq] = pregr2('corep', p_co, t, c, R);
 fprintf('costs model \n');

@@ -41,8 +41,9 @@ function Lt = asigrowth(p, t, c)
   nt = length(t);
   % Make sure that initial state vector corresponds to t = 0
   if t(1) == 0
+    t = [t; t(end)+1e-6];
     [t, Xt] = ode23('dasigrowth', t, X0); % integrate changes in state
-    Lt = Xt(:,1:nc); % select lengths only
+    Lt = Xt(2:nt+1,1:nc); % select lengths only
   elseif nt > 1
     t = [0;t]; 
     [t, Xt] = ode23('dasigrowth', t, X0); % integrate changes in state

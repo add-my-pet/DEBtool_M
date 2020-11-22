@@ -32,11 +32,11 @@ muY_Pd = [691.99958    0.50723;
   253.00042    0.11755];
 
 nrregr_options('report',0);
-p = nrregr('linear', [0 0; 1 1], [muY_Pa; muY_Pd]);
-[cov cor sd] = pregr('linear', p, [muY_Pa; muY_Pd]);
+p = nrregr('linear_r', [0 0; 1 1], [muY_Pa; muY_Pd]);
+[cov cor sd] = pregr('linear_r', p, [muY_Pa; muY_Pd]);
 printpar({'prop constant'}, p(2,1), sd(2));
 mu = [0 700]';
-h = linear(p(:,1), mu);
+h = linear_r(p(:,1), mu);
 nrregr_options('report',1);
 
 %% gset term postscript color solid  'Times-Roman' 35
@@ -45,6 +45,6 @@ nrregr_options('report',1);
 plot(muY_Pa(:,1), muY_Pa(:,2), '.g', ...
      muY_Pd(:,1), muY_Pd(:,2), '.b', ...
      mu, h, '-r')
-legend('Pseudomonas oxalaticus', 'Paracossus denitrificans', 4);
+legend('Pseudomonas oxalaticus', 'Paracossus denitrificans');
 xlabel('chem potential substrate, kJ/C-mol')
 ylabel('yield Y_WX, C-mol/C-mol')

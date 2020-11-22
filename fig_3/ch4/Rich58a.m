@@ -33,6 +33,6 @@ t = linspace(0,5.5,100)';
 
 plot(t, O2, '-r' , t, CO2, '-b', ...
     tO2(:,1), tO2(:,2), '.r', tCO2(:,1), tCO2(:,2), '.b')
-legend('O2', 'CO2', 1);
+legend('O2', 'CO2');
 xlabel('time, d')
 ylabel('O2, CO2 flux, mul/h')

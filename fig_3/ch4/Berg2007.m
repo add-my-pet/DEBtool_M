@@ -38,7 +38,7 @@
 %%    gset xrange [0:1]
 %%    gset ytics .002
 %%    gset yrange [0:.01]
-    plot(F, data(:,1), '+b', F, Vc, '*g', FF, VV, 'r', FLb, VLb, 'm', \
+    plot(F, data(:,1), '+b', F, Vc, '*g', FF, VV, 'r', FLb, VLb, 'm', ...
 	 lb, VLb(10), '*m')
 
     subplot(1,2,2)

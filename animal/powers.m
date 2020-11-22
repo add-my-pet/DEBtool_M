@@ -18,7 +18,7 @@ function [p, e_l, p_C] = powers (l, f)
   %% Code
   global l_b l_p l_h g kap kap_R p_ref;
 
-  nl=size(l(:)); % nl = number of scaled lengths
+  nl=size(l(:),1); % nl = number of scaled lengths
   p =zeros(nl,8);     % initiate matrix of scaled powers
   e_l =f.*ones(nl,1); % initiate vector of scaled reserve densities
 

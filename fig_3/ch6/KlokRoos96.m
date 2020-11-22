@@ -4,7 +4,7 @@
 
 %% Effect of CuCl_2 on body growth of Lumbricus rubellus
 
-t = [29.4483 57.2128 84.9764 112.7409 154.3871 196.0334]';
+t = [29.4483 57.2128 84.9764 112.7409 154.3871 196.0334]'; t1=t;
 c = [13 60 145 362]';
 L = [4.8559  4.6815  4.0897  2.5763;
      7.4308  7.3061  6.2675  5.1526;
@@ -30,5 +30,5 @@ printpar(par_txt, p_asi, sd);
 %% gset output 'KlokRoos96.ps'
 
 shregr2_options('all_in_one',1)
-shregr2('asigrowth',p_asi, t, c, L);
+shregr2('asigrowth',p_asi, t1, c, L);
 title('L. rubellus in CuCl2; assimilation model')

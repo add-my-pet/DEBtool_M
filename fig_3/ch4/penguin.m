@@ -145,5 +145,5 @@ set(get(AX(2), 'Ylabel'), 'String', 'scaled food intake, cm^2')
 set(H1, 'LineStyle', '-'); set(H1, 'Color', 'r');
 set(H2, 'LineStyle', '-'); set(H2, 'Color', 'g');
 x = [0; 0]; plot([0;0], [0; 1e-4], '-g', tL_Af(:,1), tL_Af(:,2), '.g');
-legend('weight', 'food intake', 2); % reversed order; bug in Matlab?
+legend('weight', 'food intake'); % reversed order; bug in Matlab?
 xlabel('age, d');

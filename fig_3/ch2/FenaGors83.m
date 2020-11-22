@@ -39,7 +39,7 @@ nrregr_options('report',1);
 subplot(1,2,1);
 %% gset output 'FenaGors83.ps'
 plot(a, L, '-g', a, Lt, '-r' , aLw(:,1), aLw(:,2), '.g', aRw(:,1), aRw(:,2), '.r');
-legend('true trunc', 'total trunc', 4);
+legend('true trunc', 'total trunc');
 xlabel('age, d');
 ylabel('length, mm');
 

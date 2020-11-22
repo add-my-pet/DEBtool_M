@@ -14,8 +14,8 @@ function [H, a, info] = maturity(L, f, p)
   % Input
   %
   % * L: n-vector with length, ordered from small to large 
+  % * f: scalar with (constant) scaled functional response
   % * p: 9-vector with parameters (see below)
-  % * F: scalar with (constant) scaled functional response
   %
   % Output
   %

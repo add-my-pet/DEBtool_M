@@ -35,7 +35,7 @@ k =  0.1;
         tc0_01(:,1), tc0_01(:,2), '-y', ...
         tl(:,1), tl(:,2), '-c', ...
         tR(:,1), tR(:,2), '-m')
-  legend('10', '2', '1', '0.5', '0.1', 'length', 'reprod', 4);
+  legend('10', '2', '1', '0.5', '0.1', 'length', 'reprod');
   title('cV(0) = 0'); % set yrange [0:1] 
   %% gset key 1.4, .6 title 'k_e/r_B'
   xlabel('scaled time'); ylabel('scaled tissue concentration');
@@ -48,7 +48,7 @@ k =  0.1;
        tc1_01(:,1), tc1_01(:,2), '-y', ...
        tl(:,1), tl(:,2), '-c', ...
        tR(:,1), tR(:,2), '-m');
-  legend('10', '2', '1', '0.5', '0.1', 'length', 'reprod', 4);
+  legend('10', '2', '1', '0.5', '0.1', 'length', 'reprod');
   title('cV(0) = 1'); % set yrange [0:1]
   %% gset key 1.4,.6 title 'k_e/r_B'
   xlabel('scaled time'); ylabel('scaled tissue concentration');

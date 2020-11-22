@@ -1,4 +1,4 @@
-function [c1,c2] = heuristicxover(p1,p2,bounds,Ops)
+function [c1,c2] = heuristicXover(p1,p2,bounds,Ops)
   %  Heuristic crossover takes two parents P1,P2 and performs an extrapolation
   %  along the line formed by the two parents outward in the direction of the
   %  better parent.

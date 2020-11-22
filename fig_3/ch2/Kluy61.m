@@ -79,6 +79,6 @@ F_f = fbert (pfeeding_f(:,1), aF);
 F_m = fbert (pfeeding_m(:,1), aF);
 plot (aF, F_f, '-r', aF, F_m, '-b',  ...
       aF_m(:,1), aF_m(:,2), '.b' , aF_f(:,1), aF_f(:,2), '.r');
-legend('female', 'male', 4);
+legend('female', 'male');
 xlabel('age, d');
 ylabel('feeding rate, g/d');

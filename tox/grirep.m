@@ -42,7 +42,7 @@ function Nt = grirep(p, t, c)
   %% elimination rate ke at p(3) is not used
   %% it is still present for consistency with grrep
 
-  H0 = maturity(L0, 1, [p(4:8), 0, p(9:11)]); % initial scaled maturity
+  H0 = maturity(L0, 1, [p(4:8); 0; p(9:11)]); % initial scaled maturity
   U0 = L0^3/ v; % initial reserve at max value
   %% initialize state vector; catenate to avoid loops
   X0 = [zeros(nc,1);     % N: cumulative number of offspring
@@ -67,8 +67,9 @@ function Nt = grirep(p, t, c)
   nt = size(t,1);
   %% Make sure that initial state vector corresponds to t = 0
   if t(1) == 0
+    t = [t; t(end)+1e-6];
     [t, Xt] = ode23('dgrirep', t, X0); % integrate changes in state
-    Nt = Xt(:,1:nc);
+    Nt = Xt(2:nt+1,1:nc);
   elseif nt > 1
     t = [0;t]; 
     [t, Xt] = ode23('dgrirep', t, X0); % integrate changes in state

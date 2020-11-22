@@ -124,8 +124,8 @@ p = [Vb 0; Vi 0; rB 0; kM 0; 1e-2 1]; p = nrregr('bertLh', p, H5);
 h5 = bertLh(p(:,1), a); H(5,2) = p(5,1);
 
 %% fit linear relationship between aging acceleration and feeding level
-pH = nrregr('linear', [5e-4 0;1 1], H);
-XH = [0 250]'; HH = linear(pH(:,1), XH);
+pH = nrregr('linear_r', [5e-4 0;1 1], H);
+XH = [0 250]'; HH = linear_r(pH(:,1), XH);
 
 nrregr_options('report',1);
 

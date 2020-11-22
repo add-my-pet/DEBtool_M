@@ -17,11 +17,11 @@ mup = [131 90.128;
 	  657 391.716];
 
 nrregr_options('report',0);
-p = nrregr('linear', [0 0; 1 1],mup);
-[cov cor sd] = pregr('linear',p,mup);
+p = nrregr('linear_r', [0 0; 1 1],mup);
+[cov cor sd] = pregr('linear_r',p,mup);
 printpar({'prop constant'}, p(2,1), sd(2));
 mu = [0 660]';
-h = linear(p(:,1), mu);
+h = linear_r(p(:,1), mu);
 nrregr_options('report',1);
 
 %% gset term postscript color solid  'Times-Roman' 35

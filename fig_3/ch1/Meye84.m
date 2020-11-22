@@ -13,8 +13,8 @@ itt = [32.98757047 -3.394823128;
 
 %% gset nokey;
 nrregr_options('report',0);
-p = nrregr('linear',[1 1]',itt);
+p = nrregr('linear_Ap',[1 1]',itt);
 nrregr_options('report',1);
 shregr_options('xlabel','10^4 T^-1, K^-1');
 shregr_options('ylabel','- ln egg dev. time, d');
-shregr('linear',p,itt)
+shregr('linear_Ap',p,itt)

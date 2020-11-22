@@ -1,4 +1,4 @@
-function [c1, c2] = arithxover(p1, p2, bounds, Ops)
+function [c1, c2] = arithXover(p1, p2, bounds, Ops)
 %  Arith crossover takes two parents P1,P2 and performs an interpolation
 %  along the line formed by the two parents.
 % 

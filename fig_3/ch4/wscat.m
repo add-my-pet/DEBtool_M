@@ -26,7 +26,7 @@ subplot(1,2,1)
 plot(t, mw, '-k', ...
      t, sw(:,10), '-g', t,sw(:, 5), '-b', t,sw(:, 2),'-r', ...
      t, sw(:,90), '-g', t, sw(:,95), '-b', t, sw(:,99), '-r')
-legend('mean', '80%', '90%', '98%', 4);
+legend('mean', '80%', '90%', '98%');
 xlabel('scaled time')
 ylabel('scaled weight^1/3')
 

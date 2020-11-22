@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>maturity</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-04"><meta name="DC.source" content="maturity.m"><style type="text/css">
+      --><title>maturity</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-22"><meta name="DC.source" content="maturity.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>maturity</h1><!--introduction--><p>calculates the scaled maturity</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, a, info] = <a href="../maturity.m"><b>maturity</b></a> (L, f, p)</p><h2 id="4">Description</h2><p>calculates the scaled maturity UH = MH/ {JEAm} at constant food density.</p><p>Input</p><div><ul><li>L: n-vector with length, ordered from small to large</li><li>p: 9-vector with parameters (see below)</li><li>F: scalar with (constant) scaled functional response</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm}</li><li>a: n-vactor with ages at which lengths are reached</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
+  </style></head><body><div class="content"><h1>maturity</h1><!--introduction--><p>calculates the scaled maturity</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, a, info] = <a href="../maturity.m"><b>maturity</b></a> (L, f, p)</p><h2 id="4">Description</h2><p>calculates the scaled maturity UH = MH/ {JEAm} at constant food density.</p><p>Input</p><div><ul><li>L: n-vector with length, ordered from small to large</li><li>f: scalar with (constant) scaled functional response</li><li>p: 9-vector with parameters (see below)</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm}</li><li>a: n-vactor with ages at which lengths are reached</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
 See &lt;maturity_j.html *maturity_j*&gt; for type M accleration and
 &lt;maturity_s.html *maturity_s*&gt; for delayed type M acceleration.</pre><h2 id="6">Example of use</h2><pre>[H, a, info] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -75,7 +75,7 @@ See &lt;maturity_j.html *maturity_j*&gt; for type M accleration and
 
 %%
 function [H, a, info] = maturity(L, f, p)
-  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03
+  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03, 2019/06/01
   
   %% Syntax
   % [H, a, info] = <../maturity.m *maturity*> (L, f, p)
@@ -86,8 +86,8 @@ function [H, a, info] = maturity(L, f, p)
   % Input
   %
   % * L: n-vector with length, ordered from small to large 
+  % * f: scalar with (constant) scaled functional response
   % * p: 9-vector with parameters (see below)
-  % * F: scalar with (constant) scaled functional response
   %
   % Output
   %
@@ -131,7 +131,10 @@ function [H, a, info] = maturity(L, f, p)
 
   options = odeset('Events', @event_length); 
   [t, luEuH, t_l, luEuH_l, event_l] = ode23(@dget_luEuH, [0; 1e20], [1e-10; uE0; 0], options, l, f, kap, g, k, lT, uHb, uHp);
-  [l in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
+  if length(t) < length(l)
+    event_l = [1; event_l]; t_l = [0; t_l]; luEuH_l = [[0, uE0, 0]; luEuH_l];
+  end
+  [l, in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
 
 end
 

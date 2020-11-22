@@ -33,7 +33,7 @@ function shstate2 (j)
   %% xlabel('time'); ylabel('structures');
   [x, val, err] = fsolve('dstat2',X0(nt,:)', opt);
   X(i,:) = x';
-  if err ~= 1 || sum(x>0) < length(x)
+  if err ~= 1 | sum(x>0) < length(x)
     fprintf(['convergence problems for initial h = ', num2str(h), '\n']);
     return; % hopeless if first throughput already failed
   end
@@ -44,7 +44,7 @@ function shstate2 (j)
     J1_Sr = S1_r*h; J2_Sr = S2_r*h;
     x0 =  X(i-k+1,:)'; % set start value for new state variables
     [x, err] = fsolve('dstat2', x0', opt); X(i-k,:) = x';
-    if err ~= 1 || sum(x>0) < length(x) % if no convergence, then first integrate
+    if err ~= 1 | sum(x>0) < length(x) % if no convergence, then first integrate
       x0([5 7]) = max(1,x0([5 7])); [t X0]  = ode45 ('dstate2', t, x0);
       %% plot (t, X0(:,5), 'b', t, X0(:,7), 'r'); pause(1);
       %% ttext = ['down h = ', num2str(h)]; title(ttext);
@@ -52,21 +52,21 @@ function shstate2 (j)
       [x, val, err] = fsolve('dstat2', max(0.5, X0(nt,:)'),opt);
       X(i-k,:) = x';
     end
-    if err ~= 1 || sum(x>0) < length(x) % if still no convergence then report
+    if err ~= 1 | sum(x>0) < length(x) % if still no convergence then report
       fprintf(['convergence problems for h = ', num2str(h), '\n']);
       %% X(i-k,:)=[]; H(i-k)=[]; i=i-1 # remove bad value 
     end
 
   end
 
-  while X(i,:)>1e-4 && i<nh
+  while X(i,:)>1e-4 & i<nh
                 %% from initial throughput up to max throughput
     i = i+1;
     h = H(i); h1_S = h; h2_S = h; h1_P = h; h2_P = h; h1_V = h; h2_V = h; 
     J1_Sr = S1_r*h; J2_Sr = S2_r*h;
     x0 = X(i-1,:)'; % set start value for new state variables
     [x, val, err] = fsolve('dstat2', x0', opt); X(i,:) = x';
-    if err ~= 1 || sum(x>0) < length(x) % if no convergence, then first integrate
+    if err ~= 1 | sum(x>0) < length(x) % if no convergence, then first integrate
       x0([5 7]) = max(1,x0([5 7])); [t, X0]  = ode45 ('dstate2', t, x0);
       %% plot (t, X0(:,5), 'b', t, X0(:,7), 'r'); pause(1);
       %% ttext = ['up h = ', num2str(h)]; title(ttext);
@@ -74,7 +74,7 @@ function shstate2 (j)
       [x, val, err] = fsolve('dstat2', max(0.5, X0(nt,:)'), opt);
       X(i,:) = x';    
     end
-    if err ~= 1 || sum(x>0) < length(x)  % if still no convergence then report
+    if err ~= 1 | sum(x>0) < length(x)  % if still no convergence then report
       fprintf(['convergence problems for h = ', num2str(h), '\n']);
     end
   end
