@@ -51,7 +51,7 @@ nrregr_options('report',1);
 
 hold on
 plot(tOD(:,1), tOD(:,2), '.g', t, eODm, 'b', t, eOD, '-r')
-legend('S. typhimurium', 'Monod', 'expologist', 1)
+legend('S. typhimurium', 'Monod', 'expologist')
 [AX, H1, H2] = plotyy(0,0,teK(:,1), teK(:,2));
 set(H2, 'Color', 'r');
 [AX, H3, H4] = plotyy(0,0,teKm(:,1), teKm(:,2));

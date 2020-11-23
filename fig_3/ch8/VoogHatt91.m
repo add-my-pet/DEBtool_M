@@ -37,8 +37,8 @@ lklk = [ ...
 1.89323843		0.797174472;
 2.10676157		0.796581352];
 
-p = nrregr('lin05', 1, lklk);
-x = [.7 ;6.5]; y = lin05(p(1,1), x);
+p = nrregr('propto', 1, lklk);
+x = [.7 ;6.5]; y = propto(p(1,1), x);
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'VoogHatt91.ps'

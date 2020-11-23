@@ -191,9 +191,9 @@ Pu = [-2.11821  -2.30104;
   -3.13527  -2.69898;
   -1.66667  -1.00000];
 
-p = nrregr('linear', [1 1; 1 0], [Pl; Pm; Pu]);
+p = nrregr('linear_r', [1 1; 1 0], [Pl; Pm; Pu]);
 
-lP = [-4 1]'; ek = linear(p(:,1), lP);
+lP = [-4 1]'; ek = linear_r(p(:,1), lP);
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'Hend95.ps'

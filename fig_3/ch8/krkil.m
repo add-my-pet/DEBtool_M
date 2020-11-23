@@ -85,14 +85,14 @@ Pephenol =[ ...
 
 nrregr_options('default');
 
-pben = nrregr('linear',[1 1; 1 0],Pebenz);
-palif =  nrregr('linear',[1 1; 1 0],Pealifat);
-pphenol =  nrregr('linear',[1 1; 1 0],Pephenol);
+pben = nrregr('linear_r',[1 1; 1 0],Pebenz);
+palif =  nrregr('linear_r',[1 1; 1 0],Pealifat);
+pphenol =  nrregr('linear_r',[1 1; 1 0],Pephenol);
 		
 P = [1;7];
-EPben = [P, linear(pben(:,1),P)];
-EPalif = [P, linear(palif(:,1),P)];
-EPphenol = [P, linear(pphenol(:,1),P)];
+EPben = [P, linear_r(pben(:,1),P)];
+EPalif = [P, linear_r(palif(:,1),P)];
+EPphenol = [P, linear_r(pphenol(:,1),P)];
 
 %% gset term postscript color solid 'Times-Roman' 3%
 %% gset output 'krkil.ps'

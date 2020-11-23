@@ -44,11 +44,11 @@ ia = [ia1; ia2; ia3; ia4; ia5];
 %% gset output 'ass.ps'
 
 nrregr_options('report',0);
-p = nrregr('linear', [0 0; 1 1], ia);
-[cov cor sd] = pregr('linear', p, ia);
+p = nrregr('linear_r', [0 0; 1 1], ia);
+[cov cor sd] = pregr('linear_r', p, ia);
 printpar({'prop constant'}, p(2,1), sd(2));
 ing = [0 1.1]';
-assim = linear(p(:,1), ing);
+assim = linear_r(p(:,1), ing);
 nrregr_options('report',1);
 
 plot(ia1(:,1), ia1(:,2), '.g', ...

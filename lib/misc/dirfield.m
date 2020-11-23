@@ -28,7 +28,7 @@ function f = dirfield(nm, x, y, d)
 
   %% Example of use
   % see fig_9_2 in toolbox fig_3. 
-
+  
   nx = length(x); ny = length(y); f = zeros(nx * ny, 4);
 
   for i = 1:nx

@@ -69,8 +69,8 @@ n = length(Pnec); Pnec = Pnec(1:2:n,:);
 Pnec = unscale(Pnec, [57 1.5],[41.778 -3.5],[297 5.5],[281.778 0.5]);
 
 nrregr_options('default');
-p = nrregr('linear',[1 1; -1 0],Pnec);
-P = [1.5;5.5]; EPnec = [P, linear(p,P)];
+p = nrregr('linear_r',[1 1; -1 0],Pnec);
+P = [1.5;5.5]; EPnec = [P, linear_r(p,P)];
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'benznec.ps'

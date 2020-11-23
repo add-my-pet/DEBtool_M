@@ -59,8 +59,8 @@ n = length(Pk); Pk = Pk(1:2:n,:);
 Pk = unscale(Pk, [64 1.5], [41.778 0], [304 5.5], [281.778 4]);
 
 nrregr_options('default');
-p = nrregr('linear',[1 1; 1 0;],Pk);
-P = [1.5;5.5]; EPk = [P, linear(p(:,1),P)];
+p = nrregr('linear_r',[1 1; 1 0;],Pk);
+P = [1.5;5.5]; EPk = [P, linear_r(p(:,1),P)];
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'benzkil.ps' 

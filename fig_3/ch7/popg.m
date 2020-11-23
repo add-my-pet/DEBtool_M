@@ -103,7 +103,7 @@ ylabel('spec pop growth rate, 1/h')
 subplot(1,2,2)
 %% gset output 'Senn89.ps'
 plot(X_a, r, 'r', X_a1, r, 'b',cr_a(:,1), cr_a(:,2), '.g')
-legend('time in sample =  0', 'time in sample > 0', 4)
+legend('time in sample =  0', 'time in sample > 0')
 title('E. coli, glucose limited')
 xlabel('glucose. mg/l')
 ylabel('spec pop growth rate, 1/h')

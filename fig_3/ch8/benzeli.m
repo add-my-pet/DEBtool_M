@@ -37,8 +37,8 @@ Pe = unscale(Pe, [66 1.5],[41.778 -1.5],[306 5.5],[281.778 2.5]);
 
 
 nrregr_options('default');
-p = nrregr('linear',[1 1; -.5 0],Pe);
-P = [1.5; 5.5]; EPe = [P, linear(p,P)];
+p = nrregr('linear_r',[1 1; -.5 0],Pe);
+P = [1.5; 5.5]; EPe = [P, linear_r(p,P)];
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'benzeli.ps'

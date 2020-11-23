@@ -50,14 +50,14 @@ Pebiocyd =[ ...
 
 nrregr_options('default');
 
-paldehyd = nrregr('linear',[1 1; -1 0],Pealdehyd);
-palif =  nrregr('linear',[1 1; -1 0],Pealifat);
-pbiocyd =  nrregr('linear',[1 1; -1 0],Pebiocyd);
+paldehyd = nrregr('linear_r',[1 1; -1 0],Pealdehyd);
+palif =  nrregr('linear_r',[1 1; -1 0],Pealifat);
+pbiocyd =  nrregr('linear_r',[1 1; -1 0],Pebiocyd);
 		
 P = [-1;6];
-EPaldehyd = [P, linear(paldehyd(:,1),P)];
-EPalif = [P, linear(palif(:,1),P)];
-EPbiocyd = [P, linear(pbiocyd(:,1),P)];
+EPaldehyd = [P, linear_r(paldehyd(:,1),P)];
+EPalif = [P, linear_r(palif(:,1),P)];
+EPbiocyd = [P, linear_r(pbiocyd(:,1),P)];
 
 %% gset term postscript color solid 'Times-Roman' 35
 %% gset output 'KooyBaas2007a.ps'

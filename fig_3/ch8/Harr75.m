@@ -728,7 +728,7 @@ Ab_p = [ ...
 subplot(1,2,1); hold on;
 plot(ab_p(:,1), ab_p(:,2), '.r', [.5; 2.6],  [1;  1.538], '-r', ...
      ab(:,1), ab(:,2), '.g', [-.2; 2.6], [1.15; 1.15 + .7], '-r')
-legend('tube noses', 'slope .25', 2);
+legend('tube noses', 'slope .25');
 xlabel('log10 egg weight, g')
 ylabel('log10 incubation time, d')
 %% set yrange [.9:2]
@@ -737,7 +737,7 @@ title('uncorrected times for European birds')
 subplot(1,2,2)
 plot(Ab_p(:,1), Ab_p(:,2), '.r', [.5; 2.6],  [1;  1.538], '-r', ...
      Ab(:,1), Ab(:,2), '.g', [-.2; 2.6], [1.15; 1.15 + .7], '-r')
-legend('tube noses', 'slope .25', 2);
+legend('tube noses', 'slope .25');
 xlabel('log10 egg weight, g')
 ylabel('log10 incubation time, d')
 %% set yrange [.9:2]
