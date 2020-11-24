@@ -210,7 +210,11 @@ if color == 1 && n_spec > 2
   for i = 1:length(fldsPar)
     pari = zeros(n_spec-1,1);
     for k = 2:n_spec % fill parameters
-      pari(k-1) = parList.(specList{k}).(fldsPar{i});
+      if isfield(parList.(specList{k}),(fldsPar{i}))
+        pari(k-1) = parList.(specList{k}).(fldsPar{i});
+      else
+        pari(k-1) = NaN;
+      end
     end
     pariMean = mean(pari); pariVar = max(1e-4, var(pari)); 
     eccPar(i) = (parList.(specList{1}).(fldsPar{i}) - pariMean)^2/ pariVar;  
