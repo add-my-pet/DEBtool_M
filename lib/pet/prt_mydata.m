@@ -184,9 +184,10 @@ fprintf(fid, 'auxData.temp = temp;\n');
 fprintf(fid, 'txtData.units = units;\n');
 fprintf(fid, 'txtData.label = label;\n');
 fprintf(fid, 'txtData.bibkey = bibkey;\n');
-if isfield(txtData, 'comment')
-  fprintf(fid, 'txtData.comment = comment;\n\n');
+if isfield(txtData, 'comment') & ~isempty(txtData.comment)
+  fprintf(fid, 'txtData.comment = comment;\n');
 end
+fprintf(fid, '\n');
 
 %% Group plots
 if isfield(metaData, 'grp')

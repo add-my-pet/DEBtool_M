@@ -607,7 +607,7 @@ else % fill fields
       list_backup = list_res(Contains(list_res,'_backup')); n_backup = length(list_backup);
       if n_backup > 0
         load(list_backup{1})  
-      elseif (n_res - list_backup) == 1
+      elseif (n_res - n_backup) == 1
         load(list_res{1});
         AmPgui('color')
       elseif n_res == 0
