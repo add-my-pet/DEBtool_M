@@ -896,7 +896,7 @@ function climateCb(~, ~, Hclimate)
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); 
     i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);  
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[205 450], 'InitialValue',i_climate);  
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
   set(hclimateLand,'Position',[300 450 500 300]); % climate figure normal size
