@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_lf_distribution</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-03"><meta name="DC.source" content="get_lf_distribution.m"><style type="text/css">
+      --><title>get_lf_distribution</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-06"><meta name="DC.source" content="get_lf_distribution.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
   </style></head><body><div class="content"><h1><a href="../get_lf_distribution.m"><b>get_lf_distribution</b></a></h1><!--introduction--><p>created by Dina Lika 2018/08/27</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input</a></li><li><a href="#4">Output</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="1">Syntax</h2><p>[p_vec, lf] = <a href="../get_lf_distribution.m"><b>get_lf_distribution</b></a>(nTrials, nCont)</p><h2 id="2">Description</h2><p>Calibration step for the interval estimation Calculates the global minima of the loss function, that correspond with nTrials, say 500 or 1000, Monte Carlo simulations of data that has a scatter equal to the observed scatter.</p><p>The theory is discussed in Marques et al. 2018. "Fitting Multiple Models to Multiple Data Sets". J Sea Research, doi.org/10.1016/j.seares.2018.07.004</p><h2 id="3">Input</h2><div><ul><li>nTrials: number of Monte Carlo data sets</li><li>nCont: number of continuations</li></ul></div><h2 id="4">Output</h2><div><ul><li>lf: vector with the values of the loss function</li><li>p_vec: matrix with the (free) parameter values</li><li>name_par: names of free parameters</li></ul></div><h2 id="5">Example of use</h2><pre>get_lf_distribution(10, 5); % for 10 MonteCarlo  trials and 5
-continuations of the estimation</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+continuations of the estimation</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% <../get_lf_distribution.m *get_lf_distribution*>
 % created by Dina Lika 2018/08/27
