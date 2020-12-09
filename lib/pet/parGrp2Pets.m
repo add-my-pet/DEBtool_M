@@ -39,7 +39,7 @@ function parPets = parGrp2Pets(parGrp)
   
   parNms = fieldnames(parGrp); n_parNms = length(parNms);
   vec_zeros = zeros(n_pets,1); % for expansion of free settings
-  
+    
   % map group-specification to single-species specification
   for i = 1:n_pets         % scan pets
     pari = parGrp;         % prepare parameters for pet i
