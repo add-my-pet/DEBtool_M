@@ -41,6 +41,6 @@ function [lb, tb, info] = get_lb_foetus(p, tb0)
     [tb, lb] = get_tb_foetus(p); % get scaled age and length at birth
     info = 1;
   else
-    tb = tb0;
+    tb = tb0; lb = [];
   end
 
