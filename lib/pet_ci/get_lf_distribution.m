@@ -1,5 +1,5 @@
 %% <../get_lf_distribution.m *get_lf_distribution*>
-% created by Dina Lika 2018/08/27
+% created by Dina Lika 2018/08/27; modified 2020/12/12
   %% Syntax
   % [p_vec, lf] = <../get_lf_distribution.m *get_lf_distribution*>(nTrials, nCont)
   %
@@ -39,14 +39,14 @@ nmregr_options('report', 0);  % does not report to screen to save time
 
 [data, auxData, metaData, txtData, weights] = feval(['mydata_', pet]); 
 [par, metaPar, txtPar] = feval(['pars_init_', pet], metaData);
-[prdData, info] = feval(['predict_',pet], par, data, auxData); 
+[prdData0, info] = feval(['predict_',pet], par, data, auxData); 
 filternm = ['filter_', metaPar.model];
 
 % compute cv to be used to generate new datasets
 % cv = the mean of the absolute difference between observed and predicted 
 % values divided by the predicted value
 st = data; 
-[nm, nst] = fieldnmnst_st(prdData); % nst: number of data sets, take the field from prdData to exclude pseudo-data
+[nm, nst] = fieldnmnst_st(prdData0); % nst: number of data sets, take the field from prdData to exclude pseudo-data
 cv_vec = zeros(nst,1);
 for i = 1:nst   % makes st only with dependent variables
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
@@ -55,7 +55,7 @@ for i = 1:nst   % makes st only with dependent variables
     if k >= 2
         st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
     end
-    prdAux  = getfield(prdData, fieldsInCells{1}{:});
+    prdAux  = getfield(prdData0, fieldsInCells{1}{:});
     dataAux = getfield(st, fieldsInCells{1}{:});
     cv_vec(i) = sum(abs(dataAux-prdAux)./prdAux)/length(prdAux);
 end
@@ -66,8 +66,7 @@ cv = mean(cv_vec);
 p_vec=[]; lf = zeros(nTrials,1); 
 for j=1:nTrials
      fprintf(['Trial ', num2str(j), '\n']);
-    [prdData, info] = feval(['predict_',pet], par, data, auxData);
-    newData = generate_data(data, prdData, cv);  % generate new datasets
+    newData = generate_data(data, prdData0, cv);  % generate new datasets
     % estimate parameters with the newData set, nCont continuations
     for k =1:nCont
         [par, info, nsteps] = petregr_f(@predict_data_psd, par, newData, auxData, weights, filternm);
