@@ -3,7 +3,7 @@
 
 %%
 function par = get_pars_8(data, fixed_par, chem_par)
-  % created 2015/01/19 by Bas Kooijman
+  % created 2015/01/19 by Bas Kooijman, modified 2020/12/24
   
   %% Syntax
   % par = <../get_pars_8.m *get_pars_8*> (data, fixed_par, chem_par)
@@ -63,7 +63,7 @@ function par = get_pars_8(data, fixed_par, chem_par)
   %  a_b, a_p, a_m and R_m are temp-corrected to T_ref = 293 K
   %  absence of acceleration
   %  {p_T} = 0     % J/d.cm^2, surf-spec som maint
-  if exist('fixed_par','var') == 0
+  if exist('fixed_par','var') == 0 || isempty(fixed_par)
      k_J = 0.002;          % 1/d, maturity maintenance rate coefficient
      s_G = 1e-4;           % -, Gopertz stress coefficient (= small)
      kap_R = 0.95;         % -, reproduction efficiency
@@ -74,7 +74,7 @@ function par = get_pars_8(data, fixed_par, chem_par)
      kap_R = fixed_par(3); % -, reproduction efficiency
      kap_G = fixed_par(4); % -, growth efficiency
   end
-  if exist('chem_par', 'var') == 0
+  if exist('chem_par', 'var') == 0 || isempty(chem_par)
   %  C:H:O:N = 1:1.8:0.5:0.15
      w_V = 23.9;   % g/C-mol, molecular weight of structure
      w_E = 23.9;   % g/C-mol, molecular weight of reserve

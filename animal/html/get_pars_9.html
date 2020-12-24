@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_pars_9</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-03-10"><meta name="DC.source" content="get_pars_9.m"><style type="text/css">
+      --><title>get_pars_9</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-24"><meta name="DC.source" content="get_pars_9.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,8 +55,18 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>get_pars_9</h1><!--introduction--><p>Obtains 9 DEB parameters from 9 data points at abundant food</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>par = <a href="../get_pars_9.m"><b>get_pars_9</b></a> (data, fixed_par, chem_par)</p><h2>Description<a name="4"></a></h2><p>Obtains 9 DEB parameters from 9 data points at abundant food. Accounts for type M acceleration</p><p>Input</p><pre>data: 9-vector with zero-variate data</pre><pre>  d_V: g/cm^3 specific density of structure
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_pars_9</h1><!--introduction--><p>Obtains 9 DEB parameters from 9 data points at abundant food</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2 id="3">Syntax</h2><p>par = <a href="../get_pars_9.m"><b>get_pars_9</b></a> (data, fixed_par, chem_par)</p><h2 id="4">Description</h2><p>Obtains 9 DEB parameters from 9 data points at abundant food. Accounts for type M acceleration</p><p>Input</p><pre>data: 9-vector with zero-variate data</pre><pre>  d_V: g/cm^3 specific density of structure
   a_b: d, age at birth
   a_p: d, age at puberty
   a_m: d, age at death due to ageing
@@ -72,15 +83,14 @@ E_Hb: J, E_H^b, maturity <span class="string">at</span> <span class="string">bir
 E_Hj: J, E_H^j, maturity <span class="string">at</span> <span class="string">metamorphosis</span>
 E_Hp: J, E_H^p, maturity <span class="string">at</span> <span class="string">puberty</span>
 h_a: 1/d^2, ageing <span class="string">acceleration</span>
-</pre><h2>Remarks<a name="5"></a></h2><p>The theory behind this mapping is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html">LikaAugu2014</a>. See <a href="iget_pars_9.html"><b>iget_pars_9</b></a> for the inverse mapping and  <a href="get_pars_2a.html"><b>get_pars_2a</b></a>,  <a href="get_pars_3.html"><b>get_pars_3</b></a>,  <a href="get_pars_4.html"><b>get_pars_4</b></a>,  <a href="get_pars_5.html"><b>get_pars_5</b></a>,  <a href="get_pars_6.html"><b>get_pars_6</b></a>,  <a href="get_pars_6a.html"><b>get_pars_6a</b></a>,  <a href="get_pars_7.html"><b>get_pars_7</b></a>,  <a href="get_pars_8.html"><b>get_pars_8</b></a>,  <a href="get_pars_98.html"><b>get_pars_98</b></a>.</p><h2>Example of use<a name="6"></a></h2><pre>See &lt;../mydata_get_par_9.m *mydata_get_par_9*&gt;</pre><h2>subfunctions<a name="8"></a></h2><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+</pre><h2 id="5">Remarks</h2><p>The theory behind this mapping is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html">LikaAugu2014</a>. See <a href="iget_pars_9.html"><b>iget_pars_9</b></a> for the inverse mapping and  <a href="get_pars_2a.html"><b>get_pars_2a</b></a>,  <a href="get_pars_3.html"><b>get_pars_3</b></a>,  <a href="get_pars_4.html"><b>get_pars_4</b></a>,  <a href="get_pars_5.html"><b>get_pars_5</b></a>,  <a href="get_pars_6.html"><b>get_pars_6</b></a>,  <a href="get_pars_6a.html"><b>get_pars_6a</b></a>,  <a href="get_pars_7.html"><b>get_pars_7</b></a>,  <a href="get_pars_8.html"><b>get_pars_8</b></a>,  <a href="get_pars_98.html"><b>get_pars_98</b></a>.</p><h2 id="6">Example of use</h2><pre>See &lt;../mydata_get_par_9.m *mydata_get_par_9*&gt;</pre><h2 id="8">subfunctions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_pars_9
 % Obtains 9 DEB parameters from 9 data points at abundant food
 
 %%
 function par = get_pars_9(data, fixed_par, chem_par)
-  % created 2013/07/08 by Bas Kooijman; modified 2015/01/17
+  % created 2013/07/08 by Bas Kooijman; modified 2015/01/17, 2020/12/24
   
   %% Syntax
   % par = <../get_pars_9.m *get_pars_9*> (data, fixed_par, chem_par)
@@ -141,9 +151,9 @@ function par = get_pars_9(data, fixed_par, chem_par)
   %  abundant food (f = 1)
   %  a_b, a_p, a_m and R_m are temp-corrected to T_ref = 293 K
   %  p_T = 0;      % J/d.cm^2, {p_T}, surf-spec som maint
-  if exist('fixed_par','var') == 0
+  if exist('fixed_par','var') == 0  || isempty(fixed_par)
      k_J = 0.002;  % 1/d, maturity maintenance rate coefficient 
-     s_G = 1e-4;   % -, Gopertz stress coefficient (= small)
+     s_G = 1e-4;   % -, Gompertz stress coefficient (= small)
      kap_R = 0.95; % -, reproduction efficiency
      kap_G = 0.80; % -, growth efficiency
   else
@@ -152,7 +162,7 @@ function par = get_pars_9(data, fixed_par, chem_par)
      kap_R = fixed_par(3); % -, reproduction efficiency
      kap_G = fixed_par(4); % -, growth efficiency
   end
-  if exist('chem_par', 'var') == 0
+  if exist('chem_par', 'var') == 0 || isempty(chem_par)
   %  C:H:O:N = 1:1.8:0.5:0.15
      w_V = 23.9;   % g/C-mol, molecular weight of structure
      w_E = 23.9;   % g/C-mol, molecular weight of reserve

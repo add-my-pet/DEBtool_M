@@ -3,7 +3,7 @@
 
 %%
 function par = get_pars_9(data, fixed_par, chem_par)
-  % created 2013/07/08 by Bas Kooijman; modified 2015/01/17
+  % created 2013/07/08 by Bas Kooijman; modified 2015/01/17, 2020/12/24
   
   %% Syntax
   % par = <../get_pars_9.m *get_pars_9*> (data, fixed_par, chem_par)
@@ -64,9 +64,9 @@ function par = get_pars_9(data, fixed_par, chem_par)
   %  abundant food (f = 1)
   %  a_b, a_p, a_m and R_m are temp-corrected to T_ref = 293 K
   %  p_T = 0;      % J/d.cm^2, {p_T}, surf-spec som maint
-  if exist('fixed_par','var') == 0
+  if exist('fixed_par','var') == 0  || isempty(fixed_par)
      k_J = 0.002;  % 1/d, maturity maintenance rate coefficient 
-     s_G = 1e-4;   % -, Gopertz stress coefficient (= small)
+     s_G = 1e-4;   % -, Gompertz stress coefficient (= small)
      kap_R = 0.95; % -, reproduction efficiency
      kap_G = 0.80; % -, growth efficiency
   else
@@ -75,7 +75,7 @@ function par = get_pars_9(data, fixed_par, chem_par)
      kap_R = fixed_par(3); % -, reproduction efficiency
      kap_G = fixed_par(4); % -, growth efficiency
   end
-  if exist('chem_par', 'var') == 0
+  if exist('chem_par', 'var') == 0 || isempty(chem_par)
   %  C:H:O:N = 1:1.8:0.5:0.15
      w_V = 23.9;   % g/C-mol, molecular weight of structure
      w_E = 23.9;   % g/C-mol, molecular weight of reserve

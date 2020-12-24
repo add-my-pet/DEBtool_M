@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>iget_pars_9</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="iget_pars_9.m"><style type="text/css">
+      --><title>iget_pars_9</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-24"><meta name="DC.source" content="iget_pars_9.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -54,8 +55,18 @@ span.syscmd { color:#B28C00 }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>iget_pars_9</h1><!--introduction--><p>Obtains 9 data points from 9 DEB parameters at abundant food</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>data = <a href="../iget_pars_9.m"><b>iget_pars_9</b></a>(par, fixed_par, chem_par)</p><h2>Description<a name="4"></a></h2><p>Obtains 9 data points from 9 DEB parameters at abundant food</p><p>Input</p><div><ul><li>par: 9-vector with DEB parameters</li></ul></div><pre>   p_Am: J/d.cm^2,  {p_Am}, max specific assimilation rate
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>iget_pars_9</h1><!--introduction--><p>Obtains 9 data points from 9 DEB parameters at abundant food</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>data = <a href="../iget_pars_9.m"><b>iget_pars_9</b></a>(par, fixed_par, chem_par)</p><h2 id="4">Description</h2><p>Obtains 9 data points from 9 DEB parameters at abundant food</p><p>Input</p><div><ul><li>par: 9-vector with DEB parameters</li></ul></div><pre>   p_Am: J/d.cm^2,  {p_Am}, max specific assimilation rate
    v: cm/d, energy conductance
    kap: -, allocation fraction to soma
    p_M: J/d.cm^3, [p_M], specific somatic maintenance costs
@@ -71,8 +82,7 @@ span.syscmd { color:#B28C00 }
    W_j: g, wet weight at metamorphosis
    W_p: g, wet weight at puberty
    W_m: g, maximum wet weight
-   R_m: #/d, maximum reproduction rate</pre><h2>Remarks<a name="5"></a></h2><p>The theory behind this mapping is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html">LikaAugu2014</a>. See <a href="get_pars_9.html"><b>get_pars_9</b></a> for the inverse mapping</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_pars_9.html"><b>mydata_get_pars_9</b></a></p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+   R_m: #/d, maximum reproduction rate</pre><h2 id="5">Remarks</h2><p>The theory behind this mapping is discussed in    <a href="http://www.bio.vu.nl/thb/research/bib/LikaAugu2014.html">LikaAugu2014</a>. See <a href="get_pars_9.html"><b>get_pars_9</b></a> for the inverse mapping</p><h2 id="6">Example of use</h2><p>See <a href="../mydata_get_pars_9.html"><b>mydata_get_pars_9</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% iget_pars_9
 % Obtains 9 data points from 9 DEB parameters at abundant food
@@ -207,8 +217,8 @@ function data = iget_pars_9(par, fixed_par, chem_par)
   Ww_p = L_p^3 * (1 + w); % g, wet weight at puberty
   Ww_m = L_i^3 * (1 + w); % g, ultimate wet weight
 
-  pars_Rm = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; L_b; L_j; L_p]; % compose par vector
-  R_m = reprod_rate_metam(L_i, 1, pars_Rm); % #/d, maximum reprod rate
+  pars_Rm = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp]; % compose par vector
+  R_m = reprod_rate_j(L_i, 1, pars_Rm); % #/d, maximum reprod rate
 
   pars_tm = [g; l_T; h_a/ k_M^2; s_G];     % compose parameter vector
   t_m = get_tm_s(pars_tm, 1);              % -, scaled mean life span

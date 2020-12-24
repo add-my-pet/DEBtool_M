@@ -131,8 +131,8 @@ function data = iget_pars_9(par, fixed_par, chem_par)
   Ww_p = L_p^3 * (1 + w); % g, wet weight at puberty
   Ww_m = L_i^3 * (1 + w); % g, ultimate wet weight
 
-  pars_Rm = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; L_b; L_j; L_p]; % compose par vector
-  R_m = reprod_rate_metam(L_i, 1, pars_Rm); % #/d, maximum reprod rate
+  pars_Rm = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp]; % compose par vector
+  R_m = reprod_rate_j(L_i, 1, pars_Rm); % #/d, maximum reprod rate
 
   pars_tm = [g; l_T; h_a/ k_M^2; s_G];     % compose parameter vector
   t_m = get_tm_s(pars_tm, 1);              % -, scaled mean life span
