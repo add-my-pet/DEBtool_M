@@ -257,15 +257,15 @@ end
 txNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 % delete created files
-% delete(['EBT', model, '.csb'])
-% delete(['EBT', model, '.cvf'])
-% delete(['EBT', model, '.esf'])
-% delete(['EBT', model, '.exe'])
-% delete(['EBT', model, '.isf'])
-% delete(['EBT', model, '.out'])
-% delete(['EBT', model, '.rep'])
-% delete('spline_JX.c')
-% delete('spline_TC.c')
+delete(['EBT', model, '.csb'])
+delete(['EBT', model, '.cvf'])
+delete(['EBT', model, '.esf'])
+delete(['EBT', model, '.exe'])
+delete(['EBT', model, '.isf'])
+delete(['EBT', model, '.out'])
+delete(['EBT', model, '.rep'])
+delete('spline_JX.c')
+delete('spline_TC.c')
 
 cd(WD);
 
