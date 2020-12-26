@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>EBT</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-05-16"><meta name="DC.source" content="EBT.m"><style type="text/css">
+      --><title>EBT</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-26"><meta name="DC.source" content="EBT.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>EBT</h1><!--introduction--><p>escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">report_my_pet.html</a></li><li><a href="#9">EBT_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txL23W = <a href="../EBT.m"><b>EBT</b></a> (species, tT, tJX, x_0, V_X, h, t_max, numPar)</p><h2 id="4">Description</h2><p>Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)</li><li>t_max: optional scalar with simulation time (d, default 250*365).</li><li>numPar: optional structure with numerical parameter settings.      Possible fields:</li></ul></div><pre>      TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
+  </style></head><body><div class="content"><h1>EBT</h1><!--introduction--><p>escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">report_my_pet.html</a></li><li><a href="#9">EBT_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txL23W = <a href="../EBT.m"><b>EBT</b></a> (species, tT, tJX, x_0, V_X, h, t_max, numPar)</p><h2 id="4">Description</h2><p>Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)</li><li>t_max: optional scalar with simulation time (d, default 250*365).</li><li>numPar: optional structure with numerical parameter settings.      Possible fields:</li></ul></div><pre>      TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
       relTol_a,relTol_q,relTol_h_a,relTol_L,relTol_E,relTol_E_R,relTol_E_H,relTol_W, ...
       absTol_a,absTol_q,absTol_h_a,absTol_L,absTol_E,absTol_E_R,absTol_E_H,absTol_W</pre><pre>    Possible values for TIME_METHOD:
    	- rk2: the 2nd order Runge-Kutta integration method with fixed step size,
@@ -78,10 +78,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
  	- RADAU5: an implicit Runge-Kutta method of order 5 with step size  control and dense output.</pre><pre>   The DOPRI5, DOPRI8 and RADAU5 methods can detect and locate discontinuities or events.
    These events are signalled by the routine	EventLocation() in the program definition file.
    Integration will be carried out exactly up to the moment that the event takes place and will be restarted subsequently.
-   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: booelean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified. This C-code was written by Andre de Roos. This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <a href="../html/get_EBT.html"><b>get_EBT</b></a>. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>EBT('Torpedo_marmorata');</li><li>EBT('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">EBT_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: booelean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified. This C-code was written by Andre de Roos. This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <a href="../html/get_EBT.html"><b>get_EBT</b></a>. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>EBT('Torpedo_marmorata');</li><li>EBT('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">EBT_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% EBT
-% escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
+% escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor
 
 %%
 function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
@@ -95,7 +95,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
-% Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model.
+% Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
 % If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
 % The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
 % The initial population is a single fertilized (female) egg. 
@@ -144,7 +144,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %% Remarks
 % The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified.
 % This C-code was written by Andre de Roos.
-% This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
+% This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
@@ -192,10 +192,12 @@ if ~exist('t_max','var') || isempty(t_max)
 end
 
 % temperature
-if ~exist('tT','var') || isempty(tT)
+if ~exist('tT','var') || isempty(tT) 
   T = metaData.T_typical; tT = [0 T; t_max T];
-else tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];    
+elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+  tT = [tT; t_max tT(end,2)];
+elseif size(tT,1) == 1
+  T = tT; tT = [0 T; t_max T];   
 end
 
 % volume of reactor
@@ -204,7 +206,7 @@ if ~exist('V_X','var') || isempty(V_X)
 end
 
 % supply food 
-if ~exist('tJX','var') || isempty(tJX)
+if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
   J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max J_X]; 
 else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
@@ -335,6 +337,19 @@ end
 
 % get trajectories
 txNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, opt);
+
+% delete created files
+% delete(['EBT', model, '.csb'])
+% delete(['EBT', model, '.cvf'])
+% delete(['EBT', model, '.esf'])
+% delete(['EBT', model, '.exe'])
+% delete(['EBT', model, '.isf'])
+% delete(['EBT', model, '.out'])
+% delete(['EBT', model, '.rep'])
+% delete('spline_JX.c')
+% delete('spline_TC.c')
+
+cd(WD);
 
 %% plotting
 close all
@@ -539,8 +554,6 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 web(fileName,'-browser') % open html in systems browser
-
-cd(WD);
 
 
 ##### SOURCE END #####

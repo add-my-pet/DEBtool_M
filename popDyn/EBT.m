@@ -1,5 +1,5 @@
 %% EBT
-% escalator boxcar train: runs Andre de Roos' c-code using a generalized reactor
+% escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor
 
 %%
 function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
@@ -13,7 +13,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
-% Structure metadata is required to get species-name, T_typical and ecoCode, metaPar to get model.
+% Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
 % If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
 % The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
 % The initial population is a single fertilized (female) egg. 
@@ -62,7 +62,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 %% Remarks
 % The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified.
 % This C-code was written by Andre de Roos.
-% This Matlab function only uses the computational core of EBTtool, which requires tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
+% This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
 %
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
@@ -110,10 +110,12 @@ if ~exist('t_max','var') || isempty(t_max)
 end
 
 % temperature
-if ~exist('tT','var') || isempty(tT) || size(tT,2) == 1
+if ~exist('tT','var') || isempty(tT) 
   T = metaData.T_typical; tT = [0 T; t_max T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
   tT = [tT; t_max tT(end,2)];
+elseif size(tT,1) == 1
+  T = tT; tT = [0 T; t_max T];   
 end
 
 % volume of reactor
