@@ -79,14 +79,14 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
   [e_b, l_b, u_E0, info] =  get_eb_min([g, k, v_Hb], 1); % minimum value for e_b
   e = linspace(e_b+1e-3, 1, 10);
   for i = 1:10
-    [tau_b, l_b] = get_tb([g, k, v_Hb], e);
-    u_E0 = get_ue0([g, k, v_Hb], e);
+    [tau_b, l_b] = get_tb([g, k, v_Hb], e(i));
+    u_E0 = get_ue0([g, k, v_Hb], e(i));
     eaLE(i, :) = [e(i), tau_b/ k_M, l_b * L_m, g * E_m * L_m^3 * u_E0];
   end
   
   oid = fopen('eaLE.txt', 'w+'); % open file for writing, delete existing content
   for i = 1:10
-    fprintf(oid, '%5.4g %5.4g %5.4g %5.4g "\n', eaLE(i,1), eaLE(i,2), eaLE(i,3), eaLE(i,4));
+    fprintf(oid, '%5.4g %5.4g %5.4g %5.4g \n', eaLE(i,1), eaLE(i,2), eaLE(i,3), eaLE(i,4));
   end
   fclose(oid);
 
@@ -97,19 +97,22 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
   if ~exist('E_Hpm', 'var')
     E_Hpm = E_Hp;
   end
-  if ~exist('z_m', 'var')
+  if exist('z_m', 'var')
     p_Amm = z_m * p_M/ kap;
+  else
+    p_Amm = p_Am;
   end
   % set tickRate 
   tickRate = 24; % 1/d, number of time ticks per day for Euler integration
-     
+  t_R = 0; % make an egg as soon as buffer allows   
+  
   % specify input parameters
   switch model
     case {'std','stf','sbp'}
-      par = {tickRate, t_max, X_0, X_V, mu_X, h_X, h_B0b, h_Bbp, h_Bpi, ...
+      par = {tickRate, t_max, X_0, V_X, mu_X, h_X, h_B0b, h_Bbp, h_Bpi, ...
         thin, h_J, h_a, s_G, E_Hb, E_Hp, E_Hpm, fProb, kap, kap_X, kap_G, kap_R, ...
         t_R, F_m, p_Am, p_Amm, v, p_M, k_J, k_JX, E_G, ome};
-      txtPar = {'tickRate', 't_max', 'X_0', 'X_V', 'mu_X', 'h_X', 'h_B0b', 'h_Bbp', 'h_Bpi', ...
+      txtPar = {'tickRate', 't_max', 'X_0', 'V_X', 'mu_X', 'h_X', 'h_B0b', 'h_Bbp', 'h_Bpi', ...
         'thin', 'h_J', 'h_a', 's_G', 'E_Hb', 'E_Hp', 'E_Hpm', 'fProb', 'kap', 'kap_X', 'kap_G', 'kap_R', ...
         't_R', 'F_m', 'p_Am', 'p_Amm', 'v', 'p_M', 'k_J', 'k_JX', 'E_G', 'ome'};
     case 'stx'
@@ -197,7 +200,7 @@ function write_spline(txt, tY)
   n = size(tY, 1);
   oid = fopen(['spline_', txt, '.txt'], 'w+'); % open file for writing, delete existing content
   for i=1:n
-  fprintf(oid, '%5.4g %5.4g;\n', tY(i,1), txt,tY(i,2));
+  fprintf(oid, '%5.4g %5.4g\n', tY(i,1), txt,tY(i,2));
   end
   fclose(oid);
 end
