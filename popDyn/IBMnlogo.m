@@ -2,21 +2,20 @@
 % Individual-Based-Model for NetLogo: runs NetLogo's Java using a generalized reactor
 
 %%
-function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, numPar)
+function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, runNetLogo)
 % created 2021/01/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../IBMnlogo.m *IBMnlogo*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
+% txNL23W = <../IBMnlogo.m *IBMnlogo*> (species, tT, tJX, x_0, V_X, h, t_max, runNetLogo) 
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
-%  a choice of 3 reprocduction-buffer-handling rules. 
+%  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
 % Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
-% If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
-% Males are distinguished from females, with possibly diffrent parameter settings for {p_Am} and/or E_Hp.
+% Sex allocation is randomised. If dioecy applies, the default (mean) sex-ratio is 1:1. Fertilisation is assumed to be sure. Males might differ in {p_Am} and/or E_Hp.
 % The initial population is a single fertilized (female) egg from a well-fed mother. 
 % Starvation parameters are added to parameter structure, if not present.
 % Like all parameters, default settings can be changed by changing structure par in cell-string input.
@@ -32,38 +31,20 @@ function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, numPar
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)
-% * t_max: optional scalar with simulation time (d, default 250*365).
-% * numPar: optional structure with numerical parameter settings.
-%      Possible fields: 
-%
-%        TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
-%        relTol_a,relTol_q,relTol_h_a,relTol_L,relTol_E,relTol_E_R,relTol_E_H,relTol_W, ...
-%        absTol_a,absTol_q,absTol_h_a,absTol_L,absTol_E,absTol_E_R,absTol_E_H,absTol_W
-%
-%      Possible values for TIME_METHOD: 
-%     	- rk2: the 2nd order Runge-Kutta integration method with fixed step size,
-%    	- rk4: the 4th order Runge-Kutta integration method with fixed step size,
-%    	- rkf45: the Runge-Kutta-Fehlberg 4/5th order integration method with an adaptive step size,
-%    	- rkck: the Cash-Karp Runga-Kutta integration method with adaptive step size, 
-%    	- DOPRI5: an explicit Runge-Kutta method of order (4)5 due to Dormand & Prince with step size control and dense output.
-%   	- DOPRI8: an explicit Runge-Kutta method of order 8(5,3) due to Dormand & Prince with step size control and dense output.
-%   	- RADAU5: an implicit Runge-Kutta method of order 5 with step size  control and dense output.
-%
-%     The DOPRI5, DOPRI8 and RADAU5 methods can detect and locate discontinuities or events. 
-%     These events are signalled by the routine	EventLocation() in the program definition file. 
-%     Integration will be carried out exactly up to the moment that the event takes place and will be restarted subsequently.
-%     Default: DOPRI5
+% * X_0: optional scalar with initial food density(default: 0)
+% * t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span).
+% * runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)
 %
 % Output:
 %
 % * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
-% * info: booelean with failure (0) of success (1)
+% * info: boolean with failure (0) of success (1)
 %
 %% Remarks
-% The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified.
-% This C-code was written by Andre de Roos.
-% This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool
+% The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified.
+% Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo, after running this function with runNetLogo = 0, to set parameters.
+% The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions.
+% Hitting setup initiates the output file txNL23W.txt.
 %
 % If species is specified by string (rather than by data), its parameters are obtained from allStat.mat.
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
@@ -72,16 +53,19 @@ function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, numPar
 % This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBT*>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
-% For modification of EBTtool, see <https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf *manual*>
 
 %% Example of use
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * EBT('Torpedo_marmorata');
-% * EBT('Torpedo_marmorata', C2K(18));
+% * IBMnlogo('Torpedo_marmorata');
+% * IBMnlogo('Torpedo_marmorata', C2K(18));
 
-WD = cdEBTtool;
+WD = cdIBMnlogo;
+
+if ~exist ('runNetLogo', 'var') || ismepty(runNetLogo)
+  runNetLogo = true;
+end
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
@@ -128,18 +112,20 @@ end
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
   J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max J_X]; 
-else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
+else tJX(1,1) == 0 & ~(tJX(end,1) < t_max)
   tJX = [tJX; t_max tJX(end,2)];    
 end
 
-% initial scaled food density
-if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 10; % -, X/K at t=0
+% initial food density
+if ~exist('X_0','var') || isempty(X_0)
+  X_0 = 10; % -, X at t=0
 end
 
-% account for cost of male production
+% account for male production
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
-  kap_R = kap_R/2;  par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
+  par.fProb = 0.5;  % probability of embryo to be female
+else
+  par.fProb = 0.999; % probability of embryo to be female   
 end
 
 % rejuvenation parameters
@@ -212,63 +198,12 @@ switch model
     return
 end
 
-% fields for numerical parameters
-flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
-    'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
-    'absTol_a','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W'};
-n_flds = length(flds);
-% set default numerical parameters
-opt.TIME_METHOD = 'DOPRI5';  opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
-opt.integr_accurary = 1e-8;  opt.txt.integr_accurary = 'Fixed step size or integration accuracy when adaptive';
-opt.cycle_interval = 2;      opt.txt.cycle_interval = 'Cohort/Integration cycle time interval'; 
-opt.tol_zero = 1e-6;         opt.txt.tol_zero = 'Tolerance value, determining identity with zero';
-opt.time_interval_out = t_max/5000; opt.txt.time_interval_out = 'Output time interval';
-opt.state_out_interval = 0;  opt.txt.state_out_interval = 'Complete state output interval, 0 for none';
-opt.min_cohort_nr = 1e-3;    opt.txt.min_cohort_nr = 'Minimum allowable number of individuals in cohort';
-
-tol = 1e-7;
-opt.relTol_a = tol;         opt.txt.relTol_a = 'Relative tolerance for age a'; 
-opt.relTol_q = tol;         opt.txt.relTol_q = 'Relative tolerance for aging acceleration q'; 
-opt.relTol_h_a = tol;       opt.txt.relTol_h_a = 'Relative tolerance for hazard for aging h';
-opt.relTol_L = tol;         opt.txt.relTol_L = 'Relative tolerance for structural length L'; 
-opt.relTol_E = tol;         opt.txt.relTol_E = 'Relative tolerance for reserve density [E]';
-opt.relTol_E_R = tol;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
-opt.relTol_E_H = tol;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
-opt.relTol_W = tol;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
-
-opt.absTol_a = tol;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
-opt.absTol_q = tol;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
-opt.absTol_h_a = tol;       opt.txt.absTol_h_a = 'Absolute tolerance for hazard for aging h';
-opt.absTol_L = tol;         opt.txt.absTol_L = 'Absolute tolerance for structural length L'; 
-opt.absTol_E = tol;         opt.txt.absTol_E = 'Absolute tolerance for reserve density [E]';
-opt.absTol_E_R = tol;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
-opt.absTol_E_H = tol;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
-opt.absTol_W = tol;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
-
-% overwrite with specified numerical parameters
-if exist('numPar', 'var') && ~isempty(numPar)
-  for i=1:n_flds
-    if isfield(numPar,flds{i})
-      opt.(flds{i}) = numPar.(flds{i});
-    end
-  end
-end
-
 % get trajectories
-txNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, opt);
-
-% delete created files
-delete(['EBT', model, '.csb'])
-delete(['EBT', model, '.cvf'])
-delete(['EBT', model, '.esf'])
-delete(['EBT', model, '.exe'])
-delete(['EBT', model, '.isf'])
-delete(['EBT', model, '.out'])
-delete(['EBT', model, '.rep'])
-delete('spline_JX.c')
-delete('spline_TC.c')
+txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo);
 
 cd(WD);
+
+if runNetLogo
 
 %% plotting
 close all
@@ -323,6 +258,7 @@ xlabel('time, d');
 ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
+end
 
 %% report_my_pet.html
 
@@ -330,9 +266,9 @@ fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
-%%  EBT_my_pet.html
+%%  IBMnlogo_my_pet.html
 
-fileName = ['EBT_', species, '.html'];
+fileName = ['IBMnlogo_', species, '.html'];
 oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
 fprintf(oid, '<!DOCTYPE html>\n');
@@ -454,16 +390,6 @@ end
 fprintf(oid, '  </TABLE>\n');
 fprintf(oid, '  </div>\n\n');
 
-% Table with numerical parameters
-
-fprintf(oid, '  <div class="par">\n');
-fprintf(oid, '  <TABLE id="par">\n');
-fprintf(oid, '    <TR  class="head"> <TH>Numerical parameters</TH> <TH>value</TH> </TR>\n');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD>\n', opt.txt.(flds{1}), opt.(flds{1}));
-for i=2:n_flds
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%3.4g</TD>\n', opt.txt.(flds{i}), opt.(flds{i}));
-end
-
 fprintf(oid, '  </TABLE>\n'); % close numPar table
 fprintf(oid, '  </div>\n\n');
 fprintf(oid, '  </div>\n\n'); % end div newspaper
@@ -473,4 +399,5 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 web(fileName,'-browser') % open html in systems browser
+
 

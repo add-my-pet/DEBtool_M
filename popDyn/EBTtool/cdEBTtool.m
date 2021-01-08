@@ -1,5 +1,5 @@
 %% cdEBTtool
-% cd to the DEBtool_M/EBTtool directory
+% cd to the DEBtool_M/popDyn/EBTtool directory
 
 function WD = cdEBTtool
 % created 2020/04/25 by Bas Kooijman
@@ -8,7 +8,7 @@ function WD = cdEBTtool
 % <../cdEBTtool.m *cdEBTtool*>
 
 %% Description
-% cd to the DEBtool_M/EBTtool directory
+% cd to the DEBtool_M/popDyn/EBTtool directory
 %
 % Output
 %

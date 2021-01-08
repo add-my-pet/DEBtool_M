@@ -301,7 +301,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   data = fscanf(out,'%e');
   fclose(out);
   n = length(data);
-  tXNL23W = wrap(data, floor(n/7), 7); % output (n,5)-array
+  tXNL23W = wrap(data, floor(n/7), 7); % output (n,7)-array
   
   % read report file run.rep
   % read end state file run.esf
