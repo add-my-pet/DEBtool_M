@@ -21,6 +21,11 @@ globals[
   JX       ; mol/d, current food supply rate to the reactor
   X        ; Mol, food density
   eaten    ; mol/d, food that is eaten
+  r        ; 1/d, specific growth rate of individual
+  p_C      ; J/d, reserve mobilisation rate
+  L_min    ; cm, minimum structural length for survival
+  spawn-number ;  #, list with positive number of eggs per femal
+  spawn-quality ; #, list with scaled reserve density at birth for laying female
 
   ; compound parameters
   K        ; Mol, half saturation coefficient for females
@@ -41,7 +46,7 @@ globals[
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpi    ; 1/d, background hazard between p and i
   ; h_J      ; 1/d, hazard due to rejuvenation
-  ; thin     ; true/false, hazard for thinning. If true it changes in time for each turtle
+  ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
   ; mu_X     ; J/mol, chemical potential of food
   ; F_m      ; L/d.cm^2, specific searching rate
   ; kap_X    ; -, digestion efficiency
@@ -124,7 +129,7 @@ to setup
   set tTC_i 0 ; current row-index of tTC
 
   ; read matrix eaLE with embryo settings
-  set eaLE (list) ; initiate list
+  set eaLE (list) ; empty list
   file-open "eaLE.txt" ; knots with embryo settings
   while [file-at-end? = false] [
     let row (list) ; empty list
@@ -137,13 +142,12 @@ to setup
   file-close
   set eaLE matrix:from-row-list eaLE ; convert list to matrix
   set n_eaLE item 0 matrix:dimensions eaLE
+  set L_min matrix:get eaLE 0 2
 
   ; read parameters from file
   if file-exists? "set_pars.txt" [
     file-open "set_pars.txt" ; parameter settings that overwrite inputboxes of graphical interface
-    while [file-at-end? = false] [
-      run file-read ; set parameter name, value
-    ]
+    while [file-at-end? = false] [run file-read] ; set parameter-name, value
     file-close
   ]
 
@@ -161,10 +165,8 @@ to setup
   set k_M p_M / E_G                     ;  1/d, somatic maintenance rate coefficient
 
   ; initiate output file tNL23W.txt
-  if file-exists? "txNL23W.txt" [
-    file-delete "txNL23W.txt"
-  ]
-  file-open "txNL23W.txt"    ; we are now sure to append to an empty file
+  if file-exists? "txNL23W.txt" [file-delete "txNL23W.txt"]
+  file-open "txNL23W.txt"    ; append to an empty file
 
   create-turtles 1 [set-embryo 1 0] ; female embryo with e_b=1
 
@@ -202,8 +204,6 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    let r 0 ; 1/d, define specific growth rate as local
-    let p_C 0 ; J/d, define specific growth ratereserve mobilisation rate as local
     set ee ee + (X / (X + Ki) - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
@@ -211,7 +211,6 @@ to go
       [set r TC * v * (ee / L - 1 / L_mi) / (ee + gi)] ; 1/d, positive spec growth rate
       [set r TC * v * (ee / L - 1 / L_mi) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
     set L L + L * r / 3 / tickRate ; cm, structural length
-    if L < 0 [set L 0] ; do not allow that L becomes negative
     set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
@@ -222,8 +221,8 @@ to go
       set E_Hmax E_Hpi ; J, keep both maturities equal
     ]
     if E_H < E_Hb [set E_H E_Hb] ; J, do not allow maturity to pass birth level during rejuvenation
-    ifelse E_H < E_Hmax [set h_rejuv h_J * (1 - (1 - kap) * p_C / k_J / E_H)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
-    set q q + ((q * L * L * L / L_m * L_m * L_m * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
+    ifelse E_H < E_Hmax [set h_rejuv h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
+    set q q + ((q * L * L * L / L_m / L_m / L_m * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
     ifelse thin = 1 [set h_thini r * 2 / 3] [set h_thini 0] ; 1/d, hazard rate due to thinning
     if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
@@ -234,14 +233,14 @@ to go
   ]
 
   ; spawning events
-  let spawn-number (list 0)  ; create a list for egg numbers
-  let spawn-quality (list 1) ; create a list for egg scaled reserve density at birth
+  set spawn-number (list)  ; create a list for egg numbers
+  set spawn-quality (list) ; create a list for egg scaled reserve density at birth
   ask turtles with [(E_H = E_Hp) and (gender = 0) and (E_R > 0)][ ; check adult females with positive reprod buffer
     let E_0 get_E0 ee ; J, cost of egg
     (ifelse t_R = 0 [ ; spawn as soon as reprod buffer allows
       if E_R >= E_0 / kap_R [ ; reprod buffer allows one egg
-        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
-        set spawn-number insert-item 0 spawn-number 1 ; prepend number of eggs to list; should be 1 unless tickRate is too small
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn (should be 1 if tickRate is not too small)
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list; should be 1 unless tickRate is too small
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
         set t_spawn 0 ; reset time since last spawn
@@ -265,15 +264,13 @@ to go
       ]
     ])
   ]
-  if length spawn-number > 1 [
-    spawn spawn-number spawn-quality ; create new turtles
-  ]
+  if length spawn-number > 0 [spawn spawn-number spawn-quality] ; create new turtles
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
   ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thini + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thini + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ; PM death through rejuvenation
+  ask turtles with [L < L_min] [ die ]
 
   ; write daily population state to output matrix tNL23W.txt
   if ticks mod tickRate = 0 [ ; only at full days, not at each tick
@@ -383,7 +380,7 @@ to set-embryo [eei genderi]
 end
 
 ; ==========================================================================================================================================
-; ========================== PROCEDURE for spawning  =============================================================
+; ========================== PROCEDURE for spawning  =======================================================================================
 ; ==========================================================================================================================================
 
 to spawn [list-n list-eb] ; both lists should be eqally long
@@ -391,13 +388,13 @@ to spawn [list-n list-eb] ; both lists should be eqally long
   let i 0
   while [i < n] [
     create-turtles item i list-n [
-      ifelse fProb > random-float 1
-        [set-embryo (item i list-eb) 0]
-        [set-embryo (item i list-eb) 1]
+      ifelse fProb > random-float 1 [set gender 0] [set gender 1] 
+      set-embryo (item i list-eb) gender
     ]
     set i i + 1
   ]
 end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 50

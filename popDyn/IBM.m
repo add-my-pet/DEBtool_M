@@ -1,12 +1,12 @@
-%% IBMnlogo
-% Individual-Based-Model for NetLogo: runs NetLogo's Java using a generalized reactor
+%% IBM
+% Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor
 
 %%
-function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, t_R, runNetLogo)
+function [txNL23W, info] = IBM(species, tT, tJX, x_0, V_X, h, t_max, t_R, runNetLogo)
 % created 2021/01/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../IBMnlogo.m *IBMnlogo*> (species, tT, tJX, x_0, V_X, h, t_max, t_R, runNetLogo) 
+% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, x_0, V_X, h, t_max, t_R, runNetLogo) 
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
@@ -35,9 +35,10 @@ function [txNL23W, info] = IBMnlogo(species, tT, tJX, x_0, V_X, h, t_max, t_R, r
 % * t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span)
 % * t_R: optional scalar for reproduction buffer handling rule with 
 %
-%     - 0 for spawning as soon as reproduction buffer allows (default)
-%     - 1 for spawning after accumulation over an incubation period
-%     - time between spawning events
+%    - 0 for spawning as soon as reproduction buffer allows (default)
+%    - 1 for spawning after accumulation over an incubation period
+%    - time between spawning events
+%
 % * runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)
 %
 % Output:
