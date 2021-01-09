@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_IBMnlogo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-08"><meta name="DC.source" content="get_IBMnlogo.m"><style type="text/css">
+      --><title>get_IBMnlogo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-09"><meta name="DC.source" content="get_IBMnlogo.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_IBMnlogo</h1><!--introduction--><p>get population trajectories from NetLogo</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">write spline_JX.txt, spline_TC.txt for environmental variables</a></li><li><a href="#7">write eaLE.txt for embryo-setting</a></li><li><a href="#8">write set_pars.txt for parameter setting</a></li><li><a href="#9">run NetLogo and read output file tXNL23W.txt</a></li></ul></div><h2 id="3">Syntax</h2><p>tXNL23W = <a href="../get_IBMnlogo.m"><b>get_IBMnlogo</b></a> (model, par, tT, tJX, x_0, V_X, t_max, runNetLogo)</p><h2 id="4">Description</h2><p>Gets trajectories of  food density and populations, using NetLogo,</p><p>environmental variables</p><pre>- TC: temp corr factor
+  </style></head><body><div class="content"><h1>get_IBMnlogo</h1><!--introduction--><p>get population trajectories from NetLogo</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">write spline_JX.txt, spline_TC.txt for environmental variables</a></li><li><a href="#7">write eaLE.txt for embryo-setting</a></li><li><a href="#8">write set_pars.txt for parameter setting</a></li><li><a href="#9">run NetLogo and read output file tXNL23W.txt</a></li></ul></div><h2 id="3">Syntax</h2><p>tXNL23W = <a href="../get_IBMnlogo.m"><b>get_IBMnlogo</b></a> (model, par, tT, tJX, x_0, V_X, t_max,t_R,  runNetLogo)</p><h2 id="4">Description</h2><p>Gets trajectories of  food density and populations, using NetLogo,</p><p>environmental variables</p><pre>- TC: temp corr factor
 - X: food density X</pre><p>i-states</p><pre>- a: d, age
 - t_spawn: d, time since last spawning
 - h_a: 1/d, hazard rate due to aging
@@ -74,18 +74,22 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 - L: cm, structural length
 - e: -, scaled reserve density
 - E_H: J, maturity
-- E_R: J, reproduction buffer</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>X_0: scalar with initial food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>runNetLogo: boolean for running NetLogo under Matlab</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 10 DEB models</li><li>uses deb/EBTmod.c, which is written in C directly</li><li>runs EBTmod.exe in Window's PowerShell, which writes EBTmod.out</li><li>reads EBTmod.out for output</li></ul></div><h2 id="6">write spline_JX.txt, spline_TC.txt for environmental variables</h2><h2 id="7">write eaLE.txt for embryo-setting</h2><h2 id="8">write set_pars.txt for parameter setting</h2><h2 id="9">run NetLogo and read output file tXNL23W.txt</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+- E_Hmax: J, max maturity ever reached
+- E_R: J, reproduction buffer</pre><p>Input:</p><div><ul><li>model: character-string with name of model</li><li>par: structure with parameter values</li><li>tT: (nT,2)-array with time and temperature in Kelvin; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)</li><li>X_0: scalar with initial food density</li><li>V_X: scalar with volume of reactor</li><li>t_max: scalar with time to be simulated</li><li>t_R: scalar for reproduction buffer handling rule with</li></ul></div><pre>   - 0 for spawning as soon as reproduction buffer allows
+   - 1 for spawning after accumulation over an incubation period
+   - time between spawning events
+* runNetLogo: boolean for running NetLogo under Matlab</pre><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)</li><li>writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 10 DEB models</li><li>uses deb/EBTmod.c, which is written in C directly</li><li>runs EBTmod.exe in Window's PowerShell, which writes EBTmod.out</li><li>reads EBTmod.out for output</li></ul></div><h2 id="6">write spline_JX.txt, spline_TC.txt for environmental variables</h2><h2 id="7">write eaLE.txt for embryo-setting</h2><h2 id="8">write set_pars.txt for parameter setting</h2><h2 id="9">run NetLogo and read output file tXNL23W.txt</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_IBMnlogo
 % get population trajectories from NetLogo
 
 %%
-function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo)
+function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, t_R, runNetLogo)
 
 % created 2021/01/08 by Bas Kooijman
   
 %% Syntax
-% tXNL23W = <../get_IBMnlogo.m *get_IBMnlogo*> (model, par, tT, tJX, x_0, V_X, t_max, runNetLogo)
+% tXNL23W = <../get_IBMnlogo.m *get_IBMnlogo*> (model, par, tT, tJX, x_0, V_X, t_max,t_R,  runNetLogo)
   
 %% Description
 % Gets trajectories of  food density and populations, using NetLogo, 
@@ -104,6 +108,7 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
 %  - L: cm, structural length
 %  - e: -, scaled reserve density
 %  - E_H: J, maturity
+%  - E_Hmax: J, max maturity ever reached
 %  - E_R: J, reproduction buffer
 %
 % Input:
@@ -115,7 +120,12 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
 % * X_0: scalar with initial food density 
 % * V_X: scalar with volume of reactor
 % * t_max: scalar with time to be simulated
-% * runNetLogo: boolean for running NetLogo under Matlab  
+% * t_R: scalar for reproduction buffer handling rule with 
+%
+%     - 0 for spawning as soon as reproduction buffer allows
+%     - 1 for spawning after accumulation over an incubation period
+%     - time between spawning events
+% * runNetLogo: boolean for running NetLogo under Matlab
 %
 % Output:
 %
@@ -156,14 +166,14 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
   [e_b, l_b, u_E0, info] =  get_eb_min([g, k, v_Hb], 1); % minimum value for e_b
   e = linspace(e_b+1e-3, 1, 10);
   for i = 1:10
-    [tau_b, l_b] = get_tb([g, k, v_Hb], e);
-    u_E0 = get_ue0([g, k, v_Hb], e);
+    [tau_b, l_b] = get_tb([g, k, v_Hb], e(i));
+    u_E0 = get_ue0([g, k, v_Hb], e(i));
     eaLE(i, :) = [e(i), tau_b/ k_M, l_b * L_m, g * E_m * L_m^3 * u_E0];
   end
   
   oid = fopen('eaLE.txt', 'w+'); % open file for writing, delete existing content
   for i = 1:10
-    fprintf(oid, '%5.4g %5.4g %5.4g %5.4g "\n', eaLE(i,1), eaLE(i,2), eaLE(i,3), eaLE(i,4));
+    fprintf(oid, '%5.4g %5.4g %5.4g %5.4g \n', eaLE(i,1), eaLE(i,2), eaLE(i,3), eaLE(i,4));
   end
   fclose(oid);
 
@@ -174,19 +184,21 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, runNetLogo
   if ~exist('E_Hpm', 'var')
     E_Hpm = E_Hp;
   end
-  if ~exist('z_m', 'var')
+  if exist('z_m', 'var')
     p_Amm = z_m * p_M/ kap;
+  else
+    p_Amm = p_Am;
   end
   % set tickRate 
-  tickRate = 24; % 1/d, number of time ticks per day for Euler integration
-     
+  tickRate = 24; % 1/d, number of time-ticks per day for Euler integration
+  
   % specify input parameters
   switch model
     case {'std','stf','sbp'}
-      par = {tickRate, t_max, X_0, X_V, mu_X, h_X, h_B0b, h_Bbp, h_Bpi, ...
+      par = {tickRate, t_max, X_0, V_X, mu_X, h_X, h_B0b, h_Bbp, h_Bpi, ...
         thin, h_J, h_a, s_G, E_Hb, E_Hp, E_Hpm, fProb, kap, kap_X, kap_G, kap_R, ...
         t_R, F_m, p_Am, p_Amm, v, p_M, k_J, k_JX, E_G, ome};
-      txtPar = {'tickRate', 't_max', 'X_0', 'X_V', 'mu_X', 'h_X', 'h_B0b', 'h_Bbp', 'h_Bpi', ...
+      txtPar = {'tickRate', 't_max', 'X_0', 'V_X', 'mu_X', 'h_X', 'h_B0b', 'h_Bbp', 'h_Bpi', ...
         'thin', 'h_J', 'h_a', 's_G', 'E_Hb', 'E_Hp', 'E_Hpm', 'fProb', 'kap', 'kap_X', 'kap_G', 'kap_R', ...
         't_R', 'F_m', 'p_Am', 'p_Amm', 'v', 'p_M', 'k_J', 'k_JX', 'E_G', 'ome'};
     case 'stx'
@@ -274,7 +286,7 @@ function write_spline(txt, tY)
   n = size(tY, 1);
   oid = fopen(['spline_', txt, '.txt'], 'w+'); % open file for writing, delete existing content
   for i=1:n
-  fprintf(oid, '%5.4g %5.4g;\n', tY(i,1), txt,tY(i,2));
+  fprintf(oid, '%5.4g %5.4g\n', tY(i,1), txt,tY(i,2));
   end
   fclose(oid);
 end
