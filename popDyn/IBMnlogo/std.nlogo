@@ -142,7 +142,7 @@ to setup
   file-close
   set eaLE matrix:from-row-list eaLE ; convert list to matrix
   set n_eaLE item 0 matrix:dimensions eaLE
-  set L_min matrix:get eaLE 0 2
+  set L_min matrix:get eaLE 0 2 ; cm, minimum structural length; die if length becomes less
 
   ; read parameters from file
   if file-exists? "set_pars.txt" [
@@ -150,6 +150,7 @@ to setup
     while [file-at-end? = false] [run file-read] ; set parameter-name, value
     file-close
   ]
+  set X X_0 ; Mol, initial value for food density
 
   ; frequently-used compound-parameters
   set K p_Am / kap_X / mu_X / F_m       ;  Mol, half saturation coefficient for females
@@ -168,7 +169,7 @@ to setup
   if file-exists? "txNL23W.txt" [file-delete "txNL23W.txt"]
   file-open "txNL23W.txt"    ; append to an empty file
 
-  create-turtles 1 [set-embryo 1 0] ; female embryo with e_b=1
+  create-turtles 5 [set-embryo 1 0] ; female embryo with e_b=1
 
   reset-ticks
 
@@ -183,12 +184,12 @@ to go
   set time ticks / tickRate ; d, time
 
   ; get current temperature correction factor
-  if time > matrix:get tTC (tTC_i + 1) 0 [set tTC_i tTC_i + 1]
+  if time > matrix:get tTC (tTC_i + 1) 0 and t_max < matrix:get tTC (tTC_i + 1) 0 [set tTC_i tTC_i + 1]
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 
   ; get current food input into reactor
-  if time > matrix:get tJX (tJX_i + 1) 0 [set tJX_i tTC_i + 1]
+  if time > matrix:get tJX (tJX_i + 1) 0 and t_max < matrix:get tJX (tJX_i + 1) 0 [set tJX_i tJX_i + 1]
   set w (time - matrix:get tJX tJX_i 0) / (matrix:get tJX (tJX_i + 1) 0 - matrix:get tJX tJX_i 0)
   set JX w * matrix:get tJX (tJX_i + 1) 1 + (1  - w) * matrix:get tJX tJX_i 1
 
@@ -826,7 +827,7 @@ Mol
 0.0
 10.0
 0.0
-10.0
+0.1
 true
 false
 "" ""

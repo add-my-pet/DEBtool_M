@@ -120,7 +120,7 @@ end
 
 % volume of reactor
 if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+  V_X = 1e2 * L_m^3; % cm^3, volume of reactor
 end
 
 % supply food 

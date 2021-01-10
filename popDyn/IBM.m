@@ -106,29 +106,29 @@ end
 
 % temperature
 if ~exist('tT','var') || isempty(tT) 
-  T = metaData.T_typical; tT = [0 T; (t_max + 1) T];
+  T = metaData.T_typical; tT = [0 T; t_max T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; (t_max + 1) tT(end,2)];
+  tT = [tT; t_max tT(end,2)];
 elseif size(tT,1) == 1
   T = tT; tT = [0 T; (t_max + 1) T];   
 end
 
 % volume of reactor
 if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+  V_X = 1e2 * L_m^3; % cm^3, volume of reactor
 end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
   J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; (t_max + 1) J_X]; 
+  tJX = [0 J_X; t_max J_X]; 
 else tJX(1,1) == 0 & ~(tJX(end,1) < t_max)
-  tJX = [tJX; (t_max + 1) tJX(end,2)];    
+  tJX = [tJX; t_max tJX(end,2)];    
 end
 
 % initial food density
 if ~exist('X_0','var') || isempty(X_0)
-  X_0 = 10; % -, X at t=0
+  X_0 = 0; % -, X at t=0
 end
 
 % account for male production
