@@ -204,7 +204,7 @@ function write_spline(txt, tY)
   n = size(tY, 1);
   oid = fopen(['spline_', txt, '.txt'], 'w+'); % open file for writing, delete existing content
   for i=1:n
-  fprintf(oid, '%5.4g %5.4g\n', tY(i,1), txt,tY(i,2));
+  fprintf(oid, '%5.4g %5.4g\n', tY(i,1), tY(i,2));
   end
   fclose(oid);
 end

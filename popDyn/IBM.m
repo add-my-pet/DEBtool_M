@@ -56,7 +56,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, x_0, V_X, h, t_max, t_R, runNet
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page has traits at inidvidual level using the possibly modified parameter values. 
-% This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBT*>.
+% This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBTt       *>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
 
@@ -106,11 +106,11 @@ end
 
 % temperature
 if ~exist('tT','var') || isempty(tT) 
-  T = metaData.T_typical; tT = [0 T; t_max T];
+  T = metaData.T_typical; tT = [0 T; (t_max + 1) T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];
+  tT = [tT; (t_max + 1) tT(end,2)];
 elseif size(tT,1) == 1
-  T = tT; tT = [0 T; t_max T];   
+  T = tT; tT = [0 T; (t_max + 1) T];   
 end
 
 % volume of reactor
@@ -121,9 +121,9 @@ end
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
   J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; t_max J_X]; 
+  tJX = [0 J_X; (t_max + 1) J_X]; 
 else tJX(1,1) == 0 & ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
+  tJX = [tJX; (t_max + 1) tJX(end,2)];    
 end
 
 % initial food density
@@ -361,7 +361,7 @@ switch model
       fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
 end
-fprintf(oid, str, 'X_0', 'mol/L', x_0 * K, 'initial food density');
+fprintf(oid, str, 'X_0', 'mol/L', X_0, 'initial food density');
 fprintf(oid, str, 'V_X', 'L', V_X, 'volume of reactor');
 fprintf(oid, str, 't_max', '-', t_max, 'maximum integration time');
 
