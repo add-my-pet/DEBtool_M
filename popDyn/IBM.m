@@ -59,6 +59,9 @@ function [txNL23W, info] = IBM(species, tT, tJX, x_0, V_X, h, t_max, t_R, runNet
 % This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBTt       *>.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
+%
+% Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. 
+% Progress can be monitored by inspecting output-file txNL23W.txt
 
 %% Example of use
 %
