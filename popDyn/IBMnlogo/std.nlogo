@@ -169,7 +169,7 @@ to setup
   if file-exists? "txNL23W.txt" [file-delete "txNL23W.txt"]
   file-open "txNL23W.txt"    ; append to an empty file
 
-  create-turtles 5 [set-embryo 1 0] ; female embryo with e_b=1
+  create-turtles 1 [set-embryo 1 0] ; female embryo with e_b=1
 
   reset-ticks
 
@@ -1181,7 +1181,7 @@ Food supply (in mol/d) to the reactor of volume V_X is specified by a spline wit
 Except for being eaten, food disappears from the reactor with hazard h_X.
 Effects of temperature on physiology are specified via a spline with knots tTC, with time and temperature correction factors.
 Feeding and changes in state variable of individuals depend on temperature, but not food in- and output or background hazards for individuals. 
-The reactor so homogeneous in terms of food and population density, so this model does not work with patches.
+The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
 Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
