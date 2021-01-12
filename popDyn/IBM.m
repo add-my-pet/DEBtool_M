@@ -217,7 +217,7 @@ switch model
 end
 
 % get trajectories
-txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, t_R, runNetLogo);
+txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runNetLogo);
 
 cd(WD);
 

@@ -1,6 +1,6 @@
-; Model definition for a std-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for a abj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/01
+; date: 2021/01/12
 
 extensions [matrix]
 
@@ -42,7 +42,8 @@ globals[
   ; globals set through inputboxes (here just for presenting units and descriptions)
   ; t_R      ; d, time between spawns
   ; h_B0b    ; 1/d, background hazard between 0 and b
-  ; h_Bbp    ; 1/d, background hazard between b and p
+  ; h_Bbj    ; 1/d, background hazard between b and j
+  ; h_Bjp    ; 1/d, background hazard between j and p
   ; h_Bpi    ; 1/d, background hazard between p and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
@@ -61,7 +62,8 @@ globals[
   ; kap_G    ; -, growth efficiency
   ; kap_R    ; -, reproduction efficiency
   ; ome      ; -, specific contribution of reserve to wet weight
-  ; E_Hb     ; J, maturity at birth
+  ; E_Hb     ; J, maturity at birth (start acceleration)
+  ; E_Hj     ; J, maturity at end acceleration
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
 ]
@@ -71,6 +73,7 @@ globals[
 turtles-own[
   a        ; d, age
   t_spawn  ; d, time since last spawning
+  s_M      ; -, acceleration factor >= 1
   L        ; cm, structural length
   ee       ; -, scaled reserve density; DEB notation is e, but NetLogo takes this to be exponent
   E_H      ; J, maturity
@@ -204,14 +207,15 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    set ee ee + (X / (X + Ki) - ee) * TC * v / L / tickRate ; -, scaled reserve density
+    if E_H < E_Hj [set s_M L / L_b] ; keep s_M fixed otherwise at L_j/ L_b, where L_j = L at E_Hj
+    set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
-    ifelse ee >= L / L_mi
-      [set r TC * v * (ee / L - 1 / L_mi) / (ee + gi)] ; 1/d, positive spec growth rate
-      [set r TC * v * (ee / L - 1 / L_mi) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
+    ifelse ee >= L / L_mi / s_M
+      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + gi)] ; 1/d, positive spec growth rate
+      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
     set L L + L * r / 3 / tickRate ; cm, structural length
-    set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
+    set p_C ee * E_mi * L * L * L * (TC * s_M * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
@@ -222,9 +226,11 @@ to go
     ]
     if E_H < E_Hb [set E_H E_Hb] ; J, do not allow maturity to pass birth level during rejuvenation
     ifelse E_H < E_Hmax [set h_rejuv TC * h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
-    set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
+    set q q + ((q * L * L * L / L_mi / L_mi / L_mi / s_M / s_M / s_M * s_G + TC * TC * h_a) * ee * (TC * s_M * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
-    ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
+    (ifelse (thin = 1) and (E_H < E_Hj) [set h_thin r]   ; thinning during acceleration
+    (thin = 1) and (E_H >= E_Hj) [set h_thin r * 2 / 3]  ; thinning after acceleratio
+    [set h_thin 0]) ; 1/d, hazard rate due to thinning
     if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
@@ -268,7 +274,8 @@ to go
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_H < E_Hj)] [if (h_Bbj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hj) and (E_H < E_Hpi)] [if (h_Bjp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
@@ -348,7 +355,7 @@ to-report get_E0 [eei]
 end
 
 ; ==========================================================================================================================================
-; ========================== PROCEDURE to set embryo-states  ==============================================================================
+; ========================== PROCEDURE to set embryo-states  ===============================================================================
 ; ==========================================================================================================================================
 
 to set-embryo [eei genderi]
@@ -356,6 +363,7 @@ to set-embryo [eei genderi]
   set a_b get_ab eei ; d, age at birth at 20 C (used to trigger birth)
   set t_spawn 0 ; d, time since last spawning (only plays an active role in adult females)
   set ee eei ; -, scaled reserve density at birth (starts to change after birth)
+  set s_M 1 ; -, acceleration factor
   set L get_Lb eei ; cm, structural length (starts to change after birth)
   set E_H E_Hb ; J, maturity (starts to change after birth)
   set E_Hmax E_Hb ; J, max maturity (starts to change after birth)
@@ -371,7 +379,7 @@ to set-embryo [eei genderi]
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
     set E_Hpi E_Hp ; J, maturity at puberty
-    set L_b L ; cm, structural length at birth
+    set L_b L ; cm, structural length at birth (remains fixed)
     set L_mi L_m ; cm, max structural length
     set E_mi E_m ; J/cm^3, max reserve density
     set gi g ; -, energy investment ratio
@@ -380,7 +388,7 @@ to set-embryo [eei genderi]
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
     set E_Hpi E_Hpm ; J, maturity at puberty
-    set L_b L ; cm, structural length at birth
+    set L_b L ; cm, structural length at birth (remains fixed)
     set L_mi L_mm ; cm, max structural length
     set E_mi E_mm ; J/cm^3, max reserve density
     set gi g_m ; -, energy investment ratio
@@ -547,7 +555,7 @@ INPUTBOX
 150
 400
 210
-h_Bbp
+h_Bbj
 0
 1
 0
@@ -558,7 +566,7 @@ INPUTBOX
 150
 520
 210
-h_Bpi
+h_Bjp
 0
 1
 0
@@ -568,6 +576,17 @@ INPUTBOX
 50
 210
 160
+270
+h_Bpi
+0
+1
+0
+Number
+
+INPUTBOX
+170
+210
+280
 270
 thin
 0
@@ -576,9 +595,9 @@ thin
 Number
 
 INPUTBOX
-170
+290
 210
-280
+400
 270
 h_J
 0
@@ -587,9 +606,9 @@ h_J
 Number
 
 INPUTBOX
-290
+410
 210
-400
+520
 270
 h_a
 0
@@ -598,10 +617,10 @@ h_a
 Number
 
 INPUTBOX
-410
-210
-520
+50
 270
+160
+330
 s_G
 0
 1
@@ -609,9 +628,9 @@ s_G
 Number
 
 INPUTBOX
-50
+170
 270
-160
+280
 330
 E_Hb
 0
@@ -620,9 +639,20 @@ E_Hb
 Number
 
 INPUTBOX
-170
+290
 270
-280
+400
+330
+E_Hj
+0
+1
+0
+Number
+
+INPUTBOX
+410
+270
+520
 330
 E_Hp
 0
@@ -631,10 +661,10 @@ E_Hp
 Number
 
 INPUTBOX
-290
-270
-400
+50
 330
+160
+390
 E_Hpm
 0
 1
@@ -642,10 +672,10 @@ E_Hpm
 Number
 
 INPUTBOX
-410
-270
-520
+170
 330
+280
+390
 fProb
 0
 1
@@ -653,9 +683,9 @@ fProb
 Number
 
 INPUTBOX
-50
+290
 330
-160
+400
 390
 kap
 0
@@ -664,9 +694,9 @@ kap
 Number
 
 INPUTBOX
-170
+410
 330
-280
+520
 390
 kap_X
 0
@@ -675,10 +705,10 @@ kap_X
 Number
 
 INPUTBOX
-290
-330
-400
+50
 390
+160
+450
 kap_G
 0
 1
@@ -686,10 +716,10 @@ kap_G
 Number
 
 INPUTBOX
-410
-330
-520
+170
 390
+280
+450
 kap_R
 0
 1
@@ -697,9 +727,9 @@ kap_R
 Number
 
 INPUTBOX
-50
+290
 390
-160
+400
 450
 t_R
 0
@@ -708,33 +738,11 @@ t_R
 Number
 
 INPUTBOX
-170
-390
-280
-450
-F_m
-0
-1
-0
-Number
-
-INPUTBOX
-290
-390
-400
-450
-p_Am
-0
-1
-0
-Number
-
-INPUTBOX
 410
 390
 520
 450
-p_Amm
+F_m
 0
 1
 0
@@ -745,7 +753,7 @@ INPUTBOX
 450
 160
 510
-v
+p_Am
 0
 1
 0
@@ -756,7 +764,7 @@ INPUTBOX
 450
 280
 510
-p_M
+p_Amm
 0
 1
 0
@@ -767,7 +775,7 @@ INPUTBOX
 450
 400
 510
-k_J
+v
 0
 1
 0
@@ -778,7 +786,7 @@ INPUTBOX
 450
 520
 510
-k_JX
+p_M
 0
 1
 0
@@ -789,7 +797,7 @@ INPUTBOX
 510
 160
 570
-E_G
+k_J
 0
 1
 0
@@ -799,6 +807,28 @@ INPUTBOX
 170
 510
 280
+570
+k_JX
+0
+1
+0
+Number
+
+INPUTBOX
+290
+510
+400
+570
+E_G
+0
+1
+0
+Number
+
+INPUTBOX
+410
+510
+520
 570
 ome
 0
@@ -958,7 +988,7 @@ TEXTBOX
 215
 160
 230
--
+1/d
 11
 0.0
 1
@@ -968,7 +998,7 @@ TEXTBOX
 215
 280
 230
-1/d
+-
 11
 0.0
 1
@@ -988,7 +1018,7 @@ TEXTBOX
 215
 520
 230
--
+1/d
 11
 0.0
 1
@@ -998,7 +1028,7 @@ TEXTBOX
 275
 160
 290
-J
+-
 11
 0.0
 1
@@ -1028,7 +1058,7 @@ TEXTBOX
 275
 520
 290
--
+J
 11
 0.0
 1
@@ -1038,7 +1068,7 @@ TEXTBOX
 335
 150
 350
--
+J
 11
 0.0
 1
@@ -1077,6 +1107,26 @@ TEXTBOX
 120
 395
 160
+410
+-
+11
+0.0
+1
+
+TEXTBOX
+240
+395
+480
+410
+-
+11
+0.0
+1
+
+TEXTBOX
+360
+395
+400
 410
 -,d
 11
@@ -1084,31 +1134,11 @@ TEXTBOX
 1
 
 TEXTBOX
-240
-395
-480
-410
-L/d.cm2
-11
-0.0
-1
-
-TEXTBOX
-360
-395
-400
-410
-J/d.cm2
-11
-0.0
-1
-
-TEXTBOX
 480
 395
 520
 410
-J/d.cm2
+L/d.cm2
 11
 0.0
 1
@@ -1118,7 +1148,7 @@ TEXTBOX
 455
 160
 470
-cm/d
+J/d.cm2
 11
 0.0
 1
@@ -1128,7 +1158,7 @@ TEXTBOX
 455
 280
 470
-J/d.cm3
+J/d.cm2
 11
 0.0
 1
@@ -1138,7 +1168,7 @@ TEXTBOX
 455
 400
 470
-1/d
+cm/d
 11
 0.0
 1
@@ -1148,7 +1178,7 @@ TEXTBOX
 455
 520
 470
-1/d
+J/d.cm3
 11
 0.0
 1
@@ -1158,7 +1188,7 @@ TEXTBOX
 515
 160
 530
-J/cm3
+1/d
 11
 0.0
 1
@@ -1168,16 +1198,36 @@ TEXTBOX
 515
 280
 320
+1/d
+11
+0.0
+1
+
+TEXTBOX
+360
+515
+400
+530
+J/cm3
+11
+0.0
+1
+
+TEXTBOX
+480
+515
+520
+530
 -
 11
 0.0
 1
 
 @#$#@#$#@
-MODEL DESCRIPTION: std DEB model	
+MODEL DESCRIPTION: abj DEB model	
 -----------
 
-This model simulates the trajectory of a std-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
+This model simulates the trajectory of a abj-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
 
 Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
 Except for being eaten, food disappears from the reactor with hazard h_X.
@@ -1186,9 +1236,9 @@ Feeding and changes in state variable of individuals depend on temperature, but 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
-Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
+Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbj, h_Bjp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate during acceleration and times 2/3 after acceleration).
 Thinning never applies to embryos; it exactly compensates the increase of total food intake by a cohort due to growth, by a reduction in numbers. 
-Food intake and use follow the rules of the standard DEB model (see AmP website). 
+Food intake and use follow the rules of the abj DEB model (see AmP website). 
 Male and female embryos are identical, but juveniles and adults can differ by max specific assimilation and maturity levels at puberty.
 Spawning, i.e. the instantaneous conversion of the reproduction-buffer of females to eggs, follows a choice of 3 rules:
 (1) produce an egg as soon as the buffer allows (t_R = 0) (2) accumulate the buffer over an incubation period (t_R = 1) (3) accumulate the buffer over a fixed time period (t_R not equal to 0 or 1).
@@ -1197,7 +1247,7 @@ If you want to accumulate the reproduction buffer for 1 day, give t_R a value th
 Energy that was not sufficient to make an egg remains in the buffer for the next spawning event.
 
 Since the pre-natal states (maturity, reserve and structure), change much faster than post-natal, they are set at birth-values, till age passes age-at-birth.
-Embryos do not eat and the DEB rule applies for maternal effects:  neonate reserve density equals that of the mother at egg-laying.
+Embryos do not eat and the DEB rule applies for maternal effects: neonate reserve density equals that of the mother at egg-laying.
 Gender is assigned at egg-production (gender 0 for female and 1 for male); fertilisation is for sure.
 Rejuvenation, due to failing to pay maturity maintenance costs, affects reproduction and survival.
 Shrinking, due to failure to pay somatic maintenance costs, can occur till structural length zero.  
@@ -1232,7 +1282,7 @@ So any change in their values makes it necessary to update eaLE, as is done by M
 The descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function IBM in an html-page.
 
 Notice that names of variables and parameters are case-insensitive in NetLogo and that e stands for exponent.
-Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition std.nlogo, 
+Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition abj.nlogo, 
 adding a large section with code for shape-definitions to move shapes across the screen, even if these shapes are not used (like in this model).
 
 ZOOM
