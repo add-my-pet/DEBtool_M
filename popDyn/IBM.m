@@ -2,11 +2,11 @@
 % Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor
 
 %%
-function [txNL23W, info] = IBM(species, tT, tJX, x_0, V_X, h, t_R, t_max, tickRate, runNetLogo)
+function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRate, runNetLogo)
 % created 2021/01/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, x_0, V_X, h, t_R, t_max, tickrate, runNetLogo) 
+% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo) 
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
@@ -31,7 +31,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, x_0, V_X, h, t_R, t_max, tickRa
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
 % * V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)
-% * X_0: optional scalar with initial food density(default: 0)
+% * X_0: optional scalar with initial food density (default: 0)
 % * t_R: optional scalar for reproduction buffer handling rule with 
 %
 %    - 0 for spawning as soon as reproduction buffer allows (default)
