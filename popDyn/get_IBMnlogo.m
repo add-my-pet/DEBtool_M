@@ -53,11 +53,10 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
 
 %% Remarks
 %
-% * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
-% * writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 10 DEB models
-% * uses deb/EBTmod.c, which is written in C directly
-% * runs EBTmod.exe in Window's PowerShell, which writes EBTmod.out
-% * reads EBTmod.out for output
+% * writes spline_TC.txt and spline_JX.txt (first degree spline function for temp correction and food input)
+% * writes mod.nlogo,  where mod is one of 10 DEB models, and eaLE.txt with embryo settings for interpolation withing NetLogo
+% * runs NetLogo in Window's PowerShell, which writes txNL23W.txt
+% * reads txNL23W.txt.out for output
 
   % unpack par and compute compound pars
   vars_pull(par); vars_pull(parscomp_st(par));  
