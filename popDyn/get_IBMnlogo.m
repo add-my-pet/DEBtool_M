@@ -2,12 +2,12 @@
 % get population trajectories from NetLogo
 
 %%
-function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, t_R, runNetLogo)
+function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runNetLogo)
 
 % created 2021/01/08 by Bas Kooijman
   
 %% Syntax
-% tXNL23W = <../get_IBMnlogo.m *get_IBMnlogo*> (model, par, tT, tJX, x_0, V_X, t_max,t_R,  runNetLogo)
+% tXNL23W = <../get_IBMnlogo.m *get_IBMnlogo*> (model, par, tT, tJX, x_0, V_X, t_R, t_max, tickRate, runNetLogo)
   
 %% Description
 % Gets trajectories of  food density and populations, using NetLogo, 
@@ -37,12 +37,14 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, t_R, runNe
 % * tJX: (nX,2)-array with time and food supply; time scaled between 0 (= start) and 1 (= end of cycle)
 % * X_0: scalar with initial food density 
 % * V_X: scalar with volume of reactor
-% * t_max: scalar with time to be simulated
 % * t_R: scalar for reproduction buffer handling rule with 
 %
 %     - 0 for spawning as soon as reproduction buffer allows
 %     - 1 for spawning after accumulation over an incubation period
 %     - time between spawning events
+%
+% * t_max: scalar with time to be simulated
+% * tickRate: scalar with number of ticks per day for Euler intergration
 % * runNetLogo: boolean for running NetLogo under Matlab
 %
 % Output:
@@ -107,8 +109,6 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_max, t_R, runNe
   else
     p_Amm = p_Am;
   end
-  % set tickRate 
-  tickRate = 24; % 1/d, number of time-ticks per day for Euler integration
   
   % specify input parameters
   switch model
