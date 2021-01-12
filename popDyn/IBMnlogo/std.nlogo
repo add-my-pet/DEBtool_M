@@ -199,7 +199,7 @@ to go
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
   ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * J_XAmi * L * L] ; Mol/d, food consumption
-  set X X + (JX / V_X - h_X * X - eaten) / tickRate ; Mol, food density
+  set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
   if X < 0 [set X 0] ; do not allow negative food
 
   ; state variables of turtles
@@ -248,16 +248,16 @@ to go
       ]
     ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
       set a_b get_ab ee
-      if t_spawn > a_b / TC and E_R >= E_0 / kap_R [ ; reprod buffer has at least 1 egg
-        let n_spawn floor kap_R * E_R / E_0 ; number of eggs to spawn
+      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 egg
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
         set t_spawn 0 ; reset time since last spawn
       ]
-     ][ ; spawn if reprod buffer accumulation time exceeds t_R
-      if t_spawn > t_R and E_R > E_0 / kap_R [ ; reprod buffer has at least 1 egg
-        let n_spawn floor kap_R * E_R / E_0 ; number of eggs to spawn
+    ] [ ; spawn if reprod buffer accumulation time exceeds t_R
+      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 egg
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
@@ -803,13 +803,13 @@ PLOT
 208
 1218
 358
-post natals
+number of post natals
 time, d
-#/ V_X
+#
 0.0
 10.0
 0.0
-10.0
+5
 true
 false
 "" ""
@@ -839,13 +839,13 @@ PLOT
 28
 1218
 178
-stage class densities
+numbers in stage classes
 time, d
-#/ V_X
+#
 0.0
 10.0
 0.0
-10.0
+5
 true
 true
 "" ""
