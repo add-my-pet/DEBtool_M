@@ -1210,7 +1210,7 @@ Output file txNL23W.txt is written with time (d), scaled food density (-), and f
 Food density is scaled with the half-saturation coefficient for females.
 The weights do not include contributions from reproduction buffers (in adult females).
 See Matlab function DEBtool_M/animal/IBM for the use of this NetLogo model. 
-This Matlab function sets the parameter values (via the files set_pars.txt, spline_TC, spline_JX and eaLE.txt), using the AmP collection.
+This Matlab function sets the parameter values (via the files set_pars.txt, spline_TC.txt, spline_JX.txt and eaLE.txt), using the AmP collection.
 DEBtool_M is available via the add_my_pet website.
 
 This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model std.nlogo --experiment experiment".
