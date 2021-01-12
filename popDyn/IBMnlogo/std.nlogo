@@ -310,36 +310,42 @@ end
 ; ==========================================================================================================================================
 
 to-report get_ab [eei]
-  ifelse eei = 1 [
+  (ifelse eei = 1 [
     report  matrix:get eaLE (n_eaLE - 1) 1
+  ] eei <= matrix:get eaLE 0 0 [
+    report  matrix:get eaLE 0 1
   ][
     let i 0
     while [matrix:get eaLE i 0 < eei] [set i i + 1]
     let w (eei - matrix:get eaLE (i - 1) 0) / (matrix:get eaLE i 0 - matrix:get eaLE (i - 1) 0)
     report w * matrix:get eaLE i 1 + (1  - w) * matrix:get eaLE  (i - 1) 1 ; d, age at birth
-  ]
+  ])
 end
 
 to-report get_Lb [eei]
-  ifelse eei = 1 [
+  (ifelse eei = 1 [
     report  matrix:get eaLE (n_eaLE - 1) 2
+  ] eei <= matrix:get eaLE 0 0 [
+    report  matrix:get eaLE 0 2
   ][
     let i 0
     while [matrix:get eaLE i 0 < eei] [set i i + 1]
     let w (eei - matrix:get eaLE (i - 1) 0) / (matrix:get eaLE i 0 - matrix:get eaLE (i - 1) 0)
     report w * matrix:get eaLE i 2 + (1  - w) * matrix:get eaLE  (i - 1) 2 ; cm, structural length at birth
-  ]
+  ])
 end
 
 to-report get_E0 [eei]
-  ifelse eei = 1 [
+  (ifelse eei = 1 [
     report  matrix:get eaLE (n_eaLE - 1) 3
+  ] eei <= matrix:get eaLE 0 0 [
+    report  matrix:get eaLE 0 3
   ][
     let i 0
     while [matrix:get eaLE i 0 < eei] [set i i + 1]
     let w (eei - matrix:get eaLE (i - 1) 0) / (matrix:get eaLE i 0 - matrix:get eaLE (i - 1) 0)
     report w * matrix:get eaLE i 3 + (1  - w) * matrix:get eaLE  (i - 1) 3 ; J, initial reserve
-  ]
+  ])
 end
 
 ; ==========================================================================================================================================
@@ -1203,24 +1209,23 @@ Run terminates if all individuals died or time exceeds t_max.
 Output file txNL23W.txt is written with time (d), scaled food density (-), and for post-natals: total number, structural length to the power 1, 2, 3 (in cm, cm^2, cm^3) and total wet weight (in g).
 Food density is scaled with the half-saturation coefficient for females.
 The weights do not include contributions from reproduction buffers (in adult females).
-See Matlab function DEBtool_M/animal/IBMnlogo for the use of this NetLogo model. 
-This Matlab function sets the parameter values, using the AmP collection.
+See Matlab function DEBtool_M/animal/IBM for the use of this NetLogo model. 
+This Matlab function sets the parameter values (via the files set_pars.txt, spline_TC, spline_JX and eaLE.txt), using the AmP collection.
 DEBtool_M is available via the add_my_pet website.
 
 This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model std.nlogo --experiment experiment".
 Please make sure that paths have been set to NetLogo and java.exe.
-The optional file "set_pars.txt" is used to overwrite the settings in the graphical interface in the setup-procedure.
+The file "set_pars.txt" is used to overwrite the settings in the graphical interface in the setup-procedure.
 This is specifically meant for running the model via the command-line.
 Each line should exist of "set var val" (including the quotes), where var is the name of a parameter, and val its value, e.g. "set X_0 0.321".
 
 The model can also be run directly under NetLogo and its gui (simply load std.nlogo in NetLogo).
 Apart from the globals set in the interface, matrices food input tJX, temperature correction factors tTC and embryo-settings eaLE are read from txt-files.
 Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as std.nlogo. 
-The easiest way to proceed is first run IBMnlogo to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
+The easiest way to proceed is first run IBM via Matlab to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
+Change parameter values in the file set_pars.txt, not in NetLogo's interface, since these values are overwriiten at hitting setup.
 Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.
-So any change in their values makes it necessary to update eaLE, as is done by Matlab function IBMnlogo.
-Moreover, if the parameter that you want to change occurs in set_pars.txt, the setup-procedure will overwrite it. 
-You might remove the set_pars file to avoid this, once the parameters are set.
+So any change in their values makes it necessary to update eaLE, as is done by Matlab function IBM.
 
 The units and descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function.
 
