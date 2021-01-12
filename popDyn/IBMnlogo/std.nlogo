@@ -1224,10 +1224,10 @@ Apart from the globals set in the interface, matrices food input tJX, temperatur
 Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as std.nlogo. 
 The easiest way to proceed is first run IBM via Matlab to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
 Change parameter values in the file set_pars.txt, not in NetLogo's interface, since these values are overwriiten at hitting setup.
-Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.
+Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.txt, and p_Am nad v should affect parameter ome.
 So any change in their values makes it necessary to update eaLE, as is done by Matlab function IBM.
 
-The units and descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function.
+The descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function IBM in an html-page.
 
 Notice that names of variables and parameters are case-insensitive in NetLogo and that e stands for exponent.
 Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition std.nlogo, 
