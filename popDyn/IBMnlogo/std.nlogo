@@ -23,7 +23,7 @@ globals[
   eaten    ; mol/d, food that is eaten
   r        ; 1/d, specific growth rate of individual
   p_C      ; J/d, reserve mobilisation rate
-  spawn-number ;  #, list with positive number of eggs per femal
+  spawn-number ;  #, list with positive number of eggs per female
   spawn-quality ; #, list with scaled reserve density at birth for laying female
 
   ; compound parameters

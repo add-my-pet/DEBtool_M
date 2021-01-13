@@ -1,6 +1,6 @@
-; Model definition for a abj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for a stx-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/12
+; date: 2021/01/13
 
 extensions [matrix]
 
@@ -23,7 +23,7 @@ globals[
   eaten    ; mol/d, food that is eaten
   r        ; 1/d, specific growth rate of individual
   p_C      ; J/d, reserve mobilisation rate
-  spawn-number ;  #, list with positive number of eggs per female
+  spawn-number ;  #, list with positive number of embryos per female
   spawn-quality ; #, list with scaled reserve density at birth for laying female
 
   ; compound parameters
@@ -42,8 +42,8 @@ globals[
   ; globals set through inputboxes (here just for presenting units and descriptions)
   ; t_R      ; d, time between spawns
   ; h_B0b    ; 1/d, background hazard between 0 and b
-  ; h_Bbj    ; 1/d, background hazard between b and j
-  ; h_Bjp    ; 1/d, background hazard between j and p
+  ; h_Bbx    ; 1/d, background hazard between b and x
+  ; h_Bxp    ; 1/d, background hazard between x and p
   ; h_Bpi    ; 1/d, background hazard between p and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
@@ -62,8 +62,8 @@ globals[
   ; kap_G    ; -, growth efficiency
   ; kap_R    ; -, reproduction efficiency
   ; ome      ; -, specific contribution of reserve to wet weight
-  ; E_Hb     ; J, maturity at birth (start acceleration)
-  ; E_Hj     ; J, maturity at end acceleration
+  ; E_Hb     ; J, maturity at birth
+  ; E_Hx     ; J, maturity at weaning
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
 ]
@@ -73,7 +73,6 @@ globals[
 turtles-own[
   a        ; d, age
   t_spawn  ; d, time since last spawning
-  s_M      ; -, acceleration factor >= 1
   L        ; cm, structural length
   ee       ; -, scaled reserve density; DEB notation is e, but NetLogo takes this to be exponent
   E_H      ; J, maturity
@@ -207,15 +206,14 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    if E_H < E_Hj [set s_M L / L_b] ; keep s_M fixed otherwise at L_j/ L_b, where L_j = L at E_Hj
-    set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
+    set ee ee + (X / (X + Ki) - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
-    ifelse ee >= L / L_mi / s_M
-      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + gi)] ; 1/d, positive spec growth rate
-      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
+    ifelse ee >= L / L_mi
+      [set r TC * v * (ee / L - 1 / L_mi) / (ee + gi)] ; 1/d, positive spec growth rate
+      [set r TC * v * (ee / L - 1 / L_mi) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
     set L L + L * r / 3 / tickRate ; cm, structural length
-    set p_C ee * E_mi * L * L * L * (TC * s_M * v / L - r) ; J/d, reserve mobilisation rate
+    set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
@@ -226,11 +224,9 @@ to go
     ]
     if E_H < E_Hb [set E_H E_Hb] ; J, do not allow maturity to pass birth level during rejuvenation
     ifelse E_H < E_Hmax [set h_rejuv TC * h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
-    set q q + ((q * L * L * L / L_mi / L_mi / L_mi / s_M / s_M / s_M * s_G + TC * TC * h_a) * ee * (TC * s_M * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
+    set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
-    (ifelse (thin = 1) and (E_H < E_Hj) [set h_thin r]   ; thinning during acceleration
-    (thin = 1) and (E_H >= E_Hj) [set h_thin r * 2 / 3]  ; thinning after acceleration
-    [set h_thin 0]) ; 1/d, hazard rate due to thinning
+    ifelse (thin = 1) [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
     if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
@@ -239,31 +235,31 @@ to go
   ]
 
   ; spawning events
-  set spawn-number (list)  ; create a list for egg numbers
-  set spawn-quality (list) ; create a list for egg scaled reserve density at birth
+  set spawn-number (list)  ; create a list for embryo numbers
+  set spawn-quality (list) ; create a list for embryo scaled reserve density at birth
   ask turtles with [(E_H = E_Hp) and (gender = 0) and (E_R > 0)][ ; check adult females with positive reprod buffer
-    let E_0 get_E0 ee ; J, cost of egg
+    let E_0 get_E0 ee ; J, cost of embryo
     (ifelse t_R = 0 [ ; spawn as soon as reprod buffer allows
-      if E_R >= E_0 / kap_R [ ; reprod buffer allows one egg
-        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn (should be 1 if tickRate is not too small)
-        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+      if E_R >= E_0 / kap_R [ ; reprod buffer allows one embryo
+        let n_spawn floor (kap_R * E_R / E_0) ; number of embryos to spawn (should be 1 if tickRate is not too small)
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of embryos to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
         set t_spawn 0 ; reset time since last spawn
       ]
     ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
       set a_b get_ab ee
-      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 egg
-        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
-        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 embryo
+        let n_spawn floor (kap_R * E_R / E_0) ; number of embryos to spawn
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of embryos to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
         set t_spawn 0 ; reset time since last spawn
       ]
     ] [ ; spawn if reprod buffer accumulation time exceeds t_R
-      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 egg
-        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
-        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 embryo
+        let n_spawn floor (kap_R * E_R / E_0) ; number of embryos to spawn
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of embryos to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
         set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
         set t_spawn 0 ; reset time since last spawn
@@ -274,8 +270,8 @@ to go
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_H < E_Hj)] [if (h_Bbj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hj) and (E_H < E_Hpi)] [if (h_Bjp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_H < E_Hx)] [if (h_Bbx + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hx) and (E_H < E_Hpi)] [if (h_Bxp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
@@ -363,7 +359,6 @@ to set-embryo [eei genderi]
   set a_b get_ab eei ; d, age at birth at 20 C (used to trigger birth)
   set t_spawn 0 ; d, time since last spawning (only plays an active role in adult females)
   set ee eei ; -, scaled reserve density at birth (starts to change after birth)
-  set s_M 1 ; -, acceleration factor
   set L get_Lb eei ; cm, structural length (starts to change after birth)
   set E_H E_Hb ; J, maturity (starts to change after birth)
   set E_Hmax E_Hb ; J, max maturity (starts to change after birth)
@@ -555,7 +550,7 @@ INPUTBOX
 150
 400
 210
-h_Bbj
+h_Bbx
 0
 1
 0
@@ -566,7 +561,7 @@ INPUTBOX
 150
 520
 210
-h_Bjp
+h_Bxp
 0
 1
 0
@@ -643,7 +638,7 @@ INPUTBOX
 270
 400
 330
-E_Hj
+E_Hx
 0
 1
 0
@@ -1224,10 +1219,10 @@ TEXTBOX
 1
 
 @#$#@#$#@
-MODEL DESCRIPTION: abj DEB model	
+MODEL DESCRIPTION: stx DEB model	
 -----------
 
-This model simulates the trajectory of a abj-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
+This model simulates the trajectory of a stx-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
 
 Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
 Except for being eaten, food disappears from the reactor with hazard h_X.
@@ -1236,22 +1231,23 @@ Feeding and changes in state variable of individuals depend on temperature, but 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
-Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbj, h_Bjp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate during acceleration and times 2/3 after acceleration).
+Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbx, h_Bxp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate during acceleration and times 2/3 after acceleration).
 Thinning never applies to embryos; it exactly compensates the increase of total food intake by a cohort due to growth, by a reduction in numbers. 
-Food intake and use follow the rules of the abj DEB model (see AmP website). 
+Food intake and use follow the rules of the stx DEB model (see AmP website). 
 Male and female embryos are identical, but juveniles and adults can differ by max specific assimilation and maturity levels at puberty.
-Spawning, i.e. the instantaneous conversion of the reproduction-buffer of females to eggs, follows a choice of 3 rules:
-(1) produce an egg as soon as the buffer allows (t_R = 0) (2) accumulate the buffer over an incubation period (t_R = 1) (3) accumulate the buffer over a fixed time period (t_R not equal to 0 or 1).
-Method (1) compares the content of the reproduction buffer with the cost of an egg at the current reserve density, method (2) compares the predicted incubation time with temperature-corrected time since last spawning, method (3) compares the time since last spawning with the required time (not depending on temperature).
+Spawning, i.e. the instantaneous conversion of the reproduction-buffer of females to embryos, follows a choice of 3 rules:
+(1) produce an embryo as soon as the buffer allows (t_R = 0) (2) accumulate the buffer over an incubation period (t_R = 1) (3) accumulate the buffer over a fixed time period (t_R not equal to 0 or 1).
+Method (1) compares the content of the reproduction buffer with the cost of an embryo at the current reserve density, method (2) compares the predicted incubation time with temperature-corrected time since last spawning, method (3) compares the time since last spawning with the required time (not depending on temperature).
 If you want to accumulate the reproduction buffer for 1 day, give t_R a value that is very close, but not equal, to 1 day, e.g. t_R = 1.001.
-Energy that was not sufficient to make an egg remains in the buffer for the next spawning event.
+Energy that was not sufficient to make an embryo remains in the buffer for the next spawning event.
 
 Since the pre-natal states (maturity, reserve and structure), change much faster than post-natal, they are set at birth-values, till age passes age-at-birth.
-Embryos do not eat and the DEB rule applies for maternal effects: neonate reserve density equals that of the mother at egg-laying.
-Gender is assigned at egg-production (gender 0 for female and 1 for male); fertilisation is for sure.
+Embryos do not eat and the DEB rule applies for maternal effects: neonate reserve density equals that of the mother at embryo-production.
+Gender is assigned at embryo-production (gender 0 for female and 1 for male); fertilisation is for sure.
 Rejuvenation, due to failing to pay maturity maintenance costs, affects reproduction and survival.
 Shrinking, due to failure to pay somatic maintenance costs, can occur till structural length zero.  
 
+The present stx-implementation does not account for upregulation of female assimilation around pregnancy.
 For a general background, see the tab "population dynamics" of the AmP website. 
 
 USER MANUAL
@@ -1271,9 +1267,9 @@ The file "set_pars.txt" is used to overwrite the settings in the graphical inter
 This is specifically meant for running the model via the command-line.
 Each line should exist of "set var val" (including the quotes), where var is the name of a parameter, and val its value, e.g. "set X_0 0.321".
 
-The model can also be run directly under NetLogo and its gui (simply load abj.nlogo in NetLogo).
+The model can also be run directly under NetLogo and its gui (simply load stx.nlogo in NetLogo).
 Apart from the globals set in the interface, matrices food input tJX, temperature correction factors tTC and embryo-settings eaLE are read from txt-files.
-Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as abj.nlogo. 
+Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as stx.nlogo. 
 The easiest way to proceed is first run IBM via Matlab to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
 Change parameter values in the file set_pars.txt, not in NetLogo's interface, since these values are overwriiten at hitting setup.
 Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.txt, and p_Am and v should affect parameter ome.
@@ -1282,7 +1278,7 @@ So any change in their values makes it necessary to update eaLE, as is done by M
 The descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function IBM in an html-page.
 
 Notice that names of variables and parameters are case-insensitive in NetLogo and that e stands for exponent.
-Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition abj.nlogo, 
+Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition stx.nlogo, 
 adding a large section with code for shape-definitions to move shapes across the screen, even if these shapes are not used (like in this model).
 
 ZOOM
