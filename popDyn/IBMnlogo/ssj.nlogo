@@ -371,7 +371,7 @@ to set-embryo [eei genderi]
   set h_age 0 ; 1/d, no aging hazard (starts to change after birth)
   set h_thin 0 ; 1/d, no thinning (starts to change after birth if thin = 1)
   set h_rejuv 0 ; 1/d, no rejuvenation hazard (might change after birth)
-  set metam = 0 ; -, no metamorphosis yet
+  set metam 0 ; -, no metamorphosis yet
 
   set gender genderi
   ifelse gender = 0 [ ; female setting
@@ -1008,7 +1008,7 @@ TEXTBOX
 215
 400
 230
-1/d
+1/d2
 11
 0.0
 1
