@@ -62,7 +62,7 @@ function [mserr, rserr, prdInfo] = mse_st(func, par, data, auxData, weights)
     else
       rserr(i,1) = 0;
     end
-    rserr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
+    rserr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
   end
     
   mserr = sqrt(sum(prod(rserr,2))/ sum(rserr(:,2)));

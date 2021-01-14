@@ -68,6 +68,19 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
     clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
   end
+  
+  if n_pets > 1 
+    MRE = 0; SMSE = 0;  % append mean MRE and SMSE to metaPar
+    for i = 1 : n_pets
+      MRE = MRE + metaPar.(pets{i}).MRE; SMSE = SMSE + metaPar.(pets{i}).SMSE;
+    end
+    metaPar.MRE = MRE/ n_pets; metaPar.SMSE = SMSE/ n_pets;
+    % append cv's to metaPar.cv, similar to metaPar.weights
+    flds = fields(metaPar.weights); n_pars = length(flds);
+    for j = 1 : n_pars
+       metaPar.cv.(flds{j}) = var(par.(flds{j}))^0.5/ mean(par.(flds{j}));
+    end        
+  end
    
   if ~results_output == 0 % plot figures
     data2plot = data;
@@ -121,8 +134,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         counter_filenm = 0;
         for j = 1:nst
           fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-          var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
-          k = size(var, 2);
+          Var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+          k = size(Var, 2);
           if k == 2 
             if isfield(metaData.(pets{i}), 'grp') % branch to start working on grouped graphs
               plotColours4AllSets = listOfPlotColours4UpTo13Sets;
@@ -187,8 +200,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
               set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
-              xData = var(:,1); 
-              yData = var(:,2);
+              xData = Var(:,1); 
+              yData = Var(:,2);
               aux = getfield(data2plot.(pets{i}), fieldsInCells{1}{:});
               xPred = aux(:,1);
               yPred = getfield(prdData.(pets{i}), fieldsInCells{1}{:});
@@ -225,11 +238,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
-  for i = 1:n_pets % only field pet{1} will be saved in .mat
+  for i = 1:n_pets 
     if n_pets == 1
-      metaPar.(pets{1}).model = metaPar.model; 
+      metaPar.(pets{1}).model = metaPar.model; % only field pet{1} will be saved in .mat
     else
-      metaPar.(pets{i}).model = metaPar.model{i}; % only field pet{1} will be saved in .mat
+      metaPar.(pets{i}).model = metaPar.model{i}; 
     end
   end
 
