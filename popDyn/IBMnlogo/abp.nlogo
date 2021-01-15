@@ -1,4 +1,4 @@
-; Model definition for a std-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for a abp-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/01
 
@@ -204,14 +204,15 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    set ee ee + (X / (X + Ki) - ee) * TC * v / L / tickRate ; -, scaled reserve density
+    let s_M L / L_b ; -, acceleration factor
+    set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
-    ifelse ee >= L / L_mi
-      [set r TC * v * (ee / L - 1 / L_mi) / (ee + gi)] ; 1/d, positive spec growth rate
-      [set r TC * v * (ee / L - 1 / L_mi) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
+    ifelse ee >= L / L_mi / s_M
+      [ifelse E_H < E_Hpi [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + gi)] [set r 0]]; 1/d, positive spec growth rate
+      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
     set L L + L * r / 3 / tickRate ; cm, structural length
-    set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
+    set p_C ee * E_mi * L * L * L * (TC * s_M * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
@@ -222,9 +223,9 @@ to go
     ]
     if E_H < E_Hb [set E_H E_Hb] ; J, do not allow maturity to pass birth level during rejuvenation
     ifelse E_H < E_Hmax [set h_rejuv TC * h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
-    set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
+    set q q + ((q * L * L * L / L_mi / L_mi / L_mi / s_M / s_M / s_M * s_G + TC * TC * h_a) * ee * (TC * s_M * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
-    ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
+    ifelse thin = 1 [set h_thin r] [set h_thin 0] ; 1/d, hazard rate due to thinning
     if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
@@ -1167,17 +1168,17 @@ TEXTBOX
 240
 515
 280
-530
+320
 -
 11
 0.0
 1
 
 @#$#@#$#@
-MODEL DESCRIPTION: std DEB model	
+MODEL DESCRIPTION: abp DEB model	
 -----------
 
-This model simulates the trajectory of a std-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
+This model simulates the trajectory of a abp-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
 
 Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
 Except for being eaten, food disappears from the reactor with hazard h_X.
@@ -1215,15 +1216,15 @@ See Matlab function DEBtool_M/animal/IBM for the use of this NetLogo model.
 This Matlab function sets the parameter values (via the files set_pars.txt, spline_TC.txt, spline_JX.txt and eaLE.txt), using the AmP collection.
 DEBtool_M is available via the add_my_pet website.
 
-This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model std.nlogo --experiment experiment".
+This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model abp.nlogo --experiment experiment".
 Please make sure that paths have been set to NetLogo and java.exe.
 The file "set_pars.txt" is used to overwrite the settings in the graphical interface in the setup-procedure.
 This is specifically meant for running the model via the command-line.
 Each line should exist of "set var val" (including the quotes), where var is the name of a parameter, and val its value, e.g. "set X_0 0.321".
 
-The model can also be run directly under NetLogo and its gui (simply load std.nlogo in NetLogo).
+The model can also be run directly under NetLogo and its gui (simply load abp.nlogo in NetLogo).
 Apart from the globals set in the interface, matrices food input tJX, temperature correction factors tTC and embryo-settings eaLE are read from txt-files.
-Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as std.nlogo. 
+Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as abp.nlogo. 
 The easiest way to proceed is first run IBM via Matlab to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
 Change parameter values in the file set_pars.txt, not in NetLogo's interface, since these values are overwriiten at hitting setup.
 Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.txt, and p_Am and v should affect parameter ome.
@@ -1232,7 +1233,7 @@ So any change in their values makes it necessary to update eaLE, as is done by M
 The descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function IBM in an html-page.
 
 Notice that names of variables and parameters are case-insensitive in NetLogo and that e stands for exponent.
-Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition std.nlogo, 
+Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition abp.nlogo, 
 adding a large section with code for shape-definitions to move shapes across the screen, even if these shapes are not used (like in this model).
 
 ZOOM
