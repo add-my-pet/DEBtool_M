@@ -70,7 +70,14 @@ for i = 1:n
   fprintf(oid, '<TH>%9.4g</TH> <TH>%9.4g</TH> ', weights(i), cv(i));  
 end
 fprintf(oid, '</TR>\n');
-fprintf(oid, '   </TABLE>\n');
+fprintf(oid, '   </TABLE>\n\n');
+fprintf(oid, '   <p> Pets:\n');
+fprintf(oid, '   <ol>\n');
+nms = fields(metaData); n_pets = length(nms);
+for i = 1 : n_pets
+   fprintf(oid, '     <li>%s</li>\n', nms{i});
+end
+fprintf(oid, '   </ol>\n');
 fprintf(oid, '</BODY>\n\n'); 
 fprintf(oid, '</HTML>\n');
 fclose(oid);
