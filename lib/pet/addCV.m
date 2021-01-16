@@ -51,7 +51,7 @@ if init
   % table head:
   fprintf(oid, '     <TR id=head> <TH></TH> <TH></TH> <TH></TH> ');
   for i = 1:n
-    fprintf(oid, '<TH  colspan="2">%s</TH> ', nms{i});  
+    fprintf(oid, '<TH colspan="2">%s</TH> ', nms{i});  
   end
   fprintf(oid, '</TR>\n');
   fprintf(oid, '     <TR id=head> <TH>MRE</TH> <TH>SMSE</TH> <TH>lossf</TH>');
@@ -71,6 +71,7 @@ for i = 1:n
 end
 fprintf(oid, '</TR>\n');
 fprintf(oid, '   </TABLE>\n\n');
+
 fprintf(oid, '   <p> Pets:\n');
 fprintf(oid, '   <ol>\n');
 nms = fields(metaData); n_pets = length(nms);
@@ -79,6 +80,7 @@ for i = 1 : n_pets
 end
 fprintf(oid, '   </ol>\n');
 fprintf(oid, '</BODY>\n\n'); 
+
 fprintf(oid, '</HTML>\n');
 fclose(oid);
 
