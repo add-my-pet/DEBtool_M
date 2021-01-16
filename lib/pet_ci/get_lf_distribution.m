@@ -133,29 +133,6 @@ prdData = predict_pseudodata(par, data, prdData);
 end
 
 %%
-function lf_val = lossfun(data, prdData, weights)
-% compute the value of the loss function
-
-global lossfunction
-
-    fileLossfunc = ['lossfunction_', lossfunction];
-    st = data; % take the field from prdData because data have also the pseudo-data
-    [nm, nst] = fieldnmnst_st(data); % nst: number of data sets
-  
-    for i = 1:nst   % makes st only with dependent variables
-        fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-        auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
-        k = size(auxVar, 2);
-    if k >= 2
-        st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
-    end
-    end
-    [Y, meanY] = struct2vector(st, nm);
-    W = struct2vector(weights, nm);
-    [P, meanP] = struct2vector(prdData, nm);
-    lf_val = feval(fileLossfunc, Y, meanY, P, meanP, W);
-end
-%%
 function [vec, meanVec] = struct2vector(struct, fieldNames)
   vec = []; meanVec = [];
   for i = 1:size(fieldNames, 1)
