@@ -1,4 +1,4 @@
-NetLogo gui layout in x,y coordinates
+NetLogo gui layout in x,y coordinates for DEB models
 
 Parameter fields: 
   upper-left corners
