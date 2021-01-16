@@ -9,20 +9,23 @@ function addCV
 % addCV
 
 %% Description
-% Multi-species parameter estimation, usinf pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters.
+% Multi-species parameter estimation, using pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters.
 % This function adds a row to a report-table (or initiates such a table, with mean MRE, SMSE and weights and cv for the various parameters.
 % The system-browser is automatically opened if the table is initiated.
 % First apply run_group to convergence, and give command addCV to append a new report-row and hit refresh in the browser.
 % The information is taken from metaPar in results_group.mat.
 
+%% Remark
+% The value of the loss function does not include contributions from the augmented term or pseudo-data
+
 load results_group.mat
-MRE = metaPar.MRE; SMSE = metaPar.SMSE; 
+MRE = metaPar.MRE; SMSE = metaPar.SMSE; lossf = metaPar.lossf;
 nms = fieldnames(metaPar.weights); n = length(nms); weights = zeros(n,1); cv = weights;
 for i = 1:n
   weights(i) = metaPar.weights.(nms{i}); cv(i) = metaPar.cv.(nms{i}); 
 end
 
-init = ~exist('addCV.html', 'file');
+init = ~ismember('addCV.html', cellstr(ls('.'))); % true if no addCV.html file exists in local directory
 if init
   oid = fopen('addCV.html', 'w+'); % open file for writing, delete existing content
    
@@ -38,7 +41,7 @@ if init
   fprintf(oid, '      border-style: solid none solid none;\n');                          % pink header background
   fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    TR:nth-child(even){background-color: #f2f2f2};\n');        % grey on even rows
+  fprintf(oid, '    TR:nth-child(even){background-color: #f2f2f2};\n');      % grey on even rows
   fprintf(oid, '    TD:nth-child(odd){border-left: solid 1px black};\n\n');  % lines between species
   fprintf(oid, '  </style>\n\n');
   fprintf(oid, '</HEAD>\n\n');
@@ -46,12 +49,12 @@ if init
   fprintf(oid, '   <TABLE id="Table">\n');
 
   % table head:
-  fprintf(oid, '     <TR id=head> <TH></TH> <TH></TH> ');
+  fprintf(oid, '     <TR id=head> <TH></TH> <TH></TH> <TH></TH> ');
   for i = 1:n
     fprintf(oid, '<TH  colspan="2">%s</TH> ', nms{i});  
   end
   fprintf(oid, '</TR>\n');
-  fprintf(oid, '     <TR id=head> <TH>MRE</TH> <TH>SMSE</TH> ');
+  fprintf(oid, '     <TR id=head> <TH>MRE</TH> <TH>SMSE</TH> <TH>lossf</TH>');
   for i = 1:n
     fprintf(oid, '<TH>wght</TH> <TH>cv</TH> ');  
   end
@@ -62,7 +65,7 @@ else
   oid = fopen('addCV.html', 'w+'); % open file for writing, delete existing content
   fprintf(oid, addCV);  
 end
-fprintf(oid, '     <TR> <TD>%9.4g</TD> <TD>%9.4g</TD> ', MRE, SMSE);
+fprintf(oid, '     <TR> <TD>%9.4g</TD> <TD>%9.4g</TD>  <TD>%9.4g</TD> ', MRE, SMSE, lossf);
 for i = 1:n
   fprintf(oid, '<TH>%9.4g</TH> <TH>%9.4g</TH> ', weights(i), cv(i));  
 end

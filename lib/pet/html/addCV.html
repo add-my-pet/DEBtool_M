@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>addCV</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-14"><meta name="DC.source" content="addCV.m"><style type="text/css">
+      --><title>addCV</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-16"><meta name="DC.source" content="addCV.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>addCV</h1><!--introduction--><p>appends parameter weights and cv's to addCV.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>addCV</p><h2 id="4">Description</h2><p>Multi-species parameter estimation, usinf pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters. This function adds a row to a report-table (or initiates such a table, with mean MRE, SMSE and weights and cv for the various parameters. The system-browser is automatically opened if the table is initiated. First apply run_group to convergence, and give command addCV to append a new report-row and hit refresh in the browser. The information is taken from metaPar in results_group.mat.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>addCV</h1><!--introduction--><p>appends parameter weights and cv's to addCV.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li></ul></div><h2 id="3">Syntax</h2><p>addCV</p><h2 id="4">Description</h2><p>Multi-species parameter estimation, using pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters. This function adds a row to a report-table (or initiates such a table, with mean MRE, SMSE and weights and cv for the various parameters. The system-browser is automatically opened if the table is initiated. First apply run_group to convergence, and give command addCV to append a new report-row and hit refresh in the browser. The information is taken from metaPar in results_group.mat.</p><h2 id="5">Remark</h2><p>The value of the loss function does not include contributions from the augmented term or pseudo-data</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% addCV
 % appends parameter weights and cv's to addCV.html
@@ -79,20 +79,23 @@ function addCV
 % addCV
 
 %% Description
-% Multi-species parameter estimation, usinf pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters.
+% Multi-species parameter estimation, using pars_init_group and run_group makes use of augmented loss functions that also minimize variation coefficients of specied parmeters.
 % This function adds a row to a report-table (or initiates such a table, with mean MRE, SMSE and weights and cv for the various parameters.
 % The system-browser is automatically opened if the table is initiated.
 % First apply run_group to convergence, and give command addCV to append a new report-row and hit refresh in the browser.
 % The information is taken from metaPar in results_group.mat.
 
+%% Remark
+% The value of the loss function does not include contributions from the augmented term or pseudo-data
+
 load results_group.mat
-MRE = metaPar.MRE; SMSE = metaPar.SMSE; 
+MRE = metaPar.MRE; SMSE = metaPar.SMSE; lossf = metaPar.lossf;
 nms = fieldnames(metaPar.weights); n = length(nms); weights = zeros(n,1); cv = weights;
 for i = 1:n
   weights(i) = metaPar.weights.(nms{i}); cv(i) = metaPar.cv.(nms{i}); 
 end
 
-init = ~exist('addCV.html', 'file');
+init = ~ismember('addCV.html', cellstr(ls('.'))); % true if no addCV.html file exists in local directory
 if init
   oid = fopen('addCV.html', 'w+'); % open file for writing, delete existing content
    
@@ -108,7 +111,7 @@ if init
   fprintf(oid, '      border-style: solid none solid none;\n');                          % pink header background
   fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    TR:nth-child(even){background-color: #f2f2f2};\n');        % grey on even rows
+  fprintf(oid, '    TR:nth-child(even){background-color: #f2f2f2};\n');      % grey on even rows
   fprintf(oid, '    TD:nth-child(odd){border-left: solid 1px black};\n\n');  % lines between species
   fprintf(oid, '  </style>\n\n');
   fprintf(oid, '</HEAD>\n\n');
@@ -116,12 +119,12 @@ if init
   fprintf(oid, '   <TABLE id="Table">\n');
 
   % table head:
-  fprintf(oid, '     <TR id=head> <TH></TH> <TH></TH> ');
+  fprintf(oid, '     <TR id=head> <TH></TH> <TH></TH> <TH></TH> ');
   for i = 1:n
     fprintf(oid, '<TH  colspan="2">%s</TH> ', nms{i});  
   end
   fprintf(oid, '</TR>\n');
-  fprintf(oid, '     <TR id=head> <TH>MRE</TH> <TH>SMSE</TH> ');
+  fprintf(oid, '     <TR id=head> <TH>MRE</TH> <TH>SMSE</TH> <TH>lossf</TH>');
   for i = 1:n
     fprintf(oid, '<TH>wght</TH> <TH>cv</TH> ');  
   end
@@ -132,7 +135,7 @@ else
   oid = fopen('addCV.html', 'w+'); % open file for writing, delete existing content
   fprintf(oid, addCV);  
 end
-fprintf(oid, '     <TR> <TD>%9.4g</TD> <TD>%9.4g</TD> ', MRE, SMSE);
+fprintf(oid, '     <TR> <TD>%9.4g</TD> <TD>%9.4g</TD>  <TD>%9.4g</TD> ', MRE, SMSE, lossf);
 for i = 1:n
   fprintf(oid, '<TH>%9.4g</TH> <TH>%9.4g</TH> ', weights(i), cv(i));  
 end

@@ -11,7 +11,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/08/25 by Dina Lika, 
 % modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
 % modified 2019/08/30, 2019/11/12, 2019/12/20  by Nina Marn
-% modified 2020/10/27 by Bas Kooijman
+% modified 2020/10/27, 2021/01/16 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -69,8 +69,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
   end
   
-  if n_pets > 1 
-    MRE = 0; SMSE = 0;  % append mean MRE and SMSE to metaPar
+  if n_pets > 1 % MRE, SMSE, lossf and cv are used in addCV to report in addCV.html, which is why they are added to metaPar here
+    prdData = feval('predict_pets', par, data, auxData);
+    metaPar.lossf = lossfun(data, prdData, weights); % this does not include contributions from the augmented term or pseudo-data
+    MRE = 0; SMSE = 0;  % append MRE and SMSE to metaPar as means over all pets
     for i = 1 : n_pets
       MRE = MRE + metaPar.(pets{i}).MRE; SMSE = SMSE + metaPar.(pets{i}).SMSE;
     end
@@ -78,7 +80,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     % append cv's to metaPar.cv, similar to metaPar.weights
     flds = fields(metaPar.weights); n_pars = length(flds);
     for j = 1 : n_pars
-       metaPar.cv.(flds{j}) = var(par.(flds{j}))^0.5/ mean(par.(flds{j}));
+      metaPar.cv.(flds{j}) = var(par.(flds{j}))^0.5/ mean(par.(flds{j}));
     end        
   end
    
