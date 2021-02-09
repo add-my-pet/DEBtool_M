@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>surv_chi</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-02-09"><meta name="DC.source" content="surv_chi.m"><style type="text/css">
+      --><title>survi_chi</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-02-09"><meta name="DC.source" content="survi_chi.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,40 +66,42 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>surv_chi</h1><!--introduction--><p>calculates the survivor probability of the Chi-square distribution</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>p = <a href="../surv_chi.m"><b>surv_chi</b></a> (nu, x)</p><h2 id="4">Description</h2><p>Calculates the survivor probability of the Chi-square distribution</p><p>Input:</p><div><ul><li>nu: scalar with parameter (degrees of freedom)</li><li>x: vector with argument values</li></ul></div><p>Output</p><div><ul><li>p: vector with survivor probabilities</li></ul></div><h2 id="5">Remarks</h2><p>cf survi_chi the inverse survivor probability of the Chi-square distribution</p><h2 id="6">Example of use</h2><p>surv_chi(2,[3 4 6.5])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">surv1_chi</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">surv1_chi</h2><p>calculates the inverse of the survivor function of the Chi-square distribution</p><h2 id="3">Syntax</h2><p>x = <a href="../survi_chi.m"><b>survi_chi</b></a> (nu, p, x0)</p><h2 id="4">Description</h2><p>Calculates the inverse of the survivor function of the Chi-square distribution</p><p>Input:</p><div><ul><li>nu: scalar with parameter (degrees of freedom)</li><li>p: n-vector with survivor probabilities</li></ul></div><p>Output</p><div><ul><li>x: n-vector with argument values</li></ul></div><h2 id="5">Remarks</h2><p>cf surv_chi for the survivor probability of the Chi-square distribution</p><h2 id="6">Example of use</h2><p>survi_chi(2, [.99 .5 .1])</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% surv_chi
-% calculates the survivor probability of the Chi-square distribution
+%% surv1_chi
+% calculates the inverse of the survivor function of the Chi-square distribution
 
-%%
-function p = surv_chi (nu, x)
-  % created 2002/04/09 by Bas Kooijman
-  
+function x = survi_chi (nu, p)
+% created 2021/02/09 by Bas Kooijman
+
   %% Syntax
-  % p = <../surv_chi.m *surv_chi*> (nu, x)
+  % x = <../survi_chi.m *survi_chi*> (nu, p, x0)
 
   %% Description
-  % Calculates the survivor probability of the Chi-square distribution
+  % Calculates the inverse of the survivor function of the Chi-square distribution
   %
   % Input:
   %
   % * nu: scalar with parameter (degrees of freedom)
-  % * x: vector with argument values
+  % * p: n-vector with survivor probabilities
   %
   % Output
   %
-  % * p: vector with survivor probabilities
+  % * x: n-vector with argument values 
   
   %% Remarks
-  % cf survi_chi the inverse survivor probability of the Chi-square distribution
+  % cf surv_chi for the survivor probability of the Chi-square distribution
   
   %% Example of use
-  % surv_chi(2,[3 4 6.5])
-
-  
-  x = reshape(x, length(x), 1);
-  p = 1 - gammainc(nu/2,x/2);
-
+  % survi_chi(2, [.99 .5 .1])
+    
+  survi = @(arg, nu, p) surv_chi(nu,arg) - p;
+  n = length(p); x = zeros(n,1);
+  for i = 1:n
+    x(i) = fzero(@(arg) survi(arg, nu, p(i)), [0 1e4*nu]); 
+  end
+	     
+end
 
 ##### SOURCE END #####
 --></body></html>
