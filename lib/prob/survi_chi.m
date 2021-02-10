@@ -25,7 +25,7 @@ function x = survi_chi (nu, p)
   %% Example of use
   % survi_chi(2, [.99 .5 .1])
     
-  survi = @(arg, nu, p) surv_chi(nu,arg) - p;
+  survi = @(arg,nu,p) surv_chi(nu,arg) - p;
   n = length(p); x = zeros(n,1);
   for i = 1:n
     x(i) = fzero(@(arg) survi(arg, nu, p(i)), [0 1e4*nu]); 
