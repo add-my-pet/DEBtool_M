@@ -114,7 +114,9 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hj v_Hp], f); 
       [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b; tau_p - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
-      tau_m = qhSt(end,4); S_j = qhSt(2,3); S_p = qhSt(3,3); S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
+      tau_m = qhSt(end,4); tau = [tau_b; tau_j; tau_p];
+      if size(qhSt,1) == 4; S_j = qhSt(2,3); S_p = qhSt(3,3); else; S_j = qhSt(end,3); S_p = qhSt(end,3); end;          
+      S = [S_b; S_j; S_p]; 
     case 'asj'
       [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
