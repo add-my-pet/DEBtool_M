@@ -49,7 +49,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 %% Remarks
 % The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified.
-% Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo, after running this function with runNetLogo = 0, to set parameters.
+% Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo (via dropdown File, item Open), after running this function with runNetLogo = 0, to set parameters.
 % The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions.
 % Hitting setup initiates the output file txNL23W.txt.
 %
@@ -57,7 +57,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure.
 % Empty inputs are allowed, default values are then used.
 % The (first) html-page has traits at inidvidual level using the possibly modified parameter values. 
-% This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <../html/get_EBT.html *get_EBTt       *>.
+% This function IBM only controls input/output; computations are done in NetLogo.
 % Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1.
 % Background hazards do not depend on temperature, ageing hazards do.
 %
