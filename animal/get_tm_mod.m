@@ -73,7 +73,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
     end          
   end
   
-  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-8, 'RelTol',1e-8);  
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-7, 'RelTol',1e-7);  
 
   switch model
     case 'std'

@@ -68,8 +68,8 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 % * If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):
 %   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)
-% * IBMnlogo('Torpedo_marmorata');
-% * IBMnlogo('Torpedo_marmorata', C2K(18));
+% * IBM('Torpedo_marmorata');
+% * IBM('Torpedo_marmorata', C2K(18));
 
 WD = cdIBMnlogo;
 
