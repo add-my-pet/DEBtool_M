@@ -1,14 +1,12 @@
-%% nmregr
+%% nmregr_re
 % Calculates least squares estimates using Nelder Mead's simplex method
-% with the "symmetric bounded" loss function 
 
 %%
-function [q, info, fval] = nmregr(func, p, varargin)
-  % created 2001/09/07 by Bas Kooijman; modified 2013/10/04; modified
-  % 2021/03/21 by Dina Lika
+function [q, info] = nmregr_re(func, p, varargin)
+  % created 2001/09/07 by Bas Kooijman; modified 2013/10/04
   
   %% Syntax
-  % [q, info] = <../nmregr.m *nmregr*> (func, p, varargin)
+  % [q, info] = <../nmregr_re.m *nmregr_re*> (func, p, varargin)
   
   %% Description
   % Calculates least squares estimates using Nelder Mead's simplex method
@@ -74,19 +72,18 @@ function [q, info, fval] = nmregr(func, p, varargin)
   end
   nl = size(listxyw,2); listxyw = listxyw(1:(nl - 1)); % remove last ','
   nl = size(listf,2); listf = listf(1:(nl - 1)); % remove last ','
-  
+
   global_txt = strrep(['global ', listxyw], ',', ' ');
   eval(global_txt); % make data sets global
   
   N = zeros(nxyw, 1); % initiate data counter
-  Y = []; meanY = []; W = [];  % initiate observations, mean of observations and weight coefficients
+  Y = []; W = []; % initiate observations and weight coefficients
   for i = 1:nxyw % loop across data sets
     ci = num2str(i); % character string with value of i
     % assing unnamed arguments to xyw1, xyw2, etc
     eval(['xyw', ci, ' = varargin{',ci,'};']);
     eval(['[N(', ci, '), k] = size(xyw', ci, ');']); % number of data points
     eval(['Y = [Y;xyw', ci, '(:,2)];']); % append dependent variables
-    eval(['meanY = [meanY; ones(length(xyw',ci,'(:,2)),1) * mean(xyw',ci,'(:,2))];']);  % append mean of data
     if k > 2
 	  eval(['W = [W;xyw', ci, '(:,3)];']); % append weight coefficients
     else
@@ -151,17 +148,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
   xin = q(index, 1);    % Place input guess in the simplex
   v(:,1) = xin;
   eval(['[',listf, '] = ', func, '(q(:,1),', listxyw, ');']);
-  eval(['[',listf, '] = ', func, '(q(:,1),', listxyw, ');']);
-  meanf = f1;   
-  for i = 2:nxyw % loop across data sets
-    ci = num2str(i); % character string with value of i
-    eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-  end
   if nxyw == 1
-    fv(:,1) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+    fv(:,1) = W' * (f1 - Y).^2;
   else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-    fv(:,1) = W' * fv_aux;
+    eval(['fv(:,1) = W'' * (cat(1, ', listf, ')-Y).^2;']);
   end
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = 0.05;             % 5 percent deltas for non-zero terms
@@ -176,16 +166,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
     v(:,j+1) = y;
     q(index,1) = y;
     eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-    meanf = f1;   
-    for i = 2:nxyw % loop across data sets
-      ci = num2str(i); % character string with value of i
-      eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-    end
     if nxyw == 1
-      fv(1, j + 1) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+      fv(1, j + 1) = W' * (f1 - Y) .^ 2;
     else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-    fv(1, j + 1) = W' * fv_aux;
+      eval(['fv(1, j + 1) = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
     end
   end     
 
@@ -220,16 +204,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
     xr = (1 + rho) * xbar - rho * v(:,np1);
     q(index,1) = xr;
     eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-    meanf = f1;   
-    for i = 2:nxyw % loop across data sets
-      ci = num2str(i); % character string with value of i
-      eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-    end
     if nxyw == 1
-      fxr = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+      fxr = W' * (f1 - Y) .^ 2;
     else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-    fxr = W' * fv_aux;
+      eval(['fxr = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
     end
     func_evals = func_evals + 1;
    
@@ -238,16 +216,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
       q(index,1) = xe;
       eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-      meanf = f1;   
-      for i = 2:nxyw % loop across data sets
-        ci = num2str(i); % character string with value of i
-        eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-      end
       if nxyw == 1
-        fxe = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+        fxe = W' * (f1 - Y).^2;
       else
-         eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-         fxe = W' * fv_aux;
+        eval(['fxe = W'' * (cat(1,', listf, ') - Y) .^2;']);
       end
       func_evals = func_evals + 1;
       if fxe < fxr
@@ -271,16 +243,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
           xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
           q(index,1) = xc;
 	      eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-          meanf = f1;   
-          for i = 2:nxyw % loop across data sets
-            ci = num2str(i); % character string with value of i
-            eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-          end
           if nxyw == 1
-            fxc = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
-          else              
-            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);    
-            fxc = W' * fv_aux;
+            fxc = W' * (f1 - Y) .^ 2;
+          else
+            eval(['fxc = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
           end
           func_evals = func_evals + 1;
             
@@ -297,16 +263,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
           xcc = (1 - psi) * xbar + psi * v(:,np1);
           q(index,1) = xcc;
 	      eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-          meanf = f1;   
-          for i = 2:nxyw % loop across data sets
-            ci = num2str(i); % character string with value of i
-            eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-          end
           if nxyw == 1
-            fxcc = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+            fxcc = W' * (f1 - Y) .^ 2;
           else
-            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-            fxcc = W' * fv_aux;
+            eval(['fxcc = W'' * (cat(1,', listf, ') - Y) .^ 2;']);
           end
           func_evals = func_evals + 1;
             
@@ -324,16 +284,10 @@ function [q, info, fval] = nmregr(func, p, varargin)
             v(:,j) = v(:,1) + sigma * (v(:,j) - v(:,1));
             q(index,1) = v(:,j);
             eval(['[', listf, '] = ', func, '(q(:,1), ', listxyw, ');']);
-            meanf = f1;   
-            for i = 2:nxyw % loop across data sets
-              ci = num2str(i); % character string with value of i
-              eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
-            end
             if nxyw == 1
-              fv(:,j) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+              fv(:,j) = W' * (f1 - Y) .^ 2;
             else
-              eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
-              fv(:,j) = W' * fv_aux;
+              eval(['fv(:,j) = W'' * (cat(1,', listf, ') - Y).^2;']);
             end
           end
           func_evals = func_evals + n_par;
