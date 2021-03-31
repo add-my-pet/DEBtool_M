@@ -77,11 +77,11 @@ if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
 end
 
-if ~exist ('t_R', 'var') || ismepty(t_R)
+if ~exist ('t_R', 'var') || isempty(t_R)
   t_R = 0;
 end
 
-if ~exist ('tickRate', 'var') || ismepty(t_R)
+if ~exist ('tickRate', 'var') || isempty(t_R)
   tickRate = 24;
 end
 
