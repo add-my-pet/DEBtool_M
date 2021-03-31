@@ -198,6 +198,18 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
     n = length(data);
     tXNL23W = wrap(data, floor(n/7), 7); % output (n,7)-array
   else
+    path = which('cdCur'); 
+    if ismac
+      ind = strfind(path,'/'); 
+    else
+      ind = strfind(path,'\');
+    end
+    path = path(1:ind(end));
+    system(['powershell cd ', path]);
+    system( 'powershell notepad set_pars.txt');
+    system( 'powershell notepad spline_JX.txt');
+    system( 'powershell notepad spline_TC.txt');
+    %system(['powershell netlogo --model ', model, '.nlogo']); % run NetLogo in foreground
     system( 'powershell netlogo'); % run NetLogo in foreground
   end
 
