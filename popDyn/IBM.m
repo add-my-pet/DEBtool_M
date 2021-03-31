@@ -73,7 +73,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 WD = cdIBMnlogo;
 
-if ~exist ('runNetLogo', 'var') || ismepty(runNetLogo)
+if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
 end
 
