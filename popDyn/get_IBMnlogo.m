@@ -191,12 +191,14 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
   
   tXNL23W = []; % initiate output
   if runNetLogo
-    eval(['!netlogo-headless --model ', model, '.nlogo --experiment experiment']); % run NetLogo
+    eval(['!netlogo-headless --model ', model, '.nlogo --experiment experiment']); % run NetLogo in background
     out = fopen('tXNL23W.txt', 'r'); % open output-file for reading
     data = fscanf(out,'%e');
     fclose(out);
     n = length(data);
     tXNL23W = wrap(data, floor(n/7), 7); % output (n,7)-array
+  else
+    system( 'powershell netlogo'); % run NetLogo in foreground
   end
 
 end

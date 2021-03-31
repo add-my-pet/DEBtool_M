@@ -1,4 +1,4 @@
-; Model definition for a abp-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for an abp-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/01
 
@@ -90,7 +90,7 @@ turtles-own[
   L_b      ; cm, structural length at birth
   L_mi     ; cm, max structural length  (female or male value)
   E_mi     ; J/cm^3, max reserve density  (female or male value)
-  gi       ; -, energy inverstment ratio  (female or male value)
+  gi       ; -, energy investment ratio  (female or male value)
 ]
 
 ; ==========================================================================================================================================
@@ -1183,7 +1183,7 @@ This model simulates the trajectory of a abp-DEB-structured population in a well
 Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
 Except for being eaten, food disappears from the reactor with hazard h_X.
 Effects of temperature on physiology are specified via a spline with knots tTC, with time and temperature correction factors.
-Feeding and changes in state variable of individuals depend on temperature, but not food in- and output or background hazards for individuals. 
+Feeding and changes in state variable of individuals depend on temperature, but food in- and output or background hazards for individuals do not dependent on temperature. 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
