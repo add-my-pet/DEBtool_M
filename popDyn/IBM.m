@@ -81,7 +81,7 @@ if ~exist ('t_R', 'var') || isempty(t_R)
   t_R = 0;
 end
 
-if ~exist ('tickRate', 'var') || isempty(t_R) || isempty(tickRate)
+if ~exist ('tickRate', 'var') || isempty(tickRate)
   tickRate = 24;
 end
 

@@ -209,7 +209,6 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
     system( 'powershell notepad set_pars.txt');
     system( 'powershell notepad spline_JX.txt');
     system( 'powershell notepad spline_TC.txt');
-    %system(['powershell netlogo --model ', model, '.nlogo']); % run NetLogo in foreground
     system( 'powershell netlogo'); % run NetLogo in foreground
   end
 
