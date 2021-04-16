@@ -30,6 +30,7 @@ function printpar(varargin)
     nm  = varargin{1};
     p   = varargin{2};
     sd  = varargin{3};
+    if isempty(sd); zeros(length(nm),0); end
     txt = varargin{4};
   elseif isa(varargin{1},'cell') && nargin == 3
     fid = 1; % write to screen
@@ -41,7 +42,6 @@ function printpar(varargin)
     fid = 1; % write to screen
     nm = varargin{1};
     p  = varargin{2};
-    sd = [];
     txt = 'Parameter values';
   elseif nargin == 5 
     fid = varargin{1}; % write to specified file
@@ -59,17 +59,22 @@ function printpar(varargin)
     fid = varargin{1}; % write to specified file
     nm  = varargin{2};
     p   = varargin{3};
-    sd  = [];
     txt = 'Parameter values';
   end
+  
+  if isempty(sd)
+    n = 2; 
+  else
+    n = nargin;
+  end
      
-  [r,c] = size(nm);
+  r = size(nm, 1);
   fprintf(fid, [txt, ' \n']);
-  if nargin == 2 && isnumeric(p)
+  if n == 2 && isnumeric(p)
     for i = 1:r
       fprintf(fid, '%s %8.4g \n', nm{i,:}, p(i,1));
     end
-  elseif nargin == 2 
+  elseif n == 2 
     for i = 1:r
       fprintf(fid, '%s %s \n', nm{i,:}, p(i,:));
     end
