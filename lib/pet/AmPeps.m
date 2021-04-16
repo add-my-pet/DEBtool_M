@@ -29,7 +29,7 @@ function AmPeps(infoAmPgui)
 global data metaData txtData auxData pets hclimateLand hclimateSea hecozones hoceans
 
 % check if wget exists on mac
-if ismac
+if ismac || isunix
   PATH = getenv('PATH'); if isempty(strfind(PATH,':/usr/local/bin')); setenv('PATH', [PATH, ':/usr/local/bin']); end;
   status = system('which wget');
   if ~(status == 0)
@@ -52,7 +52,7 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
   close all
   path = [set_path2server, 'add_my_pet/entries/', metaData.species, '/'];
 
-  if ismac
+  if ismac || isunix
     system(['wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
     system(['wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m']);
     system(['wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m']);
