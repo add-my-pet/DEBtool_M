@@ -40,8 +40,8 @@ else
 end
 if isempty(list) | isempty(list(Contains(list,['mydata_', my_pet])))% not present in local dir
   path = ['https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries/', my_pet, '/'];
-  if ismac
-    system(['curl ', path, 'mydata_', my_pet, '.m',  ' -O ', 'mydata_', my_pet, '.m']);
+  if ismac || isunix
+    system(['wget ', path, 'mydata_', my_pet, '.m',  ' -O ', 'mydata_', my_pet, '.m']);
   else
     system(['powershell wget ', path, 'mydata_', my_pet, '.m',  ' -O ', 'mydata_', my_pet, '.m']);
   end

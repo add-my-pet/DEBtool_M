@@ -205,11 +205,19 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
       ind = strfind(path,'\');
     end
     path = path(1:ind(end));
-    system(['powershell cd ', path]);
-    system( 'powershell notepad set_pars.txt');
-    system( 'powershell notepad spline_JX.txt');
-    system( 'powershell notepad spline_TC.txt');
-    system( 'powershell netlogo'); % run NetLogo in foreground
+    if ismac || isunix
+      system(['cd ', path]);
+      system( 'notepad set_pars.txt');
+      system( 'notepad spline_JX.txt');
+      system( 'notepad spline_TC.txt');
+      system( 'netlogo'); % run NetLogo in foreground
+    else
+      system(['powershell cd ', path]);
+      system( 'powershell notepad set_pars.txt');
+      system( 'powershell notepad spline_JX.txt');
+      system( 'powershell notepad spline_TC.txt');
+      system( 'powershell netlogo'); % run NetLogo in foreground
+    end
   end
 
 end
