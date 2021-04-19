@@ -374,9 +374,13 @@ info = n_rfld0 == 0 && n_rfld1 == 0;
 
 end
 
-function str = cell2str(cell)
-  n = length(cell); str = '';
+function strOut = cell2str(cellIn)
+  n = length(cellIn); strOut = '';
   for i=1:n
-    str = [str, cell{i}, char(10)];
+    x = cellIn{i};
+    if iscell(x)
+      x = x{1};
+    end
+    strOut = [strOut, x, char(10)];
   end
 end

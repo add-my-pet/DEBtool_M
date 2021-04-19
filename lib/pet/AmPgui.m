@@ -598,7 +598,7 @@ else % fill fields
       uicontrol('Parent',dCOMPLETE, 'Position',[ 110 40  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
 
     case 'resume'
-      if ismac
+      if ismac || isunix
         list = strsplit(ls, ' ');
       else
         list = cellstr(ls);
