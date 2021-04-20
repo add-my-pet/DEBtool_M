@@ -84,6 +84,9 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
 
   % get pars_init file of a related species to produce structure par, metaPar, txtPar
   model_def = get_model(metaData.phylum, metaData.class, metaData.order); % default model for this taxon
+  if strcmp(model_def, 'hep') && any([isfield(data,'Lj'), isfield(data,'Wwj'), isfield(data,'Wdj'), isfield(data,'tj)')])
+    model_def = 'hex';
+  end
   % park data structures, because they will be overwritten by load(results_my_pet)
   data_my_pet = data; txtData_my_pet = txtData; auxData_my_pet = auxData; metaData_my_pet = metaData;
   switch infoAmPgui

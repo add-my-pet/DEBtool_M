@@ -436,10 +436,11 @@ else % fill fields
         
     case 'data_0' 
         
-      code0 = { ...
+      code0 = { ... % code-name, units, temp-dependence, description
           'ah',   'd', 1, 'age at hatch';          
           'ab',   'd', 1, 'age at birth';
           'tx',   'd', 1, 'time since birth at weaning';
+          'tj',   'd', 1, 'time since birth at end acceleration';
           'tp',   'd', 1, 'time since birth at puberty';
           'tpm',  'd', 1, 'time since birth at puberty for males'; 
           'tR',   'd', 1, 'time since birth at first egg production';
@@ -447,6 +448,7 @@ else % fill fields
 
           'Lh',  'cm', 0, 'length at hatch';
           'Lb',  'cm', 0, 'length at birth'
+          'Lj',  'cm', 0, 'length at end acceleration'
           'Lp',  'cm', 0, 'length at puberty';
           'Lpm', 'cm', 0, 'length at puberty for males';
           'Li',  'cm', 0, 'ultimate length';
@@ -455,6 +457,7 @@ else % fill fields
           'Ww0',  'g', 0, 'initial wet weight';
           'Wwh',  'g', 0, 'wet weight at hatch';
           'Wwb',  'g', 0, 'wet weight at birth';
+          'Wwj',  'g', 0, 'wet weight at end acceleration';
           'Wwp',  'g', 0, 'wet weight at puberty';
           'Wwpm', 'g', 0, 'wet weight at puberty for males';
           'Wwi',  'g', 0, 'ultimate wet weight';
@@ -462,6 +465,7 @@ else % fill fields
 
           'Wdh',  'g', 0, 'dry weight at hatch';
           'Wdb',  'g', 0, 'dry weight at birth';
+          'Wdj',  'g', 0, 'dry weight at end acceleration';
           'Wdpm', 'g', 0, 'dry weight at puberty for males';
           'Wdi',  'g', 0, 'ultimate dry weight';
           'Wdim', 'g', 0, 'ultimate dry weight for males';

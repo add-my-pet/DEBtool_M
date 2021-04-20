@@ -197,7 +197,7 @@ if any(sel_x)
 end
 
 % metamorphosis/pupation 
-fld_j = {'tj', 'Lj', 'Wwj', 'Wdl'}; % fields for section metamorphosis
+fld_j = {'tj', 'Lj', 'Wwj', 'Wdj'}; % fields for section metamorphosis
 sel_j = ismember(fld0,fld_j);
 if any(sel_j)
   if strcmp(metaPar.model,'hex')
