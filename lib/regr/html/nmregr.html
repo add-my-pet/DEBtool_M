@@ -1,3 +1,83 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>nmregr</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-25"><meta name="DC.source" content="nmregr.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>nmregr</h1><!--introduction--><p>Calculates least squares estimates using Nelder Mead's simplex method with the "symmetric bounded" loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info] = <a href="../nmregr.m"><b>nmregr</b></a> (func, p, varargin)</p><h2 id="4">Description</h2><p>Calculates least squares estimates using Nelder Mead's simplex method</p><p>Input</p><div><ul><li>func: string with name of user-defined function</li></ul></div><pre>   f = func (p, xyw) with
+     p: k-vector with parameters; xyw: (n,c)-matrix; f: n-vector
+   [f1, f2, ...] = func (p, xyw1, xyw2, ...) with  p: k-vector  and
+    xywi: (ni,k)-matrix; fi: ni-vector with model predictions
+   The dependent variable in the output f; For xyw see below.</pre><div><ul><li>p: (k,2)-matrix with</li></ul></div><pre>   p(:,1) initial guesses for parameter values
+   p(:,2) binaries with yes or no iteration (optional)</pre><div><ul><li>xyzi (read as xyw1, xyw2, .. ): (ni,3) matrix with</li></ul></div><pre>   xywi(:,1) independent variable i
+   xywi(:,2) dependent variable i
+   xywi(:,3) weight coefficients i (optional)
+   xywi(:,&gt;3) data-pont specific information data (optional)
+   The number of data matrices xyw1, xyw2, ... is optional but &gt;0
+   Default for xywi(:,3) is (number of data points in the set i)^-1</pre><p>Output</p><div><ul><li>q: matrix like p, but with F_sb estimates</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>fval: scalar with value of loss function at estimates</li></ul></div><h2 id="5">Remarks</h2><p>Calls user-defined function 'func' Set options with <a href="nmregr_options.html"><b>nmregr_options</b></a> See <a href="nrregr.html"> <b>nrregr</b></a> for Newton-Raphson method, <a href="garegr.html"> <b>garegr</b></a> for genetic algorithm, <a href="nrregr2.html"><b>nrregr2</b></a> for 2 independent variables, and <a href="nmvcregr.html"><b>nmvcregr</b></a> for standard deviations proportional to the mean. It is usually a good idea to run <a href="nrregr.html"><b>nrregr</b></a> on the result of nmregr.</p><h2 id="6">Example of use</h2><p>See <a href="../mydata_regr.m"><b>mydata_regr</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
 %% nmregr
 % Calculates least squares estimates using Nelder Mead's simplex method
 % with the "symmetric bounded" loss function 
@@ -371,3 +451,5 @@ function [q, info, fval] = nmregr(func, p, varargin)
     end
     info = 1;
   end
+##### SOURCE END #####
+--></body></html>
