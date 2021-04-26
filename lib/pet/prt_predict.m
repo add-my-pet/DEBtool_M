@@ -206,6 +206,20 @@ if any(sel_x)
   fprintf(fid, '\n');
 end
 
+% instars (for ecdysozoans)
+fld_in = {'t1','t2','t3','t4','t5','t6','L1','L2','L3','L4','L5','L6','Ww1','Ww2','Ww3','Ww4','Ww5','Ww5','Wd1','Wd2','Wd3','Wd4','Wd5','Wd6',}; % fields for section instars
+sel_in = ismember(fld0,fld_in);
+if any(sel_in)
+  fprintf(fid, '%% instars\n');
+  fld_in = fld_in(ismember(fld_in,fld0)); n_fldin = length(fld_in);
+  for i = 1:n_fldin
+    if isfield(prdCode.(model), fld_in{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_in{i})));
+    end
+  end
+  fprintf(fid, '\n');
+end
+
 % metamorphosis/pupation 
 fld_j = {'tj', 'Lj', 'Wwj', 'Wdj'}; % fields for section metamorphosis
 sel_j = ismember(fld0,fld_j);
@@ -313,7 +327,7 @@ if any(sel_m) || any(ismember(fld1,fld_m))
 end
 
 % remaining zero-variate fields
-sel_0 = any([sel_0, sel_h, sel_b, sel_x, sel_j, sel_p, sel_i, sel_R, sel_m, sel_e], 2); 
+sel_0 = any([sel_0, sel_h, sel_b, sel_x, sel_j, sel_in, sel_p, sel_i, sel_R, sel_m, sel_e], 2); 
 rfld0 = fld0(~sel_0); n_rfld0 = length(rfld0);
 if n_rfld0 > 0
   fprintf(fid, '%% Warning: The following zero-variate data fields were not recognized\n');
@@ -329,7 +343,9 @@ for i = 1:n_0
    if ismember(fld0{i}, rfld0)
      fprintf(fid, 'prdData.%s = ;\n', fld0{i});
    else
-     fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.res.(fld0{i}));
+     if isfield(prdCode.res, fld0{i})
+       fprintf(fid, 'prdData.%s = %s;\n', fld0{i}, prdCode.res.(fld0{i}));
+     end
    end
 end
 fprintf(fid, '\n');

@@ -440,35 +440,64 @@ else % fill fields
           'ah',   'd', 1, 'age at hatch';          
           'ab',   'd', 1, 'age at birth';
           'tx',   'd', 1, 'time since birth at weaning';
+          't1',   'd', 1, 'time since birth at 1st instar';
+          't2',   'd', 1, 'time since 1st instar at 2nd instar';
+          't3',   'd', 1, 'time since 2nd instar at 3rd instar';
+          't4',   'd', 1, 'time since 3rd instar at 4th instar';
+          't5',   'd', 1, 'time since 4th instar at 5th instar';
+          't6',   'd', 1, 'time since 5th instar at 6th instar';
           'tj',   'd', 1, 'time since birth at end acceleration';
           'tp',   'd', 1, 'time since birth at puberty';
           'tpm',  'd', 1, 'time since birth at puberty for males'; 
           'tR',   'd', 1, 'time since birth at first egg production';
+          'te',   'd', 1, 'time since pupation at emergence';
           'am',   'd', 1, 'life span';
 
           'Lh',  'cm', 0, 'length at hatch';
           'Lb',  'cm', 0, 'length at birth'
+          'L1',  'cm', 0, 'length at 1st instar after birth'
+          'L2',  'cm', 0, 'length at 2nd instar'
+          'L3',  'cm', 0, 'length at 3rd instar'
+          'L4',  'cm', 0, 'length at 4th instar'
+          'L5',  'cm', 0, 'length at 5th instar'
+          'L6',  'cm', 0, 'length at 6th instar'
           'Lj',  'cm', 0, 'length at end acceleration'
           'Lp',  'cm', 0, 'length at puberty';
           'Lpm', 'cm', 0, 'length at puberty for males';
           'Li',  'cm', 0, 'ultimate length';
           'Lim', 'cm', 0, 'ultimate length for males';
+          'Le',  'cm', 0, 'length of imago';
 
           'Ww0',  'g', 0, 'initial wet weight';
           'Wwh',  'g', 0, 'wet weight at hatch';
           'Wwb',  'g', 0, 'wet weight at birth';
+          'Ww1',  'g', 0, 'wet weight at 1st instar after birth';
+          'Ww2',  'g', 0, 'wet weight at 2nd instar';
+          'Ww3',  'g', 0, 'wet weight at 3rd instar';
+          'Ww4',  'g', 0, 'wet weight at 4th instar';
+          'Ww5',  'g', 0, 'wet weight at 5th instar';
+          'Ww6',  'g', 0, 'wet weight at 6th instar';
           'Wwj',  'g', 0, 'wet weight at end acceleration';
           'Wwp',  'g', 0, 'wet weight at puberty';
           'Wwpm', 'g', 0, 'wet weight at puberty for males';
           'Wwi',  'g', 0, 'ultimate wet weight';
           'Wwim', 'g', 0, 'ultimate wet weight for males';
+          'Wwe',  'g', 0, 'wet weight of imago';
 
           'Wdh',  'g', 0, 'dry weight at hatch';
           'Wdb',  'g', 0, 'dry weight at birth';
+          'Wd1',  'g', 0, 'dry weight at 1st instar after birth';
+          'Wd2',  'g', 0, 'dry weight at 2nd instar';
+          'Wd3',  'g', 0, 'dry weight at 3rd instar';
+          'Wd4',  'g', 0, 'dry weight at 4th instar';
+          'Wd5',  'g', 0, 'dry weight at 5th instar';
+          'Wd6',  'g', 0, 'dry weight at 6th instar';
           'Wdj',  'g', 0, 'dry weight at end acceleration';
+          'Wdp',  'g', 0, 'dry weight at puberty';
           'Wdpm', 'g', 0, 'dry weight at puberty for males';
           'Wdi',  'g', 0, 'ultimate dry weight';
           'Wdim', 'g', 0, 'ultimate dry weight for males';
+          'Wde',  'g', 0, 'dry weight of imago';
           
           'E0',   'J', 0, 'initial energy content';
 
