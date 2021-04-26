@@ -3,7 +3,7 @@
 
 %%
 function AmPeps(infoAmPgui)
-% created 2020/06/09 by  Bas Kooijman
+% created 2020/06/09 by  Bas Kooijman, modified 2021/04/26
 
 %% Syntax
 % <../AmPeps.m *AmPeps*>(infoAmPgui)
@@ -100,15 +100,15 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     case 4 % species not in CoL, family not in AmP, order in AmP
       Clade = select(metaData.order);
     case 5 % species not in CoL, order not in AmP, class in AmP
-      Clade = select(metaData.order);
-    case 6 % species not in CoL, class not in AmP, phylum in AmP
       Clade = select(metaData.class);
+    case 6 % species not in CoL, class not in AmP, phylum in AmP
+      Clade = select(metaData.phylum);
     case 7 % species not in CoL, phylum not in AmP
       Clade = select;        
   end
   
   Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself
-  n_Clade = length(Clade); Clade = Clade(1:min(5,n_Clade)); n_Clade = length(Clade); % set max clade members at 5
+  n_Clade = length(Clade); Clade = Clade(1:min(10,n_Clade)); n_Clade = length(Clade); % set max clade members at 10
   criterion = zeros(n_Clade,1); model_Clade = cell(n_Clade,1); resultsFn = cell(n_Clade,1);
   path = [set_path2server, 'add_my_pet/entries/']; % path for results_my_pet.mat files
   for i = 1:n_Clade % scan clade members
@@ -121,7 +121,12 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     load(resultsFn{i});
     criterion(i) = metaData.COMPLETE/ metaPar.MRE; model_Clade{i} = metaPar.model;
   end
-  sel_Clade = ismember(model_Clade, model_def); [~, i_Clade] = sort(criterion);
+  sel_Clade = ismember(model_Clade, model_def); 
+  if ~any(sel_Clade)
+    fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model definition ', model_def, '\n']);
+  end
+  Clade = Clade(sel_Clade); n_Clade = length(Clade); 
+  criterion = criterion(sel_Clade); [~, i_Clade] = sort(criterion);
   if any(sel_Clade) % at least 1  clade species with default model
     i_Clade = i_Clade(sel_Clade);
   end

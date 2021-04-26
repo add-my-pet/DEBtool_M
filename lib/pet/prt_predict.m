@@ -129,7 +129,9 @@ if any(sel_0)
     fprintf(fid, '%s', cell2str(prdCode.(model).U_E0));
   end
   for i = 1:n_fld0
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_0{i})));
+    if isfield(prdCode.(model), fld_0{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_0{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -145,7 +147,9 @@ if any(sel_h)
     fprintf(fid, '%s', cell2str(prdCode.(model).aUL_h));
   end
   for i = 1:n_fldh
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_h{i})));
+    if isfield(prdCode.(model), fld_h{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_h{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -160,7 +164,9 @@ if any(sel_b)
     fprintf(fid, '%s', cell2str(prdCode.(model).L_b));
   end
   for i = 1:n_fldb
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_b{i})));
+    if isfield(prdCode.(model), fld_b{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_b{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -176,7 +182,9 @@ if any(sel_s) && strcmp(model, 'ssj')
     fprintf(fid, '%s', cell2str(prdCode.ssj.L_s));
   end
   for i = 1:n_flds
-    fprintf(fid, '%s', cell2str(prdCode.ssj.(fld_s{i})));
+    if isfield(prdCode.(model), fld_s{i})
+      fprintf(fid, '%s', cell2str(prdCode.ssj.(fld_s{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -191,7 +199,9 @@ if any(sel_x)
     fprintf(fid, '%s', cell2str(prdCode.(model).L_x));
   end
   for i = 1:n_fldx
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_x{i})));
+    if isfield(prdCode.(model), fld_x{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_x{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -210,7 +220,9 @@ if any(sel_j)
     fprintf(fid, '%s', cell2str(prdCode.(model).L_j));
   end
   for i = 1:n_fldj
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_j{i})));
+    if isfield(prdCode.(model), fld_j{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_j{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -225,7 +237,9 @@ if any(sel_p)
     fprintf(fid, '%s', cell2str(prdCode.(model).L_p));
   end
   for i = 1:n_fldp
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_p{i})));
+    if isfield(prdCode.(model), fld_p{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_p{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -240,7 +254,9 @@ if any(sel_e)
     fprintf(fid, '%s', cell2str(prdCode.(model).L_e));
   end
   for i = 1:n_flde
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_e{i})));
+    if isfield(prdCode.(model), fld_e{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_e{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -252,10 +268,16 @@ if any(sel_i)
   fprintf(fid, '%% ultimate\n');
   fld_i = fld_i(ismember(fld_i,fld0)); n_fldi = length(fld_i);
   if any(ismember(fld_i, {'Li', 'Wwi', 'Wdi'}))
-    fprintf(fid, '%s', cell2str(prdCode.(model).L_i));
+    if isfield(prdCode.(model), 'L_i')
+      fprintf(fid, '%s', cell2str(prdCode.(model).L_i));
+    elseif strcmp(model, 'hex')
+      fprintf('Warning from AmPeps: field L_i encountered in model hex; this should have been L_e \n');
+    end
   end
   for i = 1:n_fldi
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_i{i})));
+    if isfield(prdCode.(model), fld_i{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_i{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -267,7 +289,9 @@ if any(sel_R)
   fprintf(fid, '%% reproduction\n');
   fld_R = fld_R(ismember(fld_R,fld0)); n_fldR = length(fld_R);
   for i = 1:n_fldR
-    fprintf(fid, '%s', cell2str(prdCode.(model).(fld_R{i})));
+    if isfield(prdCode.(model), fld_R{i})
+      fprintf(fid, '%s', cell2str(prdCode.(model).(fld_R{i})));
+    end
   end
   fprintf(fid, '\n');
 end
@@ -289,7 +313,7 @@ if any(sel_m) || any(ismember(fld1,fld_m))
 end
 
 % remaining zero-variate fields
-sel_0 = any([sel_0, sel_h, sel_b, sel_x, sel_j, sel_p, sel_i, sel_R, sel_m], 2); 
+sel_0 = any([sel_0, sel_h, sel_b, sel_x, sel_j, sel_p, sel_i, sel_R, sel_m, sel_e], 2); 
 rfld0 = fld0(~sel_0); n_rfld0 = length(rfld0);
 if n_rfld0 > 0
   fprintf(fid, '%% Warning: The following zero-variate data fields were not recognized\n');
