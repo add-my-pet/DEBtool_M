@@ -58,10 +58,10 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
     system(['wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m']);
     system(['wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m']);
   else
-    system(['powershell wget -O mydata_', metaData.species, '.m', path, 'mydata_', metaData.species, '.m']);
-    system(['powershell wget -O pars_init_', metaData.species, '.m', path, 'pars_init_', metaData.species, '.m'])
-    system(['powershell wget -O predict_', metaData.species, '.m', path, 'predict_', metaData.species, '.m'])
-    system(['powershell wget -O run_', metaData.species, '.m', path, 'run_', metaData.species, '.m'])
+    system(['powershell wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
+    system(['powershell wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m'])
+    system(['powershell wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m'])
+    system(['powershell wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m'])
   end
   edit(['mydata_', metaData.species, '.m'], ...
        ['pars_init_', metaData.species, '.m'], ...
