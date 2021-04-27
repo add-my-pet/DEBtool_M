@@ -125,7 +125,12 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   if ~any(sel_Clade)
     fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model definition ', model_def, '\n']);
   end
-  Clade = Clade(sel_Clade); n_Clade = length(Clade); 
+  for i = 1:n_Clade % delete the results files of the related species that do not match model_def
+    if ~sel_Clade(i)
+      delete(['results_', Clade{i}, '.mat']); 
+    end
+  end
+  Clade = Clade(sel_Clade); n_clade = length(Clade); 
   criterion = criterion(sel_Clade); [~, i_Clade] = sort(criterion);
   if any(sel_Clade) % at least 1  clade species with default model
     i_Clade = i_Clade(sel_Clade);
@@ -133,7 +138,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   i_Clade = i_Clade(end); % index of "best" clade species
   load(resultsFn{i_Clade}); 
   fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
-  for i = 1:n_Clade % delete the results files of the related species, but keep results_my_pet_backup.mat
+  for i = 1:n_clade % delete the results files of the related species, but keep results_my_pet_backup.mat
     delete(['results_', Clade{i}, '.mat']); 
   end
   
