@@ -632,7 +632,7 @@ else % fill fields
 
     case 'resume'
       if ismac || isunix
-        list = strsplit(ls, ' ');
+        list = strsplit(ls); list(end) = [];
       else
         list = cellstr(ls);
       end
