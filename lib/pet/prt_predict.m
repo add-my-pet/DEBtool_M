@@ -211,6 +211,7 @@ fld_in = {'t1','t2','t3','t4','t5','t6','L1','L2','L3','L4','L5','L6','Ww1','Ww2
 sel_in = ismember(fld0,fld_in);
 if any(sel_in)
   fprintf(fid, '%% instars\n');
+  fprintf(fid, '%s', cell2str(prdCode.(model).L_b));
   fld_in = fld_in(ismember(fld_in,fld0)); n_fldin = length(fld_in);
   for i = 1:n_fldin
     if isfield(prdCode.(model), fld_in{i})
@@ -301,6 +302,10 @@ fld_R = {'Ri', 'tR', 'GSI'}; % fields for section reproduction
 sel_R = ismember(fld0,fld_R);
 if any(sel_R)
   fprintf(fid, '%% reproduction\n');
+  if strcmp(model,'hex')
+    fprintf(fid, '%s', cell2str(prdCode.(model).L_e));
+    fprintf(fid, '%s', cell2str(prdCode.(model).E0));
+  end
   fld_R = fld_R(ismember(fld_R,fld0)); n_fldR = length(fld_R);
   for i = 1:n_fldR
     if isfield(prdCode.(model), fld_R{i})
