@@ -37,7 +37,7 @@ for i = 1:numel(nm)
     if nvar == 1 % zero-variate data
       weight.(nm{i}) = 1; 
     else % uni-variate data
-      N = length(data.(nm{i}));
+      N = size(data.(nm{i}),1);
       weight.(nm{i}) = ones(N, 1)/ N;
     end
   end
