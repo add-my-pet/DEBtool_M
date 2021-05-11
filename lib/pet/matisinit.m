@@ -3,10 +3,10 @@
 
 %%
 function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
-  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo, Marques and Laure Pecquerie 2015/07/19
+  % created by Starrlight Augustine, Dina Lika, Bas Kooijman, Goncalo, Marques and Laure Pecquerie 2015/07/19, Bas Kooijman 2021/05/11
 
   %% Syntax
-  % <../matisinit.m *matisinit*>(my_pet)
+  % [infoPar, infoMetaPar, infoTxtPar]<../matisinit.m *matisinit*>(my_pet)
   
   %% Description
   % Loads results_my_pet.mat and calls pars_init_my_pet to check if all outputs of the latter matches the contents of the .mat file. 
@@ -14,14 +14,13 @@ function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
   %
   % Input
   %
-  % * string with name of species
+  % * my_pet: string with name of species
   %
   % Output
   %
-  % * identifyer for equality of all parameters
-  % * identifyer for equality of all meta parameters
-  % * identifyer for equality of all text of parameters
-  % * identifyer for equality of all chemical parameters
+  % * infoPar: boolean for equality of all parameters
+  % * infoMetaPar: boolean for equality of all meta parameters
+  % * infoTxtPar: boolean for equality of all text of parameters
   
   %% Remarks
   % calls mydata_my_pet to fill metapar. 
@@ -32,7 +31,7 @@ function [infoPar, infoMetaPar, infoTxtPar] = matisinit(my_pet)
 
   filenm = ['results_', my_pet, '.mat'];
   if ~exist(filenm, 'file')
-    fprintf(['Warning from printmat: cannot find ', filenm, '\n']);
+    fprintf(['Warning from matisinit: cannot find ', filenm, '\n']);
     return
   end
       
