@@ -22,7 +22,8 @@ function lf_val = lossfun(data, prdData, weights)
 % * lf_val value of loss function
 
 %% Remarks
-% the output does not include contributions from the augmented term or from pseudo-data
+% the output does not include contributions from the augmented term or from pseudo-data.
+% Uses glabal "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr
 
   global lossfunction
     
