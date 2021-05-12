@@ -49,7 +49,7 @@ function prt_tab(values, header)
   end
  
   if ~isempty(header) && ~n_cols == length(header)
-    fprintf('Warning from prt_tab: length of header does not match numer of collums\n');
+    fprintf('Warning from prt_tab: length of header does not match number of collums\n');
     return
   end
         
