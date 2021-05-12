@@ -6,7 +6,7 @@ function prt_tab(values, header)
 % created 2021/05/11 by Bas Kooijman
 
 %% Syntax
-% <../prt_tab.m *prt_tab*> (values, header) 
+% <../prt_tab.m *prt_tab*> (values, header, title) 
 
 %% Description
 % writes table to temporary file tab.html, shows it in the bowser and deletes it
@@ -15,7 +15,8 @@ function prt_tab(values, header)
 % Input:
 %
 % * varargin: cell arrays with strings and/or matrices with numbers
-% * header: cell vector with strings for header; length should match number of columns, but might by empty
+% * header: optional cell vector with strings for header; length should match number of columns, but might by empty
+% * title: optiona string with title of brwser tab
 %
 % Output:
 %
@@ -30,6 +31,9 @@ function prt_tab(values, header)
   
   if ~exist('header','var')
     header = {};
+  end
+  if ~exist('title','var')
+    title = 'Table';
   end
 
   n_rows = size(values{1},1);
@@ -60,7 +64,7 @@ function prt_tab(values, header)
   fprintf(oid, '<!DOCTYPE html>\n');
   fprintf(oid, '<html>\n');
   fprintf(oid, '<head>\n');
-  fprintf(oid, '  <title>%s</title>\n',  'Table');
+  fprintf(oid, '  <title>%s</title>\n',  title);
   fprintf(oid, '  <style>\n');
   fprintf(oid, '    div.tab {\n');
   fprintf(oid, '      width: 90%%;\n');
