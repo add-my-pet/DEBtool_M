@@ -56,8 +56,9 @@ function prt_tab(values, header)
     fprintf(oid, '  <title>%s</title>\n',  'Table');
     fprintf(oid, '  <style>\n');
     fprintf(oid, '    div.tab {\n');
-    fprintf(oid, '      width: 50%%;\n');
-    fprintf(oid, '      float: left;\n'); 
+    fprintf(oid, '      width: 90%%;\n');
+    fprintf(oid, '      margin: auto;\n'); 
+    fprintf(oid, '      padding-top: 30px;\n'); 
     fprintf(oid, '    }\n\n');
     
     fprintf(oid, '    .head {\n');
