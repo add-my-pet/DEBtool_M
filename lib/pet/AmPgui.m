@@ -45,8 +45,8 @@ function AmPgui(action)
 % txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
-persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
-global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
+persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
+global data auxData metaData txtData select_id id_links eco_types color infoAmPgui list_spec
 global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db 
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
