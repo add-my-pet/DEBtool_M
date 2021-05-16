@@ -207,11 +207,19 @@ if any(sel_x)
 end
 
 % instars (for ecdysozoans)
-fld_in = {'t1','t2','t3','t4','t5','t6','L1','L2','L3','L4','L5','L6','Ww1','Ww2','Ww3','Ww4','Ww5','Ww5','Wd1','Wd2','Wd3','Wd4','Wd5','Wd6',}; % fields for section instars
+fld_in = {'t1','t2','t3','t4','t5','t6','L1','L2','L3','L4','L5','L6','Ww1','Ww2','Ww3','Ww4','Ww5','Ww5','Wd1','Wd2','Wd3','Wd4','Wd5','Wd6'}; % fields for section instars
 sel_in = ismember(fld0,fld_in);
 if any(sel_in)
   fprintf(fid, '%% instars\n');
   fprintf(fid, '%s', cell2str(prdCode.(model).L_b));
+  for j = 1:6 % find max number of instars
+    if any(ismember(fld0,{['t', num2str(7-j)], ['L', num2str(7-j)], ['Ww', num2str(7-j)], ['Wd', num2str(7-j)]}))
+      break
+    end
+  end
+  for i=1:j-1
+    fprintf(fid, '%s', cell2str(prdCode.(model).(['L_', num2str(i)])));
+  end
   fld_in = fld_in(ismember(fld_in,fld0)); n_fldin = length(fld_in);
   for i = 1:n_fldin
     if isfield(prdCode.(model), fld_in{i})

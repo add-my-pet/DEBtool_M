@@ -155,7 +155,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   otherParFields = setdiff(parFields, chemParFields); % current auxiliary parameter fields
   otherParFields = setdiff(otherParFields, {'free', 'f'});
   selPar = ismember(otherParFields, auxParFld);
-  par = rmfield(par, otherParFields(~selPar)); % remove unnessasary parameters
+  par = rmfield(par, otherParFields(~selPar)); % remove unnecessary parameters
   addParFields = auxParFld(~ismember(auxParFld, otherParFields(selPar))); % parameters fields that must be added
   n_add = length(addParFields);
 
