@@ -652,7 +652,8 @@ else % fill fields
       
     case 'pause'
       nm = ['results_', metaData.species, '.mat'];
-      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+      %save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
