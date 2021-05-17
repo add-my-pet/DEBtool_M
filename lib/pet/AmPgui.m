@@ -807,7 +807,13 @@ function speciesCb(~, ~, dspecies)
   else
     [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
-    nms = get_common_CoL(id_CoL); metaData.species_en = nms{1}; ; set(Hcommon,'String',['common name: ',metaData.species_en]);
+    nms = get_common_CoL(id_CoL); 
+    if length(nms)>0
+      metaData.species_en = nms{1}; 
+    else
+      metaData.species_en = 'no_english_name'; 
+    end
+    set(Hcommon,'String',['common name: ',metaData.species_en]);
     nm = lin(ismember(rank, 'Family')); metaData.family = nm{1}; set(Hfamily,'String',['family: ',metaData.family]);
     nm = lin(ismember(rank, 'Order'));  metaData.order = nm{1};  set(Horder,'String',['order: ',metaData.order]);
     nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hclass,'String',['class: ',metaData.class]);
