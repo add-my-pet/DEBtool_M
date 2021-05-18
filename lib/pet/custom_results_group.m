@@ -22,6 +22,7 @@ function custom_results_group(parGrp, metaPar, data, txtData, auxData)
   %% Remarks
   % if a file with this name is present in the directory of the group, it will suppress other graphical output
   
+  try 
   % convert all inputs to structures, where the first field names are the pets (ignorging auxData) 
   parGrp = rmfield(parGrp,'free'); par = parGrp2Pets(parGrp); pets = fieldnames(par); n_pets = length(pets);
   %model = metaPar.model; cov_rules = metaPar.cov_rules; metaPar = rmfield(metaPar, {'model','cov_rules'});
@@ -64,3 +65,11 @@ function custom_results_group(parGrp, metaPar, data, txtData, auxData)
   set(gca,'Fontsize',12, 'Box', 'on')
  
   print -dpng results_group.png
+  
+  catch
+    fprintf('Warning from custom_results_group: tis template is meant to replace the default way of presenting results\n');
+    fprintf('This file requires case-specific editing, which is not yet done properly\n');
+    fprintf('Use the default way of presenting results by removing this file from your current local directory\n');
+    return
+ end
+

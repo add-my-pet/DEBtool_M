@@ -31,6 +31,8 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   % * Once named appropriately, this function will be called automatically by 
   %     <results_pets.html *results_pets*> function of DEBtool_M when running the <run_my_pet.html *run*> file
   
+  try
+      
   % get predictions
   data2plot = data;              % copy data to Prd_data
   t = linspace(0, 650, 100)';   % set independent variable
@@ -70,3 +72,10 @@ function custom_results_template(par, metaPar, data, txtData, auxData)
   ylabel([txtData.label.LW{2}, ', ', txtData.units.LW{2}])
  
   print -dpng results_my_pet_01.png
+  
+  catch
+    fprintf('Warning from custom_results_template: this template is meant to replace the default way of presenting results\n');
+    fprintf('This file requires case-specific editing, which is not yet done properly\n');
+    fprintf('Use the default way of presenting results by removing this file from your current local directory\n');
+    return
+ end
