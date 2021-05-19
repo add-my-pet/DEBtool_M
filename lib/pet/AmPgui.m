@@ -797,7 +797,7 @@ function speciesCb(~, ~, dspecies)
   end
 
   [lin, rank, id_CoL, name_status] = lineage_CoL(my_pet); 
-  if ~strcmp(name_status,'accepted')
+  if ~strcmp(name_status,'accepted name')
     fprintf(['Warning from AmPgui: name status is ', name_status, '\n'])
   end
   if isempty(id_CoL)
