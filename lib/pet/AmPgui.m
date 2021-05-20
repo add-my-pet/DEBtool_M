@@ -796,7 +796,10 @@ function speciesCb(~, ~, dspecies)
     return
   end
 
-  [id_CoL, my_pet] = get_id_CoL(my_pet); 
+  [lin, rank, id_CoL, name_status] = lineage_CoL(my_pet); 
+  if ~strcmp(name_status,'accepted name')
+    fprintf(['Warning from AmPgui: name status is ', name_status, '\n'])
+  end
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
     set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
@@ -806,19 +809,18 @@ function speciesCb(~, ~, dspecies)
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
     AmPgui('setColors')
   else
-    [lin, rank] = lineage_CoL(my_pet);
     metaData.links.id_CoL = id_CoL;
     nms = get_common_CoL(id_CoL); 
-    if length(nms)>0
-      metaData.species_en = nms{1}; 
-    else
+    if isempty(nms)
       metaData.species_en = 'no_english_name'; 
+    else
+      metaData.species_en = nms{1}; 
     end
     set(Hcommon,'String',['common name: ',metaData.species_en]);
-    nm = lin(ismember(rank, 'Family')); metaData.family = nm{1}; set(Hfamily,'String',['family: ',metaData.family]);
-    nm = lin(ismember(rank, 'Order'));  metaData.order = nm{1};  set(Horder,'String',['order: ',metaData.order]);
-    nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hclass,'String',['class: ',metaData.class]);
-    nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
+    nm = lin(ismember(rank, 'Family')); if ~isempty(nm); metaData.family = nm{1}; end; set(Hfamily,'String',['family: ',metaData.family]);
+    nm = lin(ismember(rank, 'Order')); if ~isempty(nm); metaData.order = nm{1}; end; set(Horder,'String',['order: ',metaData.order]);
+    nm = lin(ismember(rank, 'Class'));  if ~isempty(nm); metaData.class = nm{1}; end; set(Hclass,'String',['class: ',metaData.class]);
+    nm = lin(ismember(rank, 'Phylum')); if ~isempty(nm); metaData.phylum = nm{1}; end; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
