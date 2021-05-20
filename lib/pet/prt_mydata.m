@@ -211,7 +211,7 @@ if isfield(metaData, 'discussion')
     str = [str, '''', fld{i}, ''',', fld{i}, ', '];
     fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.discussion.(fld{i}));
     if isfield(metaData, 'bibkey') && isfield(metaData.bibkey, fld{i})
-      fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, fld{i});
+       fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, cell2str(metaData.bibkey.(fld{i})));
     end
   end
   str([end,end-1])=[];
@@ -226,7 +226,7 @@ if isfield(metaData, 'facts') && ~isempty(metaData.facts.F1)
     str = [str, '''', fld{i}, ''',', fld{i}, ', '];
     fprintf(fid, '%s  = ''%s'';\n', fld{i}, metaData.facts.(fld{i}));
     if isfield(metaData, 'bibkey') && isfield(metaData.bibkey, fld{i})
-        fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, fld{i});
+       fprintf(fid, 'metaData.bibkey.%s = ''%s'';\n', fld{i}, cell2str(metaData.bibkey.(fld{i})));
     end
   end
   str([end,end-1])=[];
