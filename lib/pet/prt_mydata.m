@@ -328,6 +328,7 @@ fclose(fid);
 end
 
 function str = cell2str(cell)
+% Malab has the build-in function cellstr, but this function delivers a cell-vector, not a string
   if isempty(cell)
     str = '{}'; return
   elseif ischar(cell)
