@@ -43,4 +43,4 @@ ranges.z = 0.25; % For a factor to the original parameter value.
 ranges.('f_tW') = [0.1, 0.4]; % For a desired range values. 
 calibration_options('ranges', ranges);
 % Calibrate
-[best, info, out, best_favl] = calibrate;
+[best, out, best_favl] = calibrate;

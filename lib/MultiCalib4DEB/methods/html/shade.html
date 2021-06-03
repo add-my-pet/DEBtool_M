@@ -1,11 +1,82 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>lshade</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-03"><meta name="DC.source" content="shade.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>lshade</h1><!--introduction--><p>Finds parameter values for a pet that minimizes the lossfunction using the Succes History Adaptation of Differential Evolution (SHADE) using a filter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">This package is a MATLAB/Octave source code of SHADE which is an improved version of SHADE 1.1.</a></li><li><a href="#8">The original code of this algorithm was taken from: https://sites.google.com/site/tanaberyoji/software</a></li><li><a href="#10">Note that this source code is transferred from the C++ source code version.</a></li><li><a href="#11">About SHADE, please see following papers:</a></li><li><a href="#13">* Ryoji Tanabe and Alex Fukunaga: Success-History Based Parameter Adaptation for Differential Evolution, Proc. IEEE Congress on Evolutionary Computation (CEC-2013).</a></li><li><a href="#15">Taking data for objective function</a></li><li><a href="#16">Getting parameters and setting objectives</a></li><li><a href="#17">Auxiliary variables for function evaluation</a></li><li><a href="#18">Population size</a></li><li><a href="#19">Parameter settings for SHADE</a></li><li><a href="#20">Result file variables</a></li><li><a href="#21">Take initial time</a></li><li><a href="#22">Runs loop</a></li><li><a href="#23">Take run initial time</a></li><li><a href="#24">Archive file variables</a></li><li><a href="#25">Initialize the main population</a></li><li><a href="#26">Initialize function evaluations and fitness values</a></li><li><a href="#27">Main loop</a></li><li><a href="#29">Generating crossover rate</a></li><li><a href="#30">Generating scaling factor</a></li><li><a href="#31">Evaluate children</a></li><li><a href="#32">Update best fitness found so far</a></li><li><a href="#33">Comparison between parents and children</a></li><li><a href="#35">for updating the memory of scaling factor</a></li><li><a href="#36">for updating the memory of crossover rate</a></li><li><a href="#39">If best one wants to be refined with the Nelder Mead's simplex method</a></li><li><a href="#40">Setting run information</a></li><li><a href="#42">Add best to solutions archive and finish</a></li><li><a href="#43">Store the information structure into the results set</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info, archive, bsf_fval] = <a href="../lshade.m"><b>lshade</b></a> (func, par, data, auxData, weights, filternm)</p><h2 id="4">Description</h2><p>Finds parameter values for a pet that minimizes the lossfunction using the SHADE multimodal algorithm using a filter. The filter gives always a pass in the case that no filter has been selected in <a href="estim_options.html"><b>estim_options</b></a>. The values for SHADE initialization can be modifyed by editing the file <a href="calibration_options.html">calibration_options.html</a> <b>calibration_options</b>&gt;</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;      see nrregr_st or nrregr</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>weights: structure with weights</li><li>filternm: character string with name of user-defined filter function</li></ul></div><p>Output</p><div><ul><li>q: structure with parameters, result of the algorithm</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>archive: the set of solutions found by the multimodal algorithm</li><li>bsf_fval: the best fitness value found</li></ul></div><h2 id="5">Remarks</h2><p>Set options with <a href="calibration_options.html"><b>calibration_options</b></a>. The number of fields in data is variable.</p><h2 id="6">This package is a MATLAB/Octave source code of SHADE which is an improved version of SHADE 1.1.</h2><h2 id="8">The original code of this algorithm was taken from: https://sites.google.com/site/tanaberyoji/software</h2><h2 id="10">Note that this source code is transferred from the C++ source code version.</h2><h2 id="11">About SHADE, please see following papers:</h2><h2 id="13">* Ryoji Tanabe and Alex Fukunaga: Success-History Based Parameter Adaptation for Differential Evolution, Proc. IEEE Congress on Evolutionary Computation (CEC-2013).</h2><h2 id="15">Taking data for objective function</h2><h2 id="16">Getting parameters and setting objectives</h2><h2 id="17">Auxiliary variables for function evaluation</h2><h2 id="18">Population size</h2><h2 id="19">Parameter settings for SHADE</h2><h2 id="20">Result file variables</h2><h2 id="21">Take initial time</h2><h2 id="22">Runs loop</h2><h2 id="23">Take run initial time</h2><h2 id="24">Archive file variables</h2><h2 id="25">Initialize the main population</h2><h2 id="26">Initialize function evaluations and fitness values</h2><h2 id="27">Main loop</h2><h2 id="29">Generating crossover rate</h2><h2 id="30">Generating scaling factor</h2><h2 id="31">Evaluate children</h2><h2 id="32">Update best fitness found so far</h2><h2 id="33">Comparison between parents and children</h2><p>Compare parents and children fitness. Then...</p><h2 id="35">for updating the memory of scaling factor</h2><h2 id="36">for updating the memory of crossover rate</h2><h2 id="39">If best one wants to be refined with the Nelder Mead's simplex method</h2><h2 id="40">Setting run information</h2><h2 id="42">Add best to solutions archive and finish</h2><h2 id="43">Store the information structure into the results set</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
 %% lshade
 % Finds parameter values for a pet that minimizes the lossfunction using the 
-% Linear Succes History Adaptation of Differential Evolution (L-SHADE) using a filter
+% Succes History Adaptation of Differential Evolution (SHADE) using a filter
 %%
-function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights, filternm)
+function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, filternm)
    % created 2020/02/15 by Juan Francisco Robles; 
    % modified 2020/02/17 by Juan Francisco Robles, 2020/02/20, 2020/02/21,
-   % 2020/02/24, 2020/02/26, 2020/02/27, 2021/03/12,2021/03/22, 2021/05/11
+   % 2020/02/24, 2020/02/26, 2020/02/27, 2021/01/14, 2021/03/12,
+   % 2021/03/22, 2021/05/11
    %   
 
    %% Syntax
@@ -13,10 +84,10 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
 
    %% Description
    % Finds parameter values for a pet that minimizes the lossfunction using the 
-   % L-SHADE multimodal algorithm using a filter.
+   % SHADE multimodal algorithm using a filter.
    % The filter gives always a pass in the case that no filter has been selected 
    % in <estim_options.html *estim_options*>.
-   % The values for L-SHADE initialization can be modifyed by editing the file
+   % The values for SHADE initialization can be modifyed by editing the file
    % <calibration_options.html> *calibration_options*>
    %
    % Input
@@ -40,20 +111,20 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    % Set options with <calibration_options.html *calibration_options*>.
    % The number of fields in data is variable.
    %%%%%%%%%%%%%%%%%%%
-   %% This package is a MATLAB/Octave source code of L-SHADE which is an improved version of SHADE 1.1.
+   %% This package is a MATLAB/Octave source code of SHADE which is an improved version of SHADE 1.1.
    %% 
    %% The original code of this algorithm was taken from: https://sites.google.com/site/tanaberyoji/software
    %%
    %% Note that this source code is transferred from the C++ source code version.
-   %% About L-SHADE, please see following papers:
+   %% About SHADE, please see following papers:
    %%
-   %% * Ryoji Tanabe and Alex Fukunaga: Improving the Search Performance of SHADE Using Linear Population Size Reduction,  Proc. IEEE Congress on Evolutionary Computation (CEC-2014), Beijing, July, 2014.
+   %% * Ryoji Tanabe and Alex Fukunaga: Success-History Based Parameter Adaptation for Differential Evolution, Proc. IEEE Congress on Evolutionary Computation (CEC-2013).
    %%
    %%%%%%%%%%%%%%%%%%% 
 
-   global lossfunction max_fun_evals max_calibration_time num_runs refine_initial  
+   global num_results lossfunction max_fun_evals num_runs refine_initial  
    global pop_size refine_running refine_run_prob refine_best refine_firsts
-   global verbose verbose_options random_seeds num_results
+   global verbose verbose_options random_seeds max_calibration_time
 
    % Option settings
    % initiate info setting
@@ -100,21 +171,17 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    qvec = cell2mat(struct2cell(q));
    pen_val = 1e10;
 
-   %%  Parameter settings for L-SHADE
+    %% Population size
+   pop_size = num_results;
+   
+   %%  Parameter settings for SHADE
    problem_size = length(index);
    max_nfes = max_fun_evals;
    ls_nfes = max_nfes * 0.7; 
    p_best_rate = 0.11;
    arc_rate = 1.5;
-   memory_size = 5;
-   
-   %% Population y memory size
-   if 18 * problem_size > num_results
-      pop_size = 18 * problem_size;
-   else
-      pop_size = num_results;
-   end
-   
+   memory_size = problem_size;
+
    %% Result file variables 
    solution_set.NP = pop_size;
    solution_set.pop = zeros(0, problem_size);
@@ -126,7 +193,7 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    
    %% Runs loop
    fprintf('Launching calibration. \n');
-   fprintf('Using L-SHADE multimodal algorithm. \n');
+   fprintf('Using SHADE multimodal algorithm. \n');
    fprintf('Total calibration runs: %d \n', num_runs);
    if max_fun_evals ~= Inf
       fprintf('Calibration defined with evaluations as stop criteria \n');
@@ -140,28 +207,19 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    for run = 1:(min(num_runs, length(random_seeds)))
       %% Take run initial time
       run_time_start = tic; 
-      
       fprintf('Run %d. \n', run);
       % Initializing random number generator.
       rng(random_seeds(run), 'twister'); 
       
-      %% Population y memory size
-      if 18 * problem_size > num_results
-         pop_size = 18 * problem_size;
-      else
-         pop_size = num_results;
-      end
-      max_pop_size = pop_size;
-      min_pop_size = 4.0; 
-      
       %% Archive file variables
       archive.NP = arc_rate * pop_size; % maximum size of the archive
       archive.pop = zeros(0, problem_size); % solutions to store in the archive
-      archive.funvalues = zeros(0, 1); % function value of the archived solutions
-
+      archive.funvalues = zeros(0, 1); % function value for the archived solutions
+      
       %% Initialize the main population
       [popold, ranges] = gen_individuals(func, par, data, auxData, filternm); 
-
+      disp('Ranges');
+      disp(ranges);
       % Add refined guest if setted into calibration options
       if refine_initial
          fprintf('Launching local search over initial individual \n');
@@ -241,7 +299,12 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
             bsf_solution = pop(i, :);
          end
          % Check stopping criteria
-         if nfes > max_nfes; break; end
+         if max_calibration_time > 0
+            current_time = toc(time_start)/60;
+            if current_time > max_calibration_time; break; end
+         else
+            if nfes > max_nfes; break; end
+         end
       end
 
       memory_sf = 0.5 .* ones(memory_size, 1);
@@ -249,7 +312,7 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
       memory_pos = 1;
 
       %% Main loop
-      while nfes < max_nfes && (toc(run_time_start)/60) < max_calibration_time
+      while nfes < max_nfes
          fprintf('Num func evals %d | Total progress %.2f %%\n', nfes, (nfes/max_nfes)*100.0);
          pop = popold; % the old population becomes the current population
          [temp_fit, sorted_index] = sort(fitness, 'ascend');
@@ -288,7 +351,6 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
 
          r0 = 1 : pop_size;
          popAll = [pop; archive.pop];
-         
          [r1, r2] = gnR1R2(pop_size, size(popAll, 1), r0);
 
          pNP = max(round(p_best_rate * pop_size), 2); %% choose at least two best solutions
@@ -411,7 +473,6 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
                   % it is necessary for the population resize procedure of the
                   % algorithm.
                   nfes = nfes + iters;
-                  fprintf('Num func evals %d | Total progress %d \n', nfes, (nfes/max_nfes)*100.0);
                   qvec = cell2mat(struct2cell(q));
                   ui(i,:) = qvec(index)';
                   children_fitness(i) = funct_val;
@@ -424,7 +485,12 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
                end
             end
             % Check if stopping criteria has been achieved
-            if nfes > max_nfes; break; end
+            if max_calibration_time > 0
+               current_time = toc(time_start)/60;
+               if current_time > max_calibration_time; break; end
+            else
+               if nfes > max_nfes; break; end
+            end
          end
 
          %% Comparison between parents and children
@@ -463,54 +529,26 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
             memory_pos = memory_pos + 1;
             if memory_pos > memory_size;  memory_pos = 1; end
          end
-
-         %% for resizing the population size
-         plan_pop_size = round((((min_pop_size - max_pop_size) / max_nfes) * nfes) + max_pop_size);
-
-         if pop_size > plan_pop_size
-            reduction_ind_num = pop_size - plan_pop_size;
-            if pop_size - reduction_ind_num <  min_pop_size; reduction_ind_num = pop_size - min_pop_size;end
-
-            pop_size = pop_size - reduction_ind_num;
-
-            for r = 1 : reduction_ind_num
-               [~, indBest] = sort(fitness, 'ascend');
-               worst_ind = indBest(end);
-               popold(worst_ind,:) = [];
-               pop(worst_ind,:) = [];
-               fitness(worst_ind,:) = [];
-            end
-
-            archive.NP = round(arc_rate * pop_size); 
-
-            if size(archive.pop, 1) > archive.NP 
-               rndpos = randperm(size(archive.pop, 1));
-               rndpos = rndpos(1 : archive.NP);
-               archive.pop = archive.pop(rndpos, :);
-            end
-         end
          % Check if stopping criteria has been achieved
          if max_calibration_time > 0
             current_time = round(toc(run_time_start)/60);
             if current_time > max_calibration_time; break; end
             if verbose
-               fprintf('Time accomplished: %d of %d minutes (%d %%) for the %d run \n', ...,
+               fprintf('Time accomplished: %d of %d minutes (%d %%) for the run  %d \n', ...,
                   current_time, max_calibration_time, ..., 
                   round((current_time/max_calibration_time)*100.0), run);
-              if num_runs > 1
-                  current_time = round(toc(time_start)/60);
-                  fprintf('The time accomplished for the whole calibration: %d of %d minutes (%d %%) \n', ...,
-                      current_time, max_calibration_time*num_runs, ..., 
-                      round((current_time/(max_calibration_time*num_runs))*100.0));
+               if num_runs > 1
+                   current_time = round(toc(time_start)/60);
+                   fprintf('The time accomplished for the whole calibration: %d of %d minutes (%d %%) \n', ...,
+                       current_time, max_calibration_time*num_runs, ..., 
+                       round((current_time/(max_calibration_time*num_runs))*100.0));
                end
             end
          else
             if nfes > max_nfes; break; end
          end
-         % Update the final solutions set
-         solution_set = updateArchive(solution_set, popold, fitness);
       end
-
+      
       if verbose
          % Print the best result values and finish
          fprintf('Best-so-far error value = %1.8e\n', bsf_fit_var);
@@ -541,7 +579,8 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
          end
       end
       % Update best solution set
-      %solution_set.NP = length(solution_set.pop);
+      solution_set = updateArchive(solution_set, popold, fitness);
+      
       %% Setting run information
       tEnd = datevec(toc(run_time_start)./(60*60*24));
       tEnd = tEnd(3:6);
@@ -561,3 +600,6 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    %% Store the information structure into the results set
    solution_set.runtime_information = info;
 end
+
+##### SOURCE END #####
+--></body></html>

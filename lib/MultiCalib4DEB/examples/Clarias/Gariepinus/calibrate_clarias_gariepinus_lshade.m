@@ -46,4 +46,4 @@ calibration_options('verbose', 1);
 calibration_options('verbose_options', 8); 
 calibration_options('num_runs', 2);
 % Calibrate
-[best, info, out, best_favl] = calibrate;
+[best, out, best_favl] = calibrate;

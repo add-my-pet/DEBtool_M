@@ -1,6 +1,5 @@
 %% estim_pars
-% Runs the AmP estimation procedure (Marques et al 2018, PLOS computational
-% biology  https://doi.org/10.1371/journal.pcbi.1006100)
+% Runs the AmP estimation procedure 
 
 %%
 function [nsteps, info, fval] = estim_pars
@@ -9,14 +8,15 @@ function [nsteps, info, fval] = estim_pars
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
-  %   2019/03/20 by Bas kooijman
-  %   2019/12/16, 2019/12/20 by Bas kooijman
+  %   2019/03/20, 2019/12/16, 2019/12/20, 2021/06/02 by Bas kooijman
   
   %% Syntax 
   % [nsteps, info, fval] = <../estim_pars.m *estim_pars*>
   
   %% Description
-  % Runs the entire estimation procedure
+  % Runs the entire estimation procedure, see Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100
+  % See also Robles et al 2021, (in prep) for the ga-method.
+  % 
   %
   % * gets the parameters
   % * gets the data
@@ -46,7 +46,8 @@ n_pets = length(pets);
 
 if n_pets == 1
   pars_initnm = ['pars_init_', pets{1}];
-    resultsnm = ['results_', pets{1}, '.mat'];
+  resultsnm   = ['results_', pets{1}, '.mat'];
+  calibration_options('results_filename', resultsnm);
 else
   pars_initnm = 'pars_init_group';
   resultsnm = 'results_group.mat';
@@ -128,14 +129,20 @@ else
 end
 
 % perform the actual estimation
-if ~strcmp(method, 'no')
-  if strcmp(method, 'nm') % prepares for future extension to alternative minimazation algorithms
+switch method
+  case 'nm'
     if n_pets == 1
       [par, info, nsteps, fval] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
       [par, info, nsteps, fval] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
-  end
+    
+  case {'ga','mm1','mm2'}
+    [par, solutions_set, fval] = calibrate; 
+    info = ~isempty(solutions_set); 
+    nsteps = solutions_set.runtime_information.run_1.fun_evals;
+    
+  otherwise % do not estimate
 end
 
 % Results

@@ -1,3 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>calibration_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-03"><meta name="DC.source" content="calibration_options.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">calibration_options</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">calibration_options</h2><p>Sets options for calibration.pars</p><h2 id="3">Syntax</h2><p><a href="../calibration_options.m"><b>calibration_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for calibration one by one</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options by default</pre><div><ul><li>two inputs</li></ul></div><pre>  'method':
+    'mm1' - use Nelder-Mead method;
+    'mm2' - do not estimate;</pre><pre>  'num_results': The size for the multimodal algorithm's population.
+                 If it is not defined then sets the values recommended by
+                 the author, which are 100 for SHADE ('mm1') and
+                 18 * problem size for L-SHADE.
+  'gen_factor': percentage to build the ranges for initializing the
+                first population of individuals.</pre><pre>  'bounds_from_ind':
+    1: use ranges from data (default);
+    0: use ranges from pseudodata if exist (these ranges not existing
+       will be taken from data).</pre><pre>  'max_fun_evals': maximum number of function evaluations (10000 by
+                   default).</pre><pre>  'max_calibration_time': maximum calibration time in minutes (0 by default).</pre><pre>  'num_runs': the number of independent runs to perform.</pre><pre>  'add_initial': if the initial individual is added in the first
+                 population.</pre><pre>  'refine_initial': if the initial individual is refined using Nelder
+                  Mead.</pre><pre>  'refine_best': if the best individual found is refined using Nelder
+                  Mead.</pre><pre>  'refine_running': If to apply local search to some individuals
+                     while simulation is running.</pre><pre>  'refine_run_prob': The probability to apply a local search to an
+                      individual while algorithm is running.</pre><pre>  'refine_firsts': If to apply a local search to the first population
+                    (this is recommended when the algorithm is not able
+                     to converge to good solutions till the end of its
+                     execution).
+                     Not activated (0) default.</pre><pre>  'verbose_options': The number of solutions to show from the set of
+                      optimal solutions found by the algorithm through
+                      the calibration process.</pre><pre>  'verbose': If to activate verbose options (1 yes, 0 no).
+              This option prints some information while the calibration
+              process is running.</pre><pre>  'random_seeds': The values for the seeds used to generate random
+                   values (each one is used in a single run of the
+                   algorithm).
+  'ranges': Some ranges for the parameters to be calibrated. The range
+            struct has one (factor) to increase and decrease the
+            original parameter values or two substructs (min and max)
+            for the  minimum and maximum range values.
+            The factor parameter could contain a value between [0, 1].
+            If the value is not between [0,1], a default value of 0.01
+            is set.
+            Both min and max could contain values on any scale of values
+            but is it important to consider the folowing:
+            (1) The min value must be lower than the max value for each
+                variable in ranges. If it is not, then the variable will
+                be not used to avoid problems into the calibration engine.
+            (2) If the range between the min and max values is too high,
+                the calibration engine could experiment problems when
+                running. It is recomended to adapt the data to the real
+                ranges of the problem.
+             (3) Only the free parameters (see 'pars_init_my_pet' file)
+                 are considered.
+             The ranges structure is empty by default.
+  'results_display': The type of results output to display after
+                    calibration execution.
+                    Options:
+                    (1) Basic - Does not show results in screen.
+                    (2) Best - Plots the best solution results in
+                        DEBTools style.
+                    (3) Set - Plots all the solutions remarking the
+                        best one. Html with pars (best pars and a
+                        measure of the variance of each parameter in
+                        the solutions obtained for example).
+                    (4) Complete - Joins options 1, 2 , and 3 together
+                        with zero variate data with input and a measure
+                        of the variance of all the solutions considered
+  'results_filename': The name for the results file.
+  'save_results': If the results output images are going to be saved.
+  'mat_file': A file with results from where to initialize the
+              calibration parameters (only useful if pars_init_method
+              option is equal to 1 and if there is a result file)
+Output</pre><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>For other options see corresponding options file of the minimazation  algorithm, e.g. <a href="../../regr/html/nmregr_options.html"><b>nmregr_options</b></a>. See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file</p><h2 id="6">Example of use</h2><pre>calibration_options('default'); calibration_options('random_seed', 123543545); calibration_options('add_initial', 1)</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
 %% calibration_options
 % Sets options for calibration.pars
 
@@ -526,3 +660,6 @@ function calibration_options (key, val)
          end
    end
 end
+
+##### SOURCE END #####
+--></body></html>

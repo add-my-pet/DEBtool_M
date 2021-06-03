@@ -3,8 +3,8 @@
 
 %%
 function estim_options (key, val)
-  %  created at 2015/01/25 by Goncalo Marques; modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman
-  % 2019/12/20 by Nina Marn
+  %  created at 2015/01/25 by Goncalo Marques; 
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/02 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -46,15 +46,33 @@ function estim_options (key, val)
   %      6     - like 5, but also prints html with population traits
   %   
   %    'method': 
-  %      'nm': use Nelder-Mead method; 
+  %      'nm': Nelder-Mead method; 
+  %      'ga': genetic algorithm;
   %      'no': do not estimate;
+  %
+  %    'report': 
+  %       1 - to report steps to screen (default); 
+  %       0 - do not report;
+  %
+  %    'max_step_number': maximum number of steps (default 500)
+  %
+  %    'max_fun_evals': maximum number of function evaluations (default 2000)
+  %
+  %    'tol_simplex': tolerance for how close the simplex points must be together to call them the same (default 1e-4)
+  %
+  %    'tol_fun': tolerance for how close the loss-function values must be together to call them the same (default 1e-4)
+  %
+  %    'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
+
   %
   % Output
   %
   % * no output, but globals are set to values or values are printed to screen
   %
   %% Remarks
-  % For other options see corresponding options file of the minimazation  algorithm, e.g. <../../regr/html/nmregr_options.html *nmregr_options*>.
+  % Options for the nm method 'report', 'max_step_number', 'max_fun_evals', 'tol_simplex', 'tol_tun', 'simplex_size' are set in <../../regr/html/nmregr_options.html *nmregr_options*>.
+  % Options for the ga method are set in <../../lib/html/calibration_options.html *calibration_options*>;
+  % You can either use calibration_options directly, or via estim_options by prepending GA;
   % See <estim_pars.html *estim_pars*> for application of the option settings.
   % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
   % A typical estimation procedure is
@@ -62,7 +80,10 @@ function estim_options (key, val)
   % * first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),
   % * then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)
   % * type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file
-  
+  %
+  % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
+  % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
+  %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
  
@@ -73,7 +94,7 @@ function estim_options (key, val)
     key = 'inexistent';
   end
   
-  availableMethodOptions = {'no', 'nm'};
+  availableMethodOptions = {'no', 'nm', 'ga'};
     
   switch key
 	
@@ -84,6 +105,7 @@ function estim_options (key, val)
       results_output = 3;
       method = 'nm';
       nmregr_options('default');
+      calibration_options('default');
 
     case 'loss_function'
       if exist('val','var') == 0
@@ -152,6 +174,7 @@ function estim_options (key, val)
         end	      
         fprintf('''no'' - do not estimate \n');
         fprintf('''nm'' - use Nelder-Mead method \n');
+        fprintf('''ga'' - use genetic algorithm method \n');
       else
         method = val;
       end

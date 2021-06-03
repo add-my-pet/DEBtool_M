@@ -39,4 +39,4 @@ calibration_options('bounds_from_ind', 1);
 calibration_options('verbose', 1); 
 calibration_options('verbose_options', 8);
 % Calibrate
-[best, info, out, best_favl] = calibrate;
+[best, out, best_favl] = calibrate;

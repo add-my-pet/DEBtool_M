@@ -45,4 +45,4 @@ ranges.('f_tW') = [0.1, 0.4]; % For a desired range values.
 calibration_options('ranges', ranges);
 calibration_options('mat_file', 'results_best_lepus.mat');
 % Calibrate
-[best, info, out, best_favl] = calibrate;
+[best, out, best_favl] = calibrate;

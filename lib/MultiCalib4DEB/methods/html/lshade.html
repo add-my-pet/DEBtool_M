@@ -1,3 +1,73 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>lshade</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-03"><meta name="DC.source" content="lshade.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>lshade</h1><!--introduction--><p>Finds parameter values for a pet that minimizes the lossfunction using the Linear Succes History Adaptation of Differential Evolution (L-SHADE) using a filter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">This package is a MATLAB/Octave source code of L-SHADE which is an improved version of SHADE 1.1.</a></li><li><a href="#8">The original code of this algorithm was taken from: https://sites.google.com/site/tanaberyoji/software</a></li><li><a href="#10">Note that this source code is transferred from the C++ source code version.</a></li><li><a href="#11">About L-SHADE, please see following papers:</a></li><li><a href="#13">* Ryoji Tanabe and Alex Fukunaga: Improving the Search Performance of SHADE Using Linear Population Size Reduction,  Proc. IEEE Congress on Evolutionary Computation (CEC-2014), Beijing, July, 2014.</a></li><li><a href="#15">Taking data for objective function</a></li><li><a href="#16">Getting parameters and setting objectives</a></li><li><a href="#17">Auxiliary variables for function evaluation</a></li><li><a href="#18">Parameter settings for L-SHADE</a></li><li><a href="#19">Population y memory size</a></li><li><a href="#20">Result file variables</a></li><li><a href="#21">Take initial time</a></li><li><a href="#22">Runs loop</a></li><li><a href="#23">Take run initial time</a></li><li><a href="#24">Population y memory size</a></li><li><a href="#25">Archive file variables</a></li><li><a href="#26">Initialize the main population</a></li><li><a href="#27">Initialize function evaluations and fitness values</a></li><li><a href="#28">Main loop</a></li><li><a href="#30">Generating crossover rate</a></li><li><a href="#31">Generating scaling factor</a></li><li><a href="#32">Evaluate children</a></li><li><a href="#33">Update best fitness found so far</a></li><li><a href="#34">Comparison between parents and children</a></li><li><a href="#36">for updating the memory of scaling factor</a></li><li><a href="#37">for updating the memory of crossover rate</a></li><li><a href="#39">for resizing the population size</a></li><li><a href="#41">If best one wants to be refined with the Nelder Mead's simplex method</a></li><li><a href="#42">Setting run information</a></li><li><a href="#44">Add best to solutions archive and finish</a></li><li><a href="#45">Store the information structure into the results set</a></li></ul></div><h2 id="3">Syntax</h2><p>[q, info, archive, bsf_fval] = <a href="../lshade.m"><b>lshade</b></a> (func, par, data, auxData, weights, filternm)</p><h2 id="4">Description</h2><p>Finds parameter values for a pet that minimizes the lossfunction using the L-SHADE multimodal algorithm using a filter. The filter gives always a pass in the case that no filter has been selected in <a href="estim_options.html"><b>estim_options</b></a>. The values for L-SHADE initialization can be modifyed by editing the file <a href="calibration_options.html">calibration_options.html</a> <b>calibration_options</b>&gt;</p><p>Input</p><div><ul><li>func: character string with name of user-defined function;      see nrregr_st or nrregr</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>weights: structure with weights</li><li>filternm: character string with name of user-defined filter function</li></ul></div><p>Output</p><div><ul><li>q: structure with parameters, result of the algorithm</li><li>info: 1 if convergence has been successful; 0 otherwise</li><li>archive: the set of solutions found by the multimodal algorithm</li><li>bsf_fval: the best fitness value found</li></ul></div><h2 id="5">Remarks</h2><p>Set options with <a href="calibration_options.html"><b>calibration_options</b></a>. The number of fields in data is variable.</p><h2 id="6">This package is a MATLAB/Octave source code of L-SHADE which is an improved version of SHADE 1.1.</h2><h2 id="8">The original code of this algorithm was taken from: https://sites.google.com/site/tanaberyoji/software</h2><h2 id="10">Note that this source code is transferred from the C++ source code version.</h2><h2 id="11">About L-SHADE, please see following papers:</h2><h2 id="13">* Ryoji Tanabe and Alex Fukunaga: Improving the Search Performance of SHADE Using Linear Population Size Reduction,  Proc. IEEE Congress on Evolutionary Computation (CEC-2014), Beijing, July, 2014.</h2><h2 id="15">Taking data for objective function</h2><h2 id="16">Getting parameters and setting objectives</h2><h2 id="17">Auxiliary variables for function evaluation</h2><h2 id="18">Parameter settings for L-SHADE</h2><h2 id="19">Population y memory size</h2><h2 id="20">Result file variables</h2><h2 id="21">Take initial time</h2><h2 id="22">Runs loop</h2><h2 id="23">Take run initial time</h2><h2 id="24">Population y memory size</h2><h2 id="25">Archive file variables</h2><h2 id="26">Initialize the main population</h2><h2 id="27">Initialize function evaluations and fitness values</h2><h2 id="28">Main loop</h2><h2 id="30">Generating crossover rate</h2><h2 id="31">Generating scaling factor</h2><h2 id="32">Evaluate children</h2><h2 id="33">Update best fitness found so far</h2><h2 id="34">Comparison between parents and children</h2><p>Compare parents and children fitness. Then...</p><h2 id="36">for updating the memory of scaling factor</h2><h2 id="37">for updating the memory of crossover rate</h2><h2 id="39">for resizing the population size</h2><h2 id="41">If best one wants to be refined with the Nelder Mead's simplex method</h2><h2 id="42">Setting run information</h2><h2 id="44">Add best to solutions archive and finish</h2><h2 id="45">Store the information structure into the results set</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
 %% lshade
 % Finds parameter values for a pet that minimizes the lossfunction using the 
 % Linear Succes History Adaptation of Differential Evolution (L-SHADE) using a filter
@@ -561,3 +631,6 @@ function [q, solution_set, bsf_fval] = lshade(func, par, data, auxData, weights,
    %% Store the information structure into the results set
    solution_set.runtime_information = info;
 end
+
+##### SOURCE END #####
+--></body></html>

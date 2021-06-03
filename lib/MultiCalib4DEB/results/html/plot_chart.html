@@ -1,0 +1,190 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plot_chart</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-03"><meta name="DC.source" content="plot_chart.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">plot_chart</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#7">Saves results in PNG</a></li></ul></div><h2 id="1">plot_chart</h2><p>Plots charts results from user options.</p><h2 id="3">Syntax</h2><p><a href="../plot_results.m"><b>plot_results</b></a>(solutions_set, chart_type, selected_parameters, save_chart, solution_index)</p><h2 id="4">Description</h2><p>Computes model predictions and handles them (by plotting, saving or publishing)</p><p>Input</p><div><ul><li>solutions_set: the set of solutions returned by the multimodal                  calibration algorithm</li><li>chart_type: the type of chart to plot</li><li>selected_parameters: the pair of parameters to plot</li><li>save_chart: to save the plots which have been generated   solution_index: the solution index (for simple prediction plot)</li></ul></div><h2 id="5">Remarks</h2><p>The charts options for chart_type variable are: - (1) Desity heat map - option 'density_hm' - Distribution of best solutions in the       2-dimensions search space formed by parameters in selected_parameters. - (2) Desity heat map with scatter - option 'density_hm_scatter' - Distribution of       best solutions in the 2-dimensions search space formed by parameters in selected_parameters.       together with the values for the parameters combination. - (3) Scatter plot - option 'scatter' - Values for parameters in selected_parameters. - (4) Weighted scatter plot - option 'weighted_scatter' - (3) with the parameter values       in selected_parameters weighted by fitness value. - (5) Simple prediction plot - option 'prediction'.</p><h2 id="7">Saves results in PNG</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% plot_chart
+% Plots charts results from user options.  
+function plot_chart( solutions_set, chart_type, selected_parameters, save_chart, solution_index)
+% created 2021 by Juan Francisco Robles
+
+%% Syntax
+% <../plot_results.m *plot_results*>(solutions_set, chart_type, selected_parameters, save_chart, solution_index) 
+
+%% Description
+% Computes model predictions and handles them (by plotting, saving or publishing)
+%
+% Input
+% 
+% * solutions_set: the set of solutions returned by the multimodal
+%                  calibration algorithm
+% * chart_type: the type of chart to plot
+% * selected_parameters: the pair of parameters to plot
+% * save_chart: to save the plots which have been generated 
+%   solution_index: the solution index (for simple prediction plot)
+
+%% Remarks
+% The charts options for chart_type variable are: 
+% - (1) Desity heat map - option 'density_hm' - Distribution of best solutions in the
+%       2-dimensions search space formed by parameters in selected_parameters.
+% - (2) Desity heat map with scatter - option 'density_hm_scatter' - Distribution of 
+%       best solutions in the 2-dimensions search space formed by parameters in selected_parameters.
+%       together with the values for the parameters combination.
+% - (3) Scatter plot - option 'scatter' - Values for parameters in selected_parameters.
+% - (4) Weighted scatter plot - option 'weighted_scatter' - (3) with the parameter values 
+%       in selected_parameters weighted by fitness value. 
+% - (5) Simple prediction plot - option 'prediction'. 
+
+  global pets
+  
+  parnames = solutions_set.parnames;
+
+  if isempty(selected_parameters)
+     fprintf('There are not parameters for plotting soutions.');
+     fprintf('Please, enter an array containing two values in %s \n.', num2str(parnames));
+     fprintf('Remember that the supported format for the array of values in {value_one; value_tow}.');
+     return; 
+  elseif isempty(find(strcmp(parnames,selected_parameters(1)), 1))
+     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', selected_parameters(1));
+     fprintf('The calibrated parameter names are the following: %s \n', num2str(selected_parameters(1)));
+     return;
+  elseif isempty(find(strcmp(parnames,selected_parameters(2)), 1))
+     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', selected_parameters(2));
+     fprintf('The calibrated parameter names are the following: %s \n', num2str(selected_parameters(2)));
+     return;
+  else
+     % Get the parameter indexes. 
+     first_param_index = find(strcmp(solutions_set.parnames, selected_parameters(1)));
+     second_param_index = find(strcmp(solutions_set.parnames, selected_parameters(2)));
+     
+     fig_counter = 1; 
+     if strcmp(chart_type, 'density_hm') % Plots a density heatmap for two variables. 
+        density_heatmap(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ..., 
+           solutions_set.parnames(first_param_index), solutions_set.parnames(second_param_index));
+        if save_chart
+           savePNG('Density_Heat_Map', pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     elseif strcmp(chart_type, 'density_hm_scatter') % Plots a density heatmap for two variables together with 
+                                                     % an scatter plot. 
+        density_heatmap(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ..., 
+           solutions_set.parnames(first_param_index), solutions_set.parnames(second_param_index), solutions_set.funvalues);
+        if save_chart
+           savePNG('Density_Heat_Map_Scatter', pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     elseif strcmp(chart_type, 'scatter') % Plots an scatter plot for two variables.  
+        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
+           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
+           solutions_set.parnames(second_param_index));
+        if save_chart
+           savePNG('Scatter', pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     elseif strcmp(chart_type, 'weighted_scatter') % Plots an scatter plot for two variables, weighting 
+                                                   % each parameter combination with their fitness values.  
+        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
+           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
+           solutions_set.parnames(second_param_index), 1);
+        if save_chart
+           savePNG('Weighted_Scatter', pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     elseif strcmp(chart_type, 'density_scatter') % Plots an scatter plot for two variables, weighting 
+                                                   % each parameter combination with their fitness values.  
+        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
+           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
+           solutions_set.parnames(second_param_index), 2);
+        if save_chart
+           savePNG('Weighted_Scatter', pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     else % plot simple solution
+        solution_index = join(['solution_', num2str(solution_index)]);
+        plot_solution(solutions_set.results.(solution_index).par, solutions_set.results.(solution_index).metaPar, ..., 
+           solutions_set.results.data, solutions_set.results.auxData, solutions_set.results.metaData, ..., 
+           solutions_set.results.txtData);
+        if save_chart
+           savePNG(join(['Solution_', num2str(solution_index)]), pets, fig_counter);
+           fig_counter = fig_counter + 1;
+        end
+     end
+  end
+  
+end
+
+%% Saves results in PNG
+function savePNG(title, pets, fig_counter)
+   graphnm = ['results_', pets{1}, '_', title];
+   figure(fig_counter)  
+   eval(['print -dpng ', graphnm,'.png']);
+end
+
+
+##### SOURCE END #####
+--></body></html>

@@ -14,7 +14,7 @@ check_my_pet(pets);
 estim_options('default');
 % Setting calibration options (number of runs, maximum function
 % evaluations, ...) 
-calibration_options('default'); 
+%calibration_options('default'); 
 % Setting 'mm' (mmultimodal) for calibration 
 calibration_options('method', 'mm1');
 % Set number of evaluations
@@ -36,11 +36,12 @@ calibration_options('refine_best', 1);
 calibration_options('bounds_from_ind', 1); 
 % Verbose options
 % Activate verbose
-calibration_options('verbose', 1); 
+calibration_options('verbose', 0); 
 calibration_options('verbose_options', 8); 
 % Set calibration ranges
 ranges.z = 0.25; % For a factor to the original parameter value. 
 ranges.('f_tW') = [0.1, 0.4]; % For a desired range values. 
 calibration_options('ranges', ranges);
 % Calibrate
-[best, info, out, best_favl] = calibrate;
+%[best, results_set, best_favl] = calibrate;
+[nsteps, info, fval] = estim_pars;
