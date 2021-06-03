@@ -12,8 +12,8 @@ check_my_pet(pets);
 % Setting estimation options such as: 
 % Loss function, method to use, filter, etc
 estim_options('default');
-estim_options('method','ga');
-estim_options('results_output',4);
+estim_options('method','nm');
+estim_options('results_output',5);
 
 % Setting calibration options (number of runs, maximum function
 % evaluations, ...) 

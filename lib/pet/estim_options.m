@@ -209,7 +209,7 @@ function estim_options (key, val)
         if strcmp(method, 'nm')
           nmregr_options;
         elseif strcmp(method, 'ga')
-          calibration_option;
+          calibration_options;
         end
       else
         fprintf('method = unknown \n');
