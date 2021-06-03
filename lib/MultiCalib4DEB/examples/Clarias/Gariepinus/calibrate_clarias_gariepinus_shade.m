@@ -12,11 +12,14 @@ check_my_pet(pets);
 % Setting estimation options such as: 
 % Loss function, method to use, filter, etc
 estim_options('default');
+estim_options('method','ga');
+estim_options('results_output',4);
+
 % Setting calibration options (number of runs, maximum function
 % evaluations, ...) 
 %calibration_options('default'); 
 % Setting 'mm' (mmultimodal) for calibration 
-calibration_options('method', 'mm1');
+calibration_options('search_method', 'mm1');
 % Set number of evaluations
 calibration_options('max_fun_evals', 20000);
 % Set the maximum number of solutions
@@ -42,6 +45,7 @@ calibration_options('verbose_options', 8);
 ranges.z = 0.25; % For a factor to the original parameter value. 
 ranges.('f_tW') = [0.1, 0.4]; % For a desired range values. 
 calibration_options('ranges', ranges);
+% set results_output
 % Calibrate
 %[best, results_set, best_favl] = calibrate;
 [nsteps, info, fval] = estim_pars;

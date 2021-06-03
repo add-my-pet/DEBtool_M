@@ -22,7 +22,7 @@ function calibration_options (key, val)
 %
 % * two inputs
 %      
-%    'method': 
+%    'search_method': 
 %      'mm1' - use Nelder-Mead method; 
 %      'mm2' - do not estimate;
 %     
@@ -127,7 +127,7 @@ function calibration_options (key, val)
 %  calibration_options('default'); calibration_options('random_seed', 123543545); calibration_options('add_initial', 1)
 
    % Global varaibles
-   global method num_results gen_factor bounds_from_ind max_fun_evals 
+   global search_method num_results gen_factor bounds_from_ind max_fun_evals 
    global max_calibration_time  num_runs add_initial refine_initial  
    global refine_best  refine_running refine_run_prob refine_firsts 
    global verbose verbose_options random_seeds ranges mat_file
@@ -139,7 +139,7 @@ function calibration_options (key, val)
 
    switch key 
       case {'default', ''}
-         method = 'mm1'; % Use SHADE for parameter estimation
+         search_method = 'mm1'; % Use SHADE for parameter estimation
          num_results = 100; % The size for the multimodal algorithm's population.
                           % If not defined then sets the values recommended by
                           % the author, which are 100 for SHADE ('mm1') and
@@ -205,11 +205,11 @@ function calibration_options (key, val)
          results_filename = 'Default';
          save_results = false; % If results output are saved.
          mat_file = '';
-      case 'method'
+      case 'search_method'
          if ~exist('val','var')
-            method = 'mm1'; % Select SHADE as the default method.
+            search_method = 'mm1'; % Select SHADE as the default method.
          else
-            method = val;
+            search_method = val;
          end 
       case 'num_results'
          if ~exist('val','var')
@@ -424,10 +424,10 @@ function calibration_options (key, val)
          if ~strcmp(key, 'inexistent')   
             fprintf(['key ', key, ' is unkown \n\n']);
          end
-         if strcmp(method, '') ~= 0
-            fprintf(['method = ', method,' \n']);
+         if strcmp(search_method, '') ~= 0
+            fprintf(['search_method = ', search_method,' \n']);
          else
-            fprintf('method = unkown \n');
+            fprintf('search_method = unkown \n');
          end
          if numel(num_results) ~= 0.0
             fprintf(['num_results = ', num2str(num_results),' \n']);

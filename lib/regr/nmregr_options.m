@@ -49,7 +49,7 @@ function nmregr_options (key, val)
       case 'default'
 	    report = 1;
 	    max_step_number = 500;
-	    max_fun_evals = 2000;
+	    max_fun_evals = 1e4;
 	    tol_simplex = 1e-4;
 	    tol_fun = 1e-4;
         simplex_size = 0.05;

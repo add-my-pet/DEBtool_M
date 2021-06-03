@@ -31,7 +31,7 @@ function [best_sol, solutions_set, best_fval] = calibrate
    % estim_options sets many options;
    % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
   
-   global pets pars_init_method method filter covRules results_filename
+   global pets pars_init_method search_method filter covRules results_filename
    global results_display mat_file
 
    n_pets = length(pets);
@@ -125,14 +125,14 @@ function [best_sol, solutions_set, best_fval] = calibrate
    end
 
    %% perform the calibration
-   if ~strcmp(method, 'no')
-      if strcmp(method, 'mm1') % With SHADE
+   if ~strcmp(search_method, 'no')
+      if strcmp(search_method, 'mm1') % With SHADE
          if n_pets == 1
             [best_sol, solutions_set, best_fval] = shade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end
-      elseif strcmp(method, 'mm2') % With L-SHADE
+      elseif strcmp(search_method, 'mm2') % With L-SHADE
          if n_pets == 1
             [best_sol, solutions_set, best_fval] = lshade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else
