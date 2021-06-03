@@ -72,7 +72,6 @@ function estim_options (key, val)
   %% Remarks
   % Options for the nm method 'report', 'max_step_number', 'max_fun_evals', 'tol_simplex', 'tol_tun', 'simplex_size' are set in <../../regr/html/nmregr_options.html *nmregr_options*>.
   % Options for the ga method are set in <../../lib/html/calibration_options.html *calibration_options*>;
-  % You can either use calibration_options directly, or via estim_options by prepending GA;
   % See <estim_pars.html *estim_pars*> for application of the option settings.
   % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
   % A typical estimation procedure is
