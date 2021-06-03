@@ -99,13 +99,13 @@ function estim_options (key, val)
   switch key
 	
     case 'default'
+      calibration_options('default');
+      nmregr_options('default');
       lossfunction = 'sb';
       filter = 1;
       pars_init_method  = 2;
       results_output = 3;
       method = 'nm';
-      nmregr_options('default');
-      calibration_options('default');
 
     case 'loss_function'
       if exist('val','var') == 0
@@ -154,13 +154,13 @@ function estim_options (key, val)
         else
           fprintf('results_output = unknown \n');
         end	 
-        fprintf(' 0      only saves data results to .mat, no figures, no writing to html or screen\n');
+        fprintf('0      only saves data results to .mat, no figures, no writing to html or screen\n');
         fprintf('1, -1  no saving to .mat file, prints results to html (1) or screen (-1)\n');
         fprintf('2, -2  saves to .mat file, prints results to html (2) or screen (-2) \n');
         fprintf('3, -3  like 2 (or -2), but also prints graphs to .png files (default is 3)\n');
         fprintf('4, -4  like 3 (or -3), but also prints html with implied traits \n');
         fprintf('5, -5  like 3 (or -3), but also prints html with implied traits including related species \n');
-        fprintf('6, -6  like 5, but also prints html with population traits \n');         
+        fprintf('6,     like 5, but also prints html with population traits \n');         
       else
         results_output = val;
       end
@@ -206,7 +206,7 @@ function estim_options (key, val)
       
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
-        if ~strcmp(method, 'no')
+        if strcmp(method, 'nm')
           eval([method, 'regr_options;']);
         end
       else
