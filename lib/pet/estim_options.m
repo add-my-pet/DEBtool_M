@@ -23,13 +23,13 @@ function estim_options (key, val)
   % * two inputs
   %
   %    'loss_function': 
-  %      'sb': multiplicative symmetric bounded (default);
-  %      'su': multiplicative symmetric unbounded;
-  %      're': relative error;
+  %      'sb': multiplicative symmetric bounded (default)
+  %      'su': multiplicative symmetric unbounded
+  %      're': relative error (not recommanded)
   %
   %    'filter': 
   %      0: do not use filters;
-  %      1: use filters (default); 
+  %      1: use filters (default)
   %
   %    'pars_init_method':
   %      0: get initial estimates from automatized computation 
@@ -46,15 +46,15 @@ function estim_options (key, val)
   %      6     - like 5, but also prints html with population traits
   %   
   %    'method': 
-  %      'nm': Nelder-Mead method; 
-  %      'ga': genetic algorithm;
-  %      'no': do not estimate;
+  %      'no': do not estimate
+  %      'nm': Nelder-Mead method
+  %      'ga': genetic algorithm
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
   %
   %    'report' (method nm only): 
-  %       1 - report steps to screen (default); 
-  %       0 - do not report;
+  %       0 - do not report
+  %       1 - report steps to screen (default)
   %
   %    'max_step_number' (method nm only): maximum number of steps (default 500)
   %
@@ -65,32 +65,32 @@ function estim_options (key, val)
   %    'simplex_size' (method nm only): fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
   %    'search_method' (method ga only): 
-  %      'mm1' - use shade method (default); 
-  %      'mm2' - do not estimate;
+  %      'mm1' - use shade method (default)
+  %      'mm2' - do not estimate
   %     
   %    'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
   %       100 for SHADE ('search_method mm1', default) 
-  %       18 * problem size for L-SHADE ('search methof mm2').
+  %       18 * problem size for L-SHADE ('search methof mm2')
   %
-  %    'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5).                  
+  %    'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
   %    'bounds_from_ind' (method ga only): 
-  %      1: use ranges from data (default); 
-  %      0: use ranges from pseudodata if exist (these ranges not existing will be taken from data).         
+  %      0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)         
+  %      1: use ranges from data (default) 
   %
-  %    'max_calibration_time' (method ga only): maximum calibration time in minutes (default 30).
+  %    'max_calibration_time' (method ga only): maximum calibration time in minutes (default 30)
   %
-  %    'num_runs' (method ga only): the number of independent runs to perform (default 1).
+  %    'num_runs' (method ga only): the number of independent runs to perform (default 1)
   %
   %    'add_initial' (method ga only): if the initial individual is added in the first  population.
-  %      0: not activated (default)
   %      1: activated
+  %      0: not activated (default)
   %
-  %    'refine_initial' (method ga only): if the initial individual is refined using Nelder Mead.
+  %    'refine_initial' (method ga only): if the initial individual is refined using Nelder-Mead.
   %      0: not activated (default)
   %      1: activated
   %     
-  %    'refine_best'  (method ga only): if the best individual found is refined using Nelder Mead.
+  %    'refine_best'  (method ga only): if the best individual found is refined using Nelder-Mead.
   %      0: not activated (default)
   %      1: activated
   %     
@@ -98,40 +98,39 @@ function estim_options (key, val)
   %      0: not activated (default)
   %      1: activated
   %
-  %    'refine_run_prob' (method ga only): The probability to apply a local search to an individual while algorithm is running (default 0.05).
+  %    'refine_run_prob' (method ga only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
   %
   %    'refine_firsts' (method ga only): If to apply a local search to the first population
   %       0: not activated (default)
-  %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution).
+  %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)
   %
   %    'verbose_options' (method ga only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
   %
-  %    'verbose' (method ga only): prints some information while the calibration  process is running.               
+  %    'verbose' (method ga only): prints some information while the calibration  process is running              
   %       0: not activated (default)
   %       1: activated
   %
   %    'random_seeds' (method ga only): Array with values for the seeds used to generate random values 
-  %       (each one is used in a single run of the algorithm).
+  %       (each one is used in a single run of the algorithm)
   %
   %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
   %       one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
   %       two values (min, max) for the  minimum and maximum range values. Consider:               
-  %         (1) Use min < max for each variable in ranges. If it is not, then the variable will be not used
-  %         (2) Do not take max/min too high, adapt the data to the real ranges of the problem.
-  %         (3) Only the free parameters (see 'pars_init_my_pet' file) are considered.
+  %         (1) Use min < max for each variable in ranges. If it is not, then the range will be not used
+  %         (2) Do not take max/min too high, use the likely ranges of the problem
+  %         (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
   %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}                
   %
   %    'results_display (method ga only)': 
-  %       Basic - Does not show results in screen (default). 
-  %       Best  - Plots the best solution results in DEBTool style.
-  %       Set   - Plots all the solutions remarking the best one. 
-  %               Html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example).
-  %       Complete - Joins options 1, 2 , and 3 together with zero variate data with input and 
-  %               a measure of the variance of all the solutions considered
+  %       Basic - Does not show results in screen (default) 
+  %       Best  - Plots the best solution results in DEBtool style
+  %       Set   - Plots all the solutions remarking the best one 
+  %               Html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
+  %       Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered
   %
-  %    'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time). 
+  %    'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time) 
   %
-  %    'save_results' (method ga only): If the results output images are going to be saved.
+  %    'save_results' (method ga only): If the results output images are going to be saved
   %       0: no saving (default)
   %       1: saving
   %
@@ -143,7 +142,6 @@ function estim_options (key, val)
   % * no output, but globals are set to values or values are printed to screen
   %
   %% Remarks
-  % Options for the ga method are set in <../../lib/html/calibration_options.html *calibration_options*>;
   % See <estim_pars.html *estim_pars*> for application of the option settings.
   % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
   % A typical estimation procedure is
