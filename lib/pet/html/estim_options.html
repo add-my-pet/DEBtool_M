@@ -105,7 +105,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
      0: not activated (default)
      1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)</pre><pre>  'verbose_options' (method ga only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method ga only): prints some information while the calibration  process is running
      0: not activated (default)
-     1: activated</pre><pre>  'seed_index' (method ga only): Array with values for the seeds used to generate random values
+     1: activated</pre><pre>  'seed_index' (method ga only): index of vector with values for the seeds used to generate random values
      (each one is used in a single run of the algorithm)</pre><pre>  'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
      one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
      two values (min, max) for the  minimum and maximum range values. Consider:
@@ -236,7 +236,7 @@ function estim_options (key, val)
   %       0: not activated (default)
   %       1: activated
   %
-  %    'seed_index' (method ga only): Array with values for the seeds used to generate random values 
+  %    'seed_index' (method ga only): index of vector with values for the seeds used to generate random values 
   %       (each one is used in a single run of the algorithm)
   %
   %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
@@ -434,7 +434,7 @@ function estim_options (key, val)
         end	      
       else
         max_fun_evals = val;
-        max_calibration_time = Inf; % ga method only
+        % max_calibration_time = Inf; % ga method only
       end
    
     % method nm only

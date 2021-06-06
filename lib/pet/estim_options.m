@@ -110,7 +110,7 @@ function estim_options (key, val)
   %       0: not activated (default)
   %       1: activated
   %
-  %    'seed_index' (method ga only): Array with values for the seeds used to generate random values 
+  %    'seed_index' (method ga only): index of vector with values for the seeds used to generate random values 
   %       (each one is used in a single run of the algorithm)
   %
   %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
