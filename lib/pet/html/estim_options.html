@@ -91,7 +91,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     'mm1' - use shade method (default)
     'mm2' - do not estimate</pre><pre>  'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
      100 for SHADE ('search_method mm1', default)
-     18 * problem size for L-SHADE ('search methof mm2')</pre><pre>  'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method ga only):
+     18 * number of free parameters for L-SHADE ('search method mm2')</pre><pre>  'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method ga only):
     0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)
     1: use ranges from data (default)</pre><pre>  'max_calibration_time' (method ga only): maximum calibration time in minutes (default 30)</pre><pre>  'num_runs' (method ga only): the number of independent runs to perform (default 1)</pre><pre>  'add_initial' (method ga only): if the initial individual is added in the first  population.
     1: activated
@@ -196,7 +196,7 @@ function estim_options (key, val)
   %     
   %    'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
   %       100 for SHADE ('search_method mm1', default) 
-  %       18 * problem size for L-SHADE ('search methof mm2')
+  %       18 * number of free parameters for L-SHADE ('search method mm2')
   %
   %    'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %

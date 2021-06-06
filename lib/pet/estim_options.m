@@ -70,7 +70,7 @@ function estim_options (key, val)
   %     
   %    'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
   %       100 for SHADE ('search_method mm1', default) 
-  %       18 * problem size for L-SHADE ('search methof mm2')
+  %       18 * number of free parameters for L-SHADE ('search method mm2')
   %
   %    'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
