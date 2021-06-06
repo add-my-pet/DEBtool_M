@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-05"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-06"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
+  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and ga, others are specific for nm or ga</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
    any other key (see below): print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'loss_function':
     'sb': multiplicative symmetric bounded (default)
     'su': multiplicative symmetric unbounded
@@ -105,22 +105,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
      0: not activated (default)
      1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)</pre><pre>  'verbose_options' (method ga only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method ga only): prints some information while the calibration  process is running
      0: not activated (default)
-     1: activated</pre><pre>  'random_seeds' (method ga only): Array with values for the seeds used to generate random values
+     1: activated</pre><pre>  'seed_index' (method ga only): Array with values for the seeds used to generate random values
      (each one is used in a single run of the algorithm)</pre><pre>  'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
      one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
      two values (min, max) for the  minimum and maximum range values. Consider:
        (1) Use min &lt; max for each variable in ranges. If it is not, then the range will be not used
        (2) Do not take max/min too high, use the likely ranges of the problem
        (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
-     Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}</pre><pre>  'results_display (method ga only)':
+     Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}
+     Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}</pre><pre>  'results_display (method ga only)':
      Basic - Does not show results in screen (default)
      Best  - Plots the best solution results in DEBtool style
      Set   - Plots all the solutions remarking the best one
-             Html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
+             html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
      Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered</pre><pre>  'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time)</pre><pre>  'save_results' (method ga only): If the results output images are going to be saved
      0: no saving (default)
-     1: saving</pre><pre>  'mat_file' (method ga only): A file with results from where to initialize the calibration parameters
-     (only useful if pars_init_method option is equal to 1 and if there is a result file)</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+     1: saving</pre><pre>  'mat_file' (method ga only): The name of the .mat-file with results from where to initialize the calibration parameters
+     (only useful if pars_init_method option is equal to 1 and if there is a result file)
+     This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_options
 % Sets options for estim.pars
@@ -128,13 +130,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/04 by Bas Kooijman
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/06 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one
+  % Sets options for estimation one by one, some apply to methods nm and ga, others are specific for nm or ga
   %
   % Input
   %
@@ -234,7 +236,7 @@ function estim_options (key, val)
   %       0: not activated (default)
   %       1: activated
   %
-  %    'random_seeds' (method ga only): Array with values for the seeds used to generate random values 
+  %    'seed_index' (method ga only): Array with values for the seeds used to generate random values 
   %       (each one is used in a single run of the algorithm)
   %
   %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
@@ -243,13 +245,14 @@ function estim_options (key, val)
   %         (1) Use min < max for each variable in ranges. If it is not, then the range will be not used
   %         (2) Do not take max/min too high, use the likely ranges of the problem
   %         (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
-  %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}                
+  %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}} 
+  %       Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}
   %
   %    'results_display (method ga only)': 
   %       Basic - Does not show results in screen (default) 
   %       Best  - Plots the best solution results in DEBtool style
   %       Set   - Plots all the solutions remarking the best one 
-  %               Html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
+  %               html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
   %       Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered
   %
   %    'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time) 
@@ -258,8 +261,9 @@ function estim_options (key, val)
   %       0: no saving (default)
   %       1: saving
   %
-  %    'mat_file' (method ga only): A file with results from where to initialize the calibration parameters 
+  %    'mat_file' (method ga only): The name of the .mat-file with results from where to initialize the calibration parameters 
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
+  %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
   % Output
   %
@@ -285,7 +289,7 @@ function estim_options (key, val)
   global search_method num_results gen_factor bounds_from_ind % method ga only
   global max_calibration_time  num_runs add_initial  
   global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
-  global verbose verbose_options random_seeds ranges mat_file
+  global verbose verbose_options random_seeds seed_index ranges mat_file
   global results_display results_filename save_results
 
   availableMethodOptions = {'no', 'nm', 'ga'};
@@ -340,8 +344,8 @@ function estim_options (key, val)
                       1217489374, 9815931031, 3278479237, ... % single run of the algorithm).
                       8342427357, 8923758927, 7891375891, ... 
                       8781589371, 8134872397, 2784732823]; 
-      rng(random_seeds(1), 'twister'); % By default, the random number generator is initialized with the first seed.
-                                       %  It will be update for each run of the calibration method.
+      seed_index = 1; % index for seeds for random number generator
+      rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
       ranges = struct(); % The range struct is empty by default. 
       results_display = 'Basic'; % The results output style.
       results_filename = 'Default';
@@ -641,16 +645,17 @@ function estim_options (key, val)
         verbose_options = val;
       end
       
-    case 'random_seeds'
+    case 'seed_index'
       if ~exist('val','var')
         if numel(random_seeds) ~= 0
-          fprintf(['random_seeds = ', num2str(random_seeds(1)),' \n']);
+          fprintf(['seed_index = ', num2str(seed_index(1)),' \n']);
         else
-          fprintf('random_seeds = unkown \n');
+          fprintf('seed_index = unkown \n');
         end
       else
-        random_seeds = val;
+        seed_index = val;
       end
+      rng(random_seeds(seed_index), 'twister'); % initialize the number generator
       
     case 'ranges'
       if ~exist('val','var')
@@ -661,7 +666,13 @@ function estim_options (key, val)
           fprintf('ranges = unkown \n');
         end
       else
-        ranges.(val{1}) = val{2};
+        if iscell(val) && length(val)>1
+          ranges.(val{1}) = val{2};
+        elseif iscell(val) && isfield(ranges, val)
+          ranges = rmfield(ranges, val{1});
+        elseif isfield(ranges, val)
+          ranges = rmfield(ranges, val);
+        end
       end
       
     case 'results_display'

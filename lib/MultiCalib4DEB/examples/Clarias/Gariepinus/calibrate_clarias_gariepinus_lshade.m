@@ -1,5 +1,5 @@
-%% Calibrates the Clarias Gariepinus pet using L-SHADE multimodal algorithm
-%% 
+%% calibrate_clarias_gariepinus_lshade
+
 
 close all; 
 global pets
