@@ -308,7 +308,7 @@ function estim_options (key, val)
         end	      
       else
         max_fun_evals = val;
-        max_calibration_time = Inf; % ga method only
+        % max_calibration_time = Inf; % ga method only
       end
    
     % method nm only
