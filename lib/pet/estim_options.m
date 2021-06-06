@@ -4,13 +4,13 @@
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/04 by Bas Kooijman
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/06 by Bas Kooijman
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one
+  % Sets options for estimation one by one, some apply to methods nm and ga, others are specific for nm or ga
   %
   % Input
   %
@@ -110,7 +110,7 @@ function estim_options (key, val)
   %       0: not activated (default)
   %       1: activated
   %
-  %    'random_seeds' (method ga only): Array with values for the seeds used to generate random values 
+  %    'seed_index' (method ga only): Array with values for the seeds used to generate random values 
   %       (each one is used in a single run of the algorithm)
   %
   %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
@@ -119,13 +119,14 @@ function estim_options (key, val)
   %         (1) Use min < max for each variable in ranges. If it is not, then the range will be not used
   %         (2) Do not take max/min too high, use the likely ranges of the problem
   %         (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
-  %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}                
+  %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}} 
+  %       Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}
   %
   %    'results_display (method ga only)': 
   %       Basic - Does not show results in screen (default) 
   %       Best  - Plots the best solution results in DEBtool style
   %       Set   - Plots all the solutions remarking the best one 
-  %               Html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
+  %               html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
   %       Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered
   %
   %    'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time) 
@@ -134,8 +135,9 @@ function estim_options (key, val)
   %       0: no saving (default)
   %       1: saving
   %
-  %    'mat_file' (method ga only): A file with results from where to initialize the calibration parameters 
+  %    'mat_file' (method ga only): The name of the .mat-file with results from where to initialize the calibration parameters 
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
+  %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
   % Output
   %
@@ -161,7 +163,7 @@ function estim_options (key, val)
   global search_method num_results gen_factor bounds_from_ind % method ga only
   global max_calibration_time  num_runs add_initial  
   global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
-  global verbose verbose_options random_seeds ranges mat_file
+  global verbose verbose_options random_seeds seed_index ranges mat_file
   global results_display results_filename save_results
 
   availableMethodOptions = {'no', 'nm', 'ga'};
@@ -216,8 +218,8 @@ function estim_options (key, val)
                       1217489374, 9815931031, 3278479237, ... % single run of the algorithm).
                       8342427357, 8923758927, 7891375891, ... 
                       8781589371, 8134872397, 2784732823]; 
-      rng(random_seeds(1), 'twister'); % By default, the random number generator is initialized with the first seed.
-                                       %  It will be update for each run of the calibration method.
+      seed_index = 1; % index for seeds for random number generator
+      rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
       ranges = struct(); % The range struct is empty by default. 
       results_display = 'Basic'; % The results output style.
       results_filename = 'Default';
@@ -517,16 +519,17 @@ function estim_options (key, val)
         verbose_options = val;
       end
       
-    case 'random_seeds'
+    case 'seed_index'
       if ~exist('val','var')
         if numel(random_seeds) ~= 0
-          fprintf(['random_seeds = ', num2str(random_seeds(1)),' \n']);
+          fprintf(['seed_index = ', num2str(seed_index(1)),' \n']);
         else
-          fprintf('random_seeds = unkown \n');
+          fprintf('seed_index = unkown \n');
         end
       else
-        random_seeds = val;
+        seed_index = val;
       end
+      rng(random_seeds(seed_index), 'twister'); % initialize the number generator
       
     case 'ranges'
       if ~exist('val','var')
@@ -537,7 +540,13 @@ function estim_options (key, val)
           fprintf('ranges = unkown \n');
         end
       else
-        ranges.(val{1}) = val{2};
+        if iscell(val) && length(val)>1
+          ranges.(val{1}) = val{2};
+        elseif iscell(val) && isfield(ranges, val)
+          ranges = rmfield(ranges, val{1});
+        elseif isfield(ranges, val)
+          ranges = rmfield(ranges, val);
+        end
       end
       
     case 'results_display'

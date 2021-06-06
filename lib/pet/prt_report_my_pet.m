@@ -100,7 +100,7 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
       par.(specList{k}) = rmfield (par.(specList{k}), 'free'); 
     end
     parList = par;
-    datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
+    datePrintNm = ['date: ', datestr(date, 'yyyy/mm/dd')];
     if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
       datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
     end  

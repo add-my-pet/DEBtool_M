@@ -60,10 +60,9 @@ function savePNG(title, pets, fig_counter)
    eval(['print -dpng ', graphnm,'.png']);
 end
 
-
 %% Saves results report in HTML
-function saveResultsHTML(metaData, metaPar, par, pets)
-   prt_report_my_pet(metaData.(pets{1}), metaPar, par)  
+function saveResultsHTML(par, metaPar, txtPar, metaData)
+  prt_report_my_pet({par, metaPar, txtPar, metaData},[])  % edit by Bas Kooijman, 
 end
 
 %% Calculates the predictions from solution's data
@@ -133,9 +132,10 @@ function plotResultImage(solutions_set, data, auxData, ~, txtData, weights, pets
    n_pets = length(pets);
    % Get the best solution index from data. 
    best_index = find(solutions_set.pop(:,1)==min(solutions_set.pop(:,1)));
-   par = solutions_set.results.(join(['solution_',num2str(best_index)])).par;
-   metaPar = solutions_set.results.(join(['solution_',num2str(best_index)])).metaPar;
+   par = solutions_set.results.(['solution_',num2str(best_index)]).par;
+   metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
    metaData = solutions_set.results.metaData;
+   txtPar = solutions_set.results.txtPar;
 
    close all % to avoid saving figures generated prior the current run
    
@@ -233,16 +233,16 @@ function plotResultImage(solutions_set, data, auxData, ~, txtData, weights, pets
            end
            xlabel([aux.label.(fieldsInCells{1}{end}){1}, ', ', aux.units.(fieldsInCells{1}{end}){1}]);
            ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
-           title(join(['Best Estimation (solution #', num2str(best_index), ')']))
+           title(['Best Estimation (solution #', num2str(best_index), ')'])
          end
        end
      end
    end 
    end
    if save_results  % save graphs to .png
-      savePNG('Best_Result', pets, fig_counter);
-      saveResultsHTML(metaData, metaPar, par, pets);
-    end
+     savePNG('Best_Result', pets, fig_counter);
+     saveResultsHTML(par, metaPar, txtPar, metaData.(pets{1}));
+   end
 end
 
 %% Results set plot. 
@@ -279,14 +279,14 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
       % Leave the best solution plot for the last step. 
       if sol == num_solutions
          plot_best = true; % Activating the best solution plot. 
-         par = solutions_set.results.(join(['solution_',num2str(best_index)])).par;
-         metaPar = solutions_set.results.(join(['solution_',num2str(best_index)])).metaPar;
+         par = solutions_set.results.(['solution_',num2str(best_index)]).par;
+         metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
       else % For solutions which are different from the best one. 
          if sol == best_index % Skip the best solution index.  
            sol = sol+1;
          end
-         par = solutions_set.results.(join(['solution_',num2str(sol)])).par;
-         metaPar = solutions_set.results.(join(['solution_',num2str(sol)])).metaPar;
+         par = solutions_set.results.(['solution_',num2str(sol)]).par;
+         metaPar = solutions_set.results.(['solution_',num2str(sol)]).metaPar;
       end
       
       % Calculate prediction. 
@@ -327,7 +327,7 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
             end
             xlabel([aux.label.(fieldsInCells{1}{end}){1}, ', ', aux.units.(fieldsInCells{1}{end}){1}]);
             ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
-            title(join(['Set Estimation (', num2str(num_solutions), ' solutions)']));
+            title(['Set Estimation (', num2str(num_solutions), ' solutions)']);
             end
          end
          end 
@@ -338,11 +338,11 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
   ylim=get(gca,'ylim');
   xlim=get(gca,'xlim');
   % Error test. 
-  error_test = join(['  MRE = ', ..., 
-     num2str(round(solutions_set.results.(join(['solution_',num2str(best_index)])).metaPar.MRE, 5)), ...,
+  error_test = ['  MRE = ', ..., 
+     num2str(round(solutions_set.results.(['solution_',num2str(best_index)]).metaPar.MRE, 5)), ...,
      '\nSMSE = ', ..., 
-     num2str(round(solutions_set.results.(join(['solution_',num2str(best_index)])).metaPar.SMSE, 5)), ..., 
-     ' \n']);
+     num2str(round(solutions_set.results.(['solution_',num2str(best_index)]).metaPar.SMSE, 5)), ..., 
+     ' \n'];
   % Set tests. 
   text(xlim(2)-90,ylim(1)+20, sprintf(error_test));
   % Stop holding graphs. 
@@ -358,8 +358,8 @@ function plotResulValues(solutions_set, txtPar, data, auxData, metaData, txtData
    n_pets = length(pets);
    % Get the best solution index from data.
    best_index = find(solutions_set.pop(:,1)==min(solutions_set.pop(:,1)));
-   par = solutions_set.results.(['solution_',num2str(best_index)]).par; % removed: join
-   metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar; % removed: join
+   par = solutions_set.results.(['solution_',num2str(best_index)]).par; 
+   metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
    
    % Calculate prediction. 
    [prdData, metaPar, ~, ~, parPets] = calculatePrediction(par, metaPar, data, auxData, weights, pets);
@@ -399,6 +399,7 @@ function plotResulValues(solutions_set, txtPar, data, auxData, metaData, txtData
       fprintf('\n')
     end
 end
+
 function plotColours4AllSets = listOfPlotColours4UpTo13Sets
     % colours (in rgb) follow lava-scheme: from white (high), via red and blue, to black (low)
     % for 2 colours, this amounts to red and blue, e.g. for female and male, respectively
