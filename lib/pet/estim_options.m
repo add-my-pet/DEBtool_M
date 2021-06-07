@@ -49,7 +49,7 @@ function estim_options (key, val)
   %    'method': 
   %      'no': do not estimate
   %      'nm': Nelder-Mead method (default)
-  %      'ea': evolutionary algorithm
+  %      'mmea': multimodal evolutionary algorithm
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
   %
