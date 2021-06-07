@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and ea, others to ea only</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
+  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and mmea, others to mmea only</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
    any other key (see below): print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'loss_function':
     'sb': multiplicative symmetric bounded (default)
     'su': multiplicative symmetric unbounded
@@ -130,14 +130,14 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas
-  %  Kooijman, 2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
+  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one, some apply to methods nm and ea, others to ea only
+  % Sets options for estimation one by one, some apply to methods nm and mmea, others to mmea only
   %
   % Input
   %
@@ -758,7 +758,6 @@ function estim_options (key, val)
         fprintf('max_fun_evals = unknown \n');
       end
       
-      % method nm only
       if numel(report) ~= 0
         fprintf(['report = ', num2str(report),' (method nm)\n']);
       else
@@ -905,7 +904,7 @@ function estim_options (key, val)
         fprintf('mat_file = unkown \n');
       end
 
-    otherwise % option 'other'
+    otherwise
         fprintf(['key ', key, ' is unkown \n\n']);
         estim_options;
   end

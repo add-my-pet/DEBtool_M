@@ -4,14 +4,14 @@
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas
-  %  Kooijman, 2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
+  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one, some apply to methods nm and ea, others to ea only
+  % Sets options for estimation one by one, some apply to methods nm and mmea, others to mmea only
   %
   % Input
   %
@@ -632,7 +632,6 @@ function estim_options (key, val)
         fprintf('max_fun_evals = unknown \n');
       end
       
-      % method nm only
       if numel(report) ~= 0
         fprintf(['report = ', num2str(report),' (method nm)\n']);
       else
@@ -779,7 +778,7 @@ function estim_options (key, val)
         fprintf('mat_file = unkown \n');
       end
 
-    otherwise % option 'other'
+    otherwise
         fprintf(['key ', key, ' is unkown \n\n']);
         estim_options;
   end
