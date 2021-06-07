@@ -4,7 +4,8 @@
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/06 by Bas Kooijman
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas
+  %  Kooijman, 2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -528,7 +529,7 @@ function estim_options (key, val)
       else
         seed_index = val;
       end
-      rng(random_seeds(seed_index), 'twister'); % initialize the number generator
+      rng(random_seeds(seed_index), 'twister'); % initialize the random number generator
       
     case 'ranges'
       if ~exist('val','var')

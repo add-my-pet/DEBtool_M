@@ -130,7 +130,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %%
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
-  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 2019/12/20 by Nina Marn, 2021/06/06 by Bas Kooijman
+  %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas
+  %  Kooijman, 2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -287,14 +288,14 @@ function estim_options (key, val)
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
   
   global method lossfunction filter pars_init_method results_output max_fun_evals 
-  global report max_step_number tol_simplex tol_fun simplex_size % method nm only
-  global search_method num_results gen_factor bounds_from_ind % method ea only
+  global report max_step_number tol_simplex tol_fun simplex_size 
+  global search_method num_results gen_factor bounds_from_ind % method mmea only
   global max_calibration_time  num_runs add_initial  
   global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
   global verbose verbose_options random_seeds seed_index ranges mat_file
   global results_display results_filename save_results
 
-  availableMethodOptions = {'no', 'nm', 'ea'};
+  availableMethodOptions = {'no', 'nm', 'mmea'};
 
   if exist('key','var') == 0
     key = 'inexistent';
@@ -315,7 +316,7 @@ function estim_options (key, val)
 	  tol_fun = 1e-4;
       simplex_size = 0.05;
 
-      % for ea method (taken from calibration_options)
+      % for mmea method (taken from calibration_options)
       search_method = 'mm1'; % Use SHADE: Success-History based Adaptive Differential Evolution 
       num_results = 100;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
@@ -420,7 +421,7 @@ function estim_options (key, val)
         end	      
         fprintf('''no'' - do not estimate \n');
         fprintf('''nm'' - use Nelder-Mead method \n');
-        fprintf('''ea'' - use evolutionary algorithm method \n');
+        fprintf('''mmea'' - use multimodal evolutionary algorithm method \n');
       else
         method = val;
       end
@@ -434,7 +435,7 @@ function estim_options (key, val)
         end	      
       else
         max_fun_evals = val;
-        % max_calibration_time = Inf; % ea method only
+        % max_calibration_time = Inf; % mmea method only
       end
    
     case 'report'
@@ -483,7 +484,7 @@ function estim_options (key, val)
         simplex_size = val;
       end
       
-    % method ea only, taken from calibatrion_options
+    % method mmea only, taken from calibatrion_options
     case 'search_method'
       if ~exist('val','var')
         search_method = 'mm1'; % Select SHADE as the default method.
@@ -654,7 +655,7 @@ function estim_options (key, val)
       else
         seed_index = val;
       end
-      rng(random_seeds(seed_index), 'twister'); % initialize the number generator
+      rng(random_seeds(seed_index), 'twister'); % initialize the random number generator
       
     case 'ranges'
       if ~exist('val','var')
@@ -744,7 +745,7 @@ function estim_options (key, val)
       
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
-        if strcmp(method, 'ea')
+        if strcmp(method, 'mmea')
           calibration_options;
         end
       else
@@ -782,124 +783,124 @@ function estim_options (key, val)
         fprintf('simplex_size = unknown \n');
       end
       
-      % method ea only
+      % method mmea only
       if numel(search_method) ~= 0
-        fprintf(['search_method = ', search_method,' (method ea)\n']);
+        fprintf(['search_method = ', search_method,' (method mmea)\n']);
       else
         fprintf('search_method = unkown \n');
       end
       
       if numel(num_results) ~= 0.0
-        fprintf(['num_results = ', num2str(num_results),' (method ea)\n']);
+        fprintf(['num_results = ', num2str(num_results),' (method mmea)\n']);
       else
         fprintf('num_results = unknown \n');
       end
       
       if numel(gen_factor) ~= 0.0
-        fprintf(['gen_factor = ', num2str(gen_factor),' (method ea)\n']);
+        fprintf(['gen_factor = ', num2str(gen_factor),' (method mmea)\n']);
       else
         fprintf('gen_factor = unknown \n');
       end
       
       if numel(bounds_from_ind) ~= 0.0
-        fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' (method ea)\n']);
+        fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' (method mmea)\n']);
       else
         fprintf('bounds_from_ind = unknown \n');
       end
       
       if numel(max_fun_evals) ~= 0
-        fprintf(['max_fun_evals = ', num2str(max_fun_evals),' (method ea)\n']);
+        fprintf(['max_fun_evals = ', num2str(max_fun_evals),' (method mmea)\n']);
       else
         fprintf('max_fun_evals = unkown \n');
       end
       
       if numel(max_calibration_time) ~= 0
-        fprintf(['max_calibration_time = ', num2str(max_calibration_time),' (method ea)\n']);
+        fprintf(['max_calibration_time = ', num2str(max_calibration_time),' (method mmea)\n']);
       else
         fprintf('max_calibration_time = unkown \n');
       end
       
       if numel(num_runs) ~= 0
-        fprintf(['num_runs = ', num2str(num_runs),' (method ea)\n']);
+        fprintf(['num_runs = ', num2str(num_runs),' (method mmea)\n']);
       else
         fprintf('num_runs = unkown \n');
       end
       
       if numel(add_initial) ~= 0
-        fprintf(['add_initial = ', num2str(add_initial),' (method ea)\n']);
+        fprintf(['add_initial = ', num2str(add_initial),' (method mmea)\n']);
       else
         fprintf('add_initial = unkown \n');
       end
       
       if numel(refine_running) ~= 0
-        fprintf(['refine_running = ', num2str(refine_running),' (method ea)\n']);
+        fprintf(['refine_running = ', num2str(refine_running),' (method mmea)\n']);
       else
         fprintf('refine_running = unkown \n');
       end
       
       if numel(refine_run_prob) ~= 0
-        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method ea)\n']);
+        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method mmea)\n']);
       else
         fprintf('refine_run_prob = unkown \n');
       end
       
       if numel(refine_firsts) ~= 0
-        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method ea)\n']);
+        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method mmea)\n']);
       else
         fprintf('refine_firsts = unkown \n');
       end
       
       if numel('refine_initial') ~= 0
-        fprintf(['refine_initial = ', num2str(refine_initial),' (method ea)\n']);
+        fprintf(['refine_initial = ', num2str(refine_initial),' (method mmea)\n']);
       else
         fprintf('refine_initial = unkown \n');
       end
       
       if numel(refine_best) ~= 0
-        fprintf(['refine_best = ', num2str(refine_best),' (method ea)\n']);
+        fprintf(['refine_best = ', num2str(refine_best),' (method mmea)\n']);
       else
         fprintf('refine_best = unkown \n');
       end
       
       if numel(verbose) ~= 0
-        fprintf(['verbose = ', num2str(verbose),' (method ea)\n']);
+        fprintf(['verbose = ', num2str(verbose),' (method mmea)\n']);
       else
         fprintf('verbose = unkown \n');
       end
       
       if numel(verbose_options) ~= 0
-        fprintf(['verbose_options = ', num2str(verbose_options),' (method ea)\n']);
+        fprintf(['verbose_options = ', num2str(verbose_options),' (method mmea)\n']);
       else
         fprintf('verbose_options = unkown \n');
       end
       
       if numel(random_seeds) ~= 0
-        fprintf(['random_seeds = ', num2str(random_seeds(1)),' (method ea)\n']);
+        fprintf(['random_seeds = ', num2str(random_seeds(1)),' (method mmea)\n']);
       else
         fprintf('random_seeds = unkown \n');
       end
       
       if numel(ranges) ~= 0 
-        fprintf(['ranges = structure with fields (method ea)\n']);
+        fprintf(['ranges = structure with fields (method mmea)\n']);
         disp(struct2table(ranges));
       else
         fprintf('ranges = unkown \n');
       end
       
       if strcmp(results_display, '') ~= 0
-        fprintf(['results_display = ', results_display,' (method ea)\n']);
+        fprintf(['results_display = ', results_display,' (method mmea)\n']);
       else
         fprintf('results_display = unkown \n');
       end
       
       if strcmp(results_filename, '') ~= 0
-        fprintf(['results_filename = ', results_filename,' (method ea)\n']);
+        fprintf(['results_filename = ', results_filename,' (method mmea)\n']);
       else
         fprintf('results_filename = unkown \n');
       end
       
       if strcmp(mat_file, '') ~= 0
-        fprintf(['mat_file = ', mat_file,' (method ea)\n']);
+        fprintf(['mat_file = ', mat_file,' (method mmea)\n']);
       else
         fprintf('mat_file = unkown \n');
       end

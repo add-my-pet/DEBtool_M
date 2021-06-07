@@ -1,4 +1,4 @@
-%% lshade
+%% shade
 % Finds parameter values for a pet that minimizes the lossfunction using the 
 % Succes History Adaptation of Differential Evolution (SHADE) using a filter
 %%
