@@ -10,7 +10,7 @@ function estim_options (key, val)
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one, some apply to methods nm and ea, others are specific for nm or ea
+  % Sets options for estimation one by one, some apply to methods nm and ea, others to ea only
   %
   % Input
   %
@@ -155,7 +155,7 @@ function estim_options (key, val)
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %
-  % Typical simplex options are also used in the evolutionary algoritm via local_search
+  % Typical simplex options are also used in the evolutionary algorithm via local_search in shade and lshade
   %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
