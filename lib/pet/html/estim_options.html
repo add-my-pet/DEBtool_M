@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-06"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-07"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and ga, others are specific for nm or ga</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
+  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and ea, others are specific for nm or ea</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
    any other key (see below): print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'loss_function':
     'sb': multiplicative symmetric bounded (default)
     'su': multiplicative symmetric unbounded
@@ -84,43 +84,43 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     5, -5 - like 4 (or -4), but includes related species in the implied traits
     6     - like 5, but also prints html with population traits</pre><pre>  'method':
     'no': do not estimate
-    'nm': Nelder-Mead method
-    'ga': genetic algorithm</pre><pre>  'max_fun_evals': maximum number of function evaluations (default 10000)</pre><pre>  'report' (method nm only):
+    'nm': Nelder-Mead method (default)
+    'ea': evolutionary algorithm</pre><pre>  'max_fun_evals': maximum number of function evaluations (default 10000)</pre><pre>  'report' (method nm only):
      0 - do not report
-     1 - report steps to screen (default)</pre><pre>  'max_step_number' (method nm only): maximum number of steps (default 500)</pre><pre>  'tol_simplex' (method nm only): tolerance for how close the simplex points must be together to call them the same (default 1e-4)</pre><pre>  'tol_fun' (method nm only): tolerance for how close the loss-function values must be together to call them the same (default 1e-4)</pre><pre>  'simplex_size' (method nm only): fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)</pre><pre>  'search_method' (method ga only):
+     1 - report steps to screen (default)</pre><pre>  'max_step_number' (method nm only): maximum number of steps (default 500)</pre><pre>  'tol_simplex' (method nm only): tolerance for how close the simplex points must be together to call them the same (default 1e-4)</pre><pre>  'tol_fun' (method nm only): tolerance for how close the loss-function values must be together to call them the same (default 1e-4)</pre><pre>  'simplex_size' (method nm only): fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)</pre><pre>  'search_method' (method ea only):
     'mm1' - use shade method (default)
-    'mm2' - do not estimate</pre><pre>  'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
+    'mm2' - do not estimate</pre><pre>  'num_results' (method ea only): The size for the multimodal algorithm's population. The author recommended
      100 for SHADE ('search_method mm1', default)
-     18 * number of free parameters for L-SHADE ('search method mm2')</pre><pre>  'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method ga only):
+     18 * number of free parameters for L-SHADE ('search method mm2')</pre><pre>  'gen_factor' (method ea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method ea only):
     0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)
-    1: use ranges from data (default)</pre><pre>  'max_calibration_time' (method ga only): maximum calibration time in minutes (default 30)</pre><pre>  'num_runs' (method ga only): the number of independent runs to perform (default 1)</pre><pre>  'add_initial' (method ga only): if the initial individual is added in the first  population.
+    1: use ranges from data (default)</pre><pre>  'max_calibration_time' (method ea only): maximum calibration time in minutes (default 30)</pre><pre>  'num_runs' (method ea only): the number of independent runs to perform (default 1)</pre><pre>  'add_initial' (method ea only): if the initial individual is added in the first  population.
     1: activated
-    0: not activated (default)</pre><pre>  'refine_initial' (method ga only): if the initial individual is refined using Nelder-Mead.
+    0: not activated (default)</pre><pre>  'refine_initial' (method ea only): if the initial individual is refined using Nelder-Mead.
     0: not activated (default)
-    1: activated</pre><pre>  'refine_best'  (method ga only): if the best individual found is refined using Nelder-Mead.
+    1: activated</pre><pre>  'refine_best'  (method ea only): if the best individual found is refined using Nelder-Mead.
     0: not activated (default)
-    1: activated</pre><pre>  'refine_running' (method ga only): If to apply local search to some individuals while simulation is running
+    1: activated</pre><pre>  'refine_running' (method ea only): If to apply local search to some individuals while simulation is running
     0: not activated (default)
-    1: activated</pre><pre>  'refine_run_prob' (method ga only): The probability to apply a local search to an individual while algorithm is running (default 0.05)</pre><pre>  'refine_firsts' (method ga only): If to apply a local search to the first population
+    1: activated</pre><pre>  'refine_run_prob' (method ea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)</pre><pre>  'refine_firsts' (method ea only): If to apply a local search to the first population
      0: not activated (default)
-     1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)</pre><pre>  'verbose_options' (method ga only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method ga only): prints some information while the calibration  process is running
+     1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)</pre><pre>  'verbose_options' (method ea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method ea only): prints some information while the calibration  process is running
      0: not activated (default)
-     1: activated</pre><pre>  'seed_index' (method ga only): index of vector with values for the seeds used to generate random values
-     each one is used in a single run of the algorithm (default 1, must be between 1 and 30)</pre><pre>  'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
+     1: activated</pre><pre>  'seed_index' (method ea only): index of vector with values for the seeds used to generate random values
+     each one is used in a single run of the algorithm (default 1, must be between 1 and 30)</pre><pre>  'ranges' (method ea only): Structure with ranges for the parameters to be calibrated (default empty)
      one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
      two values (min, max) for the  minimum and maximum range values. Consider:
        (1) Use min &lt; max for each variable in ranges. If it is not, then the range will be not used
        (2) Do not take max/min too high, use the likely ranges of the problem
        (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
      Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}}
-     Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}</pre><pre>  'results_display (method ga only)':
+     Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}</pre><pre>  'results_display (method ea only)':
      Basic - Does not show results in screen (default)
      Best  - Plots the best solution results in DEBtool style
      Set   - Plots all the solutions remarking the best one
              html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
-     Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered</pre><pre>  'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time)</pre><pre>  'save_results' (method ga only): If the results output images are going to be saved
+     Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered</pre><pre>  'results_filename (method ea only)': The name for the results file (solutionSet_my_pet_time)</pre><pre>  'save_results' (method ea only): If the results output images are going to be saved
      0: no saving (default)
-     1: saving</pre><pre>  'mat_file' (method ga only): The name of the .mat-file with results from where to initialize the calibration parameters
+     1: saving</pre><pre>  'mat_file' (method ea only): The name of the .mat-file with results from where to initialize the calibration parameters
      (only useful if pars_init_method option is equal to 1 and if there is a result file)
      This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -136,7 +136,7 @@ function estim_options (key, val)
   % <../estim_options.m *estim_options*> (key, val)
   
   %% Description
-  % Sets options for estimation one by one, some apply to methods nm and ga, others are specific for nm or ga
+  % Sets options for estimation one by one, some apply to methods nm and ea, others are specific for nm or ea
   %
   % Input
   %
@@ -173,8 +173,8 @@ function estim_options (key, val)
   %   
   %    'method': 
   %      'no': do not estimate
-  %      'nm': Nelder-Mead method
-  %      'ga': genetic algorithm
+  %      'nm': Nelder-Mead method (default)
+  %      'ea': evolutionary algorithm
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
   %
@@ -190,56 +190,56 @@ function estim_options (key, val)
   %
   %    'simplex_size' (method nm only): fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
-  %    'search_method' (method ga only): 
+  %    'search_method' (method ea only): 
   %      'mm1' - use shade method (default)
   %      'mm2' - do not estimate
   %     
-  %    'num_results' (method ga only): The size for the multimodal algorithm's population. The author recommended
+  %    'num_results' (method ea only): The size for the multimodal algorithm's population. The author recommended
   %       100 for SHADE ('search_method mm1', default) 
   %       18 * number of free parameters for L-SHADE ('search method mm2')
   %
-  %    'gen_factor' (method ga only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
+  %    'gen_factor' (method ea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
-  %    'bounds_from_ind' (method ga only): 
+  %    'bounds_from_ind' (method ea only): 
   %      0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)         
   %      1: use ranges from data (default) 
   %
-  %    'max_calibration_time' (method ga only): maximum calibration time in minutes (default 30)
+  %    'max_calibration_time' (method ea only): maximum calibration time in minutes (default 30)
   %
-  %    'num_runs' (method ga only): the number of independent runs to perform (default 1)
+  %    'num_runs' (method ea only): the number of independent runs to perform (default 1)
   %
-  %    'add_initial' (method ga only): if the initial individual is added in the first  population.
+  %    'add_initial' (method ea only): if the initial individual is added in the first  population.
   %      1: activated
   %      0: not activated (default)
   %
-  %    'refine_initial' (method ga only): if the initial individual is refined using Nelder-Mead.
-  %      0: not activated (default)
-  %      1: activated
-  %     
-  %    'refine_best'  (method ga only): if the best individual found is refined using Nelder-Mead.
+  %    'refine_initial' (method ea only): if the initial individual is refined using Nelder-Mead.
   %      0: not activated (default)
   %      1: activated
   %     
-  %    'refine_running' (method ga only): If to apply local search to some individuals while simulation is running 
+  %    'refine_best'  (method ea only): if the best individual found is refined using Nelder-Mead.
+  %      0: not activated (default)
+  %      1: activated
+  %     
+  %    'refine_running' (method ea only): If to apply local search to some individuals while simulation is running 
   %      0: not activated (default)
   %      1: activated
   %
-  %    'refine_run_prob' (method ga only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
+  %    'refine_run_prob' (method ea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
   %
-  %    'refine_firsts' (method ga only): If to apply a local search to the first population
+  %    'refine_firsts' (method ea only): If to apply a local search to the first population
   %       0: not activated (default)
   %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)
   %
-  %    'verbose_options' (method ga only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
+  %    'verbose_options' (method ea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
   %
-  %    'verbose' (method ga only): prints some information while the calibration  process is running              
+  %    'verbose' (method ea only): prints some information while the calibration  process is running              
   %       0: not activated (default)
   %       1: activated
   %
-  %    'seed_index' (method ga only): index of vector with values for the seeds used to generate random values 
+  %    'seed_index' (method ea only): index of vector with values for the seeds used to generate random values 
   %       each one is used in a single run of the algorithm (default 1, must be between 1 and 30)
   %
-  %    'ranges' (method ga only): Structure with ranges for the parameters to be calibrated (default empty)
+  %    'ranges' (method ea only): Structure with ranges for the parameters to be calibrated (default empty)
   %       one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
   %       two values (min, max) for the  minimum and maximum range values. Consider:               
   %         (1) Use min < max for each variable in ranges. If it is not, then the range will be not used
@@ -248,20 +248,20 @@ function estim_options (key, val)
   %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}} 
   %       Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}
   %
-  %    'results_display (method ga only)': 
+  %    'results_display (method ea only)': 
   %       Basic - Does not show results in screen (default) 
   %       Best  - Plots the best solution results in DEBtool style
   %       Set   - Plots all the solutions remarking the best one 
   %               html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
   %       Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered
   %
-  %    'results_filename (method ga only)': The name for the results file (solutionSet_my_pet_time) 
+  %    'results_filename (method ea only)': The name for the results file (solutionSet_my_pet_time) 
   %
-  %    'save_results' (method ga only): If the results output images are going to be saved
+  %    'save_results' (method ea only): If the results output images are going to be saved
   %       0: no saving (default)
   %       1: saving
   %
-  %    'mat_file' (method ga only): The name of the .mat-file with results from where to initialize the calibration parameters 
+  %    'mat_file' (method ea only): The name of the .mat-file with results from where to initialize the calibration parameters 
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
   %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
@@ -286,13 +286,13 @@ function estim_options (key, val)
  
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size % method nm only
-  global search_method num_results gen_factor bounds_from_ind % method ga only
+  global search_method num_results gen_factor bounds_from_ind % method ea only
   global max_calibration_time  num_runs add_initial  
   global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
   global verbose verbose_options random_seeds seed_index ranges mat_file
   global results_display results_filename save_results
 
-  availableMethodOptions = {'no', 'nm', 'ga'};
+  availableMethodOptions = {'no', 'nm', 'ea'};
 
   if exist('key','var') == 0
     key = 'inexistent';
@@ -315,8 +315,8 @@ function estim_options (key, val)
 	  tol_fun = 1e-4;
       simplex_size = 0.05;
 
-      % for ga method (taken from calibration_options)
-      search_method = 'mm1'; % Use SHADE 
+      % for ea method (taken from calibration_options)
+      search_method = 'mm1'; % Use SHADE: Success-History based Adaptive Differential Evolution 
       num_results = 100;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
                            % which are 100 for SHADE ('mm1') and 18 * problem size for L-SHADE.
@@ -420,7 +420,7 @@ function estim_options (key, val)
         end	      
         fprintf('''no'' - do not estimate \n');
         fprintf('''nm'' - use Nelder-Mead method \n');
-        fprintf('''ga'' - use genetic algorithm method \n');
+        fprintf('''ea'' - use evolutionary algorithm method \n');
       else
         method = val;
       end
@@ -434,7 +434,7 @@ function estim_options (key, val)
         end	      
       else
         max_fun_evals = val;
-        % max_calibration_time = Inf; % ga method only
+        % max_calibration_time = Inf; % ea method only
       end
    
     % method nm only
@@ -484,7 +484,7 @@ function estim_options (key, val)
         simplex_size = val;
       end
       
-    % method ga only, taken from calibatrion_options
+    % method ea only, taken from calibatrion_options
     case 'search_method'
       if ~exist('val','var')
         search_method = 'mm1'; % Select SHADE as the default method.
@@ -745,7 +745,7 @@ function estim_options (key, val)
       
       if numel(method) ~= 0
         fprintf(['method = ', method,' \n']);
-        if strcmp(method, 'ga')
+        if strcmp(method, 'ea')
           calibration_options;
         end
       else
@@ -783,124 +783,124 @@ function estim_options (key, val)
         fprintf('simplex_size = unknown \n');
       end
       
-      % method ga only
+      % method ea only
       if numel(search_method) ~= 0
-        fprintf(['search_method = ', search_method,' (method ga)\n']);
+        fprintf(['search_method = ', search_method,' (method ea)\n']);
       else
         fprintf('search_method = unkown \n');
       end
       
       if numel(num_results) ~= 0.0
-        fprintf(['num_results = ', num2str(num_results),' (method ga)\n']);
+        fprintf(['num_results = ', num2str(num_results),' (method ea)\n']);
       else
         fprintf('num_results = unknown \n');
       end
       
       if numel(gen_factor) ~= 0.0
-        fprintf(['gen_factor = ', num2str(gen_factor),' (method ga)\n']);
+        fprintf(['gen_factor = ', num2str(gen_factor),' (method ea)\n']);
       else
         fprintf('gen_factor = unknown \n');
       end
       
       if numel(bounds_from_ind) ~= 0.0
-        fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' (method ga)\n']);
+        fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' (method ea)\n']);
       else
         fprintf('bounds_from_ind = unknown \n');
       end
       
       if numel(max_fun_evals) ~= 0
-        fprintf(['max_fun_evals = ', num2str(max_fun_evals),' (method ga)\n']);
+        fprintf(['max_fun_evals = ', num2str(max_fun_evals),' (method ea)\n']);
       else
         fprintf('max_fun_evals = unkown \n');
       end
       
       if numel(max_calibration_time) ~= 0
-        fprintf(['max_calibration_time = ', num2str(max_calibration_time),' (method ga)\n']);
+        fprintf(['max_calibration_time = ', num2str(max_calibration_time),' (method ea)\n']);
       else
         fprintf('max_calibration_time = unkown \n');
       end
       
       if numel(num_runs) ~= 0
-        fprintf(['num_runs = ', num2str(num_runs),' (method ga)\n']);
+        fprintf(['num_runs = ', num2str(num_runs),' (method ea)\n']);
       else
         fprintf('num_runs = unkown \n');
       end
       
       if numel(add_initial) ~= 0
-        fprintf(['add_initial = ', num2str(add_initial),' (method ga)\n']);
+        fprintf(['add_initial = ', num2str(add_initial),' (method ea)\n']);
       else
         fprintf('add_initial = unkown \n');
       end
       
       if numel(refine_running) ~= 0
-        fprintf(['refine_running = ', num2str(refine_running),' (method ga)\n']);
+        fprintf(['refine_running = ', num2str(refine_running),' (method ea)\n']);
       else
         fprintf('refine_running = unkown \n');
       end
       
       if numel(refine_run_prob) ~= 0
-        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method ga)\n']);
+        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method ea)\n']);
       else
         fprintf('refine_run_prob = unkown \n');
       end
       
       if numel(refine_firsts) ~= 0
-        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method ga)\n']);
+        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method ea)\n']);
       else
         fprintf('refine_firsts = unkown \n');
       end
       
       if numel('refine_initial') ~= 0
-        fprintf(['refine_initial = ', num2str(refine_initial),' (method ga)\n']);
+        fprintf(['refine_initial = ', num2str(refine_initial),' (method ea)\n']);
       else
         fprintf('refine_initial = unkown \n');
       end
       
       if numel(refine_best) ~= 0
-        fprintf(['refine_best = ', num2str(refine_best),' (method ga)\n']);
+        fprintf(['refine_best = ', num2str(refine_best),' (method ea)\n']);
       else
         fprintf('refine_best = unkown \n');
       end
       
       if numel(verbose) ~= 0
-        fprintf(['verbose = ', num2str(verbose),' (method ga)\n']);
+        fprintf(['verbose = ', num2str(verbose),' (method ea)\n']);
       else
         fprintf('verbose = unkown \n');
       end
       
       if numel(verbose_options) ~= 0
-        fprintf(['verbose_options = ', num2str(verbose_options),' (method ga)\n']);
+        fprintf(['verbose_options = ', num2str(verbose_options),' (method ea)\n']);
       else
         fprintf('verbose_options = unkown \n');
       end
       
       if numel(random_seeds) ~= 0
-        fprintf(['random_seeds = ', num2str(random_seeds(1)),' (method ga)\n']);
+        fprintf(['random_seeds = ', num2str(random_seeds(1)),' (method ea)\n']);
       else
         fprintf('random_seeds = unkown \n');
       end
       
       if numel(ranges) ~= 0 
-        fprintf(['ranges = structure with fields (method ga)\n']);
+        fprintf(['ranges = structure with fields (method ea)\n']);
         disp(struct2table(ranges));
       else
         fprintf('ranges = unkown \n');
       end
       
       if strcmp(results_display, '') ~= 0
-        fprintf(['results_display = ', results_display,' (method ga)\n']);
+        fprintf(['results_display = ', results_display,' (method ea)\n']);
       else
         fprintf('results_display = unkown \n');
       end
       
       if strcmp(results_filename, '') ~= 0
-        fprintf(['results_filename = ', results_filename,' (method ga)\n']);
+        fprintf(['results_filename = ', results_filename,' (method ea)\n']);
       else
         fprintf('results_filename = unkown \n');
       end
       
       if strcmp(mat_file, '') ~= 0
-        fprintf(['mat_file = ', mat_file,' (method ga)\n']);
+        fprintf(['mat_file = ', mat_file,' (method ea)\n']);
       else
         fprintf('mat_file = unkown \n');
       end

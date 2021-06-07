@@ -9,7 +9,7 @@ check_my_pet(pets); % Check pet consistence
 
 % Setting estimation options such as: 
 estim_options('default');
-estim_options('method','ga');
+estim_options('method','ea');
 estim_options('results_output',5);
 
 estim_options('num_results', 200);

@@ -15,7 +15,7 @@ function [nsteps, info, fval] = estim_pars
   
   %% Description
   % Runs the entire estimation procedure, see Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100
-  % See also Robles et al 2021, (in prep) for the ga-method.
+  % See also Robles et al 2021, (in prep) for the ea-method.
   % 
   %
   % * gets the parameters
@@ -137,7 +137,7 @@ switch method
       [par, info, nsteps, fval] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
     
-  case 'ga'
+  case 'ea'
     [par, solutions_set, fval] = calibrate; 
     info = ~isempty(solutions_set); 
     nsteps = solutions_set.runtime_information.run_1.fun_evals;
