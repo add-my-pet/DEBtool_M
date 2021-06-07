@@ -53,68 +53,68 @@ function estim_options (key, val)
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
   %
-  %    'report' (method nm only): 
+  %    'report': 
   %       0 - do not report
   %       1 - report steps to screen (default)
   %
-  %    'max_step_number' (method nm only): maximum number of steps (default 500)
+  %    'max_step_number': maximum number of steps (default 500)
   %
-  %    'tol_simplex' (method nm only): tolerance for how close the simplex points must be together to call them the same (default 1e-4)
+  %    'tol_simplex': tolerance for how close the simplex points must be together to call them the same (default 1e-4)
   %
-  %    'tol_fun' (method nm only): tolerance for how close the loss-function values must be together to call them the same (default 1e-4)
+  %    'tol_fun': tolerance for how close the loss-function values must be together to call them the same (default 1e-4)
   %
-  %    'simplex_size' (method nm only): fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
+  %    'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
-  %    'search_method' (method ea only): 
+  %    'search_method' (method mmea only): 
   %      'mm1' - use shade method (default)
   %      'mm2' - do not estimate
   %     
-  %    'num_results' (method ea only): The size for the multimodal algorithm's population. The author recommended
+  %    'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
   %       100 for SHADE ('search_method mm1', default) 
   %       18 * number of free parameters for L-SHADE ('search method mm2')
   %
-  %    'gen_factor' (method ea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
+  %    'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
-  %    'bounds_from_ind' (method ea only): 
+  %    'bounds_from_ind' (method mmea only): 
   %      0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)         
   %      1: use ranges from data (default) 
   %
-  %    'max_calibration_time' (method ea only): maximum calibration time in minutes (default 30)
+  %    'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)
   %
-  %    'num_runs' (method ea only): the number of independent runs to perform (default 1)
+  %    'num_runs' (method mmea only): the number of independent runs to perform (default 1)
   %
-  %    'add_initial' (method ea only): if the initial individual is added in the first  population.
+  %    'add_initial' (method mmea only): if the initial individual is added in the first  population.
   %      1: activated
   %      0: not activated (default)
   %
-  %    'refine_initial' (method ea only): if the initial individual is refined using Nelder-Mead.
-  %      0: not activated (default)
-  %      1: activated
-  %     
-  %    'refine_best'  (method ea only): if the best individual found is refined using Nelder-Mead.
+  %    'refine_initial' (method mmea only): if the initial individual is refined using Nelder-Mead.
   %      0: not activated (default)
   %      1: activated
   %     
-  %    'refine_running' (method ea only): If to apply local search to some individuals while simulation is running 
+  %    'refine_best'  (method mmea only): if the best individual found is refined using Nelder-Mead.
+  %      0: not activated (default)
+  %      1: activated
+  %     
+  %    'refine_running' (method mmea only): If to apply local search to some individuals while simulation is running 
   %      0: not activated (default)
   %      1: activated
   %
-  %    'refine_run_prob' (method ea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
+  %    'refine_run_prob' (method mmea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
   %
-  %    'refine_firsts' (method ea only): If to apply a local search to the first population
+  %    'refine_firsts' (method mmea only): If to apply a local search to the first population
   %       0: not activated (default)
   %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)
   %
-  %    'verbose_options' (method ea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
+  %    'verbose_options' (method mmea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
   %
-  %    'verbose' (method ea only): prints some information while the calibration  process is running              
+  %    'verbose' (method mmea only): prints some information while the calibration  process is running              
   %       0: not activated (default)
   %       1: activated
   %
-  %    'seed_index' (method ea only): index of vector with values for the seeds used to generate random values 
+  %    'seed_index' (method mmea only): index of vector with values for the seeds used to generate random values 
   %       each one is used in a single run of the algorithm (default 1, must be between 1 and 30)
   %
-  %    'ranges' (method ea only): Structure with ranges for the parameters to be calibrated (default empty)
+  %    'ranges' (method mmea only): Structure with ranges for the parameters to be calibrated (default empty)
   %       one value (factor between [0, 1], if not: 0.01 is set) to increase and decrease the original parameter values.
   %       two values (min, max) for the  minimum and maximum range values. Consider:               
   %         (1) Use min < max for each variable in ranges. If it is not, then the range will be not used
@@ -123,20 +123,20 @@ function estim_options (key, val)
   %       Set range with cell string of name of parameter and value for range, e.g. estim_options('ranges',{'kap', [0.3 1]}} 
   %       Remove range-specification with e.g. estim_options('ranges', {'kap'}} or estim_options('ranges', 'kap'}
   %
-  %    'results_display (method ea only)': 
+  %    'results_display (method mmea only)': 
   %       Basic - Does not show results in screen (default) 
   %       Best  - Plots the best solution results in DEBtool style
   %       Set   - Plots all the solutions remarking the best one 
   %               html with pars (best pars and a measure of the variance of each parameter in the solutions obtained for example)
   %       Complete - Joins all options with zero variate data with input and a measure of the variance of all the solutions considered
   %
-  %    'results_filename (method ea only)': The name for the results file (solutionSet_my_pet_time) 
+  %    'results_filename (method mmea only)': The name for the results file (solutionSet_my_pet_time) 
   %
-  %    'save_results' (method ea only): If the results output images are going to be saved
+  %    'save_results' (method mmea only): If the results output images are going to be saved
   %       0: no saving (default)
   %       1: saving
   %
-  %    'mat_file' (method ea only): The name of the .mat-file with results from where to initialize the calibration parameters 
+  %    'mat_file' (method mmea only): The name of the .mat-file with results from where to initialize the calibration parameters 
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
   %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
