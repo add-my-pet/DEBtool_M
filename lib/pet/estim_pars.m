@@ -137,7 +137,7 @@ switch method
       [par, info, nsteps, fval] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
     
-  case 'ea'
+  case 'mmea'
     [par, solutions_set, fval] = calibrate; 
     info = ~isempty(solutions_set); 
     nsteps = solutions_set.runtime_information.run_1.fun_evals;
