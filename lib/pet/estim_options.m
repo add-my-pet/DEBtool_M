@@ -155,9 +155,11 @@ function estim_options (key, val)
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %
+  % Typical simplex options are also used in the evolutionary algoritm via local_search
+  %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
- 
+  
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size % method nm only
   global search_method num_results gen_factor bounds_from_ind % method ea only
@@ -181,9 +183,7 @@ function estim_options (key, val)
       results_output = 3;
       method = 'nm';
 	  max_fun_evals = 1e4;
-      
-      % for nm method
-	  report = 1;
+      report = 1;
 	  max_step_number = 500;
 	  tol_simplex = 1e-4;
 	  tol_fun = 1e-4;
@@ -311,11 +311,10 @@ function estim_options (key, val)
         % max_calibration_time = Inf; % ea method only
       end
    
-    % method nm only
     case 'report'
       if ~exist('val','var')
         if numel(report) ~= 0
-          fprintf(['report = ', num2str(report),' (method nm)\n']);  
+          fprintf(['report = ', num2str(report),'\n']);  
         else
           fprintf('report = unknown \n');
         end	      
@@ -328,7 +327,7 @@ function estim_options (key, val)
     case 'max_step_number'
       if exist('val','var') == 0 
         if numel(max_step_number) ~= 0
-          fprintf(['max_step_number = ', num2str(max_step_number),' (method nm)\n']);  
+          fprintf(['max_step_number = ', num2str(max_step_number),'\n']);  
         else
           fprintf('max_step_number = unknown \n');
         end	      
@@ -339,7 +338,7 @@ function estim_options (key, val)
     case 'tol_simplex'
       if exist('val','var') == 0 
         if numel(tol_simplex) ~= 0
-          fprintf(['tol_simplex = ', num2str(tol_simplex),' (method nm)\n']);  
+          fprintf(['tol_simplex = ', num2str(tol_simplex),'\n']);  
         else
           fprintf('tol_simplex = unknown \n');
         end	      
@@ -350,7 +349,7 @@ function estim_options (key, val)
     case 'simplex_size'
       if exist('val','var') == 0 
         if numel(simplex_size) ~= 0
-          fprintf(['simplex_size = ', num2str(simplex_size),' (method nm)\n']);  
+          fprintf(['simplex_size = ', num2str(simplex_size),'\n']);  
         else
           fprintf('simplex_size = unknown \n');
         end	      

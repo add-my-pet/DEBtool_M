@@ -122,7 +122,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
      0: no saving (default)
      1: saving</pre><pre>  'mat_file' (method ea only): The name of the .mat-file with results from where to initialize the calibration parameters
      (only useful if pars_init_method option is equal to 1 and if there is a result file)
-     This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+     This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><p>Typical simplex options are also used in the evolutionary algoritm via local_search</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_options
 % Sets options for estim.pars
@@ -281,9 +281,11 @@ function estim_options (key, val)
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %
+  % Typical simplex options are also used in the evolutionary algoritm via local_search
+  %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
- 
+  
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size % method nm only
   global search_method num_results gen_factor bounds_from_ind % method ea only
@@ -307,9 +309,7 @@ function estim_options (key, val)
       results_output = 3;
       method = 'nm';
 	  max_fun_evals = 1e4;
-      
-      % for nm method
-	  report = 1;
+      report = 1;
 	  max_step_number = 500;
 	  tol_simplex = 1e-4;
 	  tol_fun = 1e-4;
@@ -437,11 +437,10 @@ function estim_options (key, val)
         % max_calibration_time = Inf; % ea method only
       end
    
-    % method nm only
     case 'report'
       if ~exist('val','var')
         if numel(report) ~= 0
-          fprintf(['report = ', num2str(report),' (method nm)\n']);  
+          fprintf(['report = ', num2str(report),'\n']);  
         else
           fprintf('report = unknown \n');
         end	      
@@ -454,7 +453,7 @@ function estim_options (key, val)
     case 'max_step_number'
       if exist('val','var') == 0 
         if numel(max_step_number) ~= 0
-          fprintf(['max_step_number = ', num2str(max_step_number),' (method nm)\n']);  
+          fprintf(['max_step_number = ', num2str(max_step_number),'\n']);  
         else
           fprintf('max_step_number = unknown \n');
         end	      
@@ -465,7 +464,7 @@ function estim_options (key, val)
     case 'tol_simplex'
       if exist('val','var') == 0 
         if numel(tol_simplex) ~= 0
-          fprintf(['tol_simplex = ', num2str(tol_simplex),' (method nm)\n']);  
+          fprintf(['tol_simplex = ', num2str(tol_simplex),'\n']);  
         else
           fprintf('tol_simplex = unknown \n');
         end	      
@@ -476,7 +475,7 @@ function estim_options (key, val)
     case 'simplex_size'
       if exist('val','var') == 0 
         if numel(simplex_size) ~= 0
-          fprintf(['simplex_size = ', num2str(simplex_size),' (method nm)\n']);  
+          fprintf(['simplex_size = ', num2str(simplex_size),'\n']);  
         else
           fprintf('simplex_size = unknown \n');
         end	      
