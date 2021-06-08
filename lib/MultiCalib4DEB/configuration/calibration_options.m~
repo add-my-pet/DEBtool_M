@@ -126,7 +126,7 @@ function calibration_options (key, val)
    global search_method num_results gen_factor bounds_from_ind max_fun_evals 
    global max_calibration_time  num_runs add_initial refine_initial  
    global refine_best  refine_running refine_run_prob refine_firsts 
-   global verbose verbose_options random_seeds seed_index ranges mat_file
+   global verbose verbose_options random_seeds ranges mat_file
    global results_display results_filename save_results
    
    if exist('key','var') == 0
@@ -191,8 +191,13 @@ function calibration_options (key, val)
                                                        % is used in a
                                                        % single run of the
                                                        % algorithm). 
-         seed_index = 1; % index for seeds for random number generator
-         rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method. 
+             seed_index = 1; % index for seeds for random number generator
+      rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
+         rng(random_seeds(1), 'twister'); % By default, the random number 
+                                          % generator is initialized with
+                                          % the first seed. It will be
+                                          % update for each run of the
+                                          % calibration method. 
          ranges = struct(); % The range struct is empty by default. 
          results_display = 'Basic'; % The results output style.
          results_filename = 'Default';
@@ -355,17 +360,6 @@ function calibration_options (key, val)
          else
             verbose_options = val;
          end
-      case 'seed_index'
-         if ~exist('val','var')
-           if numel(random_seeds) ~= 0
-             fprintf(['seed_index = ', num2str(seed_index(1)),' \n']);
-           else
-             fprintf('seed_index = unkown \n');
-           end
-         else
-           seed_index = val;
-         end
-         rng(random_seeds(seed_index), 'twister'); % initialize the random number generator
       case 'random_seeds'
          if ~exist('val','var')
             if numel(random_seeds) ~= 0
