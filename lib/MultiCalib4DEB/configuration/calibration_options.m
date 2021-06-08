@@ -503,13 +503,12 @@ function calibration_options (key, val)
          else
             fprintf('verbose_options = unkown \n');
          end
-         if numel(random_seed) ~= 0
-            fprintf(['random_seeds = ', num2str(random_seeds),' \n']);
-         else
-            fprintf('random_seeds = unkown \n');
-         end
-         if numel(ranges) ~= 0
-            fprintf(['ranges = ', num2str(ranges),' \n']);
+         if exist('ranges','var')
+            if isempty(ranges)
+               fprintf('No ranges defined \n');
+            else
+               fprintf([size(ranges), 'ranges defined \n']);
+            end
          else
             fprintf('ranges = unkown \n');
          end
