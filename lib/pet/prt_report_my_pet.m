@@ -3,8 +3,8 @@
 
 %%
 function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
-% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22, 2019/07/08 Bas Kooijman
-% description modified 2020/04/14 Nina
+% created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22,
+% 2019/07/08 Bas Kooijman, 2020/04/14 Nina Marn, 2021/06/10 Bas Kooijman
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder, filename) 
@@ -19,9 +19,13 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % and <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*> 
 % respectively, as part of the parameter estimation process.
 %
+% Estimation method mmea can save solutionSet_my_pet_date.mat, in which several solutions are stored, as specified in estim_options.
+% If the first input in prt_report_my_pet is a scalar, say n, then this .mat file is loaded and the first n solutions for the focus species are shown.
+% If this option is used, the local directory must have a file solutionSet_my_pet_date.mat and only with the file with most recent date that starts with "solutionSet_" is used
+%
 % Input:
 %
-% * focusSpecies: character-string with name of entry of special interest or cellstring with structures: {par, metaPar, txtPar, metaData}; might also be empty 
+% * focusSpecies: character-string with name of entry of special interest or cellstring with structures with {par, metaPar, txtPar, metaData} or a scalar; might also be empty 
 % * comparisonSpecies: cell string with entry names, might be empty
 % * T: optional scalar with temperature in Kelvin for all species (default: T_typical, which is species-specific)
 % * f: optional scalar scaled functional response (default: 1); it applies to all species
@@ -68,9 +72,9 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet([], clade('Nasalis_larvatus'))
 
 
-path_entries_web = 'https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries_web/'; % links of species names to AmP collection in table head
+path_entries_web = [set_path2server, 'add_my_pet/entries_web/']; % links of species names to AmP collection in table head
 
-% focusSpecies initiation: get parameters (separate from get statistics because of 2 possible routes for getting pars)
+% focusSpecies initiation: get parameters (separate from get statistics because of 3 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
   focusSpecies = comparisonSpecies{1}; specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
   if info == 0
@@ -106,13 +110,39 @@ elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or 
     end  
   end
 
-else  % use allStat.mat as parameter source for focusSpecies (always single species)
+elseif ischar(focusSpecies)  % use allStat.mat as parameter source for focusSpecies (always single species)
   specList = {focusSpecies}; [parList.(specList{1}), metaPar, txtPar, metaData, info] = allStat2par(specList{1}); 
   if info == 0
     return
   end
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
   color = 1; n_spec = 1; % number of focus species, initiate total number of species
+  
+else % first input is a scalar with number of solutions to be shown for the focus species; no color coding
+  if ismac || isunix
+    list = strsplit(ls); list(end) = [];
+  else
+    list = cellstr(ls);
+  end
+  list_sol = list(Contains(list,'solutionSet_')); n_sol = length(list_sol);
+  if n_sol == 0
+    fprintf('Warning from prt_report_my_pet: the first input is a scalar, but no solutionSet found\n');
+    return
+  end
+  date_sol = NaN(n_sol,1);
+  for i = 1:n_sol
+   solInfo = dir(which(list_sol{i}));
+   date_sol(i) = datenum(solInfo.date);
+  end
+  [~, i] = sort(date_sol); 
+  load(list_sol{i(end)}); % load the most recent solutionSet
+  n_sol = focusSpecies; % number of solutions to be shown
+  if ~exist('comparisonSpecies','var')
+    comparisonSpecies = [];
+  end
+  focusSpecies = fields(solutions_set.results.metaData); specList = [focusSpecies(ones(n_sol,1)); comparisonSpecies]; focusSpecies = focusSpecies{1};
+  color = 0; % no colors
+  n_spec = length(specList); % number of focus species, initiate total number of species
 end
 
 if n_spec == 1
@@ -615,3 +645,12 @@ if ~exist('filename')
   web(fileName,'-browser') % open html in systems browser
 end
 
+end
+
+function sel = Contains(nm, str)
+  % this fuction is the same as Matlab built-in-function contains, but the R2016a version does not work with cell input
+  n = length(nm); sel = true(n,1);
+  for i=1:n
+    sel(i) = ~isempty(strfind(nm{i}, str));
+  end
+end

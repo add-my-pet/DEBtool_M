@@ -48,7 +48,7 @@ function estim_options (key, val)
   %   
   %    'method': 
   %      'no': do not estimate
-  %      'nm': Nelder-Mead method (default)
+  %      'nm': Nelder-Mead simplex method (default)
   %      'mmea': multimodal evolutionary algorithm
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
@@ -781,5 +781,10 @@ function estim_options (key, val)
     otherwise
         fprintf(['key ', key, ' is unkown \n\n']);
         estim_options;
+  end
+  
+  %% warnings
+  if strcmp(method,'mmea') && filter==0
+    fprintf('Warning from estim_options: method mmea without using filters amounts to asking for trouble\n');
   end
 end
