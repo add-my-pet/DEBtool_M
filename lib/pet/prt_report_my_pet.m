@@ -129,13 +129,12 @@ else % first input is a scalar with number of solutions to be shown for the focu
     fprintf('Warning from prt_report_my_pet: the first input is a scalar, but no solutionSet found\n');
     return
   end
-  date_sol = NaN(n_sol,1);
+  datenum_sol = NaN(n_sol,1); % initiate datenum vector to select the latest date
   for i = 1:n_sol
-   solInfo = dir(which(list_sol{i}));
-   date_sol(i) = datenum(solInfo.date);
+    solInfo = dir(which(list_sol{i}));
+    datenum_sol(i) = solInfo.datenum;
   end
-  [~, i] = sort(date_sol); 
-  load(list_sol{i(end)}); % load the most recent solutionSet
+  [~, i] = sort(datenum_sol); load(list_sol{i(end)}); % load the most recent solutionSet
   n_sol = focusSpecies; % number of solutions to be shown
   if ~exist('comparisonSpecies','var')
     comparisonSpecies = [];
@@ -143,7 +142,13 @@ else % first input is a scalar with number of solutions to be shown for the focu
   focusSpecies = fields(solutions_set.results.metaData); specList = [focusSpecies(ones(n_sol,1)); comparisonSpecies]; focusSpecies = focusSpecies{1};
   color = 0; % no colors
   n_spec = length(specList); % number of focus species, initiate total number of species
-end
+  metaPar = solutions_set.results.solution_1.metaPar;
+  metaData = solutions_set.results.metaData.(focusSpecies);
+%  fldsPar = get_parfields(metaPar.model, 1);
+%   for i=1:length(fldsPar)
+%     parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
+%   end
+
 
 if n_spec == 1
   modelList = {metaPar.model}; % initiate cell string for model
