@@ -12,16 +12,20 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %% Description
 % Writes report_my_pet.html with a list of parameters and implied model properties for selected species. 
 % focusSpecies can be empty, or a single species;
-% comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries.
-% The parameters of the focusSpeces are obtained either from allStat.mat, or by metaData, metaPar and par, which are output structures of
-% <http://www.debtheory.org/wiki/index.php?title=Mydata_file *mydata_my_pet*>,
-% <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*>
-% and <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*> 
-% respectively, as part of the parameter estimation process.
+% comparisonSpecies can be empty (if focusSpecies is specified), or a cell-string of entries; their parameter values are taken from allStat.
+% The parameters of the focusSpeces are obtained from one of three sources:
 %
-% Estimation method mmea can save solutionSet_my_pet_date.mat, in which several solutions are stored, as specified in estim_options.
-% If the first input in prt_report_my_pet is a scalar, say n, then this .mat file is loaded and the first n solutions for the focus species are shown.
-% If this option is used, the local directory must have a file solutionSet_my_pet_date.mat and only with the file with most recent date that starts with "solutionSet_" is used
+% * allStat.mat (first input must be a character string)
+% * metaData, metaPar and par (first input must be a cell string), which are output structures of
+%     <http://www.debtheory.org/wiki/index.php?title=Mydata_file *mydata_my_pet*>,
+%     <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*>
+%     and <http://www.debtheory.org/wiki/index.php?title=Pars_init_file *pars_init_my_pet*> 
+%     respectively, as part of the parameter estimation process.
+% * solutionSet_my_pet_date.mat in local directory (first input must be a scalar) as saved by method mmea of 
+%     <estim_pars.html *estim_pars*> in which several solutions are stored. 
+%     The scalar stands for the number of solutions for the focus species that are shown.
+%     Only with the file with most recent date that starts with "solutionSet_" is used to read parameter values.
+%     In the scalar is zero, the number is generated automatically based on the values of the loss function.
 %
 % Input:
 %
@@ -129,26 +133,27 @@ else % first input is a scalar with number of solutions to be shown for the focu
     fprintf('Warning from prt_report_my_pet: the first input is a scalar, but no solutionSet found\n');
     return
   end
-  datenum_sol = NaN(n_sol,1); % initiate datenum vector to select the latest date
+  datenum_sol = NaN(n_sol,1); % initiate datenum vector to select the latest date of filenames that start with solutionSet_
   for i = 1:n_sol
     solInfo = dir(which(list_sol{i}));
     datenum_sol(i) = solInfo.datenum;
   end
   [~, i] = sort(datenum_sol); load(list_sol{i(end)}); % load the most recent solutionSet
   n_sol = focusSpecies; % number of solutions to be shown
+  % if n_sol=0 then select the number automatically on the basis of values of the loss function: to be done
   if ~exist('comparisonSpecies','var')
     comparisonSpecies = [];
   end
   focusSpecies = fields(solutions_set.results.metaData); specList = [focusSpecies(ones(n_sol,1)); comparisonSpecies]; focusSpecies = focusSpecies{1};
   color = 0; % no colors
-  n_spec = length(specList); % number of focus species, initiate total number of species
+  n_spec = length(specList); % total number of species to be shown
   metaPar = solutions_set.results.solution_1.metaPar;
   metaData = solutions_set.results.metaData.(focusSpecies);
 %  fldsPar = get_parfields(metaPar.model, 1);
 %   for i=1:length(fldsPar)
 %     parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
 %   end
-
+end
 
 if n_spec == 1
   modelList = {metaPar.model}; % initiate cell string for model
