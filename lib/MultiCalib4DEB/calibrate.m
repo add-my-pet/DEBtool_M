@@ -126,13 +126,13 @@ function [best_sol, solutions_set, best_fval] = calibrate
 
    %% perform the calibration
    if ~strcmp(search_method, 'no')
-      if strcmp(search_method, 'mm1') % With SHADE
+      if strcmp(search_method, 'shade') % With SHADE
          if n_pets == 1
             [best_sol, solutions_set, best_fval] = shade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end
-      elseif strcmp(search_method, 'mm2') % With L-SHADE
+      elseif strcmp(search_method, 'l-shade') % With L-SHADE
          if n_pets == 1
             [best_sol, solutions_set, best_fval] = lshade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else

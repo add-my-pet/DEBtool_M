@@ -23,12 +23,14 @@ function calibration_options (key, val)
 % * two inputs
 %      
 %    'search_method': 
-%      'mm1' - use Nelder-Mead method; 
-%      'mm2' - do not estimate;
+%      'shade' - use Success-history based parameter adaptation for 
+%                Differential Evolution (SHADE) method.
+%      'l-shade' - Linear Population Size Reduction Success-history based 
+%                  parameter adaptation for Differential Evolution (L-SHADE) method 
 %     
 %    'num_results': The size for the multimodal algorithm's population.
 %                   If it is not defined then sets the values recommended by 
-%                   the author, which are 100 for SHADE ('mm1') and 
+%                   the author, which are 100 for SHADE ('shade') and 
 %                   18 * problem size for L-SHADE.
 %    'gen_factor': percentage to build the ranges for initializing the 
 %                  first population of individuals.
@@ -77,25 +79,19 @@ function calibration_options (key, val)
 %    'random_seeds': The values for the seeds used to generate random
 %                     values (each one is used in a single run of the
 %                     algorithm). 
-%    'ranges': Some ranges for the parameters to be calibrated. The range
-%              struct has one (factor) to increase and decrease the 
-%              original parameter values or two substructs (min and max)  
-%              for the  minimum and maximum range values. 
-%              The factor parameter could contain a value between [0, 1].
-%              If the value is not between [0,1], a default value of 0.01
-%              is set. 
-%              Both min and max could contain values on any scale of values 
-%              but is it important to consider the folowing: 
-%              (1) The min value must be lower than the max value for each 
-%                  variable in ranges. If it is not, then the variable will
-%                  be not used to avoid problems into the calibration engine. 
-%              (2) If the range between the min and max values is too high, 
-%                  the calibration engine could experiment problems when 
-%                  running. It is recomended to adapt the data to the real 
-%                  ranges of the problem.
-%               (3) Only the free parameters (see 'pars_init_my_pet' file)
-%                   are considered.
-%               The ranges structure is empty by default. 
+%    'ranges': Structure with ranges for the parameters to be calibrated (default empty)
+%              one value (factor between [0, 1], if not: 0.01 is set) to 
+%              increase and decrease the original parameter values.
+%              two values (min, max) for the  minimum and maximum range values. 
+%              Consider:               
+%                 (1) Use min < max for each variable in ranges. If it is not, 
+%                     then the range will be not used
+%                 (2) Do not take max/min too high, use the likely ranges of the problem
+%                 (3) Only the free parameters (see 'pars_init_my_pet' file) are considered
+%              Set range with cell string of name of parameter and value for 
+%              range, e.g. estim_options('ranges',{'kap', [0.3 1]}} 
+%              Remove range-specification with e.g. estim_options('ranges', {'kap'}} 
+%              or estim_options('ranges', 'kap'} 
 %    'results_display': The type of results output to display after
 %                      calibration execution. 
 %                      Options: 
@@ -130,7 +126,7 @@ function calibration_options (key, val)
    global search_method num_results gen_factor bounds_from_ind max_fun_evals 
    global max_calibration_time  num_runs add_initial refine_initial  
    global refine_best  refine_running refine_run_prob refine_firsts 
-   global verbose verbose_options random_seeds ranges mat_file
+   global verbose verbose_options random_seeds seed_index ranges mat_file
    global results_display results_filename save_results
    
    if exist('key','var') == 0
@@ -139,10 +135,10 @@ function calibration_options (key, val)
 
    switch key 
       case {'default', ''}
-         search_method = 'mm1'; % Use SHADE for parameter estimation
+         search_method = 'shade'; % Use SHADE for parameter estimation
          num_results = 100; % The size for the multimodal algorithm's population.
                           % If not defined then sets the values recommended by
-                          % the author, which are 100 for SHADE ('mm1') and
+                          % the author, which are 100 for SHADE ('shade') and
                           % 18 * problem size for L-SHADE.
          gen_factor = 0.5; % Percentage bounds for individual 
                            % initialization. (e.g. A value of 0.9 means
@@ -195,11 +191,8 @@ function calibration_options (key, val)
                                                        % is used in a
                                                        % single run of the
                                                        % algorithm). 
-         rng(random_seeds(1), 'twister'); % By default, the random number 
-                                          % generator is initialized with
-                                          % the first seed. It will be
-                                          % update for each run of the
-                                          % calibration method. 
+         seed_index = 1; % index for seeds for random number generator
+         rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method. 
          ranges = struct(); % The range struct is empty by default. 
          results_display = 'Basic'; % The results output style.
          results_filename = 'Default';
@@ -207,7 +200,7 @@ function calibration_options (key, val)
          mat_file = '';
       case 'search_method'
          if ~exist('val','var')
-            search_method = 'mm1'; % Select SHADE as the default method.
+            search_method = 'shade'; % Select SHADE as the default method.
          else
             search_method = val;
          end 
@@ -362,6 +355,17 @@ function calibration_options (key, val)
          else
             verbose_options = val;
          end
+      case 'seed_index'
+         if ~exist('val','var')
+           if numel(random_seeds) ~= 0
+             fprintf(['seed_index = ', num2str(seed_index(1)),' \n']);
+           else
+             fprintf('seed_index = unkown \n');
+           end
+         else
+           seed_index = val;
+         end
+         rng(random_seeds(seed_index), 'twister'); % initialize the random number generator
       case 'random_seeds'
          if ~exist('val','var')
             if numel(random_seeds) ~= 0
@@ -499,13 +503,12 @@ function calibration_options (key, val)
          else
             fprintf('verbose_options = unkown \n');
          end
-         if numel(random_seed) ~= 0
-            fprintf(['random_seeds = ', num2str(random_seeds),' \n']);
-         else
-            fprintf('random_seeds = unkown \n');
-         end
-         if numel(ranges) ~= 0
-            fprintf(['ranges = ', num2str(ranges),' \n']);
+         if exist('ranges','var')
+            if isempty(ranges)
+               fprintf('No ranges defined \n');
+            else
+               fprintf([size(ranges), 'ranges defined \n']);
+            end
          else
             fprintf('ranges = unkown \n');
          end
