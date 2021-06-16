@@ -57,7 +57,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % So, if the comparison species all belong to the same genus, for instance, you can change your selection of focus species, and so change colors, without affecting numbers.
 % If you just have a set of species and want to avoid colors, treat them all as comparison species, leaving focusSpecies empty.
 % If model types differ among species in the tabel, only parameter and statistics fields for the focus species are shown.
-% In absence of a focus species, the first comparison specie serves this role.
+% In absence of a focus species, the first comparison species serves this role.
 % The default name of the output file is report_My_pet, but this name is replaced by filename, if specified, which is not opened automatically.
 % If filename is specified, destinationFolder must be specified as well
 % 
