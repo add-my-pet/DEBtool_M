@@ -25,6 +25,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %     <estim_pars.html *estim_pars*> in which several solutions are stored. 
 %     The scalar stands for the number of solutions for the focus species that are shown.
 %     Only with the file with most recent date that starts with "solutionSet_" is used to read parameter values.
+%
 % The traits are computed using <statistics_st.html *statistics_st*>.
 %
 % Input:
