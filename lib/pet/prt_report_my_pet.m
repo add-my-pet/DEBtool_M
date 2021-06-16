@@ -4,7 +4,7 @@
 %%
 function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFolder, filename)
 % created 2016/11/24 Starrlight;  modified 2018/08/22, 2019/02/22,
-% 2019/07/08 Bas Kooijman, 2020/04/14 Nina Marn, 2021/06/10 Bas Kooijman
+% 2019/07/08 Bas Kooijman, 2020/04/14 Nina Marn, 2021/06/16 Bas Kooijman
 
 %% Syntax
 % <../prt_report_my_pet.m *prt_report_my_pet*> (focusSpecies, comparisonSpecies, T, f, destinationFolder, filename) 
@@ -25,7 +25,7 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 %     <estim_pars.html *estim_pars*> in which several solutions are stored. 
 %     The scalar stands for the number of solutions for the focus species that are shown.
 %     Only with the file with most recent date that starts with "solutionSet_" is used to read parameter values.
-%     In the scalar is zero, the number is generated automatically based on the values of the loss function.
+% The traits are computed using <statistics_st.html *statistics_st*>.
 %
 % Input:
 %
@@ -74,9 +74,10 @@ function prt_report_my_pet(focusSpecies, comparisonSpecies, T, f, destinationFol
 % * prt_report_my_pet('Lutjanus_analis', select('Lutjanus'), C2K(21))
 % * prt_report_my_pet('Nasalis_larvatus', clade('Nasalis_larvatus'))
 % * prt_report_my_pet([], clade('Nasalis_larvatus'))
-
+% * prt_report_my_pet(3) if solutionsSet_my_pet_date.mat was produced via estim_pars method mmea
 
 path_entries_web = [set_path2server, 'add_my_pet/entries_web/']; % links of species names to AmP collection in table head
+n_sol = 1; % number of solutions shown for focus species; will be overwritten if first input is a scalar
 
 % focusSpecies initiation: get parameters (separate from get statistics because of 3 possible routes for getting pars)
 if isempty(focusSpecies) % only comparion species, but treat first comparison species as pseudo-focus species, but no color-coding 
@@ -88,7 +89,7 @@ if isempty(focusSpecies) % only comparion species, but treat first comparison sp
   color = 0; n_spec = 1; % number of focus species, initiate total number of species
     
 elseif iscell(focusSpecies) %  use metaData, metaPar and par to specify (one or more) focusSpecies
-  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData);
+  par = focusSpecies{1}; metaPar = focusSpecies{2}; txtPar = focusSpecies{3}; metaData = focusSpecies{4}; metaDataFldNm = fieldnames(metaData); 
   if isempty(strfind(metaDataFldNm{1}, '_')) % single species; name of species is recognized by the presence of "_"
     focusSpecies = metaData.species; specList = {focusSpecies}; color = 1; n_spec = length(specList); % number of focus species, initiate total number of species
     if isfield('par', 'free')
@@ -130,41 +131,50 @@ else % first input is a scalar with number of solutions to be shown for the focu
   end
   list_sol = list(Contains(list,'solutionSet_')); n_sol = length(list_sol);
   if n_sol == 0
-    fprintf('Warning from prt_report_my_pet: the first input is a scalar, but no solutionSet found\n');
+    fprintf('Warning from prt_report_my_pet: the first input is a scalar, but no file solutionSet_* found\n');
     return
   end
-  datenum_sol = NaN(n_sol,1); % initiate datenum vector to select the latest date of filenames that start with solutionSet_
+  % local dir can contain several files solutionSet_*, select the most recent one
+  datenum_sol = NaN(n_sol,1); date_sol = cell(n_sol,1); % initiate datenum vector to select the latest date of filenames that start with solutionSet_
   for i = 1:n_sol
     solInfo = dir(which(list_sol{i}));
     datenum_sol(i) = solInfo.datenum;
+    date_sol{i} = solInfo.date;
   end
   [~, i] = sort(datenum_sol); load(list_sol{i(end)}); % load the most recent solutionSet
-  n_sol = focusSpecies; % number of solutions to be shown
-  % if n_sol=0 then select the number automatically on the basis of values of the loss function: to be done
-  if ~exist('comparisonSpecies','var')
-    comparisonSpecies = [];
-  end
-  focusSpecies = fields(solutions_set.results.metaData); specList = [focusSpecies(ones(n_sol,1)); comparisonSpecies]; focusSpecies = focusSpecies{1};
+  n_sol = focusSpecies; n_spec = n_sol; % number of solutions for focus species to be shown
+  datePrintNm = ['date: ', datestr(date_sol{i(end)}, 'yyyy/mm/dd')]; % take the creation date of the selected file solutionSet_* 
+  if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
+    datePrintNm = [datePrintNm, '; allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
+  end  
+  focusSpecies = fields(solutions_set.results.metaData); 
   color = 0; % no colors
-  n_spec = length(specList); % total number of species to be shown
   metaPar = solutions_set.results.solution_1.metaPar;
-  metaData = solutions_set.results.metaData.(focusSpecies);
-%  fldsPar = get_parfields(metaPar.model, 1);
-%   for i=1:length(fldsPar)
-%     parList.(specList{1}).(fldsPar{i}) = par.(fldsPar{i});
-%   end
+  txtPar = solutions_set.results.txtPar;
+  metaData.(focusSpecies{1}) = solutions_set.results.metaData.(focusSpecies{1});
+  specList = focusSpecies(ones(n_sol,1)); focusSpecies = focusSpecies{1};
+  for i=1:n_sol % scan the various solutions
+    specList{i} = [specList{i},'_', num2str(i)]; % make sure that species names are unique
+    parList.(specList{i}) = solutions_set.results.(['solution_', num2str(i)]).par;
+    parList.(specList{i}) = rmfield(parList.(specList{i}),'free');
+  end
 end
 
-if n_spec == 1
+if n_spec == 1 
   modelList = {metaPar.model}; % initiate cell string for model
   tempList.(specList{1}) = metaData.T_typical; % initiate cell string for typical body temperature
   specListPrintNm = {strrep(specList{1}, '_', ' ')}; % initiate cell string for species names as they appear above the table
 else
-  modelList = metaPar.model; % initiate cell string for model
+  modelList = {metaPar.model}; modelList = modelList(ones(n_sol,1)); % initiate cell string for model
   specListPrintNm = cell(n_spec,1);
   for k = 1: n_spec
-    tempList.(specList{k}) = metaData.(specList{k}).T_typical; % initiate cell string for typical body temperature
-    specListPrintNm(k) = {strrep(specList{k}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+    if n_sol == 1
+      tempList.(specList{k}) = metaData.(specList{k}).T_typical; % initiate cell string for typical body temperature
+      specListPrintNm(k) = {strrep(specList{k}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+    else
+      tempList.(specList{k}) = metaData.(focusSpecies).T_typical; % initiate cell string for typical body temperature
+      specListPrintNm(k) = {strrep(specList{k}, '_', ' ')}; % initiate cell string for species names as they appear above the table
+    end
   end
 end
 
@@ -210,7 +220,7 @@ fldsStat = fieldnmnst_st(statList.(specList{1})); % fieldnames of all statistics
 if exist('comparisonSpecies', 'var') && ~isempty(comparisonSpecies)
   comparisonSpecies = comparisonSpecies(~ismember(comparisonSpecies,focusSpecies)); % remove focus species from comparison species
   specList = [specList; comparisonSpecies(:)]; n_spec = length(specList); % list of all entries to be shown in the table
-  for k = 2:n_spec
+  for k = n_sol+1:n_spec
     % parameters
     [parList.(specList{k}), metaPark, txtPark, metaDatak] = allStat2par(specList{k});
     modelList{k} = metaPark.model;
@@ -651,9 +661,9 @@ fprintf(oid, '</HTML>\n');
 
 fclose(oid);
 
-if ~exist('filename')
+%if ~exist('fileName','var')
   web(fileName,'-browser') % open html in systems browser
-end
+%end
 
 end
 
