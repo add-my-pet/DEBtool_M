@@ -3,7 +3,7 @@
 
 %%
 function [r, info] = sgr_abj (par, T_pop, f_pop)
-  % created 2019/07/06 by Bas Kooijman
+  % created 2019/07/06 by Bas Kooijman, modified 2021/06/27
   
   %% Syntax
   % [r, info] = <../sgr_abj.m *sgr_abj*> (par, T_pop, f_pop)
@@ -20,8 +20,11 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   % Survival of embryo due to ageing is taken for sure
   % Buffer handling rule: continuous reproduction is used in the abj model.
   % Food density and temperature are assumed to be constant; temperature is specified in par.T_typical.
-  % The resulting specific growth rate r is solved from the characteristic equation 1 = \int_0^a_max S(a) R(a) exp(- r a) da
+  % Male production is taken into account by dividing kap_R by two.
+  % For semelparous reproduction, the specific growth rate is r = log(S_m N)/ a_m
+  % For iteroparous reproduction, the specific growth rate r is solved from the characteristic equation 1 = \int_0^a_max S(a) R(a) exp(- r a) da
   %   with a_max such that S(a_max) = 1e-6
+  % 
   %
   % Input
   %
@@ -41,7 +44,7 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   % par.reprodCode is not standard in structure par. Add it before use. If missing, "O" is assumed.
 
   % unpack par and compute statisitics
-  cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
+  cPar = parscomp_st(par); vars_pull(par); vars_pull(cPar);  
 
   % defaults
   if exist('T_pop','var') && ~isempty(T_pop)
@@ -67,9 +70,6 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   if ~exist('h_Bpi', 'var')
     h_Bpi = 0;
   end
-  if (~exist('reprodCode', 'var') || strcmp(reprodCode, 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode, 'D'))
-    kap_R = kap_R/2; % take cost of male production into account
-  end
   
   % temperature correction
   pars_T = T_A;
@@ -81,33 +81,73 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
   end
   TC = tempcorr(T, T_ref, pars_T);   % -, Temperature Correction factor
   kT_M = k_M * TC; vT = v * TC; hT_a = h_a * TC^2;   
+
+  if (~exist('reprodCode', 'var') || strcmp(reprodCode(1), 'O')) && (~exist('genderCode', 'var') || strcmp(genderCode(1), 'D'))
+    kap_R = kap_R/2; % take cost of male production into account
+  end
   
-  % supporting statistics
-  u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-  [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hj v_Hp], f); % -, scaled ages and lengths
-  aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at birth, time since birth at metam, puberty
-  L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; s_M = l_j/ l_b; % cm, struc length at birth, metam, puberty, ultimate
-  S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
-  rT_j = kT_M * rho_j; rT_B = kT_M * rho_B; % 1/d, expo, von Bert growth rate
-  pars_qhSC = {f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_j, L_i, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbj, h_Bjp, h_Bpi, thinning};
-  
-  % ceiling for r
-  R_i = kap_R * (1 - kap) * kT_M * (f/ (f + g) * l_i^2 * (g * s_M + l_i) - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
-  char_eq = @(rho, rho_p) 1 + exp(- rho * rho_p) - exp(rho); % see DEB3 eq (9.22): exp(-r*a_p) = exp(r/R) - 1 
-  [rho_max, info] = nmfzero(@(rho) char_eq(rho, R_i * tT_p), 1); 
-  r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
+  if exist('reprodCode', 'var') && strcmp(reprodCode, 'Os') % semelparous reprod
+    info = 1; % correct result is for sure
     
-  % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
-  if charEq(0, S_b, tT_j, tT_p, pars_qhSC{:}) > 0 
-    fprintf(['Warning from sgr_abj: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
-    r = NaN; info = 0; % no positive r exists
-  elseif charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) < 0
+    % life cycle
+    pars_tj = [g k l_T v_Hb v_Hj v_Hp];
+    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj(pars_tj, f);
+    rT_j = rho_j * kT_M; rT_B = rho_B * kT_M;
+    tT_0b = tau_b/ kT_M; tT_bj = (tau_j - tau_b)/ kT_M; tT_jp = (tau_p - tau_j)/ kT_M;
+  
+    % life span
+    pars_tm = [g; l_T; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+    tau_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
+    tT_0i = max(tau_p+0.1,tau_m)/ kT_M;   % d, mean life span at T
+    tT_pi = max(0,tau_m - tau_p)/ kT_M;   % d, time since puberty at death
+
+    % total fecundity
+    pars_R = [kap; kap_R; g; TC*k_J; TC*k_M; L_T; TC*v; U_Hb/TC; U_Hj/TC; U_Hp/TC]; % compose parameter vector
+    NT_i = cum_reprod_j(tT_0i, f, pars_R); % #, cum no of eggs at death
+  
+    if thinning
+      fn = @(t,r_B,l) 2*r_B*(1./(1-(1-l)*exp(-r_B*t))-1);
+      S_0j = exp(- tT_0b*h_B0b - tT_bj*(h_Bbj+rT_j));         % -, survivor prob between 0 and j
+      S_jp = exp(- tT_jp*h_Bjp - integral(@(t)fn(t,rT_B,l_j/l_i),0,tT_jp));  % -, survivor prob between j and p
+      S_pi = exp(- tT_pi*h_Bpi - integral(@(t)fn(t,rT_B,l_p/l_i),0,tT_pi));  % -, survivor prob between p and 1
+    else % no thinning
+      S_0j = exp(- tT_0b*h_B0b - tT_bj*h_Bbj);                % -, survivor prob between 0 and j
+      S_jp = exp(- tT_jp*h_Bjp);                              % -, survivor prob between j and p
+      S_pi = exp(- tT_pi*h_Bpi);                              % -, survivor prob between p and 1
+    end
+    S_m =  S_0j * S_jp * S_pi;                                % -, survivor prob between 0 and i
+
+    r = log(S_m * NT_i)/ tT_0i;                               % 1/d, spec pop growth rate
+  
+  else % iteroparous reprod
+    % supporting statistics
+    u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
+    pars_tj = [g k l_T v_Hb v_Hj v_Hp];
+    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj(pars_tj, f); % -, scaled ages and lengths
+    aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; % d, age at birth, time since birth at metam, puberty
+    L_b = L_m * l_b; L_j = L_m * l_j; L_i = L_m * l_i; s_M = l_j/ l_b; % cm, struc length at birth, metam, puberty, ultimate
+    S_b = exp(-aT_b * h_B0b);          % -, survivor prob at birth
+    rT_j = kT_M * rho_j; rT_B = kT_M * rho_B; % 1/d, expo, von Bert growth rate
+    pars_qhSC = {f, kap, kap_R, kT_M, vT, g, k, u_E0, L_b, L_j, L_i, rT_j, rT_B, v_Hp, s_G, hT_a, h_Bbj, h_Bjp, h_Bpi, thinning};
+  
+    % ceiling for r
+    R_i = kap_R * (1 - kap) * kT_M * (f/ (f + g) * l_i^2 * (g * s_M + l_i) - k * v_Hp)/ u_E0; % #/d, ultimate reproduction rate at T eq (2.56) of DEB3 for l_T = 0 and l = f
+    char_eq = @(rho, rho_p) 1 + exp(- rho * rho_p) - exp(rho); % see DEB3 eq (9.22): exp(-r*a_p) = exp(r/R) - 1 
+    [rho_max, info] = nmfzero(@(rho) char_eq(rho, R_i * tT_p), 1); 
+    r_max = rho_max * R_i; % 1/d, pop growth rate for eternal surivival and ultimate reproduction rate since puberty
+    
+    % find r from char eq 1 = \int_0^infty S(t) R(t) exp(-r*t) dt
+    if charEq(0, S_b, tT_j, tT_p, pars_qhSC{:}) > 0 
+      fprintf(['Warning from sgr_abj: no root for the characteristic equation, thinning = ', num2str(thinning), '\n']);
+      r = NaN; info = 0; % no positive r exists
+    elseif charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) < 0
       [r, ~, info] = fzero(@charEq, [0 2*r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
-  else 
-    if charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) > 0.95
-      [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
-    else
-      [r, info] = nmfzero(@charEq, r_max, [], S_b, tT_j, tT_p, pars_qhSC{:});
+    else 
+      if charEq(r_max, S_b, tT_j, tT_p, pars_qhSC{:}) > 0.95
+        [r, ~, info] = fzero(@charEq, [0 r_max], [], S_b, tT_j, tT_p, pars_qhSC{:});
+      else
+        [r, info] = nmfzero(@charEq, r_max, [], S_b, tT_j, tT_p, pars_qhSC{:});
+      end
     end
   end
 end

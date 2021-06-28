@@ -101,7 +101,12 @@ function prt_tab(values, header)
   for i = 1:n_rows
     fprintf(oid, '    <tr>\n      ');
     for j = 1:n_cols
-      fprintf(oid, '<td>%s</td> ', val{i,j});
+      val_ij = val{i,j};
+      if iscell(val_ij)
+        fprintf(oid, '<td>%s</td> ', val_ij{:});
+      else
+        fprintf(oid, '<td>%s</td> ', val_ij);
+      end
     end
     fprintf(oid, '  \n    </tr>\n\n');
   end

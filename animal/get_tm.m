@@ -2,14 +2,14 @@
 % Gets scaled mean age at death
 
 %%
-function [t_m, S_b, S_p, info] = get_tm(p, F, l_b, l_p)
-  % created 2009/02/21 by Bas Kooijman; modified 2013/08/21, 2015/01/18
+function [tau_m, S_b, S_p, info] = get_tm(p, F, lb, lp)
+  % created 2009/02/21 by Bas Kooijman; modified 2013/08/21, 2015/01/18, 2021/06/28
   
   %% Syntax
-  % [t_m, S_b, S_p, info] = <../get_tm.m *get_tm*>(p, F, l_b, l_p)
+  % [t_m, S_b, S_p, info] = <../get_tm.m *get_tm*>(p, F, lb, lp)
   
   %% Description
-  % Obtains scaled mean age at death by integration of cumulative survival prob over length. 
+  % Obtains scaled mean age at death by integration of cumulative survival prob over length for the std model. 
   % Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death. 
   %
   % Input
@@ -52,32 +52,31 @@ function [t_m, S_b, S_p, info] = get_tm(p, F, l_b, l_p)
   end
    
   if ~exist('l_p','var') && ~exist('l_b','var')
-    [l_p l_b info_lp] = get_lp (p, f);
+    [tp, tb, lp lb info_tp] = get_tp (p, f);
   elseif ~exist('l_p','var') || isempty('l_p')
-    [l_p l_b info_lp] = get_lp(p, f, l_b);
+    [tp, tb, lp lb info_tp] = get_tp(p, f, lb);
   end
-  
-  [uE0, l_b, info_ue0] = get_ue0([g, k, vHb], f, l_b);
+  [uE0, lb, info_uE0] = get_ue0([g, k, vHb], f, lb);
   
   x0 = [uE0; 0; 0; 1; 0]; % initiate uE q h S cS
-  [l x]= ode23(@dget_tm_egg, [1e-6; l_b], x0, [], g, lT, ha, sG);
-  xb = x(end,:)'; xb(1) = []; % q h S cS at birth
-  l = [l_b; l_p; max(l_p + 1e-4, f - lT - 1e-6)];
-  [l x]= ode23s(@dget_tm_adult, l, xb, [], g, lT, ha, sG, f);
-  S_b = x(1,3);
-  S_p = x(2,3);
-  t_m = x(3,4);
+  [l, x]= ode45(@dget_tm_egg, [1e-6; lb], x0, [], g, lT, ha, sG);
+  xb = x(end,:)'; xb(1) = lb; % l q h S cS at birth
+  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(5,1));  
+  [t, x]= ode45(@dget_tm_adult, [tb; tp; 1e8], xb, options, g, lT, ha, sG, f);
+  S_b   = x(1,4);
+  S_p   = x(2,4);
+  tau_m = x(3,5);
 
-  if info_lp == 1 && info_ue0 == 1 && l_p < f - lT
+  if info_tp == 1 && info_uE0 == 1 && lp < f - lT
     info = 1;
   else
     info = 0;
-    if info_ue0 ~= 1
+    if info_uE0 ~= 1
       fprintf('warning: no convergence for uE0 \n');
     elseif info_lp ~=1
-      fprintf('warning: no convergence for l_p \n');
+      fprintf('warning: no convergence for t_p \n');
     else
-      fprintf('warning: l_p < f - l_T \n');
+      fprintf('warning: l_p > f - l_T \n');
     end
   end
 end
@@ -111,7 +110,7 @@ function dx = dget_tm_egg(l, x, g, lT, ha, sG)
   dx = [duE; dq; dh; dS; dcS]/ dl;
 end
 
-function dx = dget_tm_adult(l, x, g, lT, ha, sG, f)
+function dx = dget_tm_adult(t, x, g, lT, ha, sG, f)
   %  created 2000/09/21 by Bas Kooijman; modified 2009/09/29
   %  routine called by get_tm
   %  l: scalar with scaled length l = L/L_m
@@ -119,21 +118,28 @@ function dx = dget_tm_adult(l, x, g, lT, ha, sG, f)
   %  dx: d/dt x
   
   % unpack state variables
-  q  = x(1); % acelleration 
-  h  = x(2); % hazard
-  S  = x(3); % survival probability
-  % cS = x(4); % cumulative survival probability
-  % uE = f * l^3/ g; % scaled reserve
+  l  = x(1); % scaled length
+  q  = x(2); % acelleration 
+  h  = x(3); % hazard
+  S  = x(4); % survival probability
+  % cS = x(5); % cumulative survival probability
  
-  % derivatives with respect to time
-  r = (f - lT - l)/ l/ (f/ g + g); % spec growth rate in scaled time
-  dl = l * r/ 3;
-  dq = (q * l^3 * sG + ha) * f * (g/ l - r) - r * q;
-  dh = q - r * h;
+  % derivatives with respect to scaled time
+  r = (f - lT - l)/ l/ (f/ g + 1); % spec growth rate in scaled time
+  dl = l * max(0,r)/ 3;
+  dq = max(0, (q * l^3 * sG + ha) * f * (g/ l - r) - r * q);
+  dh = max(0, q - r * h);
   dS = - S * h;
   dcS = S;
  
-  % pack derivatives with respect to length
-  dx = [dq; dh; dS; dcS]/ dl;
+  % pack derivatives 
+  dx = [dl; dq; dh; dS; dcS];
+end
+
+% event dead_for_sure, linked to dget_tm_adult
+function [value, isterminal, direction] = dead_for_sure(t, lqhSC, varargin)
+  value = lqhSC(4) - 1e-6;  % trigger 
+  isterminal = 1;   % terminate after the first event
+  direction  = [];  % get all the zeros
 end
 
