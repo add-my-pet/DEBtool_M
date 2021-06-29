@@ -77,7 +77,7 @@ end
 
 function dx = dget_tm_egg(t, x, g, ha, sG)
   %  t: scalar with scaled time
-  %  x: 5-vector with scaled state variables, see below
+  %  x: 6-vector with scaled state variables, see below
   %  dx: d/dt x
   
   % unpack state variables
@@ -86,7 +86,7 @@ function dx = dget_tm_egg(t, x, g, ha, sG)
   q  = max(0,x(3)); % acelleration 
   h  = max(0,x(4)); % hazard
   S  = max(0,x(5)); % survival probability
-  % cS = x(5); % cumulative survival probability
+  % cS = x(6); % cumulative survival probability
 
   % derivatives with respect to time
   r = (g * uE/ l^4 - 1)/ (uE/ l^3 + g); % spec growth rate in scaled time
@@ -103,7 +103,7 @@ end
 
 function dx = dget_tm_adult(t, x, g, lT, ha, sG, f)
   %  t: scalar with scaled time
-  %  x: 4-vector with state variables, see below
+  %  x: 5-vector with state variables, see below
   %  dx: d/dt x
   
   % unpack state variables
