@@ -1,12 +1,12 @@
-%% get_tm
+%% get_tm_j
 % Gets scaled mean age at death
 
 %%
-function [tau_m, S_b, S_p, info] = get_tm_j(p, F)
+function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
   % created 2021/06/28 by Bas Kooijman
   
   %% Syntax
-  % [tau_m, S_b, S_p, info] = <../get_tm.m *get_tm*>(p, F, l_b, l_j, l_p)
+  % [tau_m, S_b, S_p, info] = <../get_tm.m *get_tm_j*>(p, f)
   
   %% Description
   % Obtains scaled mean age at death by integration of cumulative survival prob over length for the abj model. 
@@ -15,7 +15,7 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, F)
   % Input
   %
   % * p: 8-vector with parameters: g k lT vHb vHj vHp ha SG 
-  % * F: scalar with scaled reserve density at birth (default F = 1)
+  % * f: scalar with scaled reserve density at birth (default f = 1)
   %  
   % Output
   %
@@ -40,25 +40,23 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, F)
   ha  = p(7); % h_a/ k_M^2, scaled Weibull aging acceleration
   sG  = p(8); % Gompertz stress coefficient
   
-  if ~exist('F', 'var')
+  if ~exist('f', 'var') || isempty(f)
     f = 1;
-  elseif isempty(F)
-    f = 1;
-  else
-    f = F;
   end
    
-  [tj, tp, tb, lj, lp, lb, li, ~, rB, info_tj] = get_tj (p, f);
+  [tj, tp, tb, lj, lp, lb, ~, ~, ~, info_tj] = get_tj (p, f);
   [uE0, ~, info_uE0] = get_ue0([g, k, vHb], f, lb);
   
-  x0 = [uE0; 0; 0; 1; 0]; % initiate uE q h S cS
-  [l, x]= ode45(@dget_tm_egg, [1e-6; lb], x0, [], g, lT, ha, sG);
-  xb = x(end,:)'; xb(1) = lb; % l q h S cS at birth
+  x0 = [uE0; 1e-4; 0; 0; 1; 0]; % initiate uE l q h S cS
+  [t, x]= ode45(@dget_tm_egg, [0; tb], x0, [], g, ha, sG);
+  xb = x(end,:)'; xb(1) = []; % l q h S cS at birth
   options = odeset('Events', @dead_for_sure, 'NonNegative', ones(5,1));  
-  [t, x]= ode45(@dget_tm_adult, [tb; tj; tp; 1e8], xb, options, g, lT, lb, lj, ha, sG, f);
-  S_b   = x(1,4);
-  S_p   = x(3,4);
-  tau_m = x(4,5);
+  [t, x]= ode45(@dget_tm_adult, [tb; tj; tp; 1e6], xb, options, g, lT, lb, lj, ha, sG, f);
+  if size(x,1)==4
+    S_b = x(1,4); S_p = x(3,4); tau_m = x(4,5);
+  else
+    S_b = x(1,4); S_p = []; tau_m = x(end,5);
+  end
 
   if info_tj == 1 && info_uE0 == 1 && lp < f*lj/lb - lT
     info = 1;
@@ -76,45 +74,42 @@ end
 
 % subfunctions
 
-function dx = dget_tm_egg(l, x, g, lT, ha, sG)
-  %  created 2000/09/21 by Bas Kooijman; modified 2009/09/29
-  %  routine called by get_tm
-  %  l: scalar with scaled length l = L/L_m
-  %  x: 5-vector with state variables, see below
+function dx = dget_tm_egg(t, x, g, ha, sG)
+  %  t: scalar with scaled time
+  %  x: 5-vector with scaled state variables, see below
   %  dx: d/dt x
   
   % unpack state variables
-  uE = x(1); % scaled reserve
-  q  = x(2); % acelleration 
-  h  = x(3); % hazard
-  S  = x(4); % survival probability
+  uE = max(0,x(1)); % reserve
+  l  = max(0,x(2)); % length
+  q  = max(0,x(3)); % acelleration 
+  h  = max(0,x(4)); % hazard
+  S  = max(0,x(5)); % survival probability
   % cS = x(5); % cumulative survival probability
 
   % derivatives with respect to time
-  r = (g * uE/ l^4 - 1 - lT/ l)/ (uE/ l^3 + g); % spec growth rate in scaled time
+  r = (g * uE/ l^4 - 1)/ (uE/ l^3 + g); % spec growth rate in scaled time
+  duE = - uE * l^2 * (g + l)/ (uE + l^3);
   dl = l * r/ 3;
-  duE = - uE * l^2 * (g + (1 + lT/ l) * l)/ (uE + l^3);
   dq = (q * sG + ha/ l^3) * g * uE * (g/ l - r) - r * q;
   dh = q - r * h;
   dS = - S * h;
   dcS = S;
 
-  % pack derivatives with respect to length
-  dx = [duE; dq; dh; dS; dcS]/ dl;
+  % pack derivatives
+  dx = [duE; dl; dq; dh; dS; dcS];
 end
 
 function dx = dget_tm_adult(t, x, g, lT, lb, lj, ha, sG, f) 
-  %  created 2000/09/21 by Bas Kooijman; modified 2009/09/29
-  %  routine called by get_tm
-  %  l: scalar with scaled length l = L/L_m
+  %  t: scalar with scaled time
   %  x: 4-vector with state variables, see below
   %  dx: d/dt x
   
   % unpack state variables
-  l  = x(1); % scaled length
-  q  = x(2); % acelleration 
-  h  = x(3); % hazard
-  S  = x(4); % survival probability
+  l  = max(0,x(1)); % scaled length
+  q  = max(0,x(2)); % acelleration 
+  h  = max(0,x(3)); % hazard
+  S  = max(0,x(4)); % survival probability
   % cS = x(5); % cumulative survival probability
  
   sM = lj/ lb; 

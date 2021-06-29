@@ -150,6 +150,10 @@ function [r, info] = sgr_abj (par, T_pop, f_pop)
       end
     end
   end
+  
+  if r<0 % do not accept negative growth rates
+    info = 0;
+  end
 end
 
 % event dead_for_sure
