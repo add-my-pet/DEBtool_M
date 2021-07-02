@@ -52,7 +52,7 @@ function [tau_m, S_b, S_p, info] = get_tm(p, f)
   [l, x]= ode45(@dget_tm_egg, [0,tb], x0, [], g, ha, sG);
   xb = x(end,:)'; xb(1) = []; % l q h S cS at birth
   options = odeset('Events', @dead_for_sure, 'NonNegative', ones(5,1));  
-  [t, x]= ode45(@dget_tm_adult, [tb; tp; 1e6], xb, options, g, lT, ha, sG, f);
+  [t, x]= ode45(@dget_tm_adult, [tb; tp; 1e10], xb, options, g, lT, ha, sG, f);
   if size(x,1)==3
     S_b = x(1,4); S_p = x(2,4); tau_m = x(3,5);
   else
