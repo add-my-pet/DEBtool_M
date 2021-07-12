@@ -78,16 +78,16 @@ function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)
     Lb = lb * Lm; Lp = lp * Lm; % structural length at birth, puberty
     if info_lp ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate \n')
-      R = L * 0; UE0 = [];
+      R = L * 0; UE0 = [];  Lb = []; Lp = []; info = info_lp;
       return;
     end
   else % if length Lb0 = 2
     L0 = Lf(1); % cm, structural length at time 0
     f0 = Lf(2); % -, scaled func response before time 0
-    [UH0, info_mat] = maturity(L0, f0, p_mat);  % d.cm^2, maturity at zero
+    [UH0, a, info_mat] = maturity(L0, f0, p_mat);  % d.cm^2, maturity at zero
     if info_mat ~= 1% return at failure for tp
       fprintf('maturity could not be obtained in reprod_rate \n')
-      R = L * 0; UE0 = [];
+      R = L * 0; UE0 = []; Lb = []; Lp = []; info = info_mat;
       return;
     end
     [lp, lb, info_lp] = get_lp(p_lp, f);
