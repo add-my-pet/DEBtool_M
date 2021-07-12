@@ -22,6 +22,7 @@ function [H, a, info] = maturity_j(L, f, p)
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm}
+  % * a: n-vector with ages at which lengths are reached 
   % * info: scalar for 1 for success, 0 otherwise
   
   %% Remarks
