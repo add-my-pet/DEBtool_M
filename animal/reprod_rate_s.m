@@ -81,16 +81,16 @@ function [R, UE0, Lb, Ls, Lj, Lp, info] = reprod_rate_s(L, f, p, Lf)
     Lb = lb * Lm; Ls = ls * Lm; Lj = lj * Lm; Lp = lp * Lm; % volumetric length at birth, puberty
     if info_ls ~= 1 % return at failure for tp
       fprintf('lp could not be obtained in reprod_rate_j \n')
-      R = L * 0; UE0 = [];
+      R = L * 0; UE0 = []; Lb = []; Ls = []; Lj = []; Lp = []; info = info_ls;
       return;
     end
   else % if length Lb0 = 2
     L0 = Lf(1); % cm, structural length at time 0
     f0 = Lf(2); % -, scaled func response before time 0
-    [UH0, info_mat] = maturity_s(L0, f0, p_mat);  % d.cm^2, maturity at zero
+    [UH0, a, info_mat] = maturity_s(L0, f0, p_mat);  % d.cm^2, maturity at zero
     if info_mat ~= 1% return at failure for tp
       fprintf('maturity could not be obtained in reprod_rate_j \n')
-      R = L * 0; UE0 = [];
+      R = L * 0; UE0 = []; Lb = []; Ls = []; Lj = []; Lp = []; info = info_mat;
       return;
     end
     [ls, lj, lp, lb, info_ls] = get_ls(p_ls, f);
