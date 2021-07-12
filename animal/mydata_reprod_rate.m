@@ -1,3 +1,4 @@
+%% mydata_reprod_rate
 % script to illustrate reprod_rate
 
 z = 1;           % -, zoom factor
