@@ -2,7 +2,7 @@
 % writes table to temporary file tab.html, shows it in the bowser and deletes it
 
 %%
-function prt_tab(values, header)
+function prt_tab(values, header, title)
 % created 2021/05/11 by Bas Kooijman
 
 %% Syntax
@@ -16,7 +16,7 @@ function prt_tab(values, header)
 %
 % * varargin: cell arrays with strings and/or matrices with numbers
 % * header: optional cell vector with strings for header; length should match number of columns, but might by empty
-% * title: optiona string with title of brwser tab
+% * title: optional string with title of browser tab
 %
 % Output:
 %
@@ -33,7 +33,7 @@ function prt_tab(values, header)
     header = {};
   end
   if ~exist('title','var')
-    title = 'Table';
+    title = 'table';
   end
 
   n_rows = size(values{1},1);
@@ -57,7 +57,7 @@ function prt_tab(values, header)
     return
   end
         
-  fileName = 'tab.html'; % char string with file name of output file
+  fileName = [title, '.html']; % char string with file name of output file
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
   % file head
@@ -121,6 +121,7 @@ function prt_tab(values, header)
   fclose(oid);
 
   web(fileName,'-browser') % open html in systems browser
+  pause(2)
   delete(fileName)
     
 end
