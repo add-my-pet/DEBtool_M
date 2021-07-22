@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_tab</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-07-14"><meta name="DC.source" content="prt_tab.m"><style type="text/css">
+      --><title>prt_tab</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-07-20"><meta name="DC.source" content="prt_tab.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -72,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % writes table to temporary file tab.html, shows it in the bowser and deletes it
 
 %%
-function prt_tab(values, header)
+function prt_tab(values, header, title)
 % created 2021/05/11 by Bas Kooijman
 
 %% Syntax
@@ -103,9 +103,13 @@ function prt_tab(values, header)
     header = {};
   end
   if ~exist('title','var')
-    title = 'Table';
+    title = 'table';
   end
 
+  if size(values,2)>1 && ischar(values{1}) && iscell(values(2))
+    values{1} = select(values{1}); % the assumption is that values{1} is the name of a taxon, which is replaced by names of entries
+  end
+  
   n_rows = size(values{1},1);
   N = size(values,2); val = cell(n_rows,0);
   try
@@ -127,7 +131,7 @@ function prt_tab(values, header)
     return
   end
         
-  fileName = 'tab.html'; % char string with file name of output file
+  fileName = [title, '.html']; % char string with file name of output file
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
   % file head
@@ -191,6 +195,7 @@ function prt_tab(values, header)
   fclose(oid);
 
   web(fileName,'-browser') % open html in systems browser
+  pause(2)
   delete(fileName)
     
 end

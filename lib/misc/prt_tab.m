@@ -36,6 +36,10 @@ function prt_tab(values, header, title)
     title = 'table';
   end
 
+  if size(values,2)>1 && ischar(values{1}) && iscell(values(2))
+    values{1} = select(values{1}); % the assumption is that values{1} is the name of a taxon, which is replaced by names of entries
+  end
+  
   n_rows = size(values{1},1);
   N = size(values,2); val = cell(n_rows,0);
   try
