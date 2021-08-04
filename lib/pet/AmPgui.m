@@ -2,7 +2,7 @@
 % a GUI to create 4 data-structures
 %%
 function AmPgui(action)
-% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14
+% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03
 
 %% Syntax
 % <../AmPgui.m *AmPgui*>
@@ -311,85 +311,68 @@ else % fill fields
         dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
         links = {...
           % general links
-          'http://www.catalogueoflife.org/col/'; ...
-          'http://eol.org/'; ...
-          'http://en.wikipedia.org/wiki/'; ...
-          'http://animaldiversity.org/'; ...
+          'https://www.catalogueoflife.org/col/'; ...
+          'https://eol.org/'; ...
+          'https://en.wikipedia.org/wiki/'; ...
+          'https://animaldiversity.org/'; ...
           'http://taxonomicon.taxonomy.nl/'; ...
-          'http://marinespecies.org/'; ...
+          'https://marinespecies.org/'; ...
           % taxon-specific links
-          'http://www.molluscabase.org/'; ...
-          'http://www.fishbase.org/'; ...
-          'http://amphibiaweb.org/search/'; ...
-          'http://reptile-database.reptarium.cz/'; ...
+          'https://www.molluscabase.org/'; ...
+          'https://www.fishbase.org/'; ...
+          'https://amphibiaweb.org/search/'; ...
+          'https://reptile-database.reptarium.cz/'; ...
           'https://avibase.bsc-eoc.org/'; ...
           'http://datazone.birdlife.org/'; ...
           'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
-          'http://genomics.senescence.info/'};             
+          'https://genomics.senescence.info/'};             
       
         select_id(1:6) = true;
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
-          metaData.links.id_EoL =  'some number (replace)'; 
+          metaData.links.id_EoL = get_id_EoL(metaData.species);
         end
         if isfield(metaData.links, 'id_Wiki') && isempty(metaData.links.id_Wiki)
-          metaData.links.id_Wiki =  [metaData.species, '? (replace)']; 
+          metaData.links.id_Wiki = get_id_Wiki(metaData.species);
         end
         if isfield(metaData.links, 'id_ADW') && isempty(metaData.links.id_ADW)
-          metaData.links.id_ADW =  [metaData.species, '? (replace)']; 
+            metaData.links.id_ADW = get_id_ADW(metaData.species);
         end
         if isfield(metaData.links, 'id_Taxo') && isempty(metaData.links.id_Taxo)
-          metaData.links.id_Taxo =  'some number (replace)'; 
+          metaData.links.id_Taxo = get_id_Taxo(metaData.species);
         end
         if isfield(metaData.links, 'id_WoRMS') && isempty(metaData.links.id_WoRMS)
-          metaData.links.id_WoRMS =  'some number (replace)'; 
+          metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
         end
         
         select_id(7:14) = false;
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
+        if ~isempty(metaData.class) && strcmp(metaData.phylum, 'Mollusca') && isempty(metaData.links.id_molluscabase)
           select_id(7) = true;
-          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_molluscabase)
-            metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
-          end
+          metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
         end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
           select_id(8) = true;
-          if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
-            metaData.links.id_fishbase = [strrep(metaData.species,'_','-'), '? (replace)'];
-          end
+          metaData.links.id_fishbase = get_id_fishbase(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
           select_id(9) = true;
-          if isfield(metaData.links, 'id_amphweb') && isempty(metaData.links.id_amphweb)
-            metaData.links.id_amphweb = [strrep(metaData.species,'_','+'), '? (replace)'];
-          end
+          metaData.links.id_amphweb = get_id_amphweb(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
+        if ~isempty(metaData.class) && strcmp(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) && isempty(metaData.links.id_ReptileDB)
           select_id(10) = true;
-          nm = strsplit(metaData.species,'_');
-          if isfield(metaData.links, 'id_ReptileDB') && isempty(metaData.links.id_ReptileDB)
-            metaData.links.id_ReptileDB = ['genus=',nm{1}, '&species=', nm{2}, '? (replace)'];
-          end
+          metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
           select_id(11:12) = true;
-          if isfield(metaData.links, 'id_avibase') && isempty(metaData.links.id_avibase)
-            metaData.links.id_avibase = 'some code (replace)';
-          end
-          if ~isempty(metaData.class) && isfield(metaData.links, 'id_birdlife') && isempty(metaData.links.id_birdlife)
-            metaData.links.id_birdlife = 'some sci. & common names (replace)';
-          end
+          metaData.links.id_avibase = get_id_avibase(metaData.species);
+          metaData.links.id_birdlife = get_id_birdlife(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
           select_id(13) = true;
-          if isfield(metaData.links, 'id_MSW3') && isempty(metaData.links.id_MSW3)
-            metaData.links.id_MSW3 = 'some number (replace)';
-          end
+          metaData.links.id_MSW3 = get_id_msw3(metaData.species);
         end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
           select_id(14) = true;
-          if isfield(metaData.links, 'id_AnAge') && isempty(metaData.links.id_AnAge)
-            metaData.links.id_AnAge = [metaData.species, '? (replace)'];
-          end
+          metaData.links.id_AnAge = get_id_AnAge(metaData.species);
         end
         
                  
@@ -785,6 +768,8 @@ end
 %% callback functions
 function speciesCb(~, ~, dspecies)  
   global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec
+  hwait = waitbar(0,'Please wait...');
+
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
@@ -796,9 +781,10 @@ function speciesCb(~, ~, dspecies)
     return
   end
 
-  [lin, rank, id_CoL, name_status] = lineage_CoL(my_pet); 
+  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet); 
   if ~strcmp(name_status,'accepted name')
-    fprintf(['Warning from AmPgui: name status is ', name_status, '\n'])
+    fprintf(['Warning from AmPgui: name status of ', my_pet, ' is ', name_status, '; continue with ', my_pet_acc, '\n'])
+    metaData.species = my_pet_acc;
   end
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
@@ -809,7 +795,7 @@ function speciesCb(~, ~, dspecies)
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
     AmPgui('setColors')
   else
-    metaData.links.id_CoL = id_CoL;
+    metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
     nms = get_common_CoL(id_CoL); 
     if isempty(nms)
       metaData.species_en = 'no_english_name'; 
@@ -824,7 +810,7 @@ function speciesCb(~, ~, dspecies)
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
-    close(dspecies)
+    close(dspecies); close(hwait);
     AmPgui('links')
   end
 end
@@ -983,7 +969,7 @@ function habitatCb(~, ~, Hhabitat)
     i_habitat = 1;
   else
     code = metaData.ecoCode.habitat; n_code = length(code);
-    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end; % remove stage codes
+    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end % remove stage codes
     i_habitat = 1:n_habitat;
     i_habitat = i_habitat(i_habitat(ismember(habitatCode,code)));
   end

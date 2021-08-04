@@ -3,11 +3,11 @@
 % can implement a link to a paper like <http://www.bio.vu.nl/thb/research/bib/Kooy2014.html *this*>.
 
 %%
-function [output1 output2] = debtool_fn_markup(input1, input2)
+function [output1, output2] = debtool_fn_markup(input1, input2)
 % created year/month/day by AUTHOR; modified year/month/day AUTHOR
 
 %% Syntax
-% [output1 output2] = <../debtool_fn_markup.m *debtool_fn_markup*> (input1, input2) 
+% [output1, output2] = <../debtool_fn_markup.m *debtool_fn_markup*> (input1, input2) 
 % (please notice that the name of the function/script is hyperlinked to the code for that function/script!)
 
 %% Description
