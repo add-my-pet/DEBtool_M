@@ -368,14 +368,13 @@ else % fill fields
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
           select_id(13) = true;
-          metaData.links.id_MSW3 = get_id_msw3(metaData.species);
+          metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
         end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
           select_id(14) = true;
           metaData.links.id_AnAge = get_id_AnAge(metaData.species);
         end
-        
-                 
+                       
         select_id = logical(select_id); ID_links = id_links(select_id); Links = links(select_id); n_Links = length(ID_links);
         for i= 1:n_Links 
           if i>1
