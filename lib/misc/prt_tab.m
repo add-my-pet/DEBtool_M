@@ -2,11 +2,11 @@
 % writes table to temporary file tab.html, shows it in the bowser and deletes it
 
 %%
-function prt_tab(values, header, title)
+function prt_tab(values, header, title, save)
 % created 2021/05/11 by Bas Kooijman
 
 %% Syntax
-% <../prt_tab.m *prt_tab*> (values, header, title) 
+% <../prt_tab.m *prt_tab*> (values, header, title, save) 
 
 %% Description
 % writes table to temporary file tab.html, shows it in the bowser and deletes it
@@ -17,6 +17,7 @@ function prt_tab(values, header, title)
 % * varargin: cell arrays with strings and/or matrices with numbers
 % * header: optional cell vector with strings for header; length should match number of columns, but might by empty
 % * title: optional string with title of browser tab
+% * save: optional boolean to save the html-file (default: false)
 %
 % Output:
 %
@@ -34,6 +35,9 @@ function prt_tab(values, header, title)
   end
   if ~exist('title','var')
     title = 'table';
+  end
+  if ~exist('save','var')
+    save = false;
   end
 
   if size(values,2)>1 && ischar(values{1}) && iscell(values(2))
@@ -126,6 +130,7 @@ function prt_tab(values, header, title)
 
   web(fileName,'-browser') % open html in systems browser
   pause(2)
-  delete(fileName)
-    
+  if ~save
+    delete(fileName)
+  end  
 end
