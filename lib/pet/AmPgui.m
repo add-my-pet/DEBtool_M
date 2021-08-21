@@ -81,8 +81,9 @@ if nargin == 0 % initiate structures and create the GUI
   if ~isfield(metaData, 'data_0'); metaData.data_0 = {}; end
   if ~isfield(metaData, 'data_1'); metaData.data_1 = {}; end
   if ~isfield(metaData, 'bibkey'); metaData.bibkey = []; end % for discussion, facts
-  id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
-    'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
+  id_links = {'id_CoL', 'id_ITIS', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
+    'id_molluscabase', 'id_scorpion', 'id_spider', 'id_collembola', 'id_orthoptera', 'id_phasmida', 'id_aphid', 'id_diptera', 'id_lepidoptera', ... 
+    'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
   if ~isfield(metaData, 'links'); metaData.links = []; n = length(id_links);
     for i=1:n
       metaData.links.(id_links{i}) = '';
@@ -312,6 +313,7 @@ else % fill fields
         links = {...
           % general links
           'https://www.catalogueoflife.org/col/'; ...
+          'https://www.itis.gov/'; ...
           'https://eol.org/'; ...
           'https://en.wikipedia.org/wiki/'; ...
           'https://animaldiversity.org/'; ...
@@ -319,6 +321,14 @@ else % fill fields
           'https://marinespecies.org/'; ...
           % taxon-specific links
           'https://www.molluscabase.org/'; ...
+          'https://www.ntnu.no/ub/scorpion-files/'; ...
+          'https://wsc.nmbe.ch/'; ...
+          'https://www.collembola.org/'; ...
+          'http://Orthoptera.SpeciesFile.org'; ...
+          'http://phasmida.speciesfile.org/'; ...
+          'http://aphid.speciesfile.org/'; ...
+          'https://diptera.info/'; ...
+          'http://www.nhm.ac.uk/our-science/data/lepindex/'; ...
           'https://www.fishbase.org/'; ...
           'https://amphibiaweb.org/search/'; ...
           'https://reptile-database.reptarium.cz/'; ...
@@ -327,7 +337,10 @@ else % fill fields
           'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
           'https://genomics.senescence.info/'};             
       
-        select_id(1:6) = true;
+        select_id(1:7) = true;
+        if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
+          metaData.links.id_ITIS = get_id_ITIS(metaData.species);
+        end
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
           metaData.links.id_EoL = get_id_EoL(metaData.species);
         end
@@ -344,34 +357,66 @@ else % fill fields
           metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
         end
         
-        select_id(7:14) = false;
+        select_id(8:23) = false;
         if ~isempty(metaData.class) && strcmp(metaData.phylum, 'Mollusca') && isempty(metaData.links.id_molluscabase)
-          select_id(7) = true;
+          select_id(8) = true;
           metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
         end
+        if ismember(lin(ismember(rank,'Order')), 'Scorpiones')
+          select_id(9) = true;
+          metaData.links.id_scorpion = get_id_scorpion(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Order')), 'Araneae')
+          select_id(10) = true;
+          metaData.links.id_spider = get_id_spider(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Class')), 'Entognatha')
+          select_id(11) = true;
+          metaData.links.id_collembola = get_id_collembola(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Order')), 'Orthoptera')
+          select_id(12) = true;
+          metaData.links.id_orhtoptera = get_id_orthoptera(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Order')), 'Phasmatodea')
+          select_id(13) = true;
+          metaData.links.id_phasmida = get_id_phasmida(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Family')), 'Aphididae')
+          select_id(14) = true;
+          metaData.links.id_aphid = get_id_aphid(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Order')), 'Diptera')
+          select_id(15) = true;
+          metaData.links.id_diptera = get_id_diptera(metaData.species);
+        end
+        if ismember(lin(ismember(rank,'Order')), 'Lepidoptera')
+          select_id(16) = true;
+          metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
+       end
         if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
-          select_id(8) = true;
+          select_id(17) = true;
           metaData.links.id_fishbase = get_id_fishbase(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
-          select_id(9) = true;
+          select_id(18) = true;
           metaData.links.id_amphweb = get_id_amphweb(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) && isempty(metaData.links.id_ReptileDB)
-          select_id(10) = true;
+          select_id(19) = true;
           metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
-          select_id(11:12) = true;
+          select_id(20:21) = true;
           metaData.links.id_avibase = get_id_avibase(metaData.species);
           metaData.links.id_birdlife = get_id_birdlife(metaData.species);
         end
         if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
-          select_id(13) = true;
+          select_id(22) = true;
           metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
         end
-        if ~isempty(metaData.class) && ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
-          select_id(14) = true;
+        if ~isempty(metaData.class) && ismember(metaData.class, {'Amphibia''Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) && isempty(metaData.links.id_AnAge)
+          select_id(23) = true;
           metaData.links.id_AnAge = get_id_AnAge(metaData.species);
         end
                        
@@ -1439,7 +1484,7 @@ function proceedCb(~, ~, H)
   else
     save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
     OKCb([], [], H); AmPeps(infoAmPgui);
-  end;
+  end
       
 end
 
