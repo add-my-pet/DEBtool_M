@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>AmPgui</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-08-24"><meta name="DC.source" content="AmPgui.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>AmPgui</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-08-21"><meta name="DC.source" content="AmPgui.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 data-structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#7">initiation</a></li><li><a href="#8">setup gui</a></li><li><a href="#10">fill fields</a></li><li><a href="#13">callback functions</a></li><li><a href="#14">other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>Like mydata_my_pet.m, it writes 4 data-structures from scratch</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><p>Input: no explicit input (facultative input is set by the function itself in multiple calls)</p><p>Output: no explicit output, but global exit-flag infoAmPgui is set with</p><pre class="language-matlab">- 0, species <span class="string">is</span> <span class="string">in</span> <span class="string">AmP</span>, skip <span class="string">writing</span> <span class="string">4</span> <span class="string">source</span> <span class="string">files</span>
+  </style></head><body><div class="content"><h1>AmPgui</h1><!--introduction--><p>a GUI to create 4 data-structures</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#7">callback functions</a></li><li><a href="#8">other support functions</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../AmPgui.m"><b>AmPgui</b></a></p><h2 id="4">Description</h2><p>It writes 4 data-structures from scratch</p><div><ul><li>data: structure with data</li><li>auxData: structure with auxiliary data</li><li>metaData: structure with metaData</li><li>txtData: structure with text for data</li></ul></div><p>Input: no explicit input (facultative input is set by the function itself in multiple calls)</p><p>Output: no explicit output, but global exit-flag infoAmPgui is set with</p><pre class="language-matlab">- 0, species <span class="string">is</span> <span class="string">in</span> <span class="string">AmP</span>, skip <span class="string">writing</span> <span class="string">4</span> <span class="string">source</span> <span class="string">files</span>
 - 1, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">in</span> <span class="string">CoL</span>
 - 2, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, but <span class="string">genus</span> <span class="string">is</span> <span class="string">in</span> <span class="string">AmP</span>
 - 3, writing <span class="string">4</span> <span class="string">source</span> <span class="string">files</span> <span class="string">with</span> <span class="string">species</span> <span class="string">not</span> <span class="string">in</span> <span class="string">CoL</span>, genus <span class="string">is</span> <span class="string">not</span> <span class="string">in</span> <span class="string">AmP</span>, but <span class="string">family</span> <span class="string">is</span>
@@ -77,19 +78,19 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </pre><h2 id="5">Remarks</h2><div><ul><li>Set metaData on global before use of this function.</li><li>Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function</li><li>Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.</li><li>All weights are set at default values in the resulting file;</li><li>This function is called in AmPeps</li><li>Font colors in main AmPgui mean:</li></ul></div><pre class="language-matlab">- red: editing required
 - green: editing not <span class="string">necessary</span>
 - black: editing facultative
-</pre><p>Notice that font colors only represent internal consistency, irrespective of content. txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey. metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di</p><h2 id="7">initiation</h2><h2 id="8">setup gui</h2><h2 id="10">fill fields</h2><h2 id="13">callback functions</h2><h2 id="14">other support functions</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><p>Notice that font colors only represent internal consistency, irrespective of content. txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey. metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di</p><h2 id="7">callback functions</h2><h2 id="8">other support functions</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% AmPgui
 % a GUI to create 4 data-structures
 %%
 function AmPgui(action)
-% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14
+% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03, 2021/08/21
 
 %% Syntax
 % <../AmPgui.m *AmPgui*>
 
 %% Description
-% Like mydata_my_pet.m, it writes 4 data-structures from scratch
+% It writes 4 data-structures from scratch
 %
 % * data: structure with data
 % * auxData: structure with auxiliary data 
@@ -126,10 +127,10 @@ function AmPgui(action)
 % txtData.bibkey.data_id specifies the bibkey for dataset data_id; metaData.biblist.bibkey specifies the bibitem for bibkey.
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
-persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE  list_spec 
-global data auxData metaData txtData select_id id_links eco_types color infoAmPgui
-global Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
-global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0
+persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
+global data auxData metaData txtData select_id id_links eco_types color infoAmPgui list_spec
+global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
+global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db 
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
 %UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize'); % 8
@@ -138,132 +139,60 @@ set(0, 'DefaultUIControlFontSize', 9);
 
 if nargin == 0 % initiate structures and create the GUI
 
-%% initiation
+  % initiation
 
-if isempty(infoAmPgui)
-  infoAmPgui = 0; % no writing of source files by AmPeps
-end
-
-if ~isfield(data, 'data_0') 
-  data.data_0 = [];
-end   
-if ~isfield(data, 'data_1') 
-  data.data_1 = [];
-end   
-if ~isfield(auxData, 'temp') 
-  auxData.temp = [];
-end
-if ~isfield(txtData, 'units')
-  txtData.units = []; txtData.label = [];
-  txtData.units.temp = []; txtData.label.temp = [];
-end
-if ~isfield(txtData, 'bibkey')
-  txtData.bibkey = []; % for data
-end
-
-if ~isfield(metaData, 'species') 
-  metaData.species = '';
-end   
-if ~isfield(metaData, 'species_en') 
-  metaData.species_en = '';
-end  
-if ~isfield(metaData, 'family') 
-  metaData.family = '';
-end   
-if ~isfield(metaData, 'order') 
-  metaData.order = '';
-end  
-if ~isfield(metaData, 'class') 
-  metaData.class = '';
-end  
-if ~isfield(metaData, 'phylum') 
-  metaData.phylum = '';
-end  
-ecoCode = {'climate', 'ecozone', 'habitat', 'embryo', 'migrate', 'food', 'gender', 'reprod'};
-if ~isfield(metaData, 'ecoCode')
-  metaData.ecoCode = [];
-  n = length(ecoCode);
-  for i=1:n
-    metaData.ecoCode.(ecoCode{i}) = [];
+  if ~isfield(data, 'data_0'); data.data_0 = []; end   
+  if ~isfield(data, 'data_1'); data.data_1 = []; end  
+  if ~isfield(auxData, 'temp'); auxData.temp = []; end
+  if ~isfield(txtData, 'units'); txtData.units = []; txtData.units.temp = []; end
+  if ~isfield(txtData, 'label'); txtData.label = []; txtData.label.temp = []; end
+  if ~isfield(txtData, 'bibkey'); txtData.bibkey = []; end % for data
+  if ~isfield(metaData, 'species'); metaData.species = ''; end   
+  if ~isfield(metaData, 'species_en'); metaData.species_en = ''; end  
+  if ~isfield(metaData, 'family'); metaData.family = ''; end   
+  if ~isfield(metaData, 'order'); metaData.order = ''; end  
+  if ~isfield(metaData, 'class'); metaData.class = ''; end  
+  if ~isfield(metaData, 'phylum'); metaData.phylum = ''; end  
+  ecoCode = {'climate', 'ecozone', 'habitat', 'embryo', 'migrate', 'food', 'gender', 'reprod'};
+  if ~isfield(metaData, 'ecoCode'); metaData.ecoCode = []; n = length(ecoCode);
+    for i=1:n
+      metaData.ecoCode.(ecoCode{i}) = [];
+    end
   end
-end
-if ~isfield(metaData, 'T_typical')
-  metaData.T_typical = [];
-end
-if ~isfield(metaData, 'data_0')
-  metaData.data_0 = {};
-end
-if ~isfield(metaData, 'data_1')
-  metaData.data_1 = {};
-end
-if ~isfield(metaData, 'bibkey')
-  metaData.bibkey = []; % for discussion, facts
-end
-if ~isfield(metaData, 'comment') 
-  metaData.comment = '';
-end
-id_links = {'id_CoL', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
-  'id_molluscabase', 'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
-if ~isfield(metaData, 'links') 
-  metaData.links = [];
-  n = length(id_links);
-  for i=1:n
-    metaData.links.(id_links{i}) = '';
+  if ~isfield(metaData, 'T_typical'); metaData.T_typical = []; end
+  if ~isfield(metaData, 'data_0'); metaData.data_0 = {}; end
+  if ~isfield(metaData, 'data_1'); metaData.data_1 = {}; end
+  if ~isfield(metaData, 'bibkey'); metaData.bibkey = []; end % for discussion, facts
+  id_links = {'id_CoL', 'id_ITIS', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
+    'id_molluscabase', 'id_scorpion', 'id_spider', 'id_collembola', 'id_orthoptera', 'id_phasmida', 'id_aphid', 'id_diptera', 'id_lepidoptera', ... 
+    'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
+  if ~isfield(metaData, 'links'); metaData.links = []; n = length(id_links);
+    for i=1:n
+      metaData.links.(id_links{i}) = '';
+    end
   end
-end
-if ~isfield(metaData, 'author')
-  metaData.author = [];
-end
-if ~isfield(metaData, 'email')
-  metaData.email = [];
-end
-if ~isfield(metaData, 'address')
-  metaData.address = [];
-end
-if ~isfield(metaData, 'curator')
-  metaData.curator = [];
-end
-if ~isfield(metaData, 'COMPLETE')
-  metaData.COMPLETE = [];
-end
-if ~isfield(metaData, 'discussion')
-  metaData.discussion = []; 
-end
-if ~isfield(metaData, 'facts')
-  metaData.facts = []; 
-end
-if ~isfield(metaData, 'acknowledgment')
-  metaData.acknowledgment = [];
-end
-if ~isfield(metaData, 'biblist')
-  metaData.biblist = [];
-end
 
-if isempty(color)
-  color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
-  color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
-  color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
-end
-if isempty(eco_types)
-  get_eco_types;
-end
+  if ~isfield(metaData, 'author'); metaData.author = []; end
+  if ~isfield(metaData, 'email'); metaData.email = []; end
+  if ~isfield(metaData, 'address'); metaData.address = []; end
+  if ~isfield(metaData, 'curator'); metaData.curator = []; end
+  if ~isfield(metaData, 'COMPLETE'); metaData.COMPLETE = []; end
+  if ~isfield(metaData, 'discussion'); metaData.discussion = []; end
+  if ~isfield(metaData, 'facts'); metaData.facts = []; end
+  if ~isfield(metaData, 'acknowledgment'); metaData.acknowledgment = []; end
+  if ~isfield(metaData, 'biblist'); metaData.biblist = []; end
+  if isempty(eco_types); get_eco_types; end
+  if isempty(list_spec); list_spec = select; end % lists of taxon names in AmP
 
-% lists of taxon names in AmP
+  if isempty(color)
+    color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
+    color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
+    color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
+  end
 
-if isempty(list_spec)
-  list_spec   = select; 
-end
+  infoAmPgui = ~isempty(metaData.species); % AmPgui exit flag
 
-% if isempty(list_spec)
-%   list_spec   = list_taxa('',2); 
-%   list_genus  = list_taxa('',3); 
-%   list_family = list_taxa('',4); 
-%   list_order  = list_taxa('',5); 
-%   list_class  = list_taxa('',6); 
-%   list_phylum = list_taxa('',7); 
-% end
-
-%% setup gui
+  % setup gui
   dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
   hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 230 100 20], 'String','species',        'Style','pushbutton');
   hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 205 100 20], 'String','ecoCode',        'Style','pushbutton');
@@ -295,8 +224,7 @@ end
   set(hlinks, 'ForegroundColor', color.links);           set(hbiblist, 'ForegroundColor', color.biblist);
   set(hacknowledgment, 'ForegroundColor', color.acknowledgment); set(hdata_0, 'ForegroundColor', color.data_0);
     
-else % perform action
-%% fill fields
+else % fill fields
   switch(action)
       case 'species'
         dspecies = dialog('Position',[150 150 600 150], 'Name','species dlg');
@@ -430,7 +358,10 @@ else % perform action
           for i = 1:n
             hight = 475 - i * 25;
             uicontrol('Parent',ddiscussion, 'Position',[10, hight, 146, 20], 'String',fld{i}, 'Style','text');
-            HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i})); 
+            HD(i)  = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[110, hight, 650, 20], 'Style','edit', 'String',metaData.discussion.(fld{i}));
+            if ~isfield(metaData.bibkey, fld{i})
+              metaData.bibkey.(fld{i}) = [];
+            end
             HDb(i) = uicontrol('Parent',ddiscussion, 'Callback',{@discussionCb, i}, 'Position',[800, hight, 80, 20], 'Style','edit', 'String',metaData.bibkey.(fld{i})); 
             uicontrol('Parent',ddiscussion, 'Callback',{@deleteCb,'discussion',i,ddiscussion}, 'Position',[920, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
           end
@@ -463,88 +394,117 @@ else % perform action
         dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
         links = {...
           % general links
-          'http://www.catalogueoflife.org/col/'; ...
-          'http://eol.org/'; ...
-          'http://en.wikipedia.org/wiki/'; ...
-          'http://animaldiversity.org/'; ...
+          'https://www.catalogueoflife.org/col/'; ...
+          'https://www.itis.gov/'; ...
+          'https://eol.org/'; ...
+          'https://en.wikipedia.org/wiki/'; ...
+          'https://animaldiversity.org/'; ...
           'http://taxonomicon.taxonomy.nl/'; ...
-          'http://marinespecies.org/'; ...
+          'https://marinespecies.org/'; ...
           % taxon-specific links
-          'http://www.molluscabase.org/'; ...
-          'http://www.fishbase.org/'; ...
-          'http://amphibiaweb.org/search/'; ...
-          'http://reptile-database.reptarium.cz/'; ...
+          'https://www.molluscabase.org/'; ...
+          'https://www.ntnu.no/ub/scorpion-files/'; ...
+          'https://wsc.nmbe.ch/'; ...
+          'https://www.collembola.org/'; ...
+          'http://Orthoptera.SpeciesFile.org'; ...
+          'http://phasmida.speciesfile.org/'; ...
+          'http://aphid.speciesfile.org/'; ...
+          'https://diptera.info/'; ...
+          'http://www.nhm.ac.uk/our-science/data/lepindex/'; ...
+          'https://www.fishbase.org/'; ...
+          'https://amphibiaweb.org/search/'; ...
+          'https://reptile-database.reptarium.cz/'; ...
           'https://avibase.bsc-eoc.org/'; ...
           'http://datazone.birdlife.org/'; ...
           'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
-          'http://genomics.senescence.info/'};             
+          'https://genomics.senescence.info/'};             
       
-        select_id(1:6) = true;
+        select_id(1:7) = true; % general websites
+        if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
+          metaData.links.id_ITIS = get_id_ITIS(metaData.species);
+        end
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
-          metaData.links.id_EoL =  'some number (replace)'; 
+          metaData.links.id_EoL = get_id_EoL(metaData.species);
         end
         if isfield(metaData.links, 'id_Wiki') && isempty(metaData.links.id_Wiki)
-          metaData.links.id_Wiki =  [metaData.species, '? (replace)']; 
+          metaData.links.id_Wiki = get_id_Wiki(metaData.species);
         end
         if isfield(metaData.links, 'id_ADW') && isempty(metaData.links.id_ADW)
-          metaData.links.id_ADW =  [metaData.species, '? (replace)']; 
+            metaData.links.id_ADW = get_id_ADW(metaData.species);
         end
         if isfield(metaData.links, 'id_Taxo') && isempty(metaData.links.id_Taxo)
-          metaData.links.id_Taxo =  'some number (replace)'; 
+          metaData.links.id_Taxo = get_id_Taxo(metaData.species);
         end
         if isfield(metaData.links, 'id_WoRMS') && isempty(metaData.links.id_WoRMS)
-          metaData.links.id_WoRMS =  'some number (replace)'; 
+          metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
         end
         
-        select_id(7:14) = false;
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mollusca') && isempty(metaData.links.id_molluscabase)
-          select_id(7) = true;
-          if isfield(metaData.links, 'id_molluscabase') && isempty(metaData.links.id_molluscabase) && isempty(metaData.links.id_molluscabase)
-            metaData.links.id_molluscabase = 'some number (replace)'; select_id(7) = true; 
-          end
-        end
-        if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
+        select_id(8:23) = false; % taxon-specific websites
+        if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
           select_id(8) = true;
-          if isfield(metaData.links, 'id_fishbase') && isempty(metaData.links.id_fishbase)
-            metaData.links.id_fishbase = [strrep(metaData.species,'_','-'), '? (replace)'];
-          end
+          metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Scorpiones') & isempty(metaData.links.id_scorpion)
           select_id(9) = true;
-          if isfield(metaData.links, 'id_amphweb') && isempty(metaData.links.id_amphweb)
-            metaData.links.id_amphweb = [strrep(metaData.species,'_','+'), '? (replace)'];
-          end
+          metaData.links.id_scorpion = get_id_scorpion(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Reptilia') && isempty(metaData.links.id_ReptileDB)
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Araneae') & isempty(metaData.links.id_spider)
           select_id(10) = true;
-          nm = strspilt(metaData.species);
-          if isfield(metaData.links, 'id_ReptileDB') && isempty(metaData.links.id_ReptileDB)
-            metaData.links.id_ReptileDB = ['genus=',nm{1}, '&species=', nm{2}, '? (replace)'];
-          end
+          metaData.links.id_spider = get_id_spider(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
-          select_id(11:12) = true;
-          if isfield(metaData.links, 'id_avibase') && isempty(metaData.links.id_avibase)
-            metaData.links.id_avibase = 'some code (replace)';
-          end
-          if ~isempty(metaData.class) && isfield(metaData.links, 'id_birdlife') && isempty(metaData.links.id_birdlife)
-            metaData.links.id_birdlife = 'some sci. & common names (replace)';
-          end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Entognatha') & isempty(metaData.links.id_collembola)
+          select_id(11) = true;
+          metaData.links.id_collembola = get_id_collembola(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Orthoptera') & isempty(metaData.links.id_orthoptera)
+          select_id(12) = true;
+          metaData.links.id_orhtoptera = get_id_orthoptera(metaData.species);
+        end
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Phasmatodea') & isempty(metaData.links.id_phasmida)
           select_id(13) = true;
-          if isfield(metaData.links, 'id_MSW3') && isempty(metaData.links.id_MSW3)
-            metaData.links.id_MSW3 = 'some number (replace)';
-          end
+          metaData.links.id_phasmida = get_id_phasmida(metaData.species);
         end
-        if ~isempty(metaData.class) && ismember(metaData.class, {'Aves', 'Mammalia'}) && isempty(metaData.links.id_AnAge)
+        if ~isempty(metaData.family) & ismember(metaData.family, 'Aphididae') & isempty(metaData.links.id_aphid)
           select_id(14) = true;
-          if isfield(metaData.links, 'id_AnAge') && isempty(metaData.links.id_AnAge)
-            metaData.links.id_AnAge = [metaData.species, '? (replace)'];
-          end
+          metaData.links.id_aphid = get_id_aphid(metaData.species);
         end
-        
-                 
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Diptera') & isempty(metaData.links.id_diptera)
+          select_id(15) = true;
+          metaData.links.id_diptera = get_id_diptera(metaData.species);
+        end
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Lepidoptera') & isempty(metaData.links.id_lepidoptera)
+          select_id(16) = true;
+          metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) & isempty(metaData.links.id_fishbase)
+          select_id(17) = true;
+          metaData.links.id_fishbase = get_id_fishbase(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Amphibia') & isempty(metaData.links.id_amphweb)
+          select_id(18) = true;
+          metaData.links.id_amphweb = get_id_amphweb(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) & isempty(metaData.links.id_ReptileDB)
+          select_id(19) = true;
+          metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
+          select_id(20) = true;
+          metaData.links.id_avibase = get_id_avibase(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_birdlife)
+          select_id(21) = true;
+          metaData.links.id_birdlife = get_id_birdlife(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
+          select_id(22) = true;
+          metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
+          select_id(23) = true;
+          metaData.links.id_AnAge = get_id_AnAge(metaData.species);
+        end
+                       
         select_id = logical(select_id); ID_links = id_links(select_id); Links = links(select_id); n_Links = length(ID_links);
         for i= 1:n_Links 
           if i>1
@@ -564,63 +524,97 @@ else % perform action
        end
         
     case 'biblist'
-      bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'dio', 'url'};
+      bibTypeList.article =       {'author', 'title', 'journal',     'year', 'volume', 'pages', 'doi', 'url'};
       bibTypeList.book =          {'author', 'title', 'publisher',   'year', 'series', 'volume', 'isbn', 'url'};
       bibTypeList.incollection =  {'author', 'title', 'editor', 'booktitle', 'publisher', 'year', 'series', 'volume', 'isbn', 'url'};
       bibTypeList.mastersthesis = {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
       bibTypeList.phdthesis =     {'author', 'title', 'school',      'year', 'address', 'doi', 'isbn', 'url'};
-      bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'doi', 'isbn', 'url'};
+      bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'series', 'volume', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      dbiblist = dialog('Position',[150 100 250 400], 'Name','biblist dlg');
-      uicontrol('Parent',dbiblist, 'Position',[ 10 370  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',dbiblist, 'Position',[70 370 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
+      dbiblist = dialog('Position',[150 100 250 700], 'Name','biblist dlg');
+      uicontrol('Parent',dbiblist, 'Position',[ 10 670  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',dbiblist, 'Position',[70 670 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
       if ~isempty(metaData.biblist)
         fld = fields(metaData.biblist); n = length(fld);
         for i = 1:n
-          hight = 350 - i * 25; 
+          hight = 650 - i * 25;
           Hb(i) = uicontrol('Parent',dbiblist,  'Position',[ 10, hight,  100, 20], 'Style','text', 'String',fld{i}); % name
-          uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,fld{i},i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
+          uicontrol('Parent',dbiblist, 'Callback',{@DbCb,bibTypeList,i}, 'Position',[100, hight,  70 20], 'Style','pushbutton', 'String','edit');
           uicontrol('Parent',dbiblist, 'Callback',{@deleteCb,'biblist',fld{i},dbiblist}, 'Position',[200, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end          
       end
         
     case 'data_0' 
         
-      code0 = { ...
+      code0 = { ... % code-name, units, temp-dependence, description
           'ah',   'd', 1, 'age at hatch';          
           'ab',   'd', 1, 'age at birth';
           'tx',   'd', 1, 'time since birth at weaning';
+          't1',   'd', 1, 'time since birth at 1st instar';
+          't2',   'd', 1, 'time since 1st instar at 2nd instar';
+          't3',   'd', 1, 'time since 2nd instar at 3rd instar';
+          't4',   'd', 1, 'time since 3rd instar at 4th instar';
+          't5',   'd', 1, 'time since 4th instar at 5th instar';
+          't6',   'd', 1, 'time since 5th instar at 6th instar';
+          'tj',   'd', 1, 'time since birth at end acceleration';
           'tp',   'd', 1, 'time since birth at puberty';
           'tpm',  'd', 1, 'time since birth at puberty for males'; 
           'tR',   'd', 1, 'time since birth at first egg production';
+          'te',   'd', 1, 'time since pupation at emergence';
           'am',   'd', 1, 'life span';
 
           'Lh',  'cm', 0, 'length at hatch';
           'Lb',  'cm', 0, 'length at birth'
+          'L1',  'cm', 0, 'length at 1st instar after birth'
+          'L2',  'cm', 0, 'length at 2nd instar'
+          'L3',  'cm', 0, 'length at 3rd instar'
+          'L4',  'cm', 0, 'length at 4th instar'
+          'L5',  'cm', 0, 'length at 5th instar'
+          'L6',  'cm', 0, 'length at 6th instar'
+          'Lj',  'cm', 0, 'length at end acceleration'
           'Lp',  'cm', 0, 'length at puberty';
           'Lpm', 'cm', 0, 'length at puberty for males';
           'Li',  'cm', 0, 'ultimate length';
           'Lim', 'cm', 0, 'ultimate length for males';
+          'Le',  'cm', 0, 'length of imago';
 
           'Ww0',  'g', 0, 'initial wet weight';
           'Wwh',  'g', 0, 'wet weight at hatch';
           'Wwb',  'g', 0, 'wet weight at birth';
+          'Ww1',  'g', 0, 'wet weight at 1st instar after birth';
+          'Ww2',  'g', 0, 'wet weight at 2nd instar';
+          'Ww3',  'g', 0, 'wet weight at 3rd instar';
+          'Ww4',  'g', 0, 'wet weight at 4th instar';
+          'Ww5',  'g', 0, 'wet weight at 5th instar';
+          'Ww6',  'g', 0, 'wet weight at 6th instar';
+          'Wwj',  'g', 0, 'wet weight at end acceleration';
           'Wwp',  'g', 0, 'wet weight at puberty';
           'Wwpm', 'g', 0, 'wet weight at puberty for males';
           'Wwi',  'g', 0, 'ultimate wet weight';
           'Wwim', 'g', 0, 'ultimate wet weight for males';
+          'Wwe',  'g', 0, 'wet weight of imago';
 
           'Wdh',  'g', 0, 'dry weight at hatch';
           'Wdb',  'g', 0, 'dry weight at birth';
+          'Wd1',  'g', 0, 'dry weight at 1st instar after birth';
+          'Wd2',  'g', 0, 'dry weight at 2nd instar';
+          'Wd3',  'g', 0, 'dry weight at 3rd instar';
+          'Wd4',  'g', 0, 'dry weight at 4th instar';
+          'Wd5',  'g', 0, 'dry weight at 5th instar';
+          'Wd6',  'g', 0, 'dry weight at 6th instar';
+          'Wdj',  'g', 0, 'dry weight at end acceleration';
+          'Wdp',  'g', 0, 'dry weight at puberty';
           'Wdpm', 'g', 0, 'dry weight at puberty for males';
           'Wdi',  'g', 0, 'ultimate dry weight';
           'Wdim', 'g', 0, 'ultimate dry weight for males';
+          'Wde',  'g', 0, 'dry weight of imago';
           
           'E0',   'J', 0, 'initial energy content';
 
           'Ri', '#/d', 1, 'ultimate reproduction rate';
+          'GSI', 'mol E_R/mol W', 1, 'Gonado-Somatic Index as fraction'
           }; 
         
       ddata_0 = dialog('Position',[150 35 1050 620], 'Name','0-variate data dlg');
@@ -697,21 +691,21 @@ else % perform action
 
           }; 
         
-      ddata_1 = dialog('Position',[150 35 520 400], 'Name','1-variate data dlg');
-      uicontrol('Parent',ddata_1, 'Position',[ 10 380  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
-      uicontrol('Parent',ddata_1, 'Position',[150 380 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
-      uicontrol('Parent',ddata_1, 'Position',[ 10 350  60 20], 'String','name', 'Style','text');
-      uicontrol('Parent',ddata_1, 'Position',[100 350  90 20], 'String','x-label', 'Style','text');
-      uicontrol('Parent',ddata_1, 'Position',[200 350  90 20], 'String','y-label', 'Style','text');
+      ddata_1 = dialog('Position',[150 35 520 800], 'Name','1-variate data dlg');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 780  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
+      uicontrol('Parent',ddata_1, 'Position',[150 780 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
+      uicontrol('Parent',ddata_1, 'Position',[ 10 750  60 20], 'String','name', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[100 750  90 20], 'String','x-label', 'Style','text');
+      uicontrol('Parent',ddata_1, 'Position',[200 750  90 20], 'String','y-label', 'Style','text');
 
       if ~isempty(data.data_1)
         fld = fields(data.data_1); n = size(fld);
         for i = 1:n
-          hight = 350 - i * 25; 
+          hight = 750 - i * 25; 
           uicontrol('Parent',ddata_1,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
           label = txtData.label.(fld{i}); 
-          uicontrol('Parent',ddata_1,  'Position',[100, hight,  100, 20], 'Style','text', 'String',label{1}); % x-label
-          uicontrol('Parent',ddata_1,  'Position',[200, hight,  100, 20], 'Style','text', 'String',label{2}); % y-label
+          uicontrol('Parent',ddata_1,  'Position',[100, hight, 100, 20], 'Style','text', 'String',label{1}); % x-label
+          uicontrol('Parent',ddata_1,  'Position',[200, hight, 100, 20], 'Style','text', 'String',label{2}); % y-label
           D1(i) = uicontrol('Parent',ddata_1, 'Callback',{@D1Cb,fld{i},i}, 'Position',[380, hight,  70 20], 'Style','pushbutton', 'String','edit');
           uicontrol('Parent',ddata_1, 'Callback',{@deleteCb,'data_1',fld{i},ddata_0}, 'Position',[480, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
@@ -745,20 +739,24 @@ else % perform action
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 125 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c8); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10 100 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c9); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 10  75 600 20], 'Style','text', 'HorizontalAlignment','left', 'String',c10); 
-      HCOMPLETE = uicontrol('Parent',dCOMPLETE, 'Position',[ 10 40  50 20], 'Callback',@COMPLETECb, 'Style','edit', 'String',''); 
+      HCOMPLETE = uicontrol('Parent',dCOMPLETE, 'Position',[ 10 40  50 20], 'Callback',@COMPLETECb, 'Style','edit', 'String',metaData.COMPLETE); 
       uicontrol('Parent',dCOMPLETE, 'Position',[ 110 40  50 20], 'Callback',{@OKCb,dCOMPLETE}, 'Style','pushbutton', 'String','OK'); 
 
     case 'resume'
-      if ismac
-        list = strsplit(ls, ' ');
+      if ismac || isunix
+        list = strsplit(ls); list(end) = [];
       else
         list = cellstr(ls);
       end
-      list = list(Contains(list,'results_'));
-      if length(list) == 1
-        load(list{1});
-        AmPgui('color')
-      elseif isempty(list)
+      list_res = list(Contains(list,'results_')); n_res = length(list_res);
+      list_backup = list_res(Contains(list_res,'_backup')); n_backup = length(list_backup);
+      if n_backup > 0
+        load(list_backup{1})  
+        AmPgui('setColor')
+      elseif (n_res - n_backup) == 1
+        load(list_res{1});
+        AmPgui('setColor')
+      elseif n_res == 0
         fprintf('Warning from AmPgui: no results_my_pet.mat found\n');
       else
         fprintf('Warning from AmPgui: more than a single file results_my_pet.mat found, remove the wrong ones first\n');
@@ -766,16 +764,8 @@ else % perform action
       
     case 'pause'
       nm = ['results_', metaData.species, '.mat'];
-      if ismac
-        list = strsplit(ls, ' ');
-      else
-        list = cellstr(ls);
-      end
-      list = list(Contains(list,'results_'));
-      if length(list) > 1
-        fprintf('Warning from AmPgui: more than one file results_my_pet.mat found; this will give problems when resuming\n');
-      end
-      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+      %save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
@@ -860,26 +850,44 @@ end
   if ~isempty(data.data_0)
     fld = fields(data.data_0); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+      addbibkey = txtData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
+    bibkeys = unique(bibkeys);
   end
   if ~isempty(data.data_1)
     fld = fields(data.data_1); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, txtData.bibkey.(fld{i})];
+      addbibkey = txtData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
     bibkeys = unique(bibkeys);
   end 
   if ~isempty(metaData.bibkey)
     fld = fields(metaData.bibkey); n_fld = length(fld);
     for i=1:n_fld
-      bibkeys = [bibkeys, metaData.bibkey.(fld{i})];
+      addbibkey = metaData.bibkey.(fld{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys, addbibkey{:}];
+      else
+        bibkeys = [bibkeys, addbibkey];
+      end
     end
+    bibkeys = unique(bibkeys);
   end
   bibkeys = unique(bibkeys);
-  if any(~ismember(bibkeys,bibitems))
+  bibkeys_missing = bibkeys(~ismember(bibkeys,[bibitems; 'guess']));
+  if ~isempty(bibkeys_missing)
     color.biblist = [1 0 0];
-    fprintf(['Warning from AmPgui: missing bibitems are ', cell2str(bibkeys(~ismember(bibkeys,bibitems))),'\n']);
+    fprintf(['Warning from AmPgui: missing bibitems are ', cell2str(bibkeys_missing),'\n']);
   else
     color.biblist = [0 0.6 0];
   end
@@ -889,6 +897,8 @@ end
 %% callback functions
 function speciesCb(~, ~, dspecies)  
   global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec
+  hwait = waitbar(0,'Please wait...');
+
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
@@ -900,7 +910,11 @@ function speciesCb(~, ~, dspecies)
     return
   end
 
-  [id_CoL, my_pet] = get_id_CoL(my_pet); 
+  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet); 
+  if ~strcmp(name_status,'accepted name')
+    fprintf(['Warning from AmPgui: name status of ', my_pet, ' is ', name_status, '; continue with ', my_pet_acc, '\n'])
+    metaData.species = my_pet_acc;
+  end
   if isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
     set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
@@ -908,19 +922,24 @@ function speciesCb(~, ~, dspecies)
     set(Hwarning, 'String','species not recognized, search CoL');
     set(HwarningOK, 'String','OK proceeds to filling lineage manually');
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
-    infoAmPgui = 0;
     AmPgui('setColors')
   else
-    [lin, rank] = lineage_CoL(my_pet);
-    metaData.links.id_CoL = id_CoL;
-    metaData.species_en = get_common_CoL(id_CoL); set(Hcommon,'String',['common name: ',metaData.species_en]);
-    nm = lin(ismember(rank, 'Family')); metaData.family = nm{1}; set(Hfamily,'String',['family: ',metaData.family]);
-    nm = lin(ismember(rank, 'Order'));  metaData.order = nm{1};  set(Horder,'String',['order: ',metaData.order]);
-    nm = lin(ismember(rank, 'Class'));  metaData.class = nm{1};  set(Hclass,'String',['class: ',metaData.class]);
-    nm = lin(ismember(rank, 'Phylum')); metaData.phylum = nm{1}; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
+    metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
+    nms = get_common_CoL(id_CoL); 
+    if isempty(nms)
+      metaData.species_en = 'no_english_name'; 
+    else
+      metaData.species_en = nms{1}; 
+    end
+    set(Hcommon,'String',['common name: ',metaData.species_en]);
+    nm = lin(ismember(rank, 'Family')); if ~isempty(nm); metaData.family = nm{1}; end; set(Hfamily,'String',['family: ',metaData.family]);
+    nm = lin(ismember(rank, 'Order')); if ~isempty(nm); metaData.order = nm{1}; end; set(Horder,'String',['order: ',metaData.order]);
+    nm = lin(ismember(rank, 'Class'));  if ~isempty(nm); metaData.class = nm{1}; end; set(Hclass,'String',['class: ',metaData.class]);
+    nm = lin(ismember(rank, 'Phylum')); if ~isempty(nm); metaData.phylum = nm{1}; end; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
+    close(dspecies); close(hwait);
     AmPgui('links')
   end
 end
@@ -1024,8 +1043,9 @@ function species_enCb(~, ~)
 end
  
 function climateCb(~, ~, Hclimate)  
-  global metaData eco_types hclimateLand 
+  global metaData eco_types hclimateLand hclimateSea
   set(hclimateLand,'Position',[250 20 1200 850]); % climate figure large size
+  set(hclimateSea,'Position',[250 20 1200 850]); % climate figure large size
   climateCode = fields(eco_types.climate); n_climate = length(climateCode); 
   if isempty(metaData.ecoCode.climate)
     i_climate = 1;
@@ -1034,16 +1054,18 @@ function climateCb(~, ~, Hclimate)
     sel_climate = ismember(climateCode,metaData.ecoCode.climate); 
     i_climate = i_climate(sel_climate);
   end
-  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[185 450], 'InitialValue',i_climate);  
+  i_climate =  listdlg('ListString',climateCode, 'Name','climate dlg', 'ListSize',[205 450], 'InitialValue',i_climate);  
   metaData.ecoCode.climate = climateCode(i_climate); 
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
   set(hclimateLand,'Position',[300 450 500 300]); % climate figure normal size
+  set(hclimateSea, 'Position',[900 450 500 300]); % climate figure normal size
   AmPgui('setColor')
 end
 
 function ecozoneCb(~, ~, Hecozone)   
-  global metaData eco_types hecozones 
-  set(hecozones,'Position',[250 20 1200 850]); % ecozone figure large size
+  global metaData eco_types hecozones hoceans
+  set(hecozones,'Position',[250 20 1200 850]); % ecozone figures large size
+  set(hoceans,  'Position',[250 20 1200 850]); % ecozone figures large size
   ecozoneCode = fields(eco_types.ecozone); n_ecozone = length(ecozoneCode); 
   ecozoneCodeList = ecozoneCode;
    for i=1:n_ecozone
@@ -1060,25 +1082,28 @@ function ecozoneCb(~, ~, Hecozone)
    i_ecozone =  listdlg('ListString', ecozoneCodeList,'Name', 'ecozone dlg','ListSize',[450 500], 'InitialValue',i_ecozone);
    metaData.ecoCode.ecozone = ecozoneCode(i_ecozone); 
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
-   set(hecozones,'Position',[300  50 500 300]); % ecozone figure normal size
+   set(hecozones,'Position',[300  50 500 300]); % ecozone figures normal size
+   set(hoceans,  'Position',[900  50 500 300]); % ecozone figures normal size
    AmPgui('setColor')
 end
  
 function habitatCb(~, ~, Hhabitat)  
   global metaData eco_types 
   habitatCode = fields(eco_types.habitat); n_habitat = length(habitatCode); 
-  habitatCodeList = habitatCode;
+  habitatCodeList = habitatCode; 
   for i=1:n_habitat
     habitatCodeList{i} = [habitatCodeList{i}, ': ', eco_types.habitat.(habitatCode{i})];
   end
   if isempty(metaData.ecoCode.habitat)
     i_habitat = 1;
   else
+    code = metaData.ecoCode.habitat; n_code = length(code);
+    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end % remove stage codes
     i_habitat = 1:n_habitat;
-    i_habitat = i_habitat(i_habitat(ismember(habitatCode,metaData.ecoCode.habitat)));
+    i_habitat = i_habitat(i_habitat(ismember(habitatCode,code)));
   end
   i_habitat =  listdlg('ListString',habitatCodeList, 'Name','habitat dlg', 'ListSize',[400 500], 'InitialValue',i_habitat);
-  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList);
+  habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList, 'habitat');
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
   AmPgui('setColor')
@@ -1105,11 +1130,12 @@ end
 
 function migrateCb(~, ~, Hmigrate)  
   global metaData eco_types 
-  migrateCode = fields(eco_types.migrate); n_migrate = length(migrateCode); 
+  migrateCode = fields(eco_types.migrate); n_migrate = length(migrateCode);
   migrateCodeList = migrateCode;
   for i=1:n_migrate
     migrateCodeList{i} = [migrateCodeList{i}, ': ', eco_types.migrate.(migrateCode{i})];
   end
+  migrateCode = [' '; migrateCode]; migrateCodeList = [' no migration/torpor'; migrateCodeList];
   if isempty(metaData.ecoCode.migrate)
     i_migrate = 1;
   else
@@ -1132,11 +1158,13 @@ function foodCb(~, ~, Hfood)
   if isempty(metaData.ecoCode.food)
     i_food = 1;
   else
+    code = metaData.ecoCode.food; n_code = length(code);
+    for i = 1:n_code; Code = code{i}; code{i} = Code(3:end); end; % remove stage codes
     i_food = 1:n_food;
-    i_food = i_food(i_food(ismember(foodCode,metaData.ecoCode.food)));
+    i_food = i_food(i_food(ismember(foodCode,code)));
   end
   i_food =  listdlg('ListString',foodCodeList, 'Name','food dlg', 'ListSize',[600 500], 'InitialValue',i_food);
-  foodCode = prependStage(i_food, foodCode, foodCodeList);
+  foodCode = prependStage(i_food, foodCode, foodCodeList, 'food');
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
   AmPgui('setColor')
@@ -1252,39 +1280,40 @@ function linksCb(~, ~, id_links,i)
   metaData.links.(id_links{i}) = get(Hlinks(i), 'string');
 end
 
-function addBibCb(~, ~, dbiblist)
-   global metaData
-   metaData.biblist.new = [];
-   delete(dbiblist)
-   AmPgui('biblist')
+function addBibCb(~, ~, dbiblist) % create new bibitem in biblist with bibkey "new"
+  global metaData
+  metaData.biblist.new = [];
+  delete(dbiblist)
+  AmPgui('biblist')
 end
 
-function DbCb(~, ~, bibTypeList, bibkey, i_bibkey)
-   global metaData Dbb Dbi
-   Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
-   uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
-   uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
-   Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,Db,i_bibkey}, 'Style','edit', 'String',bibkey); 
-   if ~isempty(metaData.biblist) && isfield(metaData.biblist, bibkey) && ~strcmp(bibkey, 'new')
-     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
-     fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
-     for i=1:n_fld
-       hight = 260 - i * 25;
-       if ~isfield(metaData.biblist.(bibkey), fld{i})
-         metaData.biblist.(bibkey).(fld{i}) = [];
-       end
-       str = metaData.biblist.(bibkey).(fld{i});
-       uicontrol('Parent',Db, 'Position',[20 hight 80 20], 'Style','text', 'String',[fld{i},': ']); 
-       Dbi(i) = uicontrol('Parent',Db, 'Position',[100 hight 680 20], 'Callback',{@bibitemCb,bibkey,fld{i},i}, 'Style','edit', 'String',str); 
-     end
-   end
+function DbCb(~, ~, bibTypeList, i_bibkey) % present bibitem to allow filling of fields
+  global metaData Dbb Dbi Db
+  bibkey = fields(metaData.biblist); bibkey = bibkey{i_bibkey};
+  Db = dialog('Position',[350 320 800 320], 'Name','bibitem dlg');
+  uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
+  uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
+  Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,i_bibkey}, 'Style','edit', 'String',bibkey); 
+  if ~isempty(metaData.biblist) & ~strcmp(bibkey, 'new')
+    uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
+    fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
+    for i=1:n_fld
+      hight = 260 - i * 25;
+      if ~isfield(metaData.biblist.(bibkey), fld{i})
+        metaData.biblist.(bibkey).(fld{i}) = [];
+      end
+      str = metaData.biblist.(bibkey).(fld{i});
+      uicontrol('Parent',Db, 'Position',[20 hight 80 20], 'Style','text', 'String',[fld{i},': ']); 
+      Dbi(i) = uicontrol('Parent',Db, 'Position',[100 hight 680 20], 'Callback',{@bibitemFldCb,bibkey,fld{i},i}, 'Style','edit', 'String',str); 
+    end
+  end
 end
 
-function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
-  global metaData Dbb Hb
-  bibkeyNew = get(Dbb(1), 'string');
+function bibkeyCb(~, ~, bibTypeList, bibkey, i_bibkey) 
+  global metaData Dbb Db Hb
+  bibkeyNew = get(Dbb, 'string');
   metaData.biblist = renameStructField(metaData.biblist, bibkey, bibkeyNew); 
-  if strcmp(bibkey, 'new')
+  if strcmp(bibkey, 'new') % set type and fill fields with empty if existing bibkey was new
     fld = fields(bibTypeList);
     i_type =  listdlg('ListString',fields(bibTypeList), 'Name','biblist dlg', 'ListSize',[100 150], 'SelectionMode','single', 'InitialValue',1);
     metaData.biblist.(bibkeyNew).type = fld{i_type};
@@ -1293,18 +1322,20 @@ function bibkeyCb(~, ~, bibTypeList, bibkey, Db, i_bibkey)
       metaData.biblist.(bibkeyNew).(fld{i}) = [];
     end
   end
-  set(Hb(i_bibkey), 'String', bibkeyNew);
+  set(Hb(i_bibkey), 'String',bibkeyNew);
   delete(Db);
-  DbCb([], [], bibTypeList, bibkeyNew, i_bibkey)
-  AmPgui('set_color');
+  DbCb([], [], bibTypeList, i_bibkey)
+  AmPgui('color');
 end
 
-function bibitemCb(~, ~, bibkey, fld, i)
+function bibitemFldCb(~, ~, bibkey, fld, i) % fill a field of a bibitem
   global metaData Dbi
   metaData.biblist.(bibkey).(fld) = get(Dbi(i), 'string');
 end
 
-function add0Cb(~, ~, code0, ddata_0)
+function add0Cb(~, ~, code0, ddata_0) % add 0-var data set to data_0
+   % code0: array of possible 0-var data sets: name, description
+   % ddata_0: handle for data_0 dialog
    global data txtData auxData metaData
    n_code0 = size(code0,1); codeList0 = code0(:,1);
    for i = 1:n_code0
@@ -1326,32 +1357,13 @@ function add0Cb(~, ~, code0, ddata_0)
      if code0{i,3}
        auxData.temp.(code0{i,1}) = [];
      end
-     metaData.data_0 = [metaData.data_0 code0{i,1}];
+     metaData.data_0 = [metaData.data_0; code0{i,1}];
    end
    delete(ddata_0);
    AmPgui('data_0');
 end 
 
-% function d0NmCb(~, ~, i)
-%    global data auxData txtData metaData H0n
-%    fld = fields(data.data_0); n = length(fld);
-%    nm = get(H0n(i), 'string'); 
-%    data.data_0 = renameStructField(data.data_0, fld{i}, nm); 
-%    
-%    if isfield(txtData.units, fld{i})
-%      txtData.units = renameStructField(txtData.units, fld{i}, nm);  
-%      txtData.label = renameStructField(txtData.label, fld{i}, nm);  
-%    end
-%    if isfield(auxData.temp, fld{i})
-%      auxData.temp = renameStructField(auxData.temp, fld{i}, nm);  
-%    end 
-%    if isfield(metaData.bibkey, fld{i})
-%      metaData.bibkey = renameStructField(metaData.bibkey, fld{i}, nm);  
-%    end 
-% 
-% end
-
-function d0Cb(~, ~, i)  
+function d0Cb(~, ~, i) % fill fields for 0-var data set i
    global data auxData txtData H0v H0T H0b H0c
    fld = fields(data.data_0);
    data.data_0.(fld{i}) = str2double(get(H0v(i), 'string'));
@@ -1386,7 +1398,7 @@ function add1Cb(~, ~, code1, ddata_1)
      if code1{i,3}
        auxData.temp.(code1{i,1}) = [];
      end
-     metaData.data_1 = [metaData.data_1 code1{i,1}];
+     metaData.data_1 = [metaData.data_1; code1{i,1}];
    end 
    delete(ddata_1);
    AmPgui('data_1');
@@ -1429,7 +1441,7 @@ end
 
 function d1bCb(~, ~, fld, i)
   global txtData H1b 
-  txtData.bibkey.(fld) = get(H1b(i), 'string');
+  txtData.bibkey.(fld) = str2cell(get(H1b(i), 'string'));
 end  
 
 function d1cCb(~, ~, fld, i)
@@ -1448,9 +1460,117 @@ function stayCb(~, ~, H)
 end
 
 function proceedCb(~, ~, H)
-  global infoAmPgui
-  OKCb([], [], H);
-  AmPeps(infoAmPgui);
+  global infoAmPgui data metaData txtData auxData color select_id id_links eco_types 
+  
+  % do all data_0 have bibkeys?
+  check_bibkey0 = false;
+  if ~isempty(data.data_0)
+    fld_0 = fields(data.data_0); n = length(fld_0); check_bibkey0 = false(n,1);
+    for i= 1:n
+      if ~isfield(txtData.bibkey, fld_0{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_0{i}, '\n']);
+        check_bibkey0{i} = true;
+      end
+    end
+  end
+
+  % do all data_1 have bibkeys?
+  check_bibkey1 = false;
+  if ~isempty(data.data_1)
+    fld_1 = fields(data.data_1); n = length(fld_1); check_bibkey1 = false(n,1);
+    for i= 1:n
+      if ~isfield(txtData.bibkey, fld_1{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for dataset ', fld_1{i}, '\n']);
+        check_bibkey1{i} = true;
+      end
+    end
+  end
+  
+  % do all facts have bibkeys?
+  check_bibkeyF = false;
+  if ~isempty(metaData.facts)
+    fld_F = fields(metaData.facts); n = length(fld_F); check_bibkeyF = false(n,1);
+    for i= 1:n
+      if ~isfield(metaData.bibkey, fld_F{i})
+        fprintf(['Warning from AmPeps: please enter a bibkey for fact ', fld_F{i}, '\n']);
+        check_bibkeyF(i) = true;
+      end
+    end
+  end
+
+  % do all bibkeys have bibitems?
+  check_bibitem = false;
+  if ~isempty(txtData.bibkey) & ~isempty(metaData.biblist)
+    bibkeys = {};
+    dataNm = fields(txtData.bibkey); n_data = length(dataNm); check_bibitem = false(n_data,1);
+    for i = 1:n_data
+      addbibkey = txtData.bibkey.(dataNm{i});
+      if iscell(addbibkey)
+        bibkeys = [bibkeys; addbibkey(:)];
+      else
+        bibkeys = [bibkeys; addbibkey];
+      end
+    end
+    if ~isempty(metaData.bibkey) % bibkeys for facts and discussion points
+      fld = fields(metaData.bibkey); n_fld = length(fld);
+      for i=1:n_fld
+        addbibkey = metaData.bibkey.(fld{i});
+        if iscell(addbibkey)
+          bibkeys = [bibkeys; addbibkey(:)];
+        else
+          bibkeys = [bibkeys; addbibkey];
+        end
+      end
+    end
+    bibkeys = unique(bibkeys);
+    bibkeys = bibkeys(~ismember(bibkeys, [fields(metaData.biblist); 'guess'; 'Kooy2010']));
+    if ~isempty(bibkeys)
+      fprintf('Warning from AmPeps: the following bibkeys were not found in the biblist, please complete\n');
+      bibkeys
+      check_bibitem = true;
+    end 
+  end
+
+  % are all ecoCodes filled, except migrate?
+  eco = {'climate', 'ecozone', 'habitat', 'embryo', 'food', 'gender', 'reprod'}; n_eco = length(eco); 
+  check_eco = false(n_eco,1);
+  for i = 1 : n_eco
+    check_eco(i) = isempty(metaData.ecoCode.(eco{i}));
+  end
+  
+  % first check that all required fields are filled, if so proceed to AmPeps
+  if isempty(metaData.author); fprintf('Warning from AmPeps: please enter author details\n') 
+    OKCb([], [], H); AmPgui('author'); 
+  elseif isempty(metaData.curator); fprintf('Warning from AmPeps:select curator\n') 
+    OKCb([], [], H); AmPgui('curator'); 
+  elseif isempty(metaData.species); fprintf('Warning from AmPeps: please enter species name\n') 
+    OKCb([], [], H); AmPgui('species'); 
+  elseif any(check_eco)
+    fprintf('Warning from AmPeps: empty ecoCodes ', cell2str(eco(check_eco)),'\n');      
+    OKCb([], [], H); AmPgui('ecoCode')  
+  elseif isempty(metaData.T_typical); fprintf('Warning from AmPeps: please specify typical body temperature\n')
+    OKCb([], [], H); AmPgui('T_typical'); 
+  elseif isempty(metaData.COMPLETE); fprintf('Warning from AmPeps: please specify COMPLETE\n')
+    OKCb([], [], H); AmPgui('COMPLETE'); 
+  elseif isempty(data.data_0) | isempty(txtData.units.temp) 
+    fprintf('Warning from AmPeps: please enter at least one 0-variate data point that is time-dependent\n'); 
+    OKCb([], [], H); AmPgui('data_0'); 
+  elseif isempty(metaData.biblist)
+    fprintf('Warning from AmPeps: empty biblist, please complete\n');
+    OKCb([], [], H); AmPgui('biblist'); 
+  elseif any(check_bibkeyF)
+    OKCb([], [], H); AmPgui('facts');  
+  elseif any(check_bibkey0)
+    OKCb([], [], H); AmPgui('data_0'); 
+  elseif any(check_bibkey1)
+    OKCb([], [], H); AmPgui('data_1'); 
+  elseif check_bibitem
+    OKCb([], [], H); AmPgui('biblist'); 
+  else
+    save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+    OKCb([], [], H); AmPeps(infoAmPgui);
+  end
+      
 end
 
 function leaveCb(~, ~, H)
@@ -1476,53 +1596,53 @@ function OKCb(~, ~, H)
 end
 
 function deleteCb(~, ~, type, id, handle) 
-global data metaData txtData
-switch type
-  case 'facts'
-    fact = ['F', num2str(id)];
-    metaData.facts = rmfield(metaData.facts, fact); 
-    metaData.bibkey = rmfield(metaData.bibkey, fact);
-    if isfield(metaData.facts, ['F', num2str(id+1)])
-      n = length(fields(metaData.facts)) - id + 2;
-      for i = 1:n
-        metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
-        metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+  global data metaData txtData
+  switch type
+    case 'facts'
+      fact = ['F', num2str(id)];
+      metaData.facts = rmfield(metaData.facts, fact); 
+      metaData.bibkey = rmfield(metaData.bibkey, fact);
+      if isfield(metaData.facts, ['F', num2str(id+1)])
+        n = length(fields(metaData.facts)) - id + 2;
+        for i = 1:n
+          metaData.facts = renameStructField(metaData.facts,['F', num2str(i + 1)], ['F', num2str(i)]);
+          metaData.bibkey = renameStructField(metaData.bibkey,['F', num2str(i + 1)], ['F', num2str(i)]);
+        end
       end
-    end
-    close(handle);
-    AmPgui('facts');
+      close(handle);
+      AmPgui('facts');
     
-  case 'discussion'
-    disc = ['D', num2str(id)];
-    metaData.discussion = rmfield(metaData.discussion, disc); 
-    metaData.bibkey = rmfield(metaData.bibkey, disc);
-    if isfield(metaData.discussion, ['D', num2str(id+1)])
-      n = length(fields(metaData.discussion)) - id + 2;
-      for i = 1:n
-        metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
-        metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+    case 'discussion'
+      disc = ['D', num2str(id)];
+      metaData.discussion = rmfield(metaData.discussion, disc); 
+      metaData.bibkey = rmfield(metaData.bibkey, disc);
+      if isfield(metaData.discussion, ['D', num2str(id+1)])
+        n = length(fields(metaData.discussion)) - id + 2;
+        for i = 1:n
+          metaData.discussion = renameStructField(metaData.discussion,['D', num2str(i + 1)], ['D', num2str(i)]);
+          metaData.bibkey = renameStructField(metaData.bibkey,['D', num2str(i + 1)], ['D', num2str(i)]);
+        end
       end
-    end
-    close(handle);
-    AmPgui('discussion');
+      close(handle);
+      AmPgui('discussion');
     
-  case 'biblist'
-    metaData.biblist = rmfield(metaData.biblist, id); 
-    close(handle);
-    AmPgui('biblist');
+    case 'biblist'
+      metaData.biblist = rmfield(metaData.biblist, id); 
+      close(handle);
+      AmPgui('biblist');
 
-  case 'data_0'
-    data.data_0 = rmfield(data.data_0, id); 
-    txtData.bibkey = rmfield(txtData.bibkey, id); 
-    delete(handle);
-    AmPgui('data_0');
+    case 'data_0'
+      data.data_0 = rmfield(data.data_0, id); 
+      txtData.bibkey = rmfield(txtData.bibkey, id); 
+      delete(handle);
+      AmPgui('data_0');
       
-  case 'data_1'
-    data.data_1 = rmfield(data.data_1, id); 
-    txtData.bibkey = rmfield(txtData.bibkey, id); 
-    close(handle);
-    AmPgui('data_1');     
-end
+    case 'data_1'
+      data.data_1 = rmfield(data.data_1, id); 
+      txtData.bibkey = rmfield(txtData.bibkey, id); 
+      close(handle);
+      AmPgui('data_1');     
+  end
 end
 
 %% other support functions
@@ -1549,24 +1669,38 @@ function c = str2cell(str)
   end
   str = strsplit(str, ',');
   n = length(str); 
-  if n == 1
-    c = str;
-  else
-    c = cell(1,n);
-    for i=1:n
-      c{i} = str(i);
-     end
+  c = cell(1,n);
+  for i=1:n
+    c{i} = str{i};
   end
 end
 
-function stageCode = prependStage(ind, code, codeList)
-  stageList = {'0b', '0j', '0x', '0p', '0i', 'bj', 'bx', 'bp', 'bi', 'jp', 'ji', 'xp', 'xi', 'pi'};
+function stageCode = prependStage(ind, code, codeList, type)
+  stageList = { ...
+  '0b', '0j', ...
+  '0x          stage ij is the period', ...
+  '0p          between events i and j', ...
+  '0i', ...
+  'bj          0: start', ...
+  'bx          b: birth', ...
+  'bp          j: metamorphosis', ...
+  'bi           x: weaning/fledge', ...
+  'jp           p: puberty', ...
+  'ji            i: death', ... % this spacing gives the best outlining on the screen
+  'xp', 'xi', 'pi'};
   stageCode = code(ind); n = length(ind); 
+  switch type
+    case 'habitat'
+      init = 5; % stageCode 0i
+    case 'food'
+      init = 9; % stageCode bi
+  end
   for i = 1:n
     fprintf(['Prepend stage for code ', code{ind(i)},'\n']);
     name = ['stage code for ', codeList{ind(i)}];
-    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',2);
-    stageCode{i} = [stageList{i_stage}, code{ind(i)}];
+    i_stage =  listdlg('ListString',stageList, 'Name',name, 'SelectionMode','single', 'ListSize',[600 250], 'InitialValue',init);
+    stage = stageList{i_stage};
+    stageCode{i} = [stage(1:2), code{ind(i)}];
   end
 end
 

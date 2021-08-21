@@ -2,13 +2,13 @@
 % a GUI to create 4 data-structures
 %%
 function AmPgui(action)
-% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03
+% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03, 2021/08/21
 
 %% Syntax
 % <../AmPgui.m *AmPgui*>
 
 %% Description
-% Like mydata_my_pet.m, it writes 4 data-structures from scratch
+% It writes 4 data-structures from scratch
 %
 % * data: structure with data
 % * auxData: structure with auxiliary data 
@@ -337,7 +337,7 @@ else % fill fields
           'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
           'https://genomics.senescence.info/'};             
       
-        select_id(1:7) = true;
+        select_id(1:7) = true; % general websites
         if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
           metaData.links.id_ITIS = get_id_ITIS(metaData.species);
         end
@@ -357,7 +357,7 @@ else % fill fields
           metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
         end
         
-        select_id(8:23) = false;
+        select_id(8:23) = false; % taxon-specific websites
         if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
           select_id(8) = true;
           metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
