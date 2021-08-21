@@ -415,7 +415,7 @@ else % fill fields
           select_id(22) = true;
           metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
         end
-        if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia''Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
           select_id(23) = true;
           metaData.links.id_AnAge = get_id_AnAge(metaData.species);
         end
