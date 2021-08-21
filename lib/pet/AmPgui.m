@@ -358,64 +358,64 @@ else % fill fields
         end
         
         select_id(8:23) = false;
-        if ~isempty(metaData.class) && strcmp(metaData.phylum, 'Mollusca') && isempty(metaData.links.id_molluscabase)
+        if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
           select_id(8) = true;
           metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Scorpiones')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Scorpiones') & isempty(metaData.links.id_scorpion)
           select_id(9) = true;
           metaData.links.id_scorpion = get_id_scorpion(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Araneae')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Araneae') & isempty(metaData.links.id_spider)
           select_id(10) = true;
           metaData.links.id_spider = get_id_spider(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Class')), 'Entognatha')
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Entognatha') & isempty(metaData.links.id_collembola)
           select_id(11) = true;
           metaData.links.id_collembola = get_id_collembola(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Orthoptera')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Orthoptera') & isempty(metaData.links.id_orthoptera)
           select_id(12) = true;
           metaData.links.id_orhtoptera = get_id_orthoptera(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Phasmatodea')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Phasmatodea') & isempty(metaData.links.id_phasmida)
           select_id(13) = true;
           metaData.links.id_phasmida = get_id_phasmida(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Family')), 'Aphididae')
+        if ~isempty(metaData.family) & ismember(metaData.family, 'Aphididae') & isempty(metaData.links.id_aphid)
           select_id(14) = true;
           metaData.links.id_aphid = get_id_aphid(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Diptera')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Diptera') & isempty(metaData.links.id_diptera)
           select_id(15) = true;
           metaData.links.id_diptera = get_id_diptera(metaData.species);
         end
-        if ismember(lin(ismember(rank,'Order')), 'Lepidoptera')
+        if ~isempty(metaData.order) & ismember(metaData.order, 'Lepidoptera') & isempty(metaData.links.id_lepidoptera)
           select_id(16) = true;
           metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
-       end
-        if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'})
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) & isempty(metaData.links.id_fishbase)
           select_id(17) = true;
           metaData.links.id_fishbase = get_id_fishbase(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Amphibia') & isempty(metaData.links.id_amphweb)
           select_id(18) = true;
           metaData.links.id_amphweb = get_id_amphweb(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) && isempty(metaData.links.id_ReptileDB)
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) & isempty(metaData.links.id_ReptileDB)
           select_id(19) = true;
           metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
           select_id(20:21) = true;
           metaData.links.id_avibase = get_id_avibase(metaData.species);
           metaData.links.id_birdlife = get_id_birdlife(metaData.species);
         end
-        if ~isempty(metaData.class) && strcmp(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
           select_id(22) = true;
           metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
         end
-        if ~isempty(metaData.class) && ismember(metaData.class, {'Amphibia''Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) && isempty(metaData.links.id_AnAge)
+        if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia''Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
           select_id(23) = true;
           metaData.links.id_AnAge = get_id_AnAge(metaData.species);
         end
