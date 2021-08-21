@@ -407,8 +407,11 @@ else % fill fields
           metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
         end
         if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
-          select_id(20:21) = true;
+          select_id(20) = true;
           metaData.links.id_avibase = get_id_avibase(metaData.species);
+        end
+        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_birdlife)
+          select_id(21) = true;
           metaData.links.id_birdlife = get_id_birdlife(metaData.species);
         end
         if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
