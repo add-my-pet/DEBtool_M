@@ -152,16 +152,15 @@ function [q, info, fval] = nmregr(func, p, varargin)
   xin = q(index, 1);    % Place input guess in the simplex
   v(:,1) = xin;
   eval(['[',listf, '] = ', func, '(q(:,1),', listxyw, ');']);
-  eval(['[',listf, '] = ', func, '(q(:,1),', listxyw, ');']);
   meanf = f1;   
   for i = 2:nxyw % loop across data sets
     ci = num2str(i); % character string with value of i
     eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
   end
   if nxyw == 1
-    fv(:,1) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+    fv(:,1) = W' * ((f1 - Y).^2 / max(1e-6,mean(f1)^2 + mean(Y)^2));
   else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
     fv(:,1) = W' * fv_aux;
   end
   % Following improvement suggested by L.Pfeffer at Stanford
@@ -183,9 +182,9 @@ function [q, info, fval] = nmregr(func, p, varargin)
       eval(['meanf = [meanf; ones(length(f',ci,'),1) * mean(f',ci,')];']);  % append mean of data
     end
     if nxyw == 1
-      fv(1, j + 1) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
+      fv(1, j + 1) = W' * ((f1 - Y).^2 / max(1e-6, mean(f1)^2 + mean(Y)^2));
     else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
     fv(1, j + 1) = W' * fv_aux;
     end
   end     
@@ -229,7 +228,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
     if nxyw == 1
       fxr = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
     else
-    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+    eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
     fxr = W' * fv_aux;
     end
     func_evals = func_evals + 1;
@@ -247,7 +246,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
       if nxyw == 1
         fxe = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
       else
-         eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+         eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
          fxe = W' * fv_aux;
       end
       func_evals = func_evals + 1;
@@ -280,7 +279,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
           if nxyw == 1
             fxc = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
           else              
-            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);    
+            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);    
             fxc = W' * fv_aux;
           end
           func_evals = func_evals + 1;
@@ -306,7 +305,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
           if nxyw == 1
             fxcc = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
           else
-            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+            eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
             fxcc = W' * fv_aux;
           end
           func_evals = func_evals + 1;
@@ -333,7 +332,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
             if nxyw == 1
               fv(:,j) = W' * ((f1 - Y).^2 / (mean(f1)^2 + mean(Y)^2));
             else
-              eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ (meanf.^2 + meanY.^2);']);
+              eval(['fv_aux = (cat(1, ', listf, ')-Y).^2 ./ max(1e-6,meanf.^2 + meanY.^2);']);
               fv(:,j) = W' * fv_aux;
             end
           end
