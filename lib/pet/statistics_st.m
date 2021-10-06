@@ -8,7 +8,8 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % modified 2015/07/27 by Starrlight; 2015/08/06 by Dina Lika
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
 % modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 
-% modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20, 2018/08/18, 2018/08/22, 2019/04/25 by Bas Kooijman
+% modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20 by Bas Kooijman
+% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05 by Bas Kooijman
 
 %% Syntax
 % [stat, txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -460,14 +461,14 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
     r_B = rho_B * k_M * TC;
     stat.r_B = r_B;    units.r_B = '1/d';      label.r_B = 'von Bertalanffy growth rate'; temp.r_B = T; fresp.r_B = f;
   end  
-  % maximum growth
+  % maximum growth % see comments on DEB3 section 2.6
   switch model
     case {'std', 'stf', 'stx', 'ssj'}
       L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
-      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      dWm = TC * W_dWm * r_B * 3/ 2;
     case 'sbp'
       L_dWm = 2/3 * (L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
-      dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
+      dWm = TC * W_dWm * r_B * 3/ 2;
       L_p = l_p * L_m;
       if L_p < L_dWm
         L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w);
@@ -476,28 +477,16 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
     case {'abj', 'asj'}
       L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
       L_j = l_j * L_m;
-      if L_j > L_dWm
-        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
-        dWm = TC * W_dWm * r_j;
-      else
-        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
-      end
+      L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;
     case 'abp'
       L_p = l_p * L_m;
       L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
       dWm = TC * W_dWm * r_j;      
     case 'hep'
-      L_dWm = 2/3 * (s_M * L_m - L_T); W_dWm = L_dWm^3 * (1 + w);
-      L_p = l_p * L_m; L_j = l_j * L_m;
-      if L_p > L_dWm
-        L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
-        dWm = TC * W_dWm * r_j;
-      elseif L_dWm > L_j % max growth after metam
-        L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w);  
-        dWm = r_B * (s_M * L_m - L_j);  
-      else % max growth somewhere during the adult phase of the larva
-        dWm = TC * W_dWm * 4/ 27 * g * k_M * (1 - l_T)^3/ (1 + g);
-      end
+      L_p = l_p * L_m;
+      L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
+      dWm = TC * W_dWm * r_j;
     case 'hex'
       L_j = L_m * l_j;
       L_dWm = L_j; W_dWm = L_dWm^3 * (1 + w); 
