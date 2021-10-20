@@ -35,7 +35,7 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
   global pets 
   
   n_pets = length(pets);
-  par_set = archive.pop; % set with the best parameters found in multimodal calibration
+  par_set = archive.solutionsParameters; % set with the best parameters found in multimodal calibration
   n_pars = length(par_set);
 
   %% Variables to compose the solutions to calculate MRE and SMSE.
@@ -73,23 +73,23 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
 
       % save results to result_group.mat or result_my_pet.mat
       if n_pets > 1
-          archive.results.strcat('solution_', int2str(sol)).par = aux;
-          archive.results.strcat('solution_', int2str(sol)).txtPar = txtPar;
-          archive.results.strcat('solution_', int2str(sol)).metaPar = metaPar;
-          archive.results.strcat('solution_', int2str(sol)).metaData = metaData;
+          archive.solutionSet.strcat('solution_', int2str(sol)).par = aux;
+          archive.solutionSet.strcat('solution_', int2str(sol)).txtPar = txtPar;
+          archive.solutionSet.strcat('solution_', int2str(sol)).metaPar = metaPar;
+          archive.solutionSet.strcat('solution_', int2str(sol)).metaData = metaData;
       else % n_pets == 1
           metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
           metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
           metaPar = rmfield(metaPar, pets{1});
           
-          archive.('results').(strcat('solution_', int2str(sol))).par = aux;
-          archive.('results').(strcat('solution_', int2str(sol))).metaPar = metaPar;
+          archive.('solutionSet').(strcat('solution_', int2str(sol))).par = aux;
+          archive.('solutionSet').(strcat('solution_', int2str(sol))).metaPar = metaPar;
       end
   end
-  archive.('results').data = data;
-  archive.('results').auxData = auxData;
-  archive.('results').txtPar = txtPar;
-  archive.('results').metaData = metaData;
-  archive.('results').txtData = txtData;
-  archive.('results').weights = weights;
+  archive.('solutionSet').data = data;
+  archive.('solutionSet').auxData = auxData;
+  archive.('solutionSet').txtPar = txtPar;
+  archive.('solutionSet').metaData = metaData;
+  archive.('solutionSet').txtData = txtData;
+  archive.('solutionSet').weights = weights;
 end

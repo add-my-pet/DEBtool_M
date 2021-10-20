@@ -2,7 +2,7 @@
 % Runs the calibration procedure
 
 %%
-function [best_sol, solutions_set, best_fval] = calibrate
+function [best_sol, result, best_fval] = calibrate
    % created 2020/03/07 by Juan Francisco Robles
    % edited 2021/01/15, 2021/01/19, 2021/03/14, 2021/03/22, 2021/05/12,
    % 2021/05/18, 2021/06/02 (fix by Bas Kooijman) by Juan Francisco Robles
@@ -128,13 +128,13 @@ function [best_sol, solutions_set, best_fval] = calibrate
    if ~strcmp(search_method, 'no')
       if strcmp(search_method, 'shade') % With SHADE
          if n_pets == 1
-            [best_sol, solutions_set, best_fval] = shade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+            [best_sol, result, best_fval] = shade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end
       elseif strcmp(search_method, 'l-shade') % With L-SHADE
          if n_pets == 1
-            [best_sol, solutions_set, best_fval] = lshade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+            [best_sol, result, best_fval] = lshade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end
@@ -145,9 +145,9 @@ function [best_sol, solutions_set, best_fval] = calibrate
    % Save the best results data into solution set for printing or working
    % with them by using DEB modules.
    % results_pets(best_sol, metaPar, txtPar, data, auxData, metaData, txtData, weights);
-   solutions_set = save_results(solutions_set, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+   result = save_results(result, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
     %% Save solutions found for a latter analysis
-   if exist('solutions_set', 'var') && ~isempty(solutions_set)
+   if exist('result', 'var') && ~isempty(result)
       if strcmp(results_filename, 'Default') ~= 0
          dtime = strsplit(datestr(datetime), ' ');
          auxtime = dtime{2}; auxtime([3 6 9]) = 'hms'; % Changing ':' time separators to h/m/s
@@ -155,15 +155,15 @@ function [best_sol, solutions_set, best_fval] = calibrate
       else
          filename = results_filename;
       end
-      save(filename, 'solutions_set');
+      save(filename, 'result');
       disp('CALIBRATION PROCESS FINISHED CORRECTLY');
    end
    
    %% Print results depeding on results output parameter
-   plot_results(solutions_set, ..., 
-            solutions_set.results.txtPar, solutions_set.results.data, ...,
-            solutions_set.results.auxData, metaData, ..., 
-            solutions_set.results.txtData, weights, results_display);
+   plot_results(result, ..., 
+            result.solutionSet.txtPar, result.solutionSet.data, ...,
+            result.solutionSet.auxData, metaData, ..., 
+            result.solutionSet.txtData, weights, results_display);
    
    %% check filter
    parPets = parGrp2Pets(best_sol); % convert parameter structure of group of pets to cell string for each pet

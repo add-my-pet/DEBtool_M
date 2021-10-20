@@ -2,7 +2,7 @@
 % Finds parameter values for a pet that minimizes the lossfunction using the 
 % Succes History Adaptation of Differential Evolution (SHADE) using a filter
 %%
-function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, filternm)
+function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filternm)
    % created 2020/02/15 by Juan Francisco Robles; 
    % modified 2020/02/17 by Juan Francisco Robles, 2020/02/20, 2020/02/21,
    % 2020/02/24, 2020/02/26, 2020/02/27, 2021/01/14, 2021/03/12,
@@ -10,7 +10,7 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
    %   
 
    %% Syntax
-   % [q, info, archive, bsf_fval] = <../lshade.m *lshade*> (func, par, data, auxData, weights, filternm)
+   % [q, info, result, bsf_fval] = <../lshade.m *lshade*> (func, par, data, auxData, weights, filternm)
 
    %% Description
    % Finds parameter values for a pet that minimizes the lossfunction using the 
@@ -52,9 +52,10 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
    %%
    %%%%%%%%%%%%%%%%%%% 
 
-   global num_results lossfunction max_fun_evals num_runs refine_initial  
-   global pop_size refine_running refine_run_prob refine_best refine_firsts
+   global num_results lossfunction max_fun_evals num_runs  
+   global pop_size refine_running refine_run_prob refine_best
    global verbose verbose_options random_seeds max_calibration_time
+   global activate_niching sigma_share
 
    % Option settings
    % initiate info setting
@@ -106,17 +107,16 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
    
    %%  Parameter settings for SHADE
    problem_size = length(index);
-   max_nfes = max_fun_evals;
-   ls_nfes = max_nfes * 0.7; 
+   max_nfes = max_fun_evals; 
    p_best_rate = 0.11;
    arc_rate = 1.5;
    memory_size = problem_size;
 
    %% Result file variables 
-   solution_set.NP = pop_size;
-   solution_set.pop = zeros(0, problem_size);
-   solution_set.funvalues = zeros(0, 1); 
-   solution_set.parnames = parnm(index); % Calibrated parameter names
+   result.numSolutions = pop_size;
+   result.solutionsParameters = zeros(0, problem_size);
+   result.lossFunctionValues = zeros(0, 1); 
+   result.parameterNames = parnm(index); % Calibrated parameter names
    
    %% Take initial time
    time_start = tic;
@@ -142,61 +142,21 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
       rng(random_seeds(run), 'twister'); 
       
       %% Archive file variables
-      archive.NP = arc_rate * pop_size; % maximum size of the archive
-      archive.pop = zeros(0, problem_size); % solutions to store in the archive
-      archive.funvalues = zeros(0, 1); % function value for the archived solutions
+      archive.numSolutions = arc_rate * pop_size; % maximum size of the archive
+      archive.solutionsParameters = zeros(0, problem_size); % solutions to store in the archive
+      archive.lossFunctionValues = zeros(0, 1); % function value for the archived solutions
       
       %% Initialize the main population
       [popold, ranges] = gen_individuals(func, par, data, auxData, filternm); 
       disp('Ranges');
       disp(ranges);
-      % Add refined guest if setted into calibration options
-      if refine_initial
-         fprintf('Launching local search over initial individual \n');
-         first = 1;
-         better = 1;
-         aux = par;
-         while better || first
-            [guest, ~, aux_fval] = local_search('predict_pets', aux, ..., 
-                                                data, auxData, weights, ...,
-                                                filternm);
-            guest = rmfield(guest, 'free');
-            gvec = cell2mat(struct2cell(guest));
-            aux = cell2struct(num2cell(gvec, np), parnm);
-            aux.free = free;
-            if first
-               aux_best = aux_fval;
-               first = 0; % Stop first criteria
-            else
-               if (1.0 - (aux_fval / aux_best)) > 0.001
-                  aux_best = aux_fval;
-               else
-                  better = 0;
-               end
-            end
-         end
-         
-         popold(pop_size, :) = gvec(index)';
-         
-      end
 
       pop = popold; % the old population becomes the current population
       
       % Evaluate the individuals of the first population
       fitness = zeros(pop_size, 1);
       for ind = 1:pop_size
-         if refine_firsts % Refine first population with a 
-                          % local search if needed
-            qvec(index) = pop(ind,:)';
-            q = cell2struct(num2cell(qvec, np), parnm);
-            q.free = free;
-            [q, ~, funct_val] = local_search('predict_pets', q, data, ..., 
-                                             auxData, weights, filternm);
-            q = rmfield(q, 'free');
-            qvec = cell2mat(struct2cell(q));
-            pop(ind,:) = qvec(index)';
-            fitness(ind) = funct_val;
-         else % Evaluate each individual if not refined
+         % Evaluate each individual if not refined
             qvec(index) = pop(ind,:)';
             q = cell2struct(num2cell(qvec, np), parnm);
             f_test = feval(filternm, q);
@@ -212,7 +172,6 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
             end
             [P, meanP] = struct2vector(f, nm);
             fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-         end
       end
 
       %% Initialize function evaluations and fitness values
@@ -244,18 +203,22 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
       %% Main loop
       while nfes < max_nfes
          fprintf('Num func evals %d | Total progress %.2f %%\n', nfes, (nfes/max_nfes)*100.0);
-         pop = popold; % the old population becomes the current population
          [temp_fit, sorted_index] = sort(fitness, 'ascend');
-
          if verbose
-            % Print some fitness values
-            fprintf('Best %d values found: ', verbose_options);
-            if verbose_options <= pop_size
-               disp(temp_fit(1:verbose_options).');
-            else
-               disp(temp_fit(1:pop_size).');
-            end
+            fprintf('Best %d loss function values: \n', verbose_options);
+            disp(temp_fit(1:verbose_options).');
          end
+         if activate_niching
+            fit_sharing = fitness_sharing(pop, fitness, ranges, sigma_share);
+            [~, sorted_index] = sort(fit_sharing, 'ascend');
+            %if verbose
+            %   fprintf('Best %d loss function values: \n', verbose_options);
+            %   disp(temp_fit(1:verbose_options).');
+            %   disp('Fitness sharing');
+            %   disp(f_shar(1:verbose_options).');
+            %end
+         end
+         pop = popold; % the old population becomes the current population
 
          mem_rand_index = ceil(memory_size * rand(pop_size, 1));
          mu_sf = memory_sf(mem_rand_index);
@@ -280,7 +243,7 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
          sf = min(sf, 1); 
 
          r0 = 1 : pop_size;
-         popAll = [pop; archive.pop];
+         popAll = [pop; archive.solutionsParameters];
          [r1, r2] = gnR1R2(pop_size, size(popAll, 1), r0);
 
          pNP = max(round(p_best_rate * pop_size), 2); %% choose at least two best solutions
@@ -379,40 +342,10 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
          %% Update best fitness found so far
          for i = 1 : pop_size
             nfes = nfes + 1;
-            % If individual is factible
-            if children_fitness(i) ~= pen_val
-               % Check if local search is active an if it is then check if to
-               % apply to the current individual
-               if refine_running && (nfes > ls_nfes)
-                  if (rand(1) < refine_run_prob)
-                     fprintf('Refining individual using local search \n');
-                     refine = 1;
-                     qvec(index) = ui(i,:)';
-                     q = cell2struct(num2cell(qvec, np), parnm);
-                     q.free = free;
-                     [q, iters, funct_val] = local_search('predict_pets', q, data, auxData, weights, filternm);
-                     q = rmfield(q, 'free');
-                  else
-                     refine = 0;
-                  end
-               else
-                  refine = 0;
-               end
-               if refine
-                  % The number of function evaluations are not considered thus
-                  % it is necessary for the population resize procedure of the
-                  % algorithm.
-                  nfes = nfes + iters;
-                  qvec = cell2mat(struct2cell(q));
-                  ui(i,:) = qvec(index)';
-                  children_fitness(i) = funct_val;
-               end
-
-               % Check if better than actual best
-               if children_fitness(i) < bsf_fit_var
-                  bsf_fit_var = children_fitness(i);
-                  bsf_solution = ui(i, :);
-               end
+            % Check if better than actual best
+            if children_fitness(i) < bsf_fit_var
+              bsf_fit_var = children_fitness(i);
+              bsf_solution = ui(i, :);
             end
             % Check if stopping criteria has been achieved
             if max_calibration_time > 0
@@ -439,7 +372,46 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
 
          popold = pop;
          popold(I == 2, :) = ui(I == 2, :);
-
+         
+         for i = 1 : pop_size
+            nfes = nfes + 1;
+            
+            % Check if local search is active an if it is then check if to
+            % apply to the current individual
+            if refine_running
+              randVal = rand(1);
+              if randVal < refine_run_prob
+                 fprintf('Refining individual using local search \n');
+                 refine = 1;
+                 qvec(index) = popold(i,:)';
+                 q = cell2struct(num2cell(qvec, np), parnm);
+                 q.free = free;
+                 [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                 q = rmfield(q, 'free');
+              else
+                 refine = 0;
+              end
+            else
+              refine = 0;
+            end
+            if refine
+              % The number of function evaluations are not considered thus
+              % it is necessary for the population resize procedure of the
+              % algorithm.
+              nfes = nfes + iters;
+              qvec = cell2mat(struct2cell(q));
+              popold(i,:) = qvec(index)';
+              fitness(i) = funct_val;
+            end
+            
+            % Check if stopping criteria has been achieved
+            if max_calibration_time > 0
+               current_time = toc(time_start)/60;
+               if current_time > max_calibration_time; break; end
+            else
+               if nfes > max_nfes; break; end
+            end
+         end
          num_success_params = numel(goodCR);
 
          if num_success_params > 0 
@@ -477,6 +449,7 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
          else
             if nfes > max_nfes; break; end
          end
+         
       end
       
       if verbose
@@ -494,7 +467,7 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
       %% If best one wants to be refined with the Nelder Mead's simplex method
       if refine_best
          fprintf('Refining best individual found using local search \n');
-         [q, fun_cals, fval] = local_search('predict_pets', q, data, auxData, weights, filternm);
+         [q, fun_cals, fval] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'best', bsf_fval);
          nfes = nfes + fun_cals;
          while (1.0 - (fval / bsf_fval)) > 0.0000001
             if verbose
@@ -504,12 +477,12 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
             % Update the best fitness
             bsf_fval = fval;
             % Launch the local search again
-            [q, fun_cals, fval] = local_search('predict_pets', q, data, auxData, weights, filternm);
+            [q, fun_cals, fval] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'best', bsf_fval);
             nfes = nfes + fun_cals;
          end
       end
       % Update best solution set
-      solution_set = updateArchive(solution_set, popold, fitness);
+      result = updateArchive(result, popold, fitness);
       
       %% Setting run information
       tEnd = datevec(toc(run_time_start)./(60*60*24));
@@ -525,8 +498,10 @@ function [q, solution_set, bsf_fval] = shade(func, par, data, auxData, weights, 
       aux = q; 
       aux = rmfield(aux, 'free');
       auxvec = cell2mat(struct2cell(aux));
-      solution_set = updateArchive(solution_set, auxvec(index)', fval);
+      result = updateArchive(result, auxvec(index)', fval);
    end
    %% Store the information structure into the results set
-   solution_set.runtime_information = info;
+   archive.runtime_information = info;
+   %% Save also the parameter ranges into the final result
+   archive.parameterRanges = ranges; 
 end
