@@ -30,6 +30,6 @@ if ~(n == size(y,1))
   R = []; return
 end
 
-x = x - ones(n,1) * mean(x,1); cov_x = var(x,1).^0.5;
-y = y - ones(n,1) * mean(y,1); cov_y = var(y,1).^0.5;
-R = (x' * y) ./ (cov_x' * cov_y)/ n;
+x = x - ones(n,1) * mean(x); 
+y = y - ones(n,1) * mean(y);
+R = x' * y ./ (std(x)' * std(y))/ n;
