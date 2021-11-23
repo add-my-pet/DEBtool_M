@@ -9,7 +9,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
 % modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 
 % modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20 by Bas Kooijman
-% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05 by Bas Kooijman
+% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05, 2021/10/24 by Bas Kooijman
 
 %% Syntax
 % [stat, txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -90,6 +90,15 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 %     - E_Wb: energy content at birth; all
 %     - del_Ub: fraction of reserve left at birth; all
 %     - g_Hb: energy divestment ratio at birth; all
+%
+%     - a_x: age at weaning/fledge; std, stx
+%     - t_x: gestation time; std, stx
+%     - L_x: structural length at weaning/fledge; std, stx
+%     - M_Vx: structural mass at weaning/fledge; std, stx
+%     - M_Ex: reserve mass at weaning/fledge; std, stx
+%     - Ww_x: wet weight at weaning/fledge; std, stx
+%     - Wd_x: dry weight at weaning/fledge; std, stx
+%     - E_Wx: energy content at weaning/fledge; std, stx
 %
 %     - a_p: age at puberty; all
 %     - L_p: structural length at puberty; all
@@ -329,7 +338,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   % life cycle
   switch model
     case 'std'
-      if exist('E_Hx','var')
+      if exist('E_Hx','var') % egg development
         pars_tx = [g k l_T v_Hb v_Hx];
         [t_x, t_b, l_x, l_b] = get_tp(pars_tx, f);
         pars_tp = [g k l_T v_Hb v_Hp];
@@ -351,11 +360,11 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       end
       l_i = f - l_T; s_M = 1;
       rho_B = 1/ 3/ (1 + f/ g);
-    case 'stx'
+    case 'stx' % foetal development
       pars_tx = [g k l_T v_Hb v_Hx v_Hp]; 
       [t_p, t_x, t_b, l_p, l_x, l_b, info] = get_tx(pars_tx, f);
       if info ~= 1              
-        fprintf('warning in get_tx: invalid parameter value combination for t_p \n')
+        fprintf('warning in get_tx: invalid parameter value combination for pars_tx \n')
       end
       l_i = f - l_T; s_M = 1;
       rho_B = 1/ 3/ (1 + f/ g);
@@ -566,6 +575,21 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
         end
     t_g = t_0 + a_b; % gestation/incubation time. Note that t_0 is always given at T_body!
     stat.t_g = t_g; units.t_g = 'd'; label.t_g = 'gestation time'; temp.t_g = T; fresp.t_g = f;
+  end  
+  
+  % weaning/fledging
+  if exist('E_Hx','var') && (strcmp(model, 'std') || strcmp(model, 'stx'))
+    L_x = L_m * l_x; 
+    M_Vx = M_V * L_x^3; M_Ex = f * E_m * L_x^3/ mu_E; 
+    Ww_x = L_x^3 * (1 + f * w); Wd_x = d_V * Ww_x; E_Wx = M_Vx * mu_V + M_Ex * mu_E;
+    a_x = t_x/ k_M/ TC; 
+    stat.l_x = l_x;   units.l_x = '-';      label.l_x = 'scaled structural length at weaning/fledging'; temp.l_x = NaN; fresp.l_x = f;
+    stat.L_x = L_x;   units.L_x = 'cm';     label.L_x = 'structural length at weaning/fledging'; temp.L_x = NaN; fresp.L_x = f;
+    stat.M_Vx = M_Vx; units.M_Vx = 'mol';   label.M_Vx = 'structural mass at weaning/fledging'; temp.M_Vx = NaN; fresp.M_Vx = f;
+    stat.Ww_x = Ww_x; units.Ww_x = 'g';     label.Ww_x = 'wet weight at weaning/fledging'; temp.Ww_x = NaN; fresp.Ww_x = f;
+    stat.Wd_x = Wd_x; units.Wd_x = 'g';     label.Wd_x = 'dry weight at weaning/fledging'; temp.Wd_x = NaN; fresp.Wd_x = f;
+    stat.E_Wx = E_Wx; units.E_Wx = 'J';     label.E_Wx = 'energy content at weaning/fledging';   temp.E_Wx = NaN; fresp.E_Wx = f;
+    stat.a_x = a_x;   units.a_x = 'd';      label.a_x = 'age at weaning/fledging';    temp.a_x = T; fresp.a_x = f;
   end  
   
   % start/end shrinking
