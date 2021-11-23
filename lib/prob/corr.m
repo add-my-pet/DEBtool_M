@@ -30,6 +30,6 @@ if ~(n == size(y,1))
   R = []; return
 end
 
-x = x - ones(n,1) * mean(x); 
-y = y - ones(n,1) * mean(y);
-R = x' * y ./ (std(x)' * std(y))/ n;
+x = x - ones(n,1) * mean(x,1); std_x = var(x,1).^0.5;
+y = y - ones(n,1) * mean(y,1); std_y = var(y,1).^0.5;
+R = x' * y ./ (std_x' * std_y)/ n;
