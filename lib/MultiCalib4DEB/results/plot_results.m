@@ -2,18 +2,18 @@
 % Computes model predictions and plots results from calibration data 
 
 %%
-function plot_results(solutions_set, txtPar, data, auxData, metaData, txtData, weights, mode)
+function plot_results(result, txtPar, data, auxData, metaData, txtData, weights, mode)
 % created 2021 by Juan Francisco Robles
 % Edited 2021/06/02 (fix by Bas Kooijman) by Juan Francisco Robles
 %% Syntax
-% <../plot_results.m *plot_results*>(solutions_set, txtPar, data, auxData, metaData, txtData, weights) 
+% <../plot_results.m *plot_results*>(result, txtPar, data, auxData, metaData, txtData, weights) 
 
 %% Description
 % Computes model predictions and handles them (by plotting, saving or publishing)
 %
 % Input
 % 
-% * solutions_set: the set of solutions returned by the multimodal
+% * result: the set of solutions returned by the multimodal
 %                  calibration algorithm
 % * txtPar: structure with information on parameters
 % * data: structure with data for species
@@ -39,16 +39,16 @@ function plot_results(solutions_set, txtPar, data, auxData, metaData, txtData, w
   
   fig_counter = 1; 
   if strcmp(mode, 'Basic') % Plots only prediction results to screen. 
-     plotResulValues(solutions_set, txtPar, data, auxData, metaData, txtData, weights, pets);
+     plotResulValues(result, txtPar, data, auxData, metaData, txtData, weights, pets);
   elseif strcmp(mode, 'Best') % Plots best prediction result to screen. 
-     plotResultImage(solutions_set, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultImage(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   elseif strcmp(mode, 'Set') % Plots set predictions to screen. 
-     plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultsSet(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   else % Plots prediction values, best prediction plot, and predictions set to screen. 
-     plotResulValues(solutions_set, txtPar, data, auxData, metaData, txtData, weights, pets);
-     plotResultImage(solutions_set, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResulValues(result, txtPar, data, auxData, metaData, txtData, weights, pets);
+     plotResultImage(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
      fig_counter = fig_counter + 1;
-     plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultsSet(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   end
    
 end
@@ -127,15 +127,15 @@ end
 
 
 %% Plots results into screen.
-function plotResultImage(solutions_set, data, auxData, ~, txtData, weights, pets, save_results, fig_counter)
+function plotResultImage(result, data, auxData, ~, txtData, weights, pets, save_results, fig_counter)
 
    n_pets = length(pets);
    % Get the best solution index from data. 
-   best_index = find(solutions_set.pop(:,1)==min(solutions_set.pop(:,1)));
-   par = solutions_set.results.(['solution_',num2str(best_index)]).par;
-   metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
-   metaData = solutions_set.results.metaData;
-   txtPar = solutions_set.results.txtPar;
+   best_index = find(result.solutionsParameters(:,1)==min(result.solutionsParameters(:,1)));
+   par = result.solutionSet.(['solution_',num2str(best_index)]).par;
+   metaPar = result.solutionSet.(['solution_',num2str(best_index)]).metaPar;
+   metaData = result.solutionSet.metaData;
+   txtPar = result.solutionSet.txtPar;
 
    close all % to avoid saving figures generated prior the current run
    
@@ -246,13 +246,13 @@ function plotResultImage(solutions_set, data, auxData, ~, txtData, weights, pets
 end
 
 %% Results set plot. 
-function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter)
+function plotResultsSet(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter)
   % Get the number of pets from data. 
   n_pets = length(pets);
   % Get the number of solutions and the best solution index from data. 
-  f_names = fieldnames(solutions_set.results);
+  f_names = fieldnames(result.solutionSet);
   num_solutions = sum(contains(f_names, 'solution_'));
-  best_index = find(solutions_set.pop(:,1)==min(solutions_set.pop(:,1)));
+  best_index = find(result.solutionsParameters(:,1)==min(result.solutionsParameters(:,1)));
   
   if fig_counter == 1
    close all % to avoid saving figures generated prior the current run
@@ -279,14 +279,14 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
       % Leave the best solution plot for the last step. 
       if sol == num_solutions
          plot_best = true; % Activating the best solution plot. 
-         par = solutions_set.results.(['solution_',num2str(best_index)]).par;
-         metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
+         par = result.solutionSet.(['solution_',num2str(best_index)]).par;
+         metaPar = result.solutionSet.(['solution_',num2str(best_index)]).metaPar;
       else % For solutions which are different from the best one. 
          if sol == best_index % Skip the best solution index.  
            sol = sol+1;
          end
-         par = solutions_set.results.(['solution_',num2str(sol)]).par;
-         metaPar = solutions_set.results.(['solution_',num2str(sol)]).metaPar;
+         par = result.solutionSet.(['solution_',num2str(sol)]).par;
+         metaPar = result.solutionSet.(['solution_',num2str(sol)]).metaPar;
       end
       
       % Calculate prediction. 
@@ -339,9 +339,9 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
   xlim=get(gca,'xlim');
   % Error test. 
   error_test = ['  MRE = ', ..., 
-     num2str(round(solutions_set.results.(['solution_',num2str(best_index)]).metaPar.MRE, 5)), ...,
+     num2str(round(result.solutionSet.(['solution_',num2str(best_index)]).metaPar.MRE, 5)), ...,
      '\nSMSE = ', ..., 
-     num2str(round(solutions_set.results.(['solution_',num2str(best_index)]).metaPar.SMSE, 5)), ..., 
+     num2str(round(result.solutionSet.(['solution_',num2str(best_index)]).metaPar.SMSE, 5)), ..., 
      ' \n'];
   % Set tests. 
   text(xlim(2)-90,ylim(1)+20, sprintf(error_test));
@@ -354,12 +354,12 @@ function plotResultsSet(solutions_set, data, auxData, metaData, txtData, weights
 end
 
 %% Plots the result vales (such as MRE, SMSE, and parameter values on screen
-function plotResulValues(solutions_set, txtPar, data, auxData, metaData, txtData, weights, pets)
+function plotResulValues(result, txtPar, data, auxData, metaData, txtData, weights, pets)
    n_pets = length(pets);
    % Get the best solution index from data.
-   best_index = find(solutions_set.pop(:,1)==min(solutions_set.pop(:,1)));
-   par = solutions_set.results.(['solution_',num2str(best_index)]).par; 
-   metaPar = solutions_set.results.(['solution_',num2str(best_index)]).metaPar;
+   best_index = find(result.solutionsParameters(:,1)==min(result.solutionsParameters(:,1)));
+   par = result.solutionSet.(['solution_',num2str(best_index)]).par; 
+   metaPar = result.solutionSet.(['solution_',num2str(best_index)]).metaPar;
    
    % Calculate prediction. 
    [prdData, metaPar, ~, ~, parPets] = calculatePrediction(par, metaPar, data, auxData, weights, pets);

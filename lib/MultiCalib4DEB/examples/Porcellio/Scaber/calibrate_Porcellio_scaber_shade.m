@@ -18,9 +18,17 @@ calibration_options('default');
 % Setting 'mm' (mmultimodal) for calibration 
 calibration_options('method', 'mm1');
 % Set number of evaluations
-calibration_options('max_fun_evals', 30000);
+%calibration_options('max_fun_evals', 30000);
+calibration_options('max_calibration_time', 20);
+% Activating niching mechanism to maintain diversity into solutions set
+calibration_options('activate_niching', 1); 
+calibration_options('sigma_share', 0.15);
+% Activate refinement with iterative local search over random individuals
+% during the calibration process
+calibration_options('refine_running', 1);
+calibration_options('refine_run_prob', 0.01);
 % Set the maximum number of solutions
-calibration_options('num_results', 200);
+calibration_options('num_results', 100);
 % Set the total time in minutes
 %calibration_options('max_calibration_time', 180);
 % Set value for individual generation ranges

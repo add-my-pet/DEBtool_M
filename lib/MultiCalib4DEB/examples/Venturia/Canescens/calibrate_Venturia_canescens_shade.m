@@ -29,6 +29,13 @@ calibration_options('gen_factor', 0.3);
 calibration_options('add_initial', 0); 
 % Set if the best individual found will be refined with a local search
 % method
+% Activating niching mechanism to maintain diversity into solutions set
+calibration_options('activate_niching', 1); 
+calibration_options('sigma_share', 0.15);
+% Activate refinement with iterative local search over random individuals
+% during the calibration process
+calibration_options('refine_running', 1);
+calibration_options('refine_run_prob', 0.01);
 calibration_options('refine_best', 1);
 % Set if the bounds for the algorithm's first individuals population is
 % taken from the data values or from pseudodata (1 -> data | 0 ->

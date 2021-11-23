@@ -1,7 +1,7 @@
 global pets 
 
 % The pet to calibrate
-pets = {'Clarias_gariepinus'};
+pets = {'Homo_sapiens'};
 % Check pet consistence
 check_my_pet(pets);
 
@@ -9,7 +9,7 @@ check_my_pet(pets);
 [data, auxData, metaData, txtData, weights] = mydata_pets;
 
 % Load the solution set (example for Clarias Gariepinus). 
-load('solutionSet_Clarias_gariepinus_20-Apr-2021_20:42:00.mat')
+%load('solutionSet_Clarias_gariepinus_20-Apr-2021_20:42:00.mat')
 
 % Plot the solutions!
 plot_results(solutions_set, ..., 

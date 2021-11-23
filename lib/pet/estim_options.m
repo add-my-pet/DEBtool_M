@@ -5,7 +5,8 @@
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
   %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
-  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
+  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles,
+  %    2021/10/20 by Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -87,9 +88,6 @@ function estim_options (key, val)
   %      1: activated
   %      0: not activated (default)
   %
-  %    'refine_initial' (method mmea only): if the initial individual is refined using Nelder-Mead.
-  %      0: not activated (default)
-  %      1: activated
   %     
   %    'refine_best'  (method mmea only): if the best individual found is refined using Nelder-Mead.
   %      0: not activated (default)
@@ -140,6 +138,14 @@ function estim_options (key, val)
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
   %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
+  %    'activate_niching': True to activate the application of fitness 
+  %       sharing method over the solutions through the calibration process to 
+  %       promote diversity in the final solutions set. 
+  %       0: Not activated. 
+  %       1: Activated (default)
+  %    'sigma_share': The value of the sigma share parameter (that is used
+  %       into the fitness sharing niching method if it is activated)
+  %
   % Output
   %
   % * no output, but globals are set to values or values are printed to screen
@@ -164,10 +170,10 @@ function estim_options (key, val)
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size 
   global search_method num_results gen_factor bounds_from_ind % method mmea only
-  global max_calibration_time  num_runs add_initial  
-  global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
-  global verbose verbose_options random_seeds seed_index ranges mat_file
-  global results_display results_filename save_results
+  global max_calibration_time  num_runs add_initial refine_best
+  global refine_running refine_run_prob verbose verbose_options
+  global random_seeds seed_index ranges mat_file results_display
+  global results_filename save_results activate_niching sigma_share
 
   availableMethodOptions = {'no', 'nm', 'mmea'};
 
@@ -202,14 +208,10 @@ function estim_options (key, val)
       bounds_from_ind = 1; % This options selects from where the parameters for the initial population of individuals are taken. 
                            % If the value is equal to 1 the parameters are generated from the data initial values 
                            % if is 0 then the parameters are generated from the pseudo data values. 
-      add_initial = 0;     % If to add an invidivual taken from initial data into first population.
-      refine_initial = 0;  % If a refinement is applied to the initial individual of the population 
-                           % (only if it the 'add_initial' option is activated)
+      add_initial = 0;     % If to add an invidivual taken from initial data into first population.                     % (only if it the 'add_initial' option is activated)
       refine_best = 0;     % If a local search is applied to the best individual found. 
-      refine_running = 0;  % If to apply local search to some individuals while simulation is running. 
+      refine_running = 1;  % If to apply local search to some individuals while simulation is running. 
       refine_run_prob = 0.05; % The probability to apply a local search to an individual while algorithm is  running. 
-      refine_firsts = 0;   % If to apply a local search to the first population (this is recommended when the
-                           % algorithm is not able to converge to good solutions till the end of its execution). 
       max_calibration_time = 30; % The maximum calibration time calibration process. 
       num_runs = 1; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
@@ -226,8 +228,10 @@ function estim_options (key, val)
       results_filename = 'Default';
       save_results = false; % If results output are saved.
       mat_file = '';
-
-    case 'loss_function'
+      activate_niching = 1; 
+      sigma_share = 0.15;
+    
+      case 'loss_function'
       if exist('val','var') == 0
         if numel(lossfunction) ~= 0
           fprintf(['loss_function = ', lossfunction,' \n']);  
@@ -441,28 +445,6 @@ function estim_options (key, val)
         refine_run_prob = val;
       end
       
-    case 'refine_firsts'
-      if ~exist('val','var')
-        if numel(refine_firsts) ~= 0
-          fprintf(['refine_firsts = ', num2str(refine_firsts),' \n']);  
-        else
-          fprintf('refine_firsts = unknown \n');
-        end	      
-      else
-        refine_firsts = val;
-      end
-      
-    case 'refine_initial'
-      if ~exist('val','var')
-        if numel(refine_initial) ~= 0
-          fprintf(['refine_initial = ', num2str(refine_initial),' \n']);  
-        else
-          fprintf('refine_initial = unknown \n');
-        end	      
-      else
-        refine_initial = val;
-      end
-      
     case 'refine_best'
       if ~exist('val','var')
         if numel(refine_best) ~= 0
@@ -534,7 +516,7 @@ function estim_options (key, val)
     case 'ranges'
       if ~exist('val','var')
         if numel(ranges) ~= 0
-          fprintf(['ranges = structure with fields: \n']);
+          fprintf('ranges = structure with fields: \n');
           disp(struct2table(ranges));
         else
           fprintf('ranges = unkown \n');
@@ -591,6 +573,33 @@ function estim_options (key, val)
         mat_file = val;
       end
 
+    case 'activate_niching'
+         if ~exist('val','var')
+            if numel(activate_niching) ~= 0
+               fprintf(['activate_niching = ', num2str(activate_niching),' \n']);  
+            else
+               fprintf('activate_niching = unknown \n');
+            end	      
+         else
+            activate_niching = val;
+         end
+         
+      case 'sigma_share'
+         if ~exist('val','var')
+            if numel(sigma_share) ~= 0.0
+               fprintf(['sigma_share = ', num2str(sigma_share),' \n']);  
+            else
+               fprintf('sigma_share = unknown \n');
+            end	      
+         else
+            if val > 1.0
+               val = 1.0;
+            elseif val < 0.0
+               val = .0;
+            end
+            sigma_share = val;
+         end
+         
     % only a single input
     case 'inexistent' 
       if numel(lossfunction) ~= 0
@@ -717,18 +726,6 @@ function estim_options (key, val)
         fprintf('refine_run_prob = unkown \n');
       end
       
-      if numel(refine_firsts) ~= 0
-        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method mmea)\n']);
-      else
-        fprintf('refine_firsts = unkown \n');
-      end
-      
-      if numel('refine_initial') ~= 0
-        fprintf(['refine_initial = ', num2str(refine_initial),' (method mmea)\n']);
-      else
-        fprintf('refine_initial = unkown \n');
-      end
-      
       if numel(refine_best) ~= 0
         fprintf(['refine_best = ', num2str(refine_best),' (method mmea)\n']);
       else
@@ -754,7 +751,7 @@ function estim_options (key, val)
       end
       
       if numel(ranges) ~= 0 
-        fprintf(['ranges = structure with fields (method mmea)\n']);
+        fprintf('ranges = structure with fields (method mmea)\n');
         disp(struct2table(ranges));
       else
         fprintf('ranges = unkown \n');
@@ -778,6 +775,18 @@ function estim_options (key, val)
         fprintf('mat_file = unkown \n');
       end
 
+      if strcmp(activate_niching, '') ~= 0
+        fprintf(['activate_niching = ', activate_niching,' \n']);
+      else
+        fprintf('activate_niching = unkown \n');
+      end
+      
+      if strcmp(sigma_share, '') ~= 0
+        fprintf(['sigma_share = ', sigma_share,' \n']);
+      else
+        fprintf('sigma_share = unkown \n');
+      end
+      
     otherwise
         fprintf(['key ', key, ' is unkown \n\n']);
         estim_options;

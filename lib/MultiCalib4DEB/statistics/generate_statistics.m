@@ -101,16 +101,16 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the cardinality of the solutions set. 
    function value = cardinality(data)
       disp(data);
-      if isfield(data, 'funvalues')
-         value = length(data.funvalues);
+      if isfield(data, 'lossFunctionValues')
+         value = length(data.lossFunctionValues);
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
    end
    % Calculates and returns the average fitness of the solutions set. 
    function value = mean_fitness(data)
-      if isfield(data, 'funvalues')
-         value = mean(data.funvalues);
+      if isfield(data, 'lossFunctionValues')
+         value = mean(data.lossFunctionValues);
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -118,8 +118,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the standard deviation for the fitness of the 
    % solutions set. 
    function value = std_fitness(data)
-      if isfield(data, 'funvalues')
-         value = std(data.funvalues);
+      if isfield(data, 'lossFunctionValues')
+         value = std(data.lossFunctionValues);
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -128,8 +128,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the average distance for the fitness of the 
    % solutions set. 
    function value = average_distance_fitness(data)
-      if isfield(data, 'funvalues')
-         value = norm(data.funvalues)/length(data.funvalues);
+      if isfield(data, 'lossFunctionValues')
+         value = norm(data.lossFunctionValues)/length(data.lossFunctionValues);
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -139,8 +139,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the average values of the parameters solutions 
    % set.
    function values = mean_params(data)
-      if isfield(data, 'pop')
-         values = mean(data.pop(:,:));
+      if isfield(data, 'solutionsParameters')
+         values = mean(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -148,8 +148,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the standard deviation values of the parameters
    % solutions set.
    function values = std_params(data)
-       if isfield(data, 'pop')
-         values = std(data.pop(:,:));
+       if isfield(data, 'solutionsParameters')
+         values = std(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -158,8 +158,8 @@ function [statistics] = generate_statistics(data)
    % the diference between the maximum and minimum value of each calibrated
    % parameter) of the parameters solutions set.
    function values = spread(data)
-      if isfield(data, 'pop')
-         values = max(data.pop(:,:)) - min(data.pop(:,:));
+      if isfield(data, 'solutionsParameters')
+         values = max(data.solutionsParameters(:,:)) - min(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -167,8 +167,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the minimum values of the parameters solutions 
    % set.
    function values = minimum_params(data)
-       if isfield(data, 'pop')
-         values = min(data.pop(:,:));
+       if isfield(data, 'solutionsParameters')
+         values = min(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -176,8 +176,8 @@ function [statistics] = generate_statistics(data)
    % Calculates and returns the maximum values of the parameters solutions 
    % set.
    function values = maximum_params(data)
-       if isfield(data, 'pop')
-         values = max(data.pop(:,:));
+       if isfield(data, 'solutionsParameters')
+         values = max(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -189,8 +189,8 @@ function [statistics] = generate_statistics(data)
    % value indicates that the distribution has a sharp peak with long and
    % fal tails. 
    function values = kurtosis_params(data)
-       if isfield(data, 'pop')
-         values = kurtosis(data.pop(:,:));
+       if isfield(data, 'solutionsParameters')
+         values = kurtosis(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -201,8 +201,8 @@ function [statistics] = generate_statistics(data)
    % modality characteristics. A negative skew (left) has fewer low values
    % and a positive (rigth) has fewer large values. 
    function values = skewness_params(data)
-       if isfield(data, 'pop')
-         values = skewness(data.pop(:,:));
+       if isfield(data, 'solutionsParameters')
+         values = skewness(data.solutionsParameters(:,:));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
@@ -216,10 +216,10 @@ function [statistics] = generate_statistics(data)
    % numbers point toward multimodality whereas lower numbers point toward
    % unimodality. 
    function values = bimodal_coefficient_params(data)
-       if isfield(data, 'pop')
+       if isfield(data, 'solutionsParameters')
          skew = skewness_params(data);
          kurt = kurtosis_params(data);
-         values = ((skew(:,:).^2) + 1)./(kurt(:,:) + ((3.*(length(data.pop)-1).^2)/((length(data.pop)-2).*(length(data.pop)-3))));
+         values = ((skew(:,:).^2) + 1)./(kurt(:,:) + ((3.*(length(data.solutionsParameters)-1).^2)/((length(data.solutionsParameters)-2).*(length(data.solutionsParameters)-3))));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end

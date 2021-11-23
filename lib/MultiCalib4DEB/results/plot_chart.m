@@ -1,17 +1,17 @@
 %% plot_chart
 % Plots charts results from user options.  
-function plot_chart( solutions_set, chart_type, selected_parameters, save_chart, solution_index)
+function plot_chart( result, chart_type, selected_parameters, save_chart, solution_index)
 % created 2021 by Juan Francisco Robles
 
 %% Syntax
-% <../plot_results.m *plot_results*>(solutions_set, chart_type, selected_parameters, save_chart, solution_index) 
+% <../plot_results.m *plot_results*>(result, chart_type, selected_parameters, save_chart, solution_index) 
 
 %% Description
 % Computes model predictions and handles them (by plotting, saving or publishing)
 %
 % Input
 % 
-% * solutions_set: the set of solutions returned by the multimodal
+% * result: the set of solutions returned by the multimodal
 %                  calibration algorithm
 % * chart_type: the type of chart to plot
 % * selected_parameters: the pair of parameters to plot
@@ -32,7 +32,7 @@ function plot_chart( solutions_set, chart_type, selected_parameters, save_chart,
 
   global pets
   
-  parnames = solutions_set.parnames;
+  parnames = result.parameterNames;
 
   if isempty(selected_parameters)
      fprintf('There are not parameters for plotting soutions.');
@@ -49,56 +49,56 @@ function plot_chart( solutions_set, chart_type, selected_parameters, save_chart,
      return;
   else
      % Get the parameter indexes. 
-     first_param_index = find(strcmp(solutions_set.parnames, selected_parameters(1)));
-     second_param_index = find(strcmp(solutions_set.parnames, selected_parameters(2)));
+     first_param_index = find(strcmp(result.parameterNames, selected_parameters(1)));
+     second_param_index = find(strcmp(result.parameterNames, selected_parameters(2)));
      
      fig_counter = 1; 
      if strcmp(chart_type, 'density_hm') % Plots a density heatmap for two variables. 
-        density_heatmap(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ..., 
-           solutions_set.parnames(first_param_index), solutions_set.parnames(second_param_index));
+        density_heatmap(result.solutionsParameters(:,first_param_index), result.solutionsParameters(:,second_param_index), ..., 
+           result.parameterNames(first_param_index), result.parameterNames(second_param_index));
         if save_chart
            savePNG('Density_Heat_Map', pets, fig_counter);
            fig_counter = fig_counter + 1;
         end
      elseif strcmp(chart_type, 'density_hm_scatter') % Plots a density heatmap for two variables together with 
                                                      % an scatter plot. 
-        density_heatmap(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ..., 
-           solutions_set.parnames(first_param_index), solutions_set.parnames(second_param_index), solutions_set.funvalues);
+        density_heatmap(result.solutionsParameters(:,first_param_index), result.solutionsParameters(:,second_param_index), ..., 
+           result.parameterNames(first_param_index), result.parameterNames(second_param_index), result.lossFunctionValues);
         if save_chart
            savePNG('Density_Heat_Map_Scatter', pets, fig_counter);
            fig_counter = fig_counter + 1;
         end
      elseif strcmp(chart_type, 'scatter') % Plots an scatter plot for two variables.  
-        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
-           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
-           solutions_set.parnames(second_param_index));
+        scatter_plot(result.solutionsParameters(:,first_param_index), result.solutionsParameters(:,second_param_index), ... ,
+           result.lossFunctionValues, result.parameterNames(first_param_index), ..., 
+           result.parameterNames(second_param_index));
         if save_chart
            savePNG('Scatter', pets, fig_counter);
            fig_counter = fig_counter + 1;
         end
      elseif strcmp(chart_type, 'weighted_scatter') % Plots an scatter plot for two variables, weighting 
                                                    % each parameter combination with their fitness values.  
-        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
-           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
-           solutions_set.parnames(second_param_index), 1);
+        scatter_plot(result.solutionsParameters(:,first_param_index), result.solutionsParameters(:,second_param_index), ... ,
+           result.lossFunctionValues, result.parameterNames(first_param_index), ..., 
+           result.parameterNames(second_param_index), 1);
         if save_chart
            savePNG('Weighted_Scatter', pets, fig_counter);
            fig_counter = fig_counter + 1;
         end
      elseif strcmp(chart_type, 'density_scatter') % Plots an scatter plot for two variables, weighting 
                                                    % each parameter combination with their fitness values.  
-        scatter_plot(solutions_set.pop(:,first_param_index), solutions_set.pop(:,second_param_index), ... ,
-           solutions_set.funvalues, solutions_set.parnames(first_param_index), ..., 
-           solutions_set.parnames(second_param_index), 2);
+        scatter_plot(result.solutionsParameters(:,first_param_index), result.solutionsParameters(:,second_param_index), ... ,
+           result.lossFunctionValues, result.parameterNames(first_param_index), ..., 
+           result.parameterNames(second_param_index), 2);
         if save_chart
            savePNG('Weighted_Scatter', pets, fig_counter);
            fig_counter = fig_counter + 1;
         end
      else % plot simple solution
         solution_index = join(['solution_', num2str(solution_index)]);
-        plot_solution(solutions_set.results.(solution_index).par, solutions_set.results.(solution_index).metaPar, ..., 
-           solutions_set.results.data, solutions_set.results.auxData, solutions_set.results.metaData, ..., 
-           solutions_set.results.txtData);
+        plot_solution(result.solutionSet.(solution_index).par, result.solutionSet.(solution_index).metaPar, ..., 
+           result.solutionSet.data, result.solutionSet.auxData, result.solutionSet.metaData, ..., 
+           result.solutionSet.txtData);
         if save_chart
            savePNG(join(['Solution_', num2str(solution_index)]), pets, fig_counter);
            fig_counter = fig_counter + 1;

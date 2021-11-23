@@ -110,6 +110,11 @@ function calibration_options (key, val)
 %    'mat_file': A file with results from where to initialize the
 %                calibration parameters (only useful if pars_init_method 
 %                option is equal to 1 and if there is a result file)
+%    'activate_niching': True to activate the application of fitness
+%    sharing method over the solutions through the calibration process to
+%    promote diversity in the final solutions set. 
+%    'sigma_share': The value of the sigma share parameter (that is used
+%    into the fitness sharing niching method if it is activated)
 % Output
 %
 % * no output, but globals are set to values or values are printed to screen
@@ -127,7 +132,8 @@ function calibration_options (key, val)
    global max_calibration_time  num_runs add_initial refine_initial  
    global refine_best  refine_running refine_run_prob refine_firsts 
    global verbose verbose_options random_seeds seed_index ranges mat_file
-   global results_display results_filename save_results
+   global results_display results_filename save_results activate_niching 
+   global sigma_share
    
    if exist('key','var') == 0
       key = 'inexistent';
@@ -160,15 +166,11 @@ function calibration_options (key, val)
                              % 'add_initial' option is activated)
          refine_best = 0; % If a local search is applied to the best 
                           % individual found. 
-         refine_running = 0; % If to apply local search to some individuals
+         refine_running = 1; % If to apply local search to some individuals
                              % while simulation is running. 
-         refine_run_prob = 0.05; % The probability to apply a local search
+         refine_run_prob = 0.01; % The probability to apply a local search
                                  % to an individual while algorithm is
                                  % running. 
-         refine_firsts = 0; % If to apply a local search to the first 
-                            % population (this is recommended when the
-                            % algorithm is not able to converge to good
-                            % solutions till the end of its execution). 
          max_fun_evals = 10000; % The maximum number of function 
                                 % evaluations to perform before to end the
                                 % calibration process. 
@@ -198,6 +200,9 @@ function calibration_options (key, val)
          results_filename = 'Default';
          save_results = false; % If results output are saved.
          mat_file = '';
+         activate_niching = 1; 
+         sigma_share = 0.15;
+         
       case 'search_method'
          if ~exist('val','var')
             search_method = 'shade'; % Select SHADE as the default method.
@@ -424,6 +429,31 @@ function calibration_options (key, val)
          else
             mat_file = val;
          end
+      case 'activate_niching'
+         if ~exist('val','var')
+            if numel(activate_niching) ~= 0
+               fprintf(['activate_niching = ', num2str(activate_niching),' \n']);  
+            else
+               fprintf('activate_niching = unknown \n');
+            end	      
+         else
+            activate_niching = val;
+         end
+      case 'sigma_share'
+         if ~exist('val','var')
+            if numel(sigma_share) ~= 0.0
+               fprintf(['sigma_share = ', num2str(sigma_share),' \n']);  
+            else
+               fprintf('sigma_share = unknown \n');
+            end	      
+         else
+            if val > 1.0
+               val = 1.0;
+            elseif val < 0.0
+               val = .0;
+            end
+            sigma_share = val;
+         end
       otherwise
          if ~strcmp(key, 'inexistent')   
             fprintf(['key ', key, ' is unkown \n\n']);
@@ -526,6 +556,16 @@ function calibration_options (key, val)
             fprintf(['mat_file = ', mat_file,' \n']);
          else
             fprintf('mat_file = unkown \n');
+         end
+         if strcmp(activate_niching, '') ~= 0
+            fprintf(['activate_niching = ', activate_niching,' \n']);
+         else
+            fprintf('activate_niching = unkown \n');
+         end
+         if strcmp(sigma_share, '') ~= 0
+            fprintf(['sigma_share = ', sigma_share,' \n']);
+         else
+            fprintf('sigma_share = unkown \n');
          end
    end
 end
