@@ -6,6 +6,7 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
   % created at 2008/06/04 by Bas Kooijman, 
   % modified 2014/03/04 Starrlight Augustine, 2015/01/18 Bas Kooijman
   % modified 2018/09/10 (t -> tau) Nina Marn
+  % modified 2021/11/24 Bas Kooijman
   
   %% Syntax
   % [tau_p, tau_b, lp, lb, info] = <../get_tp.m *get_tp*>(p, f, lb0)
@@ -75,9 +76,10 @@ function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
     info = 1;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
     pars_lb = p([1 2 4]);
-    [tau_b, lb, info] = get_tb (pars_lb, f); 
+    [tau_b, lb] = get_tb (pars_lb, f); 
     tau_p = 1e20; % tau_p is never reached
-    lp = 1;    % lp is nerver reached
+    lp = 1;    % lp is never reached
+    info = 0;
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 = l_b 
       [tau_b, lb, info] = get_tb([g, k, vHb], f);      
