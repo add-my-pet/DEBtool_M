@@ -43,8 +43,9 @@ function [tau_p, tau_x, tau_b, lp, lx, lb, info] = get_tx_old(p, f)
   else
     sF = 1e10;  % fast development
   end
-  [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, [], f, g, k, lT, vHb, sF);
-  info =1;
+  options = odeset('AbsTol',1e-10, 'RelTol',1e-10);
+  [vH l] = ode45(@dget_lx, [0; vHb; vHx; vHp], 1e-20, options, f, g, k, lT, vHb, sF);
+  info = 1;
   l(1) = []; lb = l(1); lx = l(2); lp = l(3); li = f - lT;
   tau_b = - 3 * (1 + sF * f/ g) * log(1 - lb/ sF/ f);
   %tb = 3 * lb/ g;
