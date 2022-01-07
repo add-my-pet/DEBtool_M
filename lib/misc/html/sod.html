@@ -1,0 +1,154 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>sod</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-07"><meta name="DC.source" content="sod.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>sod</h1><!--introduction--><p>computes scaled outlier distances form a array of trait values</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>dist = <a href="../sol.m"><b>sod</b></a> (val, in_outlier, norm)</p><h2 id="4">Description</h2><p>Computes scaled outlier distances from a array of trait values: the mean distance between outlier and other species, divided by the mean distance between all other species. Distances between outlier species are not taken into account. All species, except the ones in the indices in_outlier, are treated as other species. So n-m other species exist, but if input in_outlier is not specified: n-1 other species exist</p><p>Input:</p><div><ul><li>val: (n,k)-array with trait values; species in rows, traits in columns</li><li>in_outlier: optional m-vector of indicies for species that are treated as outliers (default: all species one-by-one)</li><li>norm: optional boolean for loss function F_sb (0, default) or F_su (1) as distance measure</li></ul></div><p>Output:</p><div><ul><li>dist: m-vector with scaled outlier distances</li></ul></div><h2 id="5">Remarks</h2><p>The distance measures are DEBtool_M/lib/regr/lossfuction_sb or lossfuction_su.</p><h2 id="6">Example of use</h2><p>dist = sod(rand(10,2)) See mydata_sod for example of use</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% sod
+% computes scaled outlier distances form a array of trait values
+
+%%
+function dist = sod(val, in_outlier, norm)
+% created 2022/01/07 by Bas Kooijman
+
+%% Syntax
+% dist = <../sol.m *sod*> (val, in_outlier, norm) 
+
+%% Description
+% Computes scaled outlier distances from a array of trait values: 
+% the mean distance between outlier and other species, divided by the mean distance between all other species.
+% Distances between outlier species are not taken into account.
+% All species, except the ones in the indices in_outlier, are treated as other species.
+% So n-m other species exist, but if input in_outlier is not specified: n-1 other species exist
+%
+% Input:
+%
+% * val: (n,k)-array with trait values; species in rows, traits in columns
+% * in_outlier: optional m-vector of indicies for species that are treated as outliers (default: all species one-by-one)
+% * norm: optional boolean for loss function F_sb (0, default) or F_su (1) as distance measure
+%
+% Output:
+%
+% * dist: m-vector with scaled outlier distances
+
+%% Remarks
+% The distance measures are DEBtool_M/lib/regr/lossfuction_sb or lossfuction_su.
+
+
+%% Example of use
+% dist = sod(rand(10,2)) 
+% See mydata_sod for example of use
+
+  n = size(val,1); % total number of species
+  if ~exist('in_outlier','var') || isempty(in_outlier)
+    in_outlier = 0; % all species are outliers one-by-one
+    dist = zeros(n,1);
+  else
+    n_outlier = length(in_outlier);
+    dist = zeros(n_outlier,1);
+  end
+    
+  if ~exist('norm','var') || isempty(norm)
+    norm = 0; % symmetric bounded loss function
+  end
+  
+  if in_outlier == 0 % all species are outliers one-by-one
+    for i = 1:n
+      in_other = 1:n; in_other(i) = [];
+      d_10 = distAB(val(i,:),val(in_other,:),norm);
+      d_00 = distAB(val(in_other,:),val(in_other,:),norm);
+      dist(i) = mean(d_10(:))/mean(d_00(:));
+    end
+  else % outliers are in in_outlier, the rest is other 
+    in_other = 1:n; in_other(in_outlier) = [];
+    d_00 = distAB(val(in_other,:),val(in_other,:),norm);
+    md_00 = mean(d_00(:)); % mean distance between other species
+    for i = 1:n_outlier      
+      d_10 = distAB(val(in_outlier(i),:),val(in_other,:),norm);
+      dist(i) = mean(d_10(:))/md_00;
+    end
+  end
+
+  
+end
+
+function d = distAB(val_A, val_B, norm)
+  n_A = size(val_A,1); n_B = size(val_B,1); d = zeros(n_A, n_B);  
+  for i = 1:n_A
+    for j = 1:n_B
+      if ~norm 
+        d(i,j) = sum((val_A(i,:) - val_B(j,:)).^2 ./ (val_A(i,:).^2 + val_B(j,:).^2));
+      else
+        d(i,j) = sum((val_A(i,:) - val_B(j,:)).^2 .* (1./val_A(i,:).^2 + 1./val_B(j,:).^2));
+      end
+    end
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

@@ -34,9 +34,11 @@ for i=1:n
 end
 title(txt);
 
-h = datacursormode(Hfig);
-h.UpdateFcn = @(obj, event_obj)xylabels(obj, event_obj, legend(:,2), data);
-datacursormode on % mouse click on plot
+if size(legend,2)>1
+  h = datacursormode(Hfig);
+  h.UpdateFcn = @(obj, event_obj)xylabels(obj, event_obj, legend(:,2), data);
+  datacursormode on % mouse click on plot
 
-Hleg = shlegend(legend);
+  Hleg = shlegend(legend);
+end
 
