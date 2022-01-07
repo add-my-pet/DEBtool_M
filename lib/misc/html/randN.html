@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>char_su</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-07"><meta name="DC.source" content="char_su.m"><style type="text/css">
+      --><title>randN</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-07"><meta name="DC.source" content="randN.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,51 +67,37 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>char_su</h1><!--introduction--><p>characteristic value based on minimazation of loss function F_su</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[val, info] = <a href="../char_su.m"><b>char_su</b></a> (data)</p><h2 id="4">Description</h2><p>computes a characteristic value based on minimazation of loss function F_su. Loss function F_su is defined as F_Su = (val - data).^2 ./ (val.^2 + data.^2)' * weights. The minimum is found from d/d val F_su = 0</p><p>Input:</p><div><ul><li>data: (n,1 or 2)-array of data values with optional weights in second column (default ones)</li></ul></div><p>Output:</p><div><ul><li>val: characteritic value (i.e. a kind of mean or median)</li><li>info: scalar with success (1) or failure (0)</li></ul></div><h2 id="5">Example of use</h2><p>x=randN(12); [mean(x) median(x) char_su(x)]</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>randN</h1><!--introduction--><p>random trials from a normal distribution with zero mean and unit variance</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>val = <a href="../randN.m"><b>randN</b></a> (n,m)</p><h2 id="4">Description</h2><p>generates random trials from a normal distribution with zero mean and unit variance using the Box-Muller method</p><p>Input:</p><div><ul><li>n: scalar with number of rows</li><li>m: optional scalar with number of columns (default 1)</li></ul></div><p>Output:</p><div><ul><li>val: (n,m)-array with random trials from a N(0,1) distribution</li></ul></div><h2 id="5">Example of use</h2><p>x=randN(10)</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% char_su
-% characteristic value based on minimazation of loss function F_su
+%% randN
+% random trials from a normal distribution with zero mean and unit variance
 %%
 
-function [val, info] = char_su(data)
-% created 2021/07/12 by Bas Kooijman
+function val = randN(n,m)
+% created 2022/01/07 by Bas Kooijman
 
 %% Syntax
-% [val, info] = <../char_su.m *char_su*> (data) 
+% val = <../randN.m *randN*> (n,m) 
 
 %% Description
-% computes a characteristic value based on minimazation of loss function F_su.
-% Loss function F_su is defined as F_Su = (val - data).^2 ./ (val.^2 + data.^2)' * weights.
-% The minimum is found from d/d val F_su = 0
+% generates random trials from a normal distribution with zero mean and unit variance using the Box-Muller method
 %
 % Input:
 %
-% * data: (n,1 or 2)-array of data values with optional weights in second column (default ones)
+% * n: scalar with number of rows
+% * m: optional scalar with number of columns (default 1)
 %
 % Output:
 %
-% * val: characteritic value (i.e. a kind of mean or median)
-% * info: scalar with success (1) or failure (0) 
+% * val: (n,m)-array with random trials from a N(0,1) distribution
 
 %% Example of use
-% x=randN(12); [mean(x) median(x) char_su(x)]
+% x=randN(10)
 
-  % weights
-  if size(data,2) == 2
-    weights = data{:,2}; data = data(:,1); 
-  else % size(data,2) == 1
-    weights = ones(length(data),1);
-  end
-  
-  if all(data == 0)
-    val = 0; return
-  end
-      
-  val = data' * weights/ sum(weights); % initial value (= weighted mean)
-  dFsu = @(val, data, weights) ((val - data)./(val^2 + data.^2) - val * (val - data).^2./(val^2 + data.^2).^2)' * weights;
-  [val, ~, info] = fzero(@(val) dFsu(val, data, weights), val); % characteristic value
-  info = (info == 1);
+if ~exist('m','var') || isempty(m)
+    m = 1;
+end
 
-
+val = sqrt(-2 * log(rand(n,m))) .* cos(2 * pi * rand(n,m));
 ##### SOURCE END #####
 --></body></html>

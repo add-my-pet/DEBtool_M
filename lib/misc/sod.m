@@ -10,7 +10,8 @@ function dist = sod(val, in_outlier, norm)
 
 %% Description
 % Computes scaled outlier distances from a array of trait values: 
-% the mean distance between outlier and other species, divided by the mean distance between all other species.
+% the distance between outlier and the characteristic (multivariate) trait value for other species, 
+%    as fraction of the sd of all other species to that value.
 % Distances between outlier species are not taken into account.
 % All species, except the ones in the indices in_outlier, are treated as other species.
 % So n-m other species exist, but if input in_outlier is not specified: n-1 other species exist
@@ -49,17 +50,15 @@ function dist = sod(val, in_outlier, norm)
   if in_outlier == 0 % all species are outliers one-by-one
     for i = 1:n
       in_other = 1:n; in_other(i) = [];
-      d_10 = distAB(val(i,:),val(in_other,:),norm);
-      d_00 = distAB(val(in_other,:),val(in_other,:),norm);
-      dist(i) = mean(d_10(:))/mean(d_00(:));
+      valM = char_val(val(in_other,:));
+      dist(i) = distAB(val(i,:),valM,norm)/std(distAB(valM,val(in_other,:),norm));
     end
   else % outliers are in in_outlier, the rest is other 
     in_other = 1:n; in_other(in_outlier) = [];
-    d_00 = distAB(val(in_other,:),val(in_other,:),norm);
-    md_00 = mean(d_00(:)); % mean distance between other species
+    valM = char_val(val(in_other,:));
+    stdval = std(distAB(valM,val(in_other,:),norm));
     for i = 1:n_outlier      
-      d_10 = distAB(val(in_outlier(i),:),val(in_other,:),norm);
-      dist(i) = mean(d_10(:))/md_00;
+      dist(i) = distAB(val(in_outlier(i),:),valM,norm)/stdval;
     end
   end
 
@@ -76,5 +75,13 @@ function d = distAB(val_A, val_B, norm)
         d(i,j) = sum((val_A(i,:) - val_B(j,:)).^2 .* (1./val_A(i,:).^2 + 1./val_B(j,:).^2));
       end
     end
+  end
+end
+
+function val = char_val(traits)
+  n_traits = size(traits,2);
+  val = zeros(1,n_traits);
+  for i = 1:n_traits
+    val(i) = char_su(traits(:,i));
   end
 end

@@ -2,11 +2,11 @@
 % characteristic value based on minimazation of loss function F_su
 %%
 
-function val = char_su(data)
+function [val, info] = char_su(data)
 % created 2021/07/12 by Bas Kooijman
 
 %% Syntax
-% val = <../char_su.m *char_su*> (data) 
+% [val, info] = <../char_su.m *char_su*> (data) 
 
 %% Description
 % computes a characteristic value based on minimazation of loss function F_su.
@@ -20,9 +20,10 @@ function val = char_su(data)
 % Output:
 %
 % * val: characteritic value (i.e. a kind of mean or median)
+% * info: scalar with success (1) or failure (0) 
 
 %% Example of use
-% x=normrnd(12,10,[10,1]); [mean(x) median(x) char_su(x)]
+% x=randN(12); [mean(x) median(x) char_su(x)]
 
   % weights
   if size(data,2) == 2
@@ -37,5 +38,6 @@ function val = char_su(data)
       
   val = data' * weights/ sum(weights); % initial value (= weighted mean)
   dFsu = @(val, data, weights) ((val - data)./(val^2 + data.^2) - val * (val - data).^2./(val^2 + data.^2).^2)' * weights;
-  val = fzero(@(val) dFsu(val, data, weights), val); % characteristic value
+  [val, ~, info] = fzero(@(val) dFsu(val, data, weights), val); % characteristic value
+  info = (info == 1);
 
