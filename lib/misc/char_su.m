@@ -10,7 +10,7 @@ function [val, info] = char_su(data)
 
 %% Description
 % computes a characteristic value based on minimazation of loss function F_su.
-% Loss function F_su is defined as F_Su = (val - data).^2 ./ (val.^2 + data.^2)' * weights.
+% Loss function F_su is defined as F_su = (val - data).^2 .* (1./val.^2 + 1./data.^2)' * weights.
 % The minimum is found from d/d val F_su = 0
 %
 % Input:
@@ -37,7 +37,7 @@ function [val, info] = char_su(data)
   end
       
   val = data' * weights/ sum(weights); % initial value (= weighted mean)
-  dFsu = @(val, data, weights) ((val - data)./(val^2 + data.^2) - val * (val - data).^2./(val^2 + data.^2).^2)' * weights;
+  dFsu = @(val, data, weights) ((data - val).*(1/val^2 + 1./data.^2) + (val - data).^2/val^3)' * weights;
   [val, ~, info] = fzero(@(val) dFsu(val, data, weights), val); % characteristic value
   info = (info == 1);
 

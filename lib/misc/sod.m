@@ -50,12 +50,12 @@ function dist = sod(val, in_outlier, norm)
   if in_outlier == 0 % all species are outliers one-by-one
     for i = 1:n
       in_other = 1:n; in_other(i) = [];
-      valM = char_val(val(in_other,:));
-      dist(i) = distAB(val(i,:),valM,norm)/std(distAB(valM,val(in_other,:),norm));
+      valM = char_val(val(in_other,:), norm);
+      dist(i) = distAB(val(i,:),valM,norm)/std(distAB(val(in_other,:),valM,norm));
     end
   else % outliers are in in_outlier, the rest is other 
     in_other = 1:n; in_other(in_outlier) = [];
-    valM = char_val(val(in_other,:));
+    valM = char_val(val(in_other,:), norm);
     stdval = std(distAB(valM,val(in_other,:),norm));
     for i = 1:n_outlier      
       dist(i) = distAB(val(in_outlier(i),:),valM,norm)/stdval;
@@ -78,10 +78,14 @@ function d = distAB(val_A, val_B, norm)
   end
 end
 
-function val = char_val(traits)
+function val = char_val(traits, norm)
   n_traits = size(traits,2);
   val = zeros(1,n_traits);
   for i = 1:n_traits
-    val(i) = char_su(traits(:,i));
+    if ~norm
+      val(i) = char_sb(traits(:,i));
+    else
+      val(i) = char_su(traits(:,i));
+    end
   end
 end
