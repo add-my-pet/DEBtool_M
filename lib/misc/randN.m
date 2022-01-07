@@ -1,5 +1,5 @@
 %% randN
-% random trials from a normal distribution with zero mean and unit variance
+% random trials from a standard normal distribution 
 %%
 
 function val = randN(n,m)
@@ -9,7 +9,7 @@ function val = randN(n,m)
 % val = <../randN.m *randN*> (n,m) 
 
 %% Description
-% generates random trials from a normal distribution with zero mean and unit variance using the Box-Muller method
+% generates random trials from a standard normal distribution using the Box-Muller method
 %
 % Input:
 %
