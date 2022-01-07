@@ -23,7 +23,7 @@ function [val, info] = char_su(data)
 % * info: scalar with success (1) or failure (0) 
 
 %% Example of use
-% x=randN(12); [mean(x) median(x) char_su(x)]
+% x=randN(12); [mean(x) median(x) char_sb(x) char_su(x)]
 
   % weights
   if size(data,2) == 2

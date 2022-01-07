@@ -65,20 +65,24 @@ function dist = sod(val, in_outlier, norm)
   
 end
 
-function d = distAB(val_A, val_B, norm)
-  n_A = size(val_A,1); n_B = size(val_B,1); d = zeros(n_A, n_B);  
+function d = distAB(traits_A, traits_B, norm)
+% d: trait-distances between traits A and B
+% norm: 0 for sb; 1 for su
+  n_A = size(traits_A,1); n_B = size(traits_B,1); d = zeros(n_A, n_B);  
   for i = 1:n_A
     for j = 1:n_B
       if ~norm 
-        d(i,j) = sum((val_A(i,:) - val_B(j,:)).^2 ./ (val_A(i,:).^2 + val_B(j,:).^2));
+        d(i,j) = sum((traits_A(i,:) - traits_B(j,:)).^2 ./ (traits_A(i,:).^2 + traits_B(j,:).^2));
       else
-        d(i,j) = sum((val_A(i,:) - val_B(j,:)).^2 .* (1./val_A(i,:).^2 + 1./val_B(j,:).^2));
+        d(i,j) = sum((traits_A(i,:) - traits_B(j,:)).^2 .* (1./traits_A(i,:).^2 + 1./traits_B(j,:).^2));
       end
     end
   end
 end
 
 function val = char_val(traits, norm)
+% val: 'mean' of traits: species in rows, traits in cols
+% norm: 0 for sb; 1 for su
   n_traits = size(traits,2);
   val = zeros(1,n_traits);
   for i = 1:n_traits
