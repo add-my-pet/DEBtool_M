@@ -3,7 +3,7 @@
 
 %%
 function lf_val = lossfun(data, prdData, weights)
-% created by Dina Lika 2018/08/27; modified 2020/12/12, 2021/01/16 by Bas Kooijman
+% created by Dina Lika 2018/08/27; modified 2020/12/12, 2021/01/16, 2022/01/09 by Bas Kooijman
 
 %% Syntax
 % lf_val = <../lossfun.m *lossfun*> (data, prdData, weights)
@@ -19,14 +19,18 @@ function lf_val = lossfun(data, prdData, weights)
 %
 % Output:
 %
-% * lf_val value of loss function
+% * lf_val: value of loss function
 
 %% Remarks
 % the output does not include contributions from the augmented term or from pseudo-data.
-% Uses glabal "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr
+% Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr
 
   global lossfunction
     
+  if isfield(data,'psd')
+    data = rmfield(data,'psd');
+  end
+  
   st = data; % take the field from prdData because data have also the pseudo-data
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets
   

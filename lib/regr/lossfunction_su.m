@@ -2,11 +2,11 @@
 % loss function "symetric unbounded"
 
 %%
-function [lf] = lossfunction_su(data, meanData, prdData, meanPrdData, weights)
+function lf = lossfunction_su(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/08/23 by Goncalo Marques
   
   %% Syntax 
-  % [lf] = <../lossfunction_su.m *lossfunction_su*>(func, par, data, auxData, weights, psdtrue)
+  % lf = <../lossfunction_su.m *lossfunction_su*>(func, par, data, auxData, weights, psdtrue)
   
   %% Description
   % Calculates the loss function

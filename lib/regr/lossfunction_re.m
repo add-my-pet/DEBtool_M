@@ -2,11 +2,11 @@
 % loss function 
 
 %%
-function [lf] = lossfunction_re(data, meanData, prdData, meanPrdData, weights)
+function lf = lossfunction_re(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/06/06 by Goncalo Marques
   
   %% Syntax 
-  % [lf] = <../lossfunction_re.m *lossfunction_re*>(func, par, data, auxData, weights, psdtrue)
+  % lf = <../lossfunction_re.m *lossfunction_re*>(func, par, data, auxData, weights, psdtrue)
   
   %% Description
   % Calculates the loss function
