@@ -88,7 +88,7 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
     [P, meanP] = struct2vector(prdData_bi, nm);
     lf_b(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
-    for j = 1:n_free
+    for j = i:n_free % only upper-triangle
       % foreward
       par_fi2 = par_fi; par_fi2.(nm_elas{j}) =  par_fi2.(nm_elas{j}) * (1 + del); % perturb parameter
       prdData_fi2 = feval(['predict_', my_pet], par_fi2, data, auxData);
@@ -108,6 +108,8 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
   
   % ideally, the foreward and backward variants should be the same
   elas  = (elas_f + elas_b)/2;   % mean of foreward and backward elasticities
+  elas2_f = elas2_f + elas2_f' .* (1-eye(n_free)); % convert upper triangle to symmetric
+  elas2_b = elas2_b + elas2_b' .* (1-eye(n_free)); % convert upper triangle to symmetric
   elas2 = (elas2_f + elas2_b)/2; % mean of foreward and backward 2nd order elasticities
  
  
