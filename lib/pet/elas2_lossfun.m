@@ -77,14 +77,14 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
     % foreward
     par_fi = par; par_fi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 + del); % perturb parameter
     prdData_fi = feval(['predict_', my_pet], par_fi, data, auxData);
-    prdData_fi = predict_pseudodata(par, data, prdData_fi);
+    prdData_fi = predict_pseudodata(par_fi, data, prdData_fi);
     [P, meanP] = struct2vector(prdData_fi, nm);
     lf_f(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_f(i) = (lf_f(i)/ lf - 1)/ del;
     % backward
     par_bi = par; par_bi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 - del); % perturb parameter
     prdData_bi = feval(['predict_', my_pet], par_bi, data, auxData);
-    prdData_bi = predict_pseudodata(par, data, prdData_bi);
+    prdData_bi = predict_pseudodata(par_bi, data, prdData_bi);
     [P, meanP] = struct2vector(prdData_bi, nm);
     lf_b(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
@@ -92,14 +92,14 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
       % foreward
       par_fi2 = par_fi; par_fi2.(nm_elas{j}) =  par_fi2.(nm_elas{j}) * (1 + del); % perturb parameter
       prdData_fi2 = feval(['predict_', my_pet], par_fi2, data, auxData);
-      prdData_fi2 = predict_pseudodata(par, data, prdData_fi2);
+      prdData_fi2 = predict_pseudodata(par_fi2, data, prdData_fi2);
       [P, meanP] = struct2vector(prdData_fi2, nm);
       lf_f2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       elas2_f(i,j) = (lf_f2(i,j)/ lf - 1)/ del;
       % backward
       par_bi2 = par_bi; par_bi2.(nm_elas{j}) =  par_bi2.(nm_elas{j}) * (1 - del); % perturb parameter
       prdData_bi2 = feval(['predict_', my_pet], par_bi2, data, auxData);
-      prdData_bi2 = predict_pseudodata(par, data, prdData_bi2);
+      prdData_bi2 = predict_pseudodata(par_bi2, data, prdData_bi2);
       [P, meanP] = struct2vector(prdData_bi2, nm);
       lf_b2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       elas2_b(i,j) = (1 - lf_b2(i,j)/ lf)/ del;
