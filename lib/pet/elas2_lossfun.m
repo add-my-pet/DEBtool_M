@@ -111,5 +111,3 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
   elas2_f = elas2_f + elas2_f' .* (1-eye(n_free)); % convert upper triangle to symmetric
   elas2_b = elas2_b + elas2_b' .* (1-eye(n_free)); % convert upper triangle to symmetric
   elas2 = (elas2_f + elas2_b)/2; % mean of foreward and backward 2nd order elasticities
- 
- 
