@@ -43,7 +43,7 @@ function prt_elas(del, save)
   n_pets = length(pets);
   for j = 1:n_pets
     my_pet = pets{j};
-    [elas2, elas, nm] = elas2_lossfun(my_pet, 1e-6);
+    [elas2, elas, nm, lf] = elas2_lossfun(my_pet, 1e-6);
   
     n = length(nm);
           
@@ -92,7 +92,7 @@ function prt_elas(del, save)
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <div class="elas2">\n');
-    fprintf(oid, '    <h3>lossfunction %s; perturbation factor %3.4g</h3>\n', lossfunction, del); 
+    fprintf(oid, '    <h3>lossfunction %s %3.4g; perturbation factor %3.4g</h3>\n', lossfunction, lf, del); 
     fprintf(oid, '  </div>\n\n');
 
 

@@ -67,17 +67,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>elas_lossfun</h1><!--introduction--><p>gets elasticity coefficient of loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[elas, nm_elas] = <a href="../elas_lossfun.m"><b>elas_lossfun</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>Gets the elasticity coefficients of loss function for free parameters. Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat</p><p>Input:</p><div><ul><li>my_pet: character string with name of entry</li><li>del: optional scalar with mutiplication factor for perturbation of parameters (default 1e-6)</li></ul></div><p>Output:</p><div><ul><li>elas: vector of elasticity coefficients of loss function</li><li>nm_elas: cell-string with names of free parameters</li></ul></div><h2 id="5">Remarks</h2><p>the output does not include contributions from augmented terms. Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb' Takes the mean of foreward and backward perturbations of parameters.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>elas_lossfun</h1><!--introduction--><p>gets elasticity coefficient of loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[elas, nm_elas, lf] = <a href="../elas_lossfun.m"><b>elas_lossfun</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>Gets the elasticity coefficients of loss function for free parameters. Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat</p><p>Input:</p><div><ul><li>my_pet: character string with name of entry</li><li>del: optional scalar with mutiplication factor for perturbation of parameters (default 1e-6)</li></ul></div><p>Output:</p><div><ul><li>elas: vector of elasticity coefficients of loss function</li><li>nm_elas: cell-string with names of free parameters</li><li>lf: value of the loss function</li></ul></div><h2 id="5">Remarks</h2><p>the output does not include contributions from augmented terms. Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb' Takes the mean of foreward and backward perturbations of parameters.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% elas_lossfun
 % gets elasticity coefficient of loss function
 
 %%
-function [elas, nm_elas] = elas_lossfun(my_pet, del)
+function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
 % created by Bas Kooijman 2022/01/09
 
 %% Syntax
-% [elas, nm_elas] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
+% [elas, nm_elas, lf] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
 
 %% Description
 % Gets the elasticity coefficients of loss function for free parameters.
@@ -92,6 +92,7 @@ function [elas, nm_elas] = elas_lossfun(my_pet, del)
 %
 % * elas: vector of elasticity coefficients of loss function
 % * nm_elas: cell-string with names of free parameters
+% * lf: value of the loss function
 %
 %% Remarks
 % the output does not include contributions from augmented terms.
@@ -159,7 +160,7 @@ function [elas, nm_elas] = elas_lossfun(my_pet, del)
   % ideally, the foreward and backward variants should be the same
   elas = (elas_f + elas_b)/2; % mean of foreward and backward elasticities
   
-  %prt_tab({nm, elas, elas_f, elas_b}, {' ';'elas';'elas_f';'elas_b'}, ['del = ', num2str(del)]); % temporary output
+  %prt_tab({nm_elas, elas, elas_f, elas_b}, {' ';'elas';'elas_f';'elas_b'}, ['del = ', num2str(del)]); % temporary output
  
 ##### SOURCE END #####
 --></body></html>

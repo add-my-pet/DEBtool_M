@@ -2,11 +2,11 @@
 % gets elasticity coefficient of loss function
 
 %%
-function [elas, nm_elas] = elas_lossfun(my_pet, del)
+function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
 % created by Bas Kooijman 2022/01/09
 
 %% Syntax
-% [elas, nm_elas] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
+% [elas, nm_elas, lf] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
 
 %% Description
 % Gets the elasticity coefficients of loss function for free parameters.
@@ -21,6 +21,7 @@ function [elas, nm_elas] = elas_lossfun(my_pet, del)
 %
 % * elas: vector of elasticity coefficients of loss function
 % * nm_elas: cell-string with names of free parameters
+% * lf: value of the loss function
 %
 %% Remarks
 % the output does not include contributions from augmented terms.

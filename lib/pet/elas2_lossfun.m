@@ -2,11 +2,11 @@
 % gets elasticity coefficient of loss function
 
 %%
-function [elas2, elas, nm_elas] = elas2_lossfun(my_pet, del)
+function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
 % created by Bas Kooijman 2022/01/09
 
 %% Syntax
-% [elas2, elas, nm_elas] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
+% [elas2, elas, nm_elas, lf] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
 
 %% Description
 % Gets the second order elasticity coefficients of loss function for free parameters.
@@ -22,6 +22,7 @@ function [elas2, elas, nm_elas] = elas2_lossfun(my_pet, del)
 % * elas2: vector of 2nd order elasticity coefficients of loss function
 % * elas: vector of elasticity coefficients of loss function
 % * nm_elas: cell-string with names of free parameters
+% * lf: value of the loss function
 %
 %% Remarks
 % the output does not include contributions from augmented terms.
