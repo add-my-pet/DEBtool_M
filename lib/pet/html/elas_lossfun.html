@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>elas_lossfun</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-09"><meta name="DC.source" content="elas_lossfun.m"><style type="text/css">
+      --><title>elas_lossfun</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-10"><meta name="DC.source" content="elas_lossfun.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,17 +67,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>elas_lossfun</h1><!--introduction--><p>gets elasticity coefficient of loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[elas, nm] = <a href="../elas_lossfun.m"><b>elas_lossfun</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>Gets the elasticity coefficients of loss function for free parameters. Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat</p><p>Input:</p><div><ul><li>my_pet: character string with name of entry</li><li>del: optional scalar with mutiplication factor for perturbation of parameters (default 1e-6)</li></ul></div><p>Output:</p><div><ul><li>elas: vector of elasticity coefficients of loss function</li><li>nm: cel-string with names of free parameters</li></ul></div><h2 id="5">Remarks</h2><p>the output does not include contributions from the augmented term or from pseudo-data. Uses indirectly global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb' Takes the mean of foreward and backward perturbations of parameters.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>elas_lossfun</h1><!--introduction--><p>gets elasticity coefficient of loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[elas, nm_elas] = <a href="../elas_lossfun.m"><b>elas_lossfun</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>Gets the elasticity coefficients of loss function for free parameters. Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat</p><p>Input:</p><div><ul><li>my_pet: character string with name of entry</li><li>del: optional scalar with mutiplication factor for perturbation of parameters (default 1e-6)</li></ul></div><p>Output:</p><div><ul><li>elas: vector of elasticity coefficients of loss function</li><li>nm_elas: cell-string with names of free parameters</li></ul></div><h2 id="5">Remarks</h2><p>the output does not include contributions from augmented terms. Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb' Takes the mean of foreward and backward perturbations of parameters.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% elas_lossfun
 % gets elasticity coefficient of loss function
 
 %%
-function [elas, nm] = elas_lossfun(my_pet, del)
+function [elas, nm_elas] = elas_lossfun(my_pet, del)
 % created by Bas Kooijman 2022/01/09
 
 %% Syntax
-% [elas, nm] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
+% [elas, nm_elas] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
 
 %% Description
 % Gets the elasticity coefficients of loss function for free parameters.
@@ -91,41 +91,68 @@ function [elas, nm] = elas_lossfun(my_pet, del)
 % Output:
 %
 % * elas: vector of elasticity coefficients of loss function
-% * nm: cel-string with names of free parameters
+% * nm_elas: cell-string with names of free parameters
 %
 %% Remarks
-% the output does not include contributions from the augmented term or from pseudo-data.
-% Uses indirectly global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
+% the output does not include contributions from augmented terms.
+% Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
 % Takes the mean of foreward and backward perturbations of parameters.
+
+  global lossfunction
   
+  fileLossfunc = ['lossfunction_', lossfunction];
+
   if ~exist('del','var')
     del = 1e-6;
   end
   
   load(['results_', my_pet], 'par'); 
-  eval(['[data, auxData, ~, ~, weights] = mydata_', my_pet, ';']); data = rmfield(data,'psd');
-  eval(['prdData = predict_', my_pet, '(par, data, auxData);']);
+  [data, auxData, ~, ~, weights] = feval(['mydata_', my_pet]);  
+  prdData = feval(['predict_', my_pet], par, data, auxData);
+  prdData = predict_pseudodata(par, data, prdData); % append speudo-data predictions
   
-  lf = lossfun(data, prdData, weights); % loss function 
+  % prepare variable st: structure with dependent data values only
+  st = data;
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
+  %  
+  for i = 1:nst   % makes st only with dependent variables
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    k = size(auxVar, 2);
+    if k >= 2
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    end
+  end  
   
+  [Y, meanY] = struct2vector(st, nm); % Y: vector with all dependent data
+  W = struct2vector(weights, nm); % W: vector with all weights
+  
+  % loss function as used in petreg_f
+  [P, meanP] = struct2vector(prdData, nm);
+  lf = feval(fileLossfunc, Y, meanY, P, meanP, W);
+
   % get free settings
-  nm = fieldnames(par); nm(end) = []; n_par = length(nm); 
-  free = zeros(n_par,1); for i=1:n_par; free(i)=par.free.(nm{i}); end
-  nm = nm(free == 1); n_free = length(nm); % names of free parameters
+  nm_elas = fieldnames(par); nm_elas(end) = []; n_par = length(nm_elas); 
+  free = zeros(n_par,1); for i=1:n_par; free(i)=par.free.(nm_elas{i}); end
+  nm_elas = nm_elas(free == 1); n_free = length(nm_elas); % names of free parameters
   
   % perturbations
   lf_f = zeros(n_free,1); lf_b = lf_f; % initiate foreward and backward perturbed loss functions
   elas_f = lf_f; elas_b = lf_b; % initiate forward and backward elasticities
   for i = 1:n_free
     % foreward
-    par_fi = par; par_fi.(nm{i}) =  par.(nm{i}) * (1 + del); % perturb parameter
-    eval(['prdData_fi = predict_', my_pet, '(par_fi, data, auxData);']);
-    lf_f(i) = lossfun(data, prdData_fi, weights); % loss function 
+    par_fi = par; par_fi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 + del); % perturb parameter
+    prdData_fi = feval(['predict_', my_pet], par_fi, data, auxData);
+    prdData_fi = predict_pseudodata(par, data, prdData_fi);
+    [P, meanP] = struct2vector(prdData_fi, nm);
+    lf_f(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_f(i) = (lf_f(i)/ lf - 1)/ del;
     % backward
-    par_bi = par; par_bi.(nm{i}) =  par.(nm{i}) * (1 - del); % perturb parameter
-    eval(['prdData_bi = predict_', my_pet, '(par_bi, data, auxData);']);
-    lf_b(i) = lossfun(data, prdData_bi, weights); % loss function 
+    par_bi = par; par_bi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 - del); % perturb parameter
+    prdData_bi = feval(['predict_', my_pet], par_bi, data, auxData);
+    prdData_bi = predict_pseudodata(par, data, prdData_bi);
+    [P, meanP] = struct2vector(prdData_bi, nm);
+    lf_b(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
   end
   

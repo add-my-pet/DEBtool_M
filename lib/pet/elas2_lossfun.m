@@ -2,11 +2,11 @@
 % gets elasticity coefficient of loss function
 
 %%
-function [elas2, elas, nm] = elas2_lossfun(my_pet, del)
+function [elas2, elas, nm_elas] = elas2_lossfun(my_pet, del)
 % created by Bas Kooijman 2022/01/09
 
 %% Syntax
-% [elas2, elas, nm] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
+% [elas2, elas, nm_elas] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
 
 %% Description
 % Gets the second order elasticity coefficients of loss function for free parameters.
@@ -21,28 +21,52 @@ function [elas2, elas, nm] = elas2_lossfun(my_pet, del)
 %
 % * elas2: vector of 2nd order elasticity coefficients of loss function
 % * elas: vector of elasticity coefficients of loss function
-% * nm: cel-string with names of free parameters
+% * nm_elas: cell-string with names of free parameters
 %
 %% Remarks
-% the output does not include contributions from the augmented term or from pseudo-data.
-% Uses indirectly global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
+% the output does not include contributions from augmented terms.
+% Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
 % Takes the mean of foreward and backward perturbations of parameters.
   
+  global lossfunction
+  
+  fileLossfunc = ['lossfunction_', lossfunction];
+
   if ~exist('del','var')
     del = 1e-6;
   end
   
   load(['results_', my_pet], 'par'); 
-  eval(['[data, auxData, ~, ~, weights] = mydata_', my_pet, ';']); data = rmfield(data,'psd');
-  eval(['prdData = predict_', my_pet, '(par, data, auxData);']);
+  [data, auxData, ~, ~, weights] = feval(['mydata_', my_pet]);
+  prdData = feval(['predict_', my_pet], par, data, auxData);
+  prdData = predict_pseudodata(par, data, prdData); % append speudo-data predictions
+
+  % prepare variable st: structure with dependent data values only
+  st = data;
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
+  %  
+  for i = 1:nst   % makes st only with dependent variables
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    k = size(auxVar, 2);
+    if k >= 2
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    end
+  end  
   
-  lf = lossfun(data, prdData, weights); % loss function 
+  [Y, meanY] = struct2vector(st, nm); % Y: vector with all dependent data
+  W = struct2vector(weights, nm); % W: vector with all weights
   
+  % loss function as used in petreg_f
+  [P, meanP] = struct2vector(prdData, nm);
+  lf = feval(fileLossfunc, Y, meanY, P, meanP, W);
+
   % get free settings
-  nm = fieldnames(par); nm(end) = []; n_par = length(nm); 
-  free = zeros(n_par,1); for i=1:n_par; free(i)=par.free.(nm{i}); end
-  nm = nm(free == 1); n_free = length(nm); % names of free parameters
+  nm_elas = fieldnames(par); nm_elas(end) = []; n_par = length(nm_elas); 
+  free = zeros(n_par,1); for i=1:n_par; free(i)=par.free.(nm_elas{i}); end
+  nm_elas = nm_elas(free == 1); n_free = length(nm_elas); % names of free parameters
   
+
   % perturbations
   lf_f = zeros(n_free,1); lf_b = lf_f; % initiate foreward and backward perturbed loss functions
   lf_f2 = zeros(n_free, n_free); lf_b2 = lf_f; % initiate foreward and backward 2nd perturbed loss functions
@@ -50,25 +74,33 @@ function [elas2, elas, nm] = elas2_lossfun(my_pet, del)
   elas2_f = lf_f; elas2_b = lf_b; % initiate forward and backward 2nd order elasticities
   for i = 1:n_free
     % foreward
-    par_fi = par; par_fi.(nm{i}) =  par.(nm{i}) * (1 + del); % perturb parameter
-    eval(['prdData_fi = predict_', my_pet, '(par_fi, data, auxData);']);
-    lf_f(i) = lossfun(data, prdData_fi, weights); % loss function 
+    par_fi = par; par_fi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 + del); % perturb parameter
+    prdData_fi = feval(['predict_', my_pet], par_fi, data, auxData);
+    prdData_fi = predict_pseudodata(par, data, prdData_fi);
+    [P, meanP] = struct2vector(prdData_fi, nm);
+    lf_f(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_f(i) = (lf_f(i)/ lf - 1)/ del;
     % backward
-    par_bi = par; par_bi.(nm{i}) =  par.(nm{i}) * (1 - del); % perturb parameter
-    eval(['prdData_bi = predict_', my_pet, '(par_bi, data, auxData);']);
-    lf_b(i) = lossfun(data, prdData_bi, weights); % loss function 
+    par_bi = par; par_bi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 - del); % perturb parameter
+    prdData_bi = feval(['predict_', my_pet], par_bi, data, auxData);
+    prdData_bi = predict_pseudodata(par, data, prdData_bi);
+    [P, meanP] = struct2vector(prdData_bi, nm);
+    lf_b(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
     for j = 1:n_free
       % foreward
-      par_fi2 = par_fi; par_fi2.(nm{j}) =  par_fi2.(nm{j}) * (1 + del); % perturb parameter
-      eval(['prdData_fi2 = predict_', my_pet, '(par_fi2, data, auxData);']);
-      lf_f2(i,j) = lossfun(data, prdData_fi2, weights); % loss function 
+      par_fi2 = par_fi; par_fi2.(nm_elas{j}) =  par_fi2.(nm_elas{j}) * (1 + del); % perturb parameter
+      prdData_fi2 = feval(['predict_', my_pet], par_fi2, data, auxData);
+      prdData_fi2 = predict_pseudodata(par, data, prdData_fi2);
+      [P, meanP] = struct2vector(prdData_fi2, nm);
+      lf_f2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       elas2_f(i,j) = (lf_f2(i,j)/ lf - 1)/ del;
       % backward
-      par_bi2 = par_bi; par_bi2.(nm{j}) =  par_bi2.(nm{j}) * (1 - del); % perturb parameter
-      eval(['prdData_bi2 = predict_', my_pet, '(par_bi2, data, auxData);']);
-      lf_b2(i,j) = lossfun(data, prdData_bi2, weights); % loss function 
+      par_bi2 = par_bi; par_bi2.(nm_elas{j}) =  par_bi2.(nm_elas{j}) * (1 - del); % perturb parameter
+      prdData_bi2 = feval(['predict_', my_pet], par_bi2, data, auxData);
+      prdData_bi2 = predict_pseudodata(par, data, prdData_bi2);
+      [P, meanP] = struct2vector(prdData_bi2, nm);
+      lf_b2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       elas2_b(i,j) = (1 - lf_b2(i,j)/ lf)/ del;
     end
   end
@@ -77,5 +109,4 @@ function [elas2, elas, nm] = elas2_lossfun(my_pet, del)
   elas  = (elas_f + elas_b)/2;   % mean of foreward and backward elasticities
   elas2 = (elas2_f + elas2_b)/2; % mean of foreward and backward 2nd order elasticities
  
-  %prt_tab({nm, elas2}, [' ';nm], ['del = ', num2str(del)]); % temporary output
  

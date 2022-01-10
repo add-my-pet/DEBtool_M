@@ -105,7 +105,7 @@ function prt_elas(del, save)
     fprintf(oid, '    <TR  class="head"><TH>par</TH> <TH>elasticity</TH></TR>\n');
 
     for i = 1:n
-      fprintf(oid, '<TR><TD class="head">%s</TD> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
+      fprintf(oid, '<TR><TH class="head">%s</TH> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
     end
     
     fprintf(oid, '  </TABLE>\n'); % close elas table
@@ -115,7 +115,7 @@ function prt_elas(del, save)
     % open elas2 table
     fprintf(oid, '  <h2>Second order elasticities</h2>\n');
     fprintf(oid, '  <TABLE id="elas2">\n');
-    fprintf(oid, '    <TR class="head"><TH></TH>');
+    fprintf(oid, '    <TR class="head"><TH>par</TH>');
     for i=1:n
       fprintf(oid, '<TH>%s</TH>', nm{i});
     end
