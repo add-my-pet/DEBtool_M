@@ -1,5 +1,5 @@
-%% elas_lossfun
-% gets elasticity coefficient of loss function
+%% elas2_lossfun
+% gets first and second order elasticity coefficient of loss function
 
 %%
 function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
@@ -9,7 +9,7 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
 % [elas2, elas, nm_elas, lf] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
 
 %% Description
-% Gets the second order elasticity coefficients of loss function for free parameters.
+% Gets the first and second order elasticity coefficients of loss function for free parameters.
 % Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat
 %
 % Input:
@@ -25,9 +25,10 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
 % * lf: value of the loss function
 %
 %% Remarks
-% the output does not include contributions from augmented terms.
+% the output does not include contributions from augmented terms.<br>
 % Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
 % Takes the mean of foreward and backward perturbations of parameters.
+% See <elas_lossfun.html *elas_lossfun*> for first order elasticities only.
   
   global lossfunction
   

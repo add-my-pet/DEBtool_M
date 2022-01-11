@@ -1,5 +1,5 @@
 %% elas_lossfun
-% gets elasticity coefficient of loss function
+% gets (first order) elasticity coefficient of loss function
 
 %%
 function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
@@ -9,7 +9,7 @@ function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
 % [elas, nm_elas, lf] = <../elas_lossfun.m *elas_lossfun*> (my_pet, del)
 
 %% Description
-% Gets the elasticity coefficients of loss function for free parameters.
+% Gets the (first order) elasticity coefficients of loss function for free parameters.
 % Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat
 %
 % Input:
@@ -27,6 +27,7 @@ function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
 % the output does not include contributions from augmented terms.
 % Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
 % Takes the mean of foreward and backward perturbations of parameters.
+% See <elas2_lossfun.html *elas2_lossfun*> for first and second order elasticities.
 
   global lossfunction
   
@@ -73,14 +74,14 @@ function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
     % foreward
     par_fi = par; par_fi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 + del); % perturb parameter
     prdData_fi = feval(['predict_', my_pet], par_fi, data, auxData);
-    prdData_fi = predict_pseudodata(par, data, prdData_fi);
+    prdData_fi = predict_pseudodata(par_fi, data, prdData_fi);
     [P, meanP] = struct2vector(prdData_fi, nm);
     lf_f(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_f(i) = (lf_f(i)/ lf - 1)/ del;
     % backward
     par_bi = par; par_bi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 - del); % perturb parameter
     prdData_bi = feval(['predict_', my_pet], par_bi, data, auxData);
-    prdData_bi = predict_pseudodata(par, data, prdData_bi);
+    prdData_bi = predict_pseudodata(par_bi, data, prdData_bi);
     [P, meanP] = struct2vector(prdData_bi, nm);
     lf_b(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
