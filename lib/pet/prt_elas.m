@@ -9,8 +9,8 @@ function prt_elas(del, save)
 % <../prt_elas.m *prt_elas*> (del, save) 
 
 %% Description
-% writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it
-
+% writes table with first and second order elasticities to temporary file my_pet_elas.html, shows it in the bowser and deletes it
+% Deletion is suppressed if second input is true.
 %
 % Input:
 %
@@ -22,13 +22,12 @@ function prt_elas(del, save)
 % * no Malab output, elas.html is written, shown in browser and deleted, unless save is true
 
 %% Remarks
-% Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat
-% Assumes that global lossfunction and pets exist
+% Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat.
+% Assumes that global lossfunction and pets exist.
 
 %% Example of use
-% prt_elas('Manis_pentadactyla'}) 
-% if mydata_Manis_pentadactyla.m, predict_Manis_pentadactyla.m and results_Manis_pentadactyla.mat
-  
+% Meant to be used as last line "prt_elas" in the run-file
+
   global pets lossfunction
   
   if ~exist('del','var')

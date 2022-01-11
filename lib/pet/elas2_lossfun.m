@@ -29,6 +29,7 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
 % Uses global "lossfunction" with strings re, sb or su, see DEBtool_M/lib/regr, default lossfunction = 'sb'
 % Takes the mean of foreward and backward perturbations of parameters.
 % See <elas_lossfun.html *elas_lossfun*> for first order elasticities only.
+% See <prt_elas.html *prt_elas*> for printing elasticities to html
   
   global lossfunction
   

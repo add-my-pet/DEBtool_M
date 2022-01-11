@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_elas</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-09"><meta name="DC.source" content="prt_elas.m"><style type="text/css">
+      --><title>prt_elas</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-11"><meta name="DC.source" content="prt_elas.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_elas</h1><!--introduction--><p>writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_elas.m"><b>prt_elas</b></a> (del, save)</p><h2 id="4">Description</h2><p>writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it</p><h2 id="5">Remarks</h2><p>Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat Assumes that global lossfunction and pets exist</p><h2 id="6">Example of use</h2><p>prt_elas('Manis_pentadactyla'}) if mydata_Manis_pentadactyla.m, predict_Manis_pentadactyla.m and results_Manis_pentadactyla.mat</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_elas</h1><!--introduction--><p>writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_elas.m"><b>prt_elas</b></a> (del, save)</p><h2 id="4">Description</h2><p>writes table with first and second order elasticities to temporary file my_pet_elas.html, shows it in the bowser and deletes it Deletion is suppressed if second input is true.</p><p>Input:</p><div><ul><li>del: optional scalar with pertubation factor (default 1e-6)</li><li>save: optional boolean to save the html-file (default: false)</li></ul></div><p>Output:</p><div><ul><li>no Malab output, elas.html is written, shown in browser and deleted, unless save is true</li></ul></div><h2 id="5">Remarks</h2><p>Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat. Assumes that global lossfunction and pets exist.</p><h2 id="6">Example of use</h2><p>Meant to be used as last line "prt_elas" in the run-file</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_elas
 % writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it
@@ -80,8 +80,8 @@ function prt_elas(del, save)
 % <../prt_elas.m *prt_elas*> (del, save) 
 
 %% Description
-% writes table with first and second order elasticities to temporary file elas.html, shows it in the bowser and deletes it
-
+% writes table with first and second order elasticities to temporary file my_pet_elas.html, shows it in the bowser and deletes it
+% Deletion is suppressed if second input is true.
 %
 % Input:
 %
@@ -93,13 +93,12 @@ function prt_elas(del, save)
 % * no Malab output, elas.html is written, shown in browser and deleted, unless save is true
 
 %% Remarks
-% Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat
-% Assumes that global lossfunction and pets exist
+% Assumes local existence of mydata_my_pet.m, predict_my_pet.m and results_my_pet.mat.
+% Assumes that global lossfunction and pets exist.
 
 %% Example of use
-% prt_elas('Manis_pentadactyla'}) 
-% if mydata_Manis_pentadactyla.m, predict_Manis_pentadactyla.m and results_Manis_pentadactyla.mat
-  
+% Meant to be used as last line "prt_elas" in the run-file
+
   global pets lossfunction
   
   if ~exist('del','var')
@@ -114,7 +113,7 @@ function prt_elas(del, save)
   n_pets = length(pets);
   for j = 1:n_pets
     my_pet = pets{j};
-    [elas2, elas, nm] = elas2_lossfun(my_pet, 1e-6);
+    [elas2, elas, nm, lf] = elas2_lossfun(my_pet, 1e-6);
   
     n = length(nm);
           
@@ -163,7 +162,7 @@ function prt_elas(del, save)
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <div class="elas2">\n');
-    fprintf(oid, '    <h3>lossfunction %s; perturbation factor %3.4g</h3>\n', lossfunction, del); 
+    fprintf(oid, '    <h3>lossfunction %s %3.4g; perturbation factor %3.4g</h3>\n', lossfunction, lf, del); 
     fprintf(oid, '  </div>\n\n');
 
 
@@ -176,7 +175,7 @@ function prt_elas(del, save)
     fprintf(oid, '    <TR  class="head"><TH>par</TH> <TH>elasticity</TH></TR>\n');
 
     for i = 1:n
-      fprintf(oid, '<TR><TD class="head">%s</TD> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
+      fprintf(oid, '<TR><TH class="head">%s</TH> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
     end
     
     fprintf(oid, '  </TABLE>\n'); % close elas table
@@ -186,7 +185,7 @@ function prt_elas(del, save)
     % open elas2 table
     fprintf(oid, '  <h2>Second order elasticities</h2>\n');
     fprintf(oid, '  <TABLE id="elas2">\n');
-    fprintf(oid, '    <TR class="head"><TH></TH>');
+    fprintf(oid, '    <TR class="head"><TH>par</TH>');
     for i=1:n
       fprintf(oid, '<TH>%s</TH>', nm{i});
     end
