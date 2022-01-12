@@ -97,14 +97,14 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
       prdData_fi2 = predict_pseudodata(par_fi2, data, prdData_fi2);
       [P, meanP] = struct2vector(prdData_fi2, nm);
       lf_f2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-      elas2_f(i,j) = (lf_f2(i,j)/ lf - 1)/ del;
+      elas2_f(i,j) = (lf_f2(i,j)/ lf -  2 * lf_f(i)/ lf + 1)/ del^2;
       % backward
       par_bi2 = par_bi; par_bi2.(nm_elas{j}) =  par_bi2.(nm_elas{j}) * (1 - del); % perturb parameter
       prdData_bi2 = feval(['predict_', my_pet], par_bi2, data, auxData);
       prdData_bi2 = predict_pseudodata(par_bi2, data, prdData_bi2);
       [P, meanP] = struct2vector(prdData_bi2, nm);
       lf_b2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-      elas2_b(i,j) = (1 - lf_b2(i,j)/ lf)/ del;
+      elas2_b(i,j) = (2 * lf_b(i)/ lf  - lf_b2(i,j)/ lf - 1)/ del^2;
     end
   end
   
