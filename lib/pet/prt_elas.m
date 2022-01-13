@@ -30,7 +30,7 @@ function prt_elas(del, save)
 
   global pets lossfunction
   
-  if ~exist('del','var')
+  if ~exist('del','var') || isempty(del)
     del = 1e-6;
   end
   
@@ -55,12 +55,12 @@ function prt_elas(del, save)
     fprintf(oid, '  <TITLE>%s</TITLE>\n',  fileName);
     fprintf(oid, '  <style>\n');
     fprintf(oid, '    div.elas {\n');
-    fprintf(oid, '      width: 20%%;\n');
+    fprintf(oid, '      width: 25%%;\n');
     fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
     
     fprintf(oid, '    div.elas2 {\n');
-    fprintf(oid, '      width: 70%%;\n');
+    fprintf(oid, '      width: 75%%;\n');
     fprintf(oid, '      float: right;\n');
     fprintf(oid, '    }\n\n');
 
@@ -69,9 +69,12 @@ function prt_elas(del, save)
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    .head {\n');
-    fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
+    fprintf(oid, '      background-color: #FFE7C6\n'); % pink header background
     fprintf(oid, '    }\n\n');
 
+    fprintf(oid, '    .diag {\n');
+    fprintf(oid, '      background-color: #f9e79f\n'); % yellow diagonal background 
+    fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    #elas {\n');
     fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
@@ -104,7 +107,7 @@ function prt_elas(del, save)
     fprintf(oid, '    <TR  class="head"><TH>par</TH> <TH>elasticity</TH></TR>\n');
 
     for i = 1:n
-      fprintf(oid, '<TR><TH class="head">%s</TH> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
+      fprintf(oid, '    <TR><TH class="head">%s</TH> <TD>%3.4g</TD></TR>\n',nm{i}, elas(i));
     end
     
     fprintf(oid, '  </TABLE>\n'); % close elas table
@@ -114,16 +117,20 @@ function prt_elas(del, save)
     % open elas2 table
     fprintf(oid, '  <h2>Second order elasticities</h2>\n');
     fprintf(oid, '  <TABLE id="elas2">\n');
-    fprintf(oid, '    <TR class="head"><TH>par</TH>');
+    fprintf(oid, '    <TR class="head"><TH>par</TH> ');
     for i=1:n
-      fprintf(oid, '<TH>%s</TH>', nm{i});
+      fprintf(oid, '<TH>%s</TH> ', nm{i});
     end
     fprintf(oid, '</TR>\n');
 
     for i=1:n
-      fprintf(oid, '<TR><TH class="head">%s</TH>', nm{i});
+      fprintf(oid, '    <TR><TH class="head">%s</TH> ', nm{i});
       for j=1:n
-        fprintf(oid, '<TD>%3.4g</TD>', elas2(i,j));
+        if j == i
+          fprintf(oid, '<TD class="diag">%3.4g</TD> ', elas2(i,j));
+        else
+          fprintf(oid, '<TD>%3.4g</TD> ', elas2(i,j));
+        end
       end
       fprintf(oid, '</TR>\n');
     end
