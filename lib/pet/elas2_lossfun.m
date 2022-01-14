@@ -3,7 +3,7 @@
 
 %%
 function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
-% created by Bas Kooijman 2022/01/09
+% created by Bas Kooijman 2022/01/09, modified by Dina Lika 2022/01/15
 
 %% Syntax
 % [elas2, elas, nm_elas, lf] = <../elas2_lossfun.m *elas2_lossfun*> (my_pet, del)
@@ -77,14 +77,14 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
   elas2_f = lf_f; elas2_b = lf_b; % initiate forward and backward 2nd order elasticities
   for i = 1:n_free
     % foreward
-    par_fi = par; par_fi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 + del); % perturb parameter
+    par_fi = par; par_fi.(nm_elas{i}) = par.(nm_elas{i}) * (1 + del); % perturb parameter
     prdData_fi = feval(['predict_', my_pet], par_fi, data, auxData);
     prdData_fi = predict_pseudodata(par_fi, data, prdData_fi);
     [P, meanP] = struct2vector(prdData_fi, nm);
     lf_f(i) = feval(fileLossfunc, Y, meanY, P, meanP, W);
     elas_f(i) = (lf_f(i)/ lf - 1)/ del;
     % backward
-    par_bi = par; par_bi.(nm_elas{i}) =  par.(nm_elas{i}) * (1 - del); % perturb parameter
+    par_bi = par; par_bi.(nm_elas{i}) = par.(nm_elas{i}) * (1 - del); % perturb parameter
     prdData_bi = feval(['predict_', my_pet], par_bi, data, auxData);
     prdData_bi = predict_pseudodata(par_bi, data, prdData_bi);
     [P, meanP] = struct2vector(prdData_bi, nm);
@@ -92,19 +92,33 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
     elas_b(i) = (1 - lf_b(i)/ lf)/ del;
     for j = i:n_free % only upper-triangle
       % foreward
-      par_fi2 = par_fi; par_fi2.(nm_elas{j}) =  par_fi2.(nm_elas{j}) * (1 + del); % perturb parameter
+      par_fj = par; par_fj.(nm_elas{j}) = par.(nm_elas{j}) * (1 + del); % perturb parameter
+      prdData_fj = feval(['predict_', my_pet], par_fj, data, auxData);
+      prdData_fj = predict_pseudodata(par_fj, data, prdData_fj);
+      [P, meanP] = struct2vector(prdData_fj, nm);
+      lf_f(j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+      %
+      par_fi2 = par_fi; par_fi2.(nm_elas{j}) = par_fi2.(nm_elas{j}) * (1 + del); % perturb parameter
       prdData_fi2 = feval(['predict_', my_pet], par_fi2, data, auxData);
       prdData_fi2 = predict_pseudodata(par_fi2, data, prdData_fi2);
       [P, meanP] = struct2vector(prdData_fi2, nm);
       lf_f2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-      elas2_f(i,j) = (lf_f2(i,j)/ lf -  2 * lf_f(i)/ lf + 1)/ del^2;
+%       elas2_f(i,j) = (lf_f2(i,j)/ lf -  2 * lf_f(i)/ lf + 1)/ del^2;
+      elas2_f(i,j) = (lf_f2(i,j)/ lf -  lf_f(i)/ lf - lf_f(j)/ lf+ 1)/ del^2;
       % backward
+      par_bj = par; par_bj.(nm_elas{j}) =  par.(nm_elas{j}) * (1 - del); % perturb parameter
+      prdData_bj = feval(['predict_', my_pet], par_bj, data, auxData);
+      prdData_bj = predict_pseudodata(par_bj, data, prdData_bj);
+      [P, meanP] = struct2vector(prdData_bj, nm);
+      lf_b(j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+    %
       par_bi2 = par_bi; par_bi2.(nm_elas{j}) =  par_bi2.(nm_elas{j}) * (1 - del); % perturb parameter
       prdData_bi2 = feval(['predict_', my_pet], par_bi2, data, auxData);
       prdData_bi2 = predict_pseudodata(par_bi2, data, prdData_bi2);
       [P, meanP] = struct2vector(prdData_bi2, nm);
       lf_b2(i,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-      elas2_b(i,j) = (2 * lf_b(i)/ lf  - lf_b2(i,j)/ lf - 1)/ del^2;
+%       elas2_b(i,j) = (2 * lf_b(i)/ lf  - lf_b2(i,j)/ lf - 1)/ del^2;
+      elas2_b(i,j) = (lf_b2(i,j)/ lf - lf_b(i)/ lf - lf_b(j)/ lf + 1)/ del^2;
     end
   end
   
