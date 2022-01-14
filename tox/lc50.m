@@ -31,20 +31,21 @@ function [c, ERR] = lc50 (p, tc)
   
   global t C0 Bk Ke;
 
-  opt = optimset('display','off');
+  options = optimset('Display','off'); 
   
   % unpack parameters
   C0 = p(1); Bk = p(2); Ke = p(3);
 
   % initiate output vector
-  [nt i] = size(tc); c = ones(nt,1); ERR = c;
+  tc = tc(:,1); nt = length(tc); c = ones(nt,1); ERR = c;
   
   for i = 1:nt
     t = tc(i,1); % get exposure time
-    LC = 1.1*C0./(1 - exp(-Ke * t)); % guess given Bk = infty
+    %LC0 = 1.1*C0./(1 - exp(-Ke * t)); % guess given Bk = infty
     
-    [LC, fl, err] = fsolve('fnlc50', LC, opt); % recalculate LC50
+    [LC, fl, err] = fzero('fnlc50', 2*C0, options); % recalculate LC50
   
     c(i) = LC; ERR(i) = err;
   
   end
+  x=1;

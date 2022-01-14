@@ -17,7 +17,7 @@ par = [1e-8 2.77 .03 .72;0 1 1 1]';
 par_txt = {'blank mortality prob rate'; 'NEC'; 'killing rate'; 'elimination rate'};
 
 p = nmsurv2('order1',par,t,c,N);
-%  p = scsurv2('order1',p,t,c,N);
+p = scsurv2('order1',p,t,c,N);
 [cov,cor,sd,dev] = psurv2('order1',p,t,c,N);
 
 printpar(par_txt, p, sd)

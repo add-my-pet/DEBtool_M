@@ -58,7 +58,7 @@ function shsurv2 (func, p, t, y, Z)
 
   
   p = p(:,1);
-  eval(['F = ', func,' (p, t, y);']);
+  F = feval(func, p, t, y);
   Z = Z./(ones(nt,1)*Z(1,:));
 
   clf; 
@@ -66,12 +66,12 @@ function shsurv2 (func, p, t, y, Z)
   if all_in_one == 1
     hold on;
     for i = 1:M
-      eval(['f = ', func, '(p, Xaxis(i), yaxis);']);
+      f = feval(func, p, Xaxis(i), yaxis);
       xyz = [Xaxis(i*ones(N,1)), yaxis, f'];
       plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'r');
     end
     for j = 1:M
-      eval(['f = ', func, '(p, xaxis, Yaxis(j));']);
+      f = feval(func, p, xaxis, Yaxis(j));
       xyz = [xaxis, Yaxis(j*ones(N,1)), f];
       plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'r');
     end

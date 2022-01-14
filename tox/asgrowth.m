@@ -51,7 +51,7 @@ function Lt = asgrowth(p, t, c)
   nt = length(t);  
   
   % Make sure that initial state vector corresponds to t = 0
-    [tt, Lt] = ode23('dasgrowth', [-1e-6, t], X0); % integrate changes in state
+    [tt, Lt] = ode23('dasgrowth', [-1e-6; t(:)], X0); % integrate changes in state
     Lt(1,:) = []; Lt = Lt(:,1:nc);
     if nt == 1
       Lt = Lt(end,:);
