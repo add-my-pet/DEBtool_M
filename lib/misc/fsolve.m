@@ -32,7 +32,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   n = length(xin); % number of variables to solve
     
   % set options if necessary
-  vars_pull(opt); 
+  if ~exist('opt','var') || isempty(opt);  vars_pull(opt); end
   if ~exist('max_step_number','var') || isempty(max_step_number)
     max_step_number = 1000 * n;
   end
@@ -65,8 +65,8 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   fval(:,1) = feval(func, x, varargin{:});
   fv(:,1) = sum(abs(fval(:,1)));
   % Following improvement suggested by L.Pfeffer at Stanford
-  usual_delta = simplex_size;     % 5 percent deltas for non-zero terms
-  zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
+  usual_delta = simplex_size;         % 5 percent deltas for non-zero terms
+  zero_term_delta = simplex_size/ 20; % Even smaller delta for zero elements
   for j = 1:n
     y = xin;
     if y(j) ~= 0
