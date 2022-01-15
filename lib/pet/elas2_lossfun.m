@@ -1,5 +1,5 @@
 %% elas2_lossfun
-% gets first and second order elasticity coefficient of loss function
+% gets first and second order elasticity coefficients of loss function
 
 %%
 function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
