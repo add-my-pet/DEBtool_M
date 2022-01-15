@@ -32,7 +32,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   n = length(xin); % number of variables to solve
     
   % set options if necessary
-  if ~exist('opt','var') || isempty(opt);  vars_pull(opt); end
+  if ~exist('opt','var') && ~isempty(opt);  vars_pull(opt); end
   if ~exist('max_step_number','var') || isempty(max_step_number)
     max_step_number = 1000 * n;
   end
@@ -62,7 +62,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
 
   % Set up a simplex near the initial guess.
   v(:,1) = xin;    % place input guess in the simplex
-  fval(:,1) = feval(func, x, varargin{:});
+  fval(:,1) = feval(func, xin, varargin{:});
   fv(:,1) = sum(abs(fval(:,1)));
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;         % 5 percent deltas for non-zero terms
@@ -81,7 +81,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
 
   % sort so v(1,:) has the lowest function value 
   [fv,j] = sort(fv);
-  v = v(:,j); fval = fval(:j);
+  v = v(:,j); fval = fval(:,j);
 
   how = 'initial';
   itercount = 1;
@@ -143,7 +143,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
           if fxc <= fxr
             v(:,n1) = xc; 
             fv(:,n1) = fxc;
-            fval(:,n1) = fval;
+            fval(:,n1) = fvalxc;
             how = 'contract outside';
           else
             % perform a shrink
