@@ -5,7 +5,7 @@ function f = fnlc50 (c)
   
   global t C0 Bk Ke;
   
-  t0 = - log(1 - C0/ c)/ Ke;
+  t0 = - log(max1e-10,1 - C0/ c))/ Ke;
   f = log(2) + c * (exp(-Ke * t0) - exp(-Ke * t)) * Bk/ Ke - ...
       Bk * (c - C0) * (t - t0);
 

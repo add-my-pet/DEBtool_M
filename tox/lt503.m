@@ -26,9 +26,9 @@ function [cbk, err] = lt503 (clt50, p)
   % [p, err] = <../lt503.m *lt503*>(tc, [1, 1, .1]). 
   
   
-  opt = optimset('display', 'off', 'TolFun', 1e-16);
+  %opt = optimset('display', 'off', 'TolFun', 1e-16);
   c = clt50(:,1); t = clt50(:,2);
-  [cbk, fl, err] = fsolve(@fncbk, p, opt, c, t);
+  [cbk, fl, err] = fsolve('fncbk', p, c, t);
   cbk = reshape(cbk, 3, 1);
   
   % subfunction
