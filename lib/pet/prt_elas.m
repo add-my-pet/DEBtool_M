@@ -42,7 +42,7 @@ function prt_elas(del, save)
   n_pets = length(pets);
   for j = 1:n_pets
     my_pet = pets{j};
-    [elas2, elas, nm, lf] = elas2_lossfun_DINA(my_pet, del);
+    [elas2, elas, nm, lf] = elas2_lossfun(my_pet, del);
   
     n = length(nm);
           
