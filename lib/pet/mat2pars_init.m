@@ -4,7 +4,7 @@
 %%
 function mat2pars_init(my_pet, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/17 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (my_pet, varargin) 
@@ -128,14 +128,18 @@ fprintf(pars_init_id, '\n%%%% other parameters \n');
 
 parFields = setdiff(parFields, EparFields);
 
-% separate chemical parameters from other
-if n_pets == 1
-  par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+if ~isempty(metaData) && isfield(metaData,'phylum') && isfield(metaData,'class')
+  % separate chemical parameters from other
+  if n_pets == 1
+    par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+  else
+    par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+  end
+  chemParFields = fields(par_auto);
+  otherParFields = setdiff(parFields, chemParFields);
 else
-  par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+  otherParFields = parFields; chemParFields = {};
 end
-chemParFields = fields(par_auto);
-otherParFields = setdiff(parFields, chemParFields);
 
 for i = 1:length(otherParFields)
   currentPar = otherParFields{i};
