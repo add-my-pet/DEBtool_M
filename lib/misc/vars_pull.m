@@ -10,8 +10,7 @@ function vars_pull(s)
   % <../vars_pull.m *vars_pull*>
   
   %% Description
-  % Allows the user to unpack variables from a stucture. It seems to be
-  % more efficient that v2struct
+  % Allows the user to unpack variables from a stucture. 
   %
   % Input
   %
@@ -22,10 +21,8 @@ function vars_pull(s)
   % * no output, but the variables appear in the work space of the function
   % or scrip which calls this function, a bit like globals in fact.
   
-  for n = fieldnames(s)'
-    name = n{1};
-    value = s.(name);
-    assignin('caller',name,value);
+  for n = fieldnames(s)'    %name = n{1};
+    assignin('caller',n{1},s.(n{1}));
   end
     
 end    
