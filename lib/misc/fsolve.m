@@ -186,20 +186,25 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
 
   x = v(:,1); % copy best point to solution
   fval = fval(:,1); % output best function value
+  fv = sum(abs(fval));
   
-  if func_evals >= max_fun_evals
+  if fv >=  tol_fun
     if report 
-      fprintf('No convergences with %6.0g function evaluations\n', max_fun_evals);
+      fprintf('No convergence; function tolerance %6.4g exceeds limit %6.4g\n', fv, tol_n);
     end
-    info = 0;
-  elseif itercount >= max_step_number 
-    if report 
-      fprintf('No convergences with %6.0g steps\n', max_step_number);
+    if func_evals >= max_fun_evals
+      if report 
+        fprintf('No convergence with %6.0g function evaluations\n', max_fun_evals);
+      end
+    elseif itercount >= max_step_number 
+      if report 
+        fprintf('No convergence with %6.0g steps\n', max_step_number);
+      end
     end
     info = 0; 
   else
     if report 
-      fprintf('Successful convergence \n');              
+      fprintf('Successful convergence\n');              
     end
     info = 1;
   end  
