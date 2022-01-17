@@ -104,27 +104,33 @@ else % model is cell string of length n_pets
   EparFields = unique(EparFields); % sorted order
 end
 
-fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
 
-currentPar = 'T_ref';
-write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+if isfield(par,'T_ref')
+  fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
+  currentPar = 'T_ref';
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+  parFields = setdiff(parFields, {currentPar});
+end
 
-parFields = setdiff(parFields, {currentPar});
+n_core = length(EparFields); 
+if n_core > 0
+  fprintf(pars_init_id, '\n%%%% core primary parameters \n');
 
-fprintf(pars_init_id, '\n%%%% core primary parameters \n');
-
-for i = 1:length(EparFields)
-  currentPar = EparFields{i};
-  if isfield(par,currentPar)
-    if length(par.(currentPar)) == 1
-      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
-    else
-      write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+  for i = 1:length(EparFields)
+    currentPar = EparFields{i};
+    if isfield(par,currentPar)
+      if length(par.(currentPar)) == 1
+        write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      else
+        write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      end
     end
-  end
-end 
+  end 
 
-fprintf(pars_init_id, '\n%%%% other parameters \n');
+  fprintf(pars_init_id, '\n%%%% other parameters \n');
+else
+  fprintf(pars_init_id, '\n%%%% parameters \n');
+end    
 
 parFields = setdiff(parFields, EparFields);
 
@@ -136,9 +142,9 @@ if ~isempty(metaData) && isfield(metaData,'phylum') && isfield(metaData,'class')
     par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
   end
   chemParFields = fields(par_auto);
-  otherParFields = setdiff(parFields, chemParFields);
+  otherParFields = setdiff(parFields, chemParFields); chem = 1;
 else
-  otherParFields = parFields; chemParFields = {};
+  otherParFields = parFields; chemParFields = {}; chem = 0;
 end
 
 for i = 1:length(otherParFields)
@@ -150,12 +156,14 @@ for i = 1:length(otherParFields)
     end
 end
 
-fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
-if n_pets == 1
-  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
-else
-  fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
-  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
+if chem
+  fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
+  if n_pets == 1
+    fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
+  else
+    fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
+    fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
+  end
 end
 
 for i = 1:length(chemParFields)
