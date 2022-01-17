@@ -3,7 +3,7 @@
 
 %%
 function [data, auxData, metaData, txtData, weights] = mydata_pets
-  % created by Goncalo Marques at 2015/01/28
+  % created by Goncalo Marques at 2015/01/28, modified Bas Kooijman 2021/01/17
   
   %% Syntax
   % [data, auxData, metaData, txtData, weights] = <../mydata_pets.m *mydata_pets*>
@@ -19,20 +19,11 @@ function [data, auxData, metaData, txtData, weights] = mydata_pets
   % * metaData: catenated metadata structure
   % * weights: catenated weights structure
 
-global pets toxs pseudodata_pets
+global pets pseudodata_pets
 
-for i = 1:length(pets)             % calls species mydata functions
-  currentPet = pets{i};
-  toxsnumber = length(toxs);
-  if toxsnumber == 0
-    [data.(currentPet), auxData.(currentPet), metaData.(currentPet), txtData.(currentPet), weights.(currentPet)] = feval(['mydata_', pets{i}]);
-  else
-    for j = 1:toxsnumber
-      currentTox = toxs{j};
-      [data.(currentPet).(currentTox), auxData.(currentPet).(currentTox), metaData.(currentPet).(currentTox), txtData.(currentPet).(currentTox), weights.(currentPet).(currentTox)] = feval(['mydata_', currentPet, '_', currentTox]);
-    end
-  end
-end 
+for i = 1:length(pets) % calls species mydata functions
+  [data.(pets{i}), auxData.(pets{i}), metaData.(pets{i}), txtData.(pets{i}), weights.(pets{i})] = feval(['mydata_', pets{i}]);
+end  
 
 if pseudodata_pets == 1 % same pseudodata for the group
   % remove pseudodata from species structure
@@ -42,12 +33,12 @@ if pseudodata_pets == 1 % same pseudodata for the group
 
   % set pseudodata and respective weights for the group
   if exist('addpseudodata_group.m', 'file')
-      [dataG, unitsG, labelG, weightsG] = addpseudodata_group;
+    [dataG, unitsG, labelG, weightsG] = addpseudodata_group;
   else
-      [dataG, unitsG, labelG, weightsG] = addpseudodata([], [], [], []);
-      fprintf('No addpseudodata_group.m found, only default pseudodata and weights are considered for the group \n')
-      
+    [dataG, unitsG, labelG, weightsG] = addpseudodata([], [], [], []);
+    fprintf('No addpseudodata_group.m found, only default pseudodata and weights are considered for the group \n')      
   end
+  
   data.psd = dataG.psd;
   weights.psd = weightsG.psd;
   txtData.psd.units = unitsG.psd;
