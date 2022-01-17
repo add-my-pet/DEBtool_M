@@ -132,8 +132,12 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <div class="par">\n');
-    % open parameter table    
-    fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
+    % open parameter table 
+    if isfield(parPets.(pets{i}), 'T_ref')
+      fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
+    else
+      fprintf(oid, '  <h2>%s parameters</h2>\n', metaPar.(pets{i}).model);
+    end
     fprintf(oid, '  <TABLE id="par">\n');
     fprintf(oid, '    <TR class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>free</TH> <TH>description</TH> </TR>\n');
 
