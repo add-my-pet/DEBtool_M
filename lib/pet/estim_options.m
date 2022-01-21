@@ -28,6 +28,7 @@ function estim_options (key, val)
   %      'sb': multiplicative symmetric bounded (default)
   %      'su': multiplicative symmetric unbounded
   %      're': relative error (not recommanded)
+  %      'SMAE': symmetric mean absolute error
   %
   %    'filter': 
   %      0: do not use filters;
@@ -241,6 +242,7 @@ function estim_options (key, val)
         fprintf('sb - multiplicative symmetric bounded \n');
         fprintf('su - multiplicative symmetric unbounded \n');
         fprintf('re - relative error \n');
+        fprintf('SMAE - symmetric mean absolute error \n');
       else
         lossfunction = val;
       end

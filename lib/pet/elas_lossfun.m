@@ -51,7 +51,7 @@ function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
     auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
     k = size(auxVar, 2);
     if k >= 2
-      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2:end));
     end
   end  
   

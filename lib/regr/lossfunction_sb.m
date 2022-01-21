@@ -1,12 +1,12 @@
 %% lossfunction_sb
-% loss function "symetric bounded"
+% loss function "symmetric bounded"
 
 %%
 function lf = lossfunction_sb(data, meanData, prdData, meanPrdData, weights)
   % created: 2016/06/06 by Goncalo Marques
   
   %% Syntax 
-  % lf = <../lossfunction_sb.m *lossfunction_sb*>(func, par, data, auxData, weights, psdtrue)
+  % lf = <../lossfunction_sb.m *lossfunction_sb*>(data, meanData, prdData, meanPrdData, weights)
   
   %% Description
   % Calculates the loss function
@@ -15,9 +15,9 @@ function lf = lossfunction_sb(data, meanData, prdData, meanPrdData, weights)
   %
   % Input
   %
-  % * data: vector with data
+  % * data: vector with (dependent) data
   % * meanData: vector with mean value of data per set
-  % * prdData: vectod with predictions
+  % * prdData: vector with predictions
   % * meanPrdData: vector with mean value of predictions per set
   % * weights: vector with weights for the data
   %  

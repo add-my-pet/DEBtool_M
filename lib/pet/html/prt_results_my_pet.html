@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_results_my_pet</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-22"><meta name="DC.source" content="prt_results_my_pet.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>prt_results_my_pet</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-21"><meta name="DC.source" content="prt_results_my_pet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,14 +67,14 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_results_my_pet</h1><!--introduction--><p>writes results of estimation to my_pet_res.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_results_my_pet.m"><b>prt_results_my_pet</b></a> (parPets, metaPar, txtPar, data, metaData, txtData, prdData)</p><h2 id="4">Description</h2><p>Writes results of an estimation to my_pet_res.html for each pet, as specified by pets. Input is the same as for results_pets, but inputs auxData and  weights are not required in this function</p><p>Input:</p><div><ul><li>parPets: cell string of parameters for each pet</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>prdData: structure with predictions for the data</li></ul></div><p>Output:</p><div><ul><li>no Malab output, text is written to screen</li></ul></div><h2 id="5">Remarks</h2><p>Function prt_results2screen writes to screen; subfunction of results_pets.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_results_my_pet</h1><!--introduction--><p>writes results of estimation to my_pet_res.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_results_my_pet.m"><b>prt_results_my_pet</b></a> (parPets, metaPar, txtPar, data, metaData, txtData, prdData)</p><h2 id="4">Description</h2><p>Writes results of an estimation to my_pet_res.html for each pet, as specified by pets. Input is the same as for results_pets, but inputs auxData and  weights are not required in this function</p><p>Input:</p><div><ul><li>parPets: cell string of parameters for each pet</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>prdData: structure with predictions for the data</li></ul></div><p>Output:</p><div><ul><li>no Malab output, text is written to screen</li></ul></div><h2 id="5">Remarks</h2><p>Function prt_results2screen writes to screen; subfunction of results_pets.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_results_my_pet
 % writes results of estimation to my_pet_res.html
 
 %%
 function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData)
-% created 2019/03/01 by Bas Kooijman, modified 2019/07/01
+% created 2019/03/01 by Bas Kooijman, modified 2019/07/01, 2022/01/21
 
 %% Syntax
 % <../prt_results_my_pet.m *prt_results_my_pet*> (parPets, metaPar, txtPar, data, metaData, txtData, prdData) 
@@ -156,7 +157,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     end
     
     fprintf(oid, '  <div class="par">\n');
-    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMSE = %8.3f </h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMSE);
+    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMAE = %8.3f; SMSE = %8.3f </h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMAE, metaPar.(pets{i}).SMSE);
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <p class="clear"></p>\n\n');
@@ -202,8 +203,12 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <div class="par">\n');
-    % open parameter table    
-    fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
+    % open parameter table 
+    if isfield(parPets.(pets{i}), 'T_ref')
+      fprintf(oid, '  <h2>%s parameters at %3.1f&deg;C</h2>\n', metaPar.(pets{i}).model, K2C(parPets.(pets{i}).T_ref));
+    else
+      fprintf(oid, '  <h2>%s parameters</h2>\n', metaPar.(pets{i}).model);
+    end
     fprintf(oid, '  <TABLE id="par">\n');
     fprintf(oid, '    <TR class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>free</TH> <TH>description</TH> </TR>\n');
 

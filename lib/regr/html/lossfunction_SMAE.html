@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>setweights</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-19"><meta name="DC.source" content="setweights.m"><style type="text/css">
+      --><title>lossfunction_SMAE</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-21"><meta name="DC.source" content="lossfunction_SMAE.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,49 +67,39 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>setweights</h1><!--introduction--><p>Sets automatically the weights for the data (to be used in a regression)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>weight = <a href="../setweights.m"><b>setweights</b></a> (data, weight)</p><h2 id="4">Description</h2><p>computes weights for given data and adds it to the weight structure: one divided by the number of data-points</p><p>Inputs:</p><div><ul><li>data : structure with data</li><li>weight : structure with weights</li></ul></div><p>Output:</p><div><ul><li>weight : structure with added weights from data</li></ul></div><h2 id="5">Example of use</h2><p>weight = setweights(data, []) computes the data weights for all data and outputs a new structure weight with the results weight = setweights(data, weight) computes the missing data weights in structure weight and adds them to it</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>lossfunction_SMAE</h1><!--introduction--><p>loss function "Symmetric Mean Absolute Error"</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>lf = <a href="../lossfunction_SMAE.m"><b>lossfunction_SMAE</b></a>(data, prdData, weights)</p><h2 id="4">Description</h2><p>Calculates the loss function: Symmetric Mean Absolute Error   2 w' (<tt>d</tt> - <tt>p</tt>)/ (<tt>d</tt> + |p})</p><p>Input</p><div><ul><li>data: vector with (dependent) data</li><li>meanData: vector with mean value of data per set</li><li>prdData: vector with predictions</li><li>meanPrdData: vector with mean value of predictions per set</li><li>weights: vector with weights for the data</li></ul></div><h2 id="5">Remarks</h2><p>Inputs meanData and meanPrdData are not used; only there for consistency with other lossfunctions</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% setweights
-% Sets automatically the weights for the data (to be used in a regression)  
+%% lossfunction_SMAE
+% loss function "Symmetric Mean Absolute Error"
 
 %%
-function weight = setweights(data, weight) 
-% created 2015/01/16 by Goncalo Marques and Bas Kooijman; modified 2015/03/30, 2016/02/11, 2016/05/06 by Goncalo Marques
+function lf = lossfunction_SMAE(data, meanData, prdData, meanPrdData, weights)
+  % created: 2022/01/19 by Bas Kooijman
+  
+  %% Syntax 
+  % lf = <../lossfunction_SMAE.m *lossfunction_SMAE*>(data, prdData, weights)
+  
+  %% Description
+  % Calculates the loss function: Symmetric Mean Absolute Error
+  %   2 w' (|d| - |p|)/ (|d| + |p})
+  %
+  % Input
+  %
+  % * data: vector with (dependent) data
+  % * meanData: vector with mean value of data per set 
+  % * prdData: vector with predictions
+  % * meanPrdData: vector with mean value of predictions per set
+  % * weights: vector with weights for the data
+] %  
+  % Output
+  %
+  % * lf: loss function value
+  
+  %% Remarks
+  % Inputs meanData and meanPrdData are not used; 
+  % only there for consistency with other lossfunctions
 
-%% Syntax
-% weight = <../setweights.m *setweights*> (data, weight)
-
-%% Description
-% computes weights for given data and adds it to the weight structure:
-% one divided by the number of data-points
-%
-% Inputs:
-%
-% * data : structure with data 
-% * weight : structure with weights
-%
-% Output: 
-%
-% * weight : structure with added weights from data 
-
-%% Example of use
-% weight = setweights(data, [])
-% computes the data weights for all data and outputs a new structure weight with the results 
-% weight = setweights(data, weight)
-% computes the missing data weights in structure weight and adds them to it 
-
-nm = fieldnames(data); % vector of cells with names of data sets
-
-for i = 1:numel(nm)
-  [N, nvar] = size(data.(nm{i}));
-  if ~isfield(weight, nm{i}) 
-    if nvar == 1 % zero-variate data
-      weight.(nm{i}) = 1; 
-    else % uni- or bi-variate data
-      weight.(nm{i}) = ones(N, nvar-1)/ N/ (nvar-1);
-    end
-  end
-end
-
+  lf = 2 * weights' * (abs(data - prdData) ./ (abs(data) + abs(prdData)));
+  
 ##### SOURCE END #####
 --></body></html>

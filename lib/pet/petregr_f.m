@@ -54,8 +54,8 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
     k = size(auxVar, 2);
-    if k >= 2
-      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    if k >= 2 % columns 2,3,.. are treated as data to be predicted
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2:end));
     end
   end
   
@@ -111,12 +111,12 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
   [P, meanP] = struct2vector(f, nm);
   fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   % Following improvement suggested by L.Pfeffer at Stanford
-  usual_delta = simplex_size;     % 5 percent deltas is the default for non-zero terms
-  zero_term_delta = 0.00025;      % Even smaller delta for zero elements of q
+  usual_delta = simplex_size;         % 5 percent deltas is the default for non-zero terms
+  zero_term_delta = simplex_size/ 20; % Even smaller delta for zero elements of q
   for j = 1:n_par
     y = xin;
     f_test = 0;
-    step_reducer = 1;             % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
+    step_reducer = 1; % step_reducer will serve to reduce usual_delta if the parameter set does not pass the filter
     y_test = y;
     while ~f_test
       if y(j) ~= 0
@@ -159,7 +159,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
   % Iterate until the diameter of the simplex is less than tol_simplex
   %   AND the function values differ from the min by less than tol_fun,
   %   or the max function evaluations are exceeded. (Cannot use OR instead of AND.)
-  while func_evals < max_fun_evals & itercount < max_step_number
+  while func_evals < max_fun_evals && itercount < max_step_number
     if max(max(abs(v(:,two2np1)-v(:,onesn)))) <= tol_simplex & ...
        max(abs(fv(1)-fv(two2np1))) <= tol_fun
       break
@@ -337,6 +337,6 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
     aux = getfield(struct, fieldsInCells{1}{:});
-    vec = [vec; aux];
-    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
+    vec = [vec; aux(:)];
+    meanVec = [meanVec; ones(length(aux(:)), 1) * mean(aux(:))];
   end

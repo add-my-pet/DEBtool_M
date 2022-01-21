@@ -62,6 +62,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     end
     [metaPar.(pets{i}).MRE, metaPar.(pets{i}).RE, info] = mre_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
+    [metaPar.(pets{i}).SMAE, metaPar.(pets{i}).SAE, info] = smae_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
     [metaPar.(pets{i}).SMSE, metaPar.(pets{i}).SSE] = smse_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
     if info == 0
       error('One parameter set did not pass the customized filters in the predict file')
@@ -69,14 +70,17 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     clear('dataTemp', 'auxDataTemp', 'weightsMRETemp');
   end
   
-  if n_pets > 1 % MRE, SMSE, lossf and cv are used in addCV to report in addCV.html, which is why they are added to metaPar here
-    prdData = feval('predict_pets', par, data, auxData);
+  if n_pets > 1 % MRE, SMAE, SMSE, lossf and cv are used in addCV to report in addCV.html, which is why they are added to metaPar here
+    %prdData = feval('predict_pets', par, data, auxData);
+    prdData = predict_pets(par, data, auxData);
     metaPar.lossf = lossfun(data, prdData, weights); % this does not include contributions from the augmented term or pseudo-data
-    MRE = 0; SMSE = 0;  % append MRE and SMSE to metaPar as means over all pets
+    MRE = 0; SMAE = 0; SMSE = 0;  % append MRE, SMAE and SMSE to metaPar as means over all pets
     for i = 1 : n_pets
-      MRE = MRE + metaPar.(pets{i}).MRE; SMSE = SMSE + metaPar.(pets{i}).SMSE;
+      MRE = MRE + metaPar.(pets{i}).MRE; 
+      SMAE = SMAE + metaPar.(pets{i}).SMAE; 
+      SMSE = SMSE + metaPar.(pets{i}).SMSE;
     end
-    metaPar.MRE = MRE/ n_pets; metaPar.SMSE = SMSE/ n_pets;
+    metaPar.MRE = MRE/ n_pets; metaPar.SMAE = SMAE/ n_pets; metaPar.SMSE = SMSE/ n_pets;
     % append cv's to metaPar.cv, similar to metaPar.weights
     flds = fields(metaPar.weights); n_pars = length(flds);
     for j = 1 : n_pars
@@ -95,7 +99,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
         varData = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
         k = size(varData, 2);  
-        if k == 2 
+        if k == 2 % uni-variate data set
           auxDataFields = fields(auxData.(pets{i}));
           dataCode = fieldsInCells{1}{:};
           univarAuxData = {};
@@ -125,7 +129,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     
     path =  which('custom_results_group.m');
     if ~isempty(path) && ~isempty(strfind(path, pwd))
-      feval('custom_results_group', par, metaPar, data, txtData, auxData);
+      %feval('custom_results_group', par, metaPar, data, txtData, auxData);
+      custom_results_group(par, metaPar, data, txtData, auxData);
     else
     for i = 1:n_pets
       if exist(['custom_results_', pets{i}, '.m'], 'file')
@@ -136,9 +141,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         counter_filenm = 0;
         for j = 1:nst
           fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-          Var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+          Var = getfield(st, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
           k = size(Var, 2);
-          if k == 2 
+          if k == 2 % uni-variate data set
             if isfield(metaData.(pets{i}), 'grp') % branch to start working on grouped graphs
               plotColours4AllSets = listOfPlotColours4UpTo13Sets;
               maxGroupColourSize = length(plotColours4AllSets) + 1;
@@ -220,6 +225,22 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               xlabel([aux.label.(fieldsInCells{1}{end}){1}, ', ', aux.units.(fieldsInCells{1}{end}){1}]);
               ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
               title(aux.bibkey.(fieldsInCells{1}{end}));
+            end
+          elseif k > 2 % bi-variate data
+            aux =  auxData.(pets{i});
+            if isfield(aux,'treat') && isfield(aux.treat,nm{j})
+              figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
+              treat = aux.treat.(nm{j});
+              if treat(1) == 0 % do not interpolate and plot curves
+                  
+              else % interpolate and plot mesh
+                if ~k == length(treat) % number of values to 2nd variable needs to match nuber of columns
+                  fprintf('Warning from results_pets: bi-variate data with interpolation is found, but the length of field "auxData.treat" does not equal the number of columns\n');
+                else
+                end                  
+              end             
+            else
+              fprintf('Warning from results_pets: bi-variate data set found, but no field "auxData.treat" is specified\n');
             end
           end
           if results_output >= 3  || results_output <= -3 % save graphs to .png

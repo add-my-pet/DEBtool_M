@@ -3,7 +3,7 @@
 
 %%
 function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData)
-% created 2019/03/01 by Bas Kooijman, modified 2019/07/01
+% created 2019/03/01 by Bas Kooijman, modified 2019/07/01, 2022/01/21
 
 %% Syntax
 % <../prt_results_my_pet.m *prt_results_my_pet*> (parPets, metaPar, txtPar, data, metaData, txtData, prdData) 
@@ -86,7 +86,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     end
     
     fprintf(oid, '  <div class="par">\n');
-    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMSE = %8.3f </h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMSE);
+    fprintf(oid, '  <h4>COMPLETE = %3.1f; MRE = %8.3f; SMAE = %8.3f; SMSE = %8.3f </h4>\n', metaData.(pets{i}).COMPLETE, metaPar.(pets{i}).MRE, metaPar.(pets{i}).SMAE, metaPar.(pets{i}).SMSE);
     fprintf(oid, '  </div>\n\n');
 
     fprintf(oid, '  <p class="clear"></p>\n\n');

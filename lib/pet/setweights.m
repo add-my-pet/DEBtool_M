@@ -10,8 +10,7 @@ function weight = setweights(data, weight)
 
 %% Description
 % computes weights for given data and adds it to the weight structure:
-% for the zero-variate data y the weight will be 1,
-% for the uni-variate data y the weight will be 1/N
+% one divided by the number of data-points
 %
 % Inputs:
 %
@@ -28,17 +27,15 @@ function weight = setweights(data, weight)
 % weight = setweights(data, weight)
 % computes the missing data weights in structure weight and adds them to it 
 
-
 nm = fieldnames(data); % vector of cells with names of data sets
 
 for i = 1:numel(nm)
-  [~, nvar] = size(data.(nm{i}));
-  if ~isfield(weight, nm{i}); 
+  [N, nvar] = size(data.(nm{i}));
+  if ~isfield(weight, nm{i}) 
     if nvar == 1 % zero-variate data
       weight.(nm{i}) = 1; 
-    else % uni-variate data
-      N = size(data.(nm{i}),1);
-      weight.(nm{i}) = ones(N, 1)/ N;
+    else % uni- or bi-variate data
+      weight.(nm{i}) = ones(N, nvar-1)/ N/ (nvar-1);
     end
   end
 end
