@@ -19,7 +19,7 @@ function lf = lossfunction_SMAE(data, meanData, prdData, meanPrdData, weights)
   % * prdData: vector with predictions
   % * meanPrdData: vector with mean value of predictions per set
   % * weights: vector with weights for the data
-] %  
+  %  
   % Output
   %
   % * lf: loss function value

@@ -49,7 +49,11 @@ function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
     w      = getfield(weights, fieldsInCells{1}{:});    
     wsum(i) = sum(w(:)); 
     
-    err(i,1) = sum(sum(w .* (diff ./ max(1e-10, meanval)), 1))/ wsum(i);
+    if wsum(i) == 0
+      err(i,1) = sum(diff(:) ./ max(1e-10, meanval(:)), 1);
+    else
+      err(i,1) = sum(sum(w .* (diff ./ max(1e-10, meanval)), 1))/ wsum(i);
+    end
     err(i,2) = (sum(w(:))~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
   end
   
@@ -57,5 +61,5 @@ function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
   if isfield(data,'psd') % take contributions from pseudo-data out from overall error.
     n_psd = length(fields(data.psd)); wsum(end-n_psd+1:end) = 0; err(end-n_psd+1:end,2) = 0;
   end
-  merr = wsum' * err/ sum(wsum);
+  merr = wsum' * err(:,1)/ sum(wsum);
   
