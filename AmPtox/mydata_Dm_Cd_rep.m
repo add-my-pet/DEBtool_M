@@ -27,7 +27,7 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000 % Daphnia magna
      98.700  76.200  53.000  21.700  11.300   5.244];
 data.tN = [t, N]; 
 units.tN = {'d', '#'}; label.tN = {'exposure time', 'cum number of offspring'};  
-treat.tN = {1, c}; units.treat.tN = 'mM'; label.treat.tN = 'concentration of Cd';
+treat.tN = {1, c}; units.treat.tN = 'mM'; label.treat.tN = 'conc. of Cd';
 bibkey.tN = 'bla2022';
 comment.tN = 'Effects of Cd on Daphnia magna reproduction';
   

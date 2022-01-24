@@ -62,7 +62,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
     end
     [metaPar.(pets{i}).MRE, metaPar.(pets{i}).RE, info] = mre_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
-    [metaPar.(pets{i}).SMAE, metaPar.(pets{i}).SAE, info] = smae_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
+    [metaPar.(pets{i}).SMAE, metaPar.(pets{i}).SAE] = smae_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
     [metaPar.(pets{i}).SMSE, metaPar.(pets{i}).SSE] = smse_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
     if info == 0
       error('One parameter set did not pass the customized filters in the predict file')
@@ -110,8 +110,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end
           aux = getfield(st, fieldsInCells{1}{:});
           dataVec = aux(:,1); 
-          if isempty(univarAuxData) % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
-            xAxis = linspace(min(dataVec), max(dataVec), 100)';
+          if isempty(univarAuxData) || strcmp(univarAuxData{1},'treat') % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
+            n_x = 100; xAxis = linspace(min(dataVec), max(dataVec), n_x)';
             univarX = setfield(univarX, fieldsInCells{1}{:}, 'dft');
           else
             xAxis = dataVec;
@@ -170,10 +170,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   xPred = data2plot.(pets{i}).(sets2plot{ii})(:,1); 
                   yPred = prdData_x.(pets{i}).(sets2plot{ii});
                   if n_sets2plot == 1
-                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
-                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
+                    plot(xPred, yPred,'Color',plotColours{2}, 'linewidth',2)
+                    plot(xData, yData, '.', 'Color',plotColours{1}, 'Markersize',15)
                   else
-                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
+                    plot(xPred, yPred, xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
                     legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
                   end
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
@@ -273,27 +273,34 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 if ~k == length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                   fprintf('Warning from results_pets: bi-variate data with interpolation is found, but the length of field "auxData.treat" does not match the number of columns\n');
                 else
-                  dataXY = data.(pets{i}).(nm{j}); n_x = size(dataXY,1); % number of values for 1st independent var
-                  plotColours = {[1 0 0], [0 0 1], [1 0 1], [0.5 0 0.5]}; % red, blue, light & dark magenta
+                  zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
+                  nX = length(xData); % number of values for 1st independent var
+                  zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
+                  plotColours = {[1 0 0], [0 0 1]}; % red, blue, light & dark magenta
                   n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
                   auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
-                  prd = data2plot.(pets{i}).(nm{j}); valX = dataXY(:,1); dataXY(:,1) = []; valY = treat{2};
+                  prd = data2plot.(pets{i}).(nm{j}); 
                   prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
                   prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
                   % plot mesh
-                  plot3(valX, valY*ones(1,n_x), prdX, 'Color', plotColours{2}, 'linewith',2)
-                  plot3(ones(n_y,1)*valX' , yAxis(:,ones(1:n_x)), prdY', 'Color', plotColours{2}, 'linewith',2) % (n_y, n_x)-matrices
+                  plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
+                  plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
                   % plot connections of points to mesh & po'ints
-                  for ii = 1:k  % scan y-values
-                    for jj = 1:n_x % first plot (x,z) predictions for yAxis
-                      plot3([valX(jj);valX(jj)], [valY(ii);valY(ii)], [prd(jj,ii);dataXY(jj,ii)], 'Color', plotColours{3+dataXY(jj,ii)<prd(jj,ii)}, 'linewith',2)
-                      plot3(valX(jj), valY(ii), dataXY(ii,jj), '.', 'Color', plotColours{1}, 'Markersize',15)
+                  for ii = 1:k-1  % scan y-values
+                    for jj = 1:nX % scan x-values
+                      plot3([xData(jj);xData(jj)], [yData(ii);yData(ii)], [zPred(jj,ii);zData(jj,ii)], 'Color', plotColours{1+(zData(jj,ii)<zPred(jj,ii))})
+                      plot3(xData(jj), yData(ii), zData(jj,ii), '.', 'Color',plotColours{1}, 'Markersize',15)
                     end
                   end
                 end
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
-                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                title(txtData.(pets{i}).comment.(nm{j}));                             
+                ylabel([txtData.(pets{i}).label.treat.(nm{j}), ', ', txtData.(pets{i}).units.treat.(nm{j})]);
+                zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                title(txtData.(pets{i}).comment.(nm{j})); 
+                view([-5,-10,-5]);
+                ax = gca;
+                ax.BoxStyle = 'full';
+                box on
               end             
             else
               fprintf('Warning from results_pets: bi-variate data set found, but no field "auxData.treat" is specified\n');
