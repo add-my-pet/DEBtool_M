@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>estim_pars</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-24"><meta name="DC.source" content="estim_pars.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,26 +67,27 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the AmP estimation procedure (Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>initiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>nsteps: number of steps</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options; option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>estim_pars</h1><!--introduction--><p>Runs the AmP estimation procedure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[nsteps, info, fval] = <a href="../estim_pars.m"><b>estim_pars</b></a></p><h2 id="4">Description</h2><p>Runs the entire estimation procedure, see Marques et al 2018, PLOS computational biology  <a href="https://doi.org/10.1371/journal.pcbi.1006100">https://doi.org/10.1371/journal.pcbi.1006100</a> See also Robles et al 2021, (in prep) for the ea-method.</p><div><ul><li>gets the parameters</li><li>gets the data</li><li>initiates the estimation procedure</li><li>sends the results for handling</li></ul></div><p>Input</p><div><ul><li>no input</li></ul></div><p>Output</p><div><ul><li>nsteps: scalar with number of steps</li><li>info: boolean with succussful convergence (true)</li><li>fval: minimum of loss function</li></ul></div><h2 id="5">Remarks</h2><p>estim_options sets many options; Option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file; Option output &gt;= 5 allow the filling of global refPets to choose comparison species, otherwise this is done automatically.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_pars
-% Runs the AmP estimation procedure (Marques et al 2018, PLOS computational
-% biology  https://doi.org/10.1371/journal.pcbi.1006100)
+% Runs the AmP estimation procedure 
 
 %%
-function nsteps = estim_pars
+function [nsteps, info, fval] = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
   %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
-  %   2019/03/20 by Bas kooijman
+  %   2019/03/20, 2019/12/16, 2019/12/20, 2021/06/02 by Bas kooijman
   
   %% Syntax 
-  % <../estim_pars.m *estim_pars*>
+  % [nsteps, info, fval] = <../estim_pars.m *estim_pars*>
   
   %% Description
-  % Runs the entire estimation procedure
+  % Runs the entire estimation procedure, see Marques et al 2018, PLOS computational biology  https://doi.org/10.1371/journal.pcbi.1006100
+  % See also Robles et al 2021, (in prep) for the ea-method.
+  % 
   %
   % * gets the parameters
   % * gets the data
@@ -98,11 +100,16 @@ function nsteps = estim_pars
   %  
   % Output
   %
-  % * nsteps: number of steps
+  % * nsteps: scalar with number of steps
+  % * info: boolean with succussful convergence (true)
+  % * fval: minimum of loss function
   
   %% Remarks
   % estim_options sets many options;
-  % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
+  % Option filter = 0 selects filter_nat, which always gives a pass, but
+  % still allows for costomized filters in the predict file;
+  % Option output >= 5 allow the filling of global refPets to choose
+  % comparison species, otherwise this is done automatically.
   
 global pets pars_init_method method filter covRules
 
@@ -113,7 +120,8 @@ n_pets = length(pets);
 
 if n_pets == 1
   pars_initnm = ['pars_init_', pets{1}];
-    resultsnm = ['results_', pets{1}, '.mat'];
+  resultsnm   = ['results_', pets{1}, '.mat'];
+  calibration_options('results_filename', resultsnm);
 else
   pars_initnm = 'pars_init_group';
   resultsnm = 'results_group.mat';
@@ -195,14 +203,20 @@ else
 end
 
 % perform the actual estimation
-if ~strcmp(method, 'no')
-  if strcmp(method, 'nm') % prepares for future extension to alternative minimazation algorithms
+switch method
+  case 'nm'
     if n_pets == 1
-      [par, info, nsteps] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+      [par, info, nsteps, fval] = petregr_f('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
     else
-      [par, info, nsteps] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
+      [par, info, nsteps, fval] = groupregr_f('predict_pets', par, data, auxData, weights, weightsPar, filternm); % estimate parameters using overwrite
     end
-  end
+    
+  case 'mmea'
+    [par, solutions_set, fval] = calibrate; 
+    info = ~isempty(solutions_set); 
+    nsteps = solutions_set.runtime_information.run_1.fun_evals;
+    
+  otherwise % do not estimate
 end
 
 % Results

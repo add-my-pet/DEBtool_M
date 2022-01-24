@@ -11,7 +11,7 @@ function [prdData, info] = predict_Dm_Cd_rep(par, data, auxData)
   H0 = maturity(L0, f, [kap; kap_R; g; k_J; k_M; 0; v; U_Hb; U_Hp]); % initial scaled maturity
   U0 = L0^3/ v; % initial reserve at max value
   
-  C = treat.tN; C(1) = []; nc = size(C,1);
+  C = treat.tN{2}(:); nc = length(C);
   
   % initialize state vector; catenate to avoid loops
   X0 = [zeros(nc,1);     % N: cumulative number of offspring
@@ -55,15 +55,15 @@ function dX = dharep(t, X, C, nc, c0, cA, ke, kap, kapR, g, kJ, kM, v, Hp, U0, f
   
   s = max(0,(c - c0)/ cA);    % -, stress factor
 
-  E = U * v ./ L .^ 3;        % -, scaled reserve density e = m_E/m_Em (dim-less)
+  E = U .* v ./ L .^ 3;        % -, scaled reserve density e = m_E/m_Em (dim-less)
   %% again we scale with respect to m_Em = {J_EAm}/ (v [M_V]) of the blanc
 
-  Lm = v./ (kM * g);          % maximum length
+  Lm = v/ (kM * g);           % maximum length
   eg = E .* g ./ (E + g);     % in DEB notation: e g/ (e + g)
-  SC = L .^ 2 .* eg .* (1 + L ./ (g .* Lm)); % SC = J_EC/{J_EAm}
+  SC = L .^ 2 .* eg .* (1 + L / (g * Lm)); % SC = J_EC/{J_EAm}
 
   rB = kM * g ./ (3 * (E + g)); % von Bert growth rate
-  dL = rB .* (E .* Lm - L);   % change in length
+  dL = rB .* (E * Lm - L);   % change in length
   dU = f * L .^ 2 - SC;           % change in time-surface U = M_E/{J_EAm}
   dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
 

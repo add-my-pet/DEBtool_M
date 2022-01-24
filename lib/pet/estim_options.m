@@ -153,7 +153,7 @@ function estim_options (key, val)
   %
   %% Remarks
   % See <estim_pars.html *estim_pars*> for application of the option settings.
-  % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
+  % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file.
   % A typical estimation procedure is
   % 
   % * first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),

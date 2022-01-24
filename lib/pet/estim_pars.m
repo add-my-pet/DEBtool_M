@@ -35,7 +35,10 @@ function [nsteps, info, fval] = estim_pars
   
   %% Remarks
   % estim_options sets many options;
-  % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
+  % Option filter = 0 selects filter_nat, which always gives a pass, but
+  % still allows for costomized filters in the predict file;
+  % Option output >= 5 allow the filling of global refPets to choose
+  % comparison species, otherwise this is done automatically.
   
 global pets pars_init_method method filter covRules
 

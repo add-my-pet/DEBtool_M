@@ -34,7 +34,7 @@ if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.9; space_MM = 0.30;
+  space_MT = 0.3; space_MM = 0.3;
 else
   space_MT = space(1); space_MM = space(2);
 end
@@ -57,7 +57,7 @@ for i = 1:n
   width = max(width, length(label{i}));
 end
 
-width = 1 + width * 0.5;
+width = 1 + width * 0.6;
 height = n * space_MM; 
 
 Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);

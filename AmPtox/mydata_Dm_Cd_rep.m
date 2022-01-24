@@ -3,7 +3,7 @@ function [data, auxData, metaData, txtData, weights] = mydata_Dm_Cd_rep
 
 % time - conc - cum # of offspring
 t = [1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21]'; % days
-c = [0.00  0.20  0.40  0.80  1.00  2.00]';          % cadmium mM
+c = [0.00  0.20  0.40  0.80  1.00  2.00]';         % cadmium mM
 N = [0.000   0.000   0.000   0.000   0.000   0.000 % Daphnia magna 
      0.000   0.000   0.000   0.000   0.000   0.000 % offspring per female
      0.000   0.000   0.000   0.000   0.000   0.000 
@@ -27,7 +27,7 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000 % Daphnia magna
      98.700  76.200  53.000  21.700  11.300   5.244];
 data.tN = [t, N]; 
 units.tN = {'d', '#'}; label.tN = {'exposure time', 'cum number of offspring'};  
-treat.tN = [1; c]; units.treat.tN = 'mM'; label.treat.tN = 'concentration of Cd';
+treat.tN = {1, c}; units.treat.tN = 'mM'; label.treat.tN = 'concentration of Cd';
 bibkey.tN = 'bla2022';
 comment.tN = 'Effects of Cd on Daphnia magna reproduction';
   

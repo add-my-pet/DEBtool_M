@@ -24,7 +24,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
 %
 % Output:
 %
-% * no Malab output, text is written to screen
+% * no Malab output, text is written to html
 
 %% Remarks
 % Function prt_results2screen writes to screen; subfunction of results_pets.

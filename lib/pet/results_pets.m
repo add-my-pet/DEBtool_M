@@ -89,7 +89,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
    
   if ~results_output == 0 % plot figures
-    data2plot = data;
+    data2plot = data; 
     close all % to avoid saving figures generated prior the current run
     univarX = {}; 
     for i = 1:n_pets
@@ -99,7 +99,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
         varData = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
         k = size(varData, 2);  
-        if k == 2 % uni-variate data set
+        if k > 1 % uni- or bi-variate data set
           auxDataFields = fields(auxData.(pets{i}));
           dataCode = fieldsInCells{1}{:};
           univarAuxData = {};
@@ -122,14 +122,14 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       end
       data2plot.(pets{i}) = st;
     end
-  
-    prdData = predict_pets(par, data2plot, auxData);
+    
+    
+    prdData_x = predict_pets(par, data2plot, auxData); % data prediction with xAxis
       
     counter_fig = 0;
     
     path =  which('custom_results_group.m');
     if ~isempty(path) && ~isempty(strfind(path, pwd))
-      %feval('custom_results_group', par, metaPar, data, txtData, auxData);
       custom_results_group(par, metaPar, data, txtData, auxData);
     else
     for i = 1:n_pets
@@ -168,7 +168,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   xData = st.(sets2plot{ii})(:,1); 
                   yData = st.(sets2plot{ii})(:,2);
                   xPred = data2plot.(pets{i}).(sets2plot{ii})(:,1); 
-                  yPred = prdData.(pets{i}).(sets2plot{ii});
+                  yPred = prdData_x.(pets{i}).(sets2plot{ii});
                   if n_sets2plot == 1
                     plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
                     plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
@@ -194,8 +194,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 xData = st.(nm{j})(:,1); 
                 yData = st.(nm{j})(:,2);
                 xPred = data2plot.(pets{i}).(nm{j})(:,1); 
-                yPred = prdData.(pets{i}).(nm{j});
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
+                yPred = prdData_x.(pets{i}).(nm{j});
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth',2)
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);   
                 title(txtData.(pets{i}).bibkey.(nm{j}));
@@ -211,9 +211,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               yData = Var(:,2);
               aux = getfield(data2plot.(pets{i}), fieldsInCells{1}{:});
               xPred = aux(:,1);
-              yPred = getfield(prdData.(pets{i}), fieldsInCells{1}{:});
+              yPred = getfield(prdData_x.(pets{i}), fieldsInCells{1}{:});
               if strcmp(getfield(univarX, fieldsInCells{1}{:}), 'dft')
-                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth', 2)
+                plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth',2)
               elseif strcmp(getfield(univarX, fieldsInCells{1}{:}), 'usr')
                 plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',15, 'linestyle', 'none')
               end
@@ -231,27 +231,87 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             if isfield(aux,'treat') && isfield(aux.treat,nm{j})
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
               treat = aux.treat.(nm{j});
-              if treat(1) == 0 % do not interpolate and plot curves
-                  
-              else % interpolate and plot mesh
-                if ~k == length(treat) % number of values to 2nd variable needs to match nuber of columns
-                  fprintf('Warning from results_pets: bi-variate data with interpolation is found, but the length of field "auxData.treat" does not equal the number of columns\n');
+              hold on;
+              set(gca,'Fontsize',10); 
+              set(gcf,'PaperPositionMode','manual');
+              set(gcf,'PaperUnits','points'); 
+              set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
+              if treat{1} == 0 % do not interpolate 2nd independent var and plot curves
+                plotColours4AllSets = listOfPlotColours4UpTo13Sets;
+                maxGroupColourSize = length(plotColours4AllSets) + 1;
+                n_sets2plot = size(st.(nm{j}),2) - 1; % # of data sets in nm{j}
+                if n_sets2plot < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
+                  plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
                 else
-                end                  
+                  plotColours = plotColours4AllSets{4};
+                end
+                legend = cell(0,2);
+                for ii = 1: n_sets2plot
+                  xData = st.(nm{j})(:,1); 
+                  yData = st.(nm{j})(:,1+ii);
+                  xPred = data2plot.(pets{i}).(nm{j})(:,1); 
+                  yPred = prdData_x.(pets{i}).(nm{j})(:,ii);
+                  if n_sets2plot == 1
+                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
+                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
+                  else
+                    plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
+                    if isnumeric(treat{2}); txt_ii = num2str(treat{2}(ii)); else;  txt_ii = treat{2}(ii); end
+                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
+                  end
+                end
+                xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                if isfield(txtData.(pets{i}).comment, nm{j})
+                  title(txtData.(pets{i}).comment.(nm{j}));
+                end
+                if n_sets2plot > 1 
+                  hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
+                end
+                  
+              else % interpolate 2nd independent var and plot mesh
+                if ~k == length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
+                  fprintf('Warning from results_pets: bi-variate data with interpolation is found, but the length of field "auxData.treat" does not match the number of columns\n');
+                else
+                  dataXY = data.(pets{i}).(nm{j}); n_x = size(dataXY,1); % number of values for 1st independent var
+                  plotColours = {[1 0 0], [0 0 1], [1 0 1], [0.5 0 0.5]}; % red, blue, light & dark magenta
+                  n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
+                  auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
+                  prd = data2plot.(pets{i}).(nm{j}); valX = dataXY(:,1); dataXY(:,1) = []; valY = treat{2};
+                  prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
+                  prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
+                  % plot mesh
+                  plot3(valX, valY*ones(1,n_x), prdX, 'Color', plotColours{2}, 'linewith',2)
+                  plot3(ones(n_y,1)*valX' , yAxis(:,ones(1:n_x)), prdY', 'Color', plotColours{2}, 'linewith',2) % (n_y, n_x)-matrices
+                  % plot connections of points to mesh & po'ints
+                  for ii = 1:k  % scan y-values
+                    for jj = 1:n_x % first plot (x,z) predictions for yAxis
+                      plot3([valX(jj);valX(jj)], [valY(ii);valY(ii)], [prd(jj,ii);dataXY(jj,ii)], 'Color', plotColours{3+dataXY(jj,ii)<prd(jj,ii)}, 'linewith',2)
+                      plot3(valX(jj), valY(ii), dataXY(ii,jj), '.', 'Color', plotColours{1}, 'Markersize',15)
+                    end
+                  end
+                end
+                xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                title(txtData.(pets{i}).comment.(nm{j}));                             
               end             
             else
               fprintf('Warning from results_pets: bi-variate data set found, but no field "auxData.treat" is specified\n');
             end
           end
+          
           if results_output >= 3  || results_output <= -3 % save graphs to .png
+            if counter_filenm > 0 && counter_fig < 10
+              graphnm = ['results_', pets{i}, '_0', num2str(counter_filenm)];
+            elseif counter_filenm > 0
+              graphnm = ['results_', pets{i}, '_', num2str(counter_filenm)];
+            end  
             if counter_filenm > 0
-              graphnm = ['results_', pets{i}, '_'];
-              if counter_fig < 10
-                figure(counter_fig)  
-                eval(['print -dpng ', graphnm, '0', num2str(counter_filenm),'.png']);
-              else
-                figure(counter_fig)  
-                eval(['print -dpng ', graphnm, num2str(counter_filenm), '.png']);
+              figure(counter_fig)  
+              eval(['print -dpng ', graphnm, '.png']);
+              if exist('hlegend', 'var')
+                figure(hlegend)  
+                eval(['print -dpng ', graphnm, '_legend.png']);
               end
             end
           end
@@ -277,49 +337,49 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 1  % no saving to .mat, no saving to png, print to html
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); 
 %       else
 %         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case -1 % no saving to .mat, no saving to png, print to screen
-      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); 
 %       else
 %         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 2  % save to .mat, no saving to png, print to html
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case -2  % save to .mat, no saving to png, print to screen
-      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 3  % save to .mat, save to png, print to html
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case -3  % save to .mat, save to png, print to screen
-      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
       else
         save('results_group.mat', 'par', 'txtPar', 'metaPar', 'metaData');
       end
     case 4  % save to .mat, save to png, print to html, implied traits to html
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
@@ -328,7 +388,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end    
     case -4  % save to .mat, save to png, print to screen, implied traits to html
-      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         prt_report_my_pet({parPets.(pets{1}), metaPar, txtPar, metaData}, []);
@@ -337,7 +397,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, []);
       end
     case 5 % save to .mat, save to png, print to html, implied traits to html, including related species
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         if isempty(refPets)
@@ -354,7 +414,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         end
       end
     case -5 % save to .mat, save to png, print to screen, implied properties to html, including related species
-      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results2screen(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         if isempty(refPets)
@@ -367,7 +427,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         prt_report_my_pet({parPets, metaPar, txtPar, metaData}, clade(fieldnames(metaData)))  
       end
     case 6 % save to .mat, save to png, print to html, implied traits to html, including related species, population traits to html
-      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData);
+      prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData_x);
       if n_pets == 1
         metaData = metaData.(pets{1}); metaPar = metaPar.(pets{1}); save(['results_', pets{1}, '.mat'], 'par', 'txtPar', 'metaPar', 'metaData');
         if isempty(refPets)

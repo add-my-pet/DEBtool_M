@@ -135,11 +135,20 @@ for i = 1:length(dataFields)
     [~, nvar] = size(currentDataSet);
     if nvar == 1 % zero-variate data
       sumval = currentDataSet; 
-    elseif nvar == 2 % uni-variate data
-      sumval = sum(currentDataSet(:,2));
-    else % bi-variate data or more
-      sumval = sum(currentDataSet(:,2)); % Lack of plotting info in the next line
-      fprintf(['The data set', dataFields{i}, ' has more than 2 columns. For that reason it will not be plotted. \n']);
+    elseif nvar > 1 % uni- or bi-variate data
+      sumval = sum(sum(currentDataSet(:,2:end)));
+      if nvar > 2 % bi-variate data
+        if ~isfield(auxData, 'treat') || ~isfield(auxData.treat, dataFields{i})
+          fprintf(['Data set', dataFields{i}, 'has more than 2 columns, but field auxData.treat is missing\n']);
+        elseif ~length(auxData.treat.(dataFields{i}))==2
+          fprintf(['Field auxData.treat.', dataFields{i}, ' should be a cell-string of length 2\n']);
+        elseif ~length(auxData.treat.(dataFields{i}){2})==nvar
+          fprintf(['The second element of auxData.treat.', dataFields{i}, ' should be a cell-string of length ', nvar,'\n']);
+        end
+        if isfield(auxData, 'treat') && isfield(auxData.treat, dataFields{i}) && length(auxData.treat.(dataFields{i}))==2 && ~(auxData.treat.(dataFields{i}){1}==0 || auxData.treat.(dataFields{i}){1}==1)
+          fprintf(['The first element of auxData.treat.', dataFields{i}, ' should be a boolean\n']);
+        end
+      end
     end
     if sumval == 0
       fprintf(['The data set/point', dataFields{i}, ' is zero. This may cause problems in the estimation procedure through the standard weight setting and the computation of the loss function. \n']);
@@ -513,7 +522,7 @@ end
 if ~isfield(par, 'T_ref')
     error(['    In pars_init_',speciesnm,'.m: The parameter T_ref is missing in the par structure']);
 elseif par.T_ref ~= C2K(20)
-    disp(['  warning:  In pars_init_',speciesnm,'.m: The parameter T_ref is not 20ºC (or 293.15K), please check that there is a very good reason for this.']);
+    disp(['  warning:  In pars_init_',speciesnm,'.m: The parameter T_ref is not 20C (or 293.15K), please check that there is a very good reason for this.']);
 end
 
 % checking the existence of free in the par structure and if it is filled with either 0 or 1
