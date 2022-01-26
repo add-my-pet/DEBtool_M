@@ -297,9 +297,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   if treat{1} == 1 
                     plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
                     plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
-                  else % alternatively a surface presentation if n_x = n_y
+                  elseif treat{1} == 2 % alternatively a surface presentation if n_x = n_y
                     x = [xAxis(:,ones(1,k-1)),ones(n_y,1)*xData']; y = [ones(n_x,1)*yData', yAxis(:,ones(1,nX))]; z = [prdX, prdY'];
                     surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
+                  else % alternatively a surface presentation if n_x = n_y
+                    x = [xAxis(:,ones(1,k-1)),ones(n_y,1)*xData']; y = [ones(n_x,1)*yData', yAxis(:,ones(1,nX))]; z = [prdX, prdY'];
+                    surfl(x,y,z);%, 'FaceAlpha',0.1)%, % ,'FaceColor',plotColours{2})
                   end
                   % plot connections of points to mesh & points
                   for ii = 1:k-1  % scan y-values

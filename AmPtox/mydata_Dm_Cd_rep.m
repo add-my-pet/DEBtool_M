@@ -27,8 +27,8 @@ N = [0.000   0.000   0.000   0.000   0.000   0.000 % Daphnia magna
      98.700  76.200  53.000  21.700  11.300   5.244];
 data.tN = [t, N]; 
 units.tN = {'d', '#'}; label.tN = {'exposure time', 'cum number of offspring'};  
-treat.tN = {1, c}; units.treat.tN = 'mM'; label.treat.tN = 'conc. of Cd';
-bibkey.tN = 'bla2022';
+treat.tN = {3, c}; units.treat.tN = 'mM'; label.treat.tN = 'conc. of Cd';
+bibkey.tN = 'KooyBeda1996';
 comment.tN = 'Effects of Cd on Daphnia magna reproduction';
   
 %% set weights for all real data
@@ -50,6 +50,11 @@ txtData.comment = comment;
 %metaData.discussion = struct('D1', D1);
 
 %% References
-bibkey = 'bla2022'; type = 'Misc'; bib = ...
-'howpublished = {\url{http://en.wikipedia.org/wiki/my_pet}}';
+%
+bibkey = 'KooyBeda1996'; type = 'Book'; bib = [ ...  % used in setting of chemical parameters and pseudodata
+'author = {Kooijman, S.A.L.M. and Bedaux, J.J.M.}, ' ...
+'year = {1996}, ' ...
+'title  = {The analysis of aquatic toxicity data}, ' ...
+'publisher = {VU University Press}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+
