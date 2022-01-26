@@ -10,14 +10,18 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques,
 % modified 2015/08/25 by Dina Lika, 
 % modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
-% modified 2019/08/30, 2019/11/12, 2019/12/20  by Nina Marn
-% modified 2020/10/27, 2021/01/16 by Bas Kooijman
+% modified 2019/08/30, 2019/11/12, 2019/12/20 by Nina Marn
+% modified 2020/10/27, 2021/01/16, 2022/01/25 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
 
 %% Description
-% Computes model predictions and handles them (by plotting, saving or publishing)
+% Computes model predictions and handles them (by plotting, saving or publishing).
+% All input structures have the species name as first field, which is done by estim_pars.
+% The user composes these structures via the mydata_my_pet and pars_init_my_pet files, 
+% where the first field directly relates to the variables.
+% This function also requires a working predict_my_pet.
 %
 % Input
 % 
@@ -35,12 +39,20 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % Depending on <estim_options.html *estim_options*> settings:
 % writes to results_my_pet.mat and/or results_my_pet_i.png and/or my_pet_res.html and/or report_my_pet.html and/or my_pet_pop.html;  
 % writes and/or plots to screen.
+%
 % Plots use lava-colour scheme; from high to low: white, red, blue, black.
 % In grp-plots, colours are assigned from high to low.
 % Since the standard colour for females is red, and for males blue, compose set with females first, then males.
 %
-% If output options -5/5 or 6 are used, and comparison species are included in the traits-table, 
-%   function clade is used to identify related species, unless global refPets is defined in the run-file with names to species to compare with
+% Bi-variate data requires field auxData.treat.(name-of-data-set) with a 2-cell string: 
+% the first element 0 for no interpolation, 1 for mesh, 2 for surface;
+% the second element is a cell-string of a length equal to the number of values for the second independent variable.
+% (So one minus the number of columns of (name-of-data-set); the first column is the first independent variable).
+% If the second element of treat is numeric, there must be a field txtData.units.treat.(name-of-data-set).
+% If no interpolation is used, the legend is plotted in a separate figure.
+%
+% If output options -5/5 or 6 are used, and comparison species are included in the traits-table. 
+% Function clade is used to identify a few most related species, unless global refPets is defined in the run-file with names to species to compare with.
 %
 % In the case of multiple species, par and metaPar have the species names as first field, but not so for a single species
 % 
@@ -256,7 +268,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
                   else
                     plot(xPred, yPred, xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
-                    if isnumeric(treat{2}); txt_ii = num2str(treat{2}(ii)); else;  txt_ii = treat{2}(ii); end
+                    if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
                     legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
                   end
                 end
@@ -279,13 +291,17 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   plotColours = {[1 0 0], [0 0 1]}; % red, blue, light & dark magenta
                   n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
                   auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
-                  prd = data2plot.(pets{i}).(nm{j}); 
                   prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
                   prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
                   % plot mesh
-                  plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
-                  plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
-                  % plot connections of points to mesh & po'ints
+                  if treat{1} == 1 
+                    plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
+                    plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
+                  else % alternatively a surface presentation if n_x = n_y
+                    x = [xAxis(:,ones(1,k-1)),ones(n_y,1)*xData']; y = [ones(n_x,1)*yData', yAxis(:,ones(1,nX))]; z = [prdX, prdY'];
+                    surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
+                  end
+                  % plot connections of points to mesh & points
                   for ii = 1:k-1  % scan y-values
                     for jj = 1:nX % scan x-values
                       plot3([xData(jj);xData(jj)], [yData(ii);yData(ii)], [zPred(jj,ii);zData(jj,ii)], 'Color', plotColours{1+(zData(jj,ii)<zPred(jj,ii))})

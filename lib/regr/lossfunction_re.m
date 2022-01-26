@@ -3,7 +3,7 @@
 
 %%
 function lf = lossfunction_re(data, meanData, prdData, meanPrdData, weights)
-  % created: 2016/06/06 by Goncalo Marques
+  % created: 2016/06/06 by Goncalo Marques, , modified 2022/01/25 by Bas Kooijman
   
   %% Syntax 
   % lf = <../lossfunction_re.m *lossfunction_re*>(func, par, data, auxData, weights, psdtrue)
@@ -25,5 +25,6 @@ function lf = lossfunction_re(data, meanData, prdData, meanPrdData, weights)
   %
   % * lf: loss function value
 
-  lf = weights' * ((data - prdData)./ meanData).^2;
+  sel = ~isnan(data);
+  lf = weights(sel)' * ((data(sel) - prdData(sel))./ meanData(sel)).^2;
   

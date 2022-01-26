@@ -3,7 +3,7 @@
 
 %%
 function lf = lossfunction_SMAE(data, meanData, prdData, meanPrdData, weights)
-  % created: 2022/01/19 by Bas Kooijman
+  % created: 2022/01/19 by Bas Kooijman, modified 2022/01/25 by Bas Kooijman
   
   %% Syntax 
   % lf = <../lossfunction_SMAE.m *lossfunction_SMAE*>(data, prdData, weights)
@@ -28,5 +28,6 @@ function lf = lossfunction_SMAE(data, meanData, prdData, meanPrdData, weights)
   % Inputs meanData and meanPrdData are not used; 
   % only there for consistency with other lossfunctions
 
-  lf = 2 * weights' * (abs(data - prdData) ./ (abs(data) + abs(prdData)));
+  sel = ~isnan(data);
+  lf = 2 * weights(sel)' * (abs(data(sel) - prdData(sel)) ./ (abs(data(sel)) + abs(prdData(sel))));
   

@@ -144,9 +144,8 @@ for i = 1:length(dataFields)
           fprintf(['Field auxData.treat.', dataFields{i}, ' should be a cell-string of length 2\n']);
         elseif ~length(auxData.treat.(dataFields{i}){2})==nvar
           fprintf(['The second element of auxData.treat.', dataFields{i}, ' should be a cell-string of length ', nvar,'\n']);
-        end
-        if isfield(auxData, 'treat') && isfield(auxData.treat, dataFields{i}) && length(auxData.treat.(dataFields{i}))==2 && ~(auxData.treat.(dataFields{i}){1}==0 || auxData.treat.(dataFields{i}){1}==1)
-          fprintf(['The first element of auxData.treat.', dataFields{i}, ' should be a boolean\n']);
+        elseif ~(auxData.treat.(dataFields{i}){1}==0 || auxData.treat.(dataFields{i}){1}==1 || auxData.treat.(dataFields{i}){1}==2)
+          fprintf(['The first element of auxData.treat.', dataFields{i}, ' should be 0, 1 or 2\n']);
         end
       end
     end

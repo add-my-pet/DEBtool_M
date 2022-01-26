@@ -4,7 +4,8 @@
 %%
 function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   % created: 2001/09/07 by Bas Kooijman; 
-  % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques, 2015/07/30 by Starrlight Augustine
+  % modified: 2013/05/02, 2015/03/30, 2015/04/27 by Goncalo Marques,
+  % 2015/07/30 by Starrlight Augustine, 2022/01/26 by Bas Kooijman
   
   %% Syntax 
   % [merr, rerr, prdInfo] = <../mre_st.m *mre_st*>(func, par, data, auxData, weights)
@@ -28,6 +29,11 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   %     in first column and 1 or 0 in the second column indicated whether or
   %     not the data set was given weight zero
   % * prdInfo: boolean with success (1) or failure (0) for call to predict-function
+  %
+  %% Remarks
+  % Bi-variate data can have NaN's (= missing data).
+  % Uni- and bi-variate data have the (first) independent variable in the first column
+  % First output merr excludes contributions from pseudo-data.
 
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
@@ -36,37 +42,47 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
       return
   end
   prdData = predict_pseudodata(par, data, prdData); % add filed psd to prdData
-  
   rerr      = zeros(nst, 2);  % prepare output
-  
-  for i = 1:nst   % first we remove independent variables from uni- or bi-variate data sets
+  wsum = zeros(nst,1);   % sum of all weights per data-set
+
+  for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
-    k = size(var, 2);
-    if k >= 2
-      data = setfield(data, fieldsInCells{1}{:}, var(:,2:end));
+    [n, k] = size(var);
+    if k > 1 % uni- or bi-variate data set
+      var(:,1) = []; % remove independent variable
     end
-  end
-  
-  for i = 1:nst % next we compute the weighted relative error of each data set
-    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var    = getfield(data, fieldsInCells{1}{:}); n = size(var,1);
-    prdVar = getfield(prdData, fieldsInCells{1}{:}); 
+    prdVar = getfield(prdData, fieldsInCells{1}{:});
     w      = getfield(weights, fieldsInCells{1}{:});
-    meanval = ones(n,1) * abs(mean(var));
-    diff = abs(prdVar - var);
+    sel = ~isnan(var); diff = zeros(n,max(1,k-1)); meanval = diff; 
+    if k > 1
+      for j = 1:k-1
+        meanval(:,j) = ones(n,1) * abs(mean(var(sel(:,j),j)));
+        diff(sel(:,j),j) = abs(prdVar(sel(:,j),j) - var(sel(:,j),j));
+      end
+    else
+      meanval = abs(var); diff = abs(prdVar - var);
+    end
+    wsum(i) = sum(w(sel)); 
+
     
-    if sum(diff) > 0 & all(meanval > 0)
+    if all(meanval > 0)
       
-      if sum(w(:)) ~= 0
-        rerr(i,1) = sum(sum(w .* diff ./ meanval, 1))/ sum(w(:));
+      if wsum(i) ~= 0
+        rerr(i,1) = w(sel)' * (diff(sel) ./ meanval(sel))/ wsum(i);
       else
         rerr(i,1) = sum(sum(diff ./ meanval, 1));
       end
     else
       rerr(i,1) = 0;
     end
-    rerr(i,2) = (sum(w(:))~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
+    rerr(i,2) = (wsum(i)~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
+
   end
-    
-  merr = sum(prod(rerr,2))/ sum(rerr(:,2));
+      
+  % assume that psd, if present, is the last field name in data
+  if isfield(data,'psd') % take contributions from pseudo-data out from overall error.
+    n_psd = length(fields(data.psd)); wsum(end-n_psd+1:end) = 0; rerr(end-n_psd+1:end,2) = 0;
+  end
+  merr = wsum' * rerr(:,1)/ sum(wsum);
+ 

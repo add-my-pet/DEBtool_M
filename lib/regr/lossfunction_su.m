@@ -3,7 +3,7 @@
 
 %%
 function lf = lossfunction_su(data, meanData, prdData, meanPrdData, weights)
-  % created: 2016/08/23 by Goncalo Marques
+  % created: 2016/08/23 by Goncalo Marques, modified 2022/01/25 by Bas Kooijman
   
   %% Syntax 
   % lf = <../lossfunction_su.m *lossfunction_su*>(func, par, data, auxData, weights, psdtrue)
@@ -25,5 +25,6 @@ function lf = lossfunction_su(data, meanData, prdData, meanPrdData, weights)
   %
   % * lf: loss function value
 
-  lf = weights' * ((data - prdData).^2 .*(1./ meanData.^2 + 1./ meanPrdData.^2));
+  sel = ~isnan(data);
+  lf = weights(sel)' * ((data(sel) - prdData(sel)).^2 .*(1./ meanData(sel).^2 + 1./ meanPrdData(sel).^2));
   

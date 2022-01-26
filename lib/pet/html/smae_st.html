@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>SMAE</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-21"><meta name="DC.source" content="smae_st.m"><style type="text/css">
+      --><title>smae_st</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-26"><meta name="DC.source" content="smae_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,17 +67,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>SMAE</h1><!--introduction--><p>calculates the Symmetric Mean Absolute Error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[[merr, err, prdInfo] = <a href="../smae_st.m"><b>smae_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the Symmetric Mean Absolute Error, used in add_my_pet</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li></ul></div><p>Output</p><div><ul><li>merr: scalar with mean absolute relative error</li><li>err: (n,1) matrix  with weighted relative error of each of data set     in first column and 1 or 0 in the second column indicated whether or     not the data set was given weight zero</li><li>prdInfo: boolean with success (1) or failure (0) for call to predict-function</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>smae_st</h1><!--introduction--><p>calculates the Symmetric Mean Absolute Error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[merr, err, prdInfo] = <a href="../smae_st.m"><b>smae_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the Symmetric Mean Absolute Error, used in add_my_pet</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li></ul></div><p>Output</p><div><ul><li>merr: scalar with mean absolute relative error</li><li>err: (n,2) matrix  with weighted relative error of each of data set     in first column and 1 or 0 in the second column indicated whether or     not the data set was given weight zero</li><li>prdInfo: boolean with success (1) or failure (0) for call to predict-function</li></ul></div><h2 id="5">Remarks</h2><p>Bi-variate data can have NaN's (= missing data). Uni- and bi-variate data have the (first) independent variable in the first column. First output merr excludes contributions from pseudo-data.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% SMAE
+%% smae_st
 % calculates the Symmetric Mean Absolute Error
 
 %%
 function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
-  % created: 2022/01/19 by Bas Kooijman; 
+  % created: 2022/01/26 by Bas Kooijman; 
   
   %% Syntax 
-  % [[merr, err, prdInfo] = <../smae_st.m *smae_st*>(func, par, data, auxData, weights)
+  % [merr, err, prdInfo] = <../smae_st.m *smae_st*>(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the Symmetric Mean Absolute Error, used in add_my_pet
@@ -93,10 +93,15 @@ function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
   % Output
   %
   % * merr: scalar with mean absolute relative error
-  % * err: (n,1) matrix  with weighted relative error of each of data set
+  % * err: (n,2) matrix  with weighted relative error of each of data set
   %     in first column and 1 or 0 in the second column indicated whether or
   %     not the data set was given weight zero
   % * prdInfo: boolean with success (1) or failure (0) for call to predict-function
+  %
+  %% Remarks
+  % Bi-variate data can have NaN's (= missing data).
+  % Uni- and bi-variate data have the (first) independent variable in the first column.
+  % First output merr excludes contributions from pseudo-data.
 
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
@@ -106,28 +111,35 @@ function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
   end
   prdData = predict_pseudodata(par, data, prdData); % add filed psd to prdData
   
-  err = zeros(nst, 1);  % prepare output
-  wsum = zeros(nst,1);   % sum of all weighte per data-set
+  err = zeros(nst, 2);  % prepare output
+  wsum = zeros(nst,1);   % sum of all weights per data-set
   
-  for i = 1:nst   % first we remove independent variables from uni- or bi-variate data sets
+  for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var = getfield(data, fieldsInCells{1}{:});
-    if size(var, 2) > 1 % remove dependent variable
-      var(:,1) = [];
+    var = getfield(data, fieldsInCells{1}{:}); 
+    k= size(var,2);
+    if k > 1 % uni- or bi-variate data set
+      var(:,1) = []; % remove dependent variable
     end
-    prdVar = getfield(prdData, fieldsInCells{1}{:}); 
-    diff = abs(prdVar - var); meanval  = (abs(prdVar) + abs(var))/ 2;
-    w      = getfield(weights, fieldsInCells{1}{:});    
-    wsum(i) = sum(w(:)); 
+    prdVar = getfield(prdData, fieldsInCells{1}{:});
+    w      = getfield(weights, fieldsInCells{1}{:});
+    sel = ~isnan(var); 
+    diff = abs(prdVar - var); meanval  = (abs(prdVar) + abs(var))/ 2; 
+    wsum(i) = sum(w(sel)); 
     
-    err(i) = sum(sum(w .* (diff ./ max(1e-10, meanval)), 1))/ wsum(i);
+    if wsum(i) == 0
+      err(i,1) = sum(diff(sel) ./ max(1e-10, meanval(sel)), 1);
+    else
+      err(i,1) = w(sel)' * (diff(sel) ./ max(1e-10, meanval(sel)))/ wsum(i);
+    end
+    err(i,2) = (wsum(i)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
   end
   
   % assume that psd, if present, is the last field name in data
   if isfield(data,'psd') % take contributions from pseudo-data out from overall error.
-    n_psd = length(fields(data.psd)); wsum(end-n_psd+1:end) = 0;
+    n_psd = length(fields(data.psd)); wsum(end-n_psd+1:end) = 0; err(end-n_psd+1:end,2) = 0;
   end
-  merr = wsum' * err/ sum(wsum);
+  merr = wsum' * err(:,1)/ sum(wsum);
   
 ##### SOURCE END #####
 --></body></html>

@@ -91,4 +91,22 @@ function [elas, nm_elas, lf] = elas_lossfun(my_pet, del)
   elas = (elas_f + elas_b)/2; % mean of foreward and backward elasticities
   
   %prt_tab({nm_elas, elas, elas_f, elas_b}, {' ';'elas';'elas_f';'elas_b'}, ['del = ', num2str(del)]); % temporary output
- 
+end
+
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:}); [n,k] = size(aux);
+    sel = ~isnan(aux);
+    vec = [vec; aux(:)];
+    maux = zeros(1,k);
+    if k > 1
+      for j=1:k
+        maux(j) = mean(aux(sel(:,j),j));
+      end
+    end
+    meanAux = ones(n,1) * maux;
+    meanVec = [meanVec; meanAux(:)];
+  end
+end

@@ -141,3 +141,22 @@ function [elas2, elas, nm_elas, lf] = elas2_lossfun(my_pet, del)
   elas2_f = elas2_f + elas2_f' .* (1-eye(n_free)); % convert upper triangle to symmetric
   elas2_b = elas2_b + elas2_b' .* (1-eye(n_free)); % convert upper triangle to symmetric
   elas2 = (elas2_f + elas2_b)/2; % mean of foreward and backward 2nd order elasticities
+end
+
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:}); [n,k] = size(aux);
+    sel = ~isnan(aux);
+    vec = [vec; aux(:)];
+    maux = zeros(1,k);
+    if k > 1
+      for j=1:k
+        maux(j) = mean(aux(sel(:,j),j));
+      end
+    end
+    meanAux = ones(n,1) * maux;
+    meanVec = [meanVec; meanAux(:)];
+  end
+end
