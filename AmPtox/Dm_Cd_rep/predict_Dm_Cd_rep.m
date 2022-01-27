@@ -5,9 +5,10 @@ function [prdData, info] = predict_Dm_Cd_rep(par, data, auxData)
   
   if c0 < 0 || cA < 0 || ke < 0
     prdData = []; info = 0; return
+  else
+    info = 1; % we use the default, filter = 1, to allow user-defined filters
   end
-  
-  info = 1; % we use the default, filter = 1, to allow user-defined filters 
+    
   H0 = maturity(L0, f, [kap; kap_R; g; k_J; k_M; 0; v; U_Hb; U_Hp]); % initial scaled maturity
   U0 = L0^3/ v; % initial reserve at max value
   
@@ -36,7 +37,7 @@ function dX = dharep(t, X, C, nc, c0, cA, ke, kap, kapR, g, kJ, kM, v, Hp, U0, f
   %  created 2002/01/20 by Bas Kooijman, modified 2007/07/12
   %
   %  routine called by harep
-  %  hazard effects on offpsring of ectotherm: target is hazard rate
+  %  hazard effects on offspring of ectotherm: target is hazard rate
   %
   %% Input
   %  t: exposure time (not used)
