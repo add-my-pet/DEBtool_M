@@ -4,13 +4,15 @@
 %%
 function mat2pars_init(my_pet, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/17 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/27 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (my_pet, varargin) 
 
 %% Description
-% Writes a pars_init_my_pet.m file from a results_my_pet.mat file
+% Writes a pars_init_my_pet.m file from a results_my_pet.mat file;
+% Two types of use: (1) AmP, (2) non-AmP if model = 'nat'.
+% In the latter case the numerical parameter values are replaced only.
 %
 % Input:
 %
@@ -53,6 +55,11 @@ end
 
 pars_initFile = ['pars_init_', my_pet, '.m'];
 
+load(matFile);
+if ~iscell(metaPar.model) && strcmp(metaPar.model,'nat')
+  mat2pars_init_nat(my_pet); return
+end
+
 if exist(pars_initFile, 'file') == 2
   prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
   overwr = lower(input(prompt, 's'));
@@ -61,8 +68,6 @@ if exist(pars_initFile, 'file') == 2
     return
   end
 end
-
-load(matFile);
 
 % open pars_init file
 pars_init_id = fopen(['pars_init_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
@@ -93,7 +98,7 @@ free = par.free;
 par = rmfield(par, 'free');
 parFields = fields(par);
 
-% checking the existence of metaPar fields
+% dectect DEB parameters
 if ~iscell(metaPar.model) % model is character string
   EparFields = get_parfields(metaPar.model);
 else % model is cell string of length n_pets
@@ -103,7 +108,7 @@ else % model is cell string of length n_pets
   end
   EparFields = unique(EparFields); % sorted order
 end
-
+n_core = length(EparFields); 
 
 if isfield(par,'T_ref')
   fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
@@ -112,8 +117,10 @@ if isfield(par,'T_ref')
   parFields = setdiff(parFields, {currentPar});
 end
 
-n_core = length(EparFields); 
-if n_core > 0
+if n_core == 0 % no DEB parameters
+  mat2pars_init_nat(my_pet, varargin); return
+   
+else % typified model
   fprintf(pars_init_id, '\n%%%% core primary parameters \n');
 
   for i = 1:length(EparFields)
@@ -128,50 +135,50 @@ if n_core > 0
   end 
 
   fprintf(pars_init_id, '\n%%%% other parameters \n');
-else
-  fprintf(pars_init_id, '\n%%%% parameters \n');
-end    
+  
+  parFields = setdiff(parFields, EparFields);
 
-parFields = setdiff(parFields, EparFields);
-
-if ~isempty(metaData) && isfield(metaData,'phylum') && isfield(metaData,'class')
-  % separate chemical parameters from other
-  if n_pets == 1
-    par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+  if ~isempty(metaData) && isfield(metaData,'phylum') && isfield(metaData,'class')
+    % separate chemical parameters from other
+    if n_pets == 1
+      par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+    else
+      par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+    end
+    chemParFields = fields(par_auto);
+    otherParFields = setdiff(parFields, chemParFields); chem = 1;
   else
-    par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+    otherParFields = parFields; chemParFields = {}; chem = 0;
   end
-  chemParFields = fields(par_auto);
-  otherParFields = setdiff(parFields, chemParFields); chem = 1;
-else
-  otherParFields = parFields; chemParFields = {}; chem = 0;
-end
 
-for i = 1:length(otherParFields)
-  currentPar = otherParFields{i};
+  for i = 1:length(otherParFields)
+    currentPar = otherParFields{i};
     if length(par.(currentPar)) == 1
       write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     else
       write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     end
-end
-
-if chem
-  fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
-  if n_pets == 1
-    fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
-  else
-    fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
-    fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
   end
-end
 
-for i = 1:length(chemParFields)
-  currentPar = chemParFields{i};
-  if par.(currentPar) ~= par_auto.(currentPar)
-    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+  if chem
+    fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
+    if n_pets == 1
+      fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
+    else
+      fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
+      fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
+    end
   end
-end
+
+  for i = 1:length(chemParFields)
+    currentPar = chemParFields{i};
+    if par.(currentPar) ~= par_auto.(currentPar)
+      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    end
+  end
+  
+end    
+
 
 fprintf(pars_init_id, '\n%%%% Pack output: \n');
 fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = free; \n');

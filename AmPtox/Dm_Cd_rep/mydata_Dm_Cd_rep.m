@@ -1,4 +1,13 @@
 function [data, auxData, metaData, txtData, weights] = mydata_Dm_Cd_rep
+%% set metaData (optional fields)
+
+metaData.author = 'Bas Kooijman';
+metaData.date = [2022 01 28];
+metaData.species = 'Daphnia_magna';
+metaData.cashno = '10108-64-2';
+metaData.MolWeight = 112.41; % of Cd only
+metaData.endpoint = 'embryo hazard';
+
 %% set data
 
 % time - conc - cum # of offspring per female
@@ -36,7 +45,6 @@ comment.tN = 'Hazard effects of Cd on Daphnia magna reproduction';
 weights = setweights(data, []);
 
 %% pack auxData and txtData for output
-%metaData = []; % metaData does not need to exist
 auxData.treat = treat; % auxData must have at least one field
 auxData.temp = temp; 
 txtData.units = units;
@@ -46,7 +54,9 @@ txtData.comment = comment;
 
 %% Discussion points
 D1 = 'hazard effects on offspring of ectotherm: target is hazard rate';
-metaData.discussion = struct('D1', D1);
+D2 = 'The type of length in parameter L0 should correspond with that in parameter v, so structural length';
+D3 = 'Read (compound) DEB parameters from allStat.Daphnia_magna after load allStat';
+metaData.discussion = struct('D1',D1, 'D2',D2, 'D3',D3);
 
 %% References
 bibkey = 'KooyBeda1996'; type = 'Book'; bib = [ ...

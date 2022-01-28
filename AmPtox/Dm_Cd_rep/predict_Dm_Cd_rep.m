@@ -15,17 +15,18 @@ function [prdData, info] = predict_Dm_Cd_rep(par, data, auxData)
   C = treat.tN{2}(:); nc = length(C);
   
   % initialize state vector; catenate to avoid loops
-  X0 = [zeros(nc,1);     % N: cumulative number of offspring
-        H0 * ones(nc,1); % H: scaled maturity H = M_H/ {J_EAm}
-        L0 * ones(nc,1); % L: length
-        U0 * ones(nc,1); % U: scaled reserve U = M_E/ {J_EAm}
-        zeros(nc,1)];    % c: scaled internal concentration
+  X0 = [zeros(nc,1);     % N: cumulative number of offspring (#)
+        H0 * ones(nc,1); % H: scaled maturity H = M_H/ {J_EAm} (d.cm^2)
+        L0 * ones(nc,1); % L: body length (cm)
+        U0 * ones(nc,1); % U: scaled reserve U = M_E/ {J_EAm} (d.cm^2)
+        zeros(nc,1)];    % c: scaled internal concentration (mug/l)
+  % "scaled" here means internal concentration in the units of external ones
 
-  p_U0 = [U_Hb/ (1 - kap); g; k_J; k_M; v];
-  U_0 = initial_scaled_reserve(1,p_U0);
+  par_U0 = [U_Hb/ (1 - kap); g; k_J; k_M; v]; % compose parameter vector
+  U_0 = initial_scaled_reserve(1,par_U0); % d.cm^2
 
   % get trajectories
-  [t, X] = ode23(@dharep, [-1e-8;tN(:,1)], X0, [], C, nc, c0, cA, ke, kap, kap_R, g, k_J, k_M, v, U_Hp, U_0, f); % integrate changes in state
+  [t, X] = ode23(@dharep, [0;tN(:,1)], X0, [], C, nc, c0, cA, ke, kap, kap_R, g, k_J, k_M, v, U_Hp, U_0, f); % integrate changes in state
   X(1,:) = []; EN = X(:, 1:nc); % remove first line, select offspring only
   
   % pack to output
@@ -48,29 +49,29 @@ function dX = dharep(t, X, C, nc, c0, cA, ke, kap, kapR, g, kJ, kM, v, Hp, U0, f
 
 
   %% unpack state vector
-  N = X(1:nc);        % cumulative number of offspring
+  N = X(1:nc);        % cumulative number of offspring (not used)
   H = X(nc+(1:nc));   % scaled maturity H = M_H/ {J_EAm}
-  L = X(2*nc+(1:nc)); % length
+  L = X(2*nc+(1:nc)); % structural length
   U = X(3*nc+(1:nc)); % scaled reserve U = M_E/ {J_EAm}
   c = X(4*nc+(1:nc)); % scaled internal concentration
   
   s = max(0,(c - c0)/ cA);    % -, stress factor
 
-  E = U .* v ./ L .^ 3;        % -, scaled reserve density e = m_E/m_Em (dim-less)
+  E = U .* v ./ L .^ 3;       % -, scaled reserve density e = m_E/m_Em (dim-less)
   %% again we scale with respect to m_Em = {J_EAm}/ (v [M_V]) of the blanc
 
-  Lm = v/ (kM * g);           % maximum length
-  eg = E .* g ./ (E + g);     % in DEB notation: e g/ (e + g)
-  SC = L .^ 2 .* eg .* (1 + L / (g * Lm)); % SC = J_EC/{J_EAm}
+  Lm = v/ (kM * g);           % cm, maximum length
+  eg = E .* g ./ (E + g);     % -, in DEB notation: e g/ (e + g)
+  SC = L .^ 2 .* eg .* (1 + L / (g * Lm)); % cm^2, SC = J_EC/{J_EAm}
 
-  rB = kM * g ./ (3 * (E + g)); % von Bert growth rate
-  dL = rB .* (E * Lm - L);   % change in length
-  dU = f * L .^ 2 - SC;           % change in time-surface U = M_E/{J_EAm}
-  dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % change in scaled int. conc
+  rB = kM * g ./ (3 * (E + g)); % 1/d, von Bert growth rate
+  dL = rB .* (E * Lm - L);   % cm/d, change in length
+  dU = f * L .^ 2 - SC;      % cm^2/ change in time-surface U = M_E/{J_EAm}
+  dc = (ke * Lm .* (C - c) - 3 * dL .* c) ./ L; % mug/d.l, change in scaled int. conc
 
-  R = exp(-s) .* ((1 - kap) * SC - kJ * Hp) * kapR/ U0; % reprod rate in %/d
-  R = (H > Hp) .* max(0,R); % make sure that R is non-negative
-  dH = (1 - kap) * SC - kJ * H; % change in scaled maturity H = M_H/ {J_EAm}
+  R = exp(-s) .* ((1 - kap) * SC - kJ * Hp) * kapR/ U0; % 1/d, reprod rate in #/d
+  R = (H > Hp) .* max(0,R); % 1/d, make sure that R is non-negative
+  dH = (1 - kap) * SC - kJ * H; % cm^2, change in scaled maturity H = M_H/ {J_EAm}
   dX = [R; dH; dL; dU; dc]; % catenate derivatives in output
 end
   

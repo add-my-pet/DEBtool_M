@@ -3,7 +3,7 @@
 
 %%
 function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p, f)
-  % created at 2017/08/01 by Bas Kooijman, 
+  % created at 2017/08/01, 2022/01/27 by Bas Kooijman, 
   
   %% Syntax
   % [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = <../get_tj_hax.m *get_tj_hax*> (p, f)
@@ -95,7 +95,7 @@ function dtl = dget_tj_hax(vR, tl, f, sM, rB, li, g, k, vHp)
   l = tl(2); % -, scaled length
 
   dl = rB * max(0, li - l);
-  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - rB * vR * (f * sM/ l - 1);
+  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - 3 * rB * vR * (f * sM/ l - 1);
 
   dtl = [1; dl]/ dvR; % pack output
 end

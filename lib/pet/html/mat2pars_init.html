@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>mat2pars_init</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-20"><meta name="DC.source" content="mat2pars_init.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>mat2pars_init</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-28"><meta name="DC.source" content="mat2pars_init.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,25 +67,27 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>mat2pars_init</h1><!--introduction--><p>writes a pars_init file from a .mat file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../mat2pars_init.m"><b>mat2pars_init</b></a> (speciesnm, varargin)</p><h2 id="4">Description</h2><p>Makes a pars_init file from a results_'speciesnm'.mat file</p><p>Input:</p><div><ul><li>speciesnm: optional string with the species name (default pets{1} for single species or group for multiple species)</li><li>varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file</li></ul></div><h2 id="5">Remarks</h2><p>Keep in mind that the files will be saved in your local directory; use the cd command BEFORE running this function to save files in the desired place.</p><h2 id="6">Example of use</h2><p>mat2pars_init</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>mat2pars_init</h1><!--introduction--><p>writes a pars_init file from a .mat file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../mat2pars_init.m"><b>mat2pars_init</b></a> (my_pet, varargin)</p><h2 id="4">Description</h2><p>Writes a pars_init_my_pet.m file from a results_my_pet.mat file; Two types of use: (1) AmP, (2) non-AmP if model = 'nat'. In the latter case the numerical parameter values are replaced only.</p><p>Input:</p><div><ul><li>my_pet: optional string with the species name (default pets{1} for single species or group for multiple species)</li><li>varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file</li></ul></div><h2 id="5">Remarks</h2><p>Keep in mind that the files will be saved in your local directory; use the cd command BEFORE running this function to save files in the desired place.</p><h2 id="6">Example of use</h2><p>mat2pars_init</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% mat2pars_init
 % writes a pars_init file from a .mat file
 
 %%
-function mat2pars_init(speciesnm, varargin)
+function mat2pars_init(my_pet, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25, 2019/03/20 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/27 by Bas Kooijman
 
 %% Syntax
-% <../mat2pars_init.m *mat2pars_init*> (speciesnm, varargin) 
+% <../mat2pars_init.m *mat2pars_init*> (my_pet, varargin) 
 
 %% Description
-% Makes a pars_init file from a results_'speciesnm'.mat file
+% Writes a pars_init_my_pet.m file from a results_my_pet.mat file;
+% Two types of use: (1) AmP, (2) non-AmP if model = 'nat'.
+% In the latter case the numerical parameter values are replaced only.
 %
 % Input:
 %
-% * speciesnm: optional string with the species name (default pets{1} for single species or group for multiple species)
+% * my_pet: optional string with the species name (default pets{1} for single species or group for multiple species)
 % * varargin: optional 1 to fix all parameters, empty or otherwise to use free/fix information from .mat file
 
 %% Remarks
@@ -93,16 +96,16 @@ function mat2pars_init(speciesnm, varargin)
 
 %% Example of use
 % mat2pars_init
-
+  
 global pets cov_rules
 
 n_pets = length(pets);
 
-if ~exist('speciesnm','var')
+if ~exist('my_pet','var')
   if n_pets == 1
-    speciesnm = pets{1}; 
+    my_pet = pets{1}; 
   else
-    speciesnm = 'group';
+    my_pet = 'group';
   end
   fix = 0;
 elseif nargin > 2
@@ -113,7 +116,7 @@ else
   fix = 1;  % all parameters fixed 
 end
 
-matFile = ['results_', speciesnm, '.mat'];
+matFile = ['results_', my_pet, '.mat'];
 
 % check that mydata actually exists
 if exist(matFile, 'file') == 0
@@ -121,7 +124,7 @@ if exist(matFile, 'file') == 0
   return
 end
 
-pars_initFile = ['pars_init_', speciesnm, '.m'];
+pars_initFile = ['pars_init_', my_pet, '.m'];
 
 if exist(pars_initFile, 'file') == 2
   prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
@@ -133,10 +136,13 @@ if exist(pars_initFile, 'file') == 2
 end
 
 load(matFile);
+if ~iscell(metaPar.model) && strcmp(metaPar.model,'nat')
+  mat2pars_init_nat(my_pet, varargin); return
+end
 
 % open pars_init file
-pars_init_id = fopen(['pars_init_', speciesnm, '.m'], 'w+'); % open file for reading and writing, delete existing content
-fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', speciesnm,'(metaData)\n\n']);
+pars_init_id = fopen(['pars_init_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
+fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', my_pet,'(metaData)\n\n']);
 
 if ~iscell(metaPar.model)
   fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n']);
@@ -163,7 +169,7 @@ free = par.free;
 par = rmfield(par, 'free');
 parFields = fields(par);
 
-% checking the existence of metaPar fields
+% dectect DEB parameters
 if ~iscell(metaPar.model) % model is character string
   EparFields = get_parfields(metaPar.model);
 else % model is cell string of length n_pets
@@ -173,63 +179,77 @@ else % model is cell string of length n_pets
   end
   EparFields = unique(EparFields); % sorted order
 end
+n_core = length(EparFields); 
 
-fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
+if isfield(par,'T_ref')
+  fprintf(pars_init_id, '%%%% reference parameter (not to be changed) \n');
+  currentPar = 'T_ref';
+  write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+  parFields = setdiff(parFields, {currentPar});
+end
 
-currentPar = 'T_ref';
-write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), 1);
+if n_core == 0 % no DEB parameters
+  mat2pars_init_nat(my_pet, varargin); return
+   
+else % typified model
+  fprintf(pars_init_id, '\n%%%% core primary parameters \n');
 
-parFields = setdiff(parFields, {currentPar});
+  for i = 1:length(EparFields)
+    currentPar = EparFields{i};
+    if isfield(par,currentPar)
+      if length(par.(currentPar)) == 1
+        write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      else
+        write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      end
+    end
+  end 
 
-fprintf(pars_init_id, '\n%%%% core primary parameters \n');
+  fprintf(pars_init_id, '\n%%%% other parameters \n');
+  
+  parFields = setdiff(parFields, EparFields);
 
-for i = 1:length(EparFields)
-  currentPar = EparFields{i};
-  if isfield(par,currentPar)
+  if ~isempty(metaData) && isfield(metaData,'phylum') && isfield(metaData,'class')
+    % separate chemical parameters from other
+    if n_pets == 1
+      par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
+    else
+      par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
+    end
+    chemParFields = fields(par_auto);
+    otherParFields = setdiff(parFields, chemParFields); chem = 1;
+  else
+    otherParFields = parFields; chemParFields = {}; chem = 0;
+  end
+
+  for i = 1:length(otherParFields)
+    currentPar = otherParFields{i};
     if length(par.(currentPar)) == 1
       write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     else
       write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     end
   end
-end 
 
-fprintf(pars_init_id, '\n%%%% other parameters \n');
-
-parFields = setdiff(parFields, EparFields);
-
-% separate chemical parameters from other
-if n_pets == 1
-  par_auto = addchem([], [], [], [], metaData.phylum, metaData.class);
-else
-  par_auto = addchem([], [], [], [], metaData.(pets{1}).phylum, metaData.(pets{1}).class);
-end
-chemParFields = fields(par_auto);
-otherParFields = setdiff(parFields, chemParFields);
-
-for i = 1:length(otherParFields)
-  currentPar = otherParFields{i};
-    if length(par.(currentPar)) == 1
-      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+  if chem
+    fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
+    if n_pets == 1
+      fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
     else
-      write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
+      fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
     end
-end
-
-fprintf(pars_init_id, '\n%%%% set chemical parameters from Kooy2010 \n');
-if n_pets == 1
-  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); \n');
-else
-  fprintf(pars_init_id, '[phylum, class] = metaData2taxo(metaData); \n');  
-  fprintf(pars_init_id, '[par, units, label, free] = addchem(par, units, label, free, phylum, class); \n');
-end
-
-for i = 1:length(chemParFields)
-  currentPar = chemParFields{i};
-  if par.(currentPar) ~= par_auto.(currentPar)
-    write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
   end
-end
+
+  for i = 1:length(chemParFields)
+    currentPar = chemParFields{i};
+    if par.(currentPar) ~= par_auto.(currentPar)
+      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+    end
+  end
+  
+end    
+
 
 fprintf(pars_init_id, '\n%%%% Pack output: \n');
 fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = free; \n');

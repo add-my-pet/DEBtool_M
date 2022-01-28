@@ -61,7 +61,7 @@ function [coreParFields, info] = get_parfields(model, addchem)
 
   case 'hex'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};
-    
+          
   case 'nat'  
     coreParFields =  {};
     

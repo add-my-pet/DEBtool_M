@@ -3,7 +3,7 @@
 
 %%
 function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
-  % created at 2016/02/12 by Bas Kooijman, 
+  % created at 2016/02/12, 2022/01/27 by Bas Kooijman
   
   %% Syntax
   % [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = <../get_tj_hep.m *get_tj_hep*> (p, f)
@@ -71,7 +71,7 @@ function dtl = dget_tj_hep(vR, tl, f, sM, rB, li, g, k, vHp)
   l = tl(2); % -, scaled length
 
   dl = rB * max(0, li - l);
-  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - rB * vR * (f * sM/ l - 1);
+  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - 3 * rB * vR * (f * sM/ l - 1);
 
   dtl = [1; dl]/ dvR; % pack output
 end
