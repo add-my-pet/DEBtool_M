@@ -39,6 +39,7 @@ function [mserr, rserr, prdInfo] = smse_st(func, par, data, auxData, weights)
     mserr = {}; rserr = {};
     return
   end
+  prdData = predict_pseudodata(par, data, prdData);
   
   rserr      = zeros(nst, 2);  % prepare output
   wsum = zeros(nst,1);   % sum of all weights per data-set
@@ -79,7 +80,7 @@ function [mserr, rserr, prdInfo] = smse_st(func, par, data, auxData, weights)
     rserr(i,2) = (wsum(i)~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
 
     if wsum(i) == 0
-      rserr(i,1) = sum(diff(sel) ./ max(1e-10, meanVarPrd2(sel)), 1);
+      rserr(i,1) = sum(diff2(sel) ./ max(1e-10, meanVarPrd2(sel)), 1);
     else
       rserr(i,1) = w(sel)' * (diff2(sel) ./ max(1e-10, meanVarPrd2(sel)))/ wsum(i);
     end
