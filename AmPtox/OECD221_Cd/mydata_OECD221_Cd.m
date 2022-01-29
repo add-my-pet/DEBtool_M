@@ -7,7 +7,7 @@ metaData.toxTest = 'OECD211';
 metaData.species = 'Daphnia_magna';
 metaData.cashno = '10108-64-2';
 metaData.compound = 'Cadmium chloride';
-metaData.MolWeight = 112.41; % of Cd only
+metaData.MolWeight = 112.41; % g/mol, of Cd only
 metaData.endpoint = 'embryo hazard';
 metaData.DEBpars = 'KooyGerg2019';
 
