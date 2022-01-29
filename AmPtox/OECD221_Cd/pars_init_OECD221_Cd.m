@@ -1,4 +1,4 @@
-function [par, metaPar, txtPar] = pars_init_Dm_Cd_rep(metaData)
+function [par, metaPar, txtPar] = pars_init_OECD221_Cd(metaData)
 
 metaPar.model = 'nat'; 
 

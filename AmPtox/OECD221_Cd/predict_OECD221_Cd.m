@@ -1,4 +1,4 @@
-function [prdData, info] = predict_Dm_Cd_rep(par, data, auxData)
+function [prdData, info] = predict_OECD221_Cd(par, data, auxData)
   
   % unpack par, data, auxData
   vars_pull(par); vars_pull(data); vars_pull(auxData);  

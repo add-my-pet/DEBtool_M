@@ -1,7 +1,7 @@
 close all; 
 global pets
 
-pets = {'Dm_Cd_rep'};
+pets = {'OECD221_Cd'};
 
 estim_options('default'); 
 estim_options('max_step_number',5e2); 
