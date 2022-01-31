@@ -54,6 +54,12 @@ if exist(pars_init, 'file') == 2
 end
 pars_initFile = fileread(pars_init);
 
+if contains(pars_initFile, 'addchem')
+  fprintf('Warning from mat2pars_init_nat: addchem detected while model = nat\n')
+  fprintf('No values copied from mat-file to pars_init\n')
+  return
+end
+
 fieldsPar = fields(par); fieldsPar = fieldsPar(~strcmp(fieldsPar, 'free'));
 n_fieldsPar = length(fieldsPar);
 
