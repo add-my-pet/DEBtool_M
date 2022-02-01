@@ -9,14 +9,14 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
 % modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 
 % modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20 by Bas Kooijman
-% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05, 2021/10/24 by Bas Kooijman
+% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05, 2021/10/24, 2022/01/31 by Bas Kooijman
 
 %% Syntax
 % [stat, txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
 
 %% Description
-% Computes quantites that depend on parameters, temperature and food level.
-% The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex.
+% Computes quantities that depend on parameters, temperature and food level.
+% The allowed models are: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hax, hex.
 %
 % Input
 %
@@ -171,7 +171,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % load('results_species.mat'); [stat, txtStat] = statistics_st(metaPar.model, par); printstat_st(stat, txtStat)
 
   
-  choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'};
+  choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hax', 'hex'};
   if ~any(strcmp(model,choices))
     fprintf('warning statistics_st: invalid model key \n')
     stat = []; txtStat = [];
@@ -445,6 +445,19 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis'; temp.V_Hj = T_ref; fresp.V_Hj = NaN;
       stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis'; temp.u_Hj = NaN; fresp.u_Hj = NaN;
       stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis'; temp.v_Hj = NaN; fresp.v_Hj = NaN;
+   case 'hax'
+      v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g, k, v_Hb, v_Hp, v_Rj, v_He, kap, kap_V];
+      [t_j, t_e, t_p, t_b, l_j, l_e, l_p, l_b, l_i, r_j, r_B, u_Ee, info] = get_tj_hax(pars_tj, f);
+      if info ~= 1              
+        fprintf('warning in get_tj_hax: invalid parameter value combination for t_p \n')
+      end  
+      s_M = l_p/ l_b; E_Hj = E_Hp - 1e-8; M_Hj = M_Hp - 1e-8; U_Hj = U_Hp - 1e-8; V_Hj = V_Hp - 1e-8; u_Hj = u_Hp - 1e-8; v_Hj = v_Hp - 1e-8;
+      stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; temp.E_Hj = NaN; fresp.E_Hj = NaN; % is not a parameter of hax
+      stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis'; temp.M_Hj = NaN; fresp.M_Hj = NaN;
+      stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis'; temp.U_Hj = T_ref; fresp.U_Hj = NaN;
+      stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis'; temp.V_Hj = T_ref; fresp.V_Hj = NaN;
+      stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis'; temp.u_Hj = NaN; fresp.u_Hj = NaN;
+      stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis'; temp.v_Hj = NaN; fresp.v_Hj = NaN;
     case 'hex'
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
@@ -492,7 +505,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       L_p = l_p * L_m;
       L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
       dWm = TC * W_dWm * r_j;      
-    case 'hep'
+    case {'hep', 'hax'}
       L_p = l_p * L_m;
       L_dWm = L_p; W_dWm = L_dWm^3 * (1 + w); 
       dWm = TC * W_dWm * r_j;
@@ -636,7 +649,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
         
   % metamorphosis
   switch model
-    case {'abj', 'asj', 'abp', 'hep', 'hex'}
+    case {'abj', 'asj', 'abp', 'hep', 'hax', 'hex'}
       L_j = L_m * l_j; M_Vj = M_V * L_j^3; M_Ej = f * E_m * L_j^3/ mu_E; E_Wj = M_Vj * mu_V + M_Ej * mu_E;
       Ww_j = L_j^3 * (1 + w * f); Wd_j = d_V * Ww_j; a_j = t_j/ k_M/ TC; 
       stat.l_j = l_j;   units.l_j = '-';    label.l_j = 'scaled structural length at metamorphosis'; temp.l_j = NaN; fresp.l_j = f;
@@ -688,7 +701,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       stat.Wd_e = Wd_e; units.Wd_e = 'g';   label.Wd_e = 'dry weight at emergence'; temp.Wd_e = NaN; fresp.Wd_e = f;
       stat.E_We = E_We; units.E_We = 'J';   label.E_We = 'energy content at emergence (excl rep buffer)'; temp.E_We = NaN; fresp.E_We = f;
       stat.a_e = a_e;   units.a_e = 'd';    label.a_e = 'age at emergence'; temp.a_e = T; fresp.a_e = f;
-    case 'hex'
+    case {'hax', 'hex'}
       L_e = L_m * l_e; M_Ve = M_V * L_e^3; M_Ee = p_Am * u_Ee * v^2/ g^2/ k_M^3; E_We = M_Ve * mu_V + M_Ee * mu_E;
       Ww_e = L_e^3 + w_E * p_Am * u_Ee * v^2/ g^2/ k_M^3/ d_E; Wd_e = d_V * Ww_e; a_e = t_e/ k_M/ TC; 
       stat.l_e = l_e;   units.l_e = '-';    label.l_e = 'scaled structural length at emergence'; temp.l_e = NaN; fresp.l_e = f;
@@ -704,10 +717,11 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   % ultimate
   L_i = L_m * l_i; M_Vi = M_V * L_i^3; M_Ei = f * E_m * L_i^3/ mu_E; E_Wi = M_Vi * mu_V + M_Ei * mu_E;
   Ww_i = L_i^3 * (1 + w * f); Wd_i = d_V * Ww_i;
-  if strcmp(model, 'hep') 
-    Ww_i = Ww_e; Wd_i = Wd_e; 
-  elseif strcmp(model, 'hex')
-    Ww_i = Ww_j; Wd_i = Wd_j; % notice that Ww_i and Wd_i are set to wet weight at pupation for hex
+  switch model
+    case {'hep', 'hax'} 
+      Ww_i = Ww_e; Wd_i = Wd_e; 
+    case 'hex'
+      Ww_i = Ww_j; Wd_i = Wd_j; % notice that Ww_i and Wd_i are set to wet weight at pupation for hex
   end
   del_Wb = Ww_b/ Ww_i; del_Wp = Ww_p/ Ww_i; 
   s_s = k_J * E_Hp * (p_M + p_T/ L_i)^2/ p_Am^3/ f^3/ s_M^3;
@@ -731,7 +745,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   stat.h_W = h_W;      units.h_W = '1/d';   label.h_W = 'Weibull ageing rate'; temp.h_W = T; fresp.h_W = f;
   stat.h_G = h_G;      units.h_G = '1/d';   label.h_G = 'Gompertz aging rate'; temp.h_G = T; fresp.h_G = f;
   switch model
-    case {'std','stf','sbp','abp','hep'}
+    case {'std','stf','sbp','abp'}
       [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(2); 
       stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
       stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
@@ -756,10 +770,21 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       stat.S_s  = S_s;     units.S_s = '-';     label.S_s = 'survival probability at start acceleration'; temp.S_s = NaN; fresp.S_s = f;  
       stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at end acceleration'; temp.S_j = NaN; fresp.S_j = f;  
       stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
-    case 'hex'
-      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(1); S_e = S(3);     
+    case 'hep'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(2); S_j = S(3);     
       stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
       stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at metam'; temp.S_j = NaN; fresp.S_j = f;  
+    case 'hax'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_p = S(2); S_j = S(3); S_e = S(4);     
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_p  = S_p;     units.S_p = '-';     label.S_p = 'survival probability at puberty'; temp.S_p = NaN; fresp.S_p = f;    
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at metam'; temp.S_j = NaN; fresp.S_j = f;  
+      stat.S_e  = S_e;     units.S_e = '-';     label.S_e = 'survival probability at emergence'; temp.S_e = NaN; fresp.S_e = f;  
+    case 'hex'
+      [tau_m, S] = get_tm_mod(model, par, f); S_b = S(1); S_j = S(2); S_e = S(3);     
+      stat.S_b  = S_b;     units.S_b = '-';     label.S_b = 'survival probability at birth'; temp.S_b = NaN; fresp.S_b = f;  
+      stat.S_j  = S_j;     units.S_j = '-';     label.S_j = 'survival probability at metam'; temp.S_j = NaN; fresp.S_j = f;  
       stat.S_e  = S_e;     units.S_e = '-';     label.S_e = 'survival probability at emergence'; temp.S_e = NaN; fresp.S_e = f;  
   end
   a_m = tau_m/ k_M/ TC;
@@ -801,7 +826,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
     case 'abp'
       R_i = TC * kap_R * (p_Am * s_M * L_p^2 - p_M * L_p^3 - k_J * E_Hp)/ E_0; 
       N_i = R_i * (a_m - a_p);
-    case 'hep'
+    case {'hep','hax'}
       N_i = kap_R * (1 - kap) * v_Rj * l_j^3/ u_E0; % # of eggs at j
     case 'hex' 
       E_Rj = v_Rj * (1 - kap) * g * E_m * L_j^3; % J, reproduction buffer at pupation
@@ -814,7 +839,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
  
   % feeding: std, stf, stx, ssj, sbp, abj, asj, abp, hep, hex
   switch model
-    case {'std', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'} %  egg (not foetus)
+    case {'std', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hax', 'hex'} %  egg (not foetus)
       % min possible egg sizes as determined by the maternal effect rule (e = f)
       [eb_min, lb_min, uE0_min, info] = get_eb_min([g; k; v_Hb]); % growth, maturation cease at birth
       if info ~= 1
@@ -831,7 +856,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       ep_min  = get_ep_min([k; l_T; v_Hp]); % growth and maturation cease at puberty   
       stat.ep_min = ep_min; units.ep_min = '-'; label.ep_min = 'scaled reserve density whereby maturation and growth cease at puberty'; temp.ep_min = NaN; fresp.ep_min = NaN;   
       stat.sM_min = 1; units.sM_min = '-'; label.sM_min = 'acceleration factor whereby maturation ceases at puberty'; temp.sM_min = NaN; fresp.sM_min = NaN;   
-    case {'abj', 'abp', 'hep'} 
+    case {'abj', 'abp', 'hep', 'hax'} 
       [ep_min, sM_min, info] = get_ep_min_j([g; k; l_T; v_Hb; v_Hj; v_Hp]); % growth and maturation cease at puberty   
       if info ~= 1
         fprintf('warning in get_ep_min_j: no convergence \n')
@@ -888,9 +913,12 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
     case 'asj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hs; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_s([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_s, l_j, l_p); 
-    case 'hep' 
+    case 'hep' % ultimate is here mapped to metam
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-8]; 
-      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_p, l_p);
+      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_j], f, pars_power, l_b, l_p, l_j);
+    case 'hax' % ultimate is here mapped to pupation
+      pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_Hp; U_He]; 
+      p_ACSJGRD = p_ref * scaled_power_hax([L_b + 1e-6; L_p; L_j], f, pars_power, l_b, l_p, l_j);
     case 'hex' % birth and puberty coincide; ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 
       p_ACSJGRD = p_ref * scaled_power_hex([L_b; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);

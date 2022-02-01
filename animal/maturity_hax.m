@@ -1,17 +1,18 @@
-%% maturity_hex
-% Gets maturity as function of length for model hex
+%% maturity_hax
+% Gets maturity as function of length for model hax
 
 %%
-function [H, info] = maturity_hex(L, f, p, lb, lj, le)
-  %  created 2016/04/16 by Bas Kooijman
+function H = maturity_hax(L, f, p, lb, lp,  lj, le, tj)
+  %  created 2022/01/31 by Bas Kooijman
   
   %% Syntax
-  % [H, a, info] = <../maturity_hex.m *maturity_hex*> (L, f, p, lb, lj, le)
+  % [H, info] = <../maturity_hax.m *maturity_hax*> (L, f, p, lb, lj, le)
   
   %% Description
-  % Life history events b (birth), j (pupation), e (emergence); puberty coincides with birth
+  % Life history events b (birth), p (puberty), j (pupation), e (emergence)
   % Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of 
-  %  acceleration between  b and j, pupa between j and e, (non-growing) imago after e, with UHb < UHj.
+  %  acceleration between b and p, pupa between j and e, (non-growing) imago after e, with UHb < UHj.
+  % No further maturation after p, and a re-set of maturity at j, so Hp = Hj.
   % Lengths must be ordered in time (so a single stepdown from L_j to 0 at j.
   % Lengths are in the pupal stage if an earlier length was larger. 
   % So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase), 
@@ -21,16 +22,14 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   %
   % * L: n-vector with length 
   % * f: scalar with (constant) scaled functional response
-  % * p: 10-vector with parameters: kap kapV g kJ kM v UHb UHe
+  % * p: 10-vector with parameters: kap kapV g kJ kM v UHb UHp UHe
   % * lb: scaled length at birth at f
   % * lj: scaled length at pupation at f
   % * le: scaled length at emergence at f
-  % * tj: scalar with scaled age at pupation for f
   %
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}
-  % * info: scalar for 1 for success, 0 otherwise
   
   %% Remarks
   % Maturity in the larval stage (between birth and pupation) stays at birth level.
@@ -51,15 +50,16 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   kM   = p(5);  % 1/d, somatic maint rate coeff
   v    = p(6);  % cm/d, energy conductance
   Hb   = p(7);  % d cm^2, E_Hb/ {p_Am}, scaled maturity at birth
-  He   = p(8);  % d cm^2, E_He/ {p_Am}, scaled maturity at emergence
+  Hp   = p(8);  % d cm^2, E_Hp/ {p_Am}, scaled maturity at puberty
+  He   = p(9);  % d cm^2, E_He/ {p_Am}, scaled maturity at emergence
+  tj   = p(10); % -, scalar with scaled age at pupation for f
     
-  if isempty('f')
+  if isempty(f)
     f = 1; % abundant food
   end
-  
 
-  % split L in L_pre and L_post
-  Lm = v/ kM/ g; Lj = Lm * lj; Le = Lm * le; Lb = Lm * lb; k = kJ/ kM; kE = v/ Lb; sM = Lj/Lb;         
+  % split L in L_pre and L_post j 
+  Lm = v/ kM/ g; Lj = Lm * lj; Le = Lm * le; Lb = Lm * lb; k = kJ/ kM; kE = v/ Lb; sM = Lp/Lb;         
   nL = length(L); L_pre = L(1);
   if nL > 1
     for i = 2:nL
@@ -70,19 +70,18 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   end
   nL_pre = length(L_pre); L_post = L; L_post(1:nL_pre) = []; nL_post = length(L_post);
 
-  % embro and larva
+  % embro till pupation
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);  
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh_hex, [1e-6; L_pre(1)/ 2; L_pre]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, lb);
+  [l_out, teh] = ode45(@dget_teh_j, [1e-6; L_pre(1)/ 2; L_pre]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lb, lj);
   teh(1:2,:) = []; 
   H = teh(:,3) * v^2/ g^2/ kM^3; % d.cm^2, scaled maturity
-  H(L >= Lb) = Hb;
-  % a = teh(:,1)/ kM;
+  H(L >= Lp) = Hp;
   
   % pupa and imago
   if nL_post > 0
     v_j = v * sM;                            % cm/d, energy conductance of imago
-    aVEH_0 = [0; Lj^3; f * Lj^3/ v_j; 0];    % state at start pupation (before spinning)
+    aVEH_0 = [0; Lj^3; f * Lj^3/ v_j; 0];    % state at start pupation
     [L_out, aVEH] = ode45(@dget_aVEH, [1e-6; L_post(1)/ 2; L_post], aVEH_0, [], g, kJ, kM, kE, v_j, kap, kapV);
     aVEH(1:2,:) = []; H = aVEH(:,4); 
   end
@@ -91,14 +90,14 @@ end
 
 % subfunctions
 
-function dtEH = dget_teh_hex(l, tEH, k, g, kap, f, uHb, lb)
+function dtEH = dget_teh_j(l, tEH, k, g, kap, f, uHb, uHj, uHp, lT, lb, lj)
   % l: scalar with scaled length  l = L g k_M/ v
-  % tEH: 3-vector with (tau, uE, uH) of embryo and larva (= adult)
+  % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
   %   tau = a k_M; scaled age
   %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
   %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
   % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
-  % called by maturity_hex
+  % called by maturity_j
   
   t = tEH(1); % scaled age
   uE = max(1e-10,tEH(2)); % scaled reserve
@@ -111,11 +110,17 @@ function dtEH = dget_teh_hex(l, tEH, k, g, kap, f, uHb, lb)
     dl = l * r/ 3;
     duE =  - uE * (g/ l - r);
     duH = (1 - kap) * uE * (g/ l - r) - k * uH;
-  else % V1-morphic larva 
-    rj = (g * uE/ lb - l3)/ (uE + l3); % scaled exponential growth rate between b and j
+  elseif uH < uHp % V1-morphic juvenile
+    rj = (g * uE/ lb - l3 * lT/ lb - l3)/ (uE + l3); % scaled exponential growth rate between b and j
     dl = l * rj/ 3;
     duE = f * l^3/ lb - uE * (g/ lb - rj);
-    duH = 0;
+    duH = (1 - kap) * uE * (g/ lb - rj) - k * uH;
+  else % isomorphic adult
+    sM = lp/ lb;
+    r = (g * uE * sM/ l - l2 * lT * sM - l3)/ (uE + l3); % spec growth rate in scaled time
+    dl = l * r/ 3;
+    duE = f * l2 * sM - uE * (g * sM/ l - r);
+    duH = 0; % no maturation in adults
   end
 
   % then obtain dt/dl, duE/dl, duH/dl, 

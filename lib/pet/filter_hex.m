@@ -1,5 +1,5 @@
 %% filter_hex
-% filters for allowable parameters of holometabolous insect DEB model
+% filters for allowable parameters of holometabolous insect DEB model (acceleration till pupation), 
 
 %%
 function [filter, flag] = filter_hex(p)
@@ -11,7 +11,7 @@ function [filter, flag] = filter_hex(p)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
-%    space of standard DEB model without acceleration
+%    space of the hex DEB model
 % Meant to be run in the estimation procedure
 %
 % Input

@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>smse_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-27"><meta name="DC.source" content="smse_st.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>smse_st</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-29"><meta name="DC.source" content="smse_st.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,21 +67,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>smse_st</h1><!--introduction--><p>calculates the symmetric mean squared relative error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[smserr, sserr] = <a href="../smse_st.m"><b>smse_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the mean symmetric squared relative error, used in add_my_pet    (d_ij - p_ij)^2/ (d_i^2 + p_i^2)</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li></ul></div><p>Output</p><div><ul><li>smserr: scalar with symmetric mean squared relative error</li><li>sserr: (n-2) matrix with weighted symmetric relative squared error of each of data set in first column and 1 or 0 in the second column indicated whether or not the data set was given weight zero</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>smse_st</h1><!--introduction--><p>calculates the symmetric mean squared error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[mserr, serr, prdInfo] = <a href="../mse_st.m"><b>smse_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the symmetric mean squared  error, used in add_my_pet:    \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2)</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li><li>prdInfo: boolean with success (1) or failure (0) for call to predict-function</li></ul></div><p>Output</p><div><ul><li>mserr: scalar with mean squared relative error</li><li>serr: (n,2) matrix  with weighted squared error of each of data set in first column and 1 or 0 in the second column indicated whether or not the data set was given weight zero</li></ul></div><h2 id="5">Remarks</h2><p>Bi-variate data can have NaN's (= missing data). Uni- and bi-variate data have the (first) independent variable in the first column First output mserr excludes contributions from pseudo-data.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% smse_st
-% calculates the symmetric mean squared relative error
+% calculates the symmetric mean squared error
 
 %%
-function [smserr, sserr, prdInfo] = smse_st(func, par, data, auxData, weights)
-  % created: 2016/09/03 by Goncalo Marques
+function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
+  % created: 2016/05/05 by Goncalo Marques, modified 2022/01/26 by Bas Kooijman
   
   %% Syntax 
-  % [smserr, sserr] = <../smse_st.m *smse_st*>(func, par, data, auxData, weights)
+  % [mserr, serr, prdInfo] = <../mse_st.m *smse_st*>(func, par, data, auxData, weights)
   
   %% Description
-  % Calculates the mean symmetric squared relative error, used in add_my_pet
-  %    (d_ij - p_ij)^2/ (d_i^2 + p_i^2)
+  % Calculates the symmetric mean squared  error, used in add_my_pet:
+  %    \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2) 
   %
   % Input
   %
@@ -89,58 +90,80 @@ function [smserr, sserr, prdInfo] = smse_st(func, par, data, auxData, weights)
   % * data: structure with data
   % * auxData: structure with data
   % * weights: structure with weights for the data
+  % * prdInfo: boolean with success (1) or failure (0) for call to predict-function
   %  
   % Output
   %
-  % * smserr: scalar with symmetric mean squared relative error
-  % * sserr: (n-2) matrix with weighted symmetric relative squared error of 
-  % each of data set in first column and 1 or 0 in the second column indicated 
-  % whether or not the data set was given weight zero
+  % * mserr: scalar with mean squared relative error
+  % * serr: (n,2) matrix  with weighted squared error of each of data set
+  % in first column and 1 or 0 in the second column indicated whether or
+  % not the data set was given weight zero
+  %
+  %% Remarks
+  % Bi-variate data can have NaN's (= missing data).
+  % Uni- and bi-variate data have the (first) independent variable in the first column
+  % First output mserr excludes contributions from pseudo-data.
 
   [nm, nst] = fieldnmnst_st(data); % nst: number of data sets   
   [prdData, prdInfo] = feval(func, par, data, auxData); % call predicted values for all of the data
   if prdInfo == 0 % no prediction from func
-    smserr = {}; sserr = {};
+    mserr = {}; serr = {};
     return
   end
-  prdData = predict_pseudodata(par, data, prdData); % add filed psd to prdData
-
+  prdData = predict_pseudodata(par, data, prdData);
   
-  rserr      = zeros(nst, 2);  % prepare output
+  serr      = zeros(nst, 2);  % prepare output
+  wsum = zeros(nst,1);   % sum of all weights per data-set
   
-  for i = 1:nst   % first we remove independent variables from uni-variate data sets
+  for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var = getfield(data, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
-    k = size(var, 2);
-    if k >= 2
-      data = setfield(data, fieldsInCells{1}{:}, var(:,2));
+    var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
+    [n, k] = size(var);
+    if k > 1 % uni- or bivariate dsta set
+      var(:,1) = []; % remove independent variable
     end
-  end
-  
-  for i = 1:nst % next we compute the weighted relative error of each data set
-    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
-    var    = getfield(data, fieldsInCells{1}{:}); 
+    sel = ~isnan(var); % selection of non-Nan's
     prdVar = getfield(prdData, fieldsInCells{1}{:}); 
     w      = getfield(weights, fieldsInCells{1}{:});
-    meanVar = abs(mean(var));
-    meanPrdVar = abs(mean(prdVar));
-    diff = abs(prdVar - var);
-    
-    if sum(diff) > 0 && meanVar > 0
-      if sum(w) ~= 0
-        sserr(i,1) = sum(w .* abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1)/ sum(w);
+    diff2 = (prdVar - var).^2;
+    if k > 1
+      meanVar = zeros(n, k-1); meanPrd = zeros(n, k-1);
+      for j = 1:k-1
+        meanVar(:,j) = ones(n,1) * mean(var(sel(:,j),j)); 
+        meanPrd(:,j) = ones(n,1) * mean(prdVar(sel(:,j),j));
+      end
+    else % zero-variate data set
+      meanVar = var; meanPrd = prdVar;
+    end
+    meanVarPrd2 = (meanVar.^2 + meanPrd.^2)/2;
+    wsum(i) = sum(w(sel)); 
+   
+    if all(meanVar > 0)
+      if wsum(i) ~= 0
+        serr(i,1) = w(sel)' * (diff2(sel) ./ meanVarPrd2(sel)) / wsum(i);
       else
-        sserr(i,1) = sum(abs(prdVar - var).^2/ (meanVar^2 + meanPrdVar^2), 1);
+        serr(i,1) = sum(diff2(sel) ./ meanVarPrd2(sel));
       end
     else
-      sserr(i,1) = 0;
+      serr(i,1) = 0;
     end
-    sserr(i,2) = (sum(w)~=0); % weight 0 if all of the data points in a data set were given wieght zero, meaning that that data set was effectively excluded from the estimation procedure
-  end
     
-  smserr = sqrt(sum(prod(sserr,2))/ sum(sserr(:,2)));
-  
-  
+    serr(i,2) = (wsum(i)~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
+
+    if wsum(i) == 0
+      serr(i,1) = sum(diff2(sel) ./ max(1e-10, meanVarPrd2(sel)), 1);
+    else
+      serr(i,1) = w(sel)' * (diff2(sel) ./ max(1e-10, meanVarPrd2(sel)))/ wsum(i);
+    end
+    serr(i,2) = (wsum(i)~=0); % weight 0 if all of the data points in a data set were given weight zero, meaning that that data set was effectively excluded from the estimation procedure
+
+  end
+      
+  % assume that psd, if present, is the last field name in data
+  if isfield(data,'psd') % take contributions from pseudo-data out from overall error.
+    n_psd = length(fields(data.psd)); wsum(end-n_psd+1:end) = 0; serr(end-n_psd+1:end,2) = 0;
+  end
+  mserr = wsum' * serr(:,1)/ sum(wsum);
   
   
 ##### SOURCE END #####

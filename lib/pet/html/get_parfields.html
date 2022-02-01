@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_parfields</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-24"><meta name="DC.source" content="get_parfields.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>get_parfields</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-31"><meta name="DC.source" content="get_parfields.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,14 +67,15 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_parfields</h1><!--introduction--><p>returns cell array of strings with names of core primary parameters for a given DEB model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[coreParFields, info] = <a href="../get_parfields.m"><b>get_parfields</b></a> (model)</p><h2 id="4">Description</h2><p>Provides the list of core primary parameters which must be present in pars_init_my_pet for a given model</p><p>Input</p><div><ul><li>model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex', 'nat'.</li><li>all: optional boolean, to include chemical parameters. Default 0: not include them</li></ul></div><p>Output</p><div><ul><li>coreParFields: cell string with field names</li><li>info: scalar 1 for success, 0 for failure</li></ul></div><h2 id="5">Remarks</h2><p>check_my_pet is a macro for check_my_pet_stnm, which checks each species one by one If the model doesn't exist, the output is empty and info = 0</p><h2 id="6">Example of use</h2><p>[coreParFields, info] = get_parfields(metaPar.model)</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_parfields</h1><!--introduction--><p>returns cell array of strings with names of core primary parameters for a given DEB model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[coreParFields, info] = <a href="../get_parfields.m"><b>get_parfields</b></a> (model)</p><h2 id="4">Description</h2><p>Provides the list of core primary parameters which must be present in pars_init_my_pet for a given model</p><p>Input</p><div><ul><li>model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hap', 'hex', 'nat'.</li><li>addchem: optional boolean, to include chemical parameters. Default 0: not include them</li></ul></div><p>Output</p><div><ul><li>coreParFields: cell string with field names</li><li>info: scalar 1 for success, 0 for failure</li></ul></div><h2 id="5">Remarks</h2><p>check_my_pet is a macro for check_my_pet_stnm, which checks each species one by one If the model doesn't exist, the output is empty and info = 0</p><h2 id="6">Example of use</h2><p>[coreParFields, info] = get_parfields(metaPar.model)</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_parfields
 % returns cell array of strings with names of core primary parameters for a given DEB model
 
 %%
-function [coreParFields, info] = get_parfields(model, all)
-% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 2017/02/03, 2018/08/18, 2019/02/24 by Bas Kooijman
+function [coreParFields, info] = get_parfields(model, addchem)
+% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 
+% 2017/02/03, 2018/08/18, 2019/02/24, 2022/01/31 by Bas Kooijman
  
   %% Syntax 
   % [coreParFields, info] = <../get_parfields.m *get_parfields*> (model)
@@ -84,8 +86,8 @@ function [coreParFields, info] = get_parfields(model, all)
   %
   % Input
   %
-  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex', 'nat'. 
-  % * all: optional boolean, to include chemical parameters. Default 0: not include them
+  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hap', 'hex', 'nat'. 
+  % * addchem: optional boolean, to include chemical parameters. Default 0: not include them
   %
   % Output
   %
@@ -103,8 +105,8 @@ function [coreParFields, info] = get_parfields(model, all)
     fprintf(['warning from check_model: ', model, ' is not a typical model\n'])
   end
   
-  if ~exist('all', 'var')
-      all = 0;
+  if ~exist('addchem', 'var')
+      addchem = 0;
   end
   
   info = 1;
@@ -129,9 +131,12 @@ function [coreParFields, info] = get_parfields(model, all)
   case 'hep'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_Rj', 'h_a', 's_G'};
 
+  case 'hax'
+    coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_He', 'E_Rj', 'h_a', 's_G'};
+
   case 'hex'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};
-    
+          
   case 'nat'  
     coreParFields =  {};
     
@@ -141,12 +146,12 @@ function [coreParFields, info] = get_parfields(model, all)
           
   end
   
-  if all
+  if addchem
     chem = { ...
-    'd_X'; 'd_V'; 'd_E'; 'd_P';
-    'mu_X'; 'mu_V'; 'mu_E'; 'mu_P'; 
-    'mu_C'; 'mu_H'; 'mu_O'; 'mu_N';
-    'n_CX'; 'n_HX'; 'n_OX'; 'n_NX';
+    'd_X';   'd_V';  'd_E';  'd_P'; % g/cm^3, specific densities 
+    'mu_X'; 'mu_V'; 'mu_E'; 'mu_P'; % J/mol, chemical potentials for organics
+    'mu_C'; 'mu_H'; 'mu_O'; 'mu_N'; % J/mol, chemical potentials for minerals
+    'n_CX'; 'n_HX'; 'n_OX'; 'n_NX'; % -, chemical indices
     'n_CV'; 'n_HV'; 'n_OV'; 'n_NV';
     'n_CE'; 'n_HE'; 'n_OE'; 'n_NE';
     'n_CP'; 'n_HP'; 'n_OP'; 'n_NP';

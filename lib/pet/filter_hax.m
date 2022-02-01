@@ -1,16 +1,16 @@
-%% filter_hep
-% filters for allowable parameters of hemimetabolous insect DEB model (no pupation, "long" larval stage)
+%% filter_hax
+% filters for allowable parameters of holometabolous insect DEB model, but acceleration ceases befor pupation
 
 %%
-function [filter, flag] = filter_hep(p)
-% created 2016/02/12 by Bas Kooijman
+function [filter, flag] = filter_hax(p)
+% created 2022/01/31 by Bas Kooijman
 
 %% Syntax
-% [filter flag] = <../filter_hep.m *filter_hep*> (par)
+% [filter, flag] = <../filter_hep.m *filter_hax*> (par)
 
 %% Description
 % Checks if parameter values are in the allowable part of the parameter
-%    space of the hep DEB model
+%    space of the hax DEB model
 % Meant to be run in the estimation procedure
 %
 % Input
@@ -33,7 +33,7 @@ function [filter, flag] = filter_hep(p)
 
   filter = 0; flag = 0; % default setting of filter and flag
   
-  parvec = [p.z; p.kap_X; p.kap_P; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.E_Rj; p.kap_R; p.h_a; p.T_A];
+  parvec = [p.z; p.kap_X; p.kap_P; p.v; p.kap; p.p_M; p.E_G; p.k_J; p.E_Hb; p.E_Hp; p.E_He; p.E_Rj; p.kap_R; p.h_a; p.T_A];
   
   if sum(parvec <= 0) > 0 % all pars must be positive
     flag = 1;

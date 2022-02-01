@@ -191,8 +191,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                   ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
                 end
-                txt = metaData.(pets{i}).grp.comment{strcmp(grpSet1st, nm{j})}; 
-                title(txt); 
+                try
+                  title(metaData.(pets{i}).grp.title{strcmp(grpSet1st, nm{j})}); 
+                catch
+                  title(metaData.(pets{i}).grp.comment{strcmp(grpSet1st, nm{j})}); 
+                end
                 if n_sets2plot > 1
                    %shlegend(legend, [], [], txt);
                 end
@@ -209,8 +212,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 yPred = prdData_x.(pets{i}).(nm{j});
                 plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth',2)
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
-                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);   
-                title(txtData.(pets{i}).bibkey.(nm{j}));
+                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]); 
+                try
+                  title(txtData.(pets{i}).title.(nm{j}));
+                catch
+                  title(txtData.(pets{i}).bibkey.(nm{j}));
+               end
               end
               
             else
@@ -236,7 +243,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               end
               xlabel([aux.label.(fieldsInCells{1}{end}){1}, ', ', aux.units.(fieldsInCells{1}{end}){1}]);
               ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
-              title(aux.bibkey.(fieldsInCells{1}{end}));
+              try
+                title(aux.title.(fieldsInCells{1}{end}));
+              catch
+                title(aux.bibkey.(fieldsInCells{1}{end}));
+              end
             end
           elseif k > 2 % bi-variate data
             aux =  auxData.(pets{i});
@@ -274,8 +285,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                if isfield(txtData.(pets{i}).comment, nm{j})
-                  title(txtData.(pets{i}).comment.(nm{j}));
+                try
+                  title(txtData.(pets{i}).title.(nm{j}));
+                catch
+                  if isfield(txtData.(pets{i}).comment, nm{j})
+                    title(txtData.(pets{i}).comment.(nm{j}));
+                  end
                 end
                 if n_sets2plot > 1 
                   hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
@@ -315,7 +330,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.treat.(nm{j}), ', ', txtData.(pets{i}).units.treat.(nm{j})]);
                 zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                title(txtData.(pets{i}).comment.(nm{j})); 
+                try
+                  title(txtData.(pets{i}).title.(nm{j}));
+                catch
+                  if isfield(txtData.(pets{i}).comment, nm{j})
+                    title(txtData.(pets{i}).comment.(nm{j}));
+                  end
+                end
                 view([-5,-10,-5]);
                 ax = gca;
                 ax.BoxStyle = 'full';

@@ -26,7 +26,7 @@ function [res, models] = check_model(model)
   %% Example of use
   % check_model('std')
   
-  models = {'std'; 'stf'; 'stx'; 'ssj'; 'sbp'; 'abj'; 'asj'; 'abp'; 'hep'; 'hex'};
+  models = {'std'; 'stf'; 'stx'; 'ssj'; 'sbp'; 'abj'; 'asj'; 'abp'; 'hep'; 'hax'; 'hex'};
   res = ismember(model, models);
   
  

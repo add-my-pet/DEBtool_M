@@ -9,9 +9,10 @@ function [H, a, info] = maturity_j(L, f, p)
   % [H, a, info] = <../maturity_j.m *maturity_j*> (L, f, p)
   
   %% Description
+  % Life history events b (birth), j (and of acceleration), p (puberty).
+  % Acceleration between b and j.
   % Calculates the scaled maturity UH = MH/ {JEAm} at constant food
-  %  density in the case of acceleration between UHb and UHj
-  %  with UHb < UHj < UHp
+  %  density in the case of acceleration between UHb and UHj with UHb < UHj < UHp
   %
   % Input
   %
@@ -45,7 +46,7 @@ function [H, a, info] = maturity_j(L, f, p)
   Hp = p(10); % d cm^2, scaled maturity at puberty
   % kapR is not used, but kept for consistency with iget_pars_r, reprod_rate
     
-  if exist('f','var') == 0
+  if isempty('f')
     f = 1; % abundant food
   end
 

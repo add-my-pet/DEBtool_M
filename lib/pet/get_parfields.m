@@ -3,7 +3,8 @@
 
 %%
 function [coreParFields, info] = get_parfields(model, addchem)
-% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 2017/02/03, 2018/08/18, 2019/02/24 by Bas Kooijman
+% created 2015/07/31 by Starrlight Augustine; modified by Goncalo Marques; 
+% 2017/02/03, 2018/08/18, 2019/02/24, 2022/01/31 by Bas Kooijman
  
   %% Syntax 
   % [coreParFields, info] = <../get_parfields.m *get_parfields*> (model)
@@ -14,7 +15,7 @@ function [coreParFields, info] = get_parfields(model, addchem)
   %
   % Input
   %
-  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex', 'nat'. 
+  % * model: string with name of model: 'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hap', 'hex', 'nat'. 
   % * addchem: optional boolean, to include chemical parameters. Default 0: not include them
   %
   % Output
@@ -58,6 +59,9 @@ function [coreParFields, info] = get_parfields(model, addchem)
 
   case 'hep'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_Rj', 'h_a', 's_G'};
+
+  case 'hax'
+    coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_He', 'E_Rj', 'h_a', 's_G'};
 
   case 'hex'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};

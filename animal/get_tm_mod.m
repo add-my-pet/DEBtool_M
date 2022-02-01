@@ -68,6 +68,8 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
         g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); h_a = p(5); s_G = p(6); %  unpack pars
       case 'hep'
         g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); v_Rj = p(5); h_a = p(6); s_G = p(7); %  unpack pars
+      case 'hax'
+        g = p(1); k = p(2); v_Hb = p(3); v_Hp = p(4); v_Rj = p(5); v_He = p(6); kap = p(7); kap_V = p(8); h_a = p(9); s_G = p(10); %  unpack pars
       case 'hex'
         g = p(1); k = p(2); v_Hb = p(3); v_He = p(4); s_j = p(5); kap = p(6); kap_V = p(7); h_a = p(8); s_G = p(9); %  unpack pars
     end          
@@ -135,6 +137,14 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj], f);
       [tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); S = [S_b; S_p; S_j]; tau = [tau_b; tau_p; tau_j];
+    case 'hax'
+      [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau_j, tau_e, tau_p, tau_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee] = get_tj_hax([g, k, v_Hb, v_Hp, v_Rj, v_He, kap, kap_V], f);
+      [tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); 
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e - tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);
+      S_e = qhSt(2,3); S = [S_b; S_p; S_j; S_e]; tau = [tau_b; tau_p; tau_j; tau_e];
     case 'hex'
       [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars

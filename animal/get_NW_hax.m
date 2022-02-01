@@ -3,10 +3,10 @@
 
 %%
 function [N, f, le] = get_NW_hax(Ww, pars_tj, pars_aux)
-  % created at 2017/08/01 by Bas Kooijman, 
+  % created at 2017/08/01 by Bas Kooijman, modified 2022/01/30
   
   %% Syntax
-  % [N, f, l_e, info] = <../get_NW_hax.m *get_NW_hax*> (Ww, pars_tj, pars_aux)
+  % [N, f, l_e] = <../get_NW_hax.m *get_NW_hax*> (Ww, pars_tj, pars_aux)
   
   %% Description
   % Obtains number of eggs at pupation from wet weight at pupation for hax model
@@ -58,7 +58,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, uEj] = get_tjj_hax(p, f)
     
   % from zero till puberty
   pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
-  [tp, tpp, tb, lp, lpp, lb, li, rj, rB] = get_tj(pars_tj, f);
+  [tp, tpp, tb, lp, lpp, lb, li, rj, rB] = get_tj_hax(pars_tj, f);
   sM = lp/ lb; % -, acceleration factor
 
   % from puberty till pupation
@@ -76,7 +76,7 @@ function dtl = dget_tj_hax(vR, tl, f, sM, rB, li, g, k, vHp)
   l = tl(2); % -, scaled length
 
   dl = rB * max(0, li - l);
-  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - rB * vR * (f * sM/ l - 1);
+  dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - 3 * rB * vR * (f * sM/ l - 1);
 
   dtl = [1; dl]/ dvR; % pack output
 end
