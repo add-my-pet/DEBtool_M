@@ -22,6 +22,7 @@ function prt_report_AmPtox(fileNm)
 %% Remarks
 % If no input is specified, a single .mat file with results is assumed to be locally present
 
+  
   path2sys = [set_path2server, 'add_my_pet/sys/'];
   if ~exist('fileNm', 'var')
     list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
@@ -29,55 +30,37 @@ function prt_report_AmPtox(fileNm)
     title = fileNm; load(fileNm);
   end
   title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
-  [data, auxData, metaData, txtData, weights] = feval(['mydata_', title]);
+  [~, ~, ~, txtData] = feval(['mydata_', title]); % get txtData
   
+  % compose fileNm_bib.bib and, if the user has BibTex, fileNm_bib.html
   prt_my_pet_bib(title, metaData.biblist);                % my_pet_bib.bib 
   try
     bib2html([title, '_bib']);                              % my_pet_bib.html 
   catch
   end
+  list = cellstr(ls);
 
     fileName = [title, '_report.html']; % char string with file name of output file
     oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
     fprintf(oid, '<!DOCTYPE html>\n');
-    fprintf(oid, '<HTML>\n');
-    fprintf(oid, '<HEAD>\n');
-    fprintf(oid, '  <TITLE>%s</TITLE>\n',  title);
-    fprintf(oid, '  <script src="w3data.js"></script>\n');
-
-%     fprintf(oid, '  <script>\n');
-%     fprintf(oid, '    function w3IncludeHTML() {\n');
-%     fprintf(oid, '      var z, i, a, file, xhttp;\n');
-%     fprintf(oid, '      z = document.getElementsByTagName("*");\n');
-%     fprintf(oid, '      for (i = 0; i < z.length; i++) {\n');
-%     fprintf(oid, '        if (z[i].getAttribute("w3-include-html")) {\n');
-%     fprintf(oid, '          a = z[i].cloneNode(false);\n');
-%     fprintf(oid, '          file = z[i].getAttribute("w3-include-html");\n');
-%     fprintf(oid, '          var xhttp = new XMLHttpRequest();\n');
-%     fprintf(oid, '          xhttp.onreadystatechange = function() {\n');
-%     fprintf(oid, '            if (xhttp.readyState == 4 && xhttp.status == 200) {\n');
-%     fprintf(oid, '              a.removeAttribute("w3-include-html");\n');
-%     fprintf(oid, '              a.innerHTML = xhttp.responseText;\n');
-%     fprintf(oid, '              z[i].parentNode.replaceChild(a, z[i]);\n');
-%     fprintf(oid, '              w3IncludeHTML();\n');
-%     fprintf(oid, '            }\n');
-%     fprintf(oid, '          }\n');      
-%     fprintf(oid, '          xhttp.open("GET", file, true);\n');
-%     fprintf(oid, '          xhttp.send();\n');
-%     fprintf(oid, '          return;\n');
-%     fprintf(oid, '        }\n');
-%     fprintf(oid, '      }\n');
-%     fprintf(oid, '    }\n');
-%     fprintf(oid, '  </script>\n\n');
-   
+    fprintf(oid, '<html>\n');
+    fprintf(oid, '<head>\n');
+    fprintf(oid, '  <title>%s</title>\n\n',  title);
+    
     fprintf(oid, '  <style>\n');
-    fprintf(oid, '    div.prd {\n');
-    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '    div.left {\n');
+    fprintf(oid, '      width: 35%%;\n');
     fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
-    
-    fprintf(oid, '    div.par {\n');
+
+    fprintf(oid, '    div.middle {\n');
+    fprintf(oid, '      width: 15%%;\n');
+    fprintf(oid, '      float: left;\n'); 
+    fprintf(oid, '      padding-top: 60px;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    div.right {\n');
     fprintf(oid, '      width: 50%%;\n');
     fprintf(oid, '      float: right;\n');
     fprintf(oid, '    }\n\n');
@@ -86,11 +69,20 @@ function prt_report_AmPtox(fileNm)
     fprintf(oid, '      clear: both;\n');
     fprintf(oid, '    }\n\n');
 
-    fprintf(oid, '  </style>\n');
-    fprintf(oid, '</HEAD>\n\n');
-    fprintf(oid, '<BODY>\n\n');
+    fprintf(oid, '    div.footer{\n');
+    fprintf(oid, '      margin: auto;\n');
+    fprintf(oid, '      clear: both;\n');
+    fprintf(oid, '      text-align: center;\n');
+    fprintf(oid, '      font-size: 0.8em;\n');
+    fprintf(oid, '    }\n\n');
 
-    fprintf(oid, '  <div class="prd">\n');
+    fprintf(oid, '  </style>\n');
+    fprintf(oid, '</head>\n\n');
+    
+    fprintf(oid, '<body>\n\n');
+
+    % metaData
+    fprintf(oid, '  <div class="left">\n');
     fprintf(oid, '  <h1>%s</h1>\n', title);
     flds = fields(metaData); 
     flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment'}));
@@ -101,34 +93,40 @@ function prt_report_AmPtox(fileNm)
     end
     fprintf(oid, '  </div>\n\n');
 
-    fprintf(oid, '  <div class="par">\n');
-    fprintf(oid, '    <h3>\n');
-    fprintf(oid, '      <a href="%s_res.html">go to results</a>\n', title);
+    % results
+    fprintf(oid, '  <div class="middle">\n');
+    fprintf(oid, '    <h3><a href="%s_res.html">results</a></h3>\n\n', title);
+    
+    % elasticities
     if ismember([title,'_elas.html'], list)
-      fprintf(oid, '      <a href="%s_elas.html">, elasticities</a>\n', title); 
+      fprintf(oid, '    <h3><a href="%s_elas.html">elasticities</a></h3>\n\n', title); 
     end
-    fprintf(oid, '    </h3>\n');
+    
+    % Bibliography
+    if ismember([title, '_bib.html'], list)
+      fprintf(oid, '    <h3><a href="%s_bib.html">bibliography</a></h3>\n', title);
+    elseif ismember([title, '_bib.bib'], list)
+      fprintf(oid, '    <h3><a href="%s_bib.bib">bibliography</a></h3>\n', title);
+    end
+    fprintf(oid, '  </div>\n\n');
+
+    % plots
+    fprintf(oid, '  <div class="right">\n');
     png = list(contains(list,'.png')); n_png = length(png);
     for i = 1:n_png
-      fprintf(oid, '    <img src=%s width="500px">\n',png{i});
+      if ~contains(png{i},'legend')
+        fprintf(oid, '    <img src=%s width="500px">\n',png{i});
+      else
+        fprintf(oid, '    <img src=%s width="50px">\n',png{i});
+      end
     end
     fprintf(oid, '  </div>\n\n');
     
     fprintf(oid, '  <p class="clear"></p>\n\n');
 
-    fprintf(oid, '  <div w3-include-html="%s_res.html"></div>\n', title);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
-
-    fprintf(oid, '  <p class="clear"></p>\n\n');
-    
-    fprintf(oid, '  <div w3-include-html="%s_elas.html"></div>\n', title);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
-
-    fprintf(oid, '  <p class="clear"></p>\n\n');
-
     % Facts:
     if isfield(metaData, 'facts') 
-      fprintf(oid, '      <H3 style="clear:both" class="pet">Facts</H3>\n');
+      fprintf(oid, '      <h3 style="clear:both" class="pet">Facts</h3>\n');
       fprintf(oid, '      <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.facts);
       for i = 1:nst
@@ -151,12 +149,12 @@ function prt_report_AmPtox(fileNm)
         end
         fprintf(oid, '        </li>\n' ); % close bullet point
       end
-      fprintf(oid,'      </ul>\n');       % close the unordered list    
+      fprintf(oid,'      </ul>\n\n');       % close the unordered list    
     end
 
     % Discussion
     if isfield(metaData, 'discussion') == 1
-      fprintf(oid, '  <H3 style="clear:both" class="pet">Discussion</H3>\n');
+      fprintf(oid, '  <h3 style="clear:both" class="pet">Discussion</h3>\n');
       fprintf(oid, '  <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.discussion);
       for i = 1:nst
@@ -168,14 +166,14 @@ function prt_report_AmPtox(fileNm)
         else
           fprintf(oid, '      %s\n', str);
         end
-        fprintf(oid, '    </li>\n' ); % close bullet point
+        fprintf(oid, '    </li>\n'); % close bullet point
       end
      fprintf(oid,'  </ul>\n\n');      % open the unordered list      
     end
 
     % Acknowledgment:
     if isfield(metaData, 'acknowledgment') == 1
-      fprintf(oid, '  <H3 style="clear:both" class="pet">Acknowledgment</H3>\n');
+      fprintf(oid, '  <h3 style="clear:both" class="pet">Acknowledgment</h3>\n');
       fprintf(oid, '    <ul> \n');     % open the unordered list
     
       fprintf(oid, '      <li>\n');    % open bullet point
@@ -183,22 +181,20 @@ function prt_report_AmPtox(fileNm)
       fprintf(oid, '      %s\n', str);
       fprintf(oid, '      </li>\n' );  % close bullet point
    
-      fprintf(oid,'     </ul>\n\n\n'); % close the unordered list      
+      fprintf(oid,'     </ul>\n\n'); % close the unordered list      
     end
-
-    % Bibliography:
-    fprintf(oid, '  <H3 style="clear:both" class="pet"><a class="link" href = "%s_bib.bib" target = "_blank">Bibliography</a></H3>\n', title);
-    fprintf(oid, '  <div w3-include-html="%s_bib.html"></div>\n', title);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
   
-    % ----------------------------------------------------------
+    % footer
+    fprintf(oid, '  <div class="footer">\n');
+    fprintf(oid, '    Report generated by <a href="https://add-my-pet.github.io/AmPtox/docs/">AmPtox</a>\n');
+    fprintf(oid, '    at %s; \n', datestr(datenum(date), 'yyyy/mm/dd'));
+    fprintf(oid, '    <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/disclaimer.html">\n');
+    fprintf(oid, '      Disclaimer/Terms of use\n');
+    fprintf(oid, '    </a> &#169; 2009-%s Add-my-Pet\n', datestr(datenum(date), 'yyyy'));
+    fprintf(oid, '  </div>\n\n');
 
-    fprintf(oid, '  <div w3-include-html="%sfooter_amp.html"></div>\n', path2sys);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
-
-
-    fprintf(oid, '</BODY>\n');
-    fprintf(oid, '</HTML>\n');
+    fprintf(oid, '</body>\n');
+    fprintf(oid, '</html>\n');
 
     fclose(oid);
 
