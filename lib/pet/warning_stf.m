@@ -26,11 +26,11 @@ function warning_stf(p)
     end
   end
   
-  if c.kap_G >= p.mu_V / p.mu_E; % can only occur if y_VE > 1, meaning that CO2 is consumed
+  if c.kap_G >= p.mu_V / p.mu_E % can only occur if y_VE > 1, meaning that CO2 is consumed
     fprintf('kap_G >= mu_V / mu_E, which is not allowed if CO2 production occurs in association with growth. \n');
   end
 
-  if p.kap_X >= p.mu_E / p.mu_X; % can only occur if y_XE > 1, meaning that CO2 is consumed
+  if p.kap_X >= p.mu_E / p.mu_X % can only occur if y_XE > 1, meaning that CO2 is consumed
     fprintf('kap_X > mu_X / mu_E, which is not allowed if CO2 production occurs in association with assimilation. \n');
   end
 
