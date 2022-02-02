@@ -1,0 +1,264 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>prt_report_AmPtox</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-01"><meta name="DC.source" content="prt_report_AmPtox.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>prt_report_AmPtox</h1><!--introduction--><p>writes report of local results file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_AmPtox.m"><b>prt_report_AmPtox</b></a> (varargin)</p><h2 id="4">Description</h2><p>Writes report in html from the local results file</p><p>Input:</p><div><ul><li>varargin: optional name of the results_*.mat file</li></ul></div><p>Output:</p><div><ul><li>no Matlab output, text is written to html</li></ul></div><h2 id="5">Remarks</h2><p>If no input is specified, a single .mat file with results is assumed to be locally present</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% prt_report_AmPtox
+% writes report of local results file
+
+%%
+function prt_report_AmPtox(varargin)
+% created 2022/02/01 by Bas Kooijman
+
+%% Syntax
+% <../prt_report_AmPtox.m *prt_report_AmPtox*> (varargin) 
+
+%% Description
+% Writes report in html from the local results file
+%
+% Input:
+%
+% * varargin: optional name of the results_*.mat file
+%
+% Output:
+%
+% * no Matlab output, text is written to html
+
+%% Remarks
+% If no input is specified, a single .mat file with results is assumed to be locally present
+
+  path2sys = [set_path2server, 'add_my_pet/sys/'];
+  list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
+  title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+  [data, auxData, metaData, txtData, weights] = feval(['mydata_', title]);
+  
+  prt_my_pet_bib(title, metaData.biblist);                % my_pet_bib.bib 
+  try
+    bib2html([title, '_bib']);                              % my_pet_bib.html 
+  catch
+  end
+
+    fileName = [title, '_report.html']; % char string with file name of output file
+    oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+
+    fprintf(oid, '<!DOCTYPE html>\n');
+    fprintf(oid, '<HTML>\n');
+    fprintf(oid, '<HEAD>\n');
+    fprintf(oid, '  <TITLE>%s</TITLE>\n',  title);
+    
+    fprintf(oid, '  <script>\n');
+    fprintf(oid, '    function w3IncludeHTML() {\n');
+    fprintf(oid, '      var z, i, a, file, xhttp;\n');
+    fprintf(oid, '      z = document.getElementsByTagName("*");\n');
+    fprintf(oid, '      for (i = 0; i < z.length; i++) {\n');
+    fprintf(oid, '        if (z[i].getAttribute("w3-include-html")) {\n');
+    fprintf(oid, '          a = z[i].cloneNode(false);\n');
+    fprintf(oid, '          file = z[i].getAttribute("w3-include-html");\n');
+    fprintf(oid, '          var xhttp = new XMLHttpRequest();\n');
+    fprintf(oid, '          xhttp.onreadystatechange = function() {\n');
+    fprintf(oid, '            if (xhttp.readyState == 4 && xhttp.status == 200) {\n');
+    fprintf(oid, '              a.removeAttribute("w3-include-html");\n');
+    fprintf(oid, '              a.innerHTML = xhttp.responseText;\n');
+    fprintf(oid, '              z[i].parentNode.replaceChild(a, z[i]);\n');
+    fprintf(oid, '              w3IncludeHTML();\n');
+    fprintf(oid, '            }\n');
+    fprintf(oid, '          }\n');      
+    fprintf(oid, '          xhttp.open("GET", file, true);\n');
+    fprintf(oid, '          xhttp.send();\n');
+    fprintf(oid, '          return;\n');
+    fprintf(oid, '        }\n');
+    fprintf(oid, '      }\n');
+    fprintf(oid, '    }\n');
+    fprintf(oid, '  </script>\n\n');
+   
+    fprintf(oid, '  <style>\n');
+    fprintf(oid, '    div.prd {\n');
+    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      float: left;\n'); 
+    fprintf(oid, '    }\n\n');
+    
+    fprintf(oid, '    div.par {\n');
+    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      float: right;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    p.clear {\n');
+    fprintf(oid, '      clear: both;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '  </style>\n');
+    fprintf(oid, '</HEAD>\n\n');
+    fprintf(oid, '<BODY>\n\n');
+
+    fprintf(oid, '  <div class="prd">\n');
+    fprintf(oid, '  <h1>%s</h1>\n', title);
+    flds = fields(metaData); 
+    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment'}));
+    n_flds = length(flds);
+    for i=1:n_flds
+       txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
+       fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+    end
+    fprintf(oid, '  </div>\n\n');
+
+    fprintf(oid, '  <div class="par">\n');
+    fprintf(oid, '    <h3>\n');
+    fprintf(oid, '      <a href="%s_res.html">go to results</a>\n', title);
+    if ismember([title,'_elas.html'], list)
+      fprintf(oid, '      <a href="%s_elas.html">, elasticities</a>\n', title); 
+    end
+    fprintf(oid, '    </h3>\n');
+    png = list(contains(list,'.png')); n_png = length(png);
+    for i = 1:n_png
+      fprintf(oid, '    <img src=%s width="500px">\n',png{i});
+    end
+    fprintf(oid, '  </div>\n\n');
+    
+    fprintf(oid, '  <p class="clear"></p>\n\n');
+
+    % Facts:
+    if isfield(metaData, 'facts') 
+      fprintf(oid, '      <H3 style="clear:both" class="pet">Facts</H3>\n');
+      fprintf(oid, '      <ul> \n');     % open the unordered list
+      [nm, nst] = fieldnmnst_st(metaData.facts);
+      for i = 1:nst
+        fprintf(oid, '        <li>\n'); % open bullet point
+        str1 = metaData.facts.(nm{i});
+        if isfield(metaData.bibkey,(nm{i}))
+          bib = metaData.bibkey.(nm{i}); 
+          if ~iscell(bib)
+            str2 = bib;
+          else
+            n_bib = length(bib);
+            str2 = bib{1};
+            for j = 2:n_bib
+              str2 = [str2, ', ', bib{j}];
+            end            
+          end
+          fprintf(oid, '          %s (ref: %s)\n', str1, str2);
+        else
+          fprintf(oid, '          %s\n', str1);  
+        end
+        fprintf(oid, '        </li>\n' ); % close bullet point
+      end
+      fprintf(oid,'      </ul>\n');       % close the unordered list    
+    end
+
+    % Discussion
+    if isfield(metaData, 'discussion') == 1
+      fprintf(oid, '  <H3 style="clear:both" class="pet">Discussion</H3>\n');
+      fprintf(oid, '  <ul> \n');     % open the unordered list
+      [nm, nst] = fieldnmnst_st(metaData.discussion);
+      for i = 1:nst
+        fprintf(oid, '    <li>\n'); % open bullet point
+        str = metaData.discussion.(nm{i});
+        if isfield(txtData.bibkey,nm{i})
+          str2 = metaData.bibkey.(nm{i});
+          fprintf(oid, '      %s(ref: %s) \n', str, str2);
+        else
+          fprintf(oid, '      %s\n', str);
+        end
+        fprintf(oid, '    </li>\n' ); % close bullet point
+      end
+     fprintf(oid,'  </ul>\n\n');      % open the unordered list      
+    end
+
+    % Acknowledgment:
+    if isfield(metaData, 'acknowledgment') == 1
+      fprintf(oid, '  <H3 style="clear:both" class="pet">Acknowledgment</H3>\n');
+      fprintf(oid, '    <ul> \n');     % open the unordered list
+    
+      fprintf(oid, '      <li>\n');    % open bullet point
+      str = metaData.acknowledgment;
+      fprintf(oid, '      %s\n', str);
+      fprintf(oid, '      </li>\n' );  % close bullet point
+   
+      fprintf(oid,'     </ul>\n\n\n'); % close the unordered list      
+    end
+
+    % Bibliography:
+    fprintf(oid, '  <H3 style="clear:both" class="pet"><a class="link" href = "%s_bib.bib" target = "_blank">Bibliography</a></H3>\n', title);
+    fprintf(oid, '  <div w3-include-html="%s_bib.html"></div>\n', title);
+    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
+  
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+    fprintf(oid, '  <div w3-include-html="%sfooter_amp.html"></div>\n', path2sys);
+    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
+
+
+    fprintf(oid, '</BODY>\n');
+    fprintf(oid, '</HTML>\n');
+
+    fclose(oid);
+
+    web(fileName,'-browser') % open html in systems browser
+
+##### SOURCE END #####
+--></body></html>
