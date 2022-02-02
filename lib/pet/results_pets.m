@@ -251,7 +251,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             end
             
           elseif k > 2 % bi-variate data
-            aux =  auxData.(pets{i}); if ~exist('hlegend','var'); hlegend = cell(0); end
+            aux =  auxData.(pets{i});
             if isfield(aux,'treat') && isfield(aux.treat,nm{j})
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
               treat = aux.treat.(nm{j});
