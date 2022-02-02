@@ -249,8 +249,9 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 title(aux.bibkey.(fieldsInCells{1}{end}));
               end
             end
+            
           elseif k > 2 % bi-variate data
-            aux =  auxData.(pets{i});
+            aux =  auxData.(pets{i}); if ~exist('hlegend','var'); hlegend = cell(0); end
             if isfield(aux,'treat') && isfield(aux.treat,nm{j})
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
               treat = aux.treat.(nm{j});
@@ -294,6 +295,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
                 if n_sets2plot > 1 
                   hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
+                  if results_output >= 3 % directly print legend
+                    figure(hlegend)  
+                    eval(['print -dpng ', pets{i}, '_', num2str(counter_fig),'_legend.png']);
+                  end
                 end
                   
               else % interpolate 2nd independent var and plot mesh
@@ -356,10 +361,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             if counter_filenm > 0
               figure(counter_fig)  
               eval(['print -dpng ', graphnm, '.png']);
-              if exist('hlegend', 'var')
-                figure(hlegend)  
-                eval(['print -dpng ', graphnm, '_legend.png']);
-              end
             end
           end
         end
