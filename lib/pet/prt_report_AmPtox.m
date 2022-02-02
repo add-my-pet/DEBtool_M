@@ -93,14 +93,17 @@ function prt_report_AmPtox(fileNm)
     fprintf(oid, '  <div class="prd">\n');
     fprintf(oid, '  <h1>%s</h1>\n', title);
     flds = fields(metaData); 
-    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment'}));
+    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey'}));
     n_flds = length(flds);
     for i=1:n_flds
        txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
-       fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+       if iscell(txt)
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt{1});
+       else
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+       end           
     end
     fprintf(oid, '  </div>\n\n');
-
     fprintf(oid, '  <div class="par">\n');
     fprintf(oid, '    <h3>\n');
     fprintf(oid, '      <a href="%s_res.html">go to results</a>\n', title);
