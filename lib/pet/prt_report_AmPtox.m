@@ -92,7 +92,8 @@ function prt_report_AmPtox(fileNm)
     for i=1:n_flds
        txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
        if iscell(txt)
-          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt{1});
+          n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, ltxt);
        else
           fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
        end           
