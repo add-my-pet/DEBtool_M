@@ -26,10 +26,11 @@ function prt_report_AmPtox(fileNm)
   path2sys = [set_path2server, 'add_my_pet/sys/'];
   if ~exist('fileNm', 'var')
     list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
+    title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
   else
-    title = fileNm; load(fileNm);
+    title = fileNm; load(['results_',fileNm]);   
   end
-  title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+  
   [~, ~, ~, txtData] = feval(['mydata_', title]); % get txtData
   
   % compose fileNm_bib.bib and, if the user has BibTex, fileNm_bib.html
@@ -50,7 +51,7 @@ function prt_report_AmPtox(fileNm)
     
     fprintf(oid, '  <style>\n');
     fprintf(oid, '    div.left {\n');
-    fprintf(oid, '      width: 35%%;\n');
+    fprintf(oid, '      width: 30%%;\n');
     fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
 
@@ -61,7 +62,7 @@ function prt_report_AmPtox(fileNm)
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    div.right {\n');
-    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      width: 55%%;\n');
     fprintf(oid, '      float: right;\n');
     fprintf(oid, '    }\n\n');
 
@@ -121,7 +122,7 @@ function prt_report_AmPtox(fileNm)
       if ~contains(png{i},'legend')
         fprintf(oid, '    <img src=%s width="500px">\n',png{i});
       else
-        fprintf(oid, '    <img src=%s width="200px">\n',png{i});
+        fprintf(oid, '    <img src=%s width="150px">\n',png{i});
      end
     end
     fprintf(oid, '  </div>\n\n');
