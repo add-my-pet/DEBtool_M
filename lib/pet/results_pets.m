@@ -110,7 +110,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
       [nm, nst] = fieldnmnst_st(st);
       for j = 1:nst  % replace univariate data by plot data 
         fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-        varData = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
+        varData = getfield(st, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
         k = size(varData, 2);  
         if k > 1 % uni- or bi-variate data set
           auxDataFields = fields(auxData.(pets{i}));
@@ -188,7 +188,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     plot(xData, yData, '.', 'Color',plotColours{1}, 'Markersize',15)
                   else
                     plot(xPred, yPred, xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
-                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
+                    if length(txtData.(pets{i}).label.(nm{j})) == 3
+                      legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txtData.(pets{i}).label.(sets2plot{ii}){3}}];
+                    else
+                      legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, sets2plot{ii}}];
+                    end 
                   end
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                   ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
@@ -199,11 +203,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   title(metaData.(pets{i}).grp.comment{strcmp(grpSet1st, nm{j})}); 
                 end
                 if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+                  plotNm = ['results_', pets{i}, '_', nFig];
                   print(plotNm, '-dpng')
                 end
                 if n_sets2plot > 1
-                   %shlegend(legend, [], [], txt);
+                  LEGEND.([plotNm, '_legend']) = legend;
                 end
               
               elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
@@ -226,8 +230,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   title(txtData.(pets{i}).bibkey.(nm{j}));
                 end
                 if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
-                  print(hfig{end}, plotNm,  '-dpng')
+                  plotNm = ['results_', pets{i}, '_', nFig];
+                  print(plotNm, '-dpng')
                 end
 
               end
@@ -311,17 +315,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     title(txtData.(pets{i}).comment.(nm{j}));
                   end
                 end
-                if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig];
-                  LEGEND.([plotNm,'_legend']) = legend;
-                end
-%                 if n_sets2plot > 1 
-%                   hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
-%                   if abs(results_output) >= 3 % directly print legend
-%                     plotNm = ['results_', pets{i}, '_', nFig, '_legend.png'];
-%                     print(plotNm, '-dpng');
-%                   end
-%                 end
+                plotNm = ['results_', pets{i}, '_', nFig];
+                LEGEND.([plotNm,'_legend']) = legend;
                   
               else % interpolate 2nd independent var and plot mesh
                 if ~k == length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
@@ -379,19 +374,25 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           end          
         end
       end 
-    end
+      
+      if exist('LEGEND','var')
+        nms = fields(LEGEND); n_nms = length(nms);
+        for j=1:n_nms
+          if exist('treat','var')
+            shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
+          else
+            shlegend(legend);
+          end
+          if abs(results_output) >= 3 % print legend
+            print(nms{j}, '-dpng');
+          end
+        end      
+      end
+     
+     end
     end
   end
   
-  if exist('LEGEND','var')
-    nms = fields(LEGEND); n_nms = length(nms);
-    for i=1:n_nms
-      shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
-      if abs(results_output) >= 3 % print legend
-        print([nms{i},'.png'], '-dpng');
-      end
-    end      
-  end
 
   for i = 1:n_pets 
     if n_pets == 1
