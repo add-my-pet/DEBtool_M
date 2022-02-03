@@ -101,6 +101,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
    
   if ~results_output == 0 % plot figures
+    txt0 = '0'; % text to prepend to figure counter if counter < 10
     data2plot = data; 
     close all % to avoid saving figures generated prior the current run
     univarX = {}; 
@@ -170,6 +171,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   plotColours = plotColours4AllSets{4};
                 end
                 figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
+                nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
                 hold on;
                 set(gca,'Fontsize',10); 
                 set(gcf,'PaperPositionMode','manual');
@@ -196,12 +198,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 catch
                   title(metaData.(pets{i}).grp.comment{strcmp(grpSet1st, nm{j})}); 
                 end
+                if abs(results_output) >= 3
+                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                end
                 if n_sets2plot > 1
                    %shlegend(legend, [], [], txt);
                 end
               
               elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
                 figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
+                nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
                 set(gca,'Fontsize',15); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
@@ -217,11 +223,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   title(txtData.(pets{i}).title.(nm{j}));
                 catch
                   title(txtData.(pets{i}).bibkey.(nm{j}));
-               end
+                end
+                if abs(results_output) >= 3
+                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                end
+
               end
               
             else
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
+              nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
               set(gca,'Fontsize',15); 
               set(gcf,'PaperPositionMode','manual');
               set(gcf,'PaperUnits','points'); 
@@ -248,12 +259,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               catch
                 title(aux.bibkey.(fieldsInCells{1}{end}));
               end
+              if abs(results_output) >= 3
+                eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+              end
             end
             
           elseif k > 2 % bi-variate data
             aux =  auxData.(pets{i});
             if isfield(aux,'treat') && isfield(aux.treat,nm{j})
               figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
+              nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
               treat = aux.treat.(nm{j});
               hold on;
               set(gca,'Fontsize',10); 
@@ -293,11 +308,15 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     title(txtData.(pets{i}).comment.(nm{j}));
                   end
                 end
+                if abs(results_output) >= 3
+                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                end
+                %
                 if n_sets2plot > 1 
                   hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
-                  if results_output >= 3 % directly print legend
-                    figure(hlegend)  
-                    eval(['print -dpng ', pets{i}, '_', num2str(counter_fig),'_legend.png']);
+                  if abs(results_output) >= 3 % directly print legend
+                    figure(hlegend)
+                    eval(['print -dpng ', pets{i}, '_', nFig,'_legend.png']);
                   end
                 end
                   
@@ -350,19 +369,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             else
               fprintf('Warning from results_pets: bi-variate data set found, but no field "auxData.treat" is specified\n');
             end
-          end
-          
-          if results_output >= 3  || results_output <= -3 % save graphs to .png
-            if counter_filenm > 0 && counter_fig < 10
-              graphnm = ['results_', pets{i}, '_0', num2str(counter_filenm)];
-            elseif counter_filenm > 0
-              graphnm = ['results_', pets{i}, '_', num2str(counter_filenm)];
-            end  
-            if counter_filenm > 0
-              figure(counter_fig)  
-              eval(['print -dpng ', graphnm, '.png']);
+            if abs(results_output) >= 3
+              eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
             end
-          end
+          end          
         end
       end 
     end
