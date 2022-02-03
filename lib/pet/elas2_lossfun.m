@@ -151,10 +151,8 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
     sel = ~isnan(aux);
     vec = [vec; aux(:)];
     maux = zeros(1,k);
-    if k > 1
-      for j=1:k
+    for j=1:k
         maux(j) = mean(aux(sel(:,j),j));
-      end
     end
     meanAux = ones(n,1) * maux;
     meanVec = [meanVec; meanAux(:)];
