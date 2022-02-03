@@ -139,7 +139,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     
     prdData_x = predict_pets(par, data2plot, auxData); % data prediction with xAxis
       
-    counter_fig = 0;
+    counter_fig = 0; hfig = {}; 
     
     path =  which('custom_results_group.m');
     if ~isempty(path) && ~isempty(strfind(path, pwd))
@@ -199,7 +199,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   title(metaData.(pets{i}).grp.comment{strcmp(grpSet1st, nm{j})}); 
                 end
                 if abs(results_output) >= 3
-                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+                  print(plotNm, '-dpng')
                 end
                 if n_sets2plot > 1
                    %shlegend(legend, [], [], txt);
@@ -225,7 +226,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   title(txtData.(pets{i}).bibkey.(nm{j}));
                 end
                 if abs(results_output) >= 3
-                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+                  print(hfig{end}, plotNm,  '-dpng')
                 end
 
               end
@@ -259,15 +261,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               catch
                 title(aux.bibkey.(fieldsInCells{1}{end}));
               end
-              if abs(results_output) >= 3
-                eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+              if abs(results_output) >= 3 
+                plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+                print(plotNm, '-dpng')
               end
             end
             
           elseif k > 2 % bi-variate data
             aux =  auxData.(pets{i});
             if isfield(aux,'treat') && isfield(aux.treat,nm{j})
-              figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1;
+              figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1;
               nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
               treat = aux.treat.(nm{j});
               hold on;
@@ -309,16 +312,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   end
                 end
                 if abs(results_output) >= 3
-                  eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+                  plotNm = ['results_', pets{i}, '_', nFig];
+                  LEGEND.([plotNm,'_legend']) = legend;
                 end
-                %
-                if n_sets2plot > 1 
-                  hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
-                  if abs(results_output) >= 3 % directly print legend
-                    figure(hlegend)
-                    eval(['print -dpng ', pets{i}, '_', nFig,'_legend.png']);
-                  end
-                end
+%                 if n_sets2plot > 1 
+%                   hlegend = shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
+%                   if abs(results_output) >= 3 % directly print legend
+%                     plotNm = ['results_', pets{i}, '_', nFig, '_legend.png'];
+%                     print(plotNm, '-dpng');
+%                   end
+%                 end
                   
               else % interpolate 2nd independent var and plot mesh
                 if ~k == length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
@@ -370,7 +373,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               fprintf('Warning from results_pets: bi-variate data set found, but no field "auxData.treat" is specified\n');
             end
             if abs(results_output) >= 3
-              eval(['print -dpng results_', pets{i}, '_', nFig, '.png'])
+              plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+              print(plotNm, '-dpng');
             end
           end          
         end
@@ -379,6 +383,16 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
     end
   end
   
+  if exist('LEGEND','var')
+    nms = fields(LEGEND); n_nms = length(nms);
+    for i=1:n_nms
+      shlegend(legend, [], [], txtData.(pets{i}).label.treat.(nm{j}));
+      if abs(results_output) >= 3 % print legend
+        print([nms{i},'.png'], '-dpng');
+      end
+    end      
+  end
+
   for i = 1:n_pets 
     if n_pets == 1
       metaPar.(pets{1}).model = metaPar.model; % only field pet{1} will be saved in .mat
