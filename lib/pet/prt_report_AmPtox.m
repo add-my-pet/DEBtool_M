@@ -21,12 +21,13 @@ function prt_report_AmPtox(fileNm)
 
 %% Remarks
 % If no input is specified, a single .mat file with results is assumed to be locally present
-
+  global pets
   
   path2sys = [set_path2server, 'add_my_pet/sys/'];
   if ~exist('fileNm', 'var')
-    list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
-    title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+    %list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
+    %title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+    title = pets{1}; load(['results_',title]);
   else
     title = fileNm; load(['results_',fileNm]);   
   end
@@ -117,7 +118,7 @@ function prt_report_AmPtox(fileNm)
 
     % plots
     fprintf(oid, '  <div class="right">\n');
-    png = list(contains(list,'.png')); n_png = length(png);
+    png = list(contains(list,'.png')); png = png(contains(png,title)); n_png = length(png);
     for i = 1:n_png
       if ~contains(png{i},'legend')
         fprintf(oid, '    <img src=%s width="500px">\n',png{i});
