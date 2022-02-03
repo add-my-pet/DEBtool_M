@@ -121,8 +121,8 @@ function prt_report_AmPtox(fileNm)
       if ~contains(png{i},'legend')
         fprintf(oid, '    <img src=%s width="500px">\n',png{i});
       else
-        fprintf(oid, '    <img src=%s width="50px">\n',png{i});
-      end
+        fprintf(oid, '    <img src=%s width="200px">\n',png{i});
+     end
     end
     fprintf(oid, '  </div>\n\n');
     
