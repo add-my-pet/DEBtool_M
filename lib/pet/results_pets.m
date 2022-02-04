@@ -366,7 +366,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   print(plotNm, '-dpng');
                 end
                  
-              elseif treat{1} > 1 % interpolate 2nd independent var and plot mesh
+              elseif treat{1} > 1 % interpolate 2nd independent var and plot mesh or surface
                 zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
                 nX = length(xData); % number of values for 1st independent var
                 zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
