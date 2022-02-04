@@ -21,15 +21,17 @@ function prt_report_AmPtox(fileNm)
 
 %% Remarks
 % If no input is specified, a single .mat file with results is assumed to be locally present
-
+  global pets
   
   path2sys = [set_path2server, 'add_my_pet/sys/'];
   if ~exist('fileNm', 'var')
-    list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
+    %list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
+    %title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+    title = pets{1}; load(['results_',title]);
   else
-    title = fileNm; load(fileNm);
+    title = fileNm; load(['results_',fileNm]);   
   end
-  title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
+  
   [~, ~, ~, txtData] = feval(['mydata_', title]); % get txtData
   
   % compose fileNm_bib.bib and, if the user has BibTex, fileNm_bib.html
@@ -50,7 +52,7 @@ function prt_report_AmPtox(fileNm)
     
     fprintf(oid, '  <style>\n');
     fprintf(oid, '    div.left {\n');
-    fprintf(oid, '      width: 35%%;\n');
+    fprintf(oid, '      width: 30%%;\n');
     fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
 
@@ -61,7 +63,7 @@ function prt_report_AmPtox(fileNm)
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    div.right {\n');
-    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '      width: 55%%;\n');
     fprintf(oid, '      float: right;\n');
     fprintf(oid, '    }\n\n');
 
@@ -90,7 +92,8 @@ function prt_report_AmPtox(fileNm)
     for i=1:n_flds
        txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
        if iscell(txt)
-          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt{1});
+          n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, ltxt);
        else
           fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
        end           
@@ -116,12 +119,12 @@ function prt_report_AmPtox(fileNm)
 
     % plots
     fprintf(oid, '  <div class="right">\n');
-    png = list(contains(list,'.png')); n_png = length(png);
+    png = list(contains(list,'.png')); png = png(contains(png,title)); n_png = length(png);
     for i = 1:n_png
       if ~contains(png{i},'legend')
         fprintf(oid, '    <img src=%s width="500px">\n',png{i});
       else
-        fprintf(oid, '    <img src=%s width="200px">\n',png{i});
+        fprintf(oid, '    <img src=%s width="150px">\n',png{i});
      end
     end
     fprintf(oid, '  </div>\n\n');
