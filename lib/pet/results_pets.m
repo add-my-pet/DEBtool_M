@@ -59,9 +59,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % For curators: 
 % my_pet_res.html is written in the directory entries, and deleted by run_collection, which writes another file with that name in directory entries_web.
 
-  global pets refPets results_output 
+  global pets refPets results_output dataSet_nFig
   
-  n_pets = length(pets);
+  % dataSet_nFig is a (n,2)-cell array with names of data sets in col 1, and 2-char txt with figure-number in col 2; 
+  % If fig nFig has a legend, this element is not a string, but a cell-string of length 2, where nFig_legend is added
+  % This is used in prt_results_my_pet and prt_report_AmPtox
+  
+  n_pets = length(pets); dataSet_nFig = cell(0,2);
   parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
 
   % get (mean) relative errors and symmetric mean squared errors
@@ -101,40 +105,38 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   end
    
   if ~results_output == 0 % plot figures
-    txt0 = '0'; % text to prepend to figure counter if counter < 10
-    data2plot = data; 
+    txt0 = '0'; % text to prepend to figure counter if counter < 10 (for intuitive listing sequence in the directory)
+    data2plot = data; % with pets as first field names
     close all % to avoid saving figures generated prior the current run
-    univarX = {}; 
-    for i = 1:n_pets
+    for i = 1:n_pets % scan pets
       st = data2plot.(pets{i}); 
       [nm, nst] = fieldnmnst_st(st);
       for j = 1:nst  % replace univariate data by plot data 
         fieldsInCells = textscan(nm{j},'%s','Delimiter','.');
-        varData = getfield(st, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
+        varData = getfield(st, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{j}
         k = size(varData, 2);  
         if k > 1 % uni- or bi-variate data set
           auxDataFields = fields(auxData.(pets{i}));
           dataCode = fieldsInCells{1}{:};
           univarAuxData = {};
           for ii = 1:length(auxDataFields) % add to univarAuxData all auxData for the data set that has length > 1
-            if isfield(auxData.(pets{i}).(auxDataFields{ii}), dataCode) && length(auxData.(pets{i}).(auxDataFields{ii}).(dataCode)) > 1
+            if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, dataCode) && auxData.(pets{i}).treat.(dataCode){1} == 0
               univarAuxData{end + 1} = auxDataFields{ii};
             end
           end
           aux = getfield(st, fieldsInCells{1}{:});
           dataVec = aux(:,1); 
-          if isempty(univarAuxData) || strcmp(univarAuxData{1},'treat') % if there is no univariate auxiliary data the axis can have 100 points otherwise it will have the same points as in data 
-            n_x = 100; xAxis = linspace(min(dataVec), max(dataVec), n_x)';
-            univarX = setfield(univarX, fieldsInCells{1}{:}, 'dft');
-          else
+          if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, dataCode) && auxData.(pets{i}).treat.(dataCode){1} == 0
+            % if auxData.(pets{i}).treat is specified for this dataCode and equals 1, interpolation is allowed
             xAxis = dataVec;
-            univarX = setfield(univarX, fieldsInCells{1}{:}, 'usr');
+          else
+            n_x = 100; xAxis = linspace(min(dataVec), max(dataVec), n_x)';
           end
           st = setfield(st, fieldsInCells{1}{:}, xAxis);
         end
-      end
+      end % end of scan data sets of pets{i}
       data2plot.(pets{i}) = st;
-    end
+    end % end of scan pets
     
     
     prdData_x = predict_pets(par, data2plot, auxData); % data prediction with xAxis
@@ -171,13 +173,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   else
                     plotColours = plotColours4AllSets{4};
                   end
-                  hfig = figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
-                  nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
+                  figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1; 
+                  nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                   hold on;
-%                   set(gca,'Fontsize',10); 
-%                   set(gcf,'PaperPositionMode','manual');
-%                   set(gcf,'PaperUnits','points'); 
-%                   set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
+                  set(gca,'Fontsize',10); 
+                  set(gcf,'PaperPositionMode','manual');
+                  set(gcf,'PaperUnits','points'); 
+                  set(gcf,'PaperPosition',[0 0 350 250]);%left bottom width height
                   legend = cell(0,2);
                   for ii = 1: n_sets2plot
                     xData = st.(sets2plot{ii})(:,1); 
@@ -185,10 +187,19 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     xPred = data2plot.(pets{i}).(sets2plot{ii})(:,1); 
                     yPred = prdData_x.(pets{i}).(sets2plot{ii});
                     if n_sets2plot == 1
-                      plot(xPred, yPred,'Color',plotColours{2}, 'linewidth',2)
+                      if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, sets2plot{ii}) && auxData.(pets{i}).treat.(sets2plot{ii}){1} == 0
+                        plot(xPred, yPred, 'o', 'Color',plotColours{2}, 'Markersize',3)
+                      else
+                        plot(xPred, yPred,'Color',plotColours{2}, 'linewidth',2)
+                      end
                       plot(xData, yData, '.', 'Color',plotColours{1}, 'Markersize',15)
                     else
-                      plot(xPred, yPred, xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15, 'linewidth', 2)
+                      if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, sets2plot{ii}) && auxData.(pets{i}).treat.(sets2plot{ii}){1} == 0
+                        plot(xPred, yPred, 'o', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',3)
+                      else
+                        plot(xPred, yPred, 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
+                      end
+                        plot(xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15)
                       if length(txtData.(pets{i}).label.(nm{j})) == 3
                         legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txtData.(pets{i}).label.(sets2plot{ii}){3}}];
                       else
@@ -208,12 +219,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     print(plotNm, '-dpng')
                   end
                   if n_sets2plot > 1
-                    LEGEND.([plotNm, '_legend']) = legend;
+                    LEGEND.([plotNm, '_legend']) = legend; dataSet_nFig{end,2} = {nFig, [nFig,'_legend']};
                   end % end of grouped plots
               
-                elseif sum(strcmp(allSetsInGroup, nm{j})) == 0 % non-grouped plots in presebce of a grouped-plot
-                  hfig = figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-                  nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
+                elseif sum(strcmp(allSetsInGroup, nm{j})) == 0 % non-grouped plots with k=2 in presence of a grouped-plot
+                  figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
+                  nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                   set(gca,'Fontsize',15); 
                   set(gcf,'PaperPositionMode','manual');
                   set(gcf,'PaperUnits','points'); 
@@ -222,7 +233,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   yData = st.(nm{j})(:,2);
                   xPred = data2plot.(pets{i}).(nm{j})(:,1); 
                   yPred = prdData_x.(pets{i}).(nm{j});
-                  plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth',2)
+                  if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && auxData.(pets{i}).treat.(nm{j}){1} == 0
+                    plot(xPred, yPred, 'or', 'Markersize',3)
+                  else
+                    plot(xPred, yPred, 'r', 'linewidth',2)
+                  end
+                  plot(xData, yData, '.b', 'Markersize',15)
                   xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                   ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]); 
                   try
@@ -237,8 +253,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
               
               else % non-grouped plots in absence of a grouped plot
-                hfig = figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
-                nFig = [txt0(counter_fig < 10), num2str(counter_fig)];
+                figure; counter_fig = counter_fig + 1;  counter_filenm = counter_filenm + 1; 
+                nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                 set(gca,'Fontsize',15); 
                 set(gcf,'PaperPositionMode','manual');
                 set(gcf,'PaperUnits','points'); 
@@ -248,11 +264,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 aux = getfield(data2plot.(pets{i}), fieldsInCells{1}{:});
                 xPred = aux(:,1);
                 yPred = getfield(prdData_x.(pets{i}), fieldsInCells{1}{:});
-                if strcmp(getfield(univarX, fieldsInCells{1}{:}), 'dft')
-                  plot(xPred, yPred, 'b', xData, yData, '.r', 'Markersize',15, 'linewidth',2)
-                elseif strcmp(getfield(univarX, fieldsInCells{1}{:}), 'usr')
-                  plot(xPred, yPred, '.b', xData, yData, '.r', 'Markersize',15, 'linestyle', 'none')
+                if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, dataCode) && auxData.(pets{i}).treat.(dataCode){1} == 0
+                  plot(xPred,yPred, 'or', 'Markersize',3)
+                else 
+                  plot(xPred,yPred, 'r', 'linewidth',2)
                 end
+                plot(xData,yData, '.b', 'Markersize',15)
                 if length(fieldsInCells{1}) == 1
                   aux = txtData.(pets{i});
                 else
@@ -277,8 +294,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 return
               end
               aux =  auxData.(pets{i});
-              hfig = figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1;
-              nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; % txt with 2-diget fig number
+              figure; counter_fig = counter_fig + 1; counter_filenm = counter_filenm + 1;
+              nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               hold on;
               %
@@ -317,7 +334,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   end
                 end
                 plotNm = ['results_', pets{i}, '_', nFig];
-                LEGEND.([plotNm,'_legend']) = legend; % add to 
+                LEGEND.([plotNm,'_legend']) = legend; dataSet_nFig{end,2} = {nFig, [nFig, '_legend']};
                 LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});  
                 if abs(results_output) >= 3
                   plotNm = ['results_', pets{i}, '_', nFig, '.png'];
@@ -359,7 +376,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   end
                 end
                 plotNm = ['results_', pets{i}, '_', nFig];
-                LEGEND.([plotNm,'_legend']) = legend;
+                LEGEND.([plotNm,'_legend']) = legend; dataSet_nFig{end,2} = {nFig, [nFig,'_legend']};
                 LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});
                 if abs(results_output) >= 3
                   plotNm = ['results_', pets{i}, '_', nFig, '.png'];
@@ -423,7 +440,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
         shlegend(LEGEND.(nms{j}), [], [], LEGENDlabel.(nms{j}));
       else
         shlegend(LEGEND.(nms{j}));
-      end
+      end     
       if abs(results_output) >= 3 % print legend
         print(nms{j}, '-dpng');
       end
