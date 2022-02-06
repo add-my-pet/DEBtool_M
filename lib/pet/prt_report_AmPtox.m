@@ -13,15 +13,16 @@ function prt_report_AmPtox(title)
 %
 % Input:
 %
-% * title: optional name of the results_title.mat file
+% * title: optional name of the results_title.mat file (default: pets{1})
 %
 % Output:
 %
 % * no Matlab output, text is written to html
 
 %% Remarks
-% If no input is specified, a single .mat file with results is assumed to be locally present
-  global pets
+% Click on figures to enlarge, and again to shrink
+
+  global pets dataSet_nFig
   
   path2sys = [set_path2server, 'add_my_pet/sys/'];
   if ~exist('title', 'var')
@@ -163,16 +164,19 @@ function prt_report_AmPtox(title)
     fprintf(oid, '  <div class="left">\n');
     fprintf(oid, '  <h1>%s</h1>\n', title);
     flds = fields(metaData); 
-    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey','COMPLETE'}));
+    flds = flds(~ismember(flds,{'model', 'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey','COMPLETE'}));
     n_flds = length(flds);
     for i=1:n_flds
-       txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
-       if iscell(txt)
-          n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
-          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, ltxt);
-       else
-          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
-       end           
+      txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end      
+      if iscell(txt)
+        n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+        txt = ltxt;
+      end
+      if strcmp(flds{i},'DEBmodel')
+        fprintf(oid, '    <b>%s: </b><a href="https://add-my-pet.github.io/AmPtool/docs/model/%s.pdf">%s</a><br>\n', flds{i}, txt, txt);
+      else
+        fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+      end                  
     end
     fprintf(oid, '  </div>\n\n');
 
@@ -195,9 +199,25 @@ function prt_report_AmPtox(title)
 
     % plots
     fprintf(oid, '  <div class="right">\n');
-    png = list(contains(list,'.png')); png = png(contains(png,title)); n_png = length(png);
-    for i = 1:n_png
-      fprintf(oid, '    <img class="myImg" src=%s alt="">\n',png{i});
+    png = list(contains(list,'.png')); png = png(contains(png,[title,'_'])); n_png = length(png);
+    n_data = size(dataSet_nFig,1); % nummer of data sets wih png's
+    for i = 1:n_png % find bibkeys for the data set that was plotted in the png's
+      if contains(png{i},'legend')
+        txt = '';
+      else
+        txt = ''; nFig = png{i}; nFig = nFig(end-5:end-4); %dataSet = dataSet_nFig(,1);
+        for j=1:n_data; fig = dataSet_nFig{j,2};
+          if iscell(fig); if strcmp(nFig,fig{1}); break; end
+          elseif strcmp(nFig,fig); break; end
+        end
+        dataSet = dataSet_nFig{j,1};
+        if isfield(txtData, 'bibkey') && isfield(txtData.bibkey,dataSet)
+          key = txtData.bibkey.(dataSet); txt = key; if iscell(key); txt = key{1};
+          n_key = length(key); for j=2:n_key; txt = [txt,', ',key{j}]; end; end
+        end
+        if ~isempty(txt); txt = ['Ref: ', txt]; end % txt with references for data
+      end
+      fprintf(oid, '    <img class="myImg" src=%s alt="%s">\n',png{i},txt);
     end
     fprintf(oid, '    \n');
    
@@ -230,7 +250,47 @@ function prt_report_AmPtox(title)
     fprintf(oid, '  </script>\n\n');
     
     fprintf(oid, '  <p class="clear"></p>\n\n');
-
+    
+    % Model
+    if isfield(metaData, 'model')
+      fprintf(oid, '  <h3>Model</h3>\n');
+      nm = fields(metaData.model);
+      TK = nm(contains(nm,'TK')); nTK = length(TK);
+      fprintf(oid, '  <h4>Toxicokinetic assumptions</h4>\n');      
+      fprintf(oid, '  <ul>\n');     % open the unordered list
+      for i = 1:nTK
+        fprintf(oid, '    <li>%s</li>\n', metaData.model.(TK{i})); % TK assumption i
+      end
+      fprintf(oid, '  </ul>\n\n');      % close the unordered list  
+      %
+      TD = nm(contains(nm,'TD')); nTD = length(TD);
+      fprintf(oid, '  <h4>Toxicodynamic assumptions</h4>\n');      
+      fprintf(oid, '  <ul>\n');     % open the unordered list
+      for i = 1:nTD
+        fprintf(oid, '    <li>%s</li>\n', metaData.model.(TD{i})); % TD assumption i
+      end
+      fprintf(oid, '  </ul>\n\n');      % close the unordered list  
+    end
+    
+    % Discussion
+    if isfield(metaData, 'discussion')
+      fprintf(oid, '  <h3 style="clear:both" class="pet">Discussion</h3>\n');
+      fprintf(oid, '  <ul> \n');     % open the unordered list
+      [nm, nst] = fieldnmnst_st(metaData.discussion);
+      for i = 1:nst
+        fprintf(oid, '    <li>\n'); % open bullet point
+        str = metaData.discussion.(nm{i});
+        if isfield(txtData.bibkey,nm{i})
+          str2 = metaData.bibkey.(nm{i});
+          fprintf(oid, '      %s(ref: %s) \n', str, str2);
+        else
+          fprintf(oid, '      %s\n', str);
+        end
+        fprintf(oid, '    </li>\n'); % close bullet point
+      end
+     fprintf(oid,'  </ul>\n\n');      % close the unordered list      
+    end
+    
     % Facts:
     if isfield(metaData, 'facts') 
       fprintf(oid, '      <h3 style="clear:both" class="pet">Facts</h3>\n');
@@ -257,25 +317,6 @@ function prt_report_AmPtox(title)
         fprintf(oid, '        </li>\n' ); % close bullet point
       end
       fprintf(oid,'      </ul>\n\n');       % close the unordered list    
-    end
-
-    % Discussion
-    if isfield(metaData, 'discussion') == 1
-      fprintf(oid, '  <h3 style="clear:both" class="pet">Discussion</h3>\n');
-      fprintf(oid, '  <ul> \n');     % open the unordered list
-      [nm, nst] = fieldnmnst_st(metaData.discussion);
-      for i = 1:nst
-        fprintf(oid, '    <li>\n'); % open bullet point
-        str = metaData.discussion.(nm{i});
-        if isfield(txtData.bibkey,nm{i})
-          str2 = metaData.bibkey.(nm{i});
-          fprintf(oid, '      %s(ref: %s) \n', str, str2);
-        else
-          fprintf(oid, '      %s\n', str);
-        end
-        fprintf(oid, '    </li>\n'); % close bullet point
-      end
-     fprintf(oid,'  </ul>\n\n');      % open the unordered list      
     end
 
     % Acknowledgment:

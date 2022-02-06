@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_report_AmPtox</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-01"><meta name="DC.source" content="prt_report_AmPtox.m"><style type="text/css">
+      --><title>prt_report_AmPtox</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-05"><meta name="DC.source" content="prt_report_AmPtox.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,124 +67,261 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_report_AmPtox</h1><!--introduction--><p>writes report of local results file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_AmPtox.m"><b>prt_report_AmPtox</b></a> (varargin)</p><h2 id="4">Description</h2><p>Writes report in html from the local results file</p><p>Input:</p><div><ul><li>varargin: optional name of the results_*.mat file</li></ul></div><p>Output:</p><div><ul><li>no Matlab output, text is written to html</li></ul></div><h2 id="5">Remarks</h2><p>If no input is specified, a single .mat file with results is assumed to be locally present</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_report_AmPtox</h1><!--introduction--><p>writes report of local results file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_report_AmPtox.m"><b>prt_report_AmPtox</b></a> (title)</p><h2 id="4">Description</h2><p>Writes report in html from the local results file</p><p>Input:</p><div><ul><li>title: optional name of the results_title.mat file (default: pets{1})</li></ul></div><p>Output:</p><div><ul><li>no Matlab output, text is written to html</li></ul></div><h2 id="5">Remarks</h2><p>Click on figures to enlarge, and again to shrink</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_report_AmPtox
 % writes report of local results file
 
 %%
-function prt_report_AmPtox(varargin)
+function prt_report_AmPtox(title)
 % created 2022/02/01 by Bas Kooijman
 
 %% Syntax
-% <../prt_report_AmPtox.m *prt_report_AmPtox*> (varargin) 
+% <../prt_report_AmPtox.m *prt_report_AmPtox*> (title) 
 
 %% Description
 % Writes report in html from the local results file
 %
 % Input:
 %
-% * varargin: optional name of the results_*.mat file
+% * title: optional name of the results_title.mat file (default: pets{1})
 %
 % Output:
 %
 % * no Matlab output, text is written to html
 
 %% Remarks
-% If no input is specified, a single .mat file with results is assumed to be locally present
+% Click on figures to enlarge, and again to shrink
 
-  path2sys = [set_path2server, 'add_my_pet/sys/'];
-  list = cellstr(ls); title = list(contains(list,'.mat')); title = title{1}; load(title) % load the results_*.mat file
-  title(1:8) = []; title(end-3:end) = []; % select identifying part of the name 
-  [data, auxData, metaData, txtData, weights] = feval(['mydata_', title]);
+  global pets dataSet_nFig
   
+  path2sys = [set_path2server, 'add_my_pet/sys/'];
+  if ~exist('title', 'var')
+    title = pets{1}; load(['results_',title]);
+  else
+    load(['results_',title]);   
+  end
+  
+  [~, ~, ~, txtData] = feval(['mydata_', title]); % get txtData
+  
+  % compose fileNm_bib.bib and, if the user has BibTex, fileNm_bib.html
   prt_my_pet_bib(title, metaData.biblist);                % my_pet_bib.bib 
   try
     bib2html([title, '_bib']);                              % my_pet_bib.html 
   catch
   end
+  list = cellstr(ls);
 
     fileName = [title, '_report.html']; % char string with file name of output file
     oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
     fprintf(oid, '<!DOCTYPE html>\n');
-    fprintf(oid, '<HTML>\n');
-    fprintf(oid, '<HEAD>\n');
-    fprintf(oid, '  <TITLE>%s</TITLE>\n',  title);
+    fprintf(oid, '<html>\n');
+    fprintf(oid, '<head>\n');
+    fprintf(oid, '  <title>%s</title>\n\n',  title);
     
-    fprintf(oid, '  <script>\n');
-    fprintf(oid, '    function w3IncludeHTML() {\n');
-    fprintf(oid, '      var z, i, a, file, xhttp;\n');
-    fprintf(oid, '      z = document.getElementsByTagName("*");\n');
-    fprintf(oid, '      for (i = 0; i < z.length; i++) {\n');
-    fprintf(oid, '        if (z[i].getAttribute("w3-include-html")) {\n');
-    fprintf(oid, '          a = z[i].cloneNode(false);\n');
-    fprintf(oid, '          file = z[i].getAttribute("w3-include-html");\n');
-    fprintf(oid, '          var xhttp = new XMLHttpRequest();\n');
-    fprintf(oid, '          xhttp.onreadystatechange = function() {\n');
-    fprintf(oid, '            if (xhttp.readyState == 4 && xhttp.status == 200) {\n');
-    fprintf(oid, '              a.removeAttribute("w3-include-html");\n');
-    fprintf(oid, '              a.innerHTML = xhttp.responseText;\n');
-    fprintf(oid, '              z[i].parentNode.replaceChild(a, z[i]);\n');
-    fprintf(oid, '              w3IncludeHTML();\n');
-    fprintf(oid, '            }\n');
-    fprintf(oid, '          }\n');      
-    fprintf(oid, '          xhttp.open("GET", file, true);\n');
-    fprintf(oid, '          xhttp.send();\n');
-    fprintf(oid, '          return;\n');
-    fprintf(oid, '        }\n');
-    fprintf(oid, '      }\n');
-    fprintf(oid, '    }\n');
-    fprintf(oid, '  </script>\n\n');
-   
     fprintf(oid, '  <style>\n');
-    fprintf(oid, '    div.prd {\n');
-    fprintf(oid, '      width: 50%%;\n');
+    fprintf(oid, '    div.left {\n');
+    fprintf(oid, '      width: 30%%;\n');
     fprintf(oid, '      float: left;\n'); 
     fprintf(oid, '    }\n\n');
-    
-    fprintf(oid, '    div.par {\n');
-    fprintf(oid, '      width: 50%%;\n');
+
+    fprintf(oid, '    div.middle {\n');
+    fprintf(oid, '      width: 15%%;\n');
+    fprintf(oid, '      float: left;\n'); 
+    fprintf(oid, '      padding-top: 60px;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    div.right {\n');
+    fprintf(oid, '      width: 55%%;\n');
     fprintf(oid, '      float: right;\n');
+    fprintf(oid, '      padding-top: 60px;\n');
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    p.clear {\n');
     fprintf(oid, '      clear: both;\n');
     fprintf(oid, '    }\n\n');
 
-    fprintf(oid, '  </style>\n');
-    fprintf(oid, '</HEAD>\n\n');
-    fprintf(oid, '<BODY>\n\n');
+    fprintf(oid, '    div.footer{\n');
+    fprintf(oid, '      margin: auto;\n');
+    fprintf(oid, '      clear: both;\n');
+    fprintf(oid, '      text-align: center;\n');
+    fprintf(oid, '      font-size: 0.8em;\n');
+    fprintf(oid, '    }\n\n');
 
-    fprintf(oid, '  <div class="prd">\n');
+    fprintf(oid, '    /*REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH Figs REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-*/\n\n');
+
+    fprintf(oid, '    /* not-enlarged on page */\n');
+    fprintf(oid, '    .myImg {\n');
+    fprintf(oid, '      max-width:300px;\n');
+    fprintf(oid, '      max-height:200px;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    /* enlarge figs: to Trigger the Modal */\n');
+    fprintf(oid, '    .myImg {\n');
+    fprintf(oid, '      border-radius: 5px;\n');
+    fprintf(oid, '      cursor: pointer;\n');
+    fprintf(oid, '      transition: 0.3s;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    .myImg:hover {opacity: 0.7;}\n\n');
+
+    fprintf(oid, '    /* The Modal (background) */\n');
+    fprintf(oid, '    .modal {\n');
+    fprintf(oid, '      display: none; /* Hidden by default */\n');
+    fprintf(oid, '      position: fixed; /* Stay in place */\n');
+    fprintf(oid, '      z-index: 1; /* Sit on top */\n');
+    fprintf(oid, '      padding-top: 100px; /* Location of the box */\n');
+    fprintf(oid, '      left: 0;\n');
+    fprintf(oid, '      top: 0;\n');
+    fprintf(oid, '      width: 100%%; /* Full width */\n');
+    fprintf(oid, '      height: 100%%; /* Full height */\n');
+    fprintf(oid, '      overflow: auto; /* Enable scroll if needed */\n');
+    fprintf(oid, '      background-color: rgb(0,0,0); /* Fallback color */\n');
+    fprintf(oid, '      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    /* Modal Content (Image) */\n');
+    fprintf(oid, '    .modal-content {\n');
+    fprintf(oid, '      margin: auto;\n');
+    fprintf(oid, '      display: block;\n');
+    fprintf(oid, '      height: 80%%;\n');
+    fprintf(oid, '      max-height: 700px;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    /* Caption of Modal Image (Image Text) - Same Width as the Image */\n');
+    fprintf(oid, '    #caption {\n');
+    fprintf(oid, '      margin: auto;\n');
+    fprintf(oid, '      display: block;\n');
+    fprintf(oid, '      width: 80%%;\n');
+    fprintf(oid, '      max-width: 700px;\n');
+    fprintf(oid, '      text-align: center;\n');
+    fprintf(oid, '      color: #ccc;\n');
+    fprintf(oid, '      padding: 10px 0;\n');
+    fprintf(oid, '      height: 150px;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    /* Add Animation - Zoom in the Modal */\n');
+    fprintf(oid, '    .modal-content, #caption {\n');
+    fprintf(oid, '      -webkit-animation-name: zoom;\n');
+    fprintf(oid, '      -webkit-animation-duration: 0.6s;\n');
+    fprintf(oid, '      animation-name: zoom;\n');
+    fprintf(oid, '      animation-duration: 0.6s;\n');
+    fprintf(oid, '    }\n\n');
+   
+    fprintf(oid, '    @-webkit-keyframes zoom {\n');
+    fprintf(oid, '      from {-webkit-transform:scale(0)}\n');
+    fprintf(oid, '      to {-webkit-transform:scale(1)}\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    @keyframes zoom {\n');
+    fprintf(oid, '      from {transform:scale(0)}\n');
+    fprintf(oid, '      to {transform:scale(1)}\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    .close:hover,\n');
+    fprintf(oid, '    .close:focus {\n');
+    fprintf(oid, '      color: #bbb;\n');
+    fprintf(oid, '      text-decoration: none;\n');
+    fprintf(oid, '      cursor: pointer;\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '  </style>\n');
+    fprintf(oid, '</head>\n\n');
+    
+    fprintf(oid, '<body>\n\n');
+
+    % metaData
+    fprintf(oid, '  <div class="left">\n');
     fprintf(oid, '  <h1>%s</h1>\n', title);
     flds = fields(metaData); 
-    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment'}));
+    flds = flds(~ismember(flds,{'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey','COMPLETE'}));
     n_flds = length(flds);
     for i=1:n_flds
        txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end
-       fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+       if iscell(txt)
+          n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, ltxt);
+       else
+          fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+       end           
     end
     fprintf(oid, '  </div>\n\n');
 
-    fprintf(oid, '  <div class="par">\n');
-    fprintf(oid, '    <h3>\n');
-    fprintf(oid, '      <a href="%s_res.html">go to results</a>\n', title);
+    % results
+    fprintf(oid, '  <div class="middle">\n');
+    fprintf(oid, '    <h3><a href="%s_res.html">results</a></h3>\n\n', title);
+    
+    % elasticities
     if ismember([title,'_elas.html'], list)
-      fprintf(oid, '      <a href="%s_elas.html">, elasticities</a>\n', title); 
+      fprintf(oid, '    <h3><a href="%s_elas.html">elasticities</a></h3>\n\n', title); 
     end
-    fprintf(oid, '    </h3>\n');
-    png = list(contains(list,'.png')); n_png = length(png);
-    for i = 1:n_png
-      fprintf(oid, '    <img src=%s width="500px">\n',png{i});
+    
+    % Bibliography
+    if ismember([title, '_bib.html'], list)
+      fprintf(oid, '    <h3><a href="%s_bib.html">bibliography</a></h3>\n', title);
+    elseif ismember([title, '_bib.bib'], list)
+      fprintf(oid, '    <h3><a href="%s_bib.bib">bibliography</a></h3>\n', title);
     end
     fprintf(oid, '  </div>\n\n');
+
+    % plots
+    fprintf(oid, '  <div class="right">\n');
+    png = list(contains(list,'.png')); png = png(contains(png,[title,'_'])); n_png = length(png);
+    n_data = size(dataSet_nFig,1); % nummer of data sets wih png's
+    for i = 1:n_png % find bibkeys for the data set that was plotted in the png's
+      if contains(png{i},'legend')
+        txt = '';
+      else
+        txt = ''; nFig = png{i}; nFig = nFig(end-5:end-4); %dataSet = dataSet_nFig(,1);
+        for j=1:n_data; fig = dataSet_nFig{j,2};
+          if iscell(fig); if strcmp(nFig,fig{1}); break; end
+          elseif strcmp(nFig,fig); break; end
+        end
+        dataSet = dataSet_nFig{j,1};
+        if isfield(txtData, 'bibkey') && isfield(txtData.bibkey,dataSet)
+          key = txtData.bibkey.(dataSet); txt = key; if iscell(key); txt = key{1};
+          n_key = length(key); for j=2:n_key; txt = [txt,', ',key{j}]; end; end
+        end
+        if ~isempty(txt); txt = ['Refs: ', txt]; end % txt with references for data
+      end
+      fprintf(oid, '    <img class="myImg" src=%s alt="%s">\n',png{i},txt);
+    end
+    fprintf(oid, '    \n');
+   
+    fprintf(oid, '    <div id="myModal" class="modal">\n');        
+    fprintf(oid, '      <img class="modal-content" id="img01">\n');
+    fprintf(oid, '      <div id="caption"></div>\n');
+    fprintf(oid, '    </div>\n');
+    fprintf(oid, '  </div>\n\n');
+
+    fprintf(oid, '  <script>\n');
+    fprintf(oid, '    var modal = document.getElementById("myModal");\n');
+    fprintf(oid, '    var i;\n\n');
+
+    fprintf(oid, '    var img = document.getElementsByClassName("myImg");\n');
+    fprintf(oid, '    var modalImg = document.getElementById("img01");\n');
+    fprintf(oid, '    var captionText = document.getElementById("caption");\n\n');
+
+    fprintf(oid, '    for(i=0;i< img.length;i++) {\n');    
+    fprintf(oid, '      img[i].onclick = function(){\n');
+    fprintf(oid, '        modal.style.display = "block";\n');
+    fprintf(oid, '        modalImg.src = this.src;\n');
+    fprintf(oid, '        captionText.innerHTML = this.alt;\n');  
+    fprintf(oid, '      }\n');
+    fprintf(oid, '    }\n\n');
+
+    fprintf(oid, '    // When the user clicks on modelImg, close the modal\n');
+    fprintf(oid, '    modalImg.onclick = function() {\n'); 
+    fprintf(oid, '      modal.style.display = "none";\n');
+    fprintf(oid, '    }\n');
+    fprintf(oid, '  </script>\n\n');
     
     fprintf(oid, '  <p class="clear"></p>\n\n');
 
     % Facts:
     if isfield(metaData, 'facts') 
-      fprintf(oid, '      <H3 style="clear:both" class="pet">Facts</H3>\n');
+      fprintf(oid, '      <h3 style="clear:both" class="pet">Facts</h3>\n');
       fprintf(oid, '      <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.facts);
       for i = 1:nst
@@ -207,12 +344,12 @@ function prt_report_AmPtox(varargin)
         end
         fprintf(oid, '        </li>\n' ); % close bullet point
       end
-      fprintf(oid,'      </ul>\n');       % close the unordered list    
+      fprintf(oid,'      </ul>\n\n');       % close the unordered list    
     end
 
     % Discussion
     if isfield(metaData, 'discussion') == 1
-      fprintf(oid, '  <H3 style="clear:both" class="pet">Discussion</H3>\n');
+      fprintf(oid, '  <h3 style="clear:both" class="pet">Discussion</h3>\n');
       fprintf(oid, '  <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.discussion);
       for i = 1:nst
@@ -224,14 +361,14 @@ function prt_report_AmPtox(varargin)
         else
           fprintf(oid, '      %s\n', str);
         end
-        fprintf(oid, '    </li>\n' ); % close bullet point
+        fprintf(oid, '    </li>\n'); % close bullet point
       end
      fprintf(oid,'  </ul>\n\n');      % open the unordered list      
     end
 
     % Acknowledgment:
     if isfield(metaData, 'acknowledgment') == 1
-      fprintf(oid, '  <H3 style="clear:both" class="pet">Acknowledgment</H3>\n');
+      fprintf(oid, '  <h3 style="clear:both" class="pet">Acknowledgment</h3>\n');
       fprintf(oid, '    <ul> \n');     % open the unordered list
     
       fprintf(oid, '      <li>\n');    % open bullet point
@@ -239,22 +376,22 @@ function prt_report_AmPtox(varargin)
       fprintf(oid, '      %s\n', str);
       fprintf(oid, '      </li>\n' );  % close bullet point
    
-      fprintf(oid,'     </ul>\n\n\n'); % close the unordered list      
+      fprintf(oid,'     </ul>\n\n'); % close the unordered list      
     end
-
-    % Bibliography:
-    fprintf(oid, '  <H3 style="clear:both" class="pet"><a class="link" href = "%s_bib.bib" target = "_blank">Bibliography</a></H3>\n', title);
-    fprintf(oid, '  <div w3-include-html="%s_bib.html"></div>\n', title);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
   
-    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+    fprintf(oid, '  <hr>\n\n');
+    
+    % footer
+    fprintf(oid, '  <div class="footer">\n');
+    fprintf(oid, '    Report generated by <a href="https://add-my-pet.github.io/AmPtox/docs/">AmPtox</a>\n');
+    fprintf(oid, '    at %s; \n', datestr(datenum(date), 'yyyy/mm/dd'));
+    fprintf(oid, '    <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/disclaimer.html">\n');
+    fprintf(oid, '      Disclaimer/Terms of use\n');
+    fprintf(oid, '    </a> &#169; 2009-%s Add-my-Pet\n', datestr(datenum(date), 'yyyy'));
+    fprintf(oid, '  </div>\n\n');
 
-    fprintf(oid, '  <div w3-include-html="%sfooter_amp.html"></div>\n', path2sys);
-    fprintf(oid, '  <script>w3IncludeHTML();</script>\n\n');
-
-
-    fprintf(oid, '</BODY>\n');
-    fprintf(oid, '</HTML>\n');
+    fprintf(oid, '</body>\n');
+    fprintf(oid, '</html>\n');
 
     fclose(oid);
 
