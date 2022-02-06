@@ -173,7 +173,7 @@ function prt_report_AmPtox(title)
         txt = ltxt;
       end
       if strcmp(flds{i},'DEBmodel')
-        fprintf(oid, '    <b>%s: </b><a href="https://add-my-pet.github.io/AmPtool/docs/model/%s.pdf">%s</a><br>\n', flds{i}, txt, txt);
+        fprintf(oid, '    <b>%s: </b><a href="https://add-my-pet.github.io/AmPtool/docs/models/%s.pdf">%s</a><br>\n', flds{i}, txt, txt);
       else
         fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
       end                  
@@ -253,7 +253,7 @@ function prt_report_AmPtox(title)
     
     % Model
     if isfield(metaData, 'model')
-      fprintf(oid, '  <h3>Model</h3>\n');
+      fprintf(oid, '  <h3>TKTD model</h3>\n');
       nm = fields(metaData.model);
       TK = nm(contains(nm,'TK')); nTK = length(TK);
       fprintf(oid, '  <h4>Toxicokinetic assumptions</h4>\n');      
