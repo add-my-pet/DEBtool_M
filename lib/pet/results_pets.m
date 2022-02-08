@@ -239,11 +239,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               xPred = aux(:,1);
               yPred = getfield(prdData_x.(pets{i}), fieldsInCells{1}{:});
               if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, dataCode) && auxData.(pets{i}).treat.(dataCode){1} == 0
-                plot(xPred,yPred, 'or', 'Markersize',3)
+                plot(xPred,yPred, 'ob', 'Markersize',3)
               else 
-                plot(xPred,yPred, 'r', 'linewidth',2)
+                plot(xPred,yPred, 'b', 'linewidth',2)
               end
-              plot(xData,yData, '.b', 'Markersize',15)
+              plot(xData,yData, '.r', 'Markersize',15)
               if length(fieldsInCells{1}) == 1
                 aux = txtData.(pets{i});
               else
