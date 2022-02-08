@@ -253,7 +253,7 @@ function prt_report_AmPtox(title)
     
     % Model
     if isfield(metaData, 'model')
-      fprintf(oid, '  <h3>TKTD model</h3>\n');
+      fprintf(oid, '  <h3><a href="https://en.wikipedia.org/wiki/DEBtox" target="_blank">TKTD model</a></h3>\n');
       nm = fields(metaData.model);
       TK = nm(contains(nm,'TK')); nTK = length(TK);
       fprintf(oid, '  <h4>Toxicokinetic assumptions</h4>\n');      
