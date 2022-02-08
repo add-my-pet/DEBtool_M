@@ -15,11 +15,11 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
 % Input:
 %
 % * parPets: cell string of parameters for each pet
-% * metaPar: structure with information on metaparameters
-% * txtPar: structure with information on parameters
+% * metaPar: structure with information on parameters
+% * txtPar: structure with text for parameters
 % * data: structure with data for species
-% * metaData: structure with information on the entry
-% * txtData: structure with information on the data
+% * metaData: structure with information on the data
+% * txtData: structure with text for the data
 % * prdData: structure with predictions for the data
 %
 % Output:
@@ -29,7 +29,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
 %% Remarks
 % Function prt_results2screen writes to screen; subfunction of results_pets.
 
-  global pets
+  global pets 
   
   n_pets = length(pets);
     
