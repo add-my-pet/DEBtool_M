@@ -188,7 +188,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   end
                   plot(xData, yData, '.', 'Color',plotColours{1}, 'Markersize',15)
                 else % more than 1 data set in group set ii
-                  if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nms{jj}) && auxData.(pets{i}).treat.(nm{jj}){1} == 0
+                  if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nms{jj}) && auxData.(pets{i}).treat.(nms{jj}){1} == 0
                     plot(xPred, yPred, 'o', 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'Markersize',3)
                   else
                     plot(xPred, yPred, 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'linewidth', 2)
