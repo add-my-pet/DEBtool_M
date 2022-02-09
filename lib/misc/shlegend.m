@@ -34,7 +34,7 @@ if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.3; space_MM = 0.3;
+  space_MT = 0.5; space_MM = 0.3;
 else
   space_MT = space(1); space_MM = space(2);
 end
