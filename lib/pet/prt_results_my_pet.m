@@ -78,7 +78,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '<BODY>\n\n');
 
     fprintf(oid, '  <div class="prd">\n');
-    fprintf(oid,['  <h1>', strrep(pets{i}, '_', ' '), '</h1>\n']);
+    fprintf(oid, '  <h1>%s</h1>\n', strrep(pets{i}, '_', ' '));
     fprintf(oid, '  </div>\n\n');
 
     if ~isfield(metaData.(pets{i}), 'COMPLETE')
@@ -123,8 +123,14 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
         else
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
-        str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s, <font color="blue"><i>vs.</i></font> %s</TD>\n';
-        fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
+        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) % bivar
+          str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
+              '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.treat.(fieldsInCells{1}{1}), aux.label.(fieldsInCells{1}{end}){2});
+        else % univar
+          str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s <font color="blue"><i>vs.</i></font> %s</TD>\n';
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
+        end
       end
     end
   
