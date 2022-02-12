@@ -11,7 +11,7 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   %% Description
   % Life history events b (birth), p (puberty), j (pupation), e (emergence)
   % Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of 
-  %  acceleration between b and p, pupa between j and e, (non-growing) imago after e, with UHb < UHj.
+  %  acceleration between b and p, pupa between j and e, (non-growing) imago after e.
   % No further maturation after p, so Hp = Hj, and a re-set of maturity at j. Maturity of pupa increases from 0 to He. 
   % Lengths must be ordered in time (so a single stepdown from L_j to 0 at j.
   % Lengths are in the pupal stage if an earlier length was larger. 
@@ -34,7 +34,7 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}
   
   %% Remarks
-  % Maturity in the larval stage (between puberty and pupation) stays at birth level.
+  % Maturity in the larval stage (between puberty and pupation) stays at puberty level.
   % Maturity and structure are reset to zero at pupation and freeze at emergence of the imago.
   % See <maturity.html *maturity*> in absence of acceleration and
   % <maturity_j.html *maturity_j*> with accleration,
@@ -71,7 +71,7 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   end
   nL_pre = length(L_pre); L_post = L; L_post(1:nL_pre) = []; nL_post = length(L_post);
 
-  % embro till pupation
+  % embryo till pupation
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);  
   uHp = Hp * g^2 * kM^3/ (v^2); 
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
