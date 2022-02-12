@@ -3,7 +3,7 @@
 
 %%
 function [y, dy, index] = spline1(x, knots, Dy1, Dyk)
-  %  created at 2007/03/29 by Bas Kooijman; modified 2009/09/29
+  %  created at 2007/03/29 by Bas Kooijman; modified 2009/09/29, modified 2022/02/11
   
   %% Syntax
   % [y, dy, index] <../spline1.m *spline1*>(x, knots, Dy1, Dyk)
@@ -19,9 +19,9 @@ function [y, dy, index] = spline1(x, knots, Dy1, Dyk)
   % * knots: (nk,2)-matrix with coordinates of knots; we must have nk > 3; 
   %         knots(:,1) must be ascending
   % * Dy1: scalar with first derivative at first knot (optional); 
-  %       empty means: zero
+  %       absent means: zero; empty means derivative as for first knot
   % * Dyk: scalar with first derivative at last knot (optional); 
-  %       empty means: zero
+  %       absent means: zero; empty means derivative as for last knot
   %
   % Ouput:
   %
@@ -46,6 +46,12 @@ function [y, dy, index] = spline1(x, knots, Dy1, Dyk)
   end
   if exist('Dyk','var') == 0 % make sure that right clamp is specified
     Dyk = 0; 
+  end
+  if isempty(Dy1)
+    Dy1 = (knots(2,2) - knots(1,2))/(knots(2,1) - knots(1,1));
+  end
+  if isempty(Dyk)
+    Dyk = (knots(nk,2) - knots(nk-1,2))/(knots(nk,1) - knots(nk-1,1));
   end
 
   % derivatives right of knot-abcissa

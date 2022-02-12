@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>maturity_hax</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-31"><meta name="DC.source" content="maturity_hax.m"><style type="text/css">
+      --><title>maturity_hax</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-10"><meta name="DC.source" content="maturity_hax.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,23 +67,23 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>maturity_hax</h1><!--introduction--><p>Gets maturity as function of length for model hax</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, info] = <a href="../maturity_hax.m"><b>maturity_hax</b></a> (L, f, p, lb, lj, le)</p><h2 id="4">Description</h2><p>Life history events b (birth), p (puberty), j (pupation), e (emergence) Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of  acceleration between b and p, pupa between j and e, (non-growing) imago after e, with UHb &lt; UHj. No further maturation after p, and a re-set of maturity at j, so Hp = Hj. Lengths must be ordered in time (so a single stepdown from L_j to 0 at j. Lengths are in the pupal stage if an earlier length was larger. So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase),  but the last 3 in [.3 .2 .3 .8] are in the pupal stage, because they follow a larger length.</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapV g kJ kM v UHb UHp UHe</li><li>lb: scaled length at birth at f</li><li>lj: scaled length at pupation at f</li><li>le: scaled length at emergence at f</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}</li></ul></div><h2 id="5">Remarks</h2><p>Maturity in the larval stage (between birth and pupation) stays at birth level. Maturity and structure are reset to zero at pupation and freeze are emergence of the imago. See <a href="maturity.html"><b>maturity</b></a> in absence of acceleration and <a href="maturity_j.html"><b>maturity_j</b></a> with accleration, <a href="maturity_s.html"><b>maturity_s</b></a> if accleration is delayed. Called from scaled_power_hex.</p><h2 id="6">Example of use</h2><p>[H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>maturity_hax</h1><!--introduction--><p>Gets maturity as function of length for model hax</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, info] = <a href="../maturity_hax.m"><b>maturity_hax</b></a> (L, f, p, lb, lp, lj, le, tj)</p><h2 id="4">Description</h2><p>Life history events b (birth), p (puberty), j (pupation), e (emergence) Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of  acceleration between b and p, pupa between j and e, (non-growing) imago after e, with UHb &lt; UHj. No further maturation after p, so Hp = Hj, and a re-set of maturity at j. Maturity of pupa increases from 0 to He. Lengths must be ordered in time (so a single stepdown from L_j to 0 at j. Lengths are in the pupal stage if an earlier length was larger. So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase),  but the last 3 in [.3 .2 .3 .8] are in the pupal stage, because they follow a larger length.</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapV g kJ kM v UHb UHp UHe</li><li>lb: scaled length at birth at f</li><li>lp: scaled length at pupation at f</li><li>lj: scaled length at metm at f</li><li>le: scaled length at emergence at f</li><li>tj: scaled age at metam at f</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}</li></ul></div><h2 id="5">Remarks</h2><p>Maturity in the larval stage (between puberty and pupation) stays at birth level. Maturity and structure are reset to zero at pupation and freeze at emergence of the imago. See <a href="maturity.html"><b>maturity</b></a> in absence of acceleration and <a href="maturity_j.html"><b>maturity_j</b></a> with accleration, <a href="maturity_s.html"><b>maturity_s</b></a> if accleration is delayed. Called from scaled_power_hax.</p><h2 id="6">Example of use</h2><p>[H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% maturity_hax
 % Gets maturity as function of length for model hax
 
 %%
-function H = maturity_hax(L, f, p, lb, lp,  lj, le, tj)
+function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   %  created 2022/01/31 by Bas Kooijman
   
   %% Syntax
-  % [H, info] = <../maturity_hax.m *maturity_hax*> (L, f, p, lb, lj, le)
+  % [H, info] = <../maturity_hax.m *maturity_hax*> (L, f, p, lb, lp, lj, le, tj)
   
   %% Description
   % Life history events b (birth), p (puberty), j (pupation), e (emergence)
   % Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of 
   %  acceleration between b and p, pupa between j and e, (non-growing) imago after e, with UHb < UHj.
-  % No further maturation after p, and a re-set of maturity at j, so Hp = Hj.
+  % No further maturation after p, so Hp = Hj, and a re-set of maturity at j. Maturity of pupa increases from 0 to He. 
   % Lengths must be ordered in time (so a single stepdown from L_j to 0 at j.
   % Lengths are in the pupal stage if an earlier length was larger. 
   % So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase), 
@@ -95,20 +95,22 @@ function H = maturity_hax(L, f, p, lb, lp,  lj, le, tj)
   % * f: scalar with (constant) scaled functional response
   % * p: 10-vector with parameters: kap kapV g kJ kM v UHb UHp UHe
   % * lb: scaled length at birth at f
-  % * lj: scaled length at pupation at f
+  % * lp: scaled length at pupation at f
+  % * lj: scaled length at metm at f
   % * le: scaled length at emergence at f
-  %
+  % * tj: scaled age at metam at f
+  % 
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}
   
   %% Remarks
-  % Maturity in the larval stage (between birth and pupation) stays at birth level.
-  % Maturity and structure are reset to zero at pupation and freeze are emergence of the imago.
+  % Maturity in the larval stage (between puberty and pupation) stays at birth level.
+  % Maturity and structure are reset to zero at pupation and freeze at emergence of the imago.
   % See <maturity.html *maturity*> in absence of acceleration and
   % <maturity_j.html *maturity_j*> with accleration,
   % <maturity_s.html *maturity_s*> if accleration is delayed.
-  % Called from scaled_power_hex.
+  % Called from scaled_power_hax.
 
   %% Example of use
   % [H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])
@@ -123,7 +125,6 @@ function H = maturity_hax(L, f, p, lb, lp,  lj, le, tj)
   Hb   = p(7);  % d cm^2, E_Hb/ {p_Am}, scaled maturity at birth
   Hp   = p(8);  % d cm^2, E_Hp/ {p_Am}, scaled maturity at puberty
   He   = p(9);  % d cm^2, E_He/ {p_Am}, scaled maturity at emergence
-  tj   = p(10); % -, scalar with scaled age at pupation for f
     
   if isempty(f)
     f = 1; % abundant food

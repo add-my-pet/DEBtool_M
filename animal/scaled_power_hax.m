@@ -2,11 +2,11 @@
 % Gets scaled powers as function of length in case of model hax
 
 %%
-function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
+function pACSJGRD = scaled_power_hax(L, f, p, lb, lp, lj, le, tj)
   % created 2022/01/31 by Bas Kooijman
   
   %% Syntax
-  % pACSJGRD = <..scaled_power_hax.m *scaled_power_hax*> (L, f, p, lb, lp, lj, le)
+  % pACSJGRD = <..scaled_power_hax.m *scaled_power_hax*> (L, f, p, lb, lp, lj, le, tj)
   
   %% Description
   % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length.
@@ -22,6 +22,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   % * lp: scalar with scaled length at puberty for f; if not existent: NaN
   % * lj: scalar with scaled length at pupation for f; if not existent: NaN
   % * le: scalar with scaled length at emergence for f; if not existent: NaN  
+  % * tj: scalar with scaled age at pupation for f
   %
   % Output
   %
@@ -49,7 +50,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   U_He = p(10);  % d cm^2, scaled maturity at emergence
 
   Lm = v/ kM/ g; k = kJ/ kM;
-  L = L(:); l = L/ Lm; lp = lb;
+  L = L(:); l = L/ Lm; 
 
   if isnan(lb) && isnan(lp) % adult stage cannot be reached
     assim = 0 * l;
@@ -60,9 +61,9 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
     kapR = kapR * (l > lp);
     sM = min(lp, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
-  
+
   pars_maturity_hax = [kap kapV g kJ kM v U_Hb U_Hp U_He]; 
-  H = maturity_hax(L, f, pars_maturity_hax, lb, lj, le);  % scaled maturities E_H/ {p_Am}
+  H = maturity_hax(L, f, pars_maturity_hax, lb, lp, lj, le, tj);  % scaled maturities E_H/ {p_Am}
   %uH = ones(length(L),1) .* H * g^2 * kM^3/ v^2;
   uH = H * g^2 * kM^3/ v^2;
 
@@ -70,7 +71,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   pA = assim * f .* sM .* l.^2;              % assim
   pC = l.^2 .* (g .* sM + l )/ (1 + g/ f);   % mobilisation
   pS = kap * l.^3;                           % somatic  maint
-  pJ = k * uH;                               % maturity maint
+  pJ = k * uH .* ones(length(pA),1);         % maturity maint
   pG = kap * pC - pS;                        % growth
   pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
   pD = pS + pJ + (1 - kapR) .* pR ;          % dissipation

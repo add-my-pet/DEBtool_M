@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>scaled_power_hax</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-31"><meta name="DC.source" content="scaled_power_hax.m"><style type="text/css">
+      --><title>scaled_power_hax</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-11"><meta name="DC.source" content="scaled_power_hax.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,17 +67,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>scaled_power_hax</h1><!--introduction--><p>Gets scaled powers as function of length in case of model hax</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>pACSJGRD = <a href="..scaled_power_hax.m"><b>scaled_power_hax</b></a> (L, f, p, lb, lp, lj, le)</p><h2 id="4">Description</h2><p>Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length. Length must monitonically increase till pupation (j), and again after pupation. Length at pupation must be present, if lengths of pupa and/or imago are included</p><p>Input</p><div><ul><li>L: n-vector with lengths</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapV kapR g kJ kM v UHb UHp UHe</li><li>lb: scalar with scaled length at birth for f; if not existent: NaN</li><li>lp: scalar with scaled length at puberty for f; if not existent: NaN</li><li>lj: scalar with scaled length at pupation for f; if not existent: NaN</li><li>le: scalar with scaled length at emergence for f; if not existent: NaN</li></ul></div><p>Output</p><div><ul><li>pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}</li></ul></div><h2 id="5">Remarks</h2><p>Similar to <a href="scaled_power.html"><b>scaled_power</b></a> The maturity value relates to the one for which f has been constant. Powers can become negative for shrinking of structure or maturity. See function <a href="scaled_power.html"><b>scaled_power</b></a> for model std.</p><h2 id="6">Example of use</h2><p>See <a href="../statistics_st.m"><b>statistics_st</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>scaled_power_hax</h1><!--introduction--><p>Gets scaled powers as function of length in case of model hax</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>pACSJGRD = <a href="..scaled_power_hax.m"><b>scaled_power_hax</b></a> (L, f, p, lb, lp, lj, le, tj)</p><h2 id="4">Description</h2><p>Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length. Length must monitonically increase till pupation (j), and again after pupation. Length at pupation must be present, if lengths of pupa and/or imago are included</p><p>Input</p><div><ul><li>L: n-vector with lengths</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapV kapR g kJ kM v UHb UHp UHe</li><li>lb: scalar with scaled length at birth for f; if not existent: NaN</li><li>lp: scalar with scaled length at puberty for f; if not existent: NaN</li><li>lj: scalar with scaled length at pupation for f; if not existent: NaN</li><li>le: scalar with scaled length at emergence for f; if not existent: NaN</li><li>tj: scalar with scaled age at pupation for f</li></ul></div><p>Output</p><div><ul><li>pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}</li></ul></div><h2 id="5">Remarks</h2><p>Similar to <a href="scaled_power.html"><b>scaled_power</b></a> The maturity value relates to the one for which f has been constant. Powers can become negative for shrinking of structure or maturity. See function <a href="scaled_power.html"><b>scaled_power</b></a> for model std.</p><h2 id="6">Example of use</h2><p>See <a href="../statistics_st.m"><b>statistics_st</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% scaled_power_hax
 % Gets scaled powers as function of length in case of model hax
 
 %%
-function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
+function pACSJGRD = scaled_power_hax(L, f, p, lb, lp, lj, le, tj)
   % created 2022/01/31 by Bas Kooijman
   
   %% Syntax
-  % pACSJGRD = <..scaled_power_hax.m *scaled_power_hax*> (L, f, p, lb, lp, lj, le)
+  % pACSJGRD = <..scaled_power_hax.m *scaled_power_hax*> (L, f, p, lb, lp, lj, le, tj)
   
   %% Description
   % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length.
@@ -93,6 +93,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   % * lp: scalar with scaled length at puberty for f; if not existent: NaN
   % * lj: scalar with scaled length at pupation for f; if not existent: NaN
   % * le: scalar with scaled length at emergence for f; if not existent: NaN  
+  % * tj: scalar with scaled age at pupation for f
   %
   % Output
   %
@@ -120,7 +121,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   U_He = p(10);  % d cm^2, scaled maturity at emergence
 
   Lm = v/ kM/ g; k = kJ/ kM;
-  L = L(:); l = L/ Lm; lp = lb;
+  L = L(:); l = L/ Lm; 
 
   if isnan(lb) && isnan(lp) % adult stage cannot be reached
     assim = 0 * l;
@@ -131,9 +132,9 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
     kapR = kapR * (l > lp);
     sM = min(lp, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
-  
+
   pars_maturity_hax = [kap kapV g kJ kM v U_Hb U_Hp U_He]; 
-  H = maturity_hax(L, f, pars_maturity_hax, lb, lj, le);  % scaled maturities E_H/ {p_Am}
+  H = maturity_hax(L, f, pars_maturity_hax, lb, lp, lj, le, tj);  % scaled maturities E_H/ {p_Am}
   %uH = ones(length(L),1) .* H * g^2 * kM^3/ v^2;
   uH = H * g^2 * kM^3/ v^2;
 
@@ -141,7 +142,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lj, lp, le)
   pA = assim * f .* sM .* l.^2;              % assim
   pC = l.^2 .* (g .* sM + l )/ (1 + g/ f);   % mobilisation
   pS = kap * l.^3;                           % somatic  maint
-  pJ = k * uH;                               % maturity maint
+  pJ = k * uH .* ones(length(pA),1);         % maturity maint
   pG = kap * pC - pS;                        % growth
   pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
   pD = pS + pJ + (1 - kapR) .* pR ;          % dissipation

@@ -32,21 +32,30 @@ function [N, f, le] = get_NW_hax(Ww, pars_tj, pars_aux)
   %% Example of use
   %  get_NW_hax([.5, .1, .01, .05, .2, 0.8, .95])
    
-   kap = pars_tj(7); vRj = pars_tj(5); kap_R = pars_aux(1); % unpack parameters
-   n = length(Ww); N = zeros(n,1); le = zeros(n,1); f = zeros(n,1); % initiate output
- 
-   for i = 1:n    
-     f(i) = fzero(@fnfW, 1, [], pars_tj, pars_aux, Ww(i)); % -, scaled functional response
-     [tj, tp, tb, lj(i), lp, lb, li, rj, rB, uEe] = get_tjj_hax(pars_tj, f(i));
-     N(i) = kap_R * (1 - kap) * vRj * lj(i)^3/ get_ue0(pars_tj, f(i)); % total # of eggs
+   kap = pars_tj(7); v_Rj = pars_tj(5); kap_R = pars_aux(1); % unpack parameters
+   g = pars_tj(1); E_m = pars_aux(2); L_m = pars_aux(3); w_E = pars_aux(4); mu_E = pars_aux(5); d_E = pars_aux(6);
+      
+   % first get Ww_j, N_j and l_i values for a range of f-values
+   f_knot = [0.05; (.1:.1:1.5)']; n_f = length(f_knot); 
+   lj_knot = zeros(n_f,1); N_knot = zeros(n_f,1); Wwj_knot = zeros(n_f,1);
+   for i=1:n_f
+     [tj, tp, tb, lj_knot(i), lp, lb, li, rj, rB, uEj] = get_tjj_hax(pars_tj, f_knot(i));
+     N_knot(i) = kap_R * (1 - kap) * v_Rj * lj_knot(i)^3/ get_ue0(pars_tj, f_knot(i)); % total # of eggs
+     Ww_Rj = v_Rj * (1 - kap) * g * E_m * (L_m * lj_knot(i))^3 * w_E/ mu_E/ d_E;    % g, wet weight reprod buffer at pupation
+     Wwj_knot(i) = (L_m * lj_knot(i))^3 + Ww_Rj + uEj * g * E_m * L_m^3 * w_E/ mu_E/ d_E; % g, wet weight including reprod buffer
    end
- 
+   
+   % now interpolate in splines
+   f  = spline1(Ww,[Wwj_knot, f_knot],[],[]); %f for Ww
+   N  = spline1(f,[f_knot, N_knot],[],[]); % N for f
+   le = spline1(f,[f_knot, lj_knot],[],[]); % le for f
+   
 end
 
 %% subfunction
 
 function [tj, tp, tb, lj, lp, lb, li, rj, rB, uEj] = get_tjj_hax(p, f)
-  % like get_tjj_hax, but without pupation stage
+  % like get_tj_hax, but without pupation stage
   
   % unpack pars
   g   = p(1); % energy investment ratio
@@ -54,11 +63,10 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, uEj] = get_tjj_hax(p, f)
   vHb = p(3); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am} start acceleration
   vHp = p(4); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am} end acceleration
   vRj = p(5); % (kap/(1 - kap)) [E_R^j]/ [E_G] scaled reprod buffer density at pupation
-
     
   % from zero till puberty
   pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
-  [tp, tpp, tb, lp, lpp, lb, li, rj, rB] = get_tj_hax(pars_tj, f);
+  [tp, tpp, tb, lp, lpp, lb, li, rj, rB] = get_tj(pars_tj, f);
   sM = lp/ lb; % -, acceleration factor
 
   % from puberty till pupation
@@ -79,17 +87,4 @@ function dtl = dget_tj_hax(vR, tl, f, sM, rB, li, g, k, vHp)
   dvR = (f * g * sM/ l + f)/ (g + f) - k * vHp/ l^3 - 3 * rB * vR * (f * sM/ l - 1);
 
   dtl = [1; dl]/ dvR; % pack output
-end
-
-function F = fnfW(f, pars_tj, pars_aux, Ww) 
-  % called from get_NW_hax via fzero: F = 0 for f such that Ww_j = Ww 
-  
-  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, u_Ej] = get_tjj_hax(pars_tj, f);
-  g = pars_tj(1); v_Rj = pars_tj(5); kap = pars_tj(7); % pars_tj: g, k, v_Hb, v_Hp, v_Rj, v_He, kap, kapV
-  E_m = pars_aux(2); L_m = pars_aux(3); w_E = pars_aux(4); mu_E = pars_aux(5); d_E = pars_aux(6);
-  
-  Ww_Rj = v_Rj * (1 - kap) * g * E_m * (L_m * l_j)^3 * w_E/ mu_E/ d_E;    % g, wet weight reprod buffer at pupation
-  Ww_j = (L_m * l_j)^3 + Ww_Rj + u_Ej * g * E_m * L_m^3 * w_E/ mu_E/ d_E; % g, wet weight including reprod buffer
-
-  F = Ww_j - Ww; % loss function
 end

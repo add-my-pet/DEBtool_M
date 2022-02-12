@@ -9,7 +9,7 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   % [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = <../get_tj_hax.m *get_tj_hax*> (p, f)
   
   %% Description
-  % Obtains scaled ages at pupation, emerence, puberty, birth and the scaled lengths at these ages for hax model of e.g. Chaoborus;
+  % Obtains scaled ages at pupation, emergence, puberty, birth and the scaled lengths at these ages for hax model of e.g. Chaoborus;
   % The hax model is the same as the hep model, but has a pupa stage like the hex model.
   % Food density is assumed to be constant.
   % Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. 

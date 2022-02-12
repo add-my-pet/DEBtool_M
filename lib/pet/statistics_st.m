@@ -918,7 +918,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_j], f, pars_power, l_b, l_p, l_j);
     case 'hax' % ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_Hp; U_He]; 
-      p_ACSJGRD = p_ref * scaled_power_hax([L_b + 1e-6; L_p; L_j], f, pars_power, l_b, l_p, l_j);
+      p_ACSJGRD = p_ref * scaled_power_hax([L_b; L_p; L_j], f, pars_power, l_b, l_p, l_j, l_e, t_j);
     case 'hex' % birth and puberty coincide; ultimate is here mapped to pupation
       pars_power = [kap; kap_V; kap_R; g; k_J; k_M; v; U_Hb; U_He]; 
       p_ACSJGRD = p_ref * scaled_power_hex([L_b; L_b + 1e-6; L_j], f, pars_power, l_b, l_j, l_e, t_j);

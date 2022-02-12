@@ -61,7 +61,7 @@ function [coreParFields, info] = get_parfields(model, addchem)
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_Rj', 'h_a', 's_G'};
 
   case 'hax'
-    coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_He', 'E_Rj', 'h_a', 's_G'};
+    coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 'E_Hp', 'E_He', 'E_Rj', 'h_a', 's_G'};
 
   case 'hex'
     coreParFields =  {'T_A', 'z', 'F_m', 'kap_X', 'kap_P', 'v', 'kap', 'kap_R', 'kap_V', 'p_M', 'p_T', 'k_J', 'E_G', 'E_Hb', 's_j', 'E_He', 'h_a', 's_G'};
