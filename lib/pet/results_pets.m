@@ -191,7 +191,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nms{jj}) && auxData.(pets{i}).treat.(nms{jj}){1} == 0
                     plot(xPred, yPred, 'o', 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'Markersize',3)
                   else
-                    plot(xPred, yPred, 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'linewidth', 2)
+                    plot(xPred, yPred, 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'linewidth',2)
                   end
                   plot(xData, yData, '.', 'Color',plotColours{mod(jj, maxGroupColourSize)}, 'Markersize',15)
                   if length(txtData.(pets{i}).label.(nms{jj})) == 3
@@ -242,7 +242,11 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               if isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && auxData.(pets{i}).treat.(nm{j}){1} == 0
                 plot(xPred,yPred, 'ob', 'Markersize',3)
               else 
-                plot(xPred,yPred, 'b', 'linewidth',2)
+                try
+                  plot(xPred,yPred, 'b', 'linewidth',2)
+                catch
+                  keyboard;
+                end
               end
               plot(xData,yData, '.r', 'Markersize',15)
               if length(fieldsInCells{1}) == 1
@@ -269,8 +273,6 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 return
               end
               aux =  auxData.(pets{i});
-              figure; counter_fig = counter_fig + 1; 
-              nFig = [txt0(counter_fig < 10), num2str(counter_fig)]; 
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               hold on;
               %
@@ -344,6 +346,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 end
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
                 try
                   title(txtData.(pets{i}).title.(nm{j}));
                 catch
