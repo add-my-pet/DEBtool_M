@@ -5,7 +5,7 @@
 function check_my_pet(speciesnms)
   % created 2015/05/05 by Goncalo Marques; 
   % modified Goncalo Marques 2015/05/12, 2015/06/05, 2015/07/02, 2015/07/08, 2015/07/22 
-  % modified Bas Kooijman 2015/07/31, Goncalo Marques 2015/07/31, Bas Kooijman 2018/08/26
+  % modified Bas Kooijman 2015/07/31, Goncalo Marques 2015/07/31, Bas Kooijman 2018/08/26, 2022/02/16
   
   %% Syntax 
   % <../check_my_pet.m *check_my_pet*> (speciesnm)
@@ -265,7 +265,7 @@ if sum(strcmp(txtDataFields, 'units'))
         end
       end
       unitsChecked = unitsChecked + strcmp(auxDataTypes(i), unitsFields); 
-    else
+    elseif ~strcmp(auxDataTypes{i},'treat')
       fprintf(['In mydata_',speciesnm,'.m: There are no units defined for auxData type ', auxDataTypes{i},'. \n']);
     end
   end
@@ -337,7 +337,7 @@ if sum(strcmp(txtDataFields, 'label'))
         end
       end
       labelChecked = labelChecked + strcmp(auxDataTypes(i), labelFields); 
-    else
+    elseif ~strcmp(auxDataTypes{i},'treat')
       fprintf(['In mydata_',speciesnm,'.m: There are no labels defined for auxData type ', auxDataTypes{i},'. \n']);
     end
   end
