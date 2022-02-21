@@ -1,7 +1,7 @@
 %% popStatistics_st
 % Computes implied population properties of DEB models
 
-function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F) 
+function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F) 
 % created 2019/07/08 by Bas Kooijman, modified 2020/02/21
 
 %% Syntax
@@ -59,13 +59,15 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
 %     - R: mean reproduction rate of adults
 %     - J_X: mean ingestion rate of wet food by post-natals
 %
-% * txtStat: structure with labels and units
+% * Hfig_surv: figure handle for survivor probabilities
+% * Hfig_stab: figure handle for atable age distributions
 
 %% Remarks
 % Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked!
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
 % The background hazards, if specified in par, are assumed to correspond with T_typical, not with T_ref
+% The labels and units are avilable in the (static) structures AmPdata/allUnits.mat and allLabel.mat
 %
 % For required model-specific fields, see <get_parfields.html *get_parfields*>.
 
@@ -287,13 +289,6 @@ function [stat, txtStat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T,
     stat = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
   end
   
-  % add statistics to output structure
-  txtStat.units.f   = '-';   txtStat.label.f   = 'scaled functional response';
-  txtStat.units.r   = '1/d'; txtStat.label.r   = 'spec pop growth rate';
-  txtStat.units.t2  = 'd';   txtStat.label.t2  = 'population doubling time';
-  txtStat.units.T   = 'C';   txtStat.label.T = 'body temperature'; 
-  txtStat.units.c_T = '-';   txtStat.label.c_T = 'temperature correction factor'; 
-
   % graphics
  
   Hfig_surv = figure(1); % survivor prob
