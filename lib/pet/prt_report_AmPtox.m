@@ -69,6 +69,7 @@ function prt_report_AmPtox(title)
 
     fprintf(oid, '    p.clear {\n');
     fprintf(oid, '      clear: both;\n');
+    fprintf(oid, '      padding-top: 15px;\n');
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    div.footer{\n');
@@ -274,7 +275,7 @@ function prt_report_AmPtox(title)
     
     % Discussion
     if isfield(metaData, 'discussion')
-      fprintf(oid, '  <h3 style="clear:both" class="pet">Discussion</h3>\n');
+      fprintf(oid, '  <h3 class="pet">Discussion</h3>\n');
       fprintf(oid, '  <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.discussion);
       for i = 1:nst
@@ -293,7 +294,7 @@ function prt_report_AmPtox(title)
     
     % Facts:
     if isfield(metaData, 'facts') 
-      fprintf(oid, '      <h3 style="clear:both" class="pet">Facts</h3>\n');
+      fprintf(oid, '      <h3>Facts</h3>\n');
       fprintf(oid, '      <ul> \n');     % open the unordered list
       [nm, nst] = fieldnmnst_st(metaData.facts);
       for i = 1:nst
@@ -321,7 +322,7 @@ function prt_report_AmPtox(title)
 
     % Acknowledgment:
     if isfield(metaData, 'acknowledgment') == 1
-      fprintf(oid, '  <h3 style="clear:both" class="pet">Acknowledgment</h3>\n');
+      fprintf(oid, '  <h3>Acknowledgment</h3>\n');
       fprintf(oid, '    <ul> \n');     % open the unordered list
     
       fprintf(oid, '      <li>\n');    % open bullet point
