@@ -208,7 +208,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               try
                 title(metaData.(pets{i}).grp.title{ii}); 
               catch
-                title(metaData.(pets{i}).grp.comment{ii}); 
+                title(''); 
               end
               if abs(results_output) >= 3
                 plotNm = ['results_', pets{i}, '_', nFig];
@@ -260,7 +260,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               try
                 title(aux.title.(fieldsInCells{1}{end}));
               catch
-                title(aux.bibkey.(fieldsInCells{1}{end}));
+                title('');
               end
               if abs(results_output) >= 3 
                 plotNm = ['results_', pets{i}, '_', nFig, '.png'];
@@ -307,9 +307,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 try
                   title(txtData.(pets{i}).title.(nm{j}));
                 catch
-                  if isfield(txtData.(pets{i}).comment, nm{j})
-                    title(txtData.(pets{i}).comment.(nm{j}));
-                  end
+                  title('')
                 end
                 plotNm = ['results_', pets{i}, '_', nFig];
                 LEGEND.([plotNm,'_legend']) = legend; 
@@ -350,9 +348,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 try
                   title(txtData.(pets{i}).title.(nm{j}));
                 catch
-                  if isfield(txtData.(pets{i}).comment, nm{j})
-                    title(txtData.(pets{i}).comment.(nm{j}));
-                  end
+                  title('');
                 end
                 plotNm = ['results_', pets{i}, '_', nFig];
                 LEGEND.([plotNm,'_legend']) = legend; 
@@ -393,9 +389,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 try
                   title(txtData.(pets{i}).title.(nm{j}));
                 catch
-                  if isfield(txtData.(pets{i}).comment, nm{j})
-                    title(txtData.(pets{i}).comment.(nm{j}));
-                  end
+                  title('');
                 end
                 view([-5,-10,-5]);
                 ax = gca;
