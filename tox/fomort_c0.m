@@ -25,8 +25,10 @@ function f = fomort_c0(p, t, c)
   nC = 5000; fac = exp(5 * sc); C0 = linspace(c0 / fac, c0 * fac, nC);
   dC = C0(2) - C0(1); % step in NEC
   C1 = ones(1, nC);
+  
   %% pdf of NEC
   fC0 = exp(- (log(C0/ c0)) .^2 ./ (2 * sc^2)) ./ (sqrt(2 * pi) * sc * C0);
+  
   %% initiate output
   nt = length(t); nc = length(c); f = zeros(nt,nc);
   for i = 1:nt   % scan times

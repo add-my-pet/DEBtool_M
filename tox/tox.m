@@ -1,5 +1,5 @@
 function tox
-  %  created 2002/02/05 by Bsa Kooijman
+  %  created 2002/02/05 by Bas Kooijman
   %  demo that runs script-files to illustrate the
   %    use of toxicity functions; See the script files for explanation
   
