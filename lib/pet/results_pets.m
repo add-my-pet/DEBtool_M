@@ -206,7 +206,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               xlabel([txtData.(pets{i}).label.(nms{1}){1}, ', ', txtData.(pets{i}).units.(nms{1}){1}]);
               ylabel([txtData.(pets{i}).label.(nms{1}){2}, ', ', txtData.(pets{i}).units.(nms{1}){2}]);
               try
-                title(metaData.(pets{i}).grp.title{ii}); 
+                title(['\it',metaData.(pets{i}).grp.title{ii}], 'FontSize',15, 'FontWeight','normal'); 
               catch
                 title(''); 
               end
@@ -258,7 +258,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               ylabel([aux.label.(fieldsInCells{1}{end}){2}, ', ', aux.units.(fieldsInCells{1}{end}){2}]);
               dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
               try
-                title(aux.title.(fieldsInCells{1}{end}));
+                title(['\it',aux.title.(fieldsInCells{1}{end})], 'FontSize',15, 'FontWeight','normal');
               catch
                 title('');
               end
@@ -305,7 +305,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
                 dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
                 try
-                  title(txtData.(pets{i}).title.(nm{j}));
+                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
                 catch
                   title('')
                 end
@@ -346,7 +346,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
                 dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
                 try
-                  title(txtData.(pets{i}).title.(nm{j}));
+                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
                 catch
                   title('');
                 end
@@ -387,7 +387,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
                 dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                 try
-                  title(txtData.(pets{i}).title.(nm{j}));
+                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
                 catch
                   title('');
                 end
