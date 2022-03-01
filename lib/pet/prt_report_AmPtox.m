@@ -101,7 +101,7 @@ function prt_report_AmPtox(title)
     fprintf(oid, '      display: none; /* Hidden by default */\n');
     fprintf(oid, '      position: fixed; /* Stay in place */\n');
     fprintf(oid, '      z-index: 1; /* Sit on top */\n');
-    fprintf(oid, '      padding-top: 100px; /* Location of the box */\n');
+    fprintf(oid, '      padding-top: 20px; /* Location of the box */\n');
     fprintf(oid, '      left: 0;\n');
     fprintf(oid, '      top: 0;\n');
     fprintf(oid, '      width: 100%%; /* Full width */\n');
@@ -109,6 +109,7 @@ function prt_report_AmPtox(title)
     fprintf(oid, '      overflow: auto; /* Enable scroll if needed */\n');
     fprintf(oid, '      background-color: rgb(0,0,0); /* Fallback color */\n');
     fprintf(oid, '      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */\n');
+    fprintf(oid, '      font-size: 30px;\n');
     fprintf(oid, '    }\n\n');
 
     fprintf(oid, '    /* Modal Content (Image) */\n');
@@ -218,7 +219,7 @@ function prt_report_AmPtox(title)
         end
         if ~isempty(txt); txt = ['Ref: ', txt]; end % txt with references for data
       end
-      fprintf(oid, '    <img class="myImg" src=%s alt="%s">\n',png{i},txt);
+      fprintf(oid, '    <img class="myImg" src=%s alt="<i>%s</i>">\n',png{i},txt);
     end
     fprintf(oid, '    \n');
    
