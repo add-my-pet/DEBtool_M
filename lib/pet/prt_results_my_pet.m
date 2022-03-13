@@ -24,7 +24,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
 %
 % Output:
 %
-% * no Malab output, text is written to html
+% * no Matlab output, text is written to html
 
 %% Remarks
 % Function prt_results2screen writes to screen; subfunction of results_pets.
@@ -123,10 +123,14 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
         else
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
-        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) % bivar
+        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{1}).label.(fieldsInCells{1}{1}))<3 % bivar
           str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
               '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
           fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.treat.(fieldsInCells{1}{1}), aux.label.(fieldsInCells{1}{end}){2});
+        elseif isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{1}).label.(fieldsInCells{1}{1}))==3 % trivar
+          str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
+              '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{1}){2}, aux.label.(fieldsInCells{1}{end}){3});
         else % univar
           str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s <font color="blue"><i>vs.</i></font> %s</TD>\n';
           fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});

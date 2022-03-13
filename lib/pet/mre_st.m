@@ -48,18 +48,21 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
   for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
-    [n, k] = size(var);
-    if k > 1 % uni- or bi-variate data set
+    [r, k, npage] = size(var);
+    if npage==1 && k>1 % uni- or bivariate data set
       var(:,1) = []; % remove independent variable
     end
     prdVar = getfield(prdData, fieldsInCells{1}{:});
     w      = getfield(weights, fieldsInCells{1}{:});
-    sel = ~isnan(var); diff = zeros(n,max(1,k-1)); meanval = diff; 
-    if k > 1
+    sel = ~isnan(var); diff = zeros(r,max(1,k-1)); meanval = diff; 
+    if npage==1 && k > 1
       for j = 1:k-1
         meanval(:,j) = ones(n,1) * abs(mean(var(sel(:,j),j)));
         diff(sel(:,j),j) = abs(prdVar(sel(:,j),j) - var(sel(:,j),j));
       end
+    elseif npage>1
+      meanval = mean(var,3); meanval = meanval(:,:,ones(npage,1));
+      diff = abs(prdVar - var);
     else
       meanval = abs(var); diff = abs(prdVar - var);
     end
@@ -68,8 +71,10 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
     
     if all(meanval > 0)
       
-      if wsum(i) ~= 0
+      if wsum(i) ~= 0 && npage==1
         rerr(i,1) = w(sel)' * (diff(sel) ./ meanval(sel))/ wsum(i);
+      elseif npage>1
+        er= w .* diff ./ meanval; rerr(i,1) = sum(er(sel))/ wsum(i);
       else
         rerr(i,1) = sum(sum(diff ./ meanval, 1));
       end

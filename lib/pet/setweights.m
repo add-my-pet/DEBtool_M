@@ -30,12 +30,14 @@ function weight = setweights(data, weight)
 nm = fieldnames(data); % vector of cells with names of data sets
 
 for i = 1:numel(nm)
-  [N, nvar] = size(data.(nm{i}));
+  [N, nvar, npage] = size(data.(nm{i}));
   if ~isfield(weight, nm{i}) 
     if nvar == 1 % zero-variate data
       weight.(nm{i}) = 1; 
-    else % uni- or bi-variate data
+    elseif npage==1 % uni- or bi-variate data
       weight.(nm{i}) = ones(N, nvar-1)/ N/ (nvar-1);
+    else % tri-variate data
+      weight.(nm{i}) = ones(N, nvar, npage)/ N/ nvar/ npage;
     end
   end
 end

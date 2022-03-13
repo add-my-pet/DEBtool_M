@@ -267,13 +267,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            else % bi-variate data
-              if ~isfield(auxData.(pets{i}), 'treat') || ~isfield(auxData.(pets{i}).treat,nm{j}) || ~k == 1+length(auxData.(pets{i}).treat.(nm{j}){2}) % number of values to 2nd variable needs to match nuber of columns
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && length(auxData.(pets{i}).treat.(nm{j}){2})<3 % bi-variate data
+              aux =  auxData.(pets{i});
+              treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
+              if ~isfield(treat,nm{j}) || ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                 fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
                 return
               end
-              aux =  auxData.(pets{i});
-              treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               hold on;
               %
               if treat{1} == 0 % do not interpolate 1st and 2nd independent var and plot markers
@@ -362,12 +362,13 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
                 nX = length(xData); % number of values for 1st independent var
                 zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
-                plotColours = {[1 0 0], [0 0 1]}; % red, blue, light & dark magenta
+                plotColours = {[1 0 0], [0 0 1]}; % red, blue
                 n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
                 auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
                 prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
                 prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
                 %
+                dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                 if treat{1} == 2 % plot mesh
                   plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
                   plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
@@ -382,10 +383,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     plot3(xData(jj), yData(ii), zData(jj,ii), '.', 'Color',plotColours{1}, 'Markersize',15)
                   end
                 end
+                % insert clock
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ylabel([txtData.(pets{i}).label.treat.(nm{j}), ', ', txtData.(pets{i}).units.treat.(nm{j})]);
                 zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
                 try
                   title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
                 catch
@@ -399,6 +400,93 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   plotNm = ['results_', pets{i}, '_', nFig, '.png'];
                   print(plotNm, '-dpng');
                 end
+              end
+              
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat,nm{j}) % tri-variate data, assuming that threat.(nm{j}){1} = 2 or 3 (interpolation in 3 vars)
+              treat = auxData.(pets{i}).treat.(nm{j}); %treat2 = treat{2};
+              if length(treat)<2 || length(treat{2})<3
+                fprintf('Warning from results_pets: tri-variate data %s is found, but specs "auxData.treat.%s{2}" do not match the dependent variable\n', nm{j});
+                return
+              else            
+                dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
+                zData = data.(pets{i}).(nm{j}); n = size(zData); % should have dimensions (n_x, n_y, n_t)
+                xData = treat{2}{1}; n_x = length(xData); % rows
+                yData = treat{2}{2}; n_y = length(yData); % columns
+                tData = treat{2}{3}; n_t = length(tData); % page
+                x_min = xData(1); x_max = xData(end); x_range = x_max - x_min;
+                y_min = yData(1); y_max = yData(end); y_range = y_max - y_min;
+                z_min = min(zData(:)); z_max = max(zData(:)); z_range = z_max - z_min;
+                t_min = tData(1); t_max = tData(end); t_range = t_max - t_min;
+                if ~(treat{1}==2 || treat{1}==3) && ~n(1)==n_x  && ~n(2)==n_y && ~n(3)==n_t
+                fprintf('Warning from results_pets: tri-variate data %s is found, but specs "auxData.treat.%s" do not match the dependent variable\n', nm{j});
+                  return
+                end
+                %
+                zData_int = zeros(n_t,n_x*n_y+1); % reshape for interpolation
+                for ii=1:n_t; xy = zData(:,:,ii); zData_int(ii,:) = [tData(ii), xy(:)']; end
+                %
+                nmDir = ['results_', pets{i},'_',nFig]; mkdir(nmDir);
+                n_t = 100; t = linspace(tData(1), t_max, n_t); % times to plot in movie
+                for k = 1:n_t % scan time points
+                  zData_k = reshape(spline1(t(k),zData_int),n_x,n_y); % interpolated data at time t(k)
+                  data.(pets{i}).(nm{j})= zData_k; % overwrite data with tri-variate set with npage=1
+                  treat{2}{3} = t(k); auxData.(pets{i}).treat.(nm{j}) = treat; % update specs
+                  zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
+                  plotColours = {[1 0 0], [0 0 1]}; % red, blue
+                  n_X = 100; xAxis = linspace(min(treat{2}{1})+1e-8, max(treat{2}{1}), n_X)'; 
+                  auxData.(pets{i}).treat.(nm{j}){2}{1} = xAxis; 
+                  prdData_x = predict_pets(par, data, auxData); % data prediction with xAxis
+                  auxData.(pets{i}).treat.(nm{j}){2}{1} = xData; % reset spec 
+                  n_Y = 100; yAxis = linspace(min(treat{2}{2})+1e-8, max(treat{2}{2}), n_Y)'; 
+                  auxData.(pets{i}).treat.(nm{j}){2}{2} = yAxis; 
+                  prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
+                  prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
+                  %
+                  hfig = figure; hold on
+                  clock_frac(t(k)/t_max, [.9 .1 .9].*[x_max y_max z_max], .1*[x_range 0 z_range]); % add clock to plot
+                  if treat{1}==2 % plot mesh
+                    plot3(xAxis(:,ones(1,n_y)), ones(n_X,1)*yData', prdX, 'Color',plotColours{2}) 
+                    plot3(ones(n_Y,1)*xData' , yAxis(:,ones(1,n_x)), prdY', 'Color',plotColours{2})
+                  else % treat{1} == 3 % plot surface; condition n_x = n_y must apply
+                    x = [xAxis(:,ones(1,n_y)),ones(n_Y,1)*xData']; 
+                    y = [ones(n_X,1)*yData', yAxis(:,ones(1,n_x))]; z = [prdX, prdY'];
+                    surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
+                  end
+                  % plot connections of points to mesh & points
+                  for ii = 1:n_y  % scan y-values
+                    for jj = 1:n_x % scan x-values
+                      plot3([xData(jj);xData(jj)], [yData(ii);yData(ii)], [zPred(jj,ii);zData_k(jj,ii)], 'Color', plotColours{1+(zData_k(jj,ii)<zPred(jj,ii))})
+                      plot3(xData(jj), yData(ii), zData_k(jj,ii), '.', 'Color',plotColours{1}, 'Markersize',15)
+                    end
+                  end
+                  xlim([x_min, x_max]); ylim([y_min, y_max]); zlim([z_min, z_max]);
+                  xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                  ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  zlabel([txtData.(pets{i}).label.(nm{j}){3}, ', ', txtData.(pets{i}).units.(nm{j}){3}]);
+                  try
+                    title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
+                  catch
+                    title('');
+                  end
+                  view([-5,-10,-5]);
+                  ax = gca;
+                  ax.BoxStyle = 'full';
+                  box on
+                  if abs(results_output) >= 3
+                    frame = ['000', num2str(k)]; frame = frame(end-2:end);
+                    plotNm = ['frame', frame, '.png'];
+                    print([nmDir,'/',plotNm], '-dpng');
+                  end
+                  close(hfig)
+                end
+                WD = pwd; cd(nmDir); 
+                if ismac || isunix
+                  system(['apngasm64 ../',nmDir,'.png frame*.png']);
+                else
+                  system(['powershell apngasm64 ../',nmDir,'.png frame*.png']);
+                end
+                cd(WD);
+%                 delete(nmDir)
               end
             end 
           end

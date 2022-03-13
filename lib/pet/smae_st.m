@@ -46,12 +46,11 @@ function [merr, err, prdInfo] = smae_st(func, par, data, auxData, weights)
   for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     var = getfield(data, fieldsInCells{1}{:}); 
-    k= size(var,2);
-    if k > 1 % uni- or bi-variate data set
+    prdVar = getfield(prdData, fieldsInCells{1}{:});
+    w = getfield(weights, fieldsInCells{1}{:});
+    if length(size(var))==2 && size(var,2)>1 % uni- or bi-variate data set
       var(:,1) = []; % remove dependent variable
     end
-    prdVar = getfield(prdData, fieldsInCells{1}{:});
-    w      = getfield(weights, fieldsInCells{1}{:});
     sel = ~isnan(var); 
     diff = abs(prdVar - var); meanval  = (abs(prdVar) + abs(var))/ 2; 
     wsum(i) = sum(w(sel)); 

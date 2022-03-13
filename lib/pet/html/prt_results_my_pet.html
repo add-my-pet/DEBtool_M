@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_results_my_pet</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-21"><meta name="DC.source" content="prt_results_my_pet.m"><style type="text/css">
+      --><title>prt_results_my_pet</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-03-12"><meta name="DC.source" content="prt_results_my_pet.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_results_my_pet</h1><!--introduction--><p>writes results of estimation to my_pet_res.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_results_my_pet.m"><b>prt_results_my_pet</b></a> (parPets, metaPar, txtPar, data, metaData, txtData, prdData)</p><h2 id="4">Description</h2><p>Writes results of an estimation to my_pet_res.html for each pet, as specified by pets. Input is the same as for results_pets, but inputs auxData and  weights are not required in this function</p><p>Input:</p><div><ul><li>parPets: cell string of parameters for each pet</li><li>metaPar: structure with information on metaparameters</li><li>txtPar: structure with information on parameters</li><li>data: structure with data for species</li><li>metaData: structure with information on the entry</li><li>txtData: structure with information on the data</li><li>prdData: structure with predictions for the data</li></ul></div><p>Output:</p><div><ul><li>no Malab output, text is written to screen</li></ul></div><h2 id="5">Remarks</h2><p>Function prt_results2screen writes to screen; subfunction of results_pets.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_results_my_pet</h1><!--introduction--><p>writes results of estimation to my_pet_res.html</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_results_my_pet.m"><b>prt_results_my_pet</b></a> (parPets, metaPar, txtPar, data, metaData, txtData, prdData)</p><h2 id="4">Description</h2><p>Writes results of an estimation to my_pet_res.html for each pet, as specified by pets. Input is the same as for results_pets, but inputs auxData and  weights are not required in this function</p><p>Input:</p><div><ul><li>parPets: cell string of parameters for each pet</li><li>metaPar: structure with information on parameters</li><li>txtPar: structure with text for parameters</li><li>data: structure with data for species</li><li>metaData: structure with information on the data</li><li>txtData: structure with text for the data</li><li>prdData: structure with predictions for the data</li></ul></div><p>Output:</p><div><ul><li>no Matlab output, text is written to html</li></ul></div><h2 id="5">Remarks</h2><p>Function prt_results2screen writes to screen; subfunction of results_pets.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_results_my_pet
 % writes results of estimation to my_pet_res.html
@@ -86,21 +86,21 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
 % Input:
 %
 % * parPets: cell string of parameters for each pet
-% * metaPar: structure with information on metaparameters
-% * txtPar: structure with information on parameters
+% * metaPar: structure with information on parameters
+% * txtPar: structure with text for parameters
 % * data: structure with data for species
-% * metaData: structure with information on the entry
-% * txtData: structure with information on the data
+% * metaData: structure with information on the data
+% * txtData: structure with text for the data
 % * prdData: structure with predictions for the data
 %
 % Output:
 %
-% * no Malab output, text is written to screen
+% * no Matlab output, text is written to html
 
 %% Remarks
 % Function prt_results2screen writes to screen; subfunction of results_pets.
 
-  global pets
+  global pets 
   
   n_pets = length(pets);
     
@@ -149,7 +149,7 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     fprintf(oid, '<BODY>\n\n');
 
     fprintf(oid, '  <div class="prd">\n');
-    fprintf(oid,['  <h1>', strrep(pets{i}, '_', ' '), '</h1>\n']);
+    fprintf(oid, '  <h1>%s</h1>\n', strrep(pets{i}, '_', ' '));
     fprintf(oid, '  </div>\n\n');
 
     if ~isfield(metaData.(pets{i}), 'COMPLETE')
@@ -194,8 +194,14 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
         else
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
-        str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s, <font color="blue"><i>vs.</i></font> %s</TD>\n';
-        fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
+        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) % bivar
+          str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
+              '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.treat.(fieldsInCells{1}{1}), aux.label.(fieldsInCells{1}{end}){2});
+        else % univar
+          str = '    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s <font color="blue"><i>vs.</i></font> %s</TD>\n';
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
+        end
       end
     end
   
