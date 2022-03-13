@@ -166,7 +166,7 @@ function prt_report_AmPtox(title)
     fprintf(oid, '  <div class="left">\n');
     fprintf(oid, '  <h1>%s</h1>\n', title);
     flds = fields(metaData); 
-    flds = flds(~ismember(flds,{'model', 'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey','COMPLETE'}));
+    flds = flds(~ismember(flds,{'model', 'biblist','discussion','facts','acknowledgment','data_0','data_1','data_2','bibkey','COMPLETE','grp'}));
     n_flds = length(flds);
     for i=1:n_flds
       txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end      
@@ -177,7 +177,7 @@ function prt_report_AmPtox(title)
       if strcmp(flds{i},'DEBmodel')
         fprintf(oid, '    <b>%s: </b><a href="https://add-my-pet.github.io/AmPtool/docs/models/%s.pdf">%s</a><br>\n', flds{i}, txt, txt);
       else
-        fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);
+        fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt); 
       end                  
     end
     fprintf(oid, '  </div>\n\n');
