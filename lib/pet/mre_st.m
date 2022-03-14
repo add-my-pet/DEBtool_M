@@ -57,7 +57,7 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
     sel = ~isnan(var); diff = zeros(r,max(1,k-1)); meanval = diff; 
     if npage==1 && k > 1
       for j = 1:k-1
-        meanval(:,j) = ones(n,1) * abs(mean(var(sel(:,j),j)));
+        meanval(:,j) = ones(r,1) * abs(mean(var(sel(:,j),j)));
         diff(sel(:,j),j) = abs(prdVar(sel(:,j),j) - var(sel(:,j),j));
       end
     elseif npage>1
