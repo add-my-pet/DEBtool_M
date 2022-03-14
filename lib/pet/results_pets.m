@@ -270,7 +270,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
-              if ~isfield(treat,nm{j}) || ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
+              if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                 fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
                 return
               end
