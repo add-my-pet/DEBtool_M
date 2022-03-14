@@ -425,7 +425,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 zData_int = zeros(n_t,n_x*n_y+1); % reshape for interpolation
                 for ii=1:n_t; xy = zData(:,:,ii); zData_int(ii,:) = [tData(ii), xy(:)']; end
                 %
-                nmDir = ['results_', pets{i},'_',nFig]; mkdir(nmDir);
+                nmDir = ['results_',pets{i},'_',nFig]; mkdir(nmDir);
                 n_t = 100; t = linspace(tData(1), t_max, n_t); % times to plot in movie
                 for k = 1:n_t % scan time points
                   zData_k = reshape(spline1(t(k),zData_int),n_x,n_y); % interpolated data at time t(k)
