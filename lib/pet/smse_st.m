@@ -56,10 +56,10 @@ function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
     w      = getfield(weights, fieldsInCells{1}{:});
     diff2 = (prdVar - var).^2;
     if npage==1 &&  k>1 % uni- or bi-variate data
-      meanVar = zeros(n, k-1); meanPrd = zeros(n, k-1);
+      meanVar = zeros(r, k-1); meanPrd = zeros(r, k-1);
       for j = 1:k-1
-        meanVar(:,j) = ones(n,1) * mean(var(sel(:,j),j)); 
-        meanPrd(:,j) = ones(n,1) * mean(prdVar(sel(:,j),j));
+        meanVar(:,j) = ones(r,1) * mean(var(sel(:,j),j)); 
+        meanPrd(:,j) = ones(r,1) * mean(prdVar(sel(:,j),j));
       end
     elseif npage>1 % tri-variate data
       meanVar = mean(var(sel),3); 
