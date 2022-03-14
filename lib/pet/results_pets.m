@@ -267,7 +267,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && length(auxData.(pets{i}).treat.(nm{j}){2})<3 % bi-variate data
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               if ~isfield(treat,nm{j}) || ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
