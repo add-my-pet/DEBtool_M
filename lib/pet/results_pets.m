@@ -63,7 +63,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   
   % dataSet_nFig is a (n,2)-cell array with names of data sets in col 1, and 2-char txt with figure-number in col 2; 
   % If fig nFig has a legend, this element is not a string, but a cell-string of length 2, where nFig_legend is added
-  % This is used in prt_results_my_pet and prt_report_AmPtox
+  % This is used in prt_results_my_pet and prt_report_AmPtox and filled, independent of this function, by get_dataSet_nFig
   
   n_pets = length(pets); dataSet_nFig = cell(0,2);
   parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet

@@ -123,11 +123,11 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
         else
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
-        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{1}).label.(fieldsInCells{1}{1}))<3 % bivar
+        if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{i}).label.(fieldsInCells{1}{1}))<3 % bivar
           str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
               '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
           fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.treat.(fieldsInCells{1}{1}), aux.label.(fieldsInCells{1}{end}){2});
-        elseif isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{1}).label.(fieldsInCells{1}{1}))==3 % trivar
+        elseif isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{i}).label.(fieldsInCells{1}{1}))==3 % trivar
           str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
               '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
           fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{1}){2}, aux.label.(fieldsInCells{1}{end}){3});
@@ -157,8 +157,8 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
     [parFields, nbParFields] = fieldnmnst_st(corePar);
     % we need to make a small addition so that it recognises if one of the chemical parameters were released and then print them as well
     for j = 1:nbParFields
-      if  ~isempty(strfind(parFields{j},'n_')) || ~isempty(strfind(parFields{j},'mu_')) || ~isempty(strfind(parFields{j},'d_')) ...
-        && ~free.(parFields{j}) %|| (strcmp(parFields{j}, currentPar.d_V) &&  currentPar.d_V == get_d_V(metaData.phylum, metaData.class)) 
+      if  ~isempty(strfind(parFields{j},'n_')) | ~isempty(strfind(parFields{j},'mu_')) | ~isempty(strfind(parFields{j},'d_')) ...
+        & ~free.(parFields{j})==1 %|| (strcmp(parFields{j}, currentPar.d_V) &&  currentPar.d_V == get_d_V(metaData.phylum, metaData.class)) 
         corePar          = rmfield_wtxt(corePar, parFields{j});
         coreTxtPar.units = rmfield_wtxt(coreTxtPar.units, parFields{j});
         coreTxtPar.label = rmfield_wtxt(coreTxtPar.label, parFields{j});
