@@ -267,7 +267,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}) % bi-variate data
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}{1}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
@@ -447,7 +447,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   if treat{1}==2 % plot mesh
                     plot3(xAxis(:,ones(1,n_y)), ones(n_X,1)*yData', prdX, 'Color',plotColours{2}) 
                     plot3(ones(n_Y,1)*xData' , yAxis(:,ones(1,n_x)), prdY', 'Color',plotColours{2})
-                  else % treat{1} == 3 % plot surface; condition n_x = n_y must apply
+                  else % treat{1} == 3 % plot surface; condition n_x == n_y must apply
                     x = [xAxis(:,ones(1,n_y)),ones(n_Y,1)*xData']; 
                     y = [ones(n_X,1)*yData', yAxis(:,ones(1,n_x))]; z = [prdX, prdY'];
                     surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
@@ -494,7 +494,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           if exist('LEGEND','var') % plot legend
             nms = fields(LEGEND); n_nms = length(nms);
             for j=1:n_nms
-              if exist('treat','var')
+              if isfield(LEGENDlabel, nms{j})
                 shlegend(LEGEND.(nms{j}), [], [], LEGENDlabel.(nms{j}));
               else
                 shlegend(LEGEND.(nms{j}));
