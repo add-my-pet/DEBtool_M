@@ -74,7 +74,7 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
 %% Example of use
 % load('results_species.mat'); [stat, txtStat] = popStatistics_st(metaPar.model, par); printstat_st(stat, txtStat)
 
-  choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hex'};
+  choices = {'std', 'stf', 'stx', 'ssj', 'sbp', 'abj', 'asj', 'abp', 'hep', 'hax', 'hex'};
   if ~any(strcmp(model,choices))
     fprintf('warning from statistics_st: invalid model key \n')
     stat = []; 
@@ -122,13 +122,13 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
     par.h_Bpi = 0;
   end
   if ~isfield(par, 'h_Bbj')
-    par.h_Bpi = 0;
+    par.h_Bbj = 0;
   end
   if ~isfield(par, 'h_Bje')
-    par.h_Bpi = 0;
+    par.h_Bje = 0;
   end
   if ~isfield(par, 'h_Bei')
-    par.h_Bpi = 0;
+    par.h_Bei = 0;
   end
 
   % unpack par and compute statisitics

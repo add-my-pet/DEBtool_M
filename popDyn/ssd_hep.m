@@ -137,9 +137,9 @@ function [stat, txtStat] = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   
   % life span as imago
   pars_tm = [g; k; v_Hb; v_Hp; v_Rj; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
-  tau_ima = get_tm_mod('hep',pars_tm, f);    % -, scaled mean life span at T_ref
-  tT_ima = tau_ima/ kT_M;                     % d, mean life span as imago
-  tT_N = tT_j + tT_ima;                   % d, time since birth at which all eggs are produced
+  tau_ima = get_tm_mod('hep',pars_tm, f);  % -, scaled mean life span at T_ref
+  tT_ima = tau_ima/ kT_M;                  % d, mean life span as imago
+  tT_N = tT_j + tT_ima;                    % d, time since birth at which all eggs are produced
 
   % embryos
   [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0] = get_Sb([g; k; v_Hb; h_a/k_M^2; s_G; h_B0b/kT_M; sgr/kT_M], f);
@@ -176,7 +176,6 @@ function [stat, txtStat] = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   theta_bj = theta_bp + theta_pj; theta_bi = theta_bj + theta_ji;
   del_an = theta_ji/ theta_bi; % fraction of post-natals that is imago
 
-  
   % mean L^i for post-natals: \frac{\int_{a_b}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
   L_bi = qhSL(end,5)/ t_bi; L2_bi = qhSL(end,6)/ t_bi; L3_bi = qhSL(end,7)/ t_bi; % mean L^1,2,3 for post-natals
   stat.(fldf).(fldt).(fldg).L_bi  = L_bi;  txtStat.units.L_bi = 'cm';    txtStat.label.L_bi  = 'mean structural length of post-natals';

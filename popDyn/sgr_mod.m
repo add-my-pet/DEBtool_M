@@ -30,6 +30,8 @@ function [r, info] = sgr_mod (model, par, T_pop, f_pop)
       [r, info] = sgr_abp (par, T_pop, f_pop);
     case 'hep'
       [r, info] = sgr_hep (par, T_pop, f_pop);
+    case 'hax'
+      [r, info] = sgr_hax (par, T_pop, f_pop);
     case 'hex'
       [r, info] = sgr_hex (par, T_pop, f_pop);
   end
