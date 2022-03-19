@@ -162,7 +162,7 @@ end
 
 % event dead_for_sure
 function [value,isterminal,direction] = dead_for_sure(~, qhSt, varargin)
-  value = qhSt(3) - 1e-6;  % trigger 
+  value = qhSt(3) > 1e-6;  % trigger 
   isterminal = 1;  % terminate after the last event
   direction  = [];  % get all the zeros
 end
