@@ -106,6 +106,9 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
   if ~isfield(par, 'h_Bbp')
     par.h_Bbp = 0;
   end
+  if ~isfield(par, 'h_Bpj')
+    par.h_Bpj = 0;
+  end
   if ~isfield(par, 'h_Bsj')
     par.h_Bsj = 0;
   end
