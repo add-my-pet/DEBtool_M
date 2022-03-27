@@ -13,14 +13,11 @@ estim_options('method','mmea');
 estim_options('results_output',5);
 
 estim_options('num_results', 50);
-estim_options('gen_factor', 0.7); 
+estim_options('gen_factor', 2); 
 estim_options('activate_niching', 1); 
 estim_options('sigma_share', 0.15);
-estim_options('refine_running', 1);
-estim_options('refine_run_prob', 0.01);
-estim_options('refine_best', 0);git 
 estim_options('bounds_from_ind', 1); 
-estim_options('max_calibration_time', 8);
+estim_options('min_convergence_threshold', 1e-4);
 estim_options('verbose', 1); 
 estim_options('verbose_options', 5);
 estim_options('results_display', 'Complete');

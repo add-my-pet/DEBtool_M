@@ -55,7 +55,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
    global num_results lossfunction max_fun_evals num_runs  
    global pop_size refine_running refine_run_prob refine_best
    global verbose verbose_options random_seeds max_calibration_time
-   global activate_niching sigma_share
+   global activate_niching sigma_share min_convergence_threshold
 
    % Option settings
    % initiate info setting
@@ -129,10 +129,14 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
       fprintf('Calibration defined with evaluations as stop criteria \n');
       fprintf('The total number of evaluations is: %d for each run \n', max_fun_evals);
       fprintf('The total number of evaluations for the whole calibration is %d \n', max_fun_evals * num_runs);
-   else
+   elseif max_calibration_time ~= Inf
       fprintf('Calibration defined with time as stop criteria \n');
       fprintf('The total calibration time is: %d minutes for each run \n', max_calibration_time);
       fprintf('The total calibration time for the whole calibration is %d minutes \n', max_calibration_time * num_runs);
+   else
+      fprintf('Calibration defined with convergence as stop criteria \n');
+      fprintf('The minimum convergence is: %.5f \n', min_convergence_threshold);
+      fprintf('The total calibration time and the maximum fun evals are set to infinite \n');
    end
    for run = 1:(min(num_runs, length(random_seeds)))
       %% Take run initial time
@@ -188,10 +192,10 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             bsf_solution = pop(i, :);
          end
          % Check stopping criteria
-         if max_calibration_time > 0
+         if max_calibration_time ~= Inf
             current_time = toc(time_start)/60;
             if current_time > max_calibration_time; break; end
-         else
+         elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
          end
       end
@@ -348,10 +352,10 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
               bsf_solution = ui(i, :);
             end
             % Check if stopping criteria has been achieved
-            if max_calibration_time > 0
+            if max_calibration_time ~= Inf
                current_time = toc(time_start)/60;
                if current_time > max_calibration_time; break; end
-            else
+            elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
          end
@@ -405,10 +409,10 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             end
             
             % Check if stopping criteria has been achieved
-            if max_calibration_time > 0
+            if max_calibration_time ~= Inf
                current_time = toc(time_start)/60;
                if current_time > max_calibration_time; break; end
-            else
+            elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
          end
@@ -432,7 +436,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             if memory_pos > memory_size;  memory_pos = 1; end
          end
          % Check if stopping criteria has been achieved
-         if max_calibration_time > 0
+         if max_calibration_time ~= Inf
             current_time = round(toc(run_time_start)/60);
             if current_time > max_calibration_time; break; end
             if verbose
@@ -446,8 +450,15 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                        round((current_time/(max_calibration_time*num_runs))*100.0));
                end
             end
-         else
+         elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
+         else
+             avg_prev_fitness = mean(temp_fit);
+             avg_new_fitness = mean(fitness);
+             improvement = avg_prev_fitness - avg_new_fitness; 
+             fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
+                 avg_prev_fitness, avg_new_fitness, improvement);
+             if improvement < min_convergence_threshold; break; end
          end
          
       end
@@ -501,7 +512,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
       result = updateArchive(result, auxvec(index)', fval);
    end
    %% Store the information structure into the results set
-   archive.runtime_information = info;
+   result.runtime_information = info;
    %% Save also the parameter ranges into the final result
-   archive.parameterRanges = ranges; 
+   result.parameterRanges = ranges; 
 end

@@ -45,6 +45,8 @@ function calibration_options (key, val)
 %
 %    'max_calibration_time': maximum calibration time in minutes (0 by default).
 %
+%    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
+%                                                    to continue the calibration process (default 1e-4)
 %    'num_runs': the number of independent runs to perform.
 %
 %    'add_initial': if the initial individual is added in the first
@@ -133,7 +135,7 @@ function calibration_options (key, val)
    global refine_best  refine_running refine_run_prob refine_firsts 
    global verbose verbose_options random_seeds seed_index ranges mat_file
    global results_display results_filename save_results activate_niching 
-   global sigma_share
+   global sigma_share min_convergence_threshold
    
    if exist('key','var') == 0
       key = 'inexistent';
@@ -174,7 +176,8 @@ function calibration_options (key, val)
          max_fun_evals = 10000; % The maximum number of function 
                                 % evaluations to perform before to end the
                                 % calibration process. 
-         max_calibration_time = 30; % The maximum calibration time
+         % max_calibration_time = 30; % The maximum calibration time
+         min_convergence_threshold = 1e-4;
          % calibration process. 
          num_runs = 1; % The number of runs to perform. 
          verbose = 0; % If to print some information while the calibration 
@@ -330,6 +333,18 @@ function calibration_options (key, val)
             max_calibration_time = val;
             max_fun_evals = Inf;
          end
+      case 'min_convergence_threshold'
+      if exist('val','var') == 0 
+        if numel(min_convergence_threshold) ~= 0
+          fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' \n']);  
+        else
+          fprintf('min_convergence_threshold = unknown \n');
+        end	      
+      else
+        min_convergence_threshold = val;
+        max_fun_evals = Inf;
+        max_calibration_time = Inf; % mmea method only
+      end
       case 'num_runs'
          if ~exist('val','var')
             if numel(max_fun_evals) ~= 0
@@ -488,6 +503,11 @@ function calibration_options (key, val)
          else
             fprintf('max_calibration_time = unkown \n');
          end
+         if numel(min_convergence_threshold) ~= 0
+            fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
+          else
+            fprintf('min_convergence_threshold = unkown \n');
+          end
          if numel(num_runs) ~= 0
             fprintf(['num_runs = ', num2str(num_runs),' \n']);
          else
