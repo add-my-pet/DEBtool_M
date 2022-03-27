@@ -1,7 +1,7 @@
 global pets 
 
 % The pet to calibrate
-pets = {'Homo_sapiens'};
+pets = {'Clarias_gariepinus'};
 % Check pet consistence
 check_my_pet(pets);
 
@@ -12,7 +12,7 @@ check_my_pet(pets);
 %load('solutionSet_Clarias_gariepinus_20-Apr-2021_20:42:00.mat')
 
 % Plot the solutions!
-plot_results(solutions_set, ..., 
-            solutions_set.results.txtPar, solutions_set.results.data, ...,
-            solutions_set.results.auxData, metaData, ..., 
-            solutions_set.results.txtData, weights, 'Set');
+plot_results(result, ..., 
+            result.solutionSet.txtPar, result.solutionSet.data, ...,
+            result.solutionSet.auxData, metaData, ..., 
+            result.solutionSet.txtData, weights, 'Set');

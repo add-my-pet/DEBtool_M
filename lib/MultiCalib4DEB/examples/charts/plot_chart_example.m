@@ -11,4 +11,4 @@ check_my_pet(pets);
 % Load the solution set (example for Clarias Gariepinus).
 %load('solutionSet_Clarias_gariepinus_01-Jun-2021_22h19m52s.mat');
 % Plot the chart!
-plot_chart(result, 'density_hm_scatter', {'k_J';'p_M'}, false, 200);
+plot_chart(result, 'density_hm_scatter', {'p_M';'E_Hp'}, false, 200);
