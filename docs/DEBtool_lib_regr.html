@@ -754,35 +754,35 @@
        <HR>
        <H4><A NAME="plsurv2">plsurv2</A></H4>
 
-       Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
-       The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
-       See <A HREF="#plsurv"><code>plsurv</code></A> for the multiple sample case.
+      Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
+      The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
+      See <A HREF="#plsurv"><code>plsurv</code></A> for the multiple sample case.
 
-       <P>
-       Input: 
-       user-defined function name, parameter values, times, second dependent variable, data matrix as in <A HREF="#scsurv2"><code>scsurv2</code></A>. 
-       The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
-       The value of that parameter in the parameter matrix must be within the range. 
-       The optional element 3 specifies the numer of parameter evaluations; default: 100.
+      <P>
+      Input: 
+      user-defined function name, parameter values, times, second dependent variable, data matrix as in <A HREF="#scsurv2"><code>scsurv2</code></A>. 
+      The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
+      The value of that parameter in the parameter matrix must be within the range. 
+      The optional element 3 specifies the numer of parameter evaluations; default: 100.
 
 
-       <P>
-       Output:
-       <ul> 
-         <li> (99,2)-matrix with parameter values and deviance </li>
-         <li> scalar with value 1 for successful convergence at all parameter evalation points; 
-           and value 0 with one or more convergence problems </li>
-       </ul>
+      <P>
+      Output:
+      <ul> 
+        <li> (99,2)-matrix with parameter values and deviance </li>
+        <li> scalar with value 1 for successful convergence at all parameter evalation points; 
+          and value 0 with one or more convergence problems </li>
+      </ul>
 
-       <P>
-       Example of use, assuming that 
-       <code>function_name</code>, 
-       <code>pars</code> (parameter matrix), 
-       <code>t</code> (time-vector), 
-       <code>y</code> (vector with second dependent variable), 
-       <code>tny</code> (matrix with numbers of survivors) and 
-       <code>Range</code> (2-vector with lower and upper boundary for target parameter) are defined properly: 
-       <code>plsurv('function_name', pars, t, y, tny, Range)</code>.
+      <P>
+      Example of use, assuming that 
+      <code>function_name</code>, 
+      <code>pars</code> (parameter matrix), 
+      <code>t</code> (time-vector), 
+      <code>y</code> (vector with second dependent variable),
+      <code>tny</code> (matrix with numbers of survivors) and 
+      <code>Range</code> (2-vector with lower and upper boundary for target parameter) are defined properly: 
+      <code>plsurv('function_name', pars, t, y, tny, Range)</code>.
 
 
       <div w3-include-html="footer_amp.html"></div>
