@@ -1,0 +1,576 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_tox</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: tox</H3>
+
+  Toxicokinetics in relation to effects of chemicals on organisms and populations, i.e. on survival, body growth, reproduction, population growth.
+
+  <p>
+  The theory for the models can be found in: <BR> 
+  Kooijman, S. A. L. M. and Bedaux, J. J. M. 1996.
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/KooyBeda96.html">
+  <I> The analysis of aquatic toxicity data.</I></A>
+  VU University Press, Amsterdam.
+  <BR>
+  Kooijman, S. A. L. M. 2010 
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">
+  <I>Dynamic Energy and Mass Budgets theory for Metabolic Organisation.</I></A>
+  Cambridge University Press.
+
+<HR>
+<H4><A NAME="tox">tox</A></H4>
+
+  Demo that runs:
+  <ul>
+    <li> <B>mydata_fomort</B>: 
+         effects on mortality of individuals </li>
+    <li> <B>mydata_algatox</B>:
+         effects on nutrient-limited population growth of algae </li>
+  </ul>
+
+  <p>
+  These files are script-files that illustrate the use of <A HREF="#fomort*"><code>fomort</code></A> and <A HREF="#algatox*"><code>algatox</code></A>. 
+  Consult these script-files for further explanation.
+
+
+<HR>
+<H4><A NAME="fomort">fomort</A></H4>
+
+  Meant to be used as subroutine for <A HREF="DEBtool_lib_regr.html#scsurv2"><code>scsurv2</code></A>.<br>
+  The name of the routine stands for first-order mortality. 
+  The function specifies the survival probability of blank individuals, that are exposed to a constant concentration of toxic compound. 
+  The toxicokinetics is assumed to be of the first-order type; 
+  the hazard rate is assumed to be linear in the internal concentration. 
+  Concentrations below the internal no-effect concentration do not affect survival. 
+  The proportionality factor with which the hazard rate increases with concentration minus the no-effect concentration is called the killing rate. 
+  The hazard rate in the blank is assumed to be constant.
+
+  <p>
+  Parameter interpretation:
+  <ol>
+    <li> 1/d, hazard rate in the blank (>0) </li>
+    <li> M, No-Effect-Concentration </li>
+    <li> 1/(d*M), killing rate </li>
+    <li> 1/d, elimination rate </li>
+  </ol>
+
+  <p>
+  An example of application of fomort in regression and plotting routines is given in the script-file <code>mydata_fomort</code>.
+
+<HR>
+<H4><A NAME="fomort_c0">fomort_c0</A></H4>
+
+  Meant to be used as subroutine for <A HREF="DEBtool_lib_regr.html#scsurv2"><code>scsurv2</code></A>.<br>
+  Like fomort, but the no effect concentrations follows a log normal distribution.
+
+  <p>
+  Parameter interpretation:
+  <ol>
+    <li> 1/d, hazard rate in the blank (>0) </li>
+    <li> M, No-Effect-Concentration </li>
+    <li> 1/(d*M), killing rate </li>
+    <li> 1/d, elimination rate </li>
+    <li> -, scatter parameter for the No-Effect-Concentration </li>
+  </ol>
+
+  <p>
+  The use is similar to fomort.
+
+<HR>
+<H4><A NAME="fomortph">fomortph</A></H4>
+
+  Meant to be used as subroutine for <A HREF="DEBtool_lib_regr.html#scsurv2"><code>scsurv2</code></A>.<br>
+  The name of the routine stands for first-order mortality with effects on pH. 
+  The model is identical to <A HREF="#fomort"><code>fomort</code></A>, except that the NEC and the killing rates depend on the pH, because the these parameters differ for the molecular and the ionic form.
+
+  <p>
+  Parameter interpretation:
+  <ol>
+    <li> 1/d, hazard rate in the blank </li>
+    <li> M, No-Effect-Concentration of molecular form </li>
+    <li> 1/(d*M), killing rate of molecular form </li>
+    <li> 1/d, elimination rate </li>
+    <li> M, No-Effect-Concentration of ionic form </li>
+    <li> 1/(d*M), killing rate of ionic form </li>
+    <li> -, ion-product constant </li>
+  </ol>
+
+  <p>
+  An example of application of fomortph in regression and plotting routines is given in the script-file <B>mydata_fomortph</B>. 
+  Notice that this model does not specify a response surface; 
+  thus <A HREF="#shsurv2"><code>shsurv2</code></A> only works properly with option <code>'plotnr' = 1</code>.
+
+<HR>
+<H4><A NAME="lfohaz">lfohaz</A></H4>
+
+  Calculates the minus log-likelihood function for first-order mortality, if time-to-death data are available for each individual. 
+  The model is otherwise the same as in <A HREF="#fomort"><code>fomort</code></A>. 
+  The toxicokinetics is assumed to be of the first-order type; 
+  the hazard rate is assumed to be linear in the internal concentration. 
+  Concentrations below the internal no-effect concentration do not affect survival. 
+  The proportionality factor with which the hazard rate increases with concentration minus the no-effect concentration is called the killing rate. 
+  The hazard rate in the blank is assumed to be constant.
+
+  <p>
+  Input: 
+  <ul>
+    <li> (4,k)-matrix with parameters. Parameter interpretation in first column:
+      <ol>
+        <li> 1/d, hazard rate in the blank (>0) </li>
+        <li> M, No-Effect-Concentration </li>
+        <li> 1/(d*M), killing rate </li>
+        <li> 1/d, elimination rate </li>
+      </ol>
+    </li>
+    <li> (n,2) or (n,3)-matrix with in each row:
+      <ol>
+        <li> time </li> 
+        <li> concentration </li> 
+        <li> indicator. 
+             If it equals 1 the time is treated as time-to-death, otherwise it is treated as a time at which the subject is still alive. </li>
+      </ol>
+    </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> scalar with minus log-likelihood </li>
+  </ul>
+
+  <p>
+  An example of application of lfohaz in combination with <A HREF="DEBtool_lib_misc.html#nmmin"><code>nmmin</code></A> is given in the script-file <code>mydata_fohaz</code>.
+
+<HR>
+<H4><A NAME="fomort2">fomort2</A></H4>
+
+  Meant to be used as subroutine for <A HREF="DEBtool_lib_regr.html#scsurv2"><code>scsurv2</code></A>.<br>
+  The name of the routine stands for first-order mortality with a mixture of 2 compounds. 
+  The function specifies the survival probability of blank individuals, that are exposed to a constant concentration of toxic compound. 
+  The toxicokinetics is assumed to be of the first-order type; the hazard rate is assumed to be linear in the internal concentration. The compounds compete for capacity to cancel effects. 
+  The effective part, that exceeds to cancel capacity can interact at a rate that can be negetive, zero (independent action), or positive. 
+  See further <A HREF="#fomort"><code>fomort</code></A>.
+
+  <p>
+  Parameter interpretation:
+  <ol>
+    <li> 1/d, hazard rate in the blank (>0) </li>
+    <li> M, No-Effect-Concentration for compound A </li>
+    <li> M, No-Effect-Concentration for compound B </li>
+    <li> 1/(d*M), killing rate for compound A </li>
+    <li> 1/(d*M), killing rate for compound B </li>
+    <li> 1/d, elimination rate for compound A </li>
+    <li> 1/d, elimination rate for compound B </li>
+    <li> 1/(d*M*M), interaction rate between A and B </li>
+  </ol>
+
+  <p>
+  An example of application of fomort in regression and plotting routines is given in the script-file <B>mydata_fomort2</B>.
+
+<HR>
+<H4><A NAME="algatox">algatox</A></H4>
+
+  Routine that specifies a model for effects on nutrient-limited alga growth, with three modes of action:
+  <ul>
+    <li> partial killing of inoculum </li>
+    <li> killing during growth </li>
+    <li> increase of costs for growth </li>
+  </ul>
+  Instantaneous equilibrium is assumed for the internal concentration.
+  Growth is assumed to be nutrient limited, and the nutrient pool is exchanging with a pool that is not available to the algae. 
+  Algal mass is measured in Optical Densities. 
+  The contribution of living biomass, dead biomass and ghost biomass might differ. 
+  The toxic compound can tranfer living into dead biomass, the dead biomass decays to ghost biomass according to a first order process. 
+  The no-effect-conc for the three effects are taken to be the same, but they might actually be different, however!  
+
+  <p>
+  Input:
+  <ul>
+    <li> (17,k)-matrix with parameters values in the first column
+      <ol>
+        <li> mM, background nutrient </li>
+        <li> mM, initial nutrient conc </li>
+        <li> mM, initial biomass </li>
+        <li> OD/mM, weight of living in optical density (redundant par) </li>
+        <li> OD/mM, weight of dead in optical density </li>
+        <li> OD/mM, weight of ghosts in optical density </li>
+        <li> mM, half saturation constant for nutrient </li>
+        <li> mM/mM, yield of reserves on structure </li>
+        <li> mM/(mM*h), max spec nutrient uptake rate </li>
+        <li> 1/h, reserve turnover rate </li>
+        <li> 1/h, exchange from nutrient to background </li>
+        <li> 1/h, exchange from background to nutrient </li>
+        <li> 1/h, dead biomass decay rate to ghost </li>
+        <li> mM, no-effect concentration </li>
+        <li> mM, tolerance conc for initial mortality </li>
+        <li> mM, tolerance concentration for costs of growth </li>
+        <li> 1/(mM*h), spec killing rate </li>
+      </ol>
+    </li>
+    <li> vector with exposure times </li>
+    <li> vector with concentrations of toxic compound </li> 
+  </ul
+  
+  <p>
+  Output:
+  <ul>
+    <li> matrix with Optical Densities </li>
+  </ul>
+
+  <p>
+  An example of application of fomort in regression and plotting routines is given in the script-file <code>mydata_algatox</code>.
+
+<HR>
+<H4><A NAME="lc50">lcx & lc50 & lc503</A></H4>
+
+  Calculates LC50 and lcx values, given values for the NEC, killing rate and elimination rate.
+
+  <p>
+  Input:
+  <ul>
+    <li> 3-vector with NEC, killing rate and elimination rate </li>
+    <li> n-vector with exposure times </li>
+    <li> optional scalar for lcx: effect level, expressed as a number between 0 and 1<br>
+         Default is 0.5 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector with LC50 or LCx values for the exposure times </li>
+  </ul>
+
+  <p>
+  An example of application of lc50:
+  <code>lc50([1, 1, 1], [3 4])</code>, which results in a 2-vector with [LC50.3d LC50.4d]. 
+  Another application in regression and plotting routines is given in the script-file <code>mydata_lc50</code>, where LC50 data are used to extract the toxicity parameters (so just opposite to the previous application). 
+  Consult the script-file for further explanation. 
+  See also <A HREF="#lc503*"><code>lc503</code></A>.
+
+  <p>
+  <b>lc503</b> calculates values for the NEC, killing rate and elimination rate given three LC50 values.
+
+  <p>
+  Input: 
+  <ul>
+    <li> (3,2)-matrix with exposure times in column 1 and LC50 values in column 2 </li>
+    <li> 3-vector with initial values for NEC, killing rate and elimination rate </li>
+  </ul>
+
+  <p>
+  Output: 
+  <ul>
+    <li> 3-vector with final values for NEC, killing rate and elimination rate </li>
+    <li> scalar with indicator for failure (0) or success (1) of numerical procedure </li>
+  </ul>
+
+  <p>
+  An example of application of lc503 is for an appropriate (3,2) matrix <code>tc</code>: 
+  <code>[p, err] = lc503(tc, [1, 1, .1])</code>. 
+  The effect is very similar to <code>p = nmregr("lc50", [1, 1, .1]', tc)</code>, but <code>lc503</code> is much faster and exact.
+
+<HR>
+<H4><A NAME="ecx">ecx</A></H4>
+
+  Calculates ecx values, given parameter values. 
+  It uses a symplex method, so the conversion is slow.
+
+  <p>
+  Input:
+  <ul>
+    <li> character-string with function name (e.g. <code>marep</code> or <code>grgrowth</code>) </li>
+    <li> parameter-vector with toxicity parameters </li>
+    <li> n-vector with exposure times <li>
+    <li> optional scalar for ecx: effect level, expressed as a number between 0 and 1<br>
+         Default is 0.5 </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> n-vector EC(100x) values for the exposure times </li>
+  </ul>
+
+  <p>
+  An example of application:
+  <code>ecx('marep', [.13 1 .16 15 .1 .13 .42 1]', 21, .99)</code>, 
+  which results in the EC99.21d for effects on reproduction via effects on maintenance.
+
+<HR>
+<H4><A NAME="acc">acc</A></H4>
+
+  Calculates internal concentrations, given the elimination rate and BioConcentration Factor (BCF) given exposure to a constant external concentration of a compound. 
+  The initial internal concentration is assumed to be nil.
+
+  <p>
+  Input: 
+  <ul>
+    <li> (3,1)-matrix with values for the elimination rate, BCF and external concentration </li>
+    <li> (nt,1)-matrix with exposure times </li>
+  </ul>
+
+  <p>
+  Output: 
+  <ul>
+    <li> (nt,1)-matrix with internal concentrations </li>
+  </ul>
+
+  <p>
+  An example of application of <code>acc</code> is given in <code>mydata_acc</code> for fitting accumulation data. 
+  See also <code>acceli</code> for the case of accumulation and elimination data.
+
+<HR>
+<H4><A NAME="acceli">acceli</A></H4>
+
+  Calculates internal concentrations, given the elimination rate and BioConcentration Factor (BCF) given exposure to a constant external concentration of a compound, followed by an elimination in absence of the compound. 
+  The initial internal concentration is assumed to be nil.
+
+  <p>
+  Input:
+  <ul>
+    <li> (3,1)-matrix with values for the elimination rate, BCF and external concentration </li> 
+    <li> (nt1,1)-matrix with exposure times of accumulation phase </li>
+    <li> (nt2,1)-matrix with times during elimination phase </li>
+  </ul>
+
+  <p>
+  Output: 
+  <ul>
+    <li> (nt1,1) and (nt2,1)-matrices with internal concentrations </li>
+  </ul>
+ 
+  <p>
+  An example of application of <code>acceli</code> is given in <code> mydata_acceli </code> for fitting accumulation/elimination data. 
+  See also <code>acc</code> for the case of accumulation data only.
+
+
+<HR>
+<H4><A NAME="*growth">*growth</A></H4>
+
+  Calculates body lengths during exposure to a constant external concentration of a compound, given parameter values. 
+  The initial internal concentration is assumed to be nill and food availability abundant. 
+  Toxico-kinetics is assumed to follow the one-compartment model, but dilution by growth is taken into account. 
+  No elimination via reproduction is assumed. 
+  The internal concentration and the reserve are treated as hidden variables. 
+
+  <p>
+  These functions are meant to be used via parameter estimation procedures <a href="DEBtool_lib_regr.html#nrregr2"><code>nrregr2</code></a>, <a href="DEBtool_lib_regr.html#nmregr2"><code>nmregr2</code></a> or <a href="DEBtool_lib_regr.html#garegr2"><code>garegr2</code></a>. 
+  The optional second column of the initial parameter matrix should be used, where most, if not all, of the physiological parameters are fixed (corresponding to value zero in the second column), because toxicity assays hardly contain information about these parameters. 
+  In the cases of slow and fast kinetics, the third parameter, the elimination rate, should be kept fixed as well.
+
+  <p>
+  Three cases for elimination rates can be chosen and three modes of action, which gives 9 combinations:
+  <ol>
+    <li>slow kinetics: * stands for
+      <ul>
+        <li> <code>fe0</code> feeding </li>
+        <li> <code>as0</code> assimilation </li>
+        <li> <code>ma0</code> maintenance </li>
+        <li> <code>gr0</code> growth </li>
+      </ul>
+    </li>
+    <li>normal kinetics: * stands for
+      <ul>
+        <li> <code>fe</code> feeding </li>
+        <li> <code>as</code> assimilation </li>
+        <li> <code>ma</code> maintenance </li>
+        <li> <code>gr</code> growth </li>
+      </ul>
+    </li>
+    <li> fast kinetics: * stands for
+      <ul>
+        <li> <code>fei</code> feeding </li>
+        <li> <code>asi</code> assimilation </li>
+        <li> <code>mai</code> maintenance </li>
+        <li> <code>gri</code> growth </li>
+      </ul>
+    </li>
+  </ol>
+
+  <p>
+  Input: 
+  <ul>
+    <li> 7-vector with parameters
+      <ol>
+        <li> c0, mM, No-Effect-Concentration (external, may be zero) </li>
+        <li> cT, mM, tolerance concentration </li>
+        <li> ke, 1/d, elimination rate at L = Lm </li>
+        <li> g, -, energy investment ratio </li>
+        <li> kM, 1/d, somatic maint rate coeff </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> L0, cm, initial body length </li>
+      </ol>
+      In the cases of slow (ke = 0) and fast (ke = infty) kinetics, the third parameter is not used. 
+      In the case of slow kinetics parameters one and two have a different interpretation:
+      concentration-times, rather than concentrations. 
+      This is inherent to the fact that the compound accumulates without boundary if the elimiation rate is zero.
+    </li>
+    <li> (nt,1)-matrix with exposure times </li> 
+    <li> (nc,1)-matrix with (external) concentrations </li>
+  </ul>
+
+  <p>
+  Output:
+  <ul>
+    <li> (nt,nc)-matrix with lengths </li>
+  </ul>
+ 
+  <p>
+  An example of application of <code>*growth</code> is given in <code>mydata_growth </code> for fitting length data.
+
+<HR>
+<H4><A NAME="*rep">*rep</A></H4>
+
+  Calculates cumulative number of offspring per female during exposure to a constant external concentration of a compound, given parameter
+values. 
+  The initial internal concentration is assumed to be nill and food availability abundant. 
+  Toxico-kinetics is assumed to follow the one-compartment model, but dilution by growth is taken into account. 
+  No elimination via reproduction is assumed. 
+  The internal concentration, maturity, reserve and structure are treated as hidden variables. 
+  The parameters of the embryo are assumed to be affected by the compound in the same way as in the mother; 
+  the relevance is in the amount of reserve that is required per egg. 
+  The reproduction buffer is assumed to have capacity zero.
+
+  <p>
+  These functions are meant to be used via parameter estimation procedures 
+  <a href="DEBtool_lib_regr.html#nrregr2"><code>nrregr2</code></a>, 
+  <a href="DEBtool_lib_regr.html#nmregr2"><code>nmregr2</code></a> or 
+  <a href="DEBtool_lib_regr.html#garegr2"><code>garegr2</code></a>. 
+  The optional second column of the initial parameter matrix should be used, where most, if not all, of the physiological parameters are fixed (corresponding to value zero in the second column), because toxicity assays hardly contain information about these parameters. 
+  In the cases of slow and fast kinetics, the third parameter, the elimination rate, should be kept fixed as well.
+
+  <p>
+  Three cases for elimination rates can be chosen and five modes of action, which gives 15 combinations:
+  <ol>
+    <li> slow kinetics: * stands for
+      <ul>
+        <li> <code>fe0</code> feeding </li>
+        <li> <code>as0</code> assimilation </li>
+        <li> <code>ma0</code> maintenance </li>
+        <li> <code>gr0</code> growth </li>
+        <li> <code>co0</code> costs per offspring </li>
+        <li> <code>ha0</code> hazard of offspring </li>
+      </ul>
+    </li>
+    <li>normal kinetics: * stands for
+      <ul>
+        <li> <code>fe</code> feeding </li>
+        <li> <code>as</code> assimilation </li>
+        <li> <code>ma</code> maintenance </li>
+        <li> <code>gr</code> growth </li>
+        <li> <code>co</code> costs per offspring </li>
+        <li> <code>ha</code> hazard of offspring </li>
+      </ul>
+    </li>
+    <li>fast kinetics: * stands for
+      <ul>
+        <li> <code>fei</code> feeding </li>
+        <li> <code>asi</code> assimilation </li>
+        <li> <code>mai</code> maintenance </li>
+        <li> <code>gri</code> growth </li>
+        <li> <code>coi</code> costs per offspring </li>
+        <li> <code>hai</code> hazard of offspring </li>
+      </ul>
+    </li>
+  </ol>
+
+  <p>
+  Input: 
+  <ul>
+    <li>12-vector with parameters
+      <ol>
+        <li> c0, mM, No-Effect-Concentration (external, may be zero) </li>
+        <li> cT, mM, tolerance concentration </li>
+        <li> ke, 1/d, elimination rate at L = Lm </li>
+        <li> kap, -, fraction of mobilised reserve allocated to soma </li>
+        <li> kapR, -, reproduction efficiency </li>
+        <li> g, -, energy investment ratio </li>
+        <li> kJ, 1/d, maturity maint rate coeff </li>
+        <li> kM, 1/d, somatic maint rate coeff </li>
+        <li> v, cm/d, energy conductance </li>
+        <li> Hb, d.cm^2, scaled maturity at birth </li>
+        <li> Hp, d.cm^2, scaled maturity at puberty </li>
+        <li> L0, cm, initial body length </li>
+      </ol>
+      In the cases of slow (ke = 0) and fast (ke = infty) kinetics, the third parameter is not used.  
+      In the case of slow kinetics parameters one and two have a different interpretation:
+      concentration-times, rather than concentrations. 
+      This is inherent to the fact that the compound accumulates without boundary if the elimiation rate is zero.
+    </li>
+    <li> (nt,1)-matrix with exposure times </li> 
+    <li> (nc,1)-matrix with (external) concentrations </li>
+  </ul>
+
+  <p>
+  Output: 
+  <ul>
+    <li> (nt,nc)-matrix with cumulative number of offspring </li>
+  </ul>
+ 
+  <p>
+  An example of application of <code>*rep</code> is given in <code>mydata_rep</code> for fitting length data.
+
+<HR>
+<H4><A NAME="*pop">*pop</A></H4>
+
+  Calculates (microbial) population size during exposure to a constant external concentration of a compound, given parameter values. 
+  The internal concentration is assumed to be equilibrium instantaneously.
+
+  <p>
+  Input:
+  <ul>
+    <li> (4,1)-matrix with values for
+      <ol>
+        <li> NEC </li>
+        <li> tolerance concentration </li>
+        <li> initial population size </li>
+        <li> spec population growth rate </li>
+      </ol>
+    </li>
+    <li> (nt,1)-matrix with exposure times </li>
+    <li> (nc,1)-matrix with external concentrations </li>
+  </ul>
+
+  <p>
+  * stands for
+  <ul>
+    <li> <code>gr</code> growth </li>
+    <li> <code>ha</code> hazard rate </li>
+    <li> <code>ad</code> adaptation </li>
+  </ul>
+
+  The adaptiation model is basically the same as the hazard model, but only during the first time increment; 
+  the survivors are no longer affected by the compound and the overall effect is a delay of growth only.
+
+  <p>
+  Output: 
+  <ul>
+   <li> (nt,nc)-matrix with population size </li>
+  </ul>
+ 
+  <p>
+  An example of application of <code>*pop</code> is given in <code>mydata_pop </code> for fitting population growth data.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

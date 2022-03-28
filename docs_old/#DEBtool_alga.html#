@@ -1,0 +1,424 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_alga</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: alga</H3>
+
+Nutrient-limited growth of algae in reactors: more reserves, 1 structure, V1-morph
+
+<HR>
+<H4><A NAME="alga">alga</A></H4>
+
+  Demo that runs:
+  <ul>
+    <li> <A HREF="#pars_alga"><code>pars_alga</code></A>: parameter setting </li>
+    <li> <A HREF="#shbatch"><code>shbatch</code></A>: batch culture </li>
+    <li> <A HREF="#shbatch1"><code>shbatch1</code></A>: batch culture </li>
+    <li> <A HREF="#shchem"><code>shchem</code></A></li>: chemostat in equilibrium </li>
+    <li> <A HREF="#shchem1"><code>shchem1</code></A>: chemostat in equilibrium </li>
+    <li> <A HREF="#shcycle"><code>shcycle</code></A>: cycling nutrient concentrations </li>
+  </ul>
+
+  <p>
+  This implementation accounts for: <BR>
+  effects of ammonia and phosphate concentrations in the feed (X_Nr, X_Pr), throughput rates (h) and temperature (T). <BR>
+  These environmental parameters are taken to be constant in the present implementation, but it is not difficult to let them vary in time. 
+  Limitations by light, carbon and other can be implemented as well. 
+  Two other nutrients can be substituted for ammonia and phosphate.
+
+  <p>
+  Organic compounds (that make up the alga):<BR>
+  V = structure, EN = N-reserve, EP = P-reserve,<BR>
+  Mineral compounds:<BR>
+  C = carbon dioxide, H = water, O = dioxygen, <BR>
+  N = ammonia, P = phosphate,
+  DN = excreted N-reserve, DP = excreted P-reserve
+   
+  <p>
+  Uptake is proportional to surface area, which is taken to be proportional to the structural volume: V1-morph. 
+  This removes the distinction between the individual and the population level.
+
+  <p>
+  The simplification k_J = k_M*(1 - kap)/kap is implemented, which makes this energy-structured model also size-structured <BR>
+  The alga divides when the structural mass exceeds a threshold value
+
+  <p>
+  Example of use after (optionally) editing file <code>pars_alga.m</code>: 
+  <code>alga</code>
+
+<HR>
+<H4><A NAME="pars_alga">pars_alga</A></H4>
+
+  Set the parameters by editing file <code>pars_alga.m</code> in toolbox alga.
+
+<HR>
+<H4><A NAME="shbatch">shbatch</A></H4>
+
+  Batch reactor (h_X = h_V = h = 0); 
+  Excreted reserves can NOT be assimilated (see shbatch1). Set initial conditions by editing file <code>shbatch.m</code>. 
+  See pages 168 ff of the DEB-book.<BR>
+  Four figures are shown of variables against time
+
+  <p>
+  fig <B>1</B><BR>
+  Ammonia (blue, drawn) and excreted N-reserve (blue, stippled) in Molar
+
+  <p>
+  fig <B>2</B><BR>
+  Phosphate (red, drawn) and excreted P-reserve (red, stippled) in Molar
+
+  <p>
+  fig <B>3</B><BR>
+  Structure (green, drawn) in Molar
+
+  <p>
+  fig <B>4</B><BR>
+  N-reserve density (blue, drawn) and P-reserve density (red, drawn) in mol/mol
+
+  <p>
+  Example of use after editing <code>pars_alga.m</code>: 
+  <code>clear; pars_alga; shbatch</code>.<BR> 
+  The command <code>clear; pars_alga; shbatch (4)</code> will only plot fig <B>4</B>.
+
+<HR>
+<H4><A NAME="shbatch1">shbatch1</A></H4>
+
+  Batch reactor (h_X = h_V = h = 0); 
+  Excreted reserves can be assimilated (see shbatch). 
+  Set initial conditions by editing file <code>shbatch1.m</code>. 
+  See pages 168 ff of the DEB-book.<BR>
+  Four figures are shown of variables against time
+
+  <p>
+  fig <B>1</B><BR>
+  Ammonia (blue, drawn) and excreted N-reserve (blue, stippled) in Molar.
+  Most parameter settings result in a practical absence of excreted reserves. 
+
+  <p>
+  fig <B>2</B><BR>
+  Phosphate (red, drawn) and excreted P-reserve (red, stippled) in Molar
+  Most parameter settings result in a practical absence of excreted reserves. 
+
+  <p>
+  fig <B>3</B><BR>
+  Structure (green, drawn) in Molar. Note the difference with <B>shbatch1</B>;
+  the structure does not decline after reaching a ceiling.
+
+  <p>
+  fig <B>4</B><BR>
+  N-reserve density (blue, drawn) and P-reserve density (red, drawn) in mol/mol
+
+  <p>
+  Example of use after editing <code>pars_alga.m</code>: 
+  <code>clear all; pars_alga; shbatch1</code>.<BR> 
+  The command <code>clear; pars_alga; shbatch1 (4)</code> will only plot fig <B>4</B>.
+
+<HR>
+<H4><A NAME="shchem">shchem</A></H4>
+
+  Chemostat reactor (h_X = h_V = h) in equilibrium; 
+  Excreted reserves can NOT be assimilated (see shchem1). 
+  See pages 171 ff of the DEB-book.<BR>
+  Six figures are shown of variables against throughput rate
+
+  <p>
+  fig <B>1</B><BR>
+  Ammonia (blue, drawn) and excreted N-reserve (blue, stippled) in Molar
+
+  <p>
+  fig <B>2</B><BR>
+  Phosphate (red, drawn) and excreted P-reserve (red, stippled) in Molar
+
+  <p>
+  fig <B>3</B><BR> 
+  Total ammonia (blue, drawn) and phosphate (red, drawn) in Molar
+
+  <p>
+  fig <B>4</B><BR>
+  Structure (green, drawn) in Molar
+
+  <p>
+  fig <B>5</B><BR>
+  N-reserve density (blue, drawn) and P-reserve density (red, drawn) in mol/mol
+
+  <p>
+  fig <B>6</B><BR>
+  N/C ratio (blue, drawn) and P/C ratio (red, drawn) in biomass (mol/mol).
+  Usually looks similar to fig 5, because N and P in structure contribute little.
+
+  <p>
+  Example of use after editing <code>pars_alga.m</code>: 
+  <code>clear all; pars_alga; shchem</code> or 
+  <code>clear all; pars_alga; shbatch1</code>.<BR> 
+  The command <code>clear; pars_alga; shchem (5)</code> will only plot fig <B>5</B>.
+
+<HR>
+<H4><A NAME="shchem1">shchem1</A></H4>
+
+  Chemostat reactor (h_X = h_V = h); 
+  Excreted reserves can be assimilated (see shchem). 
+  See pages 171 ff of the DEB-book.<BR>
+  Six figures are shown of variables against throughput rate
+
+  <p>
+  fig <B>1</B><BR>
+  Ammonia (blue, drawn) and excreted N-reserve (blue, stippled) in Molar;
+  Note that there is hardly any excreted N-reserve at low throughput rates (compare with shchem)
+
+  <p>
+  fig <B>2</B><BR>
+  Phosphate (red, drawn) and excreted P-reserve (red, stippled) in Molar
+  Note that there is hardly any excreted P-reserve at low throughput rates (compare with shchem)
+
+  <p>
+  fig <B>3</B><BR> 
+  Total ammonia (blue, drawn) and phosphate (red, drawn) in Molar
+
+  <p>
+  fig <B>4</B><BR>
+  Structure (green, drawn) in Molar; Note the difference with <B>shchem</B>;
+  the biomass is still high at small throughput rates.
+
+  <p>
+  fig <B>5</B><BR>
+  N-reserve density (blue, drawn) and P-reserve density (red, drawn) in mol/mol
+
+  <p>
+  fig <B>6</B><BR>
+  N/C ratio (blue, drawn) and P/C ratio (red, drawn) in biomass (mol/mol).<BR>
+  Usually looks similar to fig 5, because N and P in structure contribute little.
+
+  <p>
+  Example of use after editing <code>pars_alga.m</code>: 
+  <code>clear all; pars_alga; shchem</code>.<BR> 
+  The command <code>clear; pars_alga; shchem (5)</code> will only plot fig <B>5</B>.
+
+<HR>
+<H4><A NAME="shcycle">shcycle</A></H4>
+
+  Reserve dynamics and algal growth at cycling nutrient concentrations;
+  concentrations of nutrients N and P follow a parameterized cycling function of time (which is described in script-file <code>pars_cycle</code>). 
+  Amplitude, period and phase-shift between the nutrients can be specified. 
+  A vector of reserve turnover rates can be specified; 
+  large turnover rates imply small reserve capacities. 
+  Notice that the growth rate can be largest for the highest reserve capacity, if situations where both required nutrients are present are rare.  
+  Parameters are set in script-file <code>pars_cycle</code>.
+
+  <p>
+  fig <B>1</B><BR>
+  Nutrient N (blue) and P (red) as functions of time.
+
+  <p>
+  fig <B>2</B><BR> 
+  Reserve densities for nutrient N (blue) and P (red) as functions of time for each specified reserve turnover rate.
+
+  <p>
+  fig <B>3</B><BR> 
+  The logarithm of structure as a function of time for each specified reserve turnover rate.  
+  The structure for the first reserve turnover rate is plotted in blue, for the last value in red, the rest in green.
+
+  <p>
+  Example of use after editing <code>pars_cycle.m</code>: 
+  <code>clear all; shcycle</code>.<BR> 
+  The command <code>clear; shcycle (3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<H4><A NAME="shmcn">shmcn, shmcn_lm</A></H4>
+
+  Reserve dynamics, excretion of C- and N-reserve and algal growth for given light, DIC and DIN trajectories in the environment as multiples of their half-saturation values. 
+  Natural splines are used as forcing functions; parameters are set in function <code>shmcn</code>. 
+  The function <code>shmcn_lm</code> also shows the leak and the Morel model, which has two maximum assimilation parameters for each nutrient.
+
+  <p>
+  fig <B>1</B><BR>
+  DIC (red), DIN (blue) and light (green) as functions of time.
+
+  <p>
+  fig <B>2</B><BR> Reserve densities for carbohydrate (red) and nitrogen (blue) as functions of time.
+
+  <p>
+  fig <B>3</B><BR> Excretion rate of carbohydrates (red), and nitrogen (blue) as functions of time.
+
+  <p>
+  fig <B>4</B><BR> Specific growth rate as function of time.
+
+  <p>
+  Example of use after editing <code>shmcn.m</code>: 
+  <code>clear all; shmcn</code>.<BR> 
+  The command <code>clear; shmcn(3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<H4><A NAME="clim">clim</A></H4>
+
+  The function specifies a model for algal biomass development in a batch culture, where algae are limited by carbon dioxide. 
+  Carbon dioxide exchanges with bicarbonate, which is not directly available to the algae. 
+  See <A HREF="#cnplim"><code>cnplim</code></A> for simultaneous limitation by carbon dioixide, nitrate and phosphate.
+
+  <p>
+  Input:
+  <ul> 
+    <li> parameter vector:
+      <ol>
+        <li> mM, initial bicarbonate concentration </li>
+        <li> mM, initial CO2 concentration </li>
+        <li> mM, initial structure concentration </li>
+        <li> mM, saturation constant for CO2 </li>
+        <li> mol/mol, yield for reserve on structure </li>
+        <li> mM/(mol.h), max spec CO2 uptake rate </li>
+        <li> 1/h, reserve turnover rate </li>
+        <li> 1/h, transformation from bicarbonate to CO2 </li>
+        <li> 1/h, transformation from CO2 to bicarbonate </li>
+      </ol>
+    </li>
+    <li> (nt,2)-matrix with times and measured optical densities</li>
+  </ul>
+
+  <p>
+  Output: vector with optical densities of the batch culture.
+
+  <p>
+  The scriptfile <code>mydata_clim</code> sets data and the parameters and shows how the biomass develops in the batch culture.
+
+<HR>
+<H4><A NAME="cnplim">cnplim</A></H4>
+
+  The function specifies a model for algal biomass development in a batch culture, where algae are limited by carbon dioxide, nitrate as well as phosphate. 
+  Carbon dioxide exchanges with bicarbonate, which is not directly available to the algae.
+
+  <p>
+  Input:
+  <ul> 
+    <li> parameter vector:
+      <ol>
+        <li> K_C; mM, saturation constant for CO2 (C) </li>
+        <li> K_N; mM, saturation constant for nitrate (N) </li>
+        <li> K_P; mM, saturation constant for phosphate (P) </li>
+        <li> j_Cm; mM/(mol*h), max spec CO2 uptake rate </li>
+        <li> j_Nm; mM/(mol*h), max spec N </li>
+        <li> j_Pm; mM/(mol*h), max spec P </li>
+        <li> k_E; 1/h, reserve turnover rate</li>
+        <li> kap_C; -, recovery fraction for rejected C-reserves </li>
+        <li> kap_N; -, recovery fraction for rejected N-reserves </li>
+        <li> kap_P; -, recovery fraction for rejected P-reserves </li>
+        <li> yC_EV; mol/mol, yield for C-reserve on structure </li>
+        <li> yN_EV; mol/mol, yield for N-reserve on structure </li>
+        <li> yP_EV; mol/mol, yield for P-reserve on structure </li>
+        <li> k_BC; 1/h, transformation from B (bicarbonate) to C </li>
+        <li> k_CB; 1/h, transformation from C (CO2) to B </li>
+        <li> B_0; mM, initial bicarbonate concentration </li>
+        <li> C_0; mM, initial CO2 concentration </li>
+        <li> m_C0; mol/mol, initial C-reserve density </li>
+        <li> m_N0; mol/mol, initial N-reserve density </li>
+        <li> m_P0; mol/mol, initial P-reserve density </li>
+        <li> Biomm0; mM, initial structure concentration </li>
+      </ol>
+    </li>
+    <li> (nt)-vector with time </li>
+    <li> (nNP,2)-matrix with initial nitrate, phosphate concentrations </li>
+  </ul>
+
+  <p>
+  Routine shcnplim shows how the biomass develops; 
+  the data and the parameters are set in <code>mydata_cnplim</code>.
+
+
+<HR>
+<H4><A NAME="sgr">sgr1, sgr2, sgr3, sgr4</A></H4>
+
+  Obtains the specific growth rate of V1-morphs with 1, 2, 3 or 4 reserves, using a Newton Raphson method with continuation.
+
+  <p>
+  Inputs:
+  <ul>
+    <li>m<sub>E</sub>: mol/mol, 1,2,3 or 4-vector with reserve densities</li>
+    <li>k<sub>E</sub>: 1/d, reserve turnover rate</li> 
+    <li>j<sub>EM</sub>: mol/d.mol, 1,2,3 or 4-vector with the specific somatic maintenance costs, if paid from reserves </li>
+    <li>y<sub>EV</sub>: mol/mol, 1,2,3 or 4-vector with the yield of reserve on structure</li> 
+    <li>j<sub>VM</sub>: mol/d.mol, optional 1,2,3 or 4-vector with the specific somatic maintenance costs, if paid from structure<br>
+        Default j<sub>EM</sub>/ y<sub>EV</sub></li>
+    <li>a: -, optional scalar or 1,2,3 or 4-vector with preference for the use of structure for maintenance (default 0)</li>
+    <li>r<sub>0</sub>: 1/d, optional scalar with initial estimate for r</li>
+  </ul>
+  
+  <p> 
+  Outputs:
+  <ul>
+    <li>r: 1/d, scalar with the specific growth rate</li> 
+    <li>j<sub>E</sub><sup>M</sup>: mol/d.mol, 1,2,3 or 4-vector with specific somatic maintenance paid from reserve</li>
+    <li>j<sub>V</sub><sup>M</sup>: mol/d.mol, 1,2,3 or 4-vector with specific somatic maintenance paid from structure</li> 
+    <li>j<sub>ER</sub>: mol/d.mol, 1,2,3 or 4-vector with specific fluxes of mobilised reserves that are rejected by the growth-SU</li> 
+    <li>info: scalar with indicator for success (1) or failure (0) of numerical procedure</li>
+  </ul>
+
+  <p>
+  Example of use: <code>mydata_sgr</code>
+
+<HR>
+<H4><A NAME="sar_psri">sar_psri</A></H4>
+
+  The function obtains the specific assimilation rate of carbohydrates for oxygenic photosynthesis and the flux of captured, but not processed photons, whcich fuel fluorescense.
+  It accounts for photo-synthesis, photo-respiration and photo-inhibition.
+  Photons and carbon dioxide, as well as photons and dioxygen, are treated as parallelly processed complemantary compounds, while carbon dioxide and dioxygen are substitutable compounds.
+  Photo-inhbition occurs when photons bind to a photon-SU complex; recovery from this situation occurs when one of the photons is released.
+  The intracellular concentration of carbon dioxide and dioxygen is affected by growth and maintenance.
+  Maintenance is fuelled by corbohydrates only, in terms of O2 and CO2.
+  The stoichiometry of the growth process assumes NO3 as complementary compound.
+
+  <p>
+  Input:
+  <ol> 
+    <li> scalar with specific captured photon flux (mol/d.mol V) </li>
+    <li> scalar with environmental carbon dioxide concentration (mol/dm^3) </li> 
+    <li> scalar with environmental dioxygen concentration (mol/dm^3) </li> 
+    <li> scalar with specific growth rate (1/d) </li> 
+    <li> 10-vector with parameters
+         <ol>
+           <li>affinity for carbon dioxide (dm^3/d.mol V)</li>
+           <li>affinity for dioxygen (dm^3/d.mol V)</li>
+           <li>maximum net specific carbon fixation (1/d)</li>
+           <li>maximum net specific photo respiration (1/d)</li>
+           <li>rate of carbon dioxide exchnage with environment (1/d)</li>
+           <li>rate of dioxygen exchnage with environment (1/d)</li>
+           <li>inhibition repair rate (1/d)</li>
+           <li>specific maintenance for carbohydrate (mol/d.mol)</li>
+           <li>yield of structure on hydrocarbon (mol/mol)</li>
+           <li>volume-specific mass of structure, mol/cm^3</li>
+         </ol></li> 
+    <li> 4-vector with chemical indices for structure (C, H, O, N)</li>
+    <li> optional scalar for initial guess for carbohydrate flux</li>
+  </ol>
+
+  <p> 
+  Output:
+  <ol>
+    <li> scalar with specific assimilation rate of carbohydrates (mol/d.mol)</li>
+    <li> scalar with specific non-processed flux of photons (mol/d.mol)</li>
+    <li> scalar with info on failure (0) or success (1) of numerical procedure </li>
+  </ol>
+
+  <p>
+  An example of use is given in <code>mydata_sar_psri</code>
+
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

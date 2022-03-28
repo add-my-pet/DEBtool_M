@@ -1,0 +1,535 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_animal</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3><A NAME="toolbox_animal">Toolbox: animal</A></H3>
+
+Toolbox animal deals with the standard DEB model and some variants of this model.<br>
+Hundreds of examples of applications of functions in this toolbox can be found in the predict-files of the 
+<a href = "http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/index.html" TARGET="_top"> add_my_pet collection</a>.<br>
+The following models are delineated as variations on <a href="#std">model <i>std</i></a>
+
+<ul>
+  <li> s-models assume isomorphy throughout the full life cycle
+    <ul>
+      <li> <a NAME="std"><i>std</i></a>:<br>
+        The standard DEB model follows from the assumptions as listed in Table 2.4 of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB book</a>.
+        Within the family of DEB models, it can be seen as a canonical form, which differs from other DEB models by
+        <ul>
+          <li> 1 type of food, 1 type of reserve, 1 type of structure</i>
+          <li> 3 life stages (embryo, juvenile, adult) triggered by maturity thresholds.
+               Birth is defined as start of assimilation via food uptake, puberty as end of maturation and start of allocation to reproduction.</li>
+          <li> O_2 available without limitation </li>
+          <li> products: faeces and 3 minerals CO2, N_waste, H2O</li>
+        </ul>
+        The model equations are summarized in Table 2.5, and in scaled stochastic form in the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 2.9</a>.
+     </li>
+
+     <li> <a NAME="stf"><i>stf</i></a>:<br> 
+       Like <a href="#std">model <i>std</i></a> but with
+       <ul>
+         <li> foetal development (rather than egg development)</li>
+       </ul>
+       Budding, as found in cnidarians and salps has, metabolically, similarities with foetal propagation: no assimilation by buds during development.
+       Foetal development is found in e.g. peripatus, some cartilagenous and ray-finned fish. 
+    </li>
+
+    <li> <a NAME="stx"><i>stx</i></a>:<br>
+      Like <a href="#stf">model <i>stf</i></a> but with 
+      <ul>  
+        <li> foetal development (rather than egg development) that first starts with a preparation stage and then sparks off at a time that is an extra parameter </li>
+        <li> a baby stage (for mammals) just after birth, ended by weaning, where juvenile switches from feeding on milk to solid food at maturity level E_Hx.
+           Weaning is between birth and puberty.</li>   
+       </ul>
+       In its simplest form, it is a two parameter extension of <a href="#std">model <i>std</i></a> at abundant food.
+       Food quality and upregulation can involve more parameters.
+       This life history is found in placentalia.
+       Milk production is from upregulated feeding/assimilation.
+       The quantification of this process involves further parameters. 
+       See <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.pdf">Section 7.7 of the DEB book</a> and 
+       <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">its comments</a>.
+    </li>
+
+    <li> <a NAME="ssj"><i>ssj</i></a>:<br>
+      Like <a href="#std">model <i>std</i></a> but with 
+      <ul>  
+        <li> a non-feeding stage between events s and j during the juvenile stage that is initiated at a particular maturity level and lasts a particular time.
+          Substantial metabolically controlled shrinking occurs during this period, more than can be explained by starvation.</li>   
+      </ul>
+        It is a two or three parameter extension of <a href="#std">model <i>std</i></a>.
+        This life history is found in Elopiformes, Albuliformes, Notacanthiformes, Anguilliformes, Ophidiiformes, some Anura and Echinodermata.
+        The  <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments on Section 1.1.4</a> give more background.
+    </li>
+
+    <li> <a NAME="sbp"><i>sbp</i></a>:<br>
+      Like <a href="#std">model <i>std</i></a> but with 
+      <ul>  
+        <li> growth ceases at puberty, meaning that the kappa-rule is not operational in adults.</li>   
+      </ul>
+      It has the same parameters as the <a href="#std">model <i>std</i></a>, and is similar to the <a href="#abp">model <i>abp</i></a>, which differs by acceleration.
+      This life history is found in Calanus, while other copepods accelerate. 
+      We obviously need more data and better culturing techniques. 
+    </li>
+  </ul>
+
+  <li> a-models also assume isomorphy, but during part of the life cycle metabolism accelerates following the rules for V1-morphy
+    
+    <ul>
+      <li> <a NAME="abj"><i>abj</i></a>:<br>
+        The DEB model with type M acceleration is like <a href="#std">model <i>std</i></a>, but 
+        <ul>
+          <li> acceleration between birth and metamorphosis </li>
+          <li> before and after acceleration: isomorphy</li>
+        </ul>
+        Metamorphosis is before puberty and occurs at maturity E_Hj, which might or might not correspond with changes in morphology.
+        This model is a one-parameter extension of <a href="#std">model <i>std</i></a>.
+      </li>
+ 
+      <li> <a NAME="asj"><i>asj</i></a>:<br>
+        The DEB model with delayed type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
+        <ul>
+          <li> start of acceleration is delayed till maturity level E_Hs</li>
+          <li> Before and after acceleration: isomorphy.</li>
+        </ul>
+        Metamorphosis is still before puberty.
+        This model is a one-parameter extension of model <i>abj</i>.
+        This life history is found in Mnemiopsis, Crassostrea and Aplysia.
+        Further improvement of data might require a change from <i>abj</i> to <i>asj</i> for quite a few species.
+      </li>
+
+      <li> <a NAME="abp"><i>abp</i></a>:<br>
+        The DEB model with type M acceleration is like <a href="#abj">model <i>abj</i></a>, but 
+        <ul>
+          <li> acceleration between birth and puberty </li>
+          <li> before acceleration: isomorphy</li>
+          <li> after acceleration: no growth, so no kappa-rule</li>
+        </ul>
+        Metamorphosis can occur before puberty and occurs at maturity E_Hj, but only affects morphology, not metabolism.
+        This model has the same number of parameters as <a href="#std">model <i>std</i></a>. 
+        It is similar to the <a href="#sbp">model <i>sbp</i></a>, which has no acceleration.
+        It applies to copepods, may be also to ostracods, spiders and scorpions.
+      </li>
+    </ul>
+
+  <li> h-models are as a-models, but with extra life stages (as found in insects) triggered by the reproduction buffer density
+
+    <ul>
+      <li> <a NAME="hep"><i>hep</i></a>:<br>
+        The DEB model for ephemeropterans, odonata and possibly other insect groups. It characteristics are
+        <ul> 
+          <li> morphological life stages: egg, larva, (sub)imago;  functional stages: embryo, juvenile, adult, imago</li>
+          <li> the embryo still behaves like <a href="#std">model <i>std</i></a></li>
+          <li> acceleration starts at birth and ends at puberty</li>
+          <li> puberty occurs during the larval stage</li>
+          <li> emergence occurs when reproduction buffer density hits a threshold</li>
+          <li> the (sub)imago does not grow or allocate to reproduction. It mobilises reserve to match constant (somatic plus maturity) maintenance</li>
+        </ul>
+        The model is further discussed in the
+        <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments for Section 7.8</a>.
+      </li>
+
+      <li> <a NAME="hex"><i>hex</i></a>:<br>
+        The DEB model for holometabolic insects (and some other hexapods). It characteristics are
+        <ul> 
+          <li> morphological life stages: egg, larva, (pupa), imago; functional stages: embryo, adult, (pupa), imago </li>
+          <li> the embryo still behaves like <a href="#std">model <i>std</i></a></li>
+          <li> the larval stage accelerates (V1-morph) and behaves as adult, i.e. no maturation, allocation to reproduction</li>
+          <li> pupation occurs when reproduction buffer density hits a threshold</li>
+          <li> pupa behaves like an isomorphic embryo of <a href="#std">model <i>std</i></a>, but larval structure rapidly transforms to pupal reserve just after start of pupation</li>
+          <li> the reproduction buffer remains unchanged during the pupal stage</li>
+          <li> the imago does not grow or allocate to reproduction. It mobilises reserve to match constant (somatic plus maturity) maintenance</li>
+        </ul>
+        Hemi-metabolic insects skip the pupal stage, don't convert larval structure to reserve. 
+        Imago structure equals larval stucture when reproduction buffer density hits a threshold.
+        The model is further discussed in the
+        <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_c.pdf">comments for Section 7.8</a>.
+      </li>
+  </ul>
+
+  <li> nat model stands for not-a-typified model. It comes with no constrains or checks. It is meant for non-AmP purposes, such as effects of toxicants.
+
+</ul>
+  
+<HR>
+<H4><A NAME="life cycle">life cycle </A></H4>
+  
+  Several functions apply to the full life cycle of the individual. 
+  The function <a href="../animal/html/animal.html"><code>animal</code></a> runs a demo for the standard model, after editing parameter values in 
+  <A HREF="../animal/html/pars_animal.html"><code>pars_animal</code></A>:
+  <UL>
+    <li> <a href="../animal/html/shmics.html"><code>shmics</code></a>: 
+         temp correction, embryo weights, reproduction, reserve residence times </li>
+    <li> <a href="../animal/html/shtime_animal.html"><code>shtime_animal</code></a>:
+         length, reprod, weight, survival </li>
+    <li> <a href="../animal/html/shphase.html"><code>shphase</code></a>:
+         phase diagram </li>
+    <li> <a href=".../animal/html/shflux.html"><code>shflux</code></a>:
+         fluxes of compounds </li>
+    <li> <a href="../animal/html/shflux_struc.html"><code>shflux_struc</code></a>:
+         structure-specific fluxes </li>
+    <li> <a href="../animal/html/shflux_weight.html"><code>shflux_weight</code></a>:
+         weight-specific fluxes </li>
+    <li> <a href="../animal/html/shratio.html"><code>shratio</code></a>:
+         Repiration, Watering, Urination Quotients </li>
+    <li> <a href="../animal/html/shpower.html"><code>shpower</code></a>:
+         powers and specific powers </li>
+    <li> <a href="../animal/html/shscale.html"><code>shscale</code></a>:
+         variables versus species' max body weight </li>
+    <li> <a href="../animal/html/shssd_iso.html"><code>shssd_iso</code></a>:
+         population characteristics versus functional response </li>
+  </UL>
+
+   The standard model accounts for:<BR>
+   effects of food availability (X) and temperature (T).<BR>
+   These environmental parameters are taken to be constant in this demo, but the theory handles varying environmental parameters.
+ 
+   <p>
+   The animal (or other organism) is decomposed in:<BR>
+   structure (V) and reserve (E)<BR>
+   Organic compounds:<BR>
+   X = food, V = structure, E = reserve, P = faeces<BR>
+   Mineral compounds:<BR>
+   C = carbon dioxide, H = water, O = dioxygen, N = nitrogen waste
+
+   <p>
+   The animal develops through an embryonic, juvenile and adult phase.<BR>
+   Assimilation is switched on at birth<BR>
+   Allocation to maturation is redirected to reproduction at puberty
+
+   <p>
+   Uptake is proportional to surface area, which is taken to be proportional to the structural volume^(2/3): 
+   isomorph
+
+   <p>
+   The heating length (this is the volumetric length reduction due to the energy drain that goes into heating or osmotic work) is set to a fixed length in this implementation. 
+   The DEB theory has a module on the water balance, with implications for the costs of heating. 
+   These implications make the heating length a function of other variables.
+
+   <p>
+   All lengths refer to volumetric lengths. Lengths should be divided by a shape coefficients to arrive at shape-specific lengths.
+
+  <p>
+  Script <a href="../animal/html/shtraject.html">shtraject</a> runs a simulation of the stochastic variant, where food searching is a time-inhomogeneous Poisson process.
+  DEB theory quantifies aging directly in terms of the hazard rate, so for the aging process no deterministic equivalent is available.
+  The scripts plot variables as function of scaled time since birth.
+  Function <a href="../animal/html/shphase.html"><code>shphase</code></a> presents phase diagrams, which indicate how reserve and structure chnage relative to each other.
+  
+  <p>
+  Script <a href="../animal/html/statistics.html"><code>statistics</code></a> computes quantities that depend on food density,
+  while script <a href="../animal/html/parscomp.html"><code>parscomp</code></a> computes quantities that are independent of food density, 
+  so functions of parameters, called compound parameters.
+ 
+  <p> Function 
+  <a href="../animal/html/shpower.html"><code>shpower</code></a>
+  plots the various powers as function of scaled length.
+  It is based on 
+  <a href="../animal/html/scaled_power.html"><code>scaled_power</code></a>.
+  It is similar to 
+  <a href="../animal/html/shflux.html"><code>shflux</code></a>
+  for mass fluxes and
+  <a href="../animal/html/shflux_struc.html"><code>shflux_struc</code></a>
+  for structure-specific mass fluxes and
+  <a href="../animal/html/shflux_weight.html"><code>shflux_weight</code></a>
+  for body weight-specific mass fluxes.
+  Likewise
+  <a href="../animal/html/shratio.html"><code>shratio</code></a>
+  plots ratio's of mineral fluxes.
+
+  <p>
+  Maturity is, at constant food density, found from length by functions
+  <a href="../animal/html/maturity.html"><code>maturity</code></a>,
+  <a href="../animal/html/maturity_j.html"><code>maturity_j</code></a>,
+  <a href="../animal/html/maturity_s.html"><code>maturity_s</code></a>.
+  The functions relate to non-acceleration, tyupe M acceleration and delayed type M acceleration.
+  They can be applied for the full life cycle (although maturity remains constant for adults). 
+
+  <p>
+  Since food denisity trajectories uniquely determine state trajectories, the inverse mapping also exists:
+  from states trajectories to trajectories of scaled functional response.
+  The pair of functions 
+  <a href="../animal/html/f2o.html"><code>f2o</code></a> and
+  <a href="../animal/html/o2f.html"><code>o2f</code></a> is and example for (fish) otoliths, where otoliths are considered to be products,
+  with contributions from assimilations, dissipation and growth.
+  See section 4.11.4 of the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB book</a>.
+  Isotops, their dynamics is discussed in Section 4.7, add to the reconstruction to include temperature trajectories as well.
+  See function <a href="../animal/html/isotope.html"><code>isotope</code></a>
+
+<HR>
+<H4><A NAME="embryo">embryo</A></H4>
+
+  The scaled initial reserve is computed by 
+  <a href="../animal/html/get_ue0.html"><code>get_ue0</code></a> for eggs and
+  <a href="../animal/html/get_ue0_foetus.html"><code>get_ue0_foetus</code></a> for foetusses.
+  The latter amounts to the cumulative energy investment till birth.
+  The functions 
+  <a href="../animal/html/initial_scaled_reserve.html"><code>initial_scaled reserve</code></a> and
+  <a href="../animal/html/initial_scaled_reserve_foetus.html"><code>initial_scaled reserve_foetus</code></a> are shells around these function for vector-arguments and they are not scaled down to dimensionless quantities.
+
+  <p>
+  Scaled maturity at birth should not exceed a threshold that is computed in 
+  <a href="../animal/html/get_vHb.html"><code>get_vHb</code></a>.
+
+  <p>
+  The scaled length at birth is computed by 
+  <a href="../animal/html/get_lb.html"><code>get_lb</code></a>,
+  <a href="../animal/html/get_lb1.html"><code>get_lb1</code></a>,
+  <a href="../animal/html/get_lb2.html"><code>get_lb2</code></a>, and
+  <a href="../animal/html/get_lb3.html"><code>get_lb3</code></a>.
+  The functions differ in numerical method, from fast and dirty to slow and robust.
+  Use function  <a href="../animal/html/get_lb_foetus.html"><code>get_lb_foetus</code></a> for foetal development.
+  
+  <p>
+  The scaled time at birth is computed by
+  <a href="../animal/html/get_tb.html"><code>get_tb</code></a>, 
+  <a href="../animal/html/get_tb1.html"><code>get_tb1</code></a> and
+  <a href="../animal/html/get_tb_foetus.html"><code>get_tb_foetus</code></a>.
+  These functions also compute scaled length at birth.
+  Age, reserve, length (and maturity) at birth is produced by 
+  <a href="../animal/html/get_ael.html"><code>get_ael</code></a>,
+  <a href="../animal/html/get_aulh.html"><code>get_aulh</code></a>,
+  <a href="../animal/html/get_tul.html"><code>get_tul</code></a> and
+  <a href="../animal/html/get_tul_i.html"><code>get_tul_i</code></a> for egg development and
+  <a href="../animal/html/get_ael_f.html"><code>get_ael_f</code></a> and
+  <a href="../animal/html/get_aulh_f.html"><code>get_aulh_f</code></a> for foetal development.
+  The results are obtained by integration and can to used to check the results of other embryo-functions.
+  The numerical methods differ between these functions.
+
+  <p>
+  The scaled reserve density at which growth and/or maturition ceases at birth is computed by
+  <a href="../animal/html/get_eb_min_G.html"><code>get_eb_min_G</code></a>,
+  <a href="../animal/html/get_eb_min_R.html"><code>get_eb_min_R</code></a> and
+  <a href="../animal/html/get_eb_min.html"><code>get_eb_min</code></a>.
+  The levels can be seen as minimum levels to reach birth.
+
+  <p>
+  The cumulative energy investment to the various endpoints at birth can be obtained numerically with functions
+  <a href="../animal/html/get_EMJHG.html"><code>get_EMJHG</code></a> and
+  <a href="../animal/html/get_EMJHG_foetus.html"><code>get_EMJHG_foetus</code></a>,
+  and graphically with functions
+  <a href="../animal/html/birth_pie.html"><code>birth_pie</code></a> and 
+  <a href="../animal/html/birth_pie_foetus.html"><code>birth_pie_foetus</code></a>.
+
+
+<HR>
+<H4><A NAME="juvenile">juvenile</A></H4>
+
+  The scaled times at weaning (for mammals) 
+  <a href="../animal/html/get_tx.html"><code>get_tx</code></a> and
+  start acceleration
+  <a href="../animal/html/get_ts.html"><code>get_ts</code></a> and
+  metamorphosis
+  <a href="../animal/html/get_tj.html"><code>get_tj</code></a> and
+  <a href="../animal/html/get_tj_foetus.html"><code>get_tj_foetus</code></a>
+  and puberty
+  <a href="../animal/html/get_tp.html"><code>get_tp</code></a> and
+  <a href="../animal/html/get_tp_foetus.html"><code>get_tp_foetus</code></a>
+are computed in combination with other scaled times and scaled lengths at life history events.
+  If you only need scaled lengths, it is more economic to use the corresponding <code>get_l*</code> functions:
+  <a href="../animal/html/get_ls.html"><code>get_ls</code></a>,
+  <a href="../animal/html/get_lj.html"><code>get_lj</code></a>,
+  <a href="../animal/html/get_lj_foetus.html"><code>get_lj_foetus</code></a>,
+  <a href="../animal/html/get_lp.html"><code>get_lp</code></a>,
+  <a href="../animal/html/get_lp_foetus.html"><code>get_lp_foetus</code></a>.
+  If you only need states at birth, see under <a href="#embryo">embryo</a>
+
+  <p>
+  The scaled reserve density at which growth and maturition ceases at puberty is computed by
+  <a href="../animal/html/get_ep_min.html"><code>get_ep_min</code></a> without acceleration,
+  <a href="../animal/html/get_ep_min_metam.html"><code>get_ep_min_metam</code></a> with acceleration.
+
+  <p>
+  Scaled functional response is reconstructed from scaled length by functions
+  <a href="../animal/html/l2f.html"><code>l2f</code></a> and
+  <a href="../animal/html/l2f1.html"><code>l2f1</code></a>.
+  They apply to the juvenile and adult stages.
+
+  <p> 
+  The reserve residence time as function of length is computed by
+  <a href="../animal/html/res_time.html"><code>res_time</code></a>
+  and fluxes of masses for parameters and states by
+  <a href="../animal/html/flux.html"><code>flux</code></a>.
+  It applies to the juvenile and adult stages.
+
+<HR>
+<H4><A NAME="adult">adult</A></H4>
+
+  The reproduction rate as function of time can be obtained with functions 
+  <a href="../animal/html/reprod_rate.html"><code>reprod_rate</code></a> and
+  <a href="../animal/html/reprod_rate_foetus.html"><code>reprod_rate_foetus</code></a>.
+  In case of type M acceleration, use functions
+  <a href="../animal/html/reprod_rate_j.html"><code>reprod_rate_j</code></a> or 
+  <a href="../animal/html/reprod_rate_s.html"><code>reprod_rate_s</code></a>. 
+
+  <p>
+  Likewise, the cumulative reproduction as function of time can be obtained with function 
+  <a href="../animal/html/cum_reprod.html"><code>cum_reprod</code></a>.
+  In case of type M acceleration, use functions
+  <a href="../animal/html/cum_reprod_j.html"><code>cum_reprod__j</code></a> or 
+  <a href="../animal/html/cum_reprod_s.html"><code>cum_reprod_s</code></a>. 
+  
+  <p>
+  The cumulative energy investment in milk production (most by mammals) from birth to weaning is computed by
+  <a href="../animal/html/milk.html"><code>milk</code></a>.
+ 
+  <p>
+  The median age at death due to ageing is computed by
+  <a href="../animal/html/get_t50_s.html"><code>get_t50_s</code></a>
+  for short growth periods.
+  The scaled mean age at death due to aging is computed by 
+  <a href="../animal/html/get_tm_s.html"><code>get_tm_s</code></a> for short growth periods and for arbitrary growth periods by
+  <a href="../animal/html/get_tm.html"><code>get_tm</code></a> and
+  <a href="../animal/html/get_tm_foetus.html"><code>get_tm_foetus</code></a>.
+
+  <p>
+  Functions
+  <a href="../animal/html/get_evh.html"><code>get_evh</code></a> and
+  <a href="../animal/html/get_leh.html"><code>get_leh</code></a> get state variables as functions of time over the whole life cycle.
+
+<HR>
+<H4><A NAME="pars-data">pars-data</A></H4>
+
+  Functions <code>get_pars_*</code> obtain compound DEB parameters from easy-to-observe quantities and the functions <code>iget_pars_*</code> do the reverse, which can be used for checking. 
+  The theory is discussed in <a href="/thb/research/bib/KooySous2008.html">KooySous2008</a>. 
+  The heating length L<sub>T</sub> is assumed to be zero in all <code>get_pars_*</code> functions. 
+  An example of use is given in <code>mydata_get_pars</code>.
+  The routines are organized as follows:
+
+  <table border rules=groups>
+    <colgroup span = 1 align = left>
+    <colgroup span = 3 align = center>
+    <colgroup span = 3 align = center>
+    <tr>
+       <th></th>
+       <th colspan = 3> get_pars</th>
+       <th colspan = 3> iget_pars</th>
+    </tr>
+    <tr>
+       <th> food level</th>
+       <th colspan = 1> one</th>
+       <th colspan = 2> several</th>
+       <th colspan = 1> one</th>
+       <th colspan = 2> several</th>
+    </tr>
+    <tr>
+      <th>constraint</th>
+      <th> k<sub>J</sub> = k<sub>M</sub> </th> 
+      <th> k<sub>J</sub> != k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub> </th> 
+      <th> k<sub>J</sub> != k<sub>M</sub></th>
+      <th> k<sub>J</sub> = k<sub>M</sub></th>
+    </tr>
+    <tr> 
+      <th> growth </th> 
+      <td> <a HREF="../animal/html/get_pars_g.html"><code>get_pars_g</code></a> </td>
+      <td> <a HREF="../animal/html/get_pars_h.html"><code>get_pars_h</code></a> </td> 
+      <td> <a HREF="../animal/html/get_pars_i.html"><code>get_pars_i</code></a> </td>
+      <td> <a HREF="../animal/html/iget_pars_g.html"><code>iget_pars_g</code></a> </td>
+      <td> <a HREF="../animal/html/iget_pars_h.html"><code>iget_pars_h<code></a> </td> 
+      <td> <a HREF="../animal/html/iget_pars_i.html"><code>iget_pars_i</code></a> </td>
+    </tr>
+    <tr> 
+      <th> growth & reprod</th> 
+      <td> <a HREF="../animal/html/get_pars_r.html"><code>get_pars_</code></a> </td>
+      <td> <a HREF="../animal/html/get_pars_s.html"><code>get_pars_s</code></a> </td> 
+      <td> <a HREF="../animal/html/get_pars_t.html"><code>get_pars_t</code></a> </td>
+      <td> <a HREF="../animal/html/iget_pars_r.html"><code>iget_pars_r</code></a> </td>
+      <td> <a HREF="../animal/html/iget_pars_s.html"><code>iget_pars_s</code></a> </td> 
+      <td> <a HREF="../animal/html/iget_pars_s.html"><code>iget_pars_s</code></a> </td>
+    </tr>
+  </table>
+
+  Functions for several food levels do not use age at birth data. 
+  If one food level is available, we have to make use of the assumption of stage transitions at fixed amounts of structure (k_M = k_J). 
+  If several food levels are available, we no longer need to make this assumption, but it does simplify matters considerably. 
+  Functions <a HREF="../animal/html/elas_pars_g.html"><code>elas_pars_g</code></a> and 
+  <a HREF="../animal/html/elas_pars_r.html"><code>elas_pars_r</code></a> give elasticity coefficients.
+  Function <a HREF="../animal/html/get_pars_u.html"><code>get_pars_u</code></a> converts compound parameters into unscaled primary parameters at abundant food.
+
+  <p>
+  Another group of <code>get_pars</code> functions obtain primary (rather than compound) parameters from data at abundant food.
+  This strategy comes with assumptions about particular (chemical) parameter values (chemical potentials and the like). 
+  Again, all functions assume absence of surface-area linked maintenance.
+  They don't make use of the assumption k_J = k_M, but assume that k_J is known.
+  By increasing the number of known parameters, we can decrease the amount of data that is needed to get the remaining parameters, as reflected in the different <code>get_par</code>s varieties:
+  <a href="../animal/html/get_pars_9.html"> <code>get_pars_9</code></a>,
+  <a href="../animal/html/get_pars_8.html"> <code>get_pars_8</code></a>,
+  <a href="../animal/html/get_pars_7.html"> <code>get_pars_7</code></a>,
+  <a href="../animal/html/get_pars_6.html"> <code>get_pars_6</code></a>,
+  <a href="../animal/html/get_pars_6a.html"> <code>get_pars_6a</code></a>,
+  <a href="../animal/html/get_pars_5.html"> <code>get_pars_5</code></a>,
+  <a href="../animal/html/get_pars_4.html"> <code>get_pars_4</code></a>,
+  <a href="../animal/html/get_pars_3.html"> <code>get_pars_3</code></a>,
+  <a href="../animal/html/get_pars_2.html"> <code>get_pars_2</code></a>,
+  <a href="../animal/html/get_pars_2a.html"> <code>get_pars_2a</code></a>.
+  Functions
+  <a href="../animal/html/iget_pars_9.html"> <code>iget_pars_9</code></a> and
+  <a href="../animal/html/iget_pars_8.html"> <code>iget_pars_8</code></a> are inverse functions, from parameters to data.
+  Functions   <a href="../animal/html/get_pars_9_foetus.html"> <code>get_pars_9_foetus</code></a> and 
+  <a href="../animal/html/iget_pars_9_foetus.html"> <code>iget_pars_9_foetus</code></a> are for foetal development.
+  One strategy to set values of "known" parameters is to use the generalized animal settings of Table 8.1 in the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.
+  The maximum number of parameters than can be obtained at abundant food only is 9.
+
+  <p>
+  Functions 
+  <a href="../animal/html/filter_pars_9.html"> <code>filter_pars_9</code></a> and
+  <a href="../animal/html/filter_data_9.html"> <code>filter_data_9</code></a> filter allowable parameter and data combinations in the case of 9 parameters (including type M acceleration).
+  Functions 
+  <a href="../animal/html/filter_pars_8.html"> <code>filter_pars_8</code></a> and
+  <a href="../animal/html/filter_data_8.html"> <code>filter_data_8</code></a> filter allowable parameter and data combinations in the case of 8 parameters (no acceleration).
+  
+
+<HR>
+<H4><A NAME="population">population</A></H4>
+
+The specific population growth rate at constant food density is obtained by 
+  <a href="../animal/html/sgr_std.html"><code>sgr_mod</code></a>, where mod is one of the 10 DEB models 
+     <a href="../animal/html/sgr_std.html"><code>std</code></a>,
+     <a href="../animal/html/sgr_stf.html"><code>stf</code></a>,
+     <a href="../animal/html/sgr_stx.html"><code>stx</code></a>,
+     <a href="../animal/html/sgr_ssj.html"><code>ssj</code></a>,
+     <a href="../animal/html/sgr_sbp.html"><code>sbp</code></a>,
+     <a href="../animal/html/sgr_abj.html"><code>abj</code></a>,
+     <a href="../animal/html/sgr_asj.html"><code>asj</code></a>,
+     <a href="../animal/html/sgr_abp.html"><code>sbp</code></a>,
+     <a href="../animal/html/sgr_hep.html"><code>hep</code></a>,
+     <a href="../animal/html/sgr_hex.html"><code>hex</code></a>.
+The mean age, length, squared and cubed length in the population at constant food density is computed by
+  <a href="../animal/html/ssd_std.html"><code>ssd_mod</code></a>, where mod is again rplaced by one of the 10 DEB models.
+
+<P>
+The scaled functional response at which the specific population growth rate is zero is found by 
+  <a href="../animal/html/f_ris0_std.html"><code>f_ris0_mod</code></a>.
+Population characteristics are plotted against scaled functional response by 
+  <a href="../animal/html/shssd_iso.html"><code>shssd_iso</code></a>.
+See further <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/popDyn/popDyn.html" target="_blank">the popDyn page of Amp</a>.
+
+<HR>
+<H4><A NAME="comparison">comparison</A></H4>
+
+Parameter values are individual-specific, but the general idea is that intra-specific variations are small relative to inter-species variations. With this idea in mind, we can concieve the parameter values of a species as a kind of mean among all individuals of that species. DEB theory has rules for the co-variation of parameter values. Function 
+<a href="../animal/html/scale.html"><code>scale</code></a> obtains eco-physiological qantities as function of the zoom-factor and function
+<a href="../animal/html/shscale.html"><code>shscale</code></a> plots these quanties against maximum body weight, which itself is just one such quantity.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

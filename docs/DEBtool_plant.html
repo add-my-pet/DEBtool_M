@@ -1,128 +1,138 @@
-<HTML>
-<HEAD>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEBtool_plant</title>
+  <link rel="stylesheet" type="text/css" href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/style.css"> 
+  <script src="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/dropdown.js"></script>
+  <script src="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/w3data.js"></script>
+</head>
+<body>
 
-  <TITLE>DEBtool_plant</TITLE>
+  <div w3-include-html="wallpaper_DEBtool.html"></div>
+  <script>w3IncludeHTML();</script>
 
-  <STYLE>
-  <!--
-  H1 {color: blue; text-align:center}
-  H2 {color: blue; text-align:left}
-  A:link{color:blue}
-  A:visited{color:red}
-  A:hover{color:blue}
-  A:active{color:blue}
-  code {color:magenta}
-  -->
-  </STYLE>
+  <div w3-include-html="toolbar_DEBtool.html"></div>
+  <script>w3IncludeHTML();</script>
 
-</HEAD>
+<!--------------------------------------------------------------->
+<!--   PART main                                               -->
+<!--   Where all of the text is placed                         -->
+<!--   use "contentFull" for 1 column                          -->
+<!--   use "content" if you want two columns"                  -->
+<!--------------------------------------------------------------->
+<div id = "main">
+  <div id = "main-wrapper">    
+    <div id="contentFull">
 
-<BODY BGCOLOR="#EEFFEE">
+      <h1>DEBtool Toolbox: plant</h1>
 
-<H3>Toolbox: plant</H3>
+      Plant growth, reproduction: 6 reserves, 2 structures, generalized morphology
 
-Plant growth, reproduction: 6 reserves, 2 structures, generalized morphology
+      <HR>
+      <H4><A NAME="plant">plant</A></H4>
 
-<HR>
-<H4><A NAME="plant">plant</A></H4>
+      Demo that runs:
+      <UL>
+        <LI> <A HREF="#pars_plant"><code>pars_plant</code></A>: parameter setting </LI>
+        <LI> <A HREF="#shtime_plant"><code>shtime_plant</code></A>: development of root & shoot </LI>
+      </UL>
 
-  Demo that runs:
-  <UL>
-    <LI> <A HREF="#pars_plant"><code>pars_plant</code></A>: parameter setting </LI>
-    <LI> <A HREF="#shtime_plant"><code>shtime_plant</code></A>: development of root & shoot </LI>
-  </UL>
+      The model accounts for:
+      effects of light (J_L.F), dioxygen (X_O) and carbon dioxide (X_C)
+      concentrations in the air, ammonium (X_NH), nitrate (X_NO) and
+      water (X_H) concentrations in the soil, and temperature (T).
+      These environmental parameters are taken to be constant in the
+      present implementation, but it is not difficult to let them vary in time.
 
-  The model accounts for:
-    effects of light (J_L.F), dioxygen (X_O) and carbon dioxide (X_C)
-    concentrations in the air, ammonium (X_NH), nitrate (X_NO) and
-    water (X_H) concentrations in the soil, and temperature (T).
-  These environmental parameters are taken to be constant in the
-    present implementation, but it is not difficult to let them vary in time.
+      <P>
+      Control vector:<BR>
+      X = [J_L.F, X_C, X_O, X_NH, X_NO, X_H, T]
 
-  <P>
-  Control vector:<BR>
-  X = [J_L.F, X_C, X_O, X_NH, X_NO, X_H, T]
+      <P>
+      The plant is decomposed in:<br>
+       shoot product (PS, e.g. wood), structure (VS), general reserves (ES), nitrogen-reserves (ENS) and carbon-reserves (ECS)<BR>
+       root  product (PR, e.g. wood), structure (VR), general reserves (ER), nitrogen-reserves (ENR) and carbon-reserves (ECR)<BR>
+      State vector:<BR>
+        M = [M_PS, M_VS, M_ECS, M_ENS, M_ES, M_PR, M_VR, M_ECR, M_ENR, M_ER]
 
-  <P>
-  The plant is decomposed in:
-    shoot product (PS, e.g. wood), structure (VS), general reserves (ES), nitrogen-reserves (ENS) and carbon-reserves (ECS)<BR>
-    root  product (PR, e.g. wood), structure (VR), general reserves (ER), nitrogen-reserves (ENR) and carbon-reserves (ECR)<BR>
-  State vector:<BR>
-    M = [M_PS, M_VS, M_ECS, M_ENS, M_ES, M_PR, M_VR, M_ECR, M_ENR, M_ER]
+      <P>
+      The plant develops through an embryonic, juvenile and adult phase<BR>
+      No assimilation occurs during the embryonic phase<BR>
+      No reproduction allocation occurs during the juvenile phase
 
-  <P>
-  The plant develops through an embryonic, juvenile and adult phase<BR>
-  No assimilation occurs during the embryonic phase<BR>
-  No reproduction allocation occurs during the juvenile phase
+      <P>
+      The interaction between root and shoot resembles that between host and symbiont. 
+      It differs by translocation of general reserves, and the occurrence of the ratio of shoot and root surface area's in the saturation constants for nutrients and water.
 
-  <P>
-  The interaction between root and shoot resembles that between host and symbiont. 
-  It differs by translocation of general reserves, and the occurrence of the ratio of shoot and root surface area's in the saturation constants for nutrients and water.
+      <P>
+      Uptake is proportional to surface area of root or shoot. 
+      The area's are take to be functions of the structure, and specified in routine <code>flux</code>; 
+      many plants develop from a V1-morph, via a isomorph, to a V0-morph.  
+      Maintenance of root and shoot is proportional to their structure.
 
-  <P>
-  Uptake is proportional to surface area of root or shoot. 
-  The area's are take to be functions of the structure, and specified in routine <code>flux</code>; 
-  many plants develop from a V1-morph, via a isomorph, to a V0-morph.  
-  Maintenance of root and shoot is proportional to their structure.
+      <P>
+      The effect of water is incorporated with a single parameter for water availability. 
+      This is too simple, since what counts is water transport, which depends on water in the soil as well as relative humidity in the atmosphere. 
+      The saturation constant depends on the ratio if the surface area's of shoot and root
+      (see <A HREF="https://www.bio.vu.nl/thb/deb/deblab/bib/Kooy2010.html">DEB-book</A> page {155}); 
+      evaporation through shoots surface area, and uptake through roots surface area are in control of water transport.
 
-  <P>
-  The effect of water is incorporated with a single parameter for water availability. 
-  This is too simple, since what counts is water transport, which depends on water in the soil as well as relative humidity in the atmosphere. 
-  The saturation constant depends on the ratio if the surface area's of shoot and root (see <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">
- DEB-book</A> page {155}); 
-  evaporation through shoots surface area, and uptake through roots surface area are in control of water transport.
+      <P>
+      The effect of both ammonia and nitrate are implemented, since their relative abundance dominates the preference of the plant. 
+      Observe that, for suitable parameter choices, the shoot/root ratio depends on environmental conditions such that adverse conditions are compensated, to some extend.
+      No optimality criteria are incorporated;
+      just plain DEB mechanisms (see <A HREF="https://www.bio.vu.nl/thb/deb/deblab/bib/Kooy2010.html"> DEB-book</A> page {209}). 
+      Aging is not implemented.
 
-  <P>
-  The effect of both ammonia and nitrate are implemented, since their relative abundance dominates the preference of the plant. 
-  Observe that, for suitable parameter choices, the shoot/root ratio depends on environmental conditions such that adverse conditions are compensated, to some extend. No optimality criteria are incorporated;
-  just plain DEB mechanisms (see <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html"> DEB-book</A> page {209}). 
-  Aging is not implemented.
+      <P>
+      Example of use after (optionally) editing file <code>pars_plant.m</code>: 
+      <code>plant</code>
 
-  <P>
-  Example of use after (optionally) editing file <code>pars_plant.m</code>: 
-  <code>plant</code>
+      <HR>
+      <H4><A NAME="pars_plant">pars_plant</A></H4>
+      Set the parameters by editing file <code>pars_plant.m</code> in toolbox plant.
 
-<HR>
-<H4><A NAME="pars_plant">pars_plant</A></H4>
+      <HR>
+      <H4><A NAME="shtime_plant">shtime_plant</A></H4>
+      The plant is exposed to a constant environment.<BR> 
+      Being usually below ground, the values for roots have been made negative, and the zero-line is plotted in brown. 
+      See pages {207} ff of the <A HREF="https://www.bio.vu.nl/thb/deb/deblab/bib/Kooy2010.html">DEB-book</A>.<BR> 
 
-  Set the parameters by editing file <code>pars_plant.m</code> in toolbox plant.
+      <p>
+      Four plots are shown of variables against time
 
-<HR>
-<H4><A NAME="shtime_plant">shtime_plant</A></H4>
+      <P>
+      Fig <B>1</B>
+      Structure of shoot (green) and root (red)
 
-  The plant is exposed to a constant environment.<BR> 
-  Being usually below ground, the values for roots have been made negative, and the zero-line is plotted in brown. 
-  See pages {207} ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.<BR> 
+      <P>
+      Fig <B>2</B>
+      Product of shoot (green) and root (red); you can think of wood, for instance
 
-  Four plots are shown of variables against time
+      <P>
+      Fig <B>3</B> 
+      Reserves of shoot and root; general reserve (red),
+      C-reserve (brown), N-reserve (blue)
 
-  <P>
-  Fig <B>1</B>
-  Structure of shoot (green) and root (red)
+      <P>
+      Fig <B>4</B> 
+      Reserve densities of shoot and root (= reserve per structure); 
+      general reserve (red), C-reserve (brown), N-reserve (blue).  
+      The general reserve density of the root is clipped to the maximum value of the other reserve densities. 
+      This is done because the seed initially starts with general root reserves only, which means that the general root reserve density is infinitely large.
 
-  <P>
-  Fig <B>2</B>
-  Product of shoot (green) and root (red); you can think of wood, for instance
+      <P>
+      Example of use after editing file <code>pars_plant.m</code> in toolbox plant:
+      <code>pars_plant;shtime_plant</code>. 
+      The command <code>pars_plant;shtime_plant(2)</code> gives figure 2 only.
 
-  <P>
-  Fig <B>3</B> 
-  Reserves of shoot and root; general reserve (red),
-  C-reserve (brown), N-reserve (blue)
+      <div w3-include-html="footer_amp.html"></div>
+      <script>w3IncludeHTML();</script>
 
-  <P>
-  Fig <B>4</B> 
-  Reserve densities of shoot and root (= reserve per structure); 
-  general reserve (red), C-reserve (brown), N-reserve (blue).  
-  The general reserve density of the root is clipped to the maximum value of the other reserve densities. 
-  This is done because the seed initially starts with general root reserves only, which means that the general root reserve density is infinitely large.
+    </div> <!-- end of content -->
 
-  <P>
-  Example of use after editing file <code>pars_plant.m</code> in toolbox plant:
-  <code>pars_plant;shtime_plant</code>. 
-  The command <code>pars_plant;shtime_plant(2)</code> gives figure 2 only.
-
-<HR>
-Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
-
-</BODY>
-</HTML>
+  </div> <!-- end of main wrapper -->
+</div> <!-- end of main -->
+</body>
+</html>
+  
