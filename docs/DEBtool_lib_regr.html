@@ -502,284 +502,287 @@
       <HR>
       <H4><A NAME="gasurv">gasurv</A></H4>
 
-  Finds maximum likelihood estimates from survival data using a genetic algorithm. 
-  The (stochastic) convergence is usually slow, but it does not require an initial estimate, only a range. 
-  The process starts from an initial set of (randomly generated) trials. 
-  See 
-  <A HREF="#scsurv"><code>scsurv</code></A> for the definition of the user-defined function, and 
-  <A HREF="#scsurv2"><code>scsurv2</code></A>, 
-  <A HREF="#nmsurv2"><code>nmsurv2</code></A> and 
-  <A HREF="#gasurv2"><code>gasurv2</code></A> for 2 independent variables and 
-  <A HREF="#scsurv3"><code>scsurv3</code></A>, 
-  <A HREF="#nmsurv3"><code>nmsurv3</code></A> and 
-  <A HREF="#gasurv3"><code>gasurv3</code></A> for 3 independent variables. 
-  See 
-  <A HREF="#garegr"><code>garegr</code></A> for a description of the outputs.
+      Finds maximum likelihood estimates from survival data using a genetic algorithm. 
+      The (stochastic) convergence is usually slow, but it does not require an initial estimate, only a range. 
+      The process starts from an initial set of (randomly generated) trials. 
+      See 
+      <A HREF="#scsurv"><code>scsurv</code></A> for the definition of the user-defined function, and 
+      <A HREF="#scsurv2"><code>scsurv2</code></A>, 
+      <A HREF="#nmsurv2"><code>nmsurv2</code></A> and 
+      <A HREF="#gasurv2"><code>gasurv2</code></A> for 2 independent variables and 
+      <A HREF="#scsurv3"><code>scsurv3</code></A>, 
+      <A HREF="#nmsurv3"><code>nmsurv3</code></A> and 
+      <A HREF="#gasurv3"><code>gasurv3</code></A> for 3 independent variables. 
+      See 
+      <A HREF="#garegr"><code>garegr</code></A> for a description of the outputs.
 
-  <P>
-  Options in the numerical procedure can be set by <A HREF="#gasurv_options"><code>gasurv_options</code></A>.
+      <P>
+      Options in the numerical procedure can be set by <A HREF="#gasurv_options"><code>gasurv_options</code></A>.
 
-  <P>
-  It is usually a good idea to run <A HREF="#scsurv"><code>scsurv</code></A> on the result of <code>gasurv</code>.
+      <P>
+      It is usually a good idea to run <A HREF="#scsurv"><code>scsurv</code></A> on the result of <code>gasurv</code>.
 
-<HR>
-<H4><A NAME="gasurv_options">gasurv_options</A></H4>
+      <HR>
+      <H4><A NAME="gasurv_options">gasurv_options</A></H4>
 
-  Sets options for parameter finding routine <code>gasurv</code>, <code>gasurv2</code> and <code>gasurv3</code>. 
-  These routines set default value which you can overwrite. 
-  See <A HREF="#garegr_options"><code>garegr_options</code></A> for further explanation.
+      Sets options for parameter finding routine <code>gasurv</code>, <code>gasurv2</code> and <code>gasurv3</code>. 
+      These routines set default value which you can overwrite. 
+      See <A HREF="#garegr_options"><code>garegr_options</code></A> for further explanation.
 
-<HR>
-<H4><A NAME="psurv">psurv</A></H4>
+      <HR>
+      <H4><A NAME="psurv">psurv</A></H4>
 
-  Calculates covariance matrix and standard deviations of parameters in survivor models.
+      Calculates covariance matrix and standard deviations of parameters in survivor models.
 
-  <P>
-  Input: 
-  user-defined function name, data matrix, and parameter values, as in <A HREF="#scsurv"><code>scsurv</code></A>.
+      <P>
+      Input: 
+      user-defined function name, data matrix, and parameter values, as in <A HREF="#scsurv"><code>scsurv</code></A>.
 
-  <P>
-  Output:
-  <ul>
-    <li> covariance matrix of parameter estimates </li>
-    <li> correlation matrix of parameter estimates </li>
-    <li> vector of standard deviations of parameter estimates </li>
-    <li> deviance</li>
-  </ul>
+      <P>
+      Output:
+      <ul>
+        <li> covariance matrix of parameter estimates </li>
+        <li> correlation matrix of parameter estimates </li>
+        <li> vector of standard deviations of parameter estimates </li>
+        <li> deviance</li>
+      </ul>
 
-  <P>
-  The elements in the covariance and correlation matrices equal zero for parameters that have code 0 in the second row of the parameter input
-matrix. 
-  The values are the maximum likelihood estimates, therefore, no corrections for bias are made.
+      <P>
+      The elements in the covariance and correlation matrices equal zero for parameters that have code 0 in the second row of the parameter input matrix. 
+      The values are the maximum likelihood estimates, therefore, no corrections for bias are made.
 
-  <P>
-  Example of use, assuming that <code>function_name</code>, <code>pars</code>, and <code>tn1</code> (and possibly more data matrices) are defined properly: 
-  <code>[cov, cor, sd, ss] = psurv('function_name', pars, tn1, tn2, ...)</code>.
+      <P>
+      Example of use, assuming that <code>function_name</code>, <code>pars</code>, and <code>tn1</code> (and possibly more data matrices) are defined properly: 
+      <code>[cov, cor, sd, ss] = psurv('function_name', pars, tn1, tn2, ...)</code>.
 
-<HR>
-<H4><A NAME="dev">dev</A></H4>
+      <HR>
+      <H4><A NAME="dev">dev</A></H4>
 
-  Calculates the deviance: two times the difference between the log likelihood function and its maximum (which based on the multinomial distribution where the death probabilities correspond with the observed relative frequencies). 
-  The maximum likelihood estimates minimize the deviance. See <A HREF="#dev2"><code>dev2</code></A> for the surface-equivalent.
+      Calculates the deviance: two times the difference between the log likelihood function and its maximum (which based on the multinomial distribution
+      where the death probabilities correspond with the observed relative frequencies). 
+      The maximum likelihood estimates minimize the deviance. See <A HREF="#dev2"><code>dev2</code></A> for the surface-equivalent.
+
+      <P>
+      Input: 
+      user-defined function name, data matrix, and parameter values, as in <A HREF="#scsurv"><code>scsurv</code></A>.
+
+      <P>
+      Output: 
+      scalar with deviance. Identical with 4th output of <A HREF="#psurv"><code>psurv</code></A>.
+
+      <P>
+      Example of use, assuming that <code>function_name</code>, <code>pars</code>, and <code>tn1</code> (and possibly more data matrices) are defined properly: 
+      <code>dev('function_name', pars, tn1, tn2, ...)</code>.
+
+      <HR>
+      <H4><A NAME="plsurv">plsurv</A></H4>
+
+      Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
+      The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
+      See <A HREF="#plsurv2"><code>plsurv2</code></A> for response surfaces.
+
+      <P>
+      Input: 
+      user-defined function name, parameter values, and one or more data matrices as in <A HREF="#scsurv"><code>scsurv</code></A>. 
+      The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
+      The value of that parameter in the parameter matrix must be within the range. 
+      The optional element 3 specifies the numer of parameter evaluations; default: 100.
+
+      <P>
+      Output:
+      <ul>
+        <li> (99,2)-matrix with parameter values and deviance </li>
+        <li> scalar with value 1 for successful convergence at all parameter evalation points; 
+          and value 0 with one or more convergence problems </li>
+      </ul>
+
+      <P>
+      Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tn1</code> (and possibly more data matrices) and <code>Range</code> are defined properly:
+      <code>plsurv('function_name', pars, tn1, tn2, ..., Range)</code>.
+
+      <HR>
+      <H4><A NAME="shsurv">shsurv</A></H4>
+
+      Plots model predictions and data (optional). 
+      Plot options can be set with routine <A HREF="#shsurv_options"><code>shsurv_options</code></A>.
+
+      <P>
+      Input: 
+      user-defined function name, parameter values, and one or more data matrices as in <A HREF="#scsurv"><code>scsurv</code></A>. 
+      The plot-range can set optionally in a vector of length 2, with the lower and upper boundaries. 
+      The columns >1 in the parameter matrix are ignored. 
+      If column 2 in the data matrix is not present, model predictions are plotted only. 
+      The colums >2 in the data matrices are ignored.
+
+      <P>
+      Example of use, assuming that <code>function_name</code>, <code>pars</code>, and data <code>tn</code> are defined properly: 
+      <code>shsurv('function_name', pars, tn)</code>, or if the user-defined function codes for two data sets, for instance
+      <code>shsurv('function_name', pars, tn1, tn2)</code>. 
+
+      <P>
+      Set options for plotting routine <code>shsurv</code> with <A HREF="#shregr_options"><code>shregr_options</code></A>.
+
+      <HR>
+      <H4><A NAME="scsurv2">scsurv2</H4>
+
+      Finds maximum likelihood estimates from survivor data like <A HREF="#scsurv"><code>scsurv</code></A>, but for an additional independent variable,
+      rather than time only. So this routine fits a surface, no a curve.
+
+      <p>
+      Options in the numerical procedure can be set by <A HREF="#scsurv_options"><code>scsurv_options</code></A>.
+
+      <P>
+      Input:
+      <ul>
+        <li> string with the name of a user-defined function for the survival model.
+          The user-defined function must take the two column vectors of values for the independent variable and a single vector-argument with parameter values as inputs,
+	  and a matrix value of model predictions as output. 
+          The size of the output matrix must match the number of values of the independent variable:  
+          the first independent variable (time) in the rows, the second one in the columns </li>
+        <li> (k, 1 or 2)-matrix with initial parameter estimates in column 1 and booleans in column 2, where 
+          0 stands for "keeping the corresponding parameter fixed", and 
+          1 for "iterate the corresponding parameter values". 
+          If column 2 is omitted, values one are assumed (i.e. all parameters are iterated) </li>
+        <li> (nt,1 or more)-matrix with time points </li>
+        <li> (ny,1 or more)-matrix with second independent variable </li>
+          The second and other columns can accomodate modifying factors.
+          The extra columns are just passed to the user-defined function, see e.g. 
+          <A HREF ="../tox/DEBtool_tox.html#fomortph" TARGET="_parent"><code>fomortph</code></A> for an example; 
+          notice that the plotting routine <A HREF="#shsurv2"><code>shsurv2</code></A> then only works properly with option <code>plotnr</code> is either 1 or 2.
+        <li> (nt,ny)-matrix with the number of surviving individual </li>
+      </ul>
+
+       <P>
+       Output: 
+       <ul>
+         <li> parameter matrix similar to the parameter input matrix, but the initial estimates are replaced by the values the that maximize the likelihood function
+	   (see <A HREF="#dev2"><code>dev2</code></A>)</li>
+         <li> scalar, which equals 0 for unsuccessful termination, and 1 for successful termination. 
+           If the option report is set to 1 (default), unsuccessful termination is reported </li>
+       </ul>
+
+       <P> 
+       The iteration is terminated if the norm, i.e. the sum of squared derivetives of the deviance with respect to the iterated parameters,
+       is less than the maximum norm or if the number of iterations exceeds a maximum values 
+       (see <A HREF="#scsurv_options"><code>scsurv_options</code></A>).
+
+       <P>
+       Example of use, assuming that 'tvalues', 'yvalues', 'numbers', function 'function_name' and initial paramer estimates 'ipars' are properly defined: 
+       <code>pars = scsurv2('function_name', ipars, tvalues, yvalues, numbers)</code>. 
+       See sample file 'mydata_surv2.m' for an example of specification. 
+       If progression seems hopeful, but the number of iterations not large enough, you can continue with 
+       <code>pars = scsurv2('function_name', pars, tvalues, yvalues, numbers)</code>. 
+       Alternatively you can increase the maximum number of iterations with <A HREF="#scsurv_options"><code>scsurv_options</code></A>.
+
+       <HR>
+       <H4><A NAME="nmsurv2">nmsurv2</A></H4>
+
+       Finds maximum likelihood estimates from survival data using Nelder Mead's simplex method. 
+       The convergence is usually slow, but the domain of attraction is rather large. 
+       See 
+       <A HREF="#scsurv2"><code>scsurv2</code></A> for the definition of the user-defined function, and 
+       <A HREF="#scsurv"><code>scsurv</code></A> and 
+       <A HREF="#nmsurv"><code>nmsurv</code></A> for one independent variable (time) with multiple samples.
+
+       <P>
+       Options in the numerical procedure can be set by <A HREF="#nmsurv_options"><code>nmsurv_options</code></A>.
+
+       <P>
+       It is usually a good idea to run <A HREF="#scsurv2"><code>scsurv2</code></A> on the result of <code>nmsurv2</code>.
+
+       <HR>
+       <H4><A NAME="gasurv2">gasurv2</A></H4>
+
+       Finds maximum likelihood estimates from survival data using a genetic algorithm. 
+       The (stochastic) convergence is usually slow, but it does not require an initial estimate, only a range. 
+       The process starts from an initial set of (randomly generated) trials. 
+       See 
+       <A HREF="#scsurv2"><code>scsurv2</code></A> for the definition of the user-defined function, and 
+       <A HREF="#scsurv"><code>scsurv</code></A>, 
+       <A HREF="#nmscsurv"><code>nmscsurv</code></A> and 
+       <A HREF="#gasurv"><code>gasurv</code></A> for one independent variable (time) with multiple samples.
+
+       <P>
+       Options in the numerical procedure can be set by <A HREF="#gasurv_options"><code>gasurv_options</code></A>.
+
+       <P>
+       It is usually a good idea to run <A HREF="#scsurv2"><code>scsurv2</code></A> on the result of <code>gasurv2</code>.
+
+       <HR>
+       <H4><A NAME="psurv2">psurv2</A></H4>
+
+       Calculates covariance matrix and standard deviations of parameters in survivor models, like <A HREF="#psurv"><code>psurv</code></A>, but for 2 independent variables.
+
+       <P>
+       Input: 
+       user-defined function name, 2 vectors of independent variables, a matrix with surviving individuals, and parameter values, as in <A HREF="#scsurv2"><code>scsurv2</code></A>.
+
+       <P>
+       Output:
+       <ul>
+         <li> covariance matrix of parameter estimates </li>
+         <li> correlation matrix of parameter estimates </li>
+         <li> vector of standard deviations of parameter estimates </li>
+         <li> deviance </li>
+       </ul>
+
+       <P>
+       The elements in the covariance and correlation matrices equal zero for parameters that have code 0 in the second row of the parameter input matrix. 
+       The values are the maximum likelihood estimates, therefore, no corrections for bias are made.
+
+       <P>
+       Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tvalues</code>, <code>yvalues</code>, <code>numbers,</code> are defined properly: 
+       <code>[cov, cor, sd, ss] = pregr2('function_name',  pars, tvalues, yvalues, numbers)</code>.
+
+       <HR>
+       <H4><A NAME="dev2">dev2</A></H4>
+
+       Calculates deviance, see <A HREF="#dev"><code>dev</code></A>.
+
+       <P>
+       Input: 
+       user-defined function name, 2 vectors of independent variables, a matrix with surviving individuals, and parameter values, as in <A HREF="#scsurv2"><code>scsurv2</code></A>.
+
+       <P>
+       Output: 
+       scalar with the deviance. Identical with 4th output of <A HREF="#psurv2"><code>psurv2</code></A>.
+
+       <P>
+       Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tvalues</code>, <code>yvalues</code>, <code>numbers</code> are defined properly: 
+       <code> dev2('function_name', pars, tvalues, yvalues, numbers)</code>.
+
+       <HR>
+       <H4><A NAME="plsurv2">plsurv2</A></H4>
+
+       Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
+       The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
+       See <A HREF="#plsurv"><code>plsurv</code></A> for the multiple sample case.
+
+       <P>
+       Input: 
+       user-defined function name, parameter values, times, second dependent variable, data matrix as in <A HREF="#scsurv2"><code>scsurv2</code></A>. 
+       The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
+       The value of that parameter in the parameter matrix must be within the range. 
+       The optional element 3 specifies the numer of parameter evaluations; default: 100.
 
 
-  <P>
-  Input: 
-  user-defined function name, data matrix, and parameter values, as in <A HREF="#scsurv"><code>scsurv</code></A>.
+       <P>
+       Output:
+       <ul> 
+         <li> (99,2)-matrix with parameter values and deviance </li>
+         <li> scalar with value 1 for successful convergence at all parameter evalation points; 
+           and value 0 with one or more convergence problems </li>
+       </ul>
 
-  <P>
-  Output: 
-  scalar with deviance. Identical with 4th output of <A HREF="#psurv"><code>psurv</code></A>.
-
-  <P>
-  Example of use, assuming that <code>function_name</code>, <code>pars</code>, and <code>tn1</code> (and possibly more data matrices) are defined properly: 
-  <code>dev('function_name', pars, tn1, tn2, ...)</code>.
-
-<HR>
-<H4><A NAME="plsurv">plsurv</A></H4>
-
-  Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
-  The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
-  See <A HREF="#plsurv2"><code>plsurv2</code></A> for response surfaces.
-
-  <P>
-  Input: 
-  user-defined function name, parameter values, and one or more data matrices as in <A HREF="#scsurv"><code>scsurv</code></A>. 
-  The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
-  The value of that parameter in the parameter matrix must be within the range. 
-  The optional element 3 specifies the numer of parameter evaluations; default: 100.
-
-  <P>
-  Output:
-  <ul>
-    <li> (99,2)-matrix with parameter values and deviance </li>
-    <li> scalar with value 1 for successful convergence at all parameter evalation points; 
-         and value 0 with one or more convergence problems </li>
-  </ul>
-
-  <P>
- Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tn1</code> (and possibly more data matrices) and <code>Range</code> are defined properly:
-  <code>plsurv('function_name', pars, tn1, tn2, ..., Range)</code>.
-
-<HR>
-<H4><A NAME="shsurv">shsurv</A></H4>
-
-  Plots model predictions and data (optional). 
-  Plot options can be set with routine <A HREF="#shsurv_options"><code>shsurv_options</code></A>.
-
-  <P>
-  Input: 
-  user-defined function name, parameter values, and one or more data matrices as in <A HREF="#scsurv"><code>scsurv</code></A>. 
-  The plot-range can set optionally in a vector of length 2, with the lower and upper boundaries. 
-  The columns >1 in the parameter matrix are ignored. 
-  If column 2 in the data matrix is not present, model predictions are plotted only. 
-  The colums >2 in the data matrices are ignored.
-
-  <P>
-  Example of use, assuming that <code>function_name</code>, <code>pars</code>, and data <code>tn</code> are defined properly: 
-  <code>shsurv('function_name', pars, tn)</code>, or if the user-defined function codes for two data sets, for instance
-  <code>shsurv('function_name', pars, tn1, tn2)</code>. 
-
-  <P>
-  Set options for plotting routine <code>shsurv</code> with <A HREF="#shregr_options"><code>shregr_options</code></A>.
-
-<HR>
-<H4><A NAME="scsurv2">scsurv2</H4>
-
-  Finds maximum likelihood estimates from survivor data like <A HREF="#scsurv"><code>scsurv</code></A>, but for an additional independent variable, rather than time only. So this routine fits a surface, no a curve.
-
-  <p>
-  Options in the numerical procedure can be set by <A HREF="#scsurv_options"><code>scsurv_options</code></A>.
-
-  <P>
-  Input:
-  <ul>
-    <li> string with the name of a user-defined function for the survival model.
-         The user-defined function must take the two column vectors of values for the independent variable and a single vector-argument with parameter values as inputs, and a matrix value of model predictions as output. 
-         The size of the output matrix must match the number of values of the independent variable:  
-         the first independent variable (time) in the rows, the second one in the columns </li>
-    <li> (k, 1 or 2)-matrix with initial parameter estimates in column 1 and booleans in column 2, where 
-         0 stands for "keeping the corresponding parameter fixed", and 
-         1 for "iterate the corresponding parameter values". 
-         If column 2 is omitted, values one are assumed (i.e. all parameters are iterated) </li>
-    <li> (nt,1 or more)-matrix with time points </li>
-    <li> (ny,1 or more)-matrix with second independent variable </li>
-         The second and other columns can accomodate modifying factors.
-         The extra columns are just passed to the user-defined function, see e.g. 
-         <A HREF ="../tox/DEBtool_tox.html#fomortph" TARGET="_parent"><code>fomortph</code></A> for an example; 
-         notice that the plotting routine <A HREF="#shsurv2"><code>shsurv2</code></A> then only works properly with option <code>plotnr</code> is either 1 or 2.
-    <li> (nt,ny)-matrix with the number of surviving individual </li>
-  </ul>
-
-  <P>
-  Output: 
-  <ul>
-    <li> parameter matrix similar to the parameter input matrix, but the initial estimates are replaced by the values the that maximize the likelihood function (see <A HREF="#dev2"><code>dev2</code></A>)</li>
-    <li> scalar, which equals 0 for unsuccessful termination, and 1 for successful termination. 
-         If the option report is set to 1 (default), unsuccessful termination is reported </li>
-  </ul>
-
-  <P> 
-  The iteration is terminated if the norm, i.e. the sum of squared derivetives of the deviance with respect to the iterated parameters, is less than the maximum norm or if the number of iterations exceeds a maximum values 
-  (see <A HREF="#scsurv_options"><code>scsurv_options</code></A>).
-
-  <P>
-  Example of use, assuming that 'tvalues', 'yvalues', 'numbers', function 'function_name' and initial paramer estimates 'ipars' are properly defined: 
-  <code>pars = scsurv2('function_name', ipars, tvalues, yvalues, numbers)</code>. 
-  See sample file 'mydata_surv2.m' for an example of specification. 
-  If progression seems hopeful, but the number of iterations not large enough, you can continue with 
-  <code>pars = scsurv2('function_name', pars, tvalues, yvalues, numbers)</code>. 
-  Alternatively you can increase the maximum number of iterations with <A HREF="#scsurv_options"><code>scsurv_options</code></A>.
-
-<HR>
-<H4><A NAME="nmsurv2">nmsurv2</A></H4>
-
-  Finds maximum likelihood estimates from survival data using Nelder Mead's simplex method. 
-  The convergence is usually slow, but the domain of attraction is rather large. 
-  See 
-  <A HREF="#scsurv2"><code>scsurv2</code></A> for the definition of the user-defined function, and 
-  <A HREF="#scsurv"><code>scsurv</code></A> and 
-  <A HREF="#nmsurv"><code>nmsurv</code></A> for one independent variable (time) with multiple samples.
-
-  <P>
-  Options in the numerical procedure can be set by <A HREF="#nmsurv_options"><code>nmsurv_options</code></A>.
-
-  <P>
-  It is usually a good idea to run <A HREF="#scsurv2"><code>scsurv2</code></A> on the result of <code>nmsurv2</code>.
-
-<HR>
-<H4><A NAME="gasurv2">gasurv2</A></H4>
-
-  Finds maximum likelihood estimates from survival data using a genetic algorithm. 
-  The (stochastic) convergence is usually slow, but it does not require an initial estimate, only a range. 
-  The process starts from an initial set of (randomly generated) trials. 
-  See 
-  <A HREF="#scsurv2"><code>scsurv2</code></A> for the definition of the user-defined function, and 
-  <A HREF="#scsurv"><code>scsurv</code></A>, 
-  <A HREF="#nmscsurv"><code>nmscsurv</code></A> and 
-  <A HREF="#gasurv"><code>gasurv</code></A> for one independent variable (time) with multiple samples.
-
-  <P>
-  Options in the numerical procedure can be set by <A HREF="#gasurv_options"><code>gasurv_options</code></A>.
-
-  <P>
-  It is usually a good idea to run <A HREF="#scsurv2"><code>scsurv2</code></A> on the result of <code>gasurv2</code>.
-
-<HR>
-<H4><A NAME="psurv2">psurv2</A></H4>
-
-  Calculates covariance matrix and standard deviations of parameters in survivor models, like <A HREF="#psurv"><code>psurv</code></A>, but for 2 independent variables.
-
-  <P>
-  Input: 
-  user-defined function name, 2 vectors of independent variables, a matrix with surviving individuals, and parameter values, as in <A HREF="#scsurv2"><code>scsurv2</code></A>.
-
-  <P>
-  Output:
-  <ul>
-    <li> covariance matrix of parameter estimates </li>
-    <li> correlation matrix of parameter estimates </li>
-    <li> vector of standard deviations of parameter estimates </li>
-    <li> deviance </li>
-  </ul>
-
-  <P>
-  The elements in the covariance and correlation matrices equal zero for parameters that have code 0 in the second row of the parameter input matrix. 
-  The values are the maximum likelihood estimates, therefore, no corrections for bias are made.
-
-  <P>
-  Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tvalues</code>, <code>yvalues</code>, <code>numbers,</code> are defined properly: 
-  <code>[cov, cor, sd, ss] = pregr2('function_name',  pars, tvalues, yvalues, numbers)</code>.
-
-<HR>
-<H4><A NAME="dev2">dev2</A></H4>
-
-  Calculates deviance, see <A HREF="#dev"><code>dev</code></A>.
-
-  <P>
-  Input: 
-  user-defined function name, 2 vectors of independent variables, a matrix with surviving individuals, and parameter values, as in <A HREF="#scsurv2"><code>scsurv2</code></A>.
-
-  <P>
-  Output: 
-  scalar with the deviance. Identical with 4th output of <A HREF="#psurv2"><code>psurv2</code></A>.
-
-  <P>
-  Example of use, assuming that <code>function_name</code>, <code>pars</code>, <code>tvalues</code>, <code>yvalues</code>, <code>numbers</code> are defined properly: 
-  <code> dev2('function_name', pars, tvalues, yvalues, numbers)</code>.
-
-<HR>
-<H4><A NAME="plsurv2">plsurv2</A></H4>
-
-  Calculates the profile likelihood function for a parameter that is indicated with code <code>2</code> in the second column of the parameter matrix.
-  The other parameters with positive codes are ml-estimated using the simplex method for each evaluation of the target parameter. 
-  See <A HREF="#plsurv"><code>plsurv</code></A> for the multiple sample case.
-
-  <P>
-  Input: 
-  user-defined function name, parameter values, times, second dependent variable, data matrix as in <A HREF="#scsurv2"><code>scsurv2</code></A>. 
-  The last argument is a 2 or 3 -vector with the lower and upper boundaries of the indicated parameter. 
-  The value of that parameter in the parameter matrix must be within the range. 
-  The optional element 3 specifies the numer of parameter evaluations; default: 100.
-
-
-  <P>
-  Output:
-  <ul> 
-    <li> (99,2)-matrix with parameter values and deviance </li>
-    <li> scalar with value 1 for successful convergence at all parameter evalation points; 
-         and value 0 with one or more convergence problems </li>
-  </ul>
-
-  <P>
-  Example of use, assuming that 
-  <code>function_name</code>, 
-  <code>pars</code> (parameter matrix), 
-  <code>t</code> (time-vector), 
-  <code>y</code> (vector with second dependent variable), 
-  <code>tny</code> (matrix with numbers of survivors) and 
-  <code>Range</code> (2-vector with lower and upper boundary for target parameter) are defined properly: 
-  <code>plsurv('function_name', pars, t, y, tny, Range)</code>.
+       <P>
+       Example of use, assuming that 
+       <code>function_name</code>, 
+       <code>pars</code> (parameter matrix), 
+       <code>t</code> (time-vector), 
+       <code>y</code> (vector with second dependent variable), 
+       <code>tny</code> (matrix with numbers of survivors) and 
+       <code>Range</code> (2-vector with lower and upper boundary for target parameter) are defined properly: 
+       <code>plsurv('function_name', pars, t, y, tny, Range)</code>.
 
 
       <div w3-include-html="footer_amp.html"></div>
