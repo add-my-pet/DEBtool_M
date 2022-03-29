@@ -34,7 +34,7 @@
         <li>evaluate implied properties
       </ul>   
 
-      <H4><A NAME="Todo">Preparation of an entry</H4>
+      <h4><a NAME="Todo">Preparation of an entry</a></h4>
       Make sure that the path to DEBtool_M and AmPtool and their subdirectories has been set in Matlab.
       An AmP entry consists of a set of 4 files, 3 Matlab functions (<code>mydata_my_pet.m</code>, <code>predict_my_pet.m</code>, <code>pars_init_my_pet.m</code>) and 
       a Matlab script (<code>run_my_pet.m</code>), where <code>my_pet</code> is replaced by the scientific name of your species with spaces replaced by <code>_</code>.
@@ -45,7 +45,7 @@
       The notation in these files follows the <a href="https://www.bio.vu.nl/thb/research/bib/Kooy2010_n.pdf">DEB notation rules</a>.
       The 4 files are now discussed in some more detail:
 
-      <h5><A NAME="mydata">mydata</h5>
+      <h5><A NAME="mydata">mydata</a></h5>
 
       Copy-and-rename template-file <code>DEBtool_M/lib/pet/mydata_my_pet.m</code> in your current directory, 
       and have a look at mydata-files for related species for editing inspiration.
@@ -105,7 +105,7 @@
       Do something similar for personal communications.
       Please notice that the type of bib-entry is not a free choice; a limited number of types are allowed by Bibtex.
 
-      <h5><A NAME="predict">predict</h5>
+      <h5><A NAME="predict">predict</a></h5>
 
       Copy-and-edit a predict-file from a related species.
       The <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/species_list.html">species-list</a> shows the data-types for all entries, 
@@ -145,7 +145,7 @@
       Some entries even reconstruct temperature and/or food level trajectories from other data.
       Search the data-base for examples, see the <a href="https://add-my-pet.github.io/AmPtool/docs/index.html" target="_blank">AmPtool manual</a> for doing this search efficiently.
 
-      <h5><A NAME="pars_init">pars_init</h5>
+      <h5><A NAME="pars_init">pars_init</a></h5>
 
       Copy-and-edit a pars_init-file from a related species.
       The specification of the model-type and the reference temperature are then already correct.
@@ -153,7 +153,7 @@
       The setting of free determines which parameters will be estimated and which are fixed.
       The first block of parameters is obligatory for the chosen model type, the second block is ad-hoc for the current entry, and can be extended.
 
-      <h5><A NAME="run">run</h5>
+      <h5><a NAME="run">run</a></h5>
 
       Copy-and-edit a run-file from any species.
       The run-file starts with setting a global variable for the species that will be estimated and with checking the entry for consistency.
@@ -181,7 +181,7 @@
       or <code>estim_options('results_output', 5);</code> for comparison with related species.
       If all seems fine, your entry is ready for submission.
 
-      <H4><A NAME="curators">For curators only</H4>
+      <H4><a NAME="curators">For curators only</a></H4>
 
       The core code 
       <a href="../lib/pet/html/estim_pars.html"><code>estim_pars</code></a> is a macro around regression function 
