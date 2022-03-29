@@ -8,7 +8,7 @@
   <style>
     #pars {
 	padding-top: 20px;
-	padding-bottom: 20px:
+	padding-bottom: 20px;
     }
   </style>
 </head>
@@ -274,7 +274,7 @@
       <H4><A NAME="pars-data">pars-data</A></H4>
       Functions <code>get_pars_*</code> obtain compound DEB parameters from easy-to-observe quantities and the functions <code>iget_pars_*</code> do the reverse,
       which can be used for checking. 
-      The theory is discussed in <a href="https://www.zotero.org/groups/500643/deb_library/items/8BSPZ82F">Kooijman at al 2008</a>. 
+      The theory is discussed in <a href="https://www.zotero.org/groups/500643/deb_library/items/8BSPZ82F">Kooijman et al 2008</a>. 
       The heating length L<sub>T</sub> is assumed to be zero in all <code>get_pars_*</code> functions. 
       An example of use is given in <code>mydata_get_pars</code>.
       The routines are organized as follows:
@@ -333,7 +333,8 @@
 
       <p>
       Another group of <code>get_pars</code> functions obtain primary (rather than compound) parameters from data at abundant food.
-      This strategy comes with assumptions about particular (chemical) parameter values (chemical potentials and the like). 
+      The theory behind the mapping of data to parameters, and vice versa, is given in <a href="https://www.zotero.org/groups/500643/deb_library/items/G92VQ79V">Lika et al 2014</a>.	
+      This mapping comes with assumptions about particular (chemical) parameter values (chemical potentials and the like). 
       Again, all functions assume absence of surface-area linked maintenance.
       They don't make use of the assumption k_J = k_M, but assume that k_J is known.
       By increasing the number of known parameters, we can decrease the amount of data that is needed to get the remaining parameters,
