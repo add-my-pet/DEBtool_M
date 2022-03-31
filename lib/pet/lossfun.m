@@ -3,7 +3,7 @@
 
 %%
 function lf_val = lossfun(data, prdData, weights)
-% created by Dina Lika 2018/08/27; modified 2020/12/12, 2021/01/16, 2022/01/09 by Bas Kooijman
+% created by Dina Lika 2018/08/27; modified 2020/12/12, 2021/01/16, 2022/01/09, 2022/03/31 by Bas Kooijman
 
 %% Syntax
 % lf_val = <../lossfun.m *lossfun*> (data, prdData, weights)
@@ -27,6 +27,10 @@ function lf_val = lossfun(data, prdData, weights)
 
   global lossfunction
     
+  if ~exist('lossfunction','var') || isempty(lossfunction)
+    lossfunction = 'sb';
+  end
+
   if isfield(data,'psd')
     data = rmfield(data,'psd');
   end

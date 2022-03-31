@@ -217,6 +217,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               if n_nms > 1
                 plotNm = ['results_', pets{i}, '_', nFig];
                 LEGEND.([plotNm, '_legend']) = legend; 
+                LEGENDlabel.([plotNm, '_legend'])= '';
               end % end of grouped plots
             end
           end % end of all grp plots   
