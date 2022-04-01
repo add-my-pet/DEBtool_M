@@ -25,6 +25,7 @@ function F = lossFn(func, par, data, auxData, weights)
   
   %% Remarks
   % the lossfunction is selected via global lossfunction, but sb is used if empty
+  % the value of the lossfunction includes contributions of pseudo-data, contrary to lossfun.
   
   %% Example of use
   % Assuming that 
@@ -42,7 +43,7 @@ function F = lossFn(func, par, data, auxData, weights)
   % Fsb_2 = lossfun(data, prdData, weights);
   % [Fsb_1 Fsb_2]
   
-  global lossfuction
+  global lossfunction
   
   close all
 
@@ -51,9 +52,9 @@ function F = lossFn(func, par, data, auxData, weights)
   end
   fileLossfunc = ['lossfunction_', lossfunction];
   
-  if isfield(data,'psd')
-   data = rmfield(data,'psd');
-  end
+%   if isfield(data,'psd')
+%    data = rmfield(data,'psd');
+%   end
 
   q = rmfield(par, 'free'); 
 
@@ -73,6 +74,7 @@ function F = lossFn(func, par, data, auxData, weights)
   W = struct2vector(weights, nm);
 
   f = feval(func, q, data, auxData);
+  f = predict_pseudodata(q, data, f);
   [P, meanP] = struct2vector(f, nm);
 
   F = feval(fileLossfunc, Y, meanY, P, meanP, W);

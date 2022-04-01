@@ -28,7 +28,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
 %  
 % Output
 % 
-% * q: structure with parameters, result of the least squares estimates
+% * q: structure with parameters, result that minimizes the loss function
 % * info: 1 if convergence has been successful; 0 otherwise
 % * itercount: nummber if iterations
 % * fval: minimum of loss function
