@@ -1,0 +1,368 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_symbi</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3>Toolbox: symbi</H3>
+
+  Interaction between hosts and symbionts in reactors:
+
+<HR>
+<H4><A NAME="symbi">symbi</A></H4>
+
+  <TABLE> 
+    <TR> <TD></TD><TD>host: 1 reserve, 1 structure, V1-morph</TD></TR>
+    <TR> <TD></TD><TD>symbiont: 2 reserves, 1 structure, V1-morph</TD></TR>
+  </TABLE>
+
+  Demo that runs:
+  <UL>
+    <LI> <A HREF="#pars_symbi"><code>pars_symbi</code></A>: parameter setting </LI>
+    <LI> <A HREF="#shtime_symbi"><code>shtime_symbi</code></A>: 
+         batch culture of autotrophs & herbivores </LI>
+    <LI> <A HREF="#shsubstr2graz"><code>shsubstr2graz</code></A>:
+         chemostat in equilibrium; substrate & grazing levels </LI>
+    <LI> <A HREF="#shsubstr2nitro"><code>shsubstr2nitro</code></A>:
+         chemostat in equilibrium; substrate & nitrogen levels </LI>
+    <LI> <A HREF="#shsubstr2throu"><code>shsubstr2throu</code></A>:
+         chemostat in equilibrium; substrate & throughput levels </LI>
+    <LI> <A HREF="#shthrou2graz"><code>shthrou2graz</code></A>:
+         chemostat in equilibrium; throughput & grazing levels </LI>
+  </UL>
+
+  The theory for the model can be found in: <br> 
+  Kooijman, S. A. L. M. 2002<A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2002.html"> 
+  Van herbivorie, via symbiose naar mixotrofie.</A>
+  In: Heesterbeek, H., Diekmann, O. en Metz,
+  J. A. J. Theoretische Biologie.  Epsilon-uitgevers, Utrecht. (subm) 
+
+  <p>
+  The paper describes the trophic relationships between autothrophs and herbivores, and how herbivory can make a smooth transition to symbiosis. 
+  The basis is that herbivores consume the structure and, more important, the reserves of the autotrophs. 
+  Autotrophs also have to excrete some reserves in the environment, which can be taken up by the herbivores as well. 
+  Stoichiometric constraints and conversion efficiencies dominate the relationships between the partners.
+
+  <p>
+  Populations of autotrophs and heterotrophs live in a reactor;
+  Model elements are:
+  <UL>
+    <LI> Inorganic carbon and light are not limiting. </LI>
+    <LI> The inflowing medium has organic substrate (X) and/or nitrogen (N, ammonia); 
+         the specific throughput rate of the chemostat is called h. </LI>
+    <LI> Initially hardly any autotrophs (VA), heterotrophs (VH) or hydrocarbon (CH) are present in the chemostat, and the concentrations nitrogen and substrate equal that in the feed </LI>
+    <LI> Substrate contains nitrogen, but this is not available for the autotroph </LI> 
+    <LI> The autotroph (VA) excretes nitrogen (N) and carbohydrate (CH), and consumes nitrogen (N) </LI>
+    <LI> The heterotroph (VH) excretes nitrogen (N), and consumes, apart from the autotroph (VA), nitrogen (N), carbohydrate (CH) and substrate (X); no faeces is produced, so all wastes are mineralized instantaneously </LI>
+    <LI> The autotroph has structure (VA), nitrogen-reserves (EN), and carbohydrate-reserves (EC);<br>
+         reserve-densities: mEN = mass EN/ mass VA; mEC = mass EC/ mass VA </LI>
+    <LI> The heterotroph has structure (VH), and reserves (E);<br>
+         reserve density: mE = mass E/ mass VH </LI>
+    <LI> Both auto- and heterotrophs are taken to be V1-morphs, with negligible aging </LI>
+  </UL>
+
+  <p>
+  Example of use after (optionally) editing file <code>pars_symbi.m</code>: 
+  <code>symbi</code>
+
+<HR>
+<H4><A NAME="pars_symbi">pars_symbi</A></H4>
+
+  Set the parameters by editing file <code>pars_symbi.m</code> in toolbox <code>symbi</code>.
+
+<HR>
+<H4><A NAME="shtime_symbi">shtime_symbi</A></H4>
+
+  Batch reactor; Initial conditions can be changed by editing the file <code>shtime_symbi.m</code>. 
+  See pages {340} ff of the <A HREF="http://www.bio.vu.nl/thb/research/bib/Kooy2010.html">DEB-book</A>.<br>
+  Four figures are shown of variables against time
+
+  <p>
+  fig <B>1</B><br>
+  Reserves in Molar: N-reserve (blue) and C-reserve (brown) of autotroph, and reserve (red) of heterotroph
+
+  <p>
+  fig <B>2</B><br> 
+  Nutrient and substrates in Molar: nitrogen (blue), carbohydrate (brown) and substrate (red)
+
+  <p>
+  fig <B>3</B><br>
+  Structural masses in Molar: autotroph (green), heterotroph (red)
+
+  <p>
+  fig <B>4</B><br>
+  Total organic carbon (brown) and nitrogen (blue) in the reactor.  
+
+  <p>
+  Example of use after editing <code>pars_symbi.m</code>: 
+  <code>clear all; pars_symbi; shtime_symbi</code><br> 
+  The command <code>clear; pars_symbi; shtime_symbi(4)</code> will only plot fig <B>4</B>.
+
+<HR>
+<H4><A NAME="shsubstr2graz">shsubstr2graz</A></H4>
+
+  Chemostat in equilibrium
+
+  <p>
+  Three figures are shown of autotrophs, heterotrophs and their ratio as functions of the substrate concentration in the feed, and the grazing intensity of the herbivores (that is: the preference for living autotrophic structure set by the parameter b_VA).
+
+  <p>
+  The range of values for the substrate concentration and grazing intensity can be changed by editing file <code>shsubstr2graz.m</code>
+
+  <p>
+  fig <B>1</B><br>
+  Autotrophic structure in Molar
+
+  <p>
+  fig <B>2</B><br>
+  Heterotrophic structure in Molar
+  
+
+  <p>
+  fig <B>3</B><br>
+  Ratio of autotrophic and heterotrophic structure in Molar/Molar
+
+  <p>
+  Example of use after editing <code>pars_symbi.m</code>: 
+  <code>clear all; pars_symbi; shsubstr2graz</code>.<br> 
+  The command <code>clear all; pars_symbi; shsubstr2graz(3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<H4><A NAME="shsubstr2nitro">shsubstr2nitro</A></H4>
+
+  Chemostat in equilibrium
+
+  <p>
+  Three figures are shown of autotrophs, heterotrophs and their ratio as functions of the substrate and the nitrogen concentration in the feed.
+
+  <p>
+  The range of values for the substrate and the nitrogen concentration can be changed by editing file <code>shsubstr2nitro.m</code>
+
+  <p>
+  fig <B>1</B><br>
+  Autotrophic structure in Molar
+
+  <p>
+  fig <B>2</B><br>
+  Heterotrophic structure in Molar
+  
+
+  <p>
+  fig <B>3</B><br>
+  Ratio of autotrophic and heterotrophic structure in Molar/Molar
+
+  <p>
+  Example of use after editing <code>pars_symbi.m</code>: 
+  <code>clear all; pars_symbi; shsubstr2nitro</code>.<br> 
+  The command <code>clear; pars_symbi; shsubstr2nitro (3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<H4><A NAME="shsubstr2throu">shsubstr2throu</A></H4>
+
+  Chemostat in equilibrium
+
+  <p>
+  Three figures are shown of autotrophs, heterotrophs and their ratio as functions of the substrate concentration in the feed, and the throughput rate.
+
+  <p>
+  The range of values for the substrate concentration and throughput rate can be changed by editing file <code>shsubstr2throu.m</code>
+
+  <p>
+  fig <B>1</B><br>
+  Autotrophic structure in Molar
+
+  <p>
+  fig <B>2</B><br>
+  Heterotrophic structure in Molar
+  
+
+  <p>
+  fig <B>3</B><br>
+  Ratio of autotrophic and heterotrophic structure in Molar/Molar
+
+  <p>
+  Example of use after editing <code>pars_symbi.m</code>: 
+  <code>clear all; pars_symbi; shsubstr2throu</code>.<br> 
+  The command <code>clear; pars_symbi; shsubstr2throu (3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<H4><A NAME="shthrou2graz">shthrou2graz</A></H4>
+
+  Chemostat in equilibrium
+
+  <p>
+  Three figures are shown of autotrophs, heterotrophs and their ratio as functions of the throughput rate, and the grazing intensity of the herbivores (that is: 
+  the preference for living autotrophic structure set by the parameter b_VA).
+
+  <p>
+  The range of values for the throughput rate and grazing intensity can be changed by editing file <code>shthrou2graz.m</code>
+
+  <p>
+  fig <B>1</B><br>
+  Autotrophic structure in Molar
+
+  <p>
+  fig <B>2</B><br>
+  Heterotrophic structure in Molar
+ 
+  <p>
+  fig <B>3</B><br>
+  Ratio of autotrophic and heterotrophic structure in Molar/Molar
+
+  <p>
+  Example of use after editing <code>pars_symbi.m</code>: 
+  <code>clear all; pars_symbi; shthrou2graz</code>.<br> 
+  The command <code>clear; pars_symbi; shthrou2graz (3)</code> will only plot fig <B>3</B>.
+
+<HR>
+<HR>
+<H4><A NAME="endosym">endosym</A></H4>
+
+  Stepwise integration of two interacting population, via endosymbiosis to single population in a reactor:<br>
+  <TABLE> 
+    <TR> 
+      <TD></TD>
+      <TD>future host: 1 reserve, 1 structure, V1-morph feeding on one substrate and one product made by future endosymbiont</TD>
+    </TR>
+    <TR> 
+      <TD></TD>
+      <TD>future endosymbiont: 1 reserve, 1 structure, V1-morph feeding on one substrate and one product made by future host</TD>
+    </TR>
+    <TR>
+      <TD></TD>
+      <TD>final endosymbiosis: 1 reserve, 1 structure, V1-morph feeding on two substrates</TD>
+    </TR>
+  </TABLE>
+
+  Demo that runs:
+  <UL>
+    <LI> <A HREF="#pars*"><code>pars*</code></A>: parameter setting </LI>
+    <LI> <A HREF="#shtime*"><code>shtime*</code></A>: 
+         interacting population in generalized reactor </LI>
+    <LI> <A HREF="#shstate*"><code>shstate*</code></A>:
+         chemostat in equilibrium; state variables as functions of throughput rate </LI>
+  </UL>
+
+  where * is an integer number in the range 0-8, that represents the degree (level) of integration (merging) of the two populations into a single one. 
+  The integration levels are:
+
+  <UL>
+    <LI> <B>0</B> two independent populations, that each produces a product that is taken by the other species as an alternative substitute for its substrate. 
+         Product and substrate are processed sequentially. </LI>
+    <LI> <B>1</B> like level 0, but the products and substrates are intermediary between substitutable and complementary, while they are processed intermediary between sequential and parallel. </LI>
+    <LI> <B>2</B> like level 0, but the products and substrates are complementary and processed parallelly. </LI>
+    <LI> <B>3</B> a single one-structure one-reserve population of the (future) host and three one-structure one-reserve populations of the (future) endosymbiont: 
+         free-living in the reactor, in the hosts' mantle spaces, and inside hosts' bodies. 
+         The hosts recieve symbionts' product on flux basis from within their bodies, and on concentration basis from its mantle space. 
+         The three symbiont populations receive their substrate and product on concentration basis. 
+         Diffusive transport between environment, the hosts' mantle spaces and hosts' bodies for both products and symbionts' substrate. </LI>
+    <LI> <B>4</B> like level 3, but only with the internal population of symbionts is presented; the populations of symbionts in hosts' mantle spaces and in the free environment are assumed to be extinct. 
+         Hosts' mantle space is still delineated to capture the concentration gradients for symbionts' substrate and both products with diffusive transport of these three chemicals between environment, the hosts' mantle spaces and hosts' bodies for both products and symbionts' substrate. </LI>
+    <LI> <B>5</B> two one-structure one-reserve populations; one population (= endosymbiont) lives inside the other (= host) and obtains its substrate and hosts' product from inside the host on concentration basis. 
+         Hosts' mantle space is no longer delineated. 
+         The host recieves symbionts' product on flux basis from within its body, and on concentration basis from the environment. 
+         Diffusive transport between environment and hosts' body for both products and symbionts' substrate. </LI>
+    <LI> <B>6</B> a single two-structures two-reserves population; 
+         each reserve is synthesized from one substrate (from the environment and fed on concentration basis) and one product (synthesized internally and fed on flux basis). </LI>
+    <LI> <B>7</B> a single one-structure two-reserves population; 
+         each reserve is synthesized from one substrate (from the environment) and one product (synthesized internally and fed on flux basis). 
+         So two products are produced, and reserves are excreted (due two stoichiometric restrictions on growth, but recovery fractions are tunable via parameters). </LI>
+    <LI> <B>8</B> a single one-structure one-reserve population feeding on two complementary substrates and producing two products. </LI>
+  </UL>
+
+  <p>
+  The theory for the models can be found in: 
+  <br> 
+  S. A. L. M. Kooijman, P. Auger, J. C. Poggiale and B. W.  Kooi 2003
+  <A HREF="http://www.bio.vu.nl/thb/research/bib/KooyAuge2003.html">
+  Quantitative steps in symbiogenesis and the evolution of homeostasis.</A> 
+ 
+  <p>
+  The paper describes the trophic relationships between two species that become fully interlocked in an endosymbiontic relationship in 8 steps starting from complete independence. 
+  Each species feeds on a single substrate and produces a single product, which is taken up by the other species. 
+  The substrate and product for each species are initially substitutable, and then become complementary. 
+  The species initially live freely in a homogeneous reactor; 
+  later the future endosymbiont has three populations: free-living, inside the mantle space of the future host, and inside the host. 
+  Each species initially has a single reserve and single structure. 
+  First the structures merge, then the reserves. Eventually a single species with one structure and one reserve emerges.
+  
+  <p>
+  The two (and later one) populations of live in a homogeous generalized reactor, where feeding rates of substrates and leaking rates of state variable are each controlled by parameters; 
+  The steady state analysis is just for chemostats, where the specific leaking rates of all state variables are equal, and the feeding rates are proportional to the leaking rates.
+
+
+  <p>
+  Example of use after (optionally) editing file <code>pars*.m</code>: 
+  <code>endosym</code>
+
+<HR>
+<H4><A NAME="pars*">pars*</A></H4>
+
+  Read <code>pars*.m</code> as one of the folling options: 
+  <code>pars_endosym.m</code>, <code>pars0.m</code>, </code>pars1.m</code>, .., <code>pars8.m</code>. 
+  The * refers to the level of merging between hosts and symbionts, see above. 
+  The file <code>pars_endosym.m</code> specifies the parameters of all levels simultaneously. 
+  The present version of shtime* and shstate* all make use of this single file.
+
+  <p>
+  Set the parameters by editing file <code>pars*.m</code> in toolbox <code>endosym</code>. 
+  The parameter vector <code>istate*</code> initializes the state variables for integration in <code>shtime*</code>. 
+
+<HR>
+<H4><A NAME="shtime*">shtime*</A></H4>
+
+  Read <code>shtime*</code> as one of the folling options: <code>shtime0</code>, <code>shtime1</code>, .., <code>shtime8</code>. 
+  The * refers to the level of merging between hosts and symbionts, see above.
+
+  <p>
+  Generalized reactor; 
+  Initial conditions can be changed by editing the file <code>pars*.m</code>.<br>
+  The figures depent on the choice of merging level (0-8). 
+  They show variables as functions of time. Some also show ratio's of structures and reserves, to illustrate the degree of homeostasis.
+
+  <p>
+  Example of use after editing <code>pars*.m</code>: 
+  <code>clear all; shtime*</code>.<br> 
+  The command <code>clear; shtime6 (4)</code> will only plot fig <B>4</B> at merging level 6.
+
+<HR>
+<H4><A NAME="shstate*">shstate*</A></H4>
+
+  Read <code>shstate*</code> as one of the folling options: 
+  <code>shstate0</code>, <code>shstate1</code>, .., <code>shstate8</code>. 
+  The * refers to the level of merging between hosts and symbionts, see above.
+
+  <p>
+  Chemostat in equilibrium for all not-trivial throughput rates; 
+  the computations might take some time. If continuation fails, time-integration is used to arrive at a initial guess of the states of the system.
+
+  <p>
+  The figures depent on the choice of merging level (0-8). 
+  They show variables as functions of te throughput rate. 
+  Some also show ratio's of structures and reserves, to illustrate the degree of homeostasis.
+
+  <p>
+  Example of use after editing <code>pars*.m</code>: 
+  <code>clear all; shstate*</code>.<br> 
+  The command <code>clear; shstate6 (3)</code> will only plot fig <B>3</B> at merging level 6.
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

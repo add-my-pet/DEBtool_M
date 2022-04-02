@@ -1,0 +1,163 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>mds4mmea</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-03-31"><meta name="DC.source" content="lossFn.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>mds4mmea</h1><!--introduction--><p>classic multidimensional scaling applied to solutions of the mmea method</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>F = <a href="../lossFn.m"><b>lossFn</b></a> (func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>calculates loss function value for predict_my_pet, using parameters par</p><p>Input</p><div><ul><li>func: character string with predict_my_pet</li><li>par: structure with parameter values as from pars_init</li><li>data: structure with data as from mydata</li><li>auxData: structure with auxData as from mydata</li><li>weight: structure with weights as from mydata</li></ul></div><p>Output</p><div><ul><li>F: scalar with value of the loss function</li></ul></div><h2 id="5">Remarks</h2><p>the lossfunction is selected via global lossfunction, but sb is used if empty</p><h2 id="6">Example of use</h2><p>Assuming that</p><div><ul><li>mydata_Acanthaster_planci</li><li>pars_init_Acanthaster_planci</li><li>predict_Acanthaster_planci</li></ul></div><p>are given: [data, auxData, metaData, ~, weights] = mydata_Acanthaster_planci; par = pars_init_Acanthaster_planci(metaData); Fsb_1 = lossFn('predict_Acanthaster_planci', par, data, auxData, weights);</p><p>prdData = predict_Acanthaster_planci(par, data, auxData); Fsb_2 = lossfun(data, prdData, weights); [Fsb_1 Fsb_2]</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% mds4mmea
+% classic multidimensional scaling applied to solutions of the mmea method
+
+%%
+function F = lossFn(func, par, data, auxData, weights)
+  %  created at 2022/03/31 by Bas Kooijman
+  
+  %% Syntax
+  % F = <../lossFn.m *lossFn*> (func, par, data, auxData, weights)
+  
+  %% Description
+  % calculates loss function value for predict_my_pet, using parameters par
+  % 
+  % Input
+  %
+  % * func: character string with predict_my_pet
+  % * par: structure with parameter values as from pars_init
+  % * data: structure with data as from mydata
+  % * auxData: structure with auxData as from mydata
+  % * weight: structure with weights as from mydata
+  %
+  % Output
+  %
+  % * F: scalar with value of the loss function
+  
+  %% Remarks
+  % the lossfunction is selected via global lossfunction, but sb is used if empty
+  
+  %% Example of use
+  % Assuming that 
+  %
+  % * mydata_Acanthaster_planci
+  % * pars_init_Acanthaster_planci
+  % * predict_Acanthaster_planci
+  %
+  % are given:
+  % [data, auxData, metaData, ~, weights] = mydata_Acanthaster_planci;
+  % par = pars_init_Acanthaster_planci(metaData);
+  % Fsb_1 = lossFn('predict_Acanthaster_planci', par, data, auxData, weights);
+  %
+  % prdData = predict_Acanthaster_planci(par, data, auxData);
+  % Fsb_2 = lossfun(data, prdData, weights);
+  % [Fsb_1 Fsb_2]
+  
+  global lossfuction
+  
+  close all
+
+  if ~exist('lossfunction','var') || isempty(lossfunction)
+    lossfunction = 'sb';
+  end
+  fileLossfunc = ['lossfunction_', lossfunction];
+  
+  if isfield(data,'psd')
+   data = rmfield(data,'psd');
+  end
+
+  q = rmfield(par, 'free'); 
+
+  st = data;
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
+  for i = 1:nst   % makes st only with dependent variables
+    fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
+    auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
+    [~, k, npage] = size(auxVar);
+    if k>=2 && npage==1% columns 2,3,.. are treated as data to be predicted if npage==1
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2:end));
+    end
+  end
+  
+  [nm, nst] = fieldnmnst_st(st); % nst: number of data sets
+  [Y, meanY] = struct2vector(st, nm);
+  W = struct2vector(weights, nm);
+
+  f = feval(func, q, data, auxData);
+  [P, meanP] = struct2vector(f, nm);
+
+  F = feval(fileLossfunc, Y, meanY, P, meanP, W);
+end
+
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); aux = aux(~isnan(aux));
+    vec = [vec; aux];
+    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
+  end
+end
+
+##### SOURCE END #####
+--></body></html>

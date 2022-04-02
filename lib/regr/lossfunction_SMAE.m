@@ -10,7 +10,7 @@ function lf = lossfunction_SMAE(data, meanData, prdData, meanPrdData, weights)
   
   %% Description
   % Calculates the loss function: Symmetric Mean Absolute Error
-  %   2 w' (|d| - |p|)/ (|d| + |p})
+  %   2 w' (|d - p|)/ (|d| + |p|)
   %
   % Input
   %

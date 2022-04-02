@@ -34,6 +34,8 @@ function [stat, txtStat] = ssd_mod(model, stat, code, par, T_pop, f_pop, sgr)
       [stat, txtStat] = ssd_abp(stat, code, par, T_pop, f_pop, sgr);
     case 'hep'
       [stat, txtStat] = ssd_hep(stat, code, par, T_pop, f_pop, sgr);
+    case 'hax'
+      [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr);
     case 'hex'
       [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr);
   end

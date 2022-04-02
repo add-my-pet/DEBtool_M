@@ -63,7 +63,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
   
   % dataSet_nFig is a (n,2)-cell array with names of data sets in col 1, and 2-char txt with figure-number in col 2; 
   % If fig nFig has a legend, this element is not a string, but a cell-string of length 2, where nFig_legend is added
-  % This is used in prt_results_my_pet and prt_report_AmPtox
+  % This is used in prt_results_my_pet and prt_report_AmPtox and filled, independent of this function, by get_dataSet_nFig
   
   n_pets = length(pets); dataSet_nFig = cell(0,2);
   parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
@@ -217,6 +217,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               if n_nms > 1
                 plotNm = ['results_', pets{i}, '_', nFig];
                 LEGEND.([plotNm, '_legend']) = legend; 
+                LEGENDlabel.([plotNm, '_legend'])= '';
               end % end of grouped plots
             end
           end % end of all grp plots   
@@ -267,10 +268,10 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && length(auxData.(pets{i}).treat.(nm{j}){2})<3 % bi-variate data
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}{1}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
-              if ~isfield(treat,nm{j}) || ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
+              if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                 fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
                 return
               end
@@ -425,7 +426,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 zData_int = zeros(n_t,n_x*n_y+1); % reshape for interpolation
                 for ii=1:n_t; xy = zData(:,:,ii); zData_int(ii,:) = [tData(ii), xy(:)']; end
                 %
-                nmDir = ['results_', pets{i},'_',nFig]; mkdir(nmDir);
+                nmDir = ['results_',pets{i},'_',nFig]; mkdir(nmDir);
                 n_t = 100; t = linspace(tData(1), t_max, n_t); % times to plot in movie
                 for k = 1:n_t % scan time points
                   zData_k = reshape(spline1(t(k),zData_int),n_x,n_y); % interpolated data at time t(k)
@@ -447,7 +448,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   if treat{1}==2 % plot mesh
                     plot3(xAxis(:,ones(1,n_y)), ones(n_X,1)*yData', prdX, 'Color',plotColours{2}) 
                     plot3(ones(n_Y,1)*xData' , yAxis(:,ones(1,n_x)), prdY', 'Color',plotColours{2})
-                  else % treat{1} == 3 % plot surface; condition n_x = n_y must apply
+                  else % treat{1} == 3 % plot surface; condition n_x == n_y must apply
                     x = [xAxis(:,ones(1,n_y)),ones(n_Y,1)*xData']; 
                     y = [ones(n_X,1)*yData', yAxis(:,ones(1,n_x))]; z = [prdX, prdY'];
                     surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
@@ -494,7 +495,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           if exist('LEGEND','var') % plot legend
             nms = fields(LEGEND); n_nms = length(nms);
             for j=1:n_nms
-              if exist('treat','var')
+              if isfield(LEGENDlabel, nms{j})
                 shlegend(LEGEND.(nms{j}), [], [], LEGENDlabel.(nms{j}));
               else
                 shlegend(LEGEND.(nms{j}));

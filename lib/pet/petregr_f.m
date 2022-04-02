@@ -28,7 +28,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
 %  
 % Output
 % 
-% * q: structure with parameters, result of the least squares estimates
+% * q: structure with parameters, result that minimizes the loss function
 % * info: 1 if convergence has been successful; 0 otherwise
 % * itercount: nummber if iterations
 % * fval: minimum of loss function
@@ -53,8 +53,8 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
   for i = 1:nst   % makes st only with dependent variables
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
-    k = size(auxVar, 2);
-    if k >= 2 % columns 2,3,.. are treated as data to be predicted
+    [~, k, npage] = size(auxVar);
+    if k>=2 && npage==1% columns 2,3,.. are treated as data to be predicted if npage==1
       st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2:end));
     end
   end

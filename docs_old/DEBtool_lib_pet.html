@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+
+  <TITLE>DEBtool_lib_pet</TITLE>
+
+  <STYLE>
+  <!--
+  H1 {color: blue; text-align:center}
+  H2 {color: blue; text-align:left}
+  A:link{color:blue}
+  A:visited{color:red}
+  A:hover{color:blue}
+  A:active{color:blue}
+  code {color:magenta}
+  -->
+  </STYLE>
+
+</HEAD>
+
+<BODY BGCOLOR="#EEFFEE">
+
+<H3><A NAME="toolbox_lib_pet">Toolbox: lib/pet</A></H3>
+
+Routines for the add_my_pet collection. 
+The aim is to 
+<ul>
+  <li>estimate DEB parameters from a collection of data sets</li>
+  <li>present goodness of fit and accuracy
+  <li>evaluate implied properties
+</ul>   
+
+<H4><A NAME="Todo">Preparation of an entry</H4>
+
+Make sure that the path to DEBtool_M and AmPtool and their subdirectories has been set in Matlab.
+An AmP entry consists of a set of 4 files, 3 Matlab functions (<code>mydata_my_pet.m</code>, <code>predict_my_pet.m</code>, <code>pars_init_my_pet.m</code>) and 
+  a Matlab script (<code>run_my_pet.m</code>), where <code>my_pet</code> is replaced by the scientific name of your species with spaces replaced by <code>_</code>.
+The mydata-file sets data and references, 
+the pars_init-file specifies the model type and initial parameter values, 
+the predict-file computes expectations for the data, given parameter values and 
+the run-file runs the parameter estimation procedure.
+The notation in these files follows the <a href="https://www.bio.vu.nl/thb/research/bib/Kooy2010_n.pdf">DEB notation rules</a>.
+The 4 files are now discussed in some more detail:
+
+<h5><A NAME="mydata">mydata</h5>
+
+Copy-and-rename template-file <code>DEBtool_M/lib/pet/mydata_my_pet.m</code> in your current directory, 
+  and have a look at mydata-files for related species for editing inspiration.
+Temperatures have to be specified in Kelvin, while function <code>C2K</code> converts Celsius to Kelvin.
+Since Celsius is more intuitive, all entries use this function.
+Bibkeys follow the structure: max 4 characters for the first author, max 4 for the second one (if existing), 4 for the year.
+
+<p>
+Consult Wikipedia for taxonomic info, and <a href = "https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeco.html">AmPeco</a> for available eco-codes.
+The fields <code>data_0</code> and <code>data_1</code> refer to the zero- and uni-variate data sets that are specified in the mydata-file.
+See the <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure#Data_and_data_types"> DEBwiki manual</a> for allowed codes;
+the data sets themselves don't need to have these names, the concepts matter.
+E.g., while data-code  <code>ap</code>, for age at puberty, is in the list, our advice is to work, instead, with <code>tp</code> for time since birth at puberty,
+to avoid that uncertainty about age at birth (due to uncertainty about the start of development), affects the results too much.
+<a href="http://www.debtheory.org/wiki/index.php?title=Completeness"><code>COMPLETE</code></a> quantifies the level of data-completeness.
+
+<p>
+The zero-variate data (in sequence of the units) are filled first, then the uni-variate data.
+Contrary to the above-mentioned fields, the data-fields can be entry-specific, but all data must have units, label, bibkey and, if time is in the units, also
+temp, units.temp, label.temp. 
+The comment-field is optional but we stimulate frequent use, e.g. with remarks about accuracy. 
+Remove empty fields.
+
+<p>
+The weights only need to be changed if more or less emphasis in terms of goodness of fit is desired.
+Avoid large numbers (weights multipliers by factor 3 of 5 already have a big effect); 
+value zero means that the predictions for that dataset do not contribute to the loss-function, so don't effect parameter estimation.
+The weights for the pseudo-data generally do not require editing; 
+the default values are chosen such that pseudo-data hardly affects parameter estimation in the case that real data determines parameters well.
+
+<p>
+Plots with the same labels and units can be combined into one plot, by assigning datasets to a group and setting a caption.
+Please observe that AmP follows the lava-colour scheme from high to low: white, via red and blue, to black.
+Female data first, followed male data, whith the consequence that female data is plotted in red, male data in blue.
+For data at several temperatures: high temperatures first; the same for food levels.
+The presentation of results can (optionally) be customized with function <a href="../lib/pet/html/custom_results_template.html"><code>custom_results_my_pet</code></a>.
+A detailed account of the method is presented in the <a href="http://www.debtheory.org/wiki/index.php?title=AmP_estimation_procedure" 
+TARGET = "_top">DEBwiki manual</a>.
+
+<p>
+Discussion points can have optional references, set by <code>metaData.bibkey.D1 = bibkey;</code>, with bibkey replaced by the correct key.
+Discussion points are required if your entry is a modification of an existing one. 
+Please explain what is new and why.
+Facts must have references.
+
+<p> 
+The links to websites, as used in the species-toolbar, depend on the species; 
+general websites are allways included (if they have the species), but the rest is taxon-specific (fishes, molluscs, etc). 
+See existing entries.
+
+<p>
+Acknowledgements are optional; you can here refer e.g. to grant numbers.
+
+<p>
+References follow the rules of <a href"http://www.bibtex.org/" target="_blank">BibTex</a>, and this program is actually run to produce the web-presentation.
+Make sure that all data has a reference.
+If you measured the data yourself, please select type "Mics" and mention this in field "note".
+Do something similar for personal communications.
+Please notice that the type of bib-entry is not a free choice; a limited number of types are allowed by Bibtex.
+
+<h5><A NAME="predict">predict</h5>
+
+Copy-and-edit a predict-file from a related species.
+The <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/species_list.html">species-list</a> shows the data-types for all entries, 
+  which can be used to find predict files of related species that specify additional predictions for your data.
+Notice that all assigned variables have a comment that starts with a specification of its units.
+Notice also that predictions can depend on the model-type, as specified in the pars_init-file.
+The model-type is, however, not a free choice: related species have the same model-type.
+Make sure that all data specified in the mydata-file are predicted, but no more.
+
+<p>
+The predict-file starts with extracting all parameters, as set in the pars_init-file, and all data, as set in the mydata-file.
+Matlab function <a href="../lib/pet/html/parscom_st.html">parscomp_st</a> is run to compute frequently used (simple) functions of the parameters, called compound-parameter, 
+  which do not depend on food level.
+
+<p>
+Then temperature correction factors, <code>TC</code>, are computed for all data sets.
+All parameters are specified at the reference temperature of 20 C, and character <code>T</code> is added to the name of the variable to indicate that it is temperature-corrected. 
+This has to be done for all variables that have time in their dimensions.
+
+<p>
+The predictions start with a number of scaled times, scaled lengths and scaled rates that concern the full life cycle for later use, followed by required expectations for 
+  zero-variate data following the life-cycle, which are outputted to structure <code>prdData</code>.
+Notice that the sequence reflect dimensions of variables. 
+This is not essential, but convenient for checking.
+
+<p>
+The final step is the specification of all required expectations of uni-variate data-sets; 
+notice how the first column is used to modify expectations for the second one.
+Auxiliary data can be used for a similar purpose.
+
+<p>
+Most entries assume data-specific constant temperatures and/or food levels.
+Quite a few entries, however, work with time-varying temperatures and/or food levels.
+In that case predictions must be based on specifications in terms of ordinary differential equations (ode's), which must be integrated with one of Matlab's ode-solvers.
+Entries that integrate ode's can be located with AmPtool function <a href="https://add-my-pet.github.io/AmPtool/html/select_predict.html" target="_blank">select_predict</a>, 
+by searching for the string "ode" with code <code>[species, nm] = select_predict('ode')</code>.
+Some entries even reconstruct temperature and/or food level trajectories from other data.
+Search the data-base for examples, see the <a href="https://add-my-pet.github.io/AmPtool/docs/index.html" target="_blank">AmPtool manual</a> for doing this search efficiently.
+
+<h5><A NAME="pars_init">pars_init</h5>
+
+Copy-and-edit a pars_init-file from a related species.
+The specification of the model-type and the reference temperature are then already correct.
+Even the parameter values rarely need modification, unless the ultimate body sizes are very different.
+The setting of free determines which parameters will be estimated and which are fixed.
+The first block of parameters is obligatory for the chosen model type, the second block is ad-hoc for the current entry, and can be extended.
+
+<h5><A NAME="run">run</h5>
+
+Copy-and-edit a run-file from any species.
+The run-file starts with setting a global variable for the species that will be estimated and with checking the entry for consistency.
+
+<p>
+Depending on <a href="../lib/pet/html/estim_options.html">option settings</a>, results will be printed to screen and/or a .mat file and/or .html file.
+This .mat file can be read with 
+<a href="../lib/pet/html/printmat.html"><code>printmat('my_pet')</code></a>.
+
+<p>
+First make sure that <code>estim_options('results_output', 3);</code> is selected, to save the .mat file and report the result in your browser.
+Then out-comment <code>estim_options('method', 'no');</code> by placing <code>%</code> in front of it. 
+You start parameter estimation from  the initial setting as specified in <code>pars_init_my_pet</code> with <code>estim_options('pars_init_method', 2);</code> 
+using a rather small number of maximum iteration steps (we frequently use 500).
+Then continuate estimation with <code>estim_options('pars_init_method', 1);</code>, in which case the initial parameter values are taken from <code>results_my_pet.mat</code>, 
+which was created in the previous run.
+Then continuate just by repeating the last comment (arrow-up + enter) till convergence, or lack of further progress.
+The significance of this sequence is that during the estimation iteration, the simplex shrinks, and a re-start restores the original size.
+In this way you reduce (but not eliminate) the probability of arriving at a local minimum of the loss function that is not global. 
+
+<p>
+You can reduce or enhance the effect of particular data sets/points by changing weight coefficients in the mydata-file.
+If you are satified by the results use <code>mat2pars_init</code> to copy the results from the .mat file into the pars_init-file.
+Then activate the line <code>estim_options('method', 'no');</code> again, and select <code>estim_options('results_output', 4);</code> to see the implied properties in your browser, 
+or <code>estim_options('results_output', 5);</code> for comparison with related species.
+If all seems fine, your entry is ready for submission.
+
+<H4><A NAME="curators">For curators only</H4>
+
+The core code 
+<a href="../lib/pet/html/estim_pars.html"><code>estim_pars</code></a> is a macro around regression function 
+<a href="../lib/pet/html/petregr_f.html"><code>petregr_f</code></a> 
+(with filters or  
+<a href="../lib/pet/html/petregr.html"><code>petregr</code></a> without; 
+model-specific filters prevent the estimation process to sample outside the allowed parameter space); 
+options can be set with 
+<a href="../lib/pet/html/estim_options.html"><code>estim_options</code></a>.
+Fix or release settings of parameters and chemical parameters are always taken from 
+<a href="../lib/pet/html/pars_init_my_pet.html"><code>pars_init_my_pet</code></a>;
+the parameters values might be set by 
+<a href="../lib/pet/html/get_pars.html"><code>get_pars</code></a> 
+if <code>estim_options('pars_init_method', 0)</code> (and parameters are free, not fixed) or are set by <code>results_my_pet.mat</code> if <code>estim_options('pars_init_method', 1)</code>.
+The function
+<a href="../lib/pet/html/matisinit.html"><code>matisinit</code></a> can be used to check if the values in <code>results_my_pet.mat</code> equal those in <code>pars_init_my_pet</code>.
+If so, the <code>.mat</code> file was not produced via <code>estim_pars</code> and method-option 0 was used in combination with output-option 1 or 2. 
+
+<h5><a NAME="filters">filters</a></h5>
+This regression function uses filters for the various
+<a href="../manual/DEBtool_animal.html">models</a>, such as
+<a href="../lib/pet/html/filter_std.html"><code>filter_std</code></a>, 
+while warnings are specified by e.g. 
+<a href="../lib/pet/html/warning_std.html"><code>warning_std</code></a>.
+Filter holds are reported by 
+<a href="../lib/pet/html/print_filterflag.html"><code>print_filterflag</code></a> 
+in <code>estim_pars</code>.
+Customized filters can be build into the predict-file, directly after unpacking of inputs, by conditionally  emptying output <code>Prd_data</code>, setting <code>info = 0</code> and <code>return</code>.
+
+<h5><a NAME="weights">weights/errors</a></h5>
+Weight coefficients are set by  <a href="../lib/pet/html/setweights.html"><code>setweights</code></a>. 
+Relative errors are computed by <a href="../lib/pet/html/mre_st.html"><code>mre_st</code></a>;
+These means are about the absolute values of the relative errrors.
+
+<h5><a NAME="pseudodata">pseudodata</a></h5>
+Pseudodata is data for (simple functions of) parameter values, while data and their predictions still might differ.
+They are used to avoid unrealistic values for poorly determined parameters.
+Pseudodata is added with <a href="../lib/pet/html/addpseudodata.html"><code>addpseudodata</code></a>, 
+removed by <a href="../lib/pet/html/rmpseudodata.html"><code>rmpseudodata</code></a> and 
+predicted by <a href="../lib/pet/html/predict_pseudodata.html"><code>predict_pseudodata</code></a>.
+
+<h5><a NAME="automized">automized initial estimates</a></h5>
+Automized initial parameters estimates are generated with 
+<a href="../lib/pet/html/get_pars.html"><code>get_pars</code></a>, which is a macro around
+<a href="../manual/DEBtool_animal.html#pars-data"><code>get_pars_2 till 9</code></a>.
+Specific density of biomass is set by
+<a href="../lib/pet/html/get_d_V.html"><code>get_d_V</code></a>
+on the basis of taxonomic relationship.
+
+<h5><a NAME="several">several species</a></h5>
+The code allows for parameter estimation of several species simultaneously. 
+The function 
+<a href="../lib/pet/html/mydata_pets.html"><code>mydata_pets</code></a> catenates <code>mydata</code> files,
+<a href="../lib/pet/html/predict_pets.html"><code>predict_pets</code></a> catenates <code>predict</code> files, and 
+<a href="../lib/pet/html/results_pets.html"><code>result_pets</code></a> does the same with <code>results</code> files.
+
+
+<HR>
+Back to the <A HREF="index.html" TARGET="_top">DEBtool</A> page
+
+</BODY>
+</HTML>

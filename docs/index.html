@@ -1,31 +1,129 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
-<HTML>
-<HEAD>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEBtool</title>
+  <link rel="stylesheet" type="text/css" href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/style.css"> 
+  <script src="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/dropdown.js"></script>
+  <script src="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/sys/w3data.js"></script>
+</head>
+<body>
 
-  <STYLE>
-  <!--
-  H1 {color: blue; text-align:center}
-  H2 {color: blue; text-align:left}
-  A:link{color:blue}
-  A:visited{color:red}
-  A:hover{color:blue}
-  A:active{color:blue}
-  -->
-  </STYLE>
+  <div w3-include-html="wallpaper_DEBtool.html"></div>
+  <script>w3IncludeHTML();</script>
 
-<TITLE>DEBtool</TITLE>
+  <div w3-include-html="toolbar_DEBtool.html"></div>
+  <script>w3IncludeHTML();</script>
 
-</HEAD>
-<FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 cols="150,*">
-  <FRAME SRC="index_left.html" NAME="left">
-  <FRAMESET BORDER=0 FRAMEBORDER=0 FRAMESPACING=0 rows="78,*">
-    <FRAME SRC="index_top.html" NAME="top">
-    <FRAME SRC="DEBtool.html" NAME="main">
-  </FRAMESET>
-<NOFRAMES>
-<BODY>
-<A HREF="DEBtool.html">Version without frames</A>
-</BODY>
-</NOFRAMES>
-</FRAMESET>
-</HTML>
+<!--------------------------------------------------------------->
+<!--   PART main                                               -->
+<!--   Where all of the text is placed                         -->
+<!--   use "contentFull" for 1 column                          -->
+<!--   use "content" if you want two columns"                  -->
+<!--------------------------------------------------------------->
+<div id="main">
+  <div id="main-wrapper">    
+    <div id="contentFull">
+
+      <h1>
+        DEBtool
+        <a href="https://youtu.be/YNytOW_LiXw" target="_blank"><img src="img/YouTube.png"  height = "50px" align="right" title="4:19"></a>
+      </h1>
+ 
+      <h2><a name="Purpose">Purpose</a></h2> 
+      <img src="img/amg.gif" width="100" align="right">
+      DEBtool is a software package written in Matlab (version DEBtool_M) and Octave (version DEBtool_O, which is no longer maintained) and 
+      that can be used to illustrate some implications of the <a href="https://add-my-pet.github.io/DEBportal/docs/" target="_top">Dynamic Energy Budget theory</a> and
+      to apply this theory in the analysis of eco-physiological data.
+      The manual and the code follow the <a href="https://www.bio.vu.nl/thb/deb/deblab/bib/Kooy2010_n.pdf">DEB notation</a>.
+      It has script-files for almost all figures of the <a href="https://www.bio.vu.nl/thb/deb/deblab/bib/Kooy2010.pdf">DEB book</a>,
+      with many references to the formulae in the book, and explaining remarks.
+      <a href="https://add-my-pet.github.io/AmPtool/docs/" target="_top">AmPtool</a>, as used to support the
+      <a href="http://www.bio.vu.nl/thb/deb/deblab/add_my_pet/" TARGET="_top"> Add-my-Pet (AmP)</a> collection is an example of application of DEBtool.
+      DEBtool has a function <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html" TARGET="_top">AmPeps</a> to produce Matlab source files for AmP entries, 
+      and a library of routines for the (point and interval) estimation of parameter values of 10 related DEB model from entry source files.
+      <br> 
+      Although DEBtool continues to expand, many implications of DEB theory will remain beyond the capacities of this package.
+
+      <p>
+      DEBtool and AmPtool are freely available via GitHub, see the <a href="/thb/deb/deblab/" target="_top">DEB laboratory</A>.
+
+      <p>
+      This release focuses on
+      <ul>
+        <li> relationships between variables, as modified by parameter values </li>
+        <li> extracting parameter values from data and testing model predictions </li>
+      </ul>
+  
+      <h2><a name="Maintenance">Maintenance & updates</a></h2>
+       New versions of any function are only indicated by the creation date and/or modification dates in the file headers. 
+       The changes are visible in GitHub.
+
+      <h2><a name="Local_manual">Local manual</a></h2>
+      The manual for DEBtool is included in the package in subdirectory DEBtool_M/docs and is written in HTML. 
+      To read it, run a browser on file <code>index.html</code>.
+
+      <h2><a NAME="Use">Use and recommendations</a></h2>
+
+      <h4>Basic-level use</h4>
+      Octave and Matlab have a very similar syntax, but <a href="first_oct_matl.html">small differences do exist</a>.
+      The first steps in Octave are explained in separate <A HREF="index_first.html" TARGET="_top"> notes </A>.
+      A useful short introduction to Matlab is: 
+      Knight, A. 2000 <i>Basics of Matlab and Beyond</i>, Chapman & Hall/CRC, 202 pp.
+      A full manual of Octave is:
+      Eaton, J. W., Batemen, D. and Hauberg, S. 2008 
+      <i>GNU Octave Manual, Version 3</i>, Network Theory Limited, 555 pp.
+      <a href="http://www.gnu.org/software/octave/doc/interpreter/" TARGET="_top">An electronic manual is on the web.</a>
+
+      <h4>Don't work in DEBtool, but set a path to it</h4>
+      It is best to work in the subdirectory that has your own data and routines, and make a path to DEBtool.
+      If you have this just besides DEBtool you set the path to DEBtool and all its subdirectories by <code>addpath(genpath('../DEBtool_O/'))</code> in Octave or in the menu-bar in Matlab.
+      Use <code>pwd</code> under Octave or Matlab for getting the current prosition in to directory-tree, and <code>ls</code> for the list of files in the current directory.
+      Use <code>cd</code> for changing directories, where <code>..</code> means the parent-directory. 
+      Example if you are in a sister-directory of DEBtool_M: <code>cd ../DEBtool_M/animal/</code> will bring you to toolbox animal.
+
+      <p>
+      The routines in each subdirectory can call other routines from that subdirectory, or from the library DEBtool/lib, which has three subdirectories. 
+
+      <h4>Erase variables</h4>
+      Do not forget to type <CODE>clear all</CODE> after switching toolboxes.  
+      No error messages are given if you do it otherwise, but the effect is not what you want it to be. 
+      So if you are in <code>alga</code> and type <CODE>cd ../plant</CODE>, continue with <CODE>clear all; plant</CODE>, for instance.
+
+      <p>
+      The plot ranges of DEBtools' plotting routines are set without notice, when you use the routines for the first time. 
+      Clear them by either use <code>clear</code>, or the 'default' option in the <code>*_option</code> routines. 
+      See under the manual under <code>library</code>.
+
+      <h4>Recalculate optimisation results from different start values</h4>
+      Always remember that optimization results contain local extremes at best, and that a local extreme might differ from the global extreme. 
+      Try different starting values, and check the results by making plots. 
+      See instructions under <a href="DEBtool_lib_regr.html#nrregr"><code>DEBtool/lib/nrregr</code></a>.
+
+      <h4><a NAME="Nomenclature">Nomenclature</a></h4>
+      <ul>
+        <li> <b>mydata_*.m</b> The practical application of many DEBtool functions is illustrated with mydata-files, i.e. script files with the name mydata_filename.m. 
+          This information is supplementary to that in this manual. You can change these files according to your own needs.</li>
+	
+        <li> <b>sh*.m</b> Routines that produce and show plots are called shfilename.m files.</li>
+	
+        <li> <b>d*.m</b> Routines that specify differential equations are called d*.m; they are frequently subroutines of *.</li>
+	
+        <li> <b>pars_*.m</b> Parameter values that are use in de demo's are specified in pars.m files; 
+         the <a href="http://www.bio.vu.nl/thb/research/bib/Kooy2010_n.html"> notation</a> follows the DEB-book, and explanations are given in the file. 
+         A demo is a script-file with a name equal to its toolbox (i.e. directory).
+      </ul>
+
+      <h2><A name="Logo">Logo</a></h2>
+      The logo, designed by Hugo van den Berg, represents a three-dimensional object, such that the projections in three directions give the symbols A, M and G. 
+      These symbols stand for the three basic energy fluxes Assimilation, Maintenance and Growth, which together organize all mass fluxes. 
+      Later in the development of the DEB theory, maintenance was replaced by dissipation to include development and other dissipating fluxes.
+
+    </div> <!-- end of contentFull -->
+ 
+    <div w3-include-html="footer_amp.html"></div>
+    <script>w3IncludeHTML();</script>
+
+  </div> <!-- end of main wrapper -->
+</div> <!-- end of main -->
+</body>
+</html>

@@ -1,0 +1,242 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>postProcess_mmea</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-02"><meta name="DC.source" content="postProcess_mmea.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>postProcess_mmea</h1><!--introduction--><p>filter and improve solutions of mmea</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>sol = <a href="../postProcess_mmea.m"><b>postProcess_mmea</b></a> (results_mmea)</p><h2 id="4">Description</h2><p>filters solutions of mmea by removing solutions that are too close together and whose lossfunction increases monotonically if the parameter set moves straight from the best to other solutions. Then each remaining parameter set is used as seed in an nm algorithm, and the removing procedure is repeated. The method is based on the fact that if the loss function increases monotonically when moving from start to end, the end parameter set cannot be a local minimum of the loss function.</p><p>Input</p><div><ul><li>results: char string with name of .mat file with solution set of mmea</li></ul></div><p>Output</p><div><ul><li>sol: (n,k)-matrix of n solutions for k free parameters</li></ul></div><h2 id="5">Remarks</h2><p>Run in directory that has the mydata-, pars_init- and predict-file, as well as the results_my_pet_mmea.mat file with mmea solutions. If not present, the results_my_pet.mat file will be written, with par-values as in the pars_init-file. The list of solutions is printed at each reduction round and finally the elasticities</p><h2 id="6">Example of use</h2><p>pars_Dipodomys_deserti_mmea = postProcess_mmea('results_Dipodomys_deserti_mmea');</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% postProcess_mmea
+% filter and improve solutions of mmea
+%%
+function sol = postProcess_mmea(results_mmea)
+  %  created at 2022/04/01 by Bas Kooijman
+  
+  %% Syntax
+  % sol = <../postProcess_mmea.m *postProcess_mmea*> (results_mmea)
+  
+  %% Description
+  % filters solutions of mmea by removing solutions that are too close together and 
+  % whose lossfunction increases monotonically if the parameter set moves straight 
+  % from the best to other solutions. Then each remaining parameter set is used as
+  % seed in an nm algorithm, and the removing procedure is repeated.
+  % The method is based on the fact that if the loss function increases
+  % monotonically when moving from start to end, the end parameter set
+  % cannot be a local minimum of the loss function.
+  % 
+  % Input
+  %
+  % * results: char string with name of .mat file with solution set of mmea
+  %
+  % Output
+  %
+  % * sol: (n,k)-matrix of n solutions for k free parameters
+  
+  %% Remarks
+  % Run in directory that has the mydata-, pars_init- and predict-file,
+  % as well as the results_my_pet_mmea.mat file with mmea solutions.
+  % If not present, the results_my_pet.mat file will be written, 
+  % with par-values as in the pars_init-file.
+  % The list of solutions is printed at each reduction round and finally
+  % the elasticities
+  
+  %% Example of use
+  % pars_Dipodomys_deserti_mmea = postProcess_mmea('results_Dipodomys_deserti_mmea');
+  global pets 
+    
+  % read results_mmea
+  load(results_mmea)
+  sol = result.solutionsParameters; % (n,k)-matrix with (solutions,parameters) 
+  [n_sol, n_par] = size(sol);
+  parNm = result.parameterNames; % cell-string with names of free parameters
+  val = result.lossFunctionValues;
+  if length(parNm) ~= n_par
+    fprintf('Warning from postProcess_mmea: parameter names are not consistent with solution set\n');
+    return
+  end
+  fprintf('%g solutions found and printed in table\n', n_sol);
+  prt_tab({(1:n_sol)', val, sol},['Par'; 'Lf'; parNm]', 'solutions');   
+  
+  % initiate par,data,auxData,weights for calls to lossfunction
+  % the free pars in par will be overwritten
+  my_pet = strsplit(results_mmea,'_'); my_pet = [my_pet{2}, '_', my_pet{3}];
+  pets = {my_pet}; % required for running nm
+  eval(['[data, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
+  eval(['[par, metaPar, txtPar] = pars_init_', my_pet, '(metaData);']);  
+  func = ['predict_', my_pet];
+  
+  % initiate estim_options settings and make a copy of results_my_pet.mat
+  estim_options('default'); % method nm
+  estim_options('results_output', 0); % only write results_my_pet.mat-file
+  estim_options('report', 0); % no printing to screen
+  if ~exist(['results_',my_pet,'.mat'], 'file')
+    estim_options('pars_init_method', 2);
+    estim_options('method', 'no');
+    estim_pars; % write results_my_pet.mat-file
+  end
+  if ismac || isunix % save a copy; will be restore at the end
+    system(['cp results_',my_pet,'.mat results_',my_pet,'_copy.mat']);
+  else
+    system(['powershell cp results_',my_pet,'.mat results_',my_pet,'_copy.mat']);
+  end
+
+  n_rnd = 3;
+  for h = 1:n_rnd % start selection & refinement rounds
+  
+    % remove solutions that are too close together
+    if n_sol>1
+      [sol, val] = reduceSol(sol, val);
+      n_sol = size(sol,1);
+      fprintf('round %g of %g: %g solutions are sufficiently apart\n', h, n_rnd, n_sol);
+    end
+
+    % refine remaining solutions with nm method with max 500*h steps
+    estim_options('method', 'nm');
+    estim_options('pars_init_method', 1); % start from .mat file
+    estim_options('simplex_size', 0.005); % very small to avoid leaving local min
+    estim_options('max_step_number', 500*h);
+    load(['results_',my_pet,'.mat'], 'par');
+    for i=1:n_sol
+      for k=1:n_par; par.(parNm{k}) = sol(i,k); end % overwrite free pars
+      save(['results_',my_pet,'.mat'], 'par');
+      estim_pars;
+      load(['results_',my_pet]);
+      for k=1:n_par; sol(i,k) = par.(parNm{k}); end % copy resulting pars in sol
+      val(i) = lossFn(func, par, data, auxData, weights);
+      fprintf('%round %g of %g: refining solution %g of %g\n',h,n_rnd,i,n_sol)
+    end
+ 
+    % remove solutions that are too close together
+    if n_sol>1
+      [sol, val] = reduceSol(sol, val);
+      n_sol = size(sol,1);
+      fprintf('%round %g of %g: %g refined solutions are sufficiently apart and printed in table\n', h,n_rnd,n_sol);
+      prt_tab({(1:n_sol)', val, sol},['Par'; 'Lf'; parNm]', 'solutions');   
+    end
+      
+    % remove solutions that are not local minima
+    fprintf('start checking monotony of loss functions from one solution to the other\n');
+    if n_sol>1
+      [val_sort, i_sort] = sort(val); 
+      sol_sort = sol(i_sort,:);
+      sel = testMonotony(func,sol_sort,parNm,val_sort,par,data,auxData,weights);
+      i_sort = i_sort(~sel); % remove indices for solutions whose lf-connection is monotonous
+      sol = sol_sort(i_sort,:); val = val_sort(i_sort); n_sol = size(sol,1);
+      fprintf('round %g of %g: %g solutions do not have a monotonous loss function connection with other remaining solutions\n', h,n_rnd,n_sol);   
+    end
+  end % end of reduction rounds
+
+  % print elasticities of best solution
+  for k=1:n_par; par.(parNm{k}) = sol(1,k); end
+  save(['results_',my_pet,'.mat'], 'par');
+  prt_elas
+
+  % restore results_my_pet.mat and delete the copy
+  if ismac || isunix
+    system(['cp results_',my_pet,'_copy.mat results_',my_pet,'.mat']);
+  else
+    system(['powershell cp results_',my_pet,'_copy.mat results_',my_pet,'.mat']);
+  end
+  delete(['results_',my_pet,'_copy.mat'])
+  
+end
+
+function sel = testMonotony(func,sol,parNm,val,par,data,auxData,weights)
+  % sel(i) = true if lf traject to i is monotonous
+  [n_sol, n_par] = size(sol); sel = false(n_sol,1);
+  n_w = 10; w = linspace(0,1,n_w); % weights for par start and end
+  for i = 1:n_sol
+    for j = i+1:n_sol
+      par_0 = par; for k=1:n_par; par_0.(parNm{k}) = sol(i,k); end % start (=best) par
+      par_1 = par; for k=1:n_par; par_1.(parNm{k}) = sol(j,k); end % end par
+      lf = zeros(n_w,1); lf(1) = val(i); lf(n_w) = val(j); % initiate loss function vector
+      for i_lf = 2:n_w-1
+        par_lf = par; for k=1:n_par; par_lf.(parNm{k}) = (1-w(i_lf))*sol(i,k)+w(i_lf)*sol(j,k); end 
+        lf(i_lf) = lossFn(func, par_lf, data, auxData, weights);
+      end
+      sel(j) = all(lf(1:n_w-1)<lf(2:n_w));
+    end
+  end
+end
+
+function [sol_red, val_red] = reduceSol(sol, val)
+  [n_sol, ~] = size(sol); sel=true(n_sol,1); tol = 1.05;
+  for i=1:n_sol-1
+    for j=i+1:n_sol
+      ratio = max(sol([i;j],:),[],1)./min(sol([i;j],:),[],1); 
+      if all(ratio<tol)
+        if val(i) < val(j)
+          sel(j) = false;
+        else
+          sel(i) = false;
+        end 
+      end
+    end
+    sol_red = sol(sel,:); val_red = val(sel);
+  end
+end
+##### SOURCE END #####
+--></body></html>

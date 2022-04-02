@@ -55,7 +55,6 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   kap = p(7); % -, allocation fraction to soma of pupa
   kapV = p(8);% -, conversion efficiency from larval reserve to larval structure, back to imago reserve
 
-    
   if ~exist('f', 'var')
     f = 1;
   elseif isempty(f)
@@ -68,7 +67,7 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   sM = lp/ lb; % -, acceleration factor
 
   % from puberty till pupation
-  [vR tl] = ode45(@dget_tj_hax, [0; vRj], [0; lp], [], f, sM, rB, li, g, k, vHp);
+  [vR, tl] = ode45(@dget_tj_hax, [0; vRj], [0; lp], [], f, sM, rB, li, g, k, vHp);
   tj = tp + tl(end,1); % -, scaled age at pupation
   lj = tl(end,2);      % -, scaled length at pupation
         
@@ -77,14 +76,14 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
 
   options = odeset('Events', @emergence);
-  [t luEvH te luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; uEj; 0], options, g, k, vHe);
+  [t, luEvH, te, luEvH_e] = ode45(@dget_tj_hex, [0; 300], [0; uEj; 0], options, g, k, vHe);
   
   if isempty(te)
-      te = []; le = []; uEe = []; info = 0;
+    te = []; le = []; uEe = []; info = 0;
   else
-  te = tj + te;     % -, scaled age at emergence 
-  le = luEvH_e(1);  % -, scaled length at emergence
-  uEe = luEvH_e(2); % -, scaled reserve at emergence
+    te = tj + te;     % -, scaled age at emergence 
+    le = luEvH_e(1);  % -, scaled length at emergence
+    uEe = luEvH_e(2); % -, scaled reserve at emergence
   end
 
 end

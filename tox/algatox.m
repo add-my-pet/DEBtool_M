@@ -49,7 +49,7 @@ function f = algatox(p, t, c)
   % * t: (tn,1) matrix with exposure times
   % * c: (cn,1) matrix with concentrations of toxic compound
   %
-  % Outout
+  % Output
   %
   % * f: (nt,nc) matrix with Optical Densities
   
