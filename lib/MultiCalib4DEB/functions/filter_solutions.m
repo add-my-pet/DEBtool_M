@@ -185,8 +185,8 @@ function [ ] = filter_solutions(input_result, option, n)
        % Get the pet's name
        my_pet = strsplit(results_mmea,'_'); my_pet = [my_pet{2}, '_', my_pet{3}];
        pets = {my_pet}; % required for running nm
-       [data, auxData, metaData, txtData, weights] = eval(['mydata_', my_pet,';']);
-       [par, metaPar, txtPar] = eval(['pars_init_', my_pet, '(metaData);']);  
+       [data, auxData, metaData, ~, weights] = eval(['mydata_', my_pet,';']);
+       [par, ~, ~] = eval(['pars_init_', my_pet, '(metaData);']);  
        func = ['predict_', my_pet];
        
        if isfield(result, 'solutionsParameters')
