@@ -28,7 +28,9 @@ function sol = postProcess_mmea(results_mmea)
   % Run in directory that has the mydata-, pars_init- and predict-file,
   % as well as the results_my_pet_mmea.mat file with mmea solutions.
   % If not present, the results_my_pet.mat file will be written, 
-  % with par-values as in the pars_init-file
+  % with par-values as in the pars_init-file.
+  % The list of solutions is printed at each reduction round and finally
+  % the elasticities
   
   %% Example of use
   % pars_Dipodomys_deserti_mmea = postProcess_mmea('results_Dipodomys_deserti_mmea');
