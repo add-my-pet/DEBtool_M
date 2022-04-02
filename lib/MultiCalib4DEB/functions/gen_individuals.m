@@ -34,7 +34,6 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
 
    global gen_factor factor_type pop_size bounds_from_ind add_initial ranges
 
-   disp(gen_factor);
    % prepare variable
    %   st: structure with dependent data values only
    st = data;
