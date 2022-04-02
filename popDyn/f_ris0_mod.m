@@ -3,7 +3,7 @@
 
 %%
 function [f, info] = f_ris0_mod (model, par)
-  % created 2019/07/21 by Bas Kooijman
+  % created 2019/07/21 by Bas Kooijman, modified 2022/03/17
   
   %% Syntax
   % [f, info] = <../f_ris0_mod.m *f_ris0_mod*> (model, par)
@@ -42,6 +42,8 @@ function [f, info] = f_ris0_mod (model, par)
       [f, info] = f_ris0_abp (par);
     case 'hep'
       [f, info] = f_ris0_hep (par);
+    case 'hax'
+      [f, info] = f_ris0_hax (par);
     case 'hex'
       [f, info] = f_ris0_hex (par);
   end

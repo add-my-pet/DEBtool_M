@@ -47,7 +47,7 @@ function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
   for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
-    [~, k, npage] = size(var); 
+    [r, k, npage] = size(var); 
     if npage==1 && k>1 % uni- or bivariate data set
       var(:,1) = []; % remove independent variable
     end
@@ -56,10 +56,10 @@ function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
     w      = getfield(weights, fieldsInCells{1}{:});
     diff2 = (prdVar - var).^2;
     if npage==1 &&  k>1 % uni- or bi-variate data
-      meanVar = zeros(npage, k-1); meanPrd = zeros(npage, k-1);
+      meanVar = zeros(r, k-1); meanPrd = zeros(r, k-1);
       for j = 1:k-1
-        meanVar(:,j) = ones(npage,1) * mean(var(sel(:,j),j)); 
-        meanPrd(:,j) = ones(npage,1) * mean(prdVar(sel(:,j),j));
+        meanVar(:,j) = ones(r,1) * mean(var(sel(:,j),j)); 
+        meanPrd(:,j) = ones(r,1) * mean(prdVar(sel(:,j),j));
       end
     elseif npage>1 % tri-variate data
       meanVar = mean(var(sel),3); 

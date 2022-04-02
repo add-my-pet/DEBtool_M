@@ -39,11 +39,11 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
 
   if ~exist('h_B', 'var') || isempty(h_B)
     h_B = zeros(5,1); 
-  end;
+  end
 
   if ~exist('thinning', 'var')
     thinning = false;
-  end;
+  end
   
   if isstruct(p)
     v2struct(p); cPar = parscomp_st(p); v2struct(cPar); % unpack pars and compute coumpound pars
@@ -139,12 +139,12 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; 1e-6; 1e8], qhSt_j, options, f,  1e-6, l_j, g, s_G, h_a, h_B);
       tau_m = qhSt(end,4); S = [S_b; S_p; S_j]; tau = [tau_b; tau_p; tau_j]; 
     case 'hax' % ignore aging till emergence (fitted data concerns life span as imago)
-      S_b = 1; S_p = 1; S_j = 1; qhSt_j = [0 0 1 0]; %[S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      %qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      S_b = 1; S_p = 1; S_j = 1; qhSt_j = [0 0 1 0]; [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       [tau_j, tau_e, tau_p, tau_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee] = get_tj_hax([g, k, v_Hb, v_Hp, v_Rj, v_He, kap, kap_V], f);
-      %[tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
-      %tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e - tau_j; 1e8], qhSt_j, options, f,  (tau_e - tau_j), l_e, g, s_G, h_a, h_B);
+      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
+      [tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p-tau_b; tau_j-tau_b; 1e8], qhSt_b, options, f, tau_p-tau_b, tau_j-tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e-tau_j, l_e, g, s_G, h_a, h_B);
       S_e = qhSt(2,3); S = [S_b; S_p; S_j; S_e]; tau = [tau_b; tau_p; tau_j; tau_e];  tau_m = qhSt(3,4);
     case 'hex' % ignore aging till emergence (fitted data concerns life span as imago)
       S_b = 1; S_j = 1; qhSt_j = [0 0 1 0]; %[S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
@@ -152,7 +152,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
       %[tau, qhSt] = ode45(@dget_qhSt_hex_bj, [0; tau_j - tau_b], qhSt_b, [], f, l_b, rho_j, g, s_G, h_a, h_B, thinning);
       %tau_m = qhSt(end,4); S_j = qhSt(end,3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e - tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);
       S_e = qhSt(2,3); S = [S_b; S_j; S_e]; tau = [tau_b; tau_j; tau_e]; tau_m = qhSt(3,4);
   end
 
@@ -162,7 +162,7 @@ end
 
 % event dead_for_sure
 function [value,isterminal,direction] = dead_for_sure(~, qhSt, varargin)
-  value = qhSt(3) - 1e-6;  % trigger 
+  value = qhSt(3) > 1e-6;  % trigger 
   isterminal = 1;  % terminate after the last event
   direction  = [];  % get all the zeros
 end
@@ -442,7 +442,7 @@ function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_e, g, s_G, h_a, h_B)
   % tau: scaled time since pupation
   q   = qhSt(1); % -, scaled aging acceleration
   h_A = qhSt(2); % -, scaled hazard rate due to aging
-  S   = qhSt(3); % -, survival prob
+  S   = max(0,qhSt(3)); % -, survival prob
   %t  = qhSt(4); % -, scaled cumulative survival
   
   if tau < tau_e

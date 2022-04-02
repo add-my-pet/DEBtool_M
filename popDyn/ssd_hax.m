@@ -1,12 +1,12 @@
-%% ssd_hex
+%% ssd_hax
 % Gets mean structural length^1,2,3 and wet weight at f and r
 
 %%
-function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
-  % created 2019/08/01 by Bas Kooijman, modified 2020/02/21
+function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
+  % created 2022/03/17 by Bas Kooijman
   
   %% Syntax
-  % [stat, txtStat] = <../ssd_hex.m *ssd_hex*> (stat, code, par, T_pop, f_pop, sgr)
+  % [stat, txtStat] = <../ssd_hxx.m *ssd_hax*> (stat, code, par, T_pop, f_pop, sgr)
   
   %% Description
   % Mean L, L^2, L^3, Ww, given f and r, on the assumption that the population has the stable age distribution.
@@ -99,8 +99,11 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   if ~exist('h_B0b', 'var')
     h_B0b = 0;
   end
-  if ~exist('h_Bbj', 'var')
-    h_Bbj = 0;
+  if ~exist('h_Bbp', 'var')
+    h_Bbp = 0;
+  end
+  if ~exist('h_Bpj', 'var')
+    h_Bpj = 0;
   end
   if ~exist('h_Bje', 'var')
     h_Bje = 0;
@@ -121,28 +124,30 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   kT_M = k_M * TC; kT_J = k_J * TC; pT_M = p_M * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
 
   % supporting statistics
-  pars_tj = [g k v_Hb v_He s_j kap kap_V];
-  [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee] = get_tj_hex(pars_tj, f);  
+  pars_tj = [g k v_Hb v_Hp v_Rj v_He kap kap_V];
+  [tau_j, tau_e, tau_p, tau_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee] = get_tj_hax(pars_tj, f);  
   if isempty(tau_j)  || isempty(tau_e)  
     stat = setNaN(stat, fldf, fldt, fldg); % set all statistics to NaN
     txtStat = NaN;
     return
   end
-  aT_b = tau_b/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_e = (tau_e - tau_b)/ kT_M; % unscale
+  aT_b = tau_b/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; tT_j = (tau_j - tau_b)/ kT_M; tT_e = (tau_e - tau_b)/ kT_M; % unscale
   stat.(fldf).(fldt).(fldg).a_b = aT_b; txtStat.units.a_b  = 'd'; txtStat.label.a_b = 'age at birth';
+  stat.(fldf).(fldt).(fldg).t_p = tT_p; txtStat.units.t_p  = 'd'; txtStat.label.t_p = 'time since birth at puberty';
   stat.(fldf).(fldt).(fldg).t_j = tT_j; txtStat.units.t_j  = 'd'; txtStat.label.t_j = 'time since birth at pupation';
   stat.(fldf).(fldt).(fldg).t_e = tT_e; txtStat.units.t_e  = 'd'; txtStat.label.t_e = 'time since birth at emergence';
-  L_b = L_m * l_b; L_j = L_m * l_j;  L_e = L_m * l_e;  % unscale
+  L_b = L_m * l_b; L_p = L_m * l_p; L_j = L_m * l_j;  L_i = L_m * l_i; L_e = L_m * l_e;  % unscale
   rT_j = kT_M * rho_j; % 1/d, growth rate
+  rT_B = kT_M * rho_B; % 1/d, von Bert growth rate
   
   % life span as imago
-  pars_tm = [g; k; v_Hb; v_He; s_j; kap; kap_V; h_a; s_G];  % compose parameter vector at T_ref
-  tau_ima = get_tm_mod('hex', pars_tm, f);    % -, scaled mean life span at T_ref
-  tT_ima = tau_ima/ kT_M;                     % d, mean life span as imago
-  tT_N = tT_e + tT_ima;                       % d, time since birth at which all eggs are produced
+  pars_tm = [g; k; v_Hb; v_Hp; v_Rj; v_He; kap; kap_V; h_a/ k_M^2; s_G];  % compose parameter vector at T_ref
+  tau_ima = get_tm_mod('hax',pars_tm, f);  % -, scaled mean life span at T_ref
+  tT_ima = tau_ima/ kT_M;                  % d, mean life span as imago
+  tT_N = tT_e + tT_ima;                    % d, time since birth at which all eggs are produced
   
   % embryos
-  [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0] = get_Sb([g; k; v_Hb; h_a/k_M^2; s_G; h_B0b/kT_M; sgr/kT_M], f);
+  [S_b, q_b, h_Ab, ~, tau_0b, u_E0] = get_Sb([g; k; v_Hb; h_a/k_M^2; s_G; h_B0b/kT_M; sgr/kT_M], f);
   stat.(fldf).(fldt).(fldg).S_b = S_b; txtStat.units.S_b  = '-'; txtStat.label.S_b = 'survival probability at birth';
   E_0 = u_E0 * g * E_m * L_m^3;   % J, initial reserve
   t_0b = tau_0b/ kT_M; % d, \int_0^a_b exp(-sgr*t)*S(t) dt 
@@ -150,15 +155,18 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   % post-natals: work with time since birth to exclude contributions from embryo lengths to EL, EL2, EL3, EWw
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(10,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
   qhSL_0 = [q_b * kT_M^2; h_Ab * kT_M; S_b; 0; 0; 0; 0; 0; 0; 0]; % initial states
-  pars_qhSL = {aT_b, tT_j, tT_e, sgr, f, vT, L_b, L_j, L_e, rT_j, s_G, hT_a, h_Bbj, h_Bje, h_Bei, thinning};
+  pars_qhSL = {aT_b, tT_p, tT_j, tT_e, sgr, f, vT, L_b, L_p, L_j, L_i, L_e, rT_j, rT_B, s_G, hT_a, h_Bbp, h_Bpj, h_Bje, h_Bei, thinning};
   [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; tT_N], qhSL_0, options, pars_qhSL{:});
-  t_bi = qhSL(end,4);   % d, \int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt
-  t_bj = qhSL_event(1,4);   % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
-  t_ei = t_bi - qhSL_event(2,4);   % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
+  t_bi = qhSL(end,4);       % d, \int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt
+  t_bp = qhSL_event(1,4);   % d, \int_{a_b}^{a_p} S(t)*exp(-sgr*t) dt
+  t_bj = qhSL_event(2,4);   % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
+  t_ei = t_bi - qhSL_event(3,4);   % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
 
-  S_j = qhSL_event(1,3);  % -, survival prob at pupation
+  S_p = qhSL_event(1,3);  % -, survival prob at puberty
+  stat.(fldf).(fldt).(fldg).S_p = S_p; txtStat.units.S_p  = '-'; txtStat.label.S_p = 'survival probability at puberty';
+  S_j = qhSL_event(2,3);  % -, survival prob at pupation
   stat.(fldf).(fldt).(fldg).S_j = S_j; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at pupation';
-  S_e = qhSL_event(2,3);  % -, survival prob at emergence
+  S_e = qhSL_event(3,3);  % -, survival prob at emergence
   stat.(fldf).(fldt).(fldg).S_e = S_e; txtStat.units.S_e  = '-'; txtStat.label.S_e = 'survival probability at emergence';
   
   % survival probability (at individual level)
@@ -176,7 +184,6 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).theta_ei = theta_ei; txtStat.units.theta_ei = '-'; txtStat.label.theta_ei = 'frac of ind that is imago';
   del_an = theta_ei/ (theta_bj + theta_ei); % fraction of (larvae + imago) that is imago
 
-  
   % mean L^i for post-natals: \frac{\int_{a_b}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
   L_bi = qhSL(end,5)/ t_bi; L2_bi = qhSL(end,6)/ t_bi; L3_bi = qhSL(end,7)/ t_bi; % mean L^1,2,3 for post-natals
   stat.(fldf).(fldt).(fldg).L_bi  = L_bi;  txtStat.units.L_bi = 'cm';    txtStat.label.L_bi  = 'mean structural length of post-natals';
@@ -197,8 +204,6 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).Ww_ei = L3_ei * (1 + f * ome); txtStat.units.Ww_ei  = 'g'; txtStat.label.Ww_ei  = 'mean wet weight of imagos';
     
   % food intake and reprod rate
-  E_R_ref = (1 - kap) * E_m * (g + l_b)/ (1 - l_b);  % J/cm^3, reference value for [E_R]
-  E_Rj = E_R_ref * s_j * L_j^3;       % J, reproduction buffer
   N = kap_R * E_Rj * L_j^3/ E_0;      % #, number of eggs at emergence
   R = N/ tT_ima;                      % #/d, reproduction rate
   stat.(fldf).(fldt).(fldg).R = R; txtStat.units.R = '1/d';  txtStat.label.R = 'mean egg depositing rate of imagos';
@@ -232,42 +237,49 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   %
   mu_TX = mu_X - (Y_VX + Y_VX_dead) * mu_V - (Y_EX + Y_EX_dead) * mu_E - Y_PX * mu_P - Y_NX * mu_N; % J/mol, yield of heat on food
   stat.(fldf).(fldt).(fldg).mu_TX = mu_TX; txtStat.units.mu_TX  = 'J/mol';  txtStat.label.mu_TX  = 'yield of heat on food';
-
-
+  
 end
 
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, a_b, t_j, t_e, varargin)
-  value = [t - t_j; t - t_e];  % trigger 
-  isterminal = [0 0];          % don't terminate
-  direction  = [];             % get all the zeros
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, a_b, t_p, t_j, t_e, varargin)
+  value = [t - [t_p t_j t_e], qhSL(3)];  % trigger 
+  isterminal = [0 0 0 1];     % don't terminate
+  direction  = [];            % get all the zeros
 end
 
-function dqhSL = dget_qhSL(t, qhSL, a_b, t_j, t_e, sgr, f, v, L_b, L_j, L_e, r_j, s_G, h_a, h_Bbj, h_Bje, h_Bei, thinning)
+function dqhSL = dget_qhSL(t, qhSL, a_b, t_p, t_j, t_e, sgr, f, v, L_b, L_p, L_j, L_i, L_e, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bje, h_Bei, thinning)
   q   = max(0,qhSL(1)); % 1/d^2, aging acceleration
   h_A = max(0,qhSL(2)); % 1/d, hazard rate due to aging
   S   = max(0,qhSL(3)); % -, survival prob
   
-  if t < t_j % larva
-    h_B = h_Bbj;
+  if t < t_p % larva (accelerating)
+    h_B = h_Bbp;
     h_X = thinning * r_j; % 1/d, hazard due to thinning
     L = L_b * exp(t * r_j/ 3);
     s_M = L/ L_b;
     r = r_j; % 1/d, spec growth rate of structure
     dq = 0;
     dh_A = 0;
+  elseif t < t_j % larva (non-accelerating)
+    L = L_i - (L_i - L_p) * exp(-r_B * (t - t_p));
+    s_M = L_p/ L_b;
+    r = 3 * r_B * (L_i/ L - 1); % 1/d, spec growth rate of structure
+    dq = 0;
+    dh_A = 0;
+    h_B = h_Bpj;
+    h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
   elseif t < t_e % pupa
     h_B = h_Bje;
     h_X = 0; % 1/d, hazard due to thinning
     L = (L_j * (t_e - t)) + L_e * (t - t_j)/(t_e - t_j); % linear transition as approximation
-    s_M = L_j/ L_b;
+    s_M = L_p/ L_b;
     r = 3 * L^2 * L_e/ (t_e - t_j); % 1/d, spec growth rate of structure, linear as aprox
     dq = 0;
     dh_A = 0;
-  else % imago
+  else % t > t_e, imago
     h_B = h_Bei;
     L = L_e;
-    s_M = L_j/ L_b;
+    s_M = L_p/ L_b;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
     %dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
@@ -299,11 +311,14 @@ function stat = setNaN(stat, fldf, fldt, fldg)
     stat.(fldf).(fldt).(fldg).L_bi = NaN;     stat.(fldf).(fldt).(fldg).L2_bi = NaN;  stat.(fldf).(fldt).(fldg).L3_bi = NaN;   
     stat.(fldf).(fldt).(fldg).L_ei = NaN;     stat.(fldf).(fldt).(fldg).L2_ei = NaN;  stat.(fldf).(fldt).(fldg).L3_ei = NaN;      
     stat.(fldf).(fldt).(fldg).Ww_bi = NaN;    stat.(fldf).(fldt).(fldg).Ww_ei = NaN; 
-    stat.(fldf).(fldt).(fldg).S_b = NaN;      stat.(fldf).(fldt).(fldg).S_j = NaN; stat.(fldf).(fldt).(fldg).S_e = NaN;  
-    stat.(fldf).(fldt).(fldg).a_b = NaN;      stat.(fldf).(fldt).(fldg).t_j = NaN;  stat.(fldf).(fldt).(fldg).t_e = NaN;   
+    stat.(fldf).(fldt).(fldg).S_b = NaN;      stat.(fldf).(fldt).(fldg).S_p = NaN;   
+    stat.(fldf).(fldt).(fldg).S_j = NaN;      stat.(fldf).(fldt).(fldg).S_e = NaN;  
+    stat.(fldf).(fldt).(fldg).a_b = NaN;      stat.(fldf).(fldt).(fldg).t_p = NaN;  
+    stat.(fldf).(fldt).(fldg).t_j = NaN;      stat.(fldf).(fldt).(fldg).t_e = NaN;   
     stat.(fldf).(fldt).(fldg).tS = [NaN NaN]; stat.(fldf).(fldt).(fldg).tSs = [NaN NaN];
     stat.(fldf).(fldt).(fldg).R = NaN;        stat.(fldf).(fldt).(fldg).J_X = NaN; 
-    stat.(fldf).(fldt).(fldg).theta_0b = NaN; stat.(fldf).(fldt).(fldg).theta_bj = NaN; stat.(fldf).(fldt).(fldg).theta_je = NaN; stat.(fldf).(fldt).(fldg).theta_ei = NaN;   
+    stat.(fldf).(fldt).(fldg).theta_0b = NaN; stat.(fldf).(fldt).(fldg).theta_bj = NaN; 
+    stat.(fldf).(fldt).(fldg).theta_je = NaN; stat.(fldf).(fldt).(fldg).theta_ei = NaN;   
     stat.(fldf).(fldt).(fldg).Y_VX = NaN;     stat.(fldf).(fldt).(fldg).Y_VX_d = NaN;   
     stat.(fldf).(fldt).(fldg).Y_EX = NaN;     stat.(fldf).(fldt).(fldg).Y_EX_d = NaN;   
     stat.(fldf).(fldt).(fldg).Y_PX = NaN;     stat.(fldf).(fldt).(fldg).Y_CX = NaN;   
