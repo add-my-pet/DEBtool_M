@@ -32,8 +32,9 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
    % Set options with <calibration_options.html *calibration_options*>.
    % The number of fields in data is variable.
 
-   global gen_factor pop_size bounds_from_ind add_initial ranges
+   global gen_factor factor_type pop_size bounds_from_ind add_initial ranges
 
+   disp(gen_factor);
    % prepare variable
    %   st: structure with dependent data values only
    st = data;
@@ -80,6 +81,9 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
    q = rmfield(par, 'free'); % copy input parameter matrix into output
    qvec = cell2mat(struct2cell(q));
 
+   fprintf('Original parameter values \n');
+   disp(qvec(index)');
+   
    % Getting these pseudovalues which are into the set of parameters being calibrated
    cell_data = struct2cell(data); % Transforming data to cell
    % Chechking if pseudodata is available
@@ -92,9 +96,16 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
 
    % Setting default maximums and minimums for random individual
    % initialization ranges. 
-   par_maxs = qvec(index) * (1.0 + gen_factor);
-   par_mins = qvec(index) * (1.0 - gen_factor);
-
+   if strcmp(factor_type, 'sum')
+       par_maxs = qvec(index) + gen_factor;
+       par_mins = qvec(index) - gen_factor;
+       par_mins(par_mins < 0) = 0;
+       disp(qvec(index)');
+   else
+       par_maxs = qvec(index) * (1.0 + gen_factor);
+       par_mins = qvec(index) * (1.0 - gen_factor);
+       par_mins(par_mins < 0) = 0;
+   end
    % Check if some range is defined from calibration options and set the
    % range if true.
    if ~isempty(fieldnames(ranges))
@@ -115,14 +126,22 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
                    end
                else % If one range value then to apply a factor to the original range value
                    factor = ranges.(par_name);
-                   % If factor for range is not between the limits ([0, 1])
-                   % then set a default range value. 
-                   if ranges.(par_name) >= 1.0 || ranges.(par_name) <= 0.0
-                       factor = 0.01;
+                   % Set range values depeinding on factor_type
+                   if strcmp(factor_type, 'sum')
+                       par_maxs(par_pos) = orig_values(par_pos) + gen_factor;
+                       if orig_values(par_pos) - gen_factor < 0
+                           par_mins(par_pos) = 0;
+                       else
+                           par_mins(par_pos) = orig_values(par_pos) - gen_factor;
+                       end
+                   else
+                       par_maxs(par_pos) = orig_values(par_pos) * (1.0 + factor);
+                       if orig_values(par_pos) - gen_factor <= 0
+                           par_mins(par_pos) = 0;
+                       else
+                           par_mins(par_pos) = orig_values(par_pos) * (1.0 - factor);
+                       end
                    end
-                   % Set the max and min by using the factor
-                   par_maxs(par_pos) = orig_values(par_pos) * (1.0 + factor);
-                   par_mins(par_pos) = orig_values(par_pos) * (1.0 - factor);
                end
            end
        end
@@ -136,8 +155,22 @@ function [inds, bounds] = gen_individuals(func, par, data, auxData, filternm)
       for i = 1:n_calibpar
          if ~isempty(fieldnames(ranges))
             if (~isempty(find(strcmp(psdnm, calibnm(i)), 1)) && isempty(find(par_range_names, calibnm(i), 1)))
-               par_maxs(i) = pseudodata.(char(calibnm(i))) * (1.0 + gen_factor);
-               par_mins(i) = pseudodata.(char(calibnm(i))) * (1.0 - gen_factor);
+                % Set pseudo-parameters's ranges. 
+                if strcmp(factor_type, 'sum')
+                   par_maxs(i) = pseudodata.(char(calibnm(i))) + gen_factor;
+                   if pseudodata.(char(calibnm(i))) - gen_factor < 0
+                       par_mins(i) = 0;
+                   else
+                       par_mins(i) = pseudodata.(char(calibnm(i))) - gen_factor;
+                   end
+               else
+                   par_maxs(i) = pseudodata.(char(calibnm(i))) * (1.0 + factor);
+                   if pseudodata.(char(calibnm(i))) - gen_factor <= 0
+                       par_mins(i) = 0;
+                   else
+                       par_mins(i) = pseudodata.(char(calibnm(i))) * (1.0 - factor);
+                   end
+               end
             end
          else
             if (~isempty(find(strcmp(psdnm, calibnm(i)), 1)))

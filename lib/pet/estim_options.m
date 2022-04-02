@@ -172,12 +172,12 @@ function estim_options (key, val)
   
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size 
-  global search_method num_results gen_factor bounds_from_ind % method mmea only
+  global search_method num_results gen_factor factor_type bounds_from_ind % method mmea only
   global max_calibration_time  num_runs add_initial refine_best
   global refine_running refine_run_prob verbose verbose_options
   global random_seeds seed_index ranges mat_file results_display
   global results_filename save_results activate_niching sigma_share
-  global min_convergence_threshold
+  global min_convergence_threshold 
   
   availableMethodOptions = {'no', 'nm', 'mmea'};
 
@@ -209,6 +209,9 @@ function estim_options (key, val)
                            % initialization. (e.g. A value of 0.9 means that, for a parameter value of 1, 
                            % the range for generation is [(1 - 0.9) * 1, 1 * (1 + 0.9)] so
                            % the new parameter value will be a random between [0.1, 1.9]
+      factor_type = 'mult'; % The kind of factor to be applied when generatin individuals 
+                           %('mult' is multiplicative (Default) | 'add' if
+                           % additive);
       bounds_from_ind = 1; % This options selects from where the parameters for the initial population of individuals are taken. 
                            % If the value is equal to 1 the parameters are generated from the data initial values 
                            % if is 0 then the parameters are generated from the pseudo data values. 
@@ -412,13 +415,21 @@ function estim_options (key, val)
           fprintf('gen_factor = unknown \n');
         end	      
       else
-        if val >= 1.0
-           val = 0.99;
-        elseif val <= 0.0
-           val = .01;
-        end
+        %if val >= 1.0
+        %   val = 0.99;
+        %elseif val <= 0.0
+        %   val = .01;
+        %end
         gen_factor = val;
       end
+      
+    case 'factor_type'
+      if ~exist('val','var')
+        factor_type = 'mult';
+        fprintf(['factor_type = ', factor_type,' \n']);  
+      else
+          factor_type = val;
+      end	 
       
     case 'bounds_from_ind'
       if ~exist('val','var')
@@ -701,6 +712,12 @@ function estim_options (key, val)
         fprintf(['gen_factor = ', num2str(gen_factor),' (method mmea)\n']);
       else
         fprintf('gen_factor = unknown \n');
+      end
+      
+      if numel(factor_type) ~= 0
+        fprintf(['factor_type = ', factor_type,' \n']);
+      else
+        fprintf('factor_type = unkown \n');
       end
       
       if numel(bounds_from_ind) ~= 0.0
