@@ -5,7 +5,7 @@
 function [nsteps, info, fval] = estim_pars
   % created 2015/02/10 by Goncalo Marques
   % modified 2015/02/10 by Bas Kooijman, 
-  %   2015/03/31, 2015/07/30, 2017/02/03 by Goncalo Marques, 
+  %   2015/03/31, 2015/shade07/30, 2017/02/03 by Goncalo Marques, 
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
   %   2019/03/20, 2019/12/16, 2019/12/20, 2021/06/02 by Bas kooijman
@@ -149,7 +149,15 @@ switch method
 end
 
 % Results
-results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+switch method
+  case 'nm'
+    results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+  case 'mmea'
+    mmea_name =  strsplit(resultsnm, '.');
+    resultsnm = [mmea_name{1}, '_mmea.', mmea_name{2}];
+    calibration_options('results_filename', resultsnm);
+    result_pets_mmea(solutions_set, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+end
 
 % check filter
 parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
