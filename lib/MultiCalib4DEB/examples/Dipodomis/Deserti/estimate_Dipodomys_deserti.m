@@ -10,8 +10,8 @@ pets = {'Dipodomys_deserti'};
 % See estim_options for more options
 estim_options('default');             % use Nead-Melder simplex method and filter
 
-estim_options('max_step_number',10e3); % set options for parameter estimation
-estim_options('max_fun_evals',10e3);   % set options for parameter estimation
+estim_options('max_step_number',500); % set options for parameter estimation
+%estim_options('max_fun_evals',10e3);   % set options for parameter estimation
 
 estim_options('pars_init_method', 2);
 estim_options('results_output', 1);

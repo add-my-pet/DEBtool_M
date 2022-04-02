@@ -1,7 +1,7 @@
 global pets 
 
 % The pet to calibrate
-pets = {'Clarias_gariepinus'};
+pets = {'Dipodomys_deserti'};
 % Check pet consistence
 check_my_pet(pets);
 
