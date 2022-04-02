@@ -1,6 +1,6 @@
 %% plot_chart
 % Plots charts results from user options.  
-function plot_chart( result, chart_type, selected_parameters, save_chart, solution_index)
+function plot_chart(result_mmea, chart_type, selected_parameters, save_chart, solution_index)
 % created 2021 by Juan Francisco Robles
 
 %% Syntax
@@ -11,7 +11,7 @@ function plot_chart( result, chart_type, selected_parameters, save_chart, soluti
 %
 % Input
 % 
-% * result: the set of solutions returned by the multimodal
+% * results_mmea: the set of solutions returned by the multimodal
 %                  calibration algorithm
 % * chart_type: the type of chart to plot
 % * selected_parameters: the pair of parameters to plot
@@ -32,6 +32,14 @@ function plot_chart( result, chart_type, selected_parameters, save_chart, soluti
 
   global pets
   
+  % Get the species name
+  my_pet = strsplit(result_mmea,'_'); my_pet = [my_pet{2}, '_', my_pet{3}];
+  pets = {my_pet}; % required for running nm
+  
+  % Load the results
+  load(result_mmea);
+  
+  % Get the parameter names
   parnames = result.parameterNames;
 
   if isempty(selected_parameters)
