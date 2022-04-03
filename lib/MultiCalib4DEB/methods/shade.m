@@ -270,6 +270,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
 
          children_fitness = zeros(size(ui,1), 1);
          %% Evaluate children
+         penalized_individuals = 0; 
          for child = 1:size(ui,1)
             qvec(index) = ui(child,:)';
             q = cell2struct(num2cell(qvec, np), parnm);
@@ -289,7 +290,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                   f_test = 1;
                end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
-                  fprintf('Penalizing non feasible individual. \n'); 
+                  penalized_individuals = penalized_individuals + 1;
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
@@ -303,9 +304,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
-              fprintf('Penalizing non feasible individual. \n'); 
+              penalized_individuals = penalized_individuals + 1;
               children_fitness(child) = pen_val;
             end
+         end
+         if penalized_individuals > 0
+           fprintf('% d out of %d solutions (%.2f%%) have been penalized for not-passing the species filters. \n', ..., 
+               penalized_individuals, pop_size, (penalized_individuals / pop_size) * 100.0); 
          end
 
          %% Update best fitness found so far
@@ -350,12 +355,24 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             if refine_running
               randVal = rand(1);
               if randVal < refine_run_prob
-                 fprintf('Refining individual using local search \n');
-                 refine = 1;
                  qvec(index) = popold(i,:)';
                  q = cell2struct(num2cell(qvec, np), parnm);
                  q.free = free;
-                 [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                 refine = 1;
+                 try
+                   [f, f_test] = feval(func, q, data, auxData);
+                 catch
+                   f_test = 1;
+                 end
+                 % refine only feasible individuals and the penalize 
+                 % non-feasible ones
+                 if ~f_test
+                   funct_val = pen_val;
+                   iters = 1;
+                 else
+                   fprintf('Refining individual using local search \n');
+                   [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                 end                 
                  q = rmfield(q, 'free');
               else
                  refine = 0;
@@ -429,7 +446,6 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
              fprintf('Avg. normalized distance: %.5f \n', norm_dist);
              if norm_dist < norm_pop_dist; break; end
          end
-         
       end
       
       if verbose

@@ -275,6 +275,9 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
             % If does not pass the filter then try to reduce the maximum and
             % minimums for the random parameter values and try again till obtain a
             % feasible individual. 
+            % If does not pass the filter then try to reduce the maximum and
+            % minimums for the random parameter values and try again till obtain a
+            % feasible individual. 
             if ~f_test
                non_feasible = 1;
             end
@@ -286,6 +289,7 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
                   f_test = 1;
                end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
+                  penalized_individuals = penalized_individuals + 1;
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
@@ -293,13 +297,19 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
                   try
                      children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
                   catch
+                     fprintf('Penalizing non feasible individual. \n'); 
                      children_fitness(child) = pen_val;
                   end
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
+              penalized_individuals = penalized_individuals + 1;
               children_fitness(child) = pen_val;
             end
+         end
+         if penalized_individuals > 0
+           fprintf('% d out of %d solutions (%.2f%%) have been penalized for not-passing the species filters. \n', ..., 
+               penalized_individuals, pop_size, (penalized_individuals / pop_size) * 100.0); 
          end
 
          %% Update best fitness found so far
