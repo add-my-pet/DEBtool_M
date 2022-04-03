@@ -165,17 +165,22 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             q = cell2struct(num2cell(qvec, np), parnm);
             f_test = feval(filternm, q);
             % If the function evaluation does not pass the filter then 
-            % try to reduce the maximum and minimums for the random parameter
-            % values and try again till obtain a feasible individual. 
+            % punish the individual (in order to discard it later) 
             if ~f_test 
                fprintf('The parameter set does not pass the filter. \n');
             end
-            [f, f_test] = feval(func, q, data, auxData);
+            try
+                [f, f_test] = feval(func, q, data, auxData);
+            catch
+                f_test = 1;
+            end
             if ~f_test 
                fprintf('The parameter set for the simplex construction is not realistic. \n');
+               fitness(ind) = pen_val;
+            else
+                [P, meanP] = struct2vector(f, nm);
+                fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
-            [P, meanP] = struct2vector(f, nm);
-            fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       end
 
       %% Initialize function evaluations and fitness values

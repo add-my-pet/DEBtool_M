@@ -269,7 +269,9 @@ function plotResultsSet(result, data, auxData, metaData, txtData, weights, pets,
   f_names = fieldnames(result.solutionSet);
   num_solutions = sum(contains(f_names, 'solution_'));
   best_index = find(result.solutionsParameters(:,1)==min(result.solutionsParameters(:,1)));
-  
+  if length(best_index) > 1
+      best_index = best_index(1);
+  end
   if fig_counter == 1
    close all % to avoid saving figures generated prior the current run
   end
