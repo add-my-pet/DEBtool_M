@@ -14,10 +14,13 @@ function [ norm_dist ] = population_normalized_euclidean_distance( population, r
 norm_dist = 0; 
 % Loop over the population 
 for i = 1:length(population)-1
+    counter = 0; 
     for j = i+1:length(population)
         % Accumulate the distance between solutions
         norm_dist = norm_dist + normalized_euclidean_distance(population(i, :), population(j, :), ranges);
+        counter = counter + 1;
     end
+    norm_dist = norm_dist / counter; 
 end
 % Calculate the average distance
 norm_dist = norm_dist / length(population);

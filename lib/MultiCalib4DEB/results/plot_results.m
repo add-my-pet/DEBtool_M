@@ -34,6 +34,8 @@ function plot_results(result_mmea, mode)
 % both operations (D) - option 'Complete' -. 
 % If the save_results from <calibration_options.html*calibration_options*> settings
 % is activated, then the plots from (B), (C), or/and (D) are saved. 
+%% Example of use
+%  plot_results('result_Clarias_Gariepinus_mmea', 'Set')
 
   global pets save_results % Global variables
   
@@ -47,11 +49,10 @@ function plot_results(result_mmea, mode)
   % Get the pet's data (some from results) 
   txtPar = result.solutionSet.txtPar; 
   data = result.solutionSet.data; 
+  metaData = result.solutionSet.metaData;
   auxData = result.solutionSet.auxData;
   txtData = result.solutionSet.txtData;
-  weights = result.solutionSet.weights;
-  % Some from pet
-  [~, ~, metaData, ~, ~] = eval(['mydata_', my_pet,';'])  
+  weights = result.solutionSet.weights; 
   
   fig_counter = 1; 
   if strcmp(mode, 'Basic') % Plots only prediction results to screen. 
@@ -172,13 +173,13 @@ function plotResultImage(result, data, auxData, ~, txtData, weights, pets, save_
        var = getfield(st, fieldsInCells{1}{:});   % scaler, vector or matrix with data in field nm{i}
        k = size(var, 2);
        if k == 2 
-         if isfield(metaData, 'grp') % branch to start working on grouped graphs
+         if isfield(metaData.(pets{1}), 'grp') % branch to start working on grouped graphs
            plotColours4AllSets = listOfPlotColours4UpTo13Sets;
            maxGroupColourSize = length(plotColours4AllSets) + 1;
-           grpSet1st = cellfun(@(v) v(1), metaData.grp.sets);
-           allSetsInGroup = horzcat(metaData.grp.sets{:});
+           grpSet1st = cellfun(@(v) v(1), metaData.(pets{1}).grp.sets);
+           allSetsInGroup = horzcat(metaData.(pets{1}).grp.sets{:});
            if sum(strcmp(grpSet1st, nm{j})) 
-             sets2plot = metaData.grp.sets{strcmp(grpSet1st, nm{j})};
+             sets2plot = metaData.(pets{1}).grp.sets{strcmp(grpSet1st, nm{j})};
              n_sets2plot = length(sets2plot); % actually: # of data sets in set j
              if length(sets2plot) < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
                plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
@@ -207,7 +208,11 @@ function plotResultImage(result, data, auxData, ~, txtData, weights, pets, save_
                xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
              end
-             txt = metaData.grp.comment{strcmp(grpSet1st, nm{j})}; 
+             if isfield(metaData.(pets{1}).grp, 'comment')
+               txt = metaData.(pets{1}).grp.comment{strcmp(grpSet1st, nm{j})}; 
+             else
+               txt = ['Result', pets{i}];
+             end
              title(txt); 
 
            elseif sum(strcmp(allSetsInGroup, nm{j})) == 0
