@@ -85,7 +85,7 @@ function estim_options (key, val)
   %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
   %                                                    to continue the calibration process (default 1e-4)
   %    'norm_pop_dist': the maximum normalized Euclidean distance allowed
-  %                     between the solutions of the MMEA population to continue the calibration process (default 2). 
+  %                     between the solutions of the MMEA population to continue the calibration process (default 0.02). 
   %    'num_runs' (method mmea only): the number of independent runs to perform (default 1)
   %
   %    'add_initial' (method mmea only): if the initial individual is added in the first  population.
@@ -222,9 +222,9 @@ function estim_options (key, val)
       refine_run_prob = 0.05; % The probability to apply a local search to an individual while algorithm is  running. 
       % max_calibration_time = 30; % The maximum calibration time calibration process. 
       min_convergence_threshold = 1e-4;
-      % norm_pop_dist = 2; % maximum normalized Euclidean distance allowed
+      % norm_pop_dist = 0.02; % maximum normalized Euclidean distance allowed
                             % between the solutions of the MMEA population to 
-                            % continue the calibration process (default 2).
+                            % continue the calibration process (default 0.02).
       num_runs = 1; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
       verbose_options = 10; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
