@@ -20,7 +20,7 @@ estim_options('gen_factor', 5);
 %estim_options('sigma_share', 0.15);
 estim_options('bounds_from_ind', 1); 
 %estim_options('min_convergence_threshold', 1);
-estim_options('norm_pop_dist', 2);
+estim_options('norm_pop_dist', 0.02);
 estim_options('verbose', 1); 
 estim_options('verbose_options', 5);
 estim_options('results_display', 'Complete');
