@@ -171,7 +171,11 @@ function [q, itercount, fval] = local_search(func, par, data, auxData, weights, 
     if ~f_test
       fxr = fv(:,np1) + 1;
     else
-      [f, f_test] = feval(func, q, data, auxData);
+      try
+        [f, f_test] = feval(func, q, data, auxData);
+      catch
+        f_test = 1; 
+      end
       if ~f_test 
         fxr = fv(:,np1) + 1;
       else
@@ -185,11 +189,19 @@ function [q, itercount, fval] = local_search(func, par, data, auxData, weights, 
       % Calculate the expansion point
       xe = (1 + rho * chi) * xbar - rho * chi * v(:, np1);
       qvec(index) = xe; q = cell2struct(num2cell(qvec, np), parnm);
-      f_test = feval(filternm, q);
+      try
+        f_test = feval(filternm, q);
+      catch
+        f_test = 1; 
+      end
       if ~f_test
          fxe = fxr + 1;
       else
-        [f, f_test] = feval(func, q, data, auxData);
+        try
+          [f, f_test] = feval(func, q, data, auxData);
+        catch
+          f_test = 1; 
+        end
         if ~f_test 
           fxe = fv(:,np1) + 1;
         else
@@ -218,11 +230,19 @@ function [q, itercount, fval] = local_search(func, par, data, auxData, weights, 
             % Perform an outside contraction
             xc = (1 + psi * rho) * xbar - psi * rho * v(:,np1);
             qvec(index) = xc; q = cell2struct(num2cell(qvec, np), parnm);
-            f_test = feval(filternm, q);
+            try
+              f_test = feval(filternm, q);
+            catch
+              f_test = 1; 
+            end
             if ~f_test
               fxc = fxr + 1;
-            else            
-              [f, f_test] = feval(func, q, data, auxData);
+            else
+              try
+                [f, f_test] = feval(func, q, data, auxData);
+              catch
+                f_test = 1; 
+              end
               if ~f_test 
                 fxc = fv(:,np1) + 1;
               else
@@ -244,7 +264,11 @@ function [q, itercount, fval] = local_search(func, par, data, auxData, weights, 
             % Perform an inside contraction
             xcc = (1 - psi) * xbar + psi * v(:,np1);
             qvec(index) = xcc; q = cell2struct(num2cell(qvec, np), parnm);
-            f_test = feval(filternm, q);
+            try
+              f_test = feval(filternm, q);
+            catch
+              f_test = 1; 
+            end
             if ~f_test
               fxcc = fv(:,np1) + 1;
             else
@@ -274,11 +298,19 @@ function [q, itercount, fval] = local_search(func, par, data, auxData, weights, 
                while ~f_test
                   v_test = v(:,1) + sigma / step_reducer * (v(:,j) - v(:,1));
                   qvec(index) = v_test; q = cell2struct(num2cell(qvec, np), parnm);
-                  f_test = feval(filternm, q);
+                  try
+                    f_test = feval(filternm, q);
+                  catch
+                    f_test = 1; 
+                  end
                   if ~f_test 
                      step_reducer = 2 * step_reducer;
                   else
-                    [f, f_test] = feval(func, q, data, auxData);
+                    try
+                      [f, f_test] = feval(func, q, data, auxData);
+                    catch
+                      f_test = 1; 
+                    end
                     if ~f_test 
                       step_reducer = 2 * step_reducer;
                     end
