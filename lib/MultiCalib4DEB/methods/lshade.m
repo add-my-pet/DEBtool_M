@@ -128,10 +128,14 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
       fprintf('Calibration defined with evaluations as stop criteria \n');
       fprintf('The total number of evaluations is: %d for each run \n', max_fun_evals);
       fprintf('The total number of evaluations for the whole calibration is %d \n', max_fun_evals * num_runs);
-    else
+    elseif max_calibration_time ~= Inf
       fprintf('Calibration defined with time as stop criteria \n');
       fprintf('The total calibration time is: %d minutes for each run \n', max_calibration_time);
       fprintf('The total calibration time for the whole calibration is %d minutes \n', max_calibration_time * num_runs);
+    else
+      fprintf('Calibration defined with convergence as stop criteria \n');
+      fprintf('The minimum convergence is: %.5f \n', min_convergence_threshold);
+      fprintf('The total calibration time and the maximum fun evals are set to infinite \n');
     end
     for run = 1:(min(num_runs, length(random_seeds)))
       %% Take run initial time
@@ -186,11 +190,11 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
             bsf_fit_var = fitness(i);
             bsf_solution = pop(i, :);
          end
-         % Check stopping criteria
-         if max_calibration_time > 0
+         % Check if stopping criteria has been achieved
+         if max_calibration_time ~= Inf
             current_time = toc(time_start)/60;
             if current_time > max_calibration_time; break; end
-         else
+         elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
          end
       end
@@ -268,69 +272,25 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
             % minimums for the random parameter values and try again till obtain a
             % feasible individual. 
             if ~f_test
-               % Fix individual by reducing its parameter values by 5%
-               max_factor = 0.05;
-               min_factor = 0.01;
-               while ~f_test 
-                  % Initializing warning counter and the maximum number of
-                  % warnings allowed (to the number of parameters multiplied
-                  % by 10 to try different parameter configurations)
-                  warning_counter = 0;
-                  max_warnings = length(index) * 10; 
-                  auxvalue = (max_factor-min_factor) * rand(1) + min_factor; % The value to reduce/increase a parameter value
-                  % Do it for each parameter till fix the individual
-                  for param = 1:length(index) & ~f_test
-                     auxpar = qvec(index(param));
-                     if (rand(1) < .5) % Decrease
-                        qvec(index(param)) = qvec(index(param)) * (1-auxvalue);
-                     else % Increase
-                        qvec(index(param)) = qvec(index(param)) / (1-auxvalue);
-                     end
-                     % Test if parameter configuration is feasible
-                     q = cell2struct(num2cell(qvec, np), parnm);
-
-                     % Try to catch an warning or error when evaluating DEB
-                     % in order to properly fix the indivudual parameters 
-                     try
-                        f_test = feval(filternm, q);
-                     catch
-                        warning_counter = warning_counter + 1;
-                        qvec(index(param)) = auxpar;
-                        if warning_counter >= max_warnings
-                           f_test = 1;
-                           non_feasible = 1;
-                        end
-                     end
-
-                     % If individual continues not being feasible then
-                     % choose if return to the previous solution value or
-                     % maintain the generated one
-                     if ~f_test 
-                        if (rand(1) < .5) 
-                           qvec(index(param)) = auxpar;
-                        end
-                     end
-                  end
-                  % If minimum reduction/increase factor is achieved set
-                  % configuration as non feasible. Later its fitness will be
-                  % set to a maximum value to erase it. 
-                  if (max_factor >= 0.98 && ~f_test && ~non_feasible)
-                     non_feasible = 1;
-                     f_test = 1;
-                  else % decrease factor and keep trying
-                     max_factor = min((max_factor + 0.01), 1);
-                  end
-               end
+               non_feasible = 1;
             end
             % If solution is feasible then evaluate it.  
             if ~non_feasible
-               [f, f_test] = feval(func, q, data, auxData);
+               try
+                  [f, f_test] = feval(func, q, data, auxData);
+               catch
+                  f_test = 1;
+               end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
                   [P, meanP] = struct2vector(f, nm);
-                  children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                  try
+                     children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                  catch
+                     children_fitness(child) = pen_val;
+                  end
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
@@ -347,10 +307,10 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
               bsf_solution = ui(i, :);
             end
             % Check if stopping criteria has been achieved
-            if max_calibration_time > 0
+            if max_calibration_time ~= Inf
                current_time = toc(time_start)/60;
                if current_time > max_calibration_time; break; end
-            else
+            elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
          end
@@ -404,10 +364,10 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
             end
 
             % Check if stopping criteria has been achieved
-            if max_calibration_time > 0
+            if max_calibration_time ~= Inf
                current_time = toc(time_start)/60;
                if current_time > max_calibration_time; break; end
-            else
+            elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
          end
@@ -431,7 +391,7 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
             if memory_pos > memory_size;  memory_pos = 1; end
          end
          % Check if stopping criteria has been achieved
-         if max_calibration_time > 0
+         if max_calibration_time ~= Inf
             current_time = round(toc(run_time_start)/60);
             if current_time > max_calibration_time; break; end
             if verbose
@@ -445,8 +405,15 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
                        round((current_time/(max_calibration_time*num_runs))*100.0));
                end
             end
-         else
+         elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
+         else
+             avg_prev_fitness = mean(temp_fit);
+             avg_new_fitness = mean(fitness);
+             improvement = avg_prev_fitness - avg_new_fitness; 
+             fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
+                 avg_prev_fitness, avg_new_fitness, improvement);
+             if improvement < min_convergence_threshold; break; end
          end
 
          %% for resizing the population size
@@ -521,7 +488,7 @@ function [q, result, bsf_fval] = lshade(func, par, data, auxData, weights, filte
       result = updateArchive(result, auxvec(index)', fval);
     end
     %% Store the information structure into the results set
-    archive.runtime_information = info;
+    result.runtime_information = info;
     %% Save also the parameter ranges into the final result
-    archive.parameterRanges = ranges; 
+    result.parameterRanges = ranges; 
 end

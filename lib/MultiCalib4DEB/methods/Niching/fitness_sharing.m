@@ -34,15 +34,6 @@ function [ sharing_fitness ] = fitness_sharing( population, fitness, ranges, sig
 end
 
 %% Methods.
-function [distance] = euclidean_distance(individual_one, individual_two, ranges)
-    % Calculates the normalized euclidean distance between tho solutions
-    % vectors. The method uses the minimum and maximum ranges defined for
-    % each calibration parameter to normalize the final distance value.
-    % This consideration allows obtaining accurate distances between
-    % individuals while restricting the distance to the calibration
-    % parameters domain.
-    distance = sqrt(sum(((individual_one-individual_two)/(ranges(2,:)-ranges(1,:))).^2));
-end
 
 function [sharing_fitness] = fitness_sharing_niching(population, fitness, ranges, sigma_share)
     % Applies the fitness sharing mechanism in which: 
@@ -77,7 +68,7 @@ function [sharing_fitness] = fitness_sharing_niching(population, fitness, ranges
             center_id = 1;
             ids_to_remove = [center_id];
             for i = 2:(size(P, 1)-1)
-                distance = euclidean_distance(P(center_id,:), P(i,:), ranges);
+                distance = normalized_euclidean_distance(P(center_id,:), P(i,:), ranges);
                 % Punish the individuals whose distance to the center is
                 % lower than the sigma share value. Also note the
                 % identifiers of the individuals to remove (because they

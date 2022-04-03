@@ -34,7 +34,9 @@ function calibration_options (key, val)
 %                   18 * problem size for L-SHADE.
 %    'gen_factor': percentage to build the ranges for initializing the 
 %                  first population of individuals.
-%
+%    'factor_type': The kind of factor to be applied when generatin individuals 
+%      'mult' - multiplicative (Default) 
+%      'add' - additive 
 %    'bounds_from_ind': 
 %      1: use ranges from data (default); 
 %      0: use ranges from pseudodata if exist (these ranges not existing 
@@ -45,6 +47,8 @@ function calibration_options (key, val)
 %
 %    'max_calibration_time': maximum calibration time in minutes (0 by default).
 %
+%    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
+%                                                    to continue the calibration process (default 1e-4)
 %    'num_runs': the number of independent runs to perform.
 %
 %    'add_initial': if the initial individual is added in the first
@@ -128,12 +132,12 @@ function calibration_options (key, val)
 %  calibration_options('default'); calibration_options('random_seed', 123543545); calibration_options('add_initial', 1)
 
    % Global varaibles
-   global search_method num_results gen_factor bounds_from_ind max_fun_evals 
-   global max_calibration_time  num_runs add_initial refine_initial  
-   global refine_best  refine_running refine_run_prob refine_firsts 
-   global verbose verbose_options random_seeds seed_index ranges mat_file
-   global results_display results_filename save_results activate_niching 
-   global sigma_share
+   global search_method num_results gen_factor factor_type bounds_from_ind  
+   global max_fun_evals max_calibration_time  num_runs add_initial   
+   global refine_initial refine_best  refine_running refine_run_prob 
+   global refine_firsts verbose verbose_options random_seeds seed_index 
+   global ranges mat_file results_display results_filename save_results 
+   global activate_niching sigma_share min_convergence_threshold
    
    if exist('key','var') == 0
       key = 'inexistent';
@@ -152,6 +156,9 @@ function calibration_options (key, val)
                            % for generation is [(1 - 0.9) * 1, 1 * (1 + 0.9)] so
                            % the new parameter value will be a random
                            % between [0.1, 1.9]
+         factor_type = 'mult'; % The kind of factor to be applied when generatin individuals 
+                           %('mult' is multiplicative (Default) | 'add' if
+                           % additive);
          bounds_from_ind = 1; % This options selects from where the 
                               % parameters for the initial population of
                               % individuals are taken. If the value is
@@ -174,7 +181,8 @@ function calibration_options (key, val)
          max_fun_evals = 10000; % The maximum number of function 
                                 % evaluations to perform before to end the
                                 % calibration process. 
-         max_calibration_time = 30; % The maximum calibration time
+         % max_calibration_time = 30; % The maximum calibration time
+         min_convergence_threshold = 1e-4;
          % calibration process. 
          num_runs = 1; % The number of runs to perform. 
          verbose = 0; % If to print some information while the calibration 
@@ -231,13 +239,25 @@ function calibration_options (key, val)
                fprintf('gen_factor = unknown \n');
             end	      
          else
-            if val >= 1.0
-               val = 0.99;
-            elseif val <= 0.0
-               val = .01;
-            end
+            %if val >= 1.0
+            %   val = 0.99;
+            %elseif val <= 0.0
+            %   val = .01;
+            %end
             gen_factor = val;
          end
+      case 'factor_type'
+          disp('e');
+          if ~exist('val','var')
+              disp('a');
+            if numel(factor_type) ~= 0.0
+                disp('o');
+              fprintf(['factor_type = ', factor_type,' \n']);  
+            else
+              fprintf('factor_type = unknown \n');
+            end	
+            factor_type = val;
+          end
       case 'bounds_from_ind'
          if ~exist('val','var')
             if numel(bounds_from_ind) ~= 0
@@ -330,6 +350,18 @@ function calibration_options (key, val)
             max_calibration_time = val;
             max_fun_evals = Inf;
          end
+      case 'min_convergence_threshold'
+      if exist('val','var') == 0 
+        if numel(min_convergence_threshold) ~= 0
+          fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' \n']);  
+        else
+          fprintf('min_convergence_threshold = unknown \n');
+        end	      
+      else
+        min_convergence_threshold = val;
+        max_fun_evals = Inf;
+        max_calibration_time = Inf; % mmea method only
+      end
       case 'num_runs'
          if ~exist('val','var')
             if numel(max_fun_evals) ~= 0
@@ -472,7 +504,12 @@ function calibration_options (key, val)
             fprintf(['gen_factor = ', num2str(gen_factor),' \n']);
          else
             fprintf('gen_factor = unknown \n');
-         end	  
+         end	
+         if numel(factor_type) ~= 0
+            fprintf(['factor_type = ', factor_type,' \n']);
+          else
+            fprintf('factor_type = unkown \n');
+          end
          if numel(bounds_from_ind) ~= 0.0
             fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' \n']);
          else
@@ -488,6 +525,11 @@ function calibration_options (key, val)
          else
             fprintf('max_calibration_time = unkown \n');
          end
+         if numel(min_convergence_threshold) ~= 0
+            fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
+          else
+            fprintf('min_convergence_threshold = unkown \n');
+          end
          if numel(num_runs) ~= 0
             fprintf(['num_runs = ', num2str(num_runs),' \n']);
          else

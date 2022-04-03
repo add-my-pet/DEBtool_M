@@ -2,7 +2,7 @@
 % Computes model predictions and plots results from calibration data 
 
 %%
-function plot_results(result, txtPar, data, auxData, metaData, txtData, weights, mode)
+function plot_results(result_mmea, mode)
 % created 2021 by Juan Francisco Robles
 % Edited 2021/06/02 (fix by Bas Kooijman) by Juan Francisco Robles
 %% Syntax
@@ -36,6 +36,22 @@ function plot_results(result, txtPar, data, auxData, metaData, txtData, weights,
 % is activated, then the plots from (B), (C), or/and (D) are saved. 
 
   global pets save_results % Global variables
+  
+  % Get the species name
+  my_pet = strsplit(result_mmea,'_'); my_pet = [my_pet{2}, '_', my_pet{3}];
+  pets = {my_pet}; % required for running nm
+  
+  % Load the results
+  load(result_mmea);
+  
+  % Get the pet's data (some from results) 
+  txtPar = result.solutionSet.txtPar; 
+  data = result.solutionSet.data; 
+  auxData = result.solutionSet.auxData;
+  txtData = result.solutionSet.txtData;
+  weights = result.solutionSet.weights;
+  % Some from pet
+  [~, ~, metaData, ~, ~] = eval(['mydata_', my_pet,';'])  
   
   fig_counter = 1; 
   if strcmp(mode, 'Basic') % Plots only prediction results to screen. 
