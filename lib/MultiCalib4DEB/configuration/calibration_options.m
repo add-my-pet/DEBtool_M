@@ -49,6 +49,8 @@ function calibration_options (key, val)
 %
 %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
 %                                                    to continue the calibration process (default 1e-4)
+%    'norm_pop_dist': the maximum normalized Euclidean distance allowed
+%                     between the solutions of the MMEA population to continue the calibration process (default 2). 
 %    'num_runs': the number of independent runs to perform.
 %
 %    'add_initial': if the initial individual is added in the first
@@ -137,7 +139,8 @@ function calibration_options (key, val)
    global refine_initial refine_best  refine_running refine_run_prob 
    global refine_firsts verbose verbose_options random_seeds seed_index 
    global ranges mat_file results_display results_filename save_results 
-   global activate_niching sigma_share min_convergence_threshold
+   global activate_niching sigma_share min_convergence_threshold 
+   global norm_pop_dist
    
    if exist('key','var') == 0
       key = 'inexistent';
@@ -182,7 +185,11 @@ function calibration_options (key, val)
                                 % evaluations to perform before to end the
                                 % calibration process. 
          % max_calibration_time = 30; % The maximum calibration time
-         min_convergence_threshold = 1e-4;
+         min_convergence_threshold = 1e-4; % minimum improvement the mmea needs to reach 
+                                           % to continue the calibration process (default 1e-4)
+         %norm_pop_dist = 2; % maximum normalized Euclidean distance allowed
+                            % between the solutions of the MMEA population to 
+                            % continue the calibration process (default 2).
          % calibration process. 
          num_runs = 1; % The number of runs to perform. 
          verbose = 0; % If to print some information while the calibration 
@@ -362,6 +369,19 @@ function calibration_options (key, val)
         max_fun_evals = Inf;
         max_calibration_time = Inf; % mmea method only
       end
+      case 'norm_pop_dist'
+      if exist('val','var') == 0 
+        if numel(norm_pop_dist) ~= 0
+          fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' \n']);  
+        else
+          fprintf('norm_pop_dist = unknown \n');
+        end	      
+      else
+        norm_pop_dist = val;
+        max_fun_evals = Inf;
+        max_calibration_time = Inf; % mmea method only
+        min_convergence_threshold = Inf;
+      end
       case 'num_runs'
          if ~exist('val','var')
             if numel(max_fun_evals) ~= 0
@@ -529,7 +549,12 @@ function calibration_options (key, val)
             fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
           else
             fprintf('min_convergence_threshold = unkown \n');
-          end
+         end
+         if numel(norm_pop_dist) ~= 0
+            fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' (method mmea)\n']);
+         else
+            fprintf('norm_pop_dist = unkown \n');
+         end
          if numel(num_runs) ~= 0
             fprintf(['num_runs = ', num2str(num_runs),' \n']);
          else

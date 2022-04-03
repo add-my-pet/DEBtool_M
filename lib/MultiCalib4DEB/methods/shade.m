@@ -55,7 +55,8 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
    global num_results lossfunction max_fun_evals num_runs  
    global pop_size refine_running refine_run_prob refine_best
    global verbose verbose_options random_seeds max_calibration_time
-   global activate_niching sigma_share min_convergence_threshold
+   global activate_niching sigma_share min_convergence_threshold 
+   global norm_pop_dist
 
    % Option settings
    % initiate info setting
@@ -288,6 +289,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                   f_test = 1;
                end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
+                  fprintf('Penalizing non feasible individual. \n'); 
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
@@ -295,11 +297,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                   try
                      children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
                   catch
+                     fprintf('Penalizing non feasible individual. \n'); 
                      children_fitness(child) = pen_val;
                   end
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
+              fprintf('Penalizing non feasible individual. \n'); 
               children_fitness(child) = pen_val;
             end
          end
@@ -413,13 +417,17 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             end
          elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
+         elseif min_convergence_threshold ~= Inf
+            avg_prev_fitness = mean(temp_fit);
+            avg_new_fitness = mean(fitness);
+            improvement = avg_prev_fitness - avg_new_fitness; 
+            fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
+                avg_prev_fitness, avg_new_fitness, improvement);
+            if improvement < min_convergence_threshold; break; end
          else
-             avg_prev_fitness = mean(temp_fit);
-             avg_new_fitness = mean(fitness);
-             improvement = avg_prev_fitness - avg_new_fitness; 
-             fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
-                 avg_prev_fitness, avg_new_fitness, improvement);
-             if improvement < min_convergence_threshold; break; end
+             norm_dist = population_normalized_euclidean_distance(popold, ranges);
+             fprintf('Avg. normalized distance: %.5f \n', norm_dist);
+             if norm_dist < norm_pop_dist; break; end
          end
          
       end
