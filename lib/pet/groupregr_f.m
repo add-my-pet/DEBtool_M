@@ -52,9 +52,9 @@ function [q, info, itercount, fval] = groupregr_f(func, par, data, auxData, weig
   for i = 1:nst   % makes st only with dependent variables
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     auxVar = getfield(st, fieldsInCells{1}{:});   % data in field nm{i}
-    k = size(auxVar, 2);
-    if k >= 2
-      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2));
+    [~,k,npage] = size(auxVar);
+    if k >= 2 && npage==1
+      st = setfield(st, fieldsInCells{1}{:}, auxVar(:,2:end));
     end
   end
   
@@ -319,7 +319,7 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
   vec = []; meanVec = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    aux = getfield(struct, fieldsInCells{1}{:});
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); aux = aux(~isnan(aux));
     vec = [vec; aux];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end

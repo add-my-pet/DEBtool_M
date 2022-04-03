@@ -62,7 +62,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
    info = struct;
    
    fileLossfunc = ['lossfunction_', lossfunction];
-   format long;
+   format shortG;
    format compact;
    
    %% Taking data for objective function
@@ -273,69 +273,25 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             % minimums for the random parameter values and try again till obtain a
             % feasible individual. 
             if ~f_test
-               % Fix individual by reducing its parameter values by 5%
-               max_factor = 0.05;
-               min_factor = 0.01;
-               while ~f_test 
-                  % Initializing warning counter and the maximum number of
-                  % warnings allowed (to the number of parameters multiplied
-                  % by 10 to try different parameter configurations)
-                  warning_counter = 0;
-                  max_warnings = length(index) * 10; 
-                  auxvalue = (max_factor-min_factor) * rand(1) + min_factor; % The value to reduce/increase a parameter value
-                  % Do it for each parameter till fix the individual
-                  for param = 1:length(index) & ~f_test
-                     auxpar = qvec(index(param));
-                     if (rand(1) < .5) % Decrease
-                        qvec(index(param)) = qvec(index(param)) * (1-auxvalue);
-                     else % Increase
-                        qvec(index(param)) = qvec(index(param)) / (1-auxvalue);
-                     end
-                     % Test if parameter configuration is feasible
-                     q = cell2struct(num2cell(qvec, np), parnm);
-
-                     % Try to catch an warning or error when evaluating DEB
-                     % in order to properly fix the indivudual parameters 
-                     try
-                        f_test = feval(filternm, q);
-                     catch
-                        warning_counter = warning_counter + 1;
-                        qvec(index(param)) = auxpar;
-                        if warning_counter >= max_warnings
-                           f_test = 1;
-                           non_feasible = 1;
-                        end
-                     end
-
-                     % If individual continues not being feasible then
-                     % choose if return to the previous solution value or
-                     % maintain the generated one
-                     if ~f_test 
-                        if (rand(1) < .5) 
-                           qvec(index(param)) = auxpar;
-                        end
-                     end
-                  end
-                  % If minimum reduction/increase factor is achieved set
-                  % configuration as non feasible. Later its fitness will be
-                  % set to a maximum value to erase it. 
-                  if (max_factor >= 0.98 && ~f_test && ~non_feasible)
-                     non_feasible = 1;
-                     f_test = 1;
-                  else % decrease factor and keep trying
-                     max_factor = min((max_factor + 0.01), 1);
-                  end
-               end
+               non_feasible = 1;
             end
             % If solution is feasible then evaluate it.  
             if ~non_feasible
-               [f, f_test] = feval(func, q, data, auxData);
+               try
+                  [f, f_test] = feval(func, q, data, auxData);
+               catch
+                  f_test = 1;
+               end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
                   [P, meanP] = struct2vector(f, nm);
-                  children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                  try
+                     children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                  catch
+                     children_fitness(child) = pen_val;
+                  end
                end
             % If solution is not feasible then set an extreme fitness value.  
             else

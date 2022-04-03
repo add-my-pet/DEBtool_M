@@ -156,9 +156,9 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   t_bj = qhSL_event(1,4);   % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
   t_ei = t_bi - qhSL_event(2,4);   % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
 
-  S_j = qhSL_event(1,3);  % -, survival prob at emergence
+  S_j = qhSL_event(1,3);  % -, survival prob at pupation
   stat.(fldf).(fldt).(fldg).S_j = S_j; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at pupation';
-  S_e = qhSL_event(2,3);  % -, survival prob at puberty
+  S_e = qhSL_event(2,3);  % -, survival prob at emergence
   stat.(fldf).(fldt).(fldg).S_e = S_e; txtStat.units.S_e  = '-'; txtStat.label.S_e = 'survival probability at emergence';
   
   % survival probability (at individual level)
@@ -237,7 +237,7 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
 end
 
 % event dead_for_sure
-function [value,isterminal,direction] = dead_for_sure(t, qhSL, t_j, t_e, varargin)
+function [value,isterminal,direction] = dead_for_sure(t, qhSL, a_b, t_j, t_e, varargin)
   value = [t - t_j; t - t_e];  % trigger 
   isterminal = [0 0];          % don't terminate
   direction  = [];             % get all the zeros

@@ -56,8 +56,8 @@ end
 pars_initFile = ['pars_init_', my_pet, '.m'];
 
 load(matFile);
-if ~iscell(metaPar.model) && strcmp(metaPar.model,'nat')
-  mat2pars_init_nat(my_pet); return
+if all(strcmp(metaPar.model,'nat'))
+  mat2pars_init_nat; return
 end
 
 if exist(pars_initFile, 'file') == 2
@@ -118,7 +118,7 @@ if isfield(par,'T_ref')
 end
 
 if n_core == 0 % no DEB parameters
-  mat2pars_init_nat(my_pet, varargin); return
+  mat2pars_init_nat; return
    
 else % typified model
   fprintf(pars_init_id, '\n%%%% core primary parameters \n');

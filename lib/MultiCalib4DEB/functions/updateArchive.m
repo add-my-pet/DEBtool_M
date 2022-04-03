@@ -30,3 +30,5 @@ else                % randomly remove some solutions
   result.solutionsParameters = popAll(rndpos, :);
   result.lossFunctionValues = funvalues(rndpos, :);
 end
+
+result.numSolutions = length(result.lossFunctionValues);
