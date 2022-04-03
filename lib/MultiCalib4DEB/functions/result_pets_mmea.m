@@ -20,8 +20,5 @@ function result_pets_mmea(result, par, metaPar, txtPar, data, auxData, metaData,
    end
    
    %% Print results depeding on results output parameter
-   plot_results(result, ..., 
-            result.solutionSet.txtPar, result.solutionSet.data, ...,
-            result.solutionSet.auxData, metaData, ..., 
-            result.solutionSet.txtData, weights, results_display);
+   plot_results(filename, results_display);
 end

@@ -84,7 +84,8 @@ function estim_options (key, val)
   %    'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)
   %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
   %                                                    to continue the calibration process (default 1e-4)
-  %
+  %    'norm_pop_dist': the maximum normalized Euclidean distance allowed
+  %                     between the solutions of the MMEA population to continue the calibration process (default 0.02). 
   %    'num_runs' (method mmea only): the number of independent runs to perform (default 1)
   %
   %    'add_initial' (method mmea only): if the initial individual is added in the first  population.
@@ -177,7 +178,7 @@ function estim_options (key, val)
   global refine_running refine_run_prob verbose verbose_options
   global random_seeds seed_index ranges mat_file results_display
   global results_filename save_results activate_niching sigma_share
-  global min_convergence_threshold 
+  global min_convergence_threshold norm_pop_dist
   
   availableMethodOptions = {'no', 'nm', 'mmea'};
 
@@ -219,8 +220,11 @@ function estim_options (key, val)
       refine_best = 0;     % If a local search is applied to the best individual found. 
       refine_running = 0;  % If to apply local search to some individuals while simulation is running. 
       refine_run_prob = 0.05; % The probability to apply a local search to an individual while algorithm is  running. 
-      %max_calibration_time = 30; % The maximum calibration time calibration process. 
+      % max_calibration_time = 30; % The maximum calibration time calibration process. 
       min_convergence_threshold = 1e-4;
+      % norm_pop_dist = 0.02; % maximum normalized Euclidean distance allowed
+                            % between the solutions of the MMEA population to 
+                            % continue the calibration process (default 0.02).
       num_runs = 1; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
       verbose_options = 10; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
@@ -336,6 +340,20 @@ function estim_options (key, val)
         min_convergence_threshold = val;
         max_fun_evals = Inf;
         max_calibration_time = Inf; % mmea method only
+      end
+      
+    case 'norm_pop_dist'
+      if exist('val','var') == 0 
+        if numel(norm_pop_dist) ~= 0
+          fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' \n']);  
+        else
+          fprintf('norm_pop_dist = unknown \n');
+        end	      
+      else
+        norm_pop_dist = val;
+        max_fun_evals = Inf;
+        max_calibration_time = Inf; % mmea method only
+        min_convergence_threshold = Inf;
       end
       
     case 'report'
@@ -742,6 +760,12 @@ function estim_options (key, val)
         fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
       else
         fprintf('min_convergence_threshold = unkown \n');
+      end
+      
+      if numel(norm_pop_dist) ~= 0
+        fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' (method mmea)\n']);
+      else
+        fprintf('norm_pop_dist = unkown \n');
       end
       
       if numel(num_runs) ~= 0

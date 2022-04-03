@@ -55,7 +55,8 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
    global num_results lossfunction max_fun_evals num_runs  
    global pop_size refine_running refine_run_prob refine_best
    global verbose verbose_options random_seeds max_calibration_time
-   global activate_niching sigma_share min_convergence_threshold
+   global activate_niching sigma_share min_convergence_threshold 
+   global norm_pop_dist
 
    % Option settings
    % initiate info setting
@@ -165,17 +166,22 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             q = cell2struct(num2cell(qvec, np), parnm);
             f_test = feval(filternm, q);
             % If the function evaluation does not pass the filter then 
-            % try to reduce the maximum and minimums for the random parameter
-            % values and try again till obtain a feasible individual. 
+            % punish the individual (in order to discard it later) 
             if ~f_test 
                fprintf('The parameter set does not pass the filter. \n');
             end
-            [f, f_test] = feval(func, q, data, auxData);
+            try
+                [f, f_test] = feval(func, q, data, auxData);
+            catch
+                f_test = 1;
+            end
             if ~f_test 
                fprintf('The parameter set for the simplex construction is not realistic. \n');
+               fitness(ind) = pen_val;
+            else
+                [P, meanP] = struct2vector(f, nm);
+                fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
-            [P, meanP] = struct2vector(f, nm);
-            fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
       end
 
       %% Initialize function evaluations and fitness values
@@ -264,6 +270,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
 
          children_fitness = zeros(size(ui,1), 1);
          %% Evaluate children
+         penalized_individuals = 0; 
          for child = 1:size(ui,1)
             qvec(index) = ui(child,:)';
             q = cell2struct(num2cell(qvec, np), parnm);
@@ -283,6 +290,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                   f_test = 1;
                end
                if ~f_test % If DEB function is not feasible then set an extreme fitness value.
+                  penalized_individuals = penalized_individuals + 1;
                   children_fitness(child) = pen_val;
                else % If not set the fitness
                   ui(child,:) = qvec(index)';
@@ -290,13 +298,19 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                   try
                      children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
                   catch
+                     fprintf('Penalizing non feasible individual. \n'); 
                      children_fitness(child) = pen_val;
                   end
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
+              penalized_individuals = penalized_individuals + 1;
               children_fitness(child) = pen_val;
             end
+         end
+         if penalized_individuals > 0
+           fprintf('% d out of %d solutions (%.2f%%) have been penalized for not-passing the species filters. \n', ..., 
+               penalized_individuals, pop_size, (penalized_individuals / pop_size) * 100.0); 
          end
 
          %% Update best fitness found so far
@@ -341,12 +355,24 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             if refine_running
               randVal = rand(1);
               if randVal < refine_run_prob
-                 fprintf('Refining individual using local search \n');
-                 refine = 1;
                  qvec(index) = popold(i,:)';
                  q = cell2struct(num2cell(qvec, np), parnm);
                  q.free = free;
-                 [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                 refine = 1;
+                 try
+                   [f, f_test] = feval(func, q, data, auxData);
+                 catch
+                   f_test = 1;
+                 end
+                 % refine only feasible individuals and the penalize 
+                 % non-feasible ones
+                 if ~f_test
+                   funct_val = pen_val;
+                   iters = 1;
+                 else
+                   fprintf('Refining individual using local search \n');
+                   [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                 end                 
                  q = rmfield(q, 'free');
               else
                  refine = 0;
@@ -408,15 +434,18 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             end
          elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
+         elseif min_convergence_threshold ~= Inf
+            avg_prev_fitness = mean(temp_fit);
+            avg_new_fitness = mean(fitness);
+            improvement = avg_prev_fitness - avg_new_fitness; 
+            fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
+                avg_prev_fitness, avg_new_fitness, improvement);
+            if improvement < min_convergence_threshold; break; end
          else
-             avg_prev_fitness = mean(temp_fit);
-             avg_new_fitness = mean(fitness);
-             improvement = avg_prev_fitness - avg_new_fitness; 
-             fprintf('Previous avg. loss funtion: %.5f, Current avg. loss function: %.5f. Improvement: %.5f \n', ..., 
-                 avg_prev_fitness, avg_new_fitness, improvement);
-             if improvement < min_convergence_threshold; break; end
+             norm_dist = population_normalized_euclidean_distance(popold, ranges);
+             fprintf('Avg. normalized distance: %.5f \n', norm_dist);
+             if norm_dist < norm_pop_dist; break; end
          end
-         
       end
       
       if verbose

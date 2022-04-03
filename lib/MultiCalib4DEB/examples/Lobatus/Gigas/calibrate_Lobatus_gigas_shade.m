@@ -1,4 +1,4 @@
-%% Calibrates the Clarias Gariepinus pet using SHADE multimodal algorithm
+%% Calibrates the Lobatus gigas pet using SHADE multimodal algorithm
 %% 
 
 close all; 
