@@ -1,0 +1,264 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>findLocal_nm</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-05"><meta name="DC.source" content="findLocal_nm.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>findLocal_nm</h1><!--introduction--><p>find local minima for a target parameter</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[parLf, valLf, parVal] = <a href="../findLocal_nm.m"><b>findLocal_nm</b></a> (parLfNm,parLfMin,parLfMax,nLf,nCont)</p><h2 id="4">Description</h2><p>Finds local minima using the nm method with varying a target parameter, estimating the other free parameters through continuation, Then a graph of the loss function as function of the target parameter is plotted and local minima are searched using the .</p><p>Input</p><div><ul><li>parLfNm: string with name of the parameter for which the profile is calculated</li><li>parLfMin: scalar with lower value of the profile interval</li><li>parLfMax: scalar with upper value of the profile interval</li><li>nLf: number of nodes, increase for a smooth profile</li><li>nCont: number of continuations</li></ul></div><p>Output</p><div><ul><li>parLf: nLf-vector with values for target par</li><li>valLf: nLf-vector of loss function values at free parameters</li><li>parVal: (nLf,k)-matrix of n solutions for k free parameters</li></ul></div><h2 id="5">Remarks</h2><p>Run in directory that has the mydata-, pars_init-, predict- files. Assumes that global pets has the name of the entry as cell string.</p><h2 id="6">Example of use</h2><p>[parLf,valLf,parVal] = findLocal_nm_rB('v',0.01,0.9,20,2);</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% findLocal_nm
+% find local minima for a target parameter
+%%
+function [parLf, valLf, parVal] = findLocal_nm(parLfNm,parLfMin,parLfMax,nLf,nCont)
+  %  created at 2022/04/02 by Bas Kooijman
+  
+  %% Syntax
+  % [parLf, valLf, parVal] = <../findLocal_nm.m *findLocal_nm*> (parLfNm,parLfMin,parLfMax,nLf,nCont)
+  
+  %% Description
+  % Finds local minima using the nm method with 
+  % varying a target parameter, estimating the other free parameters through continuation, 
+  % Then a graph of the loss function as function of the target parameter is plotted
+  % and local minima are searched using the .
+  % 
+  % Input
+  %
+  % * parLfNm: string with name of the parameter for which the profile is calculated 
+  % * parLfMin: scalar with lower value of the profile interval
+  % * parLfMax: scalar with upper value of the profile interval
+  % * nLf: number of nodes, increase for a smooth profile
+  % * nCont: number of continuations
+  %
+  % Output
+  %
+  % * parLf: nLf-vector with values for target par
+  % * valLf: nLf-vector of loss function values at free parameters
+  % * parVal: (nLf,k)-matrix of n solutions for k free parameters
+  
+  %% Remarks
+  % Run in directory that has the mydata-, pars_init-, predict- files.
+  % Assumes that global pets has the name of the entry as cell string.
+  
+  %% Example of use
+  % [parLf,valLf,parVal] = findLocal_nm_rB('v',0.01,0.9,20,2);
+  
+  global pets loss_function
+    
+  my_pet = pets{1};
+  matNm = ['results_', my_pet];
+  func = ['predict_', my_pet];
+
+  % fill structures
+  eval(['[data, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
+  eval(['[par, metaPar, txtPar] = pars_init_', my_pet, '(metaData);']);  
+
+  % initiate estim_options settings
+  estim_options('default'); % method nm
+  estim_options('results_output', 0); % only write results_my_pet.mat-file
+  estim_options('report', 0); % no printing to screen
+  estim_options('pars_init_method', 2); % use parameter from pars_init
+  estim_options('max_step_number', 500);
+  estim_options('method', 'no');
+  estim_pars; % write results_my_pet.mat
+  estim_options('method', 'nm');
+  
+  % get parNm of free parameters, 
+  load(matNm,'par')
+  free = par.free; free.(parLfNm) = 0; freeNm = fields(free); n = size(freeNm,1);
+  sel = zeros(n,1); for i=1:n; sel(i)=free.(freeNm{i});end
+  parNm = fields(par); parNm(end) = ''; parNm = parNm(sel==1); n_par = length(parNm);
+  
+  % edit free-setting of parLfNm in pars_init
+  pars_init = fileread(['pars_init_', my_pet,'.m']);
+  i_0 = strfind(pars_init, ['free.', parLfNm]); i_1 = strfind(pars_init(i_0:end), '='); i_0 = i_0 + i_1(1) + 1;
+  pars_init = [pars_init(1:i_0-2),' 0; ', pars_init(2+i_0:end)];
+  fid = fopen(['pars_init_', my_pet, '.m'], 'w+');
+  fprintf(fid,'%s', pars_init); fclose(fid);
+
+  % set parLf-vector for scanning and copy global min and store its lossfunction
+  parLf = linspace(parLfMin, parLfMax, nLf)'; % column-vector of target parameter values
+  [~, i_0] = sort(abs(parLf - par.(parLfNm))); i_0 = i_0(1); % index of v_lf that is closest to v
+  valLf = NaN(nLf, 1); parVal = NaN(nLf, n_par); % initiate lossfunction, par-values
+  parVal0 = zeros(n_par,1); for i=1:n_par; parVal0(i) = par.(parNm{i}); end % pars at globel min
+  valLf0 = lossFn(func, par, data, auxData, weights); % lf at global minimum
+  parLf0 = par.(parLfNm); % par at global minimum
+
+  % estimate pars with fixed parLfNm
+  estim_options('pars_init_method', 1);
+  % first upper-branch of parLf, start closest to global min value for parLfNm
+  for i = i_0:nLf
+    load(matNm,'par')
+    par.(parLfNm) = parLf(i);
+    save(matNm,'par')
+    for j=1:nCont; estim_pars; end
+    load(matNm,'par')
+    valLf(i) = lossFn(func, par, data, auxData, weights);
+    for j=1:n_par; parVal(i,j) = par.(parNm{j}); end
+    fprintf('value %g, v: %g; lf: %g\n', i, parLf(i), valLf(i));
+  end
+  % restore par-setting at start
+  for j=1:n_par; par.(parNm{j}) = parVal0(j); end
+  save(matNm,'par')
+  % now lower branch with fixed parLfNm
+  for k = 1:i_0-1
+    i = i_0 - k; % reverse order to start close to global min value for parLfNm
+    load(matNm,'par')
+    par.(parLfNm) = parLf(i);
+    for j=1:n_par; par.(parNm{j}) = parVal0(j); end
+    save(matNm,'par')
+    for j=1:nCont; estim_pars; end
+    load(matNm,'par')
+    valLf(i) = lossFn(func, par, data, auxData, weights);
+    for j=1:n_par; parVal(i,j) = par.(parNm{j}); end
+    fprintf('value %g, v %g; lf %g\n', i, parLf(i), valLf(i));
+  end
+ 
+  prt_tab({valLf, parLf, parVal}, ['loss fn'; parLfNm; parNm])
+
+  % insert global minimum and add parLfNm to parNm list
+  parLf = [parLf(1:i_0-1); parLf0; parLf(i_0:end)];
+  valLf = [valLf(1:i_0-1); valLf0; valLf(i_0:end)];
+  parVal = [parLf, [parVal(1:i_0-1,:); parVal0'; parVal(i_0:end,:)]];
+  parNm = [parLfNm;parNm]; n_par = n_par+1; nLf = nLf+1; % prepend v to par-names
+  
+  % plot lossfunction as function of parLfNm
+  plot(parLf, valLf, 'or')
+  xlabel(parLfNm)
+  ylabel(['lossfunction ', loss_function])
+    
+  % locate local minima in lf-profile
+  sel = zeros(nLf,1); 
+  if valLf(2)>valLf(1); sel(1) = true; end; if valLf(nLf)<valLf(nLf-1); sel(n_v) = true; end
+  sel(2:nLf-1) = (valLf(2:nLf-1)<valLf(1:nLf-2)) & (valLf(3:nLf)>valLf(2:nLf-1));
+  valLf = valLf(sel==1); parLf = parLf(sel==1); parVal = parVal(sel==1,:); nLf = length(valLf);
+  
+  % edit free-setting of parLfNm in pars_init
+  pars_init = fileread(['pars_init_', my_pet,'.m']);
+  i_0 = strfind(pars_init, ['free.',parLfNm]); i_1 = strfind(pars_init(i_0:end), '='); i_0 = i_0 + i_1(1) + 1;
+  pars_init = [pars_init(1:i_0-2),' 1; ', pars_init(2+i_0:end)];
+  fid = fopen(['pars_init_', my_pet, '.m'], 'w+');
+  fprintf(fid,'%s', pars_init); fclose(fid);
+  
+  % find local minima, starting from pars that correspond with local minima on loss function
+  estim_options('simplex_size', 0.005); % small simplex size to avoid loss of local min
+  fprintf('%g local minima found\n', nLf);
+  for i = 1:nLf
+    load(matNm,'par')
+    for j=1:n_par; par.(parNm{j}) = parVal(i,j); end
+    save(matNm,'par')
+    for j=1:nCont; estim_pars; end
+    load(matNm,'par')
+    parLf(i)=par.(parLfNm); for j=1:n_par; parVal(i,j) = par.(parNm{j}); end
+    valLf(i) = lossFn(func, par, data, auxData, weights);
+    fprintf('solution %g, %s %g; lf %g\n', i, parLfNm, parLf(i), valLf(i));
+  end
+
+  prt_tab({valLf, parVal}, ['loss fn'; parNm])
+  
+  % remove solutions that are not local minima
+  fprintf('start checking monotony of loss functions from one solution to the other\n');
+  if nLf>1
+    [valLf_sort, i_sort] = sort(valLf); 
+    parVal_sort = parVal(i_sort,:);
+    sel = testMonotony(func,parVal_sort,parNm,valLf_sort,par,data,auxData,weights);
+    i_sort = i_sort(~sel); % remove indices for solutions whose lf-connection is monotonous
+    parVal = parVal_sort(i_sort,:); valLf = valLf_sort(i_sort); nLf = size(parVal,1);
+      fprintf('%g solutions do not have a monotonous loss function connection with other remaining solutions\n', nLf);  
+  end
+  
+  % refine local minima
+  for i = 1:nLf
+    load(matNm,'par')
+    for j=1:n_par; par.(parNm{j}) = parVal(i,j); end
+    save(matNm,'par')
+    estim_pars;
+    load(matNm,'par')
+    for j=1:n_par; parVal(i,j) = par.(parNm{j}); end
+    valLf(i) = lossFn(func, par, data, auxData, weights);
+    fprintf('solution %g, %s %g; lf %g\n', i, parLfNm, parLf(i), valLf(i));
+  end
+
+end
+
+function sel = testMonotony(func,sol,parNm,val,par,data,auxData,weights)
+  % sel(i) = true if lf traject to i is monotonous
+  [n_sol, n_par] = size(sol); sel = false(n_sol,1);
+  n_w = 10; w = linspace(0,1,n_w); % weights for par start and end
+  for i = 1:n_sol
+    for j = i+1:n_sol
+      par_0 = par; for k=1:n_par; par_0.(parNm{k}) = sol(i,k); end % start (=best) par
+      par_1 = par; for k=1:n_par; par_1.(parNm{k}) = sol(j,k); end % end par
+      lf = zeros(n_w,1); lf(1) = val(i); lf(n_w) = val(j); % initiate loss function vector
+      for i_lf = 2:n_w-1
+        par_lf = par; for k=1:n_par; par_lf.(parNm{k}) = (1-w(i_lf))*sol(i,k)+w(i_lf)*sol(j,k); end 
+        lf(i_lf) = lossFn(func, par_lf, data, auxData, weights);
+      end
+      sel(j) = all(lf(1:n_w-1)<lf(2:n_w));
+    end
+  end
+end
+##### SOURCE END #####
+--></body></html>
