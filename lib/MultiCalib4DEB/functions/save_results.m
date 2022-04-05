@@ -63,8 +63,8 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
             weightsMRE.(pets{i}).psd.(psdSets{j}) = zeros(length(weightsMRE.(pets{i}).psd.(psdSets{j})), 1);
           end
         end
-        [metaPar.(pets{i}).MRE, metaPar.(pets{i}).RE, info] = mre_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
-        [metaPar.(pets{i}).SMSE, metaPar.(pets{i}).SSE] = smse_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
+        [metaPar.MRE, metaPar.RE, info] = mre_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
+        [metaPar.SMSE, metaPar.SSE] = smse_st(['predict_', pets{i}], parPets.(pets{i}), data.(pets{i}), auxData.(pets{i}), weightsMRE.(pets{i}));
         if info == 0
           error('One parameter set did not pass the customized filters in the predict file')
         end
@@ -78,9 +78,9 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
           archive.solutionSet.strcat('solution_', int2str(sol)).metaPar = metaPar;
           archive.solutionSet.strcat('solution_', int2str(sol)).metaData = metaData;
       else % n_pets == 1
-          metaPar.MRE = metaPar.(pets{1}).MRE;   metaPar.RE = metaPar.(pets{1}).RE;
-          metaPar.SMSE = metaPar.(pets{1}).SMSE; metaPar.SSE = metaPar.(pets{1}).SSE;
-          metaPar = rmfield(metaPar, pets{1});
+          metaPar.MRE = metaPar.MRE;   metaPar.RE = metaPar.RE;
+          metaPar.SMSE = metaPar.SMSE; metaPar.SSE = metaPar.SSE;
+          %metaPar = rmfield(metaPar, pets{1});
           
           archive.('solutionSet').(strcat('solution_', int2str(sol))).par = aux;
           archive.('solutionSet').(strcat('solution_', int2str(sol))).metaPar = metaPar;
