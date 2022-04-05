@@ -15,7 +15,7 @@ function prt_tab(values, header, title, save)
 % Input:
 %
 % * varargin: cell arrays with strings and/or matrices with numbers
-% * header: optional cell vector with strings for header; length should match number of columns, but might by empty
+% * header: cell vector with strings for header; length should match number of columns, but might by empty
 % * title: optional string with title of browser tab
 % * save: optional boolean to save the html-file (default: false)
 %
