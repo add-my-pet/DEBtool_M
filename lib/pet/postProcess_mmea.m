@@ -1,7 +1,7 @@
 %% postProcess_mmea
 % filter and improve solutions of mmea
 %%
-function sol = postProcess_mmea(results_mmea)
+function [ val, sol ] = postProcess_mmea(results_mmea)
   %  created at 2022/04/01 by Bas Kooijman
   
   %% Syntax

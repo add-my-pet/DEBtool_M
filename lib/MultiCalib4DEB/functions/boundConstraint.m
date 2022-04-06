@@ -12,8 +12,9 @@ function vi = boundConstraint (vi, pop, lu)
 xl = repmat(lu(1, :), NP, 1);
 pos = vi < xl;
 vi(pos) = (pop(pos) + xl(pos)) / 2;
-
+%vi(pos) = xl(pos);
 %% check the upper bound
 xu = repmat(lu(2, :), NP, 1);
 pos = vi > xu;
 vi(pos) = (pop(pos) + xu(pos)) / 2;
+%vi(pos) = xu(pos);

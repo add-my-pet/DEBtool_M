@@ -30,7 +30,7 @@ function [ sharing_fitness ] = fitness_sharing( population, fitness, ranges, sig
 %% Remarks
 % This method promotes the diversity between the solutions set that forms 
 % the evolutionary algorithm's population. 
-    sharing_fitness = fitness_sharing_v2(population, fitness, ranges, sigma_share);
+    sharing_fitness = fitness_sharing_niching(population, fitness, ranges, sigma_share);
 end
 
 %% Methods.
@@ -91,24 +91,25 @@ end
 %% Methods.
 
 function [sharing_fitness] = fitness_sharing_v2(population, fitness, ranges, sigma_share)
-   format shortG;
-   format compact;
+	distance, share;
 	shareFunction = ones(1, length(population));
-   sharing_fitness = fitness;
+   sharing_fitness = fitness
 	for i = 1:length(population)
-      ind_i = population(i,:);
+		ind_i = population(i,:);
 
-      for j = i+1:length(population)
-         ind_j = population(j,:);
-         % Compute distance
-         distance = normalized_euclidean_distance(ind_i, ind_j, ranges);
-         % Compute sharing function
-         if distance <  sigma_share 
-            share = 1 - (distance / sigma_share);
-            shareFunction(i) = shareFunction(i) + share;
-            shareFunction(j) = shareFunction(j) + share;
+		for j = i+1:length(population)
+			ind_j = population(j,:);
+
+			% Compute distance
+			distance = normalized_euclidean_distance(ind_i, ind_j, ranges);
+
+			% Compute sharing function
+			if distance <  sigma_share 
+				share = 1 - (distance / sigma_share);
+				shareFunction[i] = shareFunction[i] + share;
+				shareFunction[j] = shareFunction[j] + share;
          end
       end
-      sharing_fitness(i) = fitness(i) * shareFunction(i);
+      fitness(i) = fitness(i) * shareFunction(i));
 	end
 end
