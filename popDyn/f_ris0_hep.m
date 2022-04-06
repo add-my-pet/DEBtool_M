@@ -51,6 +51,9 @@ function [f, info] = f_ris0_hep (par)
   
   % set lower boundary of f
   f_0 = 1e-5 + get_ep_min_j([g, k, l_T, v_Hb, (v_Hp-1e-8), v_Hp]); % -, scaled functional response at which puberty can just be reached
+  if all([h_B0b h_Bbp h_Bpj h_Bji] == [0 0 0 0])
+      f = f_0; info = 1; return
+  end
   pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, E_Rj, E_G, v_Hb, v_Hp, s_G, h_a, h_B0b, h_Bbp, h_Bpj, h_Bji, thinning};
   if charEq0(f_0, pars_charEq0{:}) > 0
     fprintf('Warning from f_ris0_hep: f for which r = 0 is very close to that for R_i = 0\n');
