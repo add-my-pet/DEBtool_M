@@ -150,7 +150,7 @@ end
 
 % Results
 switch method
-  case 'nm'
+  case {'nm','no'}
     results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
   case 'mmea'
     mmea_name =  strsplit(resultsnm, '.');
