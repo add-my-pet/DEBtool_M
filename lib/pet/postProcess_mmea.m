@@ -61,6 +61,7 @@ function sol = postProcess_mmea(results_mmea)
   estim_options('default'); % method nm
   estim_options('results_output', 0); % only write results_my_pet.mat-file
   estim_options('report', 0); % no printing to screen
+  estim_options('max_step_number', 500);
   if ~exist(['results_',my_pet,'.mat'], 'file')
     estim_options('pars_init_method', 2);
     estim_options('method', 'no');
@@ -86,12 +87,11 @@ function sol = postProcess_mmea(results_mmea)
     estim_options('method', 'nm');
     estim_options('pars_init_method', 1); % start from .mat file
     estim_options('simplex_size', 0.005); % very small to avoid leaving local min
-    estim_options('max_step_number', 500*h);
     load(['results_',my_pet,'.mat'], 'par');
     for i=1:n_sol
       for k=1:n_par; par.(parNm{k}) = sol(i,k); end % overwrite free pars
       save(['results_',my_pet,'.mat'], 'par');
-      estim_pars;
+      for H=1:h; estim_pars; end
       load(['results_',my_pet]);
       for k=1:n_par; sol(i,k) = par.(parNm{k}); end % copy resulting pars in sol
       val(i) = lossFn(func, par, data, auxData, weights);
