@@ -171,20 +171,12 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                fprintf('The parameter set does not pass the filter. \n');
             end
             try
-                [f, f_test] = feval(func, q, data, auxData);
-            catch
-                f_test = 1;
-            end
-            if ~f_test 
-               fprintf('The parameter set for the simplex construction is not realistic. \n');
-               fitness(ind) = pen_val;
-            else
+                [f, ~] = feval(func, q, data, auxData);
                 [P, meanP] = struct2vector(f, nm);
-                try 
-                  fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-                catch
-                  fitness(ind) = pen_val;
-                end
+                fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+            catch
+                fprintf('The parameter set for the simplex construction is not realistic. \n');
+                fitness(ind) = pen_val;
             end
       end
       %prt_tab({(1:pop_size)', fitness, pop},['Par'; 'Lf'; parnm(index)]', 'solutions');
@@ -219,7 +211,6 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          fprintf('Num func evals %d | Total progress %.2f %%\n', nfes, (nfes/max_nfes)*100.0);
          if activate_niching
             fit_sharing = fitness_sharing(pop, fitness, ranges, sigma_share);
-            %[~, sorted_index] = sort(fit_sharing, 'ascend');
             fitness = fit_sharing;
             %if verbose
             %   fprintf('Best %d loss function values: \n', verbose_options);
@@ -228,12 +219,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             %   disp(f_shar(1:verbose_options).');
             %end
          end
-         [temp_fit, sorted_index] = sort(fitness, 'ascend');
-         if verbose
-            fprintf('Best %d loss function values: \n', verbose_options);
-            disp(temp_fit(1:verbose_options).');
-            disp(temp_fit(length(temp_fit)-verbose_options:length(temp_fit)).');
-         end
+         [~, sorted_index] = sort(fitness, 'ascend');
+         %if verbose
+            %[tf, ~] = sort(fitness, 'ascend');
+            %fprintf('Fitness sharing %d loss function values: \n', verbose_options);
+            %disp(tf(1:verbose_options).');
+            %disp(tf(length(tf)-verbose_options:length(tf)).');
+         %end
          pop = popold; % the old population becomes the current population
 
          mem_rand_index = ceil(memory_size * rand(pop_size, 1));
@@ -268,7 +260,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          pbest = pop(sorted_index(randindex), :); %% randomly choose one of the top 100p% solutions
 
          vi = pop + sf(:, ones(1, problem_size)) .* (pbest - pop + pop(r1, :) - popAll(r2, :));
-         vi = boundConstraint(vi, pop, ranges);
+         vi = boundConstraint(vi, pop, ranges, bsf_solution);
          mask = rand(pop_size, problem_size) > cr(:, ones(1, problem_size)); % mask is used to indicate which elements of ui comes from the parent
          rows = (1 : pop_size).'; cols = floor(rand(pop_size, 1) * problem_size)+1; % choose one position where the element of ui doesn't come from the parent
          jrand = sub2ind([pop_size problem_size], rows, cols); mask(jrand) = false;
@@ -291,22 +283,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             % If solution is feasible then evaluate it.  
             if ~non_feasible
                try
-                  [f, f_test] = feval(func, q, data, auxData);
-               catch
-                  f_test = 1;
-               end
-               if ~f_test % If DEB function is not feasible then set an extreme fitness value.
-                  penalized_individuals = penalized_individuals + 1;
-                  children_fitness(child) = pen_val;
-               else % If not set the fitness
+                  [f, ~] = feval(func, q, data, auxData);
                   ui(child,:) = qvec(index)';
                   [P, meanP] = struct2vector(f, nm);
-                  try
-                     children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-                  catch
-                     fprintf('Penalizing non feasible individual. \n'); 
-                     children_fitness(child) = pen_val;
-                  end
+                  children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+               catch
+                  penalized_individuals = penalized_individuals + 1;
+                  children_fitness(child) = pen_val;
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
@@ -334,6 +317,43 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
+         end
+         
+         %% Force population evaluation because fitness from previous 
+         %% iterations may be unreal (changed sharing)  ---
+         for ind = 1:pop_size
+            % Evaluate each individual if not refined
+            qvec(index) = pop(ind,:)';
+            q = cell2struct(num2cell(qvec, np), parnm);
+            f_test = feval(filternm, q);
+            % If the function evaluation does not pass the filter then 
+            % punish the individual (in order to discard it later) 
+            if ~f_test 
+               fprintf('The parameter set does not pass the filter. \n');
+            end
+            try
+                [f, f_test] = feval(func, q, data, auxData);
+            catch
+                f_test = 1;
+            end
+            if ~f_test 
+               fprintf('The parameter set for the simplex construction is not realistic. \n');
+               fitness(ind) = pen_val;
+            else
+                [P, meanP] = struct2vector(f, nm);
+                try 
+                  fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                catch
+                  fitness(ind) = pen_val;
+                end
+            end
+         end
+
+         if verbose
+            [temp_fit, ~] = sort(fitness, 'ascend');
+            fprintf('Best %d loss function values: \n', verbose_options);
+            disp(temp_fit(1:verbose_options).');
+            disp(temp_fit(length(temp_fit)-verbose_options:length(temp_fit)).');
          end
 
          %% Comparison between parents and children

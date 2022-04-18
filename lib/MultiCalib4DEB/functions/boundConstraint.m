@@ -1,4 +1,4 @@
-function vi = boundConstraint (vi, pop, lu)
+function vi = boundConstraint (vi, pop, lu, par_best)
 
 % if the boundary constraint is violated, set the value to be the middle
 % of the previous value and the bound
@@ -10,11 +10,14 @@ function vi = boundConstraint (vi, pop, lu)
 
 %% check the lower bound
 xl = repmat(lu(1, :), NP, 1);
+xbest = repmat(par_best(1, :), NP, 1);
 pos = vi < xl;
-vi(pos) = (pop(pos) + xl(pos)) / 2;
+vi(pos) = xbest(pos) + pop(pos) / 2;
+%vi(pos) = (pop(pos) + xl(pos)) / 2;
 %vi(pos) = xl(pos);
 %% check the upper bound
 xu = repmat(lu(2, :), NP, 1);
 pos = vi > xu;
-vi(pos) = (pop(pos) + xu(pos)) / 2;
+vi(pos) = xbest(pos) + pop(pos) / 2;
+%vi(pos) = (pop(pos) + xu(pos)) / 2;
 %vi(pos) = xu(pos);
