@@ -56,7 +56,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
    global pop_size refine_running refine_run_prob refine_best
    global verbose verbose_options random_seeds max_calibration_time
    global activate_niching sigma_share min_convergence_threshold 
-   global norm_pop_dist
+   global max_pop_dist
 
    % Option settings
    % initiate info setting
@@ -158,45 +158,41 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
 
       pop = popold; % the old population becomes the current population
       
-      % Evaluate the individuals of the first population
-      fitness = zeros(pop_size, 1);
-      for ind = 1:pop_size
-         % Evaluate each individual if not refined
-            qvec(index) = pop(ind,:)';
-            q = cell2struct(num2cell(qvec, np), parnm);
-            f_test = feval(filternm, q);
-            % If the function evaluation does not pass the filter then 
-            % punish the individual (in order to discard it later) 
-            if ~f_test 
-               fprintf('The parameter set does not pass the filter. \n');
-            end
-            try
-                [f, f_test] = feval(func, q, data, auxData);
-            catch
-                f_test = 1;
-            end
-            if ~f_test 
-               fprintf('The parameter set for the simplex construction is not realistic. \n');
-               fitness(ind) = pen_val;
-            else
-                [P, meanP] = struct2vector(f, nm);
-                try 
-                  fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-                catch
-                  fitness(ind) = pen_val;
-                end
-            end
-      end
-      %prt_tab({(1:pop_size)', fitness, pop},['Par'; 'Lf'; parnm(index)]', 'solutions');
       %% Initialize function evaluations and fitness values
       nfes = 0;
+      fitness = zeros(pop_size, 1);
       bsf_fit_var = 1e+30;
       bsf_solution = zeros(1, problem_size);
-
-      % Update evaluations and best fitness (value and parameters)
-      for i = 1 : pop_size
-         nfes = nfes + 1;
-
+      
+      for ind = 1:pop_size
+         % Evaluate each individual
+         qvec(index) = pop(ind,:)';
+         q = cell2struct(num2cell(qvec, np), parnm);
+         f_test = feval(filternm, q);
+         
+         % If the function evaluation does not pass the filter then 
+         % punish the individual (in order to discard it later) 
+         if ~f_test 
+            fprintf('The parameter set does not pass the filter. \n');
+         end
+         try
+            [f, f_test] = feval(func, q, data, auxData);
+         catch
+            f_test = 1;
+         end
+         if ~f_test 
+            fprintf('The parameter set for the simplex construction is not realistic. \n');
+            fitness(ind) = pen_val;
+         else
+            [P, meanP] = struct2vector(f, nm);
+            try 
+               fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+            catch
+               fitness(ind) = pen_val;
+            end
+         end
+         
+         nfes = nfes + 1; % Update the evaluations counter
          if fitness(i) < bsf_fit_var
             bsf_fit_var = fitness(i);
             bsf_solution = pop(i, :);
@@ -209,29 +205,25 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             if nfes > max_nfes; break; end
          end
       end
-
+      
+      %% Initialize memory for SHADE
       memory_sf = 0.5 .* ones(memory_size, 1);
       memory_cr = 0.5 .* ones(memory_size, 1);
       memory_pos = 1;
 
       %% Main loop
       while nfes < max_nfes
-         fprintf('Num func evals %d | Total progress %.2f %%\n', nfes, (nfes/max_nfes)*100.0);
+         fprintf('Num func evals %d | Total progress %.2f %%\n', ..., 
+             nfes, (nfes/max_nfes) * 100.0);
          if activate_niching
             fit_sharing = fitness_sharing(pop, fitness, ranges, sigma_share);
-            %[~, sorted_index] = sort(fit_sharing, 'ascend');
-            fitness = fit_sharing;
-            %if verbose
-            %   fprintf('Best %d loss function values: \n', verbose_options);
-            %   disp(temp_fit(1:verbose_options).');
-            %   disp('Fitness sharing');
-            %   disp(f_shar(1:verbose_options).');
-            %end
+            [~, sorted_index] = sort(fit_sharing, 'ascend');
          end
-         [temp_fit, sorted_index] = sort(fitness, 'ascend');
+         [temp_fit, ~] = sort(fitness, 'ascend');
          if verbose
             fprintf('Best %d loss function values: \n', verbose_options);
             disp(temp_fit(1:verbose_options).');
+            fprintf('Last %d loss function values: \n', verbose_options);
             disp(temp_fit(length(temp_fit)-verbose_options:length(temp_fit)).');
          end
          pop = popold; % the old population becomes the current population
@@ -262,10 +254,12 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          popAll = [pop; archive.solutionsParameters];
          [r1, r2] = gnR1R2(pop_size, size(popAll, 1), r0);
 
+         %% Generate children
          pNP = max(round(p_best_rate * pop_size), 2); %% choose at least two best solutions
          randindex = ceil(rand(1, pop_size) .* pNP); %% select from [1, 2, 3, ..., pNP]
          randindex = max(1, randindex); %% to avoid the problem that rand = 0 and thus ceil(rand) = 0
-         pbest = pop(sorted_index(randindex), :); %% randomly choose one of the top 100p% solutions
+         
+         pbest = pop(sorted_index(randindex), :); %% randomly choose one of the top 30% of the total solutions
 
          vi = pop + sf(:, ones(1, problem_size)) .* (pbest - pop + pop(r1, :) - popAll(r2, :));
          vi = boundConstraint(vi, pop, ranges);
@@ -274,7 +268,9 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          jrand = sub2ind([pop_size problem_size], rows, cols); mask(jrand) = false;
          ui = vi; ui(mask) = pop(mask);
 
+         % Initialize children fitness
          children_fitness = zeros(size(ui,1), 1);
+         
          %% Evaluate children
          penalized_individuals = 0; 
          for child = 1:size(ui,1)
@@ -314,7 +310,9 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
               children_fitness(child) = pen_val;
             end
          end
-         if penalized_individuals > 0
+         % Display information about the number of non-feasible childrens
+         % generated in the previous step. 
+         if penalized_individuals > 0 && verbose
            fprintf('% d out of %d solutions (%.2f%%) have been penalized for not-passing the species filters. \n', ..., 
                penalized_individuals, pop_size, (penalized_individuals / pop_size) * 100.0); 
          end
@@ -345,7 +343,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          goodF = sf(I == 1);
          dif_val = dif(I == 1);
 
-         % isempty(popold(I == 1, :))   
+         % Update the archive of solutions
          archive = updateArchive(archive, popold(I == 1, :), fitness(I == 1));
 
          [fitness, I] = min([fitness, children_fitness], [], 2);
@@ -353,49 +351,45 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          popold = pop;
          popold(I == 2, :) = ui(I == 2, :);
          
-         for i = 1 : pop_size
-            nfes = nfes + 1;
-            
+         %% Apply refinement over the solutions if the option is activated.
+         if refine_running
             % Check if local search is active an if it is then check if to
             % apply to the current individual
-            if refine_running
-              randVal = rand(1);
-              if randVal < refine_run_prob
-                 qvec(index) = popold(i,:)';
-                 q = cell2struct(num2cell(qvec, np), parnm);
-                 q.free = free;
-                 refine = 1;
-                 try
-                   [f, f_test] = feval(func, q, data, auxData);
-                 catch
-                   f_test = 1;
-                 end
-                 % refine only feasible individuals and the penalize 
-                 % non-feasible ones
-                 if ~f_test
-                   funct_val = pen_val;
-                   iters = 1;
-                 else
-                   fprintf('Refining individual using local search \n');
-                   [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
-                 end                 
-                 q = rmfield(q, 'free');
-              else
-                 refine = 0;
-              end
-            else
-              refine = 0;
+            for i = 1 : pop_size
+               randVal = rand(1);
+               if randVal < refine_run_prob
+                  qvec(index) = popold(i,:)';
+                  q = cell2struct(num2cell(qvec, np), parnm);
+                  q.free = free;
+                  refine = 1;
+                  try
+                     [f, f_test] = feval(func, q, data, auxData);
+                  catch
+                     f_test = 1;
+                  end
+                  % refine only feasible individuals and the penalize 
+                  % non-feasible ones
+                  if ~f_test
+                     funct_val = pen_val;
+                     iters = 1;
+                  else
+                     fprintf('Refining individual using local search \n');
+                     [q, iters, funct_val] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'running', fitness(i));
+                  end                 
+                  q = rmfield(q, 'free');
+               else
+                  refine = 0;
+               end
+               if refine
+                  % The number of function evaluations are not considered thus
+                  % it is necessary for the population resize procedure of the
+                  % algorithm.
+                  nfes = nfes + iters;
+                  qvec = cell2mat(struct2cell(q));
+                  popold(i,:) = qvec(index)';
+                  fitness(i) = funct_val;
+               end
             end
-            if refine
-              % The number of function evaluations are not considered thus
-              % it is necessary for the population resize procedure of the
-              % algorithm.
-              nfes = nfes + iters;
-              qvec = cell2mat(struct2cell(q));
-              popold(i,:) = qvec(index)';
-              fitness(i) = funct_val;
-            end
-            
             % Check if stopping criteria has been achieved
             if max_calibration_time ~= Inf
                current_time = toc(time_start)/60;
@@ -427,6 +421,9 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          if max_calibration_time ~= Inf
             current_time = round(toc(run_time_start)/60);
             if current_time > max_calibration_time; break; end
+            % If verbose is activated, the completion status of the 
+            % calibration process is printed according to the stop 
+            % criterion.
             if verbose
                fprintf('Time accomplished: %d of %d minutes (%d %%) for the run  %d \n', ...,
                   current_time, max_calibration_time, ..., 
@@ -448,11 +445,10 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
                 avg_prev_fitness, avg_new_fitness, improvement);
             if improvement < min_convergence_threshold; break; end
          else
-             norm_dist = population_normalized_euclidean_distance(popold, ranges);
-             fprintf('Avg. normalized distance: %.5f \n', norm_dist);
-             if norm_dist < norm_pop_dist; break; end
+             dist = population_distance(popold);
+             fprintf('Distance among the individuals of the population: %.5f \n', dist);
+             if dist < max_pop_dist || nfes > 100000; break; end
          end
-         %prt_tab({(1:pop_size)', fitness, pop},['Par'; 'Lf'; parnm(index)]', 'solutions');
       end
       
       if verbose
@@ -462,12 +458,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          disp(bsf_solution);
       end
 
+      %% UPDATE THE BEST SOLUTION FOUND
       bsf_fval = bsf_fit_var;
       qvec(index) = bsf_solution';
       q = cell2struct(num2cell(qvec, np), parnm);
       q.free = free; % add substructure free to q 
 
-      %% If best one wants to be refined with the Nelder Mead's simplex method
+      %% Refine the best solution found if the refinement option is activated
       if refine_best
          fprintf('Refining best individual found using local search \n');
          [q, fun_cals, fval] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'best', bsf_fval);

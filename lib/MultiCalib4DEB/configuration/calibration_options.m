@@ -49,7 +49,7 @@ function calibration_options (key, val)
 %
 %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
 %                                                    to continue the calibration process (default 1e-4)
-%    'norm_pop_dist': the maximum normalized Euclidean distance allowed
+%    'max_pop_dist': the maximum normalized Euclidean distance allowed
 %                     between the solutions of the MMEA population to continue the calibration process (default 0.02). 
 %    'num_runs': the number of independent runs to perform.
 %
@@ -140,7 +140,7 @@ function calibration_options (key, val)
    global refine_firsts verbose verbose_options random_seeds seed_index 
    global ranges mat_file results_display results_filename save_results 
    global activate_niching sigma_share min_convergence_threshold 
-   global norm_pop_dist
+   global max_pop_dist
    
    if exist('key','var') == 0
       key = 'inexistent';
@@ -149,7 +149,7 @@ function calibration_options (key, val)
    switch key 
       case {'default', ''}
          search_method = 'shade'; % Use SHADE for parameter estimation
-         num_results = 100; % The size for the multimodal algorithm's population.
+         num_results = 50; % The size for the multimodal algorithm's population.
                           % If not defined then sets the values recommended by
                           % the author, which are 100 for SHADE ('shade') and
                           % 18 * problem size for L-SHADE.
@@ -176,32 +176,31 @@ function calibration_options (key, val)
                              % 'add_initial' option is activated)
          refine_best = 0; % If a local search is applied to the best 
                           % individual found. 
-         refine_running = 1; % If to apply local search to some individuals
+         refine_running = 0; % If to apply local search to some individuals
                              % while simulation is running. 
          refine_run_prob = 0.01; % The probability to apply a local search
                                  % to an individual while algorithm is
                                  % running. 
-         max_fun_evals = 10000; % The maximum number of function 
+         %max_fun_evals = 20000; % The maximum number of function 
                                 % evaluations to perform before to end the
                                 % calibration process. 
          % max_calibration_time = 30; % The maximum calibration time
-         min_convergence_threshold = 1e-4; % minimum improvement the mmea needs to reach 
+         %min_convergence_threshold = 1e-4; % minimum improvement the mmea needs to reach 
                                            % to continue the calibration process (default 1e-4)
-         %norm_pop_dist = 0.02; % maximum normalized Euclidean distance allowed
-                            % between the solutions of the MMEA population to 
-                            % continue the calibration process (default 0.02).
+         max_pop_dist = 0.2; % maximum distance allowed between the solutions of the MMEA  
+                              % population to continue the calibration process (default 0.2).
          % calibration process. 
-         num_runs = 1; % The number of runs to perform. 
+         num_runs = 5; % The number of runs to perform. 
          verbose = 0; % If to print some information while the calibration 
                       % process is running. 
-         verbose_options = 10; % The number of solutions to show from the 
+         verbose_options = 5; % The number of solutions to show from the 
                                % set of optimal solutions found by the
                                % algorithm through the calibration process.
          random_seeds = [2147483647, 2874923758, 1284092845, ...
-                         2783758913, 3287594328, 9328947617, ...
-                         1217489374, 9815931031, 3278479237, ...
-                         8342427357, 8923758927, 7891375891, ... 
-                         8781589371, 8134872397, 2784732823]; % The values of the
+                         2783758913, 3287594328, 2328947617, ...
+                         1217489374, 1815931031, 3278479237, ...
+                         3342427357, 223758927, 3891375891, ... 
+                         1781589371, 1134872397, 2784732823]; % The values of the
                                                        % seed used to
                                                        % generate random
                                                        % values (each one
@@ -214,9 +213,9 @@ function calibration_options (key, val)
          results_display = 'Basic'; % The results output style.
          results_filename = 'Default';
          save_results = false; % If results output are saved.
-         mat_file = '';
-         activate_niching = 1; 
-         sigma_share = 0.15;
+         mat_file = ''; % .mat filename for simulation results.
+         activate_niching = 1; % Niching activation.
+         sigma_share = 0.3; % Minimum distance between individuals to sanction them in Fitness Sharing. 
          
       case 'search_method'
          if ~exist('val','var')
@@ -369,15 +368,15 @@ function calibration_options (key, val)
         max_fun_evals = Inf;
         max_calibration_time = Inf; % mmea method only
       end
-      case 'norm_pop_dist'
+      case 'max_pop_dist'
       if exist('val','var') == 0 
-        if numel(norm_pop_dist) ~= 0
-          fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' \n']);  
+        if numel(max_pop_dist) ~= 0
+          fprintf(['max_pop_dist = ', num2str(max_pop_dist),' \n']);  
         else
-          fprintf('norm_pop_dist = unknown \n');
+          fprintf('max_pop_dist = unknown \n');
         end	      
       else
-        norm_pop_dist = val;
+        max_pop_dist = val;
         max_fun_evals = Inf;
         max_calibration_time = Inf; % mmea method only
         min_convergence_threshold = Inf;
@@ -550,10 +549,10 @@ function calibration_options (key, val)
           else
             fprintf('min_convergence_threshold = unkown \n');
          end
-         if numel(norm_pop_dist) ~= 0
-            fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' (method mmea)\n']);
+         if numel(max_pop_dist) ~= 0
+            fprintf(['max_pop_dist = ', num2str(max_pop_dist),' (method mmea)\n']);
          else
-            fprintf('norm_pop_dist = unkown \n');
+            fprintf('max_pop_dist = unkown \n');
          end
          if numel(num_runs) ~= 0
             fprintf(['num_runs = ', num2str(num_runs),' \n']);

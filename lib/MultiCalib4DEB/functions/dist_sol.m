@@ -50,24 +50,6 @@ function [dist, val, parnms] = dist_sol(solutionSet, norm)
       val(i,j) = result.solutionSet.(solnms{i}).par.(parnms{j});
     end
   end
-          
-%   % weights
-%   for j = 1:n_par % set weight-structure
-%     wght.((parnms{j})) = weights(j);    
-%   end
-%   % compose structures for input in loss function
-%   for i = 1:n_sol
-%     for j = 1:n_par
-%       data.(solnms{i}).(parnms{j}) = val(i,j);
-%     end
-%   end
-%   
-%   % compute distances
-%   for i = 1:n_sol
-%     for j = i+1:n_sol
-%       dist(i,j) = lossfun(data.(solnms{i}), data.(solnms{j}), wght);
-%     end
-%   end
 
   for i = 1:n_sol
     for j = i+1:n_sol

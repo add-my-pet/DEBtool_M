@@ -6,7 +6,7 @@ function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
   %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
   %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles,
-  %    2021/10/20 by Juan Robles
+  %    2021/10/20, 2022/04/24 by Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -72,7 +72,7 @@ function estim_options (key, val)
   %      'l-shade' - use l-shade method
   %     
   %    'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
-  %       100 for SHADE ('search_method shade', default) 
+  %       50 for SHADE ('search_method shade', default) 
   %       18 * number of free parameters for L-SHADE ('search method l-shade')
   %
   %    'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
@@ -84,8 +84,8 @@ function estim_options (key, val)
   %    'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)
   %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
   %                                                    to continue the calibration process (default 1e-4)
-  %    'norm_pop_dist': the maximum normalized Euclidean distance allowed
-  %                     between the solutions of the MMEA population to continue the calibration process (default 0.02). 
+  %    'max_pop_dist': the maximum distance allowed between the solutions of the MMEA population to 
+  %                     continue the calibration process (default 0.2). 
   %    'num_runs' (method mmea only): the number of independent runs to perform (default 1)
   %
   %    'add_initial' (method mmea only): if the initial individual is added in the first  population.
@@ -174,11 +174,11 @@ function estim_options (key, val)
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size 
   global search_method num_results gen_factor factor_type bounds_from_ind % method mmea only
-  global max_calibration_time  num_runs add_initial refine_best
+  global max_calibration_time num_runs add_initial refine_best
   global refine_running refine_run_prob verbose verbose_options
   global random_seeds seed_index ranges mat_file results_display
   global results_filename save_results activate_niching sigma_share
-  global min_convergence_threshold norm_pop_dist
+  global min_convergence_threshold max_pop_dist
   
   availableMethodOptions = {'no', 'nm', 'mmea'};
 
@@ -203,7 +203,7 @@ function estim_options (key, val)
 
       % for mmea method (taken from calibration_options)
       search_method = 'shade'; % Use SHADE: Success-History based Adaptive Differential Evolution 
-      num_results = 100;   % The size for the multimodal algorithm's population.
+      num_results = 50;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
                            % which are 100 for SHADE ('shade') and 18 * problem size for L-SHADE.
       gen_factor = 0.5;    % Percentage bounds for individual 
@@ -219,20 +219,19 @@ function estim_options (key, val)
       add_initial = 0;     % If to add an invidivual taken from initial data into first population.                     % (only if it the 'add_initial' option is activated)
       refine_best = 0;     % If a local search is applied to the best individual found. 
       refine_running = 0;  % If to apply local search to some individuals while simulation is running. 
-      refine_run_prob = 0.05; % The probability to apply a local search to an individual while algorithm is  running. 
+      refine_run_prob = 0.01; % The probability to apply a local search to an individual while algorithm is  running. 
       % max_calibration_time = 30; % The maximum calibration time calibration process. 
-      min_convergence_threshold = 1e-4;
-      % norm_pop_dist = 0.02; % maximum normalized Euclidean distance allowed
-                            % between the solutions of the MMEA population to 
-                            % continue the calibration process (default 0.02).
-      num_runs = 1; % The number of runs to perform. 
+      % min_convergence_threshold = 1e-4;
+      max_pop_dist = 0.2; % maximum distance allowed between the solutions of the MMEA population to 
+                          % continue the calibration process (default 0.02).
+      num_runs = 5; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
-      verbose_options = 10; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
+      verbose_options = 5; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
       random_seeds = [2147483647, 2874923758, 1284092845, ... % The values of the seed used to
-                      2783758913, 3287594328, 9328947617, ... % generate random values (each one is used in a
-                      1217489374, 9815931031, 3278479237, ... % single run of the algorithm).
-                      8342427357, 8923758927, 7891375891, ... 
-                      8781589371, 8134872397, 2784732823]; 
+                      2783758913, 3287594328, 2328947617, ... % generate random values (each one is used in a
+                      1217489374, 1815931031, 3278479237, ... % single run of the algorithm).
+                      3342427357, 223758927, 3891375891, ... 
+                      1781589371, 1134872397, 2784732823]; 
       seed_index = 1; % index for seeds for random number generator
       rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
       ranges = struct(); % The range struct is empty by default. 
@@ -241,7 +240,7 @@ function estim_options (key, val)
       save_results = false; % If results output are saved.
       mat_file = '';
       activate_niching = 1; 
-      sigma_share = 0.15;
+      sigma_share = 0.3;
     
       case 'loss_function'
       if exist('val','var') == 0
@@ -342,15 +341,15 @@ function estim_options (key, val)
         max_calibration_time = Inf; % mmea method only
       end
       
-    case 'norm_pop_dist'
+    case 'max_pop_dist'
       if exist('val','var') == 0 
-        if numel(norm_pop_dist) ~= 0
-          fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' \n']);  
+        if numel(max_pop_dist) ~= 0
+          fprintf(['max_pop_dist = ', num2str(max_pop_dist),' \n']);  
         else
-          fprintf('norm_pop_dist = unknown \n');
+          fprintf('max_pop_dist = unknown \n');
         end	      
       else
-        norm_pop_dist = val;
+        max_pop_dist = val;
         max_fun_evals = Inf;
         max_calibration_time = Inf; % mmea method only
         min_convergence_threshold = Inf;
@@ -418,8 +417,8 @@ function estim_options (key, val)
           fprintf('num_results = unknown \n');
         end	      
       else
-        if num_results < 100 
-          num_results = 100;
+        if num_results < 10 
+          num_results = 50;
         else
           num_results = val;
         end
@@ -518,7 +517,7 @@ function estim_options (key, val)
       
     case 'num_runs'
       if ~exist('val','var')
-        if numel(max_fun_evals) ~= 0
+        if numel(num_runs) ~= 0
           fprintf(['num_runs = ', num2str(num_runs),' \n']);
         else
           fprintf('num_runs = unkown \n');
@@ -762,10 +761,10 @@ function estim_options (key, val)
         fprintf('min_convergence_threshold = unkown \n');
       end
       
-      if numel(norm_pop_dist) ~= 0
-        fprintf(['norm_pop_dist = ', num2str(norm_pop_dist),' (method mmea)\n']);
+      if numel(max_pop_dist) ~= 0
+        fprintf(['max_pop_dist = ', num2str(max_pop_dist),' (method mmea)\n']);
       else
-        fprintf('norm_pop_dist = unkown \n');
+        fprintf('max_pop_dist = unkown \n');
       end
       
       if numel(num_runs) ~= 0
