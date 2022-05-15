@@ -68,8 +68,7 @@ function estim_options (key, val)
   %    'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
   %    'search_method' (method mmea only): 
-  %      'shade' - use shade method (default)
-  %      'l-shade' - use l-shade method
+  %      'mm_shade' - use shade method (default)
   %     
   %    'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
   %       50 for SHADE ('search_method shade', default) 
@@ -97,16 +96,6 @@ function estim_options (key, val)
   %      0: not activated (default)
   %      1: activated
   %     
-  %    'refine_running' (method mmea only): If to apply local search to some individuals while simulation is running 
-  %      0: not activated (default)
-  %      1: activated
-  %
-  %    'refine_run_prob' (method mmea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
-  %
-  %    'refine_firsts' (method mmea only): If to apply a local search to the first population
-  %       0: not activated (default)
-  %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)
-  %
   %    'verbose_options' (method mmea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
   %
   %    'verbose' (method mmea only): prints some information while the calibration  process is running              
@@ -142,11 +131,6 @@ function estim_options (key, val)
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
   %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
-  %    'activate_niching': True to activate the application of fitness 
-  %       sharing method over the solutions through the calibration process to 
-  %       promote diversity in the final solutions set. 
-  %       0: Not activated. 
-  %       1: Activated (default)
   %    'sigma_share': The value of the sigma share parameter (that is used
   %       into the fitness sharing niching method if it is activated)
   %
@@ -175,12 +159,11 @@ function estim_options (key, val)
   global report max_step_number tol_simplex tol_fun simplex_size 
   global search_method num_results gen_factor factor_type bounds_from_ind % method mmea only
   global max_calibration_time num_runs add_initial refine_best
-  global refine_running refine_run_prob verbose verbose_options
+  global verbose verbose_options
   global random_seeds seed_index ranges mat_file results_display
-  global results_filename save_results activate_niching sigma_share
-  global min_convergence_threshold max_pop_dist
+  global results_filename save_results sigma_share
   
-  availableMethodOptions = {'no', 'nm', 'mmea'};
+  availableMethodOptions = {'no', 'nm', 'mmea', 'nr'};
 
   if exist('key','var') == 0
     key = 'inexistent';
@@ -202,7 +185,7 @@ function estim_options (key, val)
       simplex_size = 0.05;
 
       % for mmea method (taken from calibration_options)
-      search_method = 'shade'; % Use SHADE: Success-History based Adaptive Differential Evolution 
+      search_method = 'mm_shade'; % Use SHADE: Success-History based Adaptive Differential Evolution 
       num_results = 50;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
                            % which are 100 for SHADE ('shade') and 18 * problem size for L-SHADE.
@@ -218,12 +201,7 @@ function estim_options (key, val)
                            % if is 0 then the parameters are generated from the pseudo data values. 
       add_initial = 0;     % If to add an invidivual taken from initial data into first population.                     % (only if it the 'add_initial' option is activated)
       refine_best = 0;     % If a local search is applied to the best individual found. 
-      refine_running = 0;  % If to apply local search to some individuals while simulation is running. 
-      refine_run_prob = 0.01; % The probability to apply a local search to an individual while algorithm is  running. 
-      % max_calibration_time = 30; % The maximum calibration time calibration process. 
-      % min_convergence_threshold = 1e-4;
-      max_pop_dist = 0.2; % maximum distance allowed between the solutions of the MMEA population to 
-                          % continue the calibration process (default 0.02).
+      max_calibration_time = 30; % The maximum calibration time calibration process. 
       num_runs = 5; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
       verbose_options = 5; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
@@ -231,7 +209,12 @@ function estim_options (key, val)
                       2783758913, 3287594328, 2328947617, ... % generate random values (each one is used in a
                       1217489374, 1815931031, 3278479237, ... % single run of the algorithm).
                       3342427357, 223758927, 3891375891, ... 
-                      1781589371, 1134872397, 2784732823]; 
+                      1781589371, 1134872397, 2784732823, ... 
+                      2183647447, 24923758, 122845, ...
+                      2783784093, 394328, 2328757617, ...
+                      12174974, 18593131, 3287237, ...
+                      33442757, 2235827, 3837891, ... 
+                      17159371, 34211397, 2842823]; 
       seed_index = 1; % index for seeds for random number generator
       rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
       ranges = struct(); % The range struct is empty by default. 
@@ -239,8 +222,7 @@ function estim_options (key, val)
       results_filename = 'Default';
       save_results = false; % If results output are saved.
       mat_file = '';
-      activate_niching = 1; 
-      sigma_share = 0.3;
+      sigma_share = 0.1;
     
       case 'loss_function'
       if exist('val','var') == 0
@@ -327,33 +309,6 @@ function estim_options (key, val)
         max_fun_evals = val;
         max_calibration_time = Inf; % mmea method only
       end
-   
-    case 'min_convergence_threshold'
-      if exist('val','var') == 0 
-        if numel(min_convergence_threshold) ~= 0
-          fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' \n']);  
-        else
-          fprintf('min_convergence_threshold = unknown \n');
-        end	      
-      else
-        min_convergence_threshold = val;
-        max_fun_evals = Inf;
-        max_calibration_time = Inf; % mmea method only
-      end
-      
-    case 'max_pop_dist'
-      if exist('val','var') == 0 
-        if numel(max_pop_dist) ~= 0
-          fprintf(['max_pop_dist = ', num2str(max_pop_dist),' \n']);  
-        else
-          fprintf('max_pop_dist = unknown \n');
-        end	      
-      else
-        max_pop_dist = val;
-        max_fun_evals = Inf;
-        max_calibration_time = Inf; % mmea method only
-        min_convergence_threshold = Inf;
-      end
       
     case 'report'
       if ~exist('val','var')
@@ -404,7 +359,7 @@ function estim_options (key, val)
     % method mmea only, taken from calibatrion_options
     case 'search_method'
       if ~exist('val','var')
-        search_method = 'shade'; % Select SHADE as the default method.
+        search_method = 'mm_shade'; % Select SHADE as the default method.
       else
         search_method = val;
       end 
@@ -417,8 +372,8 @@ function estim_options (key, val)
           fprintf('num_results = unknown \n');
         end	      
       else
-        if num_results < 10 
-          num_results = 50;
+        if num_results < 1 
+          num_results = 10;
         else
           num_results = val;
         end
@@ -432,11 +387,6 @@ function estim_options (key, val)
           fprintf('gen_factor = unknown \n');
         end	      
       else
-        %if val >= 1.0
-        %   val = 0.99;
-        %elseif val <= 0.0
-        %   val = .01;
-        %end
         gen_factor = val;
       end
       
@@ -468,28 +418,6 @@ function estim_options (key, val)
         end	      
       else
         add_initial = val;
-      end
-      
-    case 'refine_running'
-      if ~exist('val','var')
-        if numel(refine_running) ~= 0
-          fprintf(['refine_running = ', num2str(refine_running),' \n']);  
-        else
-          fprintf('refine_running = unknown \n');
-        end	      
-      else
-        refine_running = val;
-      end
-      
-    case 'refine_run_prob'
-      if ~exist('val','var')
-        if numel(refine_run_prob) ~= 0
-          fprintf(['refine_run_prob = ', num2str(refine_run_prob),' \n']);  
-        else
-          fprintf('refine_run_prob = unknown \n');
-        end	      
-      else
-        refine_run_prob = val;
       end
       
     case 'refine_best'
@@ -619,17 +547,6 @@ function estim_options (key, val)
       else
         mat_file = val;
       end
-
-    case 'activate_niching'
-         if ~exist('val','var')
-            if numel(activate_niching) ~= 0
-               fprintf(['activate_niching = ', num2str(activate_niching),' \n']);  
-            else
-               fprintf('activate_niching = unknown \n');
-            end	      
-         else
-            activate_niching = val;
-         end
          
       case 'sigma_share'
          if ~exist('val','var')
@@ -755,18 +672,6 @@ function estim_options (key, val)
         fprintf('max_calibration_time = unkown \n');
       end
       
-      if numel(min_convergence_threshold) ~= 0
-        fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
-      else
-        fprintf('min_convergence_threshold = unkown \n');
-      end
-      
-      if numel(max_pop_dist) ~= 0
-        fprintf(['max_pop_dist = ', num2str(max_pop_dist),' (method mmea)\n']);
-      else
-        fprintf('max_pop_dist = unkown \n');
-      end
-      
       if numel(num_runs) ~= 0
         fprintf(['num_runs = ', num2str(num_runs),' (method mmea)\n']);
       else
@@ -777,18 +682,6 @@ function estim_options (key, val)
         fprintf(['add_initial = ', num2str(add_initial),' (method mmea)\n']);
       else
         fprintf('add_initial = unkown \n');
-      end
-      
-      if numel(refine_running) ~= 0
-        fprintf(['refine_running = ', num2str(refine_running),' (method mmea)\n']);
-      else
-        fprintf('refine_running = unkown \n');
-      end
-      
-      if numel(refine_run_prob) ~= 0
-        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method mmea)\n']);
-      else
-        fprintf('refine_run_prob = unkown \n');
       end
       
       if numel(refine_best) ~= 0
@@ -838,12 +731,6 @@ function estim_options (key, val)
         fprintf(['mat_file = ', mat_file,' (method mmea)\n']);
       else
         fprintf('mat_file = unkown \n');
-      end
-
-      if strcmp(activate_niching, '') ~= 0
-        fprintf(['activate_niching = ', activate_niching,' \n']);
-      else
-        fprintf('activate_niching = unkown \n');
       end
       
       if strcmp(sigma_share, '') ~= 0

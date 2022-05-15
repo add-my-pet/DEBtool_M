@@ -144,7 +144,10 @@ switch method
     [par, solutions_set, fval] = calibrate; 
     info = ~isempty(solutions_set); 
     nsteps = solutions_set.runtime_information.run_1.fun_evals;
-    
+  case 'nr'
+    [par, solutions_set, fval] = calibrate; 
+    info = ~isempty(solutions_set); 
+    nsteps = solutions_set.runtime_information.fun_evals;
   otherwise % do not estimate
 end
 
@@ -157,16 +160,21 @@ switch method
     resultsnm = [mmea_name{1}, '_mmea.', mmea_name{2}];
     calibration_options('results_filename', resultsnm);
     result_pets_mmea(solutions_set, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
+  case 'nr'
+    mmea_name =  strsplit(resultsnm, '.');
+    resultsnm = [mmea_name{1}, '_mmea.', mmea_name{2}];
+    calibration_options('results_filename', resultsnm);
+    result_pets_mmea(solutions_set, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
 end
 
 % check filter
-parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
-if filter
-  for i = 1:n_pets
-    if iscell(metaPar.model)
-      feval(['warning_', metaPar.model{i}], parPets.(pets{i}));
-    else
-      feval(['warning_', metaPar.model], parPets.(pets{i}));
-    end
-  end
+%parPets = parGrp2Pets(par); % convert parameter structure of group of pets to cell string for each pet
+%if filter
+%  for i = 1:n_pets
+%    if iscell(metaPar.model)
+%      feval(['warning_', metaPar.model{i}], parPets.(pets{i}));
+%    else
+%      feval(['warning_', metaPar.model], parPets.(pets{i}));
+%    end
+%  end
 end
