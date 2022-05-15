@@ -139,6 +139,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
       fprintf('The minimum convergence is: %.5f \n', min_convergence_threshold);
       fprintf('The total calibration time and the maximum fun evals are set to infinite \n');
    end
+   
    for run = 1:(min(num_runs, length(random_seeds)))
       %% Take run initial time
       run_time_start = tic; 
@@ -158,54 +159,28 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
 
       pop = popold; % the old population becomes the current population
       
-      %% Initialize function evaluations and fitness values
-      nfes = 0;
+      % Evaluate the individuals of the first population
       fitness = zeros(pop_size, 1);
-      bsf_fit_var = 1e+30;
-      bsf_solution = zeros(1, problem_size);
-      
       for ind = 1:pop_size
-         % Evaluate each individual
-         qvec(index) = pop(ind,:)';
-         q = cell2struct(num2cell(qvec, np), parnm);
-         f_test = feval(filternm, q);
-         
-         % If the function evaluation does not pass the filter then 
-         % punish the individual (in order to discard it later) 
-         if ~f_test 
-            fprintf('The parameter set does not pass the filter. \n');
-         end
-         try
-            [f, f_test] = feval(func, q, data, auxData);
-         catch
-            f_test = 1;
-         end
-         if ~f_test 
-            fprintf('The parameter set for the simplex construction is not realistic. \n');
-            fitness(ind) = pen_val;
-         else
-            [P, meanP] = struct2vector(f, nm);
-            try 
-               fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-            catch
-               fitness(ind) = pen_val;
+         % Evaluate each individual if not refined
+            qvec(index) = pop(ind,:)';
+            q = cell2struct(num2cell(qvec, np), parnm);
+            f_test = feval(filternm, q);
+            % If the function evaluation does not pass the filter then 
+            % punish the individual (in order to discard it later) 
+            if ~f_test 
+               fprintf('The parameter set does not pass the filter. \n');
             end
-         end
-         
-         nfes = nfes + 1; % Update the evaluations counter
-         if fitness(i) < bsf_fit_var
-            bsf_fit_var = fitness(i);
-            bsf_solution = pop(i, :);
-         end
-         % Check stopping criteria
-         if max_calibration_time ~= Inf
-            current_time = toc(time_start)/60;
-            if current_time > max_calibration_time; break; end
-         elseif max_nfes ~= Inf
-            if nfes > max_nfes; break; end
-         end
+            try
+                [f, ~] = feval(func, q, data, auxData);
+                [P, meanP] = struct2vector(f, nm);
+                fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+            catch
+                fprintf('The parameter set for the simplex construction is not realistic. \n');
+                fitness(ind) = pen_val;
+            end
       end
-      
+    
       %% Initialize memory for SHADE
       memory_sf = 0.5 .* ones(memory_size, 1);
       memory_cr = 0.5 .* ones(memory_size, 1);
@@ -226,6 +201,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             fprintf('Last %d loss function values: \n', verbose_options);
             disp(temp_fit(length(temp_fit)-verbose_options:length(temp_fit)).');
          end
+           
          pop = popold; % the old population becomes the current population
 
          mem_rand_index = ceil(memory_size * rand(pop_size, 1));
@@ -262,7 +238,7 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
          pbest = pop(sorted_index(randindex), :); %% randomly choose one of the top 30% of the total solutions
 
          vi = pop + sf(:, ones(1, problem_size)) .* (pbest - pop + pop(r1, :) - popAll(r2, :));
-         vi = boundConstraint(vi, pop, ranges);
+         vi = boundConstraint(vi, pop, ranges, bsf_solution);
          mask = rand(pop_size, problem_size) > cr(:, ones(1, problem_size)); % mask is used to indicate which elements of ui comes from the parent
          rows = (1 : pop_size).'; cols = floor(rand(pop_size, 1) * problem_size)+1; % choose one position where the element of ui doesn't come from the parent
          jrand = sub2ind([pop_size problem_size], rows, cols); mask(jrand) = false;
@@ -287,22 +263,13 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             % If solution is feasible then evaluate it.  
             if ~non_feasible
                try
-                  [f, f_test] = feval(func, q, data, auxData);
-               catch
-                  f_test = 1;
-               end
-               if ~f_test % If DEB function is not feasible then set an extreme fitness value.
-                  penalized_individuals = penalized_individuals + 1;
-                  children_fitness(child) = pen_val;
-               else % If not set the fitness
+                  [f, ~] = feval(func, q, data, auxData);
                   ui(child,:) = qvec(index)';
                   [P, meanP] = struct2vector(f, nm);
-                  try
-                     children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
-                  catch
-                     fprintf('Penalizing non feasible individual. \n'); 
-                     children_fitness(child) = pen_val;
-                  end
+                  children_fitness(child) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+               catch
+                  penalized_individuals = penalized_individuals + 1;
+                  children_fitness(child) = pen_val;
                end
             % If solution is not feasible then set an extreme fitness value.  
             else
@@ -332,6 +299,43 @@ function [q, result, bsf_fval] = shade(func, par, data, auxData, weights, filter
             elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
             end
+         end
+         
+         %% Force population evaluation because fitness from previous 
+         %% iterations may be unreal (changed sharing)  ---
+         for ind = 1:pop_size
+            % Evaluate each individual if not refined
+            qvec(index) = pop(ind,:)';
+            q = cell2struct(num2cell(qvec, np), parnm);
+            f_test = feval(filternm, q);
+            % If the function evaluation does not pass the filter then 
+            % punish the individual (in order to discard it later) 
+            if ~f_test 
+               fprintf('The parameter set does not pass the filter. \n');
+            end
+            try
+                [f, f_test] = feval(func, q, data, auxData);
+            catch
+                f_test = 1;
+            end
+            if ~f_test 
+               fprintf('The parameter set for the simplex construction is not realistic. \n');
+               fitness(ind) = pen_val;
+            else
+                [P, meanP] = struct2vector(f, nm);
+                try 
+                  fitness(ind) = feval(fileLossfunc, Y, meanY, P, meanP, W);
+                catch
+                  fitness(ind) = pen_val;
+                end
+            end
+         end
+
+         if verbose
+            [temp_fit, ~] = sort(fitness, 'ascend');
+            fprintf('Best %d loss function values: \n', verbose_options);
+            disp(temp_fit(1:verbose_options).');
+            disp(temp_fit(length(temp_fit)-verbose_options:length(temp_fit)).');
          end
 
          %% Comparison between parents and children
