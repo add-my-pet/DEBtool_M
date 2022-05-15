@@ -1,7 +1,7 @@
 close all; 
 global pets 
 
-pets = {'Clarias_gariepinus'}; 
+pets = {'Pleurobrachia_bachei'}; 
 check_my_pet(pets); 
 
 estim_options('default'); 
