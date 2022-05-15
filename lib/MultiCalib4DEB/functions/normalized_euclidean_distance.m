@@ -1,4 +1,4 @@
-function [ distance ] = normalized_euclidean_distance( individual_one, individual_two)
+function [ distance ] = normalized_euclidean_distance( individual_one, individual_two, ranges )
 % NORMALIZED_EUCLIDEAN_DISTANCE Calculates the normalized euclidean distance 
 % between two solutions vectors
 %
@@ -8,9 +8,14 @@ function [ distance ] = normalized_euclidean_distance( individual_one, individua
 % individuals while restricting the distance to the calibration
 % parameters domain.
 
-%% Euclidean distance calculation
+%% Normalized Euclidean distance calculation
 
-distance = sum((individual_one - individual_two).^2 ./ (individual_one.^2 + individual_two.^2));
+% Individual normalization.
+norm_ind_one = (individual_one-ranges(1,:))./(ranges(2,:)-ranges(1,:));
+norm_ind_two = (individual_two-ranges(1,:))./(ranges(2,:)-ranges(1,:));
+% Distance calculation. A factor of 0.5 is applied to transform the
+% distance value from its original range value of [0,2] to [0,1].
+distance = 0.5 * norm(norm_ind_one-norm_ind_two);
 
 end
 

@@ -49,8 +49,8 @@ function [statistics] = generate_statistics(data)
    % 
    %                 
    %                |- Cardinality
-   % * * 1) fitness |- Average fitness
-   %                |- Minimum fitness
+   %                |- Average fitness
+   % * * 1) fitness |- Minimum fitness
    %                |- Maximum fitness
    %                |- Standard deviation of fitness
    %                |- Average distance
@@ -91,6 +91,10 @@ function [statistics] = generate_statistics(data)
    statistics.fitness.max = max_fitness(data);
    statistics.fitness.std = std_fitness(data);
    statistics.fitness.average_distance_fitness = average_distance_fitness(data);
+   
+   % MRE & SMSE
+   compute_extra_fitness_stats(data);
+   
    % Parameters
    statistics.parameters.mean = mean_params(data);
    statistics.parameters.std = std_params(data);
@@ -157,11 +161,54 @@ function [statistics] = generate_statistics(data)
             end
          end
          value = mean(mean(dist));
+      elseif isa(data, 'double')
+         num_solutions = length(data);
+         dist = zeros(num_solutions);
+         for i = 1:num_solutions
+            for j = i+1:num_solutions
+               dist(i,j) = abs(data(i) - data(j));
+            end
+         end
+         value = mean(mean(dist));
       else
          fprintf('There are not values to calculate this measure. \n Please, revise your data before to try again.');
       end
    end
 
+   %% Method for MRE/SMSE statistics
+   % Composes the set of MRE/SMSE results from each solution and then
+   % computes the statistics. 
+   function [] = compute_extra_fitness_stats(data)
+      %% Get the number of runs
+      num_sols = sum(contains(fieldnames(data.solutionSet), 'solution_'));
+
+      %% Run over the results
+      res.MRE = [];
+      res.SMSE = [];
+
+      for sol=1:num_sols
+         res.MRE = [res.MRE; data.solutionSet.(['solution_', num2str(sol)]).metaPar.MRE];
+         res.SMSE = [res.SMSE; data.solutionSet.(['solution_', num2str(sol)]).metaPar.SMSE];
+      end
+      
+      %% Setting subfield values
+      % MRE statistics
+      statistics.MRE.cardinality = length(res.MRE);
+      statistics.MRE.mean = mean(res.MRE);
+      statistics.MRE.min = min(res.MRE);
+      statistics.MRE.max = max(res.MRE);
+      statistics.MRE.std = std(res.MRE);
+      statistics.MRE.average_distance_fitness = average_distance_fitness(res.MRE);
+      
+      % SMSE statistics
+      statistics.SMSE.cardinality = length(res.SMSE);
+      statistics.SMSE.mean = mean(res.SMSE);
+      statistics.SMSE.min = min(res.SMSE);
+      statistics.SMSE.max = max(res.SMSE);
+      statistics.SMSE.std = std(res.SMSE);
+      statistics.SMSE.average_distance_fitness = average_distance_fitness(res.SMSE);
+      
+   end
    %% Methods for parameter configurations
    % Calculates and returns the average values of the parameters solutions 
    % set.

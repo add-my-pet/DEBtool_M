@@ -26,8 +26,10 @@ if strcmp(period, 'beginning') || strcmp(period, 'running')
     else
         num_runs = max_runs;
     end
+elseif strcmp(period, 'experimental')
+    num_runs = 10;
 else
-    num_runs = Inf;
+    num_runs = 5;
 end
     
 % Stopping conditions  
@@ -37,9 +39,12 @@ total_iter_count = 0;
 
 % Run the search
 while(runs_perf < num_runs && improves)
+    fprintf('Run %d of %d \n', runs_perf + 1, num_runs);
+    fprintf('Prev loss function value %.4f \n', best_fval);
     [par, itercount, fval] = local_search(func, par, data, auxData, weights, filternm);
     total_iter_count = total_iter_count + itercount;
     if fval < best_fval
+        fprintf('New loss function value %.4f \n', fval);
         best_fval = fval;
     else
         improves = 0;

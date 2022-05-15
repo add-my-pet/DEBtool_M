@@ -4,9 +4,11 @@ function result_pets_mmea(result, par, metaPar, txtPar, data, auxData, metaData,
    % results_pets(best_sol, metaPar, txtPar, data, auxData, metaData, txtData, weights);
    
    global results_filename results_display pets
-   
-   result = save_results(result, par, metaPar, txtPar, data, auxData, metaData, txtData, weights);
-    %% Save solutions found for a latter analysis
+     
+   %% Save the unified solutions set. 
+   %result = save_results(result, 'final', par, metaPar, txtPar, data, ..., 
+   %    auxData, metaData, txtData, weights);
+   %% Save solutions found for a latter analysis
    if exist('result', 'var') && ~isempty(result)
       if strcmp(results_filename, 'Default') ~= 0
          dtime = strsplit(datestr(datetime), ' ');
@@ -20,5 +22,5 @@ function result_pets_mmea(result, par, metaPar, txtPar, data, auxData, metaData,
    end
    
    %% Print results depeding on results output parameter
-   plot_results(filename, results_display);
+   %plot_results(filename, results_display);
 end

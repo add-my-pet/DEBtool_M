@@ -60,7 +60,6 @@ function [sharing_fitness] = fitness_sharing_process(population, fitness, ranges
             shareFunction(j) = shareFunction(j) + share;
          end
       end
-      
       % If the individual has been previously punished for not passing the
       % filters of the species, it is not punished.
       if fitness(i) >= 1e10
