@@ -268,7 +268,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){2}{1}) % bi-variate data
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){1}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
@@ -364,6 +364,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 nX = length(xData); % number of values for 1st independent var
                 zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
                 plotColours = {[1 0 0], [0 0 1]}; % red, blue
+                xAxis = data2plot.(pets{i}).(nm{j}); 
                 n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
                 auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
                 prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
