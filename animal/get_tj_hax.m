@@ -76,7 +76,7 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
 
   options = odeset('Events', @emergence);
-  [t, luEvH, te, luEvH_e] = ode45(@dget_tj_hex, [0; 300], [0; uEj; 0], options, g, k, vHe);
+  [t, luEvH, te, luEvH_e] = ode45(@dget_tj_hex, [0; 300], [0; uEj; 0], options, sM, g, k, vHe);
   
   if isempty(te)
     te = []; le = []; uEe = []; info = 0;
@@ -99,17 +99,17 @@ function dtl = dget_tj_hax(vR, tl, f, sM, rB, li, g, k, vHp)
   dtl = [1; dl]/ dvR; % pack output
 end
 
-function dluEvH = dget_tj_hex(t, luEvH, g, k, vHe)
+function dluEvH = dget_tj_hex(t, luEvH, sM, g, k, vHe)
   l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; uE = max(1e-6, luEvH(2)); vH = luEvH(3);
 
-  dl = (g * uE - l4)/ (uE + l3)/ 3;
-  duE = - uE * l2 * (g + l)/ (uE + l3);
+  dl = (sM * g * uE - l4)/ (uE + l3)/ 3;
+  duE = - uE * l2 * (sM * g + l)/ (uE + l3);
   dvH = - duE - k * vH;
 
   dluEvH = [dl; duE; dvH]; % pack output
 end
 
-function [value,isterminal,direction] = emergence(t, luEvH, g, k, vHe)
+function [value,isterminal,direction] = emergence(t, luEvH, sM, g, k, vHe)
  value = vHe - luEvH(3); 
  isterminal = 1;
  direction = 0;
