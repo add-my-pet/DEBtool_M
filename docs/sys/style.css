@@ -1,0 +1,505 @@
+/*-- Style sheet for the Add my Pet collection --*/
+
+body {
+    background: #BDC6DE  no-repeat fixed center center / cover ;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    margin: 0;
+    padding: 0; 
+    width: 100%;
+}
+
+/*--  ----------------------------                                    --*/
+/*-- div elements                                                     --*/
+/*-- using margin auto makes that the div box resizes when the        --*/
+/*--  window gets smaller or bigger --*/
+div.img {
+    max-width:500px;
+    float: left;
+    margin: 10px;
+    /*-- border: 1px solid #73AD21;  --*/
+}
+
+div.dropdown {
+    max-width:500px;
+    float: left;
+    margin: 10px;
+    padding-top: 15px;
+    /*-- border: 1px solid #73AD21;  --*/
+}
+
+div.jump {
+    padding-left: 500px;
+    padding-top: 15px;
+}   
+
+div.about {
+    margin: auto;
+    clear: left;
+}
+
+div.footer{
+    margin: auto;
+    clear: left;
+}
+
+div.caption{
+    margin-left: 50px;
+    margin-right: 30px;
+}
+
+
+/*-- DropDown menus --*/
+
+.dropbtn {
+   background-color: #fff;  
+   color: blue;
+   padding-left: 16px;
+   padding-right: 16px;
+   font-size: 1.1em;
+   border: none;
+   cursor: pointer;  
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #f9f9f9;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+}
+
+.dropdown-content a {
+    color: blue;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.show {display:block;}
+
+/*-- logo on top of page --*/
+
+.logo img{
+    float: left;
+    margin: 0;
+    padding: 5px 0 0;
+}
+
+/*-- HYPERLINKs --*/
+
+a {
+    color:  blue;
+    text-decoration: none;
+}
+
+a:hover {
+    color:blue;
+    text-decoration: none;
+}
+
+a.deco{ /*-- this is used in species.html so that the links are more obvious --*/
+    color: blue;
+    text-decoration: none;
+}
+
+a.menu{ /*-- this is used in drobdown boxes to mark the position of the user in the website --*/
+    color: #3782fb;
+    text-decoration: none;
+    font-size: 1.2em; 
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+#tab_authors { border: 0px; height: 5000px; }
+ 
+/*-- for the banner which is fixed on top of the page --*/
+
+#top { 
+    background-color:#fff;
+    height: 80px;
+    margin: 0;
+    padding: 0px;
+    position: fixed;
+    width: 100%;  
+    z-index: 2;
+    border: 3px solid #BDC6DE;  
+}
+
+#top2 { 
+    background-color:#fff;
+    height: 65px;
+    top:80px;
+    margin: 0;
+    padding: 0px;
+    position:fixed;
+    width: 100%;  
+    z-index: 1;
+    border: 3px solid #BDC6DE;  
+}
+
+#navwrapper {
+    margin: 0;
+    padding: 0;
+    width: 1600px;
+    height: 80px;
+}
+
+/*-- h1_container: place an image or text in between the top and the main  --*/
+
+#h1_container{
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 95px;
+    width: 100%;
+    z-index: 0;
+}
+
+#h1_container h1 {
+    position: relative;
+	font-size: 3em;
+}
+
+#h1_container h1 img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+
+/*----------------------------------------------------------------------------*/
+
+
+/*-- h2_container: place an image or text in between the top and the main  --*/
+
+#h2_container{
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 350px;
+    width: 100%;
+    z-index: 0;
+}
+
+#h2container h1 {
+    position: relative;
+}
+
+#h2_container h1 img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+
+/*----------------------------------------------------------------------------*/
+
+/*-- The white box with text in it --*/
+
+#main {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    clear: both;
+    margin: 0 auto;
+    padding: 53px 0 0;
+    position: absolute;
+    top: 190px;/*-- change space between top menu and text --*/
+    width: 100%;
+}
+
+#main-wrapper {  /*-- this is where the text is placed -*/
+    background: #fff none repeat scroll 0 0;
+    border-radius: 7px;
+    margin: 0 auto;
+    padding: 0;
+    width: 1150px;
+    z-index: 100; 
+}
+
+#main-wrapper-species {  /*-- for species.html this is where the text is placed -*/
+    background: #fff none repeat scroll 0 0;
+    border-radius: 7px;
+    margin: 0 auto;
+    padding: 0;
+    width: 1500px;
+    z-index: 100; 
+}
+
+/*-- The content in the white box that goes on the left--*/
+
+/*--  if we want two columns --*/
+#content {
+    float: left;
+    padding: 10px 30px 0;
+    width: 62%;
+}
+
+/*--  if we only want one column --*/
+#contentFull {
+    float: left;
+    padding: 10px 30px 0;
+    width: 95%;
+}
+
+/*--  for species.html : only one very wide column --*/
+#contentSpecies {
+    float: left;
+    padding: 10px 30px 0;
+    width: 100%;
+}
+
+/*-- items that can go on the right ...--*/
+
+#sidebar {
+    float: left;
+    padding: 15px 0 0;
+    text-align: left;
+    width: 30%;
+    border: none;
+    /*--border:  2px; 
+    border-style: none none none solid;
+    border-color: #BDC6DE;--*/
+}
+
+
+/*-- images with text floating around it: --*/
+
+div.sidelement {
+    max-width:300px;  
+    margin:auto;	
+    margin-bottom: 10px;
+    float: center;
+    border: none; 
+    /*--border: 1px solid #BDC6DE;  --*/
+}
+
+div.sidelement2 {
+    max-width: 350px;
+    margin: auto;
+    margin-bottom: 10px;
+    float: left;
+    border: none;
+    /*--border: 1px solid #BDC6DE;  --*/
+}
+
+div.caption{	
+    margin: auto;
+    text-align: center;
+}
+
+/*-- Tables --*/
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+.head {
+    background-color: #FFE7C6
+}
+
+table#t00 {
+    border-style: solid hidden solid hidden;
+}	
+
+table#t01 {
+    width:100%;
+    border-style: solid hidden solid hidden;
+}	
+
+table#t02 {
+    width:100%;
+}
+
+table#t02 tr:nth-child(even) {
+    background-color: #eee;
+}
+
+table#t02 tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+table#t02 th {
+    color: white;
+    background-color: black;
+} 
+
+table#t03 {
+    width:350px;
+    background-color: #C6E7DE;
+}
+
+table#t05 {
+    width:50%;
+}
+
+#ecoCodes {
+    width: 100%;
+    border: hidden;
+    background-color: #fff
+}
+
+button {
+    background-color: #fff;
+    color: blue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+    border-style: none;
+}				/**/
+
+/*----------------------------------------------------------------------------*/
+
+
+
+/*------- FOOTER -----------*/
+#footer {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    clear: both;
+    color: black;
+    font-size: 0.8em;
+    margin: 0 auto;
+    padding: 0;
+    z-index: 1;
+}
+
+
+
+/*------- misc-----------*/
+
+.clear {
+    clear: both;
+}
+
+.aligncenter {
+    text-align: center;
+}
+
+.alignright {
+    float: right;
+}
+
+.alignleft {
+    float: left;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.alignleft2 {
+    float: left;
+    margin-top: 18px;
+}
+
+    /*-------- Figs -----------*/
+
+    /* not-enlarged on page, enlarge figs: to Trigger the Modal */
+    .myImg {
+      max-width:80px;
+      max-height:60px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .myImg:hover {opacity: 0.7;}
+
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+      margin: auto;
+      display: block;
+      height: 80%;
+      max-height: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+      text-align: center;
+      color: #ccc;
+      padding: 10px 0;
+      height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+      -webkit-animation-name: zoom;
+      -webkit-animation-duration: 0.6s;
+      animation-name: zoom;
+      animation-duration: 0.6s;
+    }
+
+    @-webkit-keyframes zoom {
+      from {-webkit-transform:scale(0)}
+      to {-webkit-transform:scale(1)}
+    }
+
+    @keyframes zoom {
+      from {transform:scale(0)}
+      to {transform:scale(1)}
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+/*-- after this are settings so that the screen adjusts automatically when  the screen is resized --*/
+
+/*-- logo goes away when screen is too narrow --*/
+@media handheld, only screen and (max-width: 950px) {
+    .logo {
+        display: none;
+    }
+}
+
+@media handheld, only screen and (max-width: 1100px) {
+    #main {
+        background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+        clear: both;
+        margin: 0 auto;
+        padding: 23px 0 0;
+        position: absolute;
+        top: 190px;/*-- change space between top menu and text --*/
+        width: 100%;
+    }
+}
+
+@media handheld, only screen and (max-width: 900px) {
+    #main {
+       background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+       clear: both;
+       margin: 0 auto;
+       padding: 5px 0 0;
+       position: absolute;
+       top: 200px;/*-- change space between top menu and text --*/
+       width: 100%;
+    }
+}
