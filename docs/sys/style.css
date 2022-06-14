@@ -398,6 +398,11 @@ button {
     margin-top: 18px;
 }
 
+
+img.icon {
+  vertical-align: baseline;
+}
+
     /*-------- Figs -----------*/
 
     /* not-enlarged on page, enlarge figs: to Trigger the Modal */
