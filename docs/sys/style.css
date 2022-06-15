@@ -93,8 +93,13 @@ div.caption{
 .logo img{
     float: left;
     margin: 0;
-    padding: 5px 0 0;
+    padding: 5px 0 0 0;
 }
+
+.icon {
+    padding: 15px 0 0 0;
+}
+
 
 /*-- HYPERLINKs --*/
 
@@ -396,11 +401,6 @@ button {
 .alignleft2 {
     float: left;
     margin-top: 18px;
-}
-
-
-img.icon {
-  vertical-align: baseline;
 }
 
     /*-------- Figs -----------*/
