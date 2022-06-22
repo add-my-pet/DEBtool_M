@@ -42,7 +42,7 @@ function [sharing_fitness] = fitness_sharing_process(population, fitness, ranges
    % A sigma share parameter defines the threshold above which individuals'
    % fitness values are penalized.
    
-   shareFunction = ones(1, length(population));
+   shareFunction = zeros(1, length(population));
    sharing_fitness = fitness;
    
    % Loop over the individuals...
@@ -52,7 +52,7 @@ function [sharing_fitness] = fitness_sharing_process(population, fitness, ranges
       for j = i+1:length(population)
          ind_j = population(j,:);
          % Compute distance
-         distance = normalized_euclidean_distance(ind_i, ind_j, ranges);
+         distance = genotype_distance(ind_i, ind_j);
          % Compute sharing function
          if distance <  sigma_share 
             share = 1 - (distance / sigma_share);
@@ -65,7 +65,9 @@ function [sharing_fitness] = fitness_sharing_process(population, fitness, ranges
       if fitness(i) >= 1e10
       else
          % Punish the individual if needed. 
-         sharing_fitness(i) = fitness(i) * shareFunction(i);
+         if shareFunction(i) > 0
+            sharing_fitness(i) = fitness(i) * shareFunction(i);
+         end
       end
    end
 end
