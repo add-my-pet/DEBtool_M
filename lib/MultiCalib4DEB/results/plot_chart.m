@@ -48,12 +48,12 @@ function plot_chart(result_mmea, chart_type, selected_parameters, save_chart, so
      fprintf('Remember that the supported format for the array of values in {value_one; value_tow}.');
      return; 
   elseif isempty(find(strcmp(parnames,selected_parameters(1)), 1))
-     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', selected_parameters(1));
-     fprintf('The calibrated parameter names are the following: %s \n', num2str(selected_parameters(1)));
+     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', string(selected_parameters(1)));
+     fprintf('The calibrated parameter names are the following: %s \n', string(selected_parameters(1)));
      return;
   elseif isempty(find(strcmp(parnames,selected_parameters(2)), 1))
-     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', selected_parameters(2));
-     fprintf('The calibrated parameter names are the following: %s \n', num2str(selected_parameters(2)));
+     fprintf('Parameter %s does not exist in the calibrated parameter set. \n', string(selected_parameters(2)));
+     fprintf('The calibrated parameter names are the following: %s \n', string(selected_parameters(2)));
      return;
   else
      % Get the parameter indexes. 

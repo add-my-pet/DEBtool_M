@@ -31,8 +31,7 @@ function [best_sol, result, best_fval] = calibrate
    % estim_options sets many options;
    % option filter = 0 selects filter_nat, which always gives a pass, but still allows for costomized filters in the predict file
   
-   global pets pars_init_method search_method filter covRules results_filename
-   global results_display mat_file
+   global pets pars_init_method search_method filter covRules mat_file
 
    n_pets = length(pets);
 
@@ -126,15 +125,15 @@ function [best_sol, result, best_fval] = calibrate
 
    %% perform the calibration
    if ~strcmp(search_method, 'no')
-      if strcmp(search_method, 'shade') % With SHADE
+      if strcmp(search_method, 'mm_shade') % With mm_shade
          if n_pets == 1
-            [best_sol, result, best_fval] = shade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+            [best_sol, result, best_fval] = mm_shade('predict_pets', par, metaPar, txtPar, data, auxData, metaData, txtData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end
-      elseif strcmp(search_method, 'l-shade') % With L-SHADE
+      elseif strcmp(search_method, 'nm_runs') % Several runs with Nelder Mead
          if n_pets == 1
-            [best_sol, result, best_fval] = lshade('predict_pets', par, data, auxData, weights, filternm);   % estimate parameters using overwrite
+            [best_sol, result, best_fval] = nm_runs('predict_pets', par, metaPar, txtPar, data, auxData, metaData, txtData, weights, filternm);   % estimate parameters using overwrite
          else
             fprintf('This mode has not been developed yet. It will be availlable soon \n'); % Not yet
          end

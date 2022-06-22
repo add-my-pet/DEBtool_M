@@ -47,25 +47,25 @@ function plot_results(result_mmea, mode)
   load(result_mmea);
   
   % Get the pet's data (some from results) 
-  txtPar = result.solutionSet.txtPar; 
-  data = result.solutionSet.data; 
-  metaData = result.solutionSet.metaData;
-  auxData = result.solutionSet.auxData;
-  txtData = result.solutionSet.txtData;
-  weights = result.solutionSet.weights; 
+  txtPar = result.final.solutionSet.txtPar; 
+  data = result.final.solutionSet.data; 
+  metaData = result.final.solutionSet.metaData;
+  auxData = result.final.solutionSet.auxData;
+  txtData = result.final.solutionSet.txtData;
+  weights = result.final.solutionSet.weights; 
   
   fig_counter = 1; 
   if strcmp(mode, 'Basic') % Plots only prediction results to screen. 
-     plotResulValues(result, txtPar, data, auxData, metaData, txtData, weights, pets);
+     plotResulValues(result.final, txtPar, data, auxData, metaData, txtData, weights, pets);
   elseif strcmp(mode, 'Best') % Plots best prediction result to screen. 
-     plotResultImage(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultImage(result.final, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   elseif strcmp(mode, 'Set') % Plots set predictions to screen. 
-     plotResultsSet(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultsSet(result.final, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   else % Plots prediction values, best prediction plot, and predictions set to screen. 
-     plotResulValues(result, txtPar, data, auxData, metaData, txtData, weights, pets);
-     plotResultImage(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResulValues(result.final, txtPar, data, auxData, metaData, txtData, weights, pets);
+     plotResultImage(result.final, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
      fig_counter = fig_counter + 1;
-     plotResultsSet(result, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
+     plotResultsSet(result.final, data, auxData, metaData, txtData, weights, pets, save_results, fig_counter);
   end
    
 end

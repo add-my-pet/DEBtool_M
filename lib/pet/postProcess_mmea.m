@@ -73,7 +73,7 @@ function sol = postProcess_mmea(results_mmea)
     system(['powershell cp results_',my_pet,'.mat results_',my_pet,'_copy.mat']);
   end
 
-  n_rnd = 3;
+  n_rnd = 10;
   for h = 1:n_rnd % start selection & refinement rounds
   
     % remove solutions that are too close together

@@ -2,7 +2,7 @@
 % computes a symmetric matrix of solution-distances of the mmea method
 
 %%
-function [dist, val, parnms] = dist_sol(solutionSet, norm)
+function [dist, val, parnms] = dist_sol_run(solutionSet, fld, norm)
 % created 2021/06/16 by Bas Kooijman
 
 %% Syntax
@@ -39,15 +39,15 @@ function [dist, val, parnms] = dist_sol(solutionSet, norm)
   end
   
   load(solutionSet);
-  parnms = result.parameterNames; n_par = length(parnms);
+  parnms = result.(fld).parameterNames; n_par = length(parnms);
   weights = ones(n_par,1);
-  sol = result.solutionSet; solnms = fields(sol);
+  sol = result.(fld).solutionSet; solnms = fields(sol);
   solnms = solnms(Contains(solnms,'solution_')); n_sol = length(solnms);
   val = NaN(n_sol,n_par); dist = zeros(n_sol); % initiate output
   
   for i = 1:n_sol
     for j = 1: n_par
-      val(i,j) = result.solutionSet.(solnms{i}).par.(parnms{j});
+      val(i,j) = result.(fld).solutionSet.(solnms{i}).par.(parnms{j});
     end
   end
 

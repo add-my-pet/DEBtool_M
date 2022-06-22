@@ -11,24 +11,24 @@ format long;
 
 if result.numSolutions == 0, return; end
 if size(pop, 1) ~= size(funvalue,1), error('check it'); end
+
 % Method 2: Remove duplicate elements
 popAll = [result.solutionsParameters; pop ];
 funvalues = [result.lossFunctionValues; funvalue ];
 [~, IX]= unique(popAll, 'rows');
+
 if length(IX) < size(popAll, 1) % There exist some duplicate solutions
-  popAll = popAll(IX, :);
-  funvalues = funvalues(IX, :);
+   popAll = popAll(IX, :);
+   funvalues = funvalues(IX, :);
 end
 
 if size(popAll, 1) <= result.numSolutions   % add all new individuals
-  result.solutionsParameters = popAll;
-  result.lossFunctionValues = funvalues;
+   result.solutionsParameters = popAll;
+   result.lossFunctionValues = funvalues;
 else                % randomly remove some solutions
-  rndpos = randperm(size(popAll, 1)); % equivelent to "randperm";
-  rndpos = rndpos(1 : result.numSolutions);
+   rndpos = randperm(size(popAll, 1)); % equivelent to "randperm";
+   rndpos = rndpos(1 : result.numSolutions);
   
-  result.solutionsParameters = popAll(rndpos, :);
-  result.lossFunctionValues = funvalues(rndpos, :);
+   result.solutionsParameters = popAll(rndpos, :);
+   result.lossFunctionValues = funvalues(rndpos, :);
 end
-
-result.numSolutions = length(result.lossFunctionValues);
