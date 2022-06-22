@@ -10,12 +10,13 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
     auxData, metaData, txtData, weights, filternm)
    % created 2020/02/15 by Juan Francisco Robles; 
    % modified 2020/02/17, 2020/02/20, 2020/02/21,
-   % 2020/02/24, 2020/02/26, 2020/02/27, 2021/01/14, 2021/03/12,
-   % 2021/03/22, 2021/05/11, 2022/05/15 by Juan Francisco Robles,
+   % 2020/02/24, 2020/02/26, 2020/02/27, 2021/01/14, 
+   % 2021/03/12, 2021/03/22, 2021/05/11, 2022/05/15, 
+   % 2022/06/15, 2022/06/16, 2022/06/17, 2022/06/20 by Juan Francisco Robles,
    %   
 
    %% Syntax
-   % [q, info, result, bsf_fval] = <../mm_shade.m *mm_shade*> (func, par, metaPar, txtPar, data, ..., 
+   % [bsf_solution, result, bsf_fit_val] = <../mm_shade.m *mm_shade*> (func, par, metaPar, txtPar, data, ..., 
    %                                                           auxData, metaData, txtData, weights, filternm)
 
    %% Description
@@ -41,10 +42,9 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
    %  
    % Output
    % 
-   % * q: structure with parameters, result of the algorithm
-   % * info: 1 if convergence has been successful; 0 otherwise
-   % * archive: the set of solutions found by the multimodal algorithm
-   % * bsf_fval: the best fitness value found
+   % * bsf_solution: structure with parameters, result of the algorithm
+   % * result: the set of solutions found by the multimodal algorithm
+   % * bsf_fit_val: the best fitness value found
 
    %% Remarks
    % Set options with <calibration_options.html *calibration_options*>.
@@ -173,8 +173,8 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
       bsf_fit_val = 1e+30;
       bsf_solution = zeros(1, problem_size);
 
+      % Evaluate each individual
       for ind = 1:pop_size
-         % Evaluate each individual
          qvec(index) = pop(ind,:)';
          q = cell2struct(num2cell(qvec, np), parnm);
          f_test = feval(filternm, q);
@@ -208,7 +208,7 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
          end
          % Check stopping criteria
          if max_calibration_time ~= Inf
-            current_time = toc(time_start)/60;
+            current_time = toc(run_time_start)/60;
             if current_time > max_calibration_time; break; end
          elseif max_nfes ~= Inf
             if nfes > max_nfes; break; end
@@ -222,17 +222,23 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
 
       %% Main loop
       while nfes < max_nfes
+         
+         pop = popold; % the old population becomes the current population
+         
+         % Sort the population by the fitness of the individuals
+         [temp_fit, sorted_index] = sort(fitness, 'ascend');
+         
          fprintf('Num func evals %d | Total progress %.2f %%\n', ..., 
              nfes, (nfes/max_nfes) * 100.0);
-         [temp_fit, sorted_index] = sort(fitness, 'ascend');
          if verbose
+            fprintf('---------------------------------------------------\n');
             fprintf('Best fitness value found so far: %f \n', bsf_fit_val);
             fprintf('---------------------------------------------------\n');
             fprintf('Best %d loss function values: \n', verbose_options);
+            fprintf('---------------------------------------------------\n\n');
             disp(temp_fit(1:verbose_options).');
          end
-         pop = popold; % the old population becomes the current population
-
+                         
          mem_rand_index = ceil(memory_size * rand(pop_size, 1));
          mu_sf = memory_sf(mem_rand_index);
          mu_cr = memory_cr(mem_rand_index);
@@ -321,7 +327,7 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
            fprintf('-----------------------------------------------------\n');
            fprintf('% d out of %d solutions (%.2f%%) have been penalized for not-passing the species filters. \n', ..., 
                penalized_individuals, pop_size, (penalized_individuals / pop_size) * 100.0); 
-           fprintf('------------------------------------------------------\n');
+           fprintf('------------------------------------------------------\n\n');
          end
 
          %% Update best fitness found so far
@@ -334,7 +340,7 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
             end
             % Check if stopping criteria has been achieved
             if max_calibration_time ~= Inf
-               current_time = toc(time_start)/60;
+               current_time = toc(run_time_start)/60;
                if current_time > max_calibration_time; break; end
             elseif max_nfes ~= Inf
                if nfes > max_nfes; break; end
@@ -352,20 +358,30 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
 
          % Update the archive of solutions
          archive = updateArchive(archive, popold(I == 1, :), fitness(I == 1));
-
-         popold = [pop(I == 0, :); ui];
-         fitness = [fitness(I == 0, :); children_fitness];
+        
+         %% Fitness Sharing over SHADE
+         [fitness, I] = min([fitness, children_fitness], [], 2);
+         popold = pop;
+         popold(I == 2, :) = ui(I == 2, :);
          
-         fit_sharing = fitness_sharing(pop, fitness, ranges, sigma_share);
+         % Adding both new best individuals and discarded children to a
+         % auxiliary population.
+         popold = [popold; ui(I == 1, :)];
+         fitness = [fitness; children_fitness(I == 1, :)];
+         
+         % (1) Apply fitness sharing.
+         fit_sharing = fitness_sharing(popold, fitness, ranges, sigma_share);
+         % (2) Sort the individuals by its fitness sharing.
          [~, sorted_index] = sort(fit_sharing, 'ascend');
-         
+         % (3) Select the 'pop_size' first individuals for the new
+         % generation.
          popold = popold(sorted_index, :);
          popold = popold(1:pop_size, :);
          fitness = fitness(sorted_index, :);
          fitness = fitness(1:pop_size);
-        
+         
          num_success_params = numel(goodCR);
-
+         
          if num_success_params > 0 
             sum_dif = sum(dif_val);
             dif_val = dif_val / sum_dif;
@@ -408,9 +424,11 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
       
       if verbose
          % Print the best result values and finish
+         fprintf('---------------------------------------------------\n');
          fprintf('Best-so-far error value = %1.8e\n', bsf_fit_val);
          fprintf('---------------------------------------------------\n');
          fprintf('Best-so-far configuration values: \n');
+         fprintf('---------------------------------------------------\n\n');
          disp(bsf_solution);
       end
      
@@ -421,7 +439,7 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
          q.free = free; % add substructure free to q 
          fprintf('+++++++++++++++++++++++++++++++++++++++++++++++\n');
          fprintf('Refining best individual found using local search \n');
-         fprintf('+++++++++++++++++++++++++++++++++++++++++++++++\n');
+         fprintf('+++++++++++++++++++++++++++++++++++++++++++++++\n\n');
          [q, fun_cals, fval] = iterative_local_search('predict_pets', q, data, auxData, weights, filternm, 'best', bsf_fit_val);
          nfes = nfes + fun_cals;
          bsf_fit_val = fval;
@@ -459,7 +477,7 @@ function [bsf_solution, result, bsf_fit_val] = mm_shade(func, par, metaPar, txtP
    result.runtime_information = info;
    
    %% Compose and save the grouped result
-   result.final = group_mmea_runs(result, char(fieldnames(metaData)));
+   result.final = group_mmea_runs(result, char(fieldnames(metaData)), 1.05, 2);
    result = save_results(result, 'final', par, ..., 
           metaPar, txtPar, data, auxData, metaData, txtData, weights);
 end
