@@ -2,7 +2,7 @@
 % Saves multimodal calibration results by using the DEB results format. 
 
 %%
-function archive = save_results(archive, par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
+function archive = save_results(archive, name, par, metaPar, txtPar, data, auxData, metaData, txtData, weights)
 % created 2015/01/17 by Goncalo Marques, 2015/03/21 by Bas Kooijman
 % modified 2015/03/30 by Goncalo Marques, 2015/04/01 by Bas Kooijman, 2015/04/14, 2015/04/27, 2015/05/05  by Goncalo Marques, 
 % modified 2015/07/30 by Starrlight Augustine, 2015/08/01 by Goncalo Marques
@@ -35,8 +35,8 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
   global pets 
   
   n_pets = length(pets);
-  par_set = archive.solutionsParameters; % set with the best parameters found in multimodal calibration
-  n_pars = length(par_set);
+  par_set = archive.(name).solutionsParameters; % set with the best parameters found in multimodal calibration
+  n_pars = size(par_set,1);
 
   %% Variables to compose the solutions to calculate MRE and SMSE.
   parnm = fieldnames(par.free); % Get free parameters names
@@ -73,23 +73,24 @@ function archive = save_results(archive, par, metaPar, txtPar, data, auxData, me
 
       % save results to result_group.mat or result_my_pet.mat
       if n_pets > 1
-          archive.solutionSet.strcat('solution_', int2str(sol)).par = aux;
-          archive.solutionSet.strcat('solution_', int2str(sol)).txtPar = txtPar;
-          archive.solutionSet.strcat('solution_', int2str(sol)).metaPar = metaPar;
-          archive.solutionSet.strcat('solution_', int2str(sol)).metaData = metaData;
+          archive.(name).('solutionSet').(['solution_', int2str(sol)]).par = aux;
+          archive.(name).('solutionSet').strcat('solution_', int2str(sol)).txtPar = txtPar;
+          archive.(name).('solutionSet').(['solution_', int2str(sol)]).metaPar = metaPar;
+          archive.(name).('solutionSet').(['solution_', int2str(sol)]).metaData = metaData;
       else % n_pets == 1
           metaPar.MRE = metaPar.MRE;   metaPar.RE = metaPar.RE;
           metaPar.SMSE = metaPar.SMSE; metaPar.SSE = metaPar.SSE;
           %metaPar = rmfield(metaPar, pets{1});
           
-          archive.('solutionSet').(strcat('solution_', int2str(sol))).par = aux;
-          archive.('solutionSet').(strcat('solution_', int2str(sol))).metaPar = metaPar;
+          archive.(name).('solutionSet').(['solution_', int2str(sol)]).par = aux;
+          archive.(name).('solutionSet').(['solution_', int2str(sol)]).metaPar = metaPar;
       end
   end
-  archive.('solutionSet').data = data;
-  archive.('solutionSet').auxData = auxData;
-  archive.('solutionSet').txtPar = txtPar;
-  archive.('solutionSet').metaData = metaData;
-  archive.('solutionSet').txtData = txtData;
-  archive.('solutionSet').weights = weights;
+  
+  archive.(name).('solutionSet').data = data; 
+  archive.(name).('solutionSet').auxData = auxData;
+  archive.(name).('solutionSet').txtPar = txtPar;
+  archive.(name).('solutionSet').metaData = metaData;
+  archive.(name).('solutionSet').txtData = txtData;
+  archive.(name).('solutionSet').weights = weights;
 end

@@ -28,61 +28,46 @@ function [ sharing_fitness ] = fitness_sharing( population, fitness, ranges, sig
 % input modifyed according to the fitness sharing niching mechanism. 
 
 %% Remarks
-% This method promotes the diversity between the solutions set that forms 
-% the evolutionary algorithm's population. 
-    sharing_fitness = fitness_sharing_niching(population, fitness, ranges, sigma_share);
+% This method promotes diversity among the set of solutions that make up
+% the population of the Evolutionary Algorithm. 
+   sharing_fitness = fitness_sharing_process(population, fitness, ranges, sigma_share);
 end
 
-%% Methods.
 
-function [sharing_fitness] = fitness_sharing_niching(population, fitness, ranges, sigma_share)
-    % Applies the fitness sharing mechanism in which: 
-    % 1) The population is sorted in ascending order of loss funtion value
-    % (for minimization problems).
-    % 2) The first solution in the solutions set is considered as the
-    % species center. Then, a normalized euclidean distance is calculated
-    % by using the center and the i-th individual parameter values. 
-    % 3) If the distance between the individuals is lower than the sigma
-    % share value, then the individual fitness is punished to favor that 
-    % the individual is discarded during the optimization process
-    
-    % Sort the original population. 
-    [~, sort_idxs] = sort(fitness, 'ascend');
-    P = population(sort_idxs, :);
-    % The sahring fitness values are equal to the original fitness at the
-    % first step. 
-    sharing_fitness = fitness;
-    
-    % While population is not empty, select the first individual as the
-    % species center, calculate its distance to the rest of individuals. 
-    % If the distance value is lower than the sigma share, punish the
-    % individual fitness (never the center one). 
-    while ~isempty(P)
-        if size(P, 1) == 1
-            P(1) = [];
-        else
-            % The center is always the first individual because the 
-            % population is sorted and the most similar individual to 
-            % every poulation center is removed through the algorithm 
-            % execution. 
-            center_id = 1;
-            ids_to_remove = [center_id];
-            for i = 2:(size(P, 1)-1)
-                distance = normalized_euclidean_distance(P(center_id,:), P(i,:), ranges);
-                % Punish the individuals whose distance to the center is
-                % lower than the sigma share value. Also note the
-                % identifiers of the individuals to remove (because they
-                % have been punished yet respecting to their closest
-                % center).
-                if distance < sigma_share
-                    sharing_fitness(sort_idxs(i)) = sharing_fitness(sort_idxs(i)) ./ (1 - (distance / sigma_share));
-                    ids_to_remove = [ids_to_remove, i];
-                end
-            end
-            % Remove the individuals from population and from the sorted
-            % indexes. 
-            P(ids_to_remove,:) = [];
-            sort_idxs(ids_to_remove) = [];
-        end
-    end
+%% Methods.
+function [sharing_fitness] = fitness_sharing_process(population, fitness, ranges, sigma_share)
+   % Applie the Fitness Sharing mechanism: this niching mechanism
+   % encourages the diversity among a population of individuals by
+   % punishing those individuals that are too close together. 
+   % A sigma share parameter defines the threshold above which individuals'
+   % fitness values are penalized.
+   
+   shareFunction = zeros(1, length(population));
+   sharing_fitness = fitness;
+   
+   % Loop over the individuals...
+   for i = 1:length(population)
+      ind_i = population(i,:);
+      % and over their neighbors.
+      for j = i+1:length(population)
+         ind_j = population(j,:);
+         % Compute distance
+         distance = genotype_distance(ind_i, ind_j);
+         % Compute sharing function
+         if distance <  sigma_share 
+            share = 1 - (distance / sigma_share);
+            shareFunction(i) = shareFunction(i) + share;
+            shareFunction(j) = shareFunction(j) + share;
+         end
+      end
+      % If the individual has been previously punished for not passing the
+      % filters of the species, it is not punished.
+      if fitness(i) >= 1e10
+      else
+         % Punish the individual if needed. 
+         if shareFunction(i) > 0
+            sharing_fitness(i) = fitness(i) * shareFunction(i);
+         end
+      end
+   end
 end
