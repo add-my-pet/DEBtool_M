@@ -24,12 +24,12 @@ function calibration_options (key, val)
 %      
 %    'search_method': 
 %      'mm_shade' - use Success-history based parameter adaptation for 
-%                Differential Evolution (SHADE) with fitness sharing method.
+%                Differential Evolution (mm_shade) with fitness sharing method.
 %     
 %    'num_results': The size for the multimodal algorithm's population.
 %                   If it is not defined then sets the values recommended by 
-%                   the author, which are 100 for SHADE ('shade') and 
-%                   18 * problem size for L-SHADE.
+%                   the author, which are 100 for mm_shade ('mm_shade') and 
+%                   18 * problem size for L-mm_shade.
 %    'gen_factor': percentage to build the ranges for initializing the 
 %                  first population of individuals.
 %    'factor_type': The kind of factor to be applied when generatin individuals 
@@ -124,11 +124,11 @@ function calibration_options (key, val)
 
    switch key 
       case {'default', ''}
-         search_method = 'mm_shade'; % Use SHADE for parameter estimation
+         search_method = 'mm_shade'; % Use mm_shade for parameter estimation
          num_results = 50; % The size for the multimodal algorithm's population.
                           % If not defined then sets the values recommended by
-                          % the author, which are 100 for SHADE ('shade') and
-                          % 18 * problem size for L-SHADE.
+                          % the author, which are 100 for mm_shade ('mm_shade') and
+                          % 18 * problem size for L-mm_shade.
          gen_factor = 0.5; % Percentage bounds for individual 
                            % initialization. (e.g. A value of 0.9 means
                            % that, for a parameter value of 1, the range
@@ -189,7 +189,7 @@ function calibration_options (key, val)
          
       case 'search_method'
          if ~exist('val','var')
-            search_method = 'mm_shade'; % Select SHADE as the default method.
+            search_method = 'mm_shade'; % Select mm_shade as the default method.
          else
             search_method = val;
          end 
@@ -433,16 +433,6 @@ function calibration_options (key, val)
             fprintf(['max_calibration_time = ', num2str(max_calibration_time),' \n']);
          else
             fprintf('max_calibration_time = unkown \n');
-         end
-         if numel(min_convergence_threshold) ~= 0
-            fprintf(['min_convergence_threshold = ', num2str(min_convergence_threshold),' (method mmea)\n']);
-          else
-            fprintf('min_convergence_threshold = unkown \n');
-         end
-         if numel(max_pop_dist) ~= 0
-            fprintf(['max_pop_dist = ', num2str(max_pop_dist),' (method mmea)\n']);
-         else
-            fprintf('max_pop_dist = unkown \n');
          end
          if numel(num_runs) ~= 0
             fprintf(['num_runs = ', num2str(num_runs),' \n']);

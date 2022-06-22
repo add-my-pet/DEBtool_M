@@ -125,7 +125,7 @@ function [best_sol, result, best_fval] = calibrate
 
    %% perform the calibration
    if ~strcmp(search_method, 'no')
-      if strcmp(search_method, 'mm_shade') % With SHADE
+      if strcmp(search_method, 'mm_shade') % With mm_shade
          if n_pets == 1
             [best_sol, result, best_fval] = mm_shade('predict_pets', par, metaPar, txtPar, data, auxData, metaData, txtData, weights, filternm);   % estimate parameters using overwrite
          else

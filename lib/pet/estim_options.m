@@ -68,11 +68,11 @@ function estim_options (key, val)
   %    'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
   %    'search_method' (method mmea only): 
-  %      'mm_shade' - use shade method (default)
+  %      'mm_shade' - use mm_shade method (default)
   %     
   %    'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
-  %       50 for SHADE ('search_method shade', default) 
-  %       18 * number of free parameters for L-SHADE ('search method l-shade')
+  %       50 for mm_shade ('search_method mm_shade', default) 
+  %       18 * number of free parameters for L-mm_shade ('search method l-mm_shade')
   %
   %    'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
@@ -150,7 +150,7 @@ function estim_options (key, val)
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %
-  % Typical simplex options are also used in the evolutionary algorithm via local_search in shade and lshade
+  % Typical simplex options are also used in the evolutionary algorithm via local_search in mm_shade and lmm_shade
   %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
@@ -185,10 +185,10 @@ function estim_options (key, val)
       simplex_size = 0.05;
 
       % for mmea method (taken from calibration_options)
-      search_method = 'mm_shade'; % Use SHADE: Success-History based Adaptive Differential Evolution 
+      search_method = 'mm_shade'; % Use mm_shade: Success-History based Adaptive Differential Evolution 
       num_results = 50;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
-                           % which are 100 for SHADE ('shade') and 18 * problem size for L-SHADE.
+                           % which are 100 for mm_shade ('mm_shade') and 18 * problem size for L-mm_shade.
       gen_factor = 0.5;    % Percentage bounds for individual 
                            % initialization. (e.g. A value of 0.9 means that, for a parameter value of 1, 
                            % the range for generation is [(1 - 0.9) * 1, 1 * (1 + 0.9)] so
@@ -359,7 +359,7 @@ function estim_options (key, val)
     % method mmea only, taken from calibatrion_options
     case 'search_method'
       if ~exist('val','var')
-        search_method = 'mm_shade'; % Select SHADE as the default method.
+        search_method = 'mm_shade'; % Select mm_shade as the default method.
       else
         search_method = val;
       end 
