@@ -54,11 +54,12 @@ function [f, info] = f_ris0_hex (par)
   end
   
   % set lower boundary of f
-  f_0 = 1e-5 + get_ep_min_j([g, k, l_T, v_Hb, (v_Hj-1e-8), v_Hj]); % -, scaled functional response at which puberty can just be reached
+  l_b = get_lb([g, k, v_Hb],1);
+  f_0 = min(1, 1e-5 + max(l_b, s_j * l_b/ (s_j - 1 + l_b))); % -, scaled functional response at which puberty can just be reached
   if all([h_B0b h_Bbj h_Bje h_Bei] == [0 0 0 0])
       f = f_0; info = 1; return
   end
-  f_0 = 0.1; i = 0;
+  i = 0;
   pars_charEq0 = {L_m, kap, kap_R, kap_V, k_M, v, g, k, E_G, E_m, v_Hb, v_He, s_j, s_G, h_a, h_B0b, h_Bbj, h_Bje, h_Bei, thinning};
   while charEq0(f_0, pars_charEq0{:}) > 0 && i < 20
     f_1 = f_0; f_0 = f_0/ 2; i = i + 1;
