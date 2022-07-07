@@ -24,9 +24,10 @@ function [info lf] = ismin(my_pet, del)
   
   %% Remarks
   % Assumes local existence of my_data_my_pet, pars_init_my_pet, predict_my_pet.
-  % This function is computationally intensive if number of free parameter exceeds 6
+  % This function is really computationally intensive if number of free parameter exceeds 6
   
   %% Example of use
+  % First copy add_My_pet/entries/Dipodomys_deserti to local: 
   % ismin('Dipodomys_deserti', 0.05);
   
   % initiate par,data,auxData,weights for calls to lossfunction
@@ -67,7 +68,12 @@ function [info lf] = ismin(my_pet, del)
   
   lf = val(i_ref); % value of loss function at un-perturbed parameter combination
   info = all(lf <= val);
-  
-  % info = all(lf <= val);
+    
+  figure(1) % % plot survivor function of loss function values
+  xy = surv(val); plot(xy(:,1),xy(:,2),'r');
+  hold on
+  plot([lf; lf], [0; 1], 'g');
+  set(gca, 'FontSize', 15, 'Box', 'on')
+  xlabel('loss function at perturbed parameters') 
 
 end
