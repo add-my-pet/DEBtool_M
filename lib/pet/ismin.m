@@ -1,11 +1,11 @@
 %% ismin
 % checks if a parameter combination is at a local minimum of the loss function
 %%
-function [info lf] = ismin(my_pet, del)
+function [info, lf] = ismin(my_pet, del)
   %  created at 2022/07/07 by Bas Kooijman
   
   %% Syntax
-  % [info lf] = <../ismin.m *ismin*> (my_pet, del)
+  % [info, lf] = <../ismin.m *ismin*> (my_pet, del)
   
   %% Description
   % checks if a parameter combination is at a local minimum of the loss
@@ -24,7 +24,8 @@ function [info lf] = ismin(my_pet, del)
   
   %% Remarks
   % Assumes local existence of my_data_my_pet, pars_init_my_pet, predict_my_pet.
-  % This function is really computationally intensive if number of free parameter exceeds 6
+  % This function only works for lossfunction_sb; 
+  % This function is really computationally intensive if number of free parameter exceeds 6;
   
   %% Example of use
   % First copy add_My_pet/entries/Dipodomys_deserti to local: 
@@ -32,14 +33,20 @@ function [info lf] = ismin(my_pet, del)
   
   % initiate par,data,auxData,weights for calls to lossfunction
   % the free pars in par will be overwritten
-  eval(['[data, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
+  eval(['[data_st, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
   eval(['[par, metaPar, txtPar] = pars_init_', my_pet, '(metaData);']);  
   func = ['predict_', my_pet];
   free = par.free; parNm = fields(free); % par names
   n_par = length(parNm); i_free = [];
   for i = 1:n_par; if free.(parNm{i}); i_free = [i_free, i]; end; end
   n_free = length(i_free);
-
+  
+  % catenate data, weights in a single vector
+  nm = fieldnmnst_st(data_st); % nst: number of data sets
+  [data, meanData] = struct2vector(data_st, nm);
+  weights = struct2vector(weights, nm);
+  sel = ~isnan(data);
+  
   % compose txt, here for example with n=3 for perturbation factors pert 
   % txt = 'for i1=-1:1;for i2=-1:1;for i3=-1:1;k=k+1;pert(k,:)=[1+del*i1, 1+del*i2, 1+del*i3];end;end;end'
   n_pert = 3^n_free; % # of perturbations
@@ -57,13 +64,17 @@ function [info lf] = ismin(my_pet, del)
   for i=1:n_free
     txt = [txt, ';end'];
   end
-  eval(txt); % fill pert
+  eval(txt); % fill perturbation factors
   
-  par_ref = par; % copy par-structure to reference
+  % get lf for perturbed pars
+  par = rmfield(par, 'free'); par_ref = par; % copy par-structure to reference
   for i = 1:n_pert
     for j = 1:n_free; par.(parNm{j}) = par_ref.(parNm{j}) * pert(i,j); end
-    val(i) = lossFn(func, par, data, auxData, weights);
-    % fprintf([num2str(i), ' ', num2str(val(i)), '\n'])
+    %val(i) = lossFn(func, par, data, auxData, weights);
+    f = feval(func, par, data_st, auxData);
+    f = predict_pseudodata(par, data_st, f);
+    [prdData, meanPrdData] = struct2vector(f, nm);
+    val(i) = weights(sel)' * ((data(sel) - prdData(sel)).^2 ./ (meanData(sel).^2 + meanPrdData(sel).^2));
   end
   
   lf = val(i_ref); % value of loss function at un-perturbed parameter combination
@@ -76,4 +87,14 @@ function [info lf] = ismin(my_pet, del)
   set(gca, 'FontSize', 15, 'Box', 'on')
   xlabel('loss function at perturbed parameters') 
 
+end
+
+function [vec, meanVec] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = [];
+  for i = 1:size(fieldNames, 1)
+    fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); aux = aux(~isnan(aux));
+    vec = [vec; aux];
+    meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
+  end
 end
