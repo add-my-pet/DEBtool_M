@@ -9,13 +9,13 @@ function [info, lf] = ismin(my_pet, del)
   
   %% Description
   % checks if a parameter combination is at a local minimum of the loss function 
-  % by checking its value against values where all free parameters are multiplied 
-  % by 1-del, 1 and 1+del independently, which gives 3^n-1 comparisons for n free parameters. 
+  % by comparing its value against values where all free parameters are multiplied 
+  % by 1-del, 1 and 1+del independently, which gives 3^n combinations for n free parameters. 
   % 
   % Input
   %
   % * my_pet: char string with name of pet
-  % * del: scalar with perturbation factor
+  % * del: optional scalar with perturbation factor (default 0.05)
   %
   % Output
   %
@@ -31,6 +31,10 @@ function [info, lf] = ismin(my_pet, del)
   % First copy add_my_pet/entries/Dipodomys_deserti to local and reduce # free pars by editing pars_init: 
   % ismin('Dipodomys_deserti', 0.05);
   
+  if ~exist('del','var')
+    del = 0.05;
+  end
+  
   % initiate par,data,auxData,weights for calls to lossfunction
   % the free pars in par will be overwritten
   eval(['[data_st, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
@@ -41,11 +45,17 @@ function [info, lf] = ismin(my_pet, del)
   for i = 1:n_par; if free.(parNm{i}); i_free = [i_free, i]; end; end
   n_free = length(i_free);
   
-  % catenate data, weights in a single vector
+  % catenate dependent data, weights in a single vector
   nm = fieldnmnst_st(data_st); % names of data sets
-  [data, meanData] = struct2vector(data_st, nm);
+  data = data_st; psd = data.psd; data = rmfield(data, 'psd'); % copy to remove independent data
+  for i = 1:length(fields(data))
+    if size(size(data.(nm{i})),2) == 2 && size(data.(nm{i}),2) > 1
+      data.(nm{i})(:,1) = []; 
+    end 
+  end
+  data.psd = psd; [data, meanData] = struct2vector(data, nm);
   weights = struct2vector(weights, nm);
-  sel = ~isnan(data); % exclude NaN's in data
+  sel = ~isnan(data); % fill sel to exclude NaN's in data
   
   % compose txt to fill perturbation factors pert in nested loops, here for example with n=3 
   % txt = 'for i1=-1:1;for i2=-1:1;for i3=-1:1;k=k+1;pert(k,:)=[1+del*i1, 1+del*i2, 1+del*i3];end;end;end'
@@ -93,10 +103,8 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
   vec = []; meanVec = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    aux = getfield(struct, fieldsInCells{1}{:}); 
-    if size(aux,2) > 1; aux(:,1) = []; end
-    aux = aux(:); aux = aux(~isnan(aux));
-    vec = [vec; aux];
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); 
+    vec = [vec; aux(~isnan(aux))];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
 end

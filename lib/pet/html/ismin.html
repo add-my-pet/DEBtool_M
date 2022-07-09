@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ismin</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-07-08"><meta name="DC.source" content="ismin.m"><style type="text/css">
+      --><title>ismin</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-07-09"><meta name="DC.source" content="ismin.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>ismin</h1><!--introduction--><p>checks if a parameter combination is at a local minimum of the loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[info, lf] = <a href="../ismin.m"><b>ismin</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>checks if a parameter combination is at a local minimum of the loss function by checking its value against values where all free parameters are multiplied by 1-del, 1 and 1+del independently, which gives 3^n-1 comparisons for n free parameters.</p><p>Input</p><div><ul><li>my_pet: char string with name of pet</li><li>del: scalar with perturbation factor</li></ul></div><p>Output</p><div><ul><li>info: boolean: true if local minimum, false if not</li><li>lf: scalar with value of the loss function</li></ul></div><h2 id="5">Remarks</h2><p>Assumes local existence of my_data_my_pet, pars_init_my_pet, predict_my_pet. This function only works for lossfunction_sb and is really computationally intensive if number of free parameter exceeds 6;</p><h2 id="6">Example of use</h2><p>First copy add_my_pet/entries/Dipodomys_deserti to local and reduce # free pars by editing pars_init: ismin('Dipodomys_deserti', 0.05);</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>ismin</h1><!--introduction--><p>checks if a parameter combination is at a local minimum of the loss function</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[info, lf] = <a href="../ismin.m"><b>ismin</b></a> (my_pet, del)</p><h2 id="4">Description</h2><p>checks if a parameter combination is at a local minimum of the loss function by comparing its value against values where all free parameters are multiplied by 1-del, 1 and 1+del independently, which gives 3^n combinations for n free parameters.</p><p>Input</p><div><ul><li>my_pet: char string with name of pet</li><li>del: optional scalar with perturbation factor (default 0.05)</li></ul></div><p>Output</p><div><ul><li>info: boolean: true if local minimum, false if not</li><li>lf: scalar with value of the loss function</li></ul></div><h2 id="5">Remarks</h2><p>Assumes local existence of my_data_my_pet, pars_init_my_pet, predict_my_pet. This function only works for lossfunction_sb and is really computationally intensive if number of free parameter exceeds 6;</p><h2 id="6">Example of use</h2><p>First copy add_my_pet/entries/Dipodomys_deserti to local and reduce # free pars by editing pars_init: ismin('Dipodomys_deserti', 0.05);</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% ismin
 % checks if a parameter combination is at a local minimum of the loss function
@@ -80,13 +80,13 @@ function [info, lf] = ismin(my_pet, del)
   
   %% Description
   % checks if a parameter combination is at a local minimum of the loss function 
-  % by checking its value against values where all free parameters are multiplied 
-  % by 1-del, 1 and 1+del independently, which gives 3^n-1 comparisons for n free parameters. 
+  % by comparing its value against values where all free parameters are multiplied 
+  % by 1-del, 1 and 1+del independently, which gives 3^n combinations for n free parameters. 
   % 
   % Input
   %
   % * my_pet: char string with name of pet
-  % * del: scalar with perturbation factor
+  % * del: optional scalar with perturbation factor (default 0.05)
   %
   % Output
   %
@@ -102,6 +102,10 @@ function [info, lf] = ismin(my_pet, del)
   % First copy add_my_pet/entries/Dipodomys_deserti to local and reduce # free pars by editing pars_init: 
   % ismin('Dipodomys_deserti', 0.05);
   
+  if ~exist('del','var')
+    del = 0.05;
+  end
+  
   % initiate par,data,auxData,weights for calls to lossfunction
   % the free pars in par will be overwritten
   eval(['[data_st, auxData, metaData, txtData, weights] = mydata_', my_pet,';']);
@@ -112,11 +116,17 @@ function [info, lf] = ismin(my_pet, del)
   for i = 1:n_par; if free.(parNm{i}); i_free = [i_free, i]; end; end
   n_free = length(i_free);
   
-  % catenate data, weights in a single vector
+  % catenate dependent data, weights in a single vector
   nm = fieldnmnst_st(data_st); % names of data sets
-  [data, meanData] = struct2vector(data_st, nm);
+  data = data_st; psd = data.psd; data = rmfield(data, 'psd'); % copy to remove independent data
+  for i = 1:length(fields(data))
+    if size(size(data.(nm{i})),2) == 2 && size(data.(nm{i}),2) > 1
+      data.(nm{i})(:,1) = []; 
+    end 
+  end
+  data.psd = psd; [data, meanData] = struct2vector(data, nm);
   weights = struct2vector(weights, nm);
-  sel = ~isnan(data); % exclude NaN's in data
+  sel = ~isnan(data); % fill sel to exclude NaN's in data
   
   % compose txt to fill perturbation factors pert in nested loops, here for example with n=3 
   % txt = 'for i1=-1:1;for i2=-1:1;for i3=-1:1;k=k+1;pert(k,:)=[1+del*i1, 1+del*i2, 1+del*i3];end;end;end'
@@ -145,7 +155,7 @@ function [info, lf] = ismin(my_pet, del)
     f = predict_pseudodata(par, data_st, f);
     [prdData, meanPrdData] = struct2vector(f, nm);
     val(i) = weights(sel)' * ((data(sel) - prdData(sel)).^2 ./ (meanData(sel).^2 + meanPrdData(sel).^2));
-    fprintf([num2str(i), ' ', num2str(val(i)), '\n']);
+    %fprintf([num2str(i), ' ', num2str(val(i)), '\n']);
   end
   %
   lf = val(i_ref); % value of loss function at un-perturbed parameter combination
@@ -164,8 +174,8 @@ function [vec, meanVec] = struct2vector(struct, fieldNames)
   vec = []; meanVec = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); aux = aux(~isnan(aux));
-    vec = [vec; aux];
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); 
+    vec = [vec; aux(~isnan(aux))];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
 end
