@@ -11,7 +11,7 @@ function AmPeps(infoAmPgui)
 %% Description
 % The function is a shell around several other functions, including AmPgui, that eventually write:
 %   mydata_my_pet.m, pars_init_my_pet.m, predict_my_pet.m and run_my_pet.m.
-% Guidance is presented at <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/AmPeps.html *AmPeps.html*>
+% Guidance is presented at <https://debportal.debtheory.org/docs/AmPeps.html *AmPeps.html*>
 %
 % Input:
 %
