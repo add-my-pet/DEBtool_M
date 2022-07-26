@@ -105,6 +105,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
   end
   n_par = max(size(index));  % number of parameters that must be iterated
   if (n_par == 0)
+    fval = []; info = 1;
     return; % no parameters to iterate
   end
   
