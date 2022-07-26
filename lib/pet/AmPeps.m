@@ -40,7 +40,7 @@ if ismac || isunix
 end
 
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
-  web([set_path2server, 'add_my_pet/AmPeps.html'], '-browser');
+  web('https://debportal.debtheory.org/docs/AmPeps.html', '-browser');
   web([set_path2server, 'add_my_pet/AmPeco.html'], '-browser');
   hclimateLand = figure('Name','Land climate', 'Position',[300 450 500 300]); image(imread('climate_land.png')); set(gca, 'Visible', 'off');
   hclimateSea  = figure('Name','Sea climate',  'Position',[900 450 500 300]); image(imread('climate_sea.jpg')); set(gca, 'Visible', 'off');
