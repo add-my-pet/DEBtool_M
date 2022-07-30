@@ -1,0 +1,157 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotxx</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-07-30"><meta name="DC.source" content="plotxx.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [ax,hl1,hl2] = plotxx(x1,y1,x2,y2,xlabels,ylabels,col1,col2);
+%PLOTXX - Create graphs with x axes on both top and bottom 
+%
+%Similar to PLOTYY, but ...
+%the independent variable is on the y-axis, 
+%and both dependent variables are on the x-axis.
+%
+%Syntax: [ax,hl1,hl2] = plotxx(x1,y1,x2,y2,xlabels,ylabels);
+%
+%Inputs:  X1,Y1 are the data for the first line (black)
+%         X2,Y2 are the data for the second line (red)
+%         XLABELS is a cell array containing the two x-labels
+%         YLABELS is a cell array containing the two y-labels
+%
+%The optional output handle graphics objects AX,HL1,HL2
+%allow the user to easily change the properties of the plot.
+%
+%Example: Plot temperature T and salinity S 
+%         as a function of depth D in the ocean
+%
+%D = linspace(-100,0,50);
+%S = linspace(34,32,50);
+%T = 10*exp(D/40);
+%xlabels{1} = 'Temperature (C)';
+%xlabels{2} = 'Salinity';
+%ylabels{1} = 'Depth(m)';
+%ylabels{2} = 'Depth(m)';
+%[ax,hlT,hlS] = plotxx(T,D,S,D,xlabels,ylabels);
+
+
+%The code is inspired from page 10-26 (Multiaxis axes)
+%of the manual USING MATLAB GRAPHICS, version 5.
+%
+%Tested with Matlab 5.3.1 and above on PCWIN
+
+%Author: Denis Gilbert, Ph.D., physical oceanography
+%Maurice Lamontagne Institute, Dept. of Fisheries and Oceans Canada
+%email: gilbertd@dfo-mpo.gc.ca  Web: http://www.qc.dfo-mpo.gc.ca/iml/
+%November 1997; Last revision: 01-Nov-2001
+
+if nargin < 4
+   error('Not enough input arguments')
+elseif nargin==4
+   %Use empty strings for the xlabels
+   xlabels{1}=' '; xlabels{2}=' '; ylabels{1}=' '; ylabels{2}=' ';
+elseif nargin==5
+   %Use empty strings for the ylabel
+   ylabels{1}=' '; ylabels{2}=' ';
+elseif nargin > 8
+   error('Too many input arguments')
+end
+
+if length(ylabels) == 1
+   ylabels{2} = ' ';
+end
+
+if ~iscellstr(xlabels) 
+   error('Input xlabels must be a cell array')
+elseif ~iscellstr(ylabels) 
+   error('Input ylabels must be a cell array')
+end
+FSz=17;
+hl1=line(x1,y1,'Color',col1, 'LineWidth', 2);
+ax(1)=gca;
+set(ax(1),'Position',[0.12 0.12 0.75 0.70])
+set(ax(1),'XColor',col1,'YColor',col1,'FontSize', FSz  );
+
+ax(2)=axes('Position',get(ax(1),'Position'),...
+   'XAxisLocation','top',...
+   'YAxisLocation','right',...
+   'Color','none',...
+   'XColor',col2,'YColor',col2,...
+   'FontSize', FSz );
+
+set(ax,'box','off')
+
+hl2=line(x2,y2,'Color',col2,'Parent',ax(2), 'LineWidth', 2);
+
+%label the two x-axes
+
+set(get(ax(1),'xlabel'),'string',xlabels{1}, 'FontSize',FSz )
+set(get(ax(2),'xlabel'),'string',xlabels{2}, 'FontSize',FSz)
+set(get(ax(1),'ylabel'),'string',ylabels{1}, 'FontSize',FSz)
+set(get(ax(2),'ylabel'),'string',ylabels{2}, 'FontSize',FSz)
+##### SOURCE END #####
+--></body></html>
