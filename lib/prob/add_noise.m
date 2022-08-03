@@ -6,10 +6,10 @@ function xNoise = add_noise (x, cv, nr)
   % created by Dina Lika 2016/06/29; modified by Goncalo Marques 2016/07/16, Bas Kooijman 2022/07/30
    
   %% Syntax 
-  % <../add_noise.m *add_noise*>
+  % xNoise = <../add_noise.m *add_noise*> (x, cv, nr)
   
   %% Description
-  % Adds lognorm noise to input data
+  % Adds lognorm noise to input data with specified cv
   %
   % Input
   %
@@ -19,7 +19,7 @@ function xNoise = add_noise (x, cv, nr)
   %  
   % Output
   %
-  % * x_noise: vector or matrix with data + noise
+  % * xNoise: vector or matrix with data + noise
   
   %% Remarks
   % nr serves to mimick an average over several samples
