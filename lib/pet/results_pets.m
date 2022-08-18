@@ -271,139 +271,166 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
             elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){1}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
-              if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
-                fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
-                return
-              end
               hold on;
-              %
-              if treat{1} == 0 % do not interpolate 1st and 2nd independent var and plot markers
-                plotColours4AllSets = listOfPlotColours4UpTo13Sets;
-                maxGroupColourSize = length(plotColours4AllSets) + 1;
-                n_sets2plot = size(st.(nm{j}),2) - 1; % # of data sets in nm{j}
-                if n_sets2plot < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
-                  plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
-                else
-                  plotColours = plotColours4AllSets{4};
-                end
-                legend = cell(0,2);
+              if k == 3 && length(txtData.(pets{i}).units.(nm{j})) == 3 && length(txtData.(pets{i}).label.(nm{j})) == 3 % yyaxis
+                %% here the plotyy stuff for bi-variate data
+                xData = st.(nm{j})(:,1); 
+                xPred = st.(nm{j})(:,1); 
+                y1Data = st.(nm{j})(:,2);
+                y2Data = st.(nm{j})(:,3);
                 yPred = predict_pets(par, data, auxData); yPred = yPred.(pets{i}).(nm{j});
-                for ii = 1: n_sets2plot
-                  xData = st.(nm{j})(:,1); 
-                  yData = st.(nm{j})(:,1+ii);
-                  xPred = st.(nm{j})(:,1); 
-                  if n_sets2plot == 1
-                    plot(xPred, yPred, 'o', 'Color', plotColours{1}, 'Markersize', 3)
-                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
-                  else
-                    plot(xPred, yPred(:,ii), 'o', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',3)
-                    plot(xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15)
-                    if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
-                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
-                  end
+                if treat{1} > 1; fprintf('treat{1} must be 0 or 1 for plotyy\n'); return; 
+                elseif treat{1} == 0 % do not interpolate 1st and 2nd independent var and plot markers
+                  yyaxis left
+                  plot(xPred, yPred(:,1), 'o', 'Color','r', 'Markersize',3)
+                  plot(xData, y1Data, '.', 'Color','r', 'Markersize',15)
+                  ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  yyaxis right
+                  plot(xPred, yPred(:,2), 'o', 'Color','b', 'Markersize',3)
+                  plot(xData, y2Data, '.', 'Color','b', 'Markersize',15)
+                  ylabel([txtData.(pets{i}).label.(nm{j}){3}, ', ', txtData.(pets{i}).units.(nm{j}){3}]);
+                else % treat{1} == 1, do not interpolate 2nd independent var and plot curves
+                  yyaxis left
+                  plot(xPred, yPred(:,1), '-', 'Color','r', 'linewidth',2)
+                  plot(xData, y1Data, '.', 'Color','r', 'Markersize',15)
+                  ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  yyaxis right
+                  plot(xPred, yPred(:,2), '-', 'Color','b', 'linewidth',2)
+                  plot(xData, y2Data, '.', 'Color','b', 'Markersize',15)
+                  ylabel([txtData.(pets{i}).label.(nm{j}){3}, ', ', txtData.(pets{i}).units.(nm{j}){3}]);
                 end
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
-                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
-                try
-                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
-                catch
-                  title('')
+                ax = gca; ax.YAxis(1).Color = 'r'; ax.YAxis(2).Color = 'b'; % left yaxis red, right blue
+              else
+                if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
+                  fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
+                  return
                 end
-                plotNm = ['results_', pets{i}, '_', nFig];
-                LEGEND.([plotNm,'_legend']) = legend; 
-                LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});  
-                if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
-                  print(plotNm, '-dpng');
-                end
-                  
-              elseif treat{1} == 1 % do not interpolate 2nd independent var and plot curves
-                plotColours4AllSets = listOfPlotColours4UpTo13Sets;
-                maxGroupColourSize = length(plotColours4AllSets) + 1;
-                n_sets2plot = size(st.(nm{j}),2) - 1; % # of data sets in nm{j}
-                if n_sets2plot < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
-                  plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
-                else
-                  plotColours = plotColours4AllSets{4};
-                end
-                legend = cell(0,2);
-                for ii = 1: n_sets2plot
-                  xData = st.(nm{j})(:,1); 
-                  yData = st.(nm{j})(:,1+ii);
-                  xPred = data2plot.(pets{i}).(nm{j})(:,1); 
-                  yPred = prdData_x.(pets{i}).(nm{j})(:,ii);
-                  if n_sets2plot == 1
-                    plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
-                    plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
-                  else
-                    plot(xPred, yPred, 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
-                    plot(xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize', 15)
-                    if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
-                    legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
-                  end
-                end
-                xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
-                ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
-                try
-                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
-                catch
-                  title('');
-                end
-                plotNm = ['results_', pets{i}, '_', nFig];
-                LEGEND.([plotNm,'_legend']) = legend; 
-                LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});
-                if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
-                  print(plotNm, '-dpng');
-                end
-                 
-              elseif treat{1} > 1 % interpolate 2nd independent var and plot mesh or surface
-                zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
-                nX = length(xData); % number of values for 1st independent var
-                zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
-                plotColours = {[1 0 0], [0 0 1]}; % red, blue
-                xAxis = data2plot.(pets{i}).(nm{j}); 
-                n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
-                auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
-                prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
-                prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
                 %
-                dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
-                if treat{1} == 2 % plot mesh
-                  plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
-                  plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
-                else % treat{1} == 3 % plot surface; condition n_x = n_y must apply
-                  x = [xAxis(:,ones(1,k-1)),ones(n_y,1)*xData']; y = [ones(n_x,1)*yData', yAxis(:,ones(1,nX))]; z = [prdX, prdY'];
-                  surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
-                end
-                % plot connections of points to mesh & points
-                for ii = 1:k-1  % scan y-values
-                  for jj = 1:nX % scan x-values
-                    plot3([xData(jj);xData(jj)], [yData(ii);yData(ii)], [zPred(jj,ii);zData(jj,ii)], 'Color', plotColours{1+(zData(jj,ii)<zPred(jj,ii))})
-                    plot3(xData(jj), yData(ii), zData(jj,ii), '.', 'Color',plotColours{1}, 'Markersize',15)
+                if treat{1} == 0 % do not interpolate 1st and 2nd independent var and plot markers
+                  plotColours4AllSets = listOfPlotColours4UpTo13Sets;
+                  maxGroupColourSize = length(plotColours4AllSets) + 1;
+                  n_sets2plot = size(st.(nm{j}),2) - 1; % # of data sets in nm{j}
+                  if n_sets2plot < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
+                    plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
+                  else
+                    plotColours = plotColours4AllSets{4};
                   end
-                end
-                % insert clock
-                xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
-                ylabel([txtData.(pets{i}).label.treat.(nm{j}), ', ', txtData.(pets{i}).units.treat.(nm{j})]);
-                zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
-                try
-                  title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
-                catch
-                  title('');
-                end
-                view([-5,-10,-5]);
-                ax = gca;
-                ax.BoxStyle = 'full';
-                box on
-                if abs(results_output) >= 3
-                  plotNm = ['results_', pets{i}, '_', nFig, '.png'];
-                  print(plotNm, '-dpng');
+                  legend = cell(0,2);
+                  yPred = predict_pets(par, data, auxData); yPred = yPred.(pets{i}).(nm{j});
+                  for ii = 1: n_sets2plot
+                    xData = st.(nm{j})(:,1); 
+                    yData = st.(nm{j})(:,1+ii);
+                    xPred = st.(nm{j})(:,1); 
+                    if n_sets2plot == 1
+                      plot(xPred, yPred, 'o', 'Color', plotColours{1}, 'Markersize', 3)
+                      plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
+                    else
+                      plot(xPred, yPred(:,ii), 'o', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',3)
+                      plot(xData, yData, '.', 'Color',plotColours{mod(ii, maxGroupColourSize)}, 'Markersize',15)
+                      if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
+                      legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
+                    end
+                  end
+                  xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                  ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
+                  try
+                    title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
+                  catch
+                    title('')
+                  end
+                  plotNm = ['results_', pets{i}, '_', nFig];
+                  LEGEND.([plotNm,'_legend']) = legend; 
+                  LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});  
+                  
+                elseif treat{1} == 1 % do not interpolate 2nd independent var and plot curves
+                  plotColours4AllSets = listOfPlotColours4UpTo13Sets;
+                  maxGroupColourSize = length(plotColours4AllSets) + 1;
+                  n_sets2plot = size(st.(nm{j}),2) - 1; % # of data sets in nm{j}
+                  if n_sets2plot < maxGroupColourSize  % choosing the right set of colours depending on the number of sets to plot
+                    plotColours = plotColours4AllSets{max(1,n_sets2plot - 1)}; 
+                  else
+                    plotColours = plotColours4AllSets{4};
+                  end
+                  legend = cell(0,2);
+                  for ii = 1: n_sets2plot
+                    xData = st.(nm{j})(:,1); 
+                    yData = st.(nm{j})(:,1+ii);
+                    xPred = data2plot.(pets{i}).(nm{j})(:,1); 
+                    yPred = prdData_x.(pets{i}).(nm{j})(:,ii);
+                    if n_sets2plot == 1
+                      plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
+                      plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
+                    else
+                      plot(xPred, yPred, 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
+                      plot(xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize', 15)
+                      if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
+                      legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
+                    end
+                  end
+                  xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                  ylabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  dataSet_nFig = [dataSet_nFig; {nm{j}, {nFig, [nFig,'_legend']}}];
+                  try
+                    title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
+                  catch
+                    title('');
+                  end
+                  plotNm = ['results_', pets{i}, '_', nFig];
+                  LEGEND.([plotNm,'_legend']) = legend; 
+                  if isfield(txtData.(pets{i}).label, 'treat')
+                    LEGENDlabel.([plotNm,'_legend']) = txtData.(pets{i}).label.treat.(nm{j});
+                  else
+                    LEGENDlabel.([plotNm,'_legend']) = '';
+                  end
+                 
+                elseif treat{1} > 1 % interpolate 2nd independent var and plot mesh or surface
+                  zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
+                  nX = length(xData); % number of values for 1st independent var
+                  zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});
+                  plotColours = {[1 0 0], [0 0 1]}; % red, blue
+                  xAxis = data2plot.(pets{i}).(nm{j}); 
+                  n_y = 100; yAxis = linspace(min(treat{2}), max(treat{2}), n_y)'; 
+                  auxData.(pets{i}).treat.(nm{j}) = {treat{1}, yAxis}; 
+                  prdData_y = predict_pets(par, data, auxData); % data prediction with yAxis
+                  prdX = prdData_x.(pets{i}).(nm{j}); prdY = prdData_y.(pets{i}).(nm{j}); 
+                  %
+                  dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}];
+                  if treat{1} == 2 % plot mesh
+                    plot3(xAxis(:,ones(1,k-1)), ones(n_x,1)*yData', prdX, 'Color',plotColours{2}) 
+                    plot3(ones(n_y,1)*xData' , yAxis(:,ones(1,nX)), prdY', 'Color',plotColours{2})
+                  else % treat{1} == 3 % plot surface; condition n_x = n_y must apply
+                    x = [xAxis(:,ones(1,k-1)),ones(n_y,1)*xData']; y = [ones(n_x,1)*yData', yAxis(:,ones(1,nX))]; z = [prdX, prdY'];
+                    surf(x,y,z, 'AlphaData',gradient(z), 'FaceAlpha',0.1, 'FaceColor',plotColours{2})
+                  end
+                  % plot connections of points to mesh & points
+                  for ii = 1:k-1  % scan y-values
+                    for jj = 1:nX % scan x-values
+                      plot3([xData(jj);xData(jj)], [yData(ii);yData(ii)], [zPred(jj,ii);zData(jj,ii)], 'Color', plotColours{1+(zData(jj,ii)<zPred(jj,ii))})
+                      plot3(xData(jj), yData(ii), zData(jj,ii), '.', 'Color',plotColours{1}, 'Markersize',15)
+                    end
+                  end
+                  % insert clock
+                  xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
+                  ylabel([txtData.(pets{i}).label.treat.(nm{j}), ', ', txtData.(pets{i}).units.treat.(nm{j})]);
+                  zlabel([txtData.(pets{i}).label.(nm{j}){2}, ', ', txtData.(pets{i}).units.(nm{j}){2}]);
+                  try
+                    title(['\it',txtData.(pets{i}).title.(nm{j})], 'FontSize',15, 'FontWeight','normal');
+                  catch
+                    title('');
+                  end
+                  view([-5,-10,-5]);
+                  ax = gca;
+                  ax.BoxStyle = 'full';
+                  box on
                 end
               end
-              
+              if abs(results_output) >= 3
+                plotNm = ['results_', pets{i}, '_', nFig, '.png'];
+                print(plotNm, '-dpng');
+              end
+             
             elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat,nm{j}) % tri-variate data, assuming that threat.(nm{j}){1} = 2 or 3 (interpolation in 3 vars)
               treat = auxData.(pets{i}).treat.(nm{j}); %treat2 = treat{2};
               if length(treat)<2 || length(treat{2})<3
