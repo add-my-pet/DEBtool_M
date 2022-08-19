@@ -12,6 +12,7 @@ function pACSJGRD = scaled_power(L, f, p, lb, lp)
   % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance,
   % growth, reproduction and dissipation as function of length.
   % Scaled powers are calculated on the assumption for maturity that food density is constant. 
+  % The lengths in the first input must be ordered.
   %
   % Input
   %
