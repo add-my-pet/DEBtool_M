@@ -139,7 +139,7 @@ for i = 1:length(dataFields)
       sumval = sum(sum(currentDataSet(:,2:end)));
       if nvar > 2 % bi-variate data
         if ~isfield(auxData, 'treat') || ~isfield(auxData.treat, dataFields{i})
-          fprintf(['Data set', dataFields{i}, 'has more than 2 columns, but field auxData.treat is missing\n']);
+          fprintf(['Data set ', dataFields{i}, ' has more than 2 columns, but field auxData.treat is missing\n']);
         elseif ~length(auxData.treat.(dataFields{i}))==2
           fprintf(['Field auxData.treat.', dataFields{i}, ' should be a cell-string of length 2\n']);
         elseif ~length(auxData.treat.(dataFields{i}){2})==nvar
