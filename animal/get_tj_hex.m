@@ -88,13 +88,13 @@ function F = fnget_tj_hex(tau_j, f, g, l_b, k, v_Hb, v_Rj, rho_j)
   F = v_Rj - f/ g * (g + l_b)/ (f - l_b) * (1 - ert) + tau_j * k * v_Hb * ert/ l_b^3;
 end
 
-function [value,isterminal,direction] = emergence(t, luEvH, g, k, v_He)
+function [value,isterminal,direction] = emergence(t, luEvH, sM, g, k, v_He)
  value = v_He - luEvH(3); 
  isterminal = 1;
  direction = 0;
 end
 
-function dluEvH = dget_tj_hex(t, luEvH, g, k, v_He)
+function dluEvH = dget_tj_hex(t, luEvH, sM, g, k, v_He)
   l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; u_E = max(1e-6, luEvH(2)); v_H = luEvH(3);
 
   dl = (g * sM * u_E - l4)/ (u_E + l3)/ 3;
