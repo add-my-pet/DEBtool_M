@@ -61,8 +61,8 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
   
   % Y: vector with all dependent data
   % W: vector with all weights
-  [Y, meanY] = struct2vector(st, nm);
-  W = struct2vector(weights, nm);
+  [Y, meanY, sel] = struct2vector(st, nm);
+  W = struct2vector(weights, nm); W = W(sel==1); % remove NaN's from W
   
   parnm = fieldnames(par.free);
   np = numel(parnm);
@@ -332,11 +332,11 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
     info = 1;
   end
    
-function [vec, meanVec] = struct2vector(struct, fieldNames)
-  vec = []; meanVec = [];
+function [vec, meanVec, sel] = struct2vector(struct, fieldNames)
+  vec = []; meanVec = []; sel = [];
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); aux = aux(~isnan(aux));
-    vec = [vec; aux];
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); seli = ~isnan(aux); aux = aux(seli);
+    vec = [vec; aux]; sel = [sel; seli];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
