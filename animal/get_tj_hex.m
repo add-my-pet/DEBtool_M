@@ -64,13 +64,14 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   tau_j = nmfzero(@fnget_tj_hex, 1, [], f, g, l_b, k, v_Hb, v_Rj, rho_j); % scaled time since birth at pupation
   l_j = l_b * exp(tau_j * rho_j/ 3);          % scaled length at pubation
   tau_j = tau_b + tau_j;                      % -, scaled age at pupation
-  
+  sM = l_j/ l_b;                              % -, acceleration factor
+
   % from pupation to emergence; 
   % instantaneous conversion from larval structure to pupal reserve
   u_Ej = l_j^3 * (kap * kap_V + f/ g);        % -, scaled reserve at pupation
 
   options = odeset('Events',@emergence, 'NonNegative',[1; 1; 1]);
-  [t luEvH tau_e luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; u_Ej; 0], options, g, k, v_He);
+  [t luEvH tau_e luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; u_Ej; 0], options, sM, g, k, v_He);
   tau_e = tau_j + tau_e; % -, scaled age at emergence 
   l_e = luEvH(end,1);    % -, scaled length at emergence
   u_Ee = luEvH(end,2);   % -, scaled reserve at emergence
@@ -87,17 +88,17 @@ function F = fnget_tj_hex(tau_j, f, g, l_b, k, v_Hb, v_Rj, rho_j)
   F = v_Rj - f/ g * (g + l_b)/ (f - l_b) * (1 - ert) + tau_j * k * v_Hb * ert/ l_b^3;
 end
 
-function [value,isterminal,direction] = emergence(t, luEvH, g, k, v_He)
+function [value,isterminal,direction] = emergence(t, luEvH, sM, g, k, v_He)
  value = v_He - luEvH(3); 
  isterminal = 1;
  direction = 0;
 end
 
-function dluEvH = dget_tj_hex(t, luEvH, g, k, v_He)
+function dluEvH = dget_tj_hex(t, luEvH, sM, g, k, v_He)
   l = luEvH(1); l2 = l * l; l3 = l * l2; l4 = l * l3; u_E = max(1e-6, luEvH(2)); v_H = luEvH(3);
 
-  dl = (g * u_E - l4)/ (u_E + l3)/ 3;
-  du_E = - u_E * l2 * (g + l)/ (u_E + l3);
+  dl = (g * sM * u_E - l4)/ (u_E + l3)/ 3;
+  du_E = - u_E * l2 * (g * sM + l)/ (u_E + l3);
   dv_H = - du_E - k * v_H;
 
   dluEvH = [dl; du_E; dv_H]; % pack output
