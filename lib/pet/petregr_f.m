@@ -59,10 +59,10 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
     end
   end
   
-  % Y: vector with all dependent data
-  % W: vector with all weights
-  [Y, meanY, sel] = struct2vector(st, nm);
-  W = struct2vector(weights, nm); W = W(sel==1); % remove NaN's from W
+  % Y: vector with all dependent data, NaN's omitted
+  % W: vector with all weights, but those that correspond NaN's in data omitted
+  [Y, meanY] = struct2vector(st, nm, st);
+  W = struct2vector(weights, nm, st); 
   
   parnm = fieldnames(par.free);
   np = numel(parnm);
@@ -108,7 +108,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
   xin = qvec(index);    % Place input guess in the simplex
   v(:,1) = xin;
   f = feval(func, q, data, auxData);
-  [P, meanP] = struct2vector(f, nm);
+  [P, meanP] = struct2vector(f, nm, st);
   fv(:,1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   % Following improvement suggested by L.Pfeffer at Stanford
   usual_delta = simplex_size;         % 5 percent deltas is the default for non-zero terms
@@ -138,7 +138,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
       end
     end  
     v(:,j+1) = y_test;
-    [P, meanP] = struct2vector(f, nm);
+    [P, meanP] = struct2vector(f, nm, st);
     fv(:,j+1) = feval(fileLossfunc, Y, meanY, P, meanP, W);
   end     
 
@@ -180,7 +180,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
       if ~f_test 
         fxr = fv(:,np1) + 1;
       else
-        [P, meanP] = struct2vector(f, nm);
+        [P, meanP] = struct2vector(f, nm, st);
         fxr = feval(fileLossfunc, Y, meanY, P, meanP, W);
       end
     end
@@ -198,7 +198,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
         if ~f_test 
           fxe = fv(:,np1) + 1;
         else
-          [P, meanP] = struct2vector(f, nm);
+          [P, meanP] = struct2vector(f, nm, st);
           fxe = feval(fileLossfunc, Y, meanY, P, meanP, W);
         end
       end
@@ -231,7 +231,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
               if ~f_test 
                 fxc = fv(:,np1) + 1;
               else
-                [P, meanP] = struct2vector(f, nm);
+                [P, meanP] = struct2vector(f, nm, st);
                 fxc = feval(fileLossfunc, Y, meanY, P, meanP, W);
               end
             end
@@ -257,7 +257,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
               if ~f_test 
                 fxcc = fv(:,np1) + 1;
               else
-                [P, meanP] = struct2vector(f, nm);
+                [P, meanP] = struct2vector(f, nm, st);
                 fxcc = feval(fileLossfunc, Y, meanY, P, meanP, W);
               end
             end
@@ -292,7 +292,7 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
                   end
                end
                v(:,j) = v_test;
-               [P, meanP] = struct2vector(f, nm);
+               [P, meanP] = struct2vector(f, nm, st);
                fv(:,j) = feval(fileLossfunc, Y, meanY, P, meanP, W);
             end
             func_evals = func_evals + n_par;
@@ -331,12 +331,18 @@ function [q, info, itercount, fval] = petregr_f(func, par, data, auxData, weight
     end
     info = 1;
   end
+end
    
-function [vec, meanVec, sel] = struct2vector(struct, fieldNames)
-  vec = []; meanVec = []; sel = [];
+function [vec, meanVec] = struct2vector(struct, fieldNames, structRef)
+  % structRef has the same structure as struct, but some values can be NaN's; the values themselves are not used
+  % struct2vector is called for data (which might have NaN's), but also for predictions, which do not have NaN's
+  vec = []; meanVec = []; 
   for i = 1:size(fieldNames, 1)
     fieldsInCells = textscan(fieldNames{i},'%s','Delimiter','.');
-    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:); seli = ~isnan(aux); aux = aux(seli);
-    vec = [vec; aux]; sel = [sel; seli];
+    aux = getfield(struct, fieldsInCells{1}{:}); aux = aux(:);
+    auxRef = getfield(structRef, fieldsInCells{1}{:}); auxRef = auxRef(:);
+    aux = aux(~isnan(auxRef)); % remove values that have NaN's in structRef
+    vec = [vec; aux];
     meanVec = [meanVec; ones(length(aux), 1) * mean(aux)];
   end
+end
