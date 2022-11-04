@@ -64,13 +64,17 @@ function [f, info] = f_ris0_std (par)
     fprintf(['Warning from f_ris0_std: no f detected for which r = 0 for thinning = ', num2str(thinning), '\n']);
     info = 0; f = f_0; return
   end
-  norm = 1; i = 0; % initialize norm and counter
+  norm = 1; i = 0; val = 0; % initialize norm and counter
 
   % 2^-18 = 4e-6: min accuracy of f_min, starting from worst-case (0,1)
-  while i < 18 && norm^2 > 1e-16 && f_1 - f_0 > 1e-5 % bisection method
+  while i < 18 && norm^2 > 1e-16 && f_1 - f_0 > 1e-5 && val > -1 % bisection method
     i = i + 1;
     f = (f_0 + f_1)/ 2;
-    norm = charEq0(f, pars_charEq0{:});
+    try
+      norm = charEq0(f, pars_charEq0{:});
+    catch
+      val = -1; norm = 0;
+    end
     %[i f_0 f f_1 norm] % show progress
     if norm > 0
       f_1 = f;
