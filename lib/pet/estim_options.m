@@ -147,6 +147,10 @@ function estim_options (key, val)
   % * then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)
   % * type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file
   %
+  % If results_output equals 5 or higher, the comparison species can be
+  % specified by declaring variable refPets as global and fill it with a
+  % cell-string of AmP species names.
+  %
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %

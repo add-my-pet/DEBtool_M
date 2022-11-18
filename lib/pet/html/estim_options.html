@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-07"><meta name="DC.source" content="estim_options.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-18"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,11 +67,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and mmea, others to mmea only</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
+  </style></head><body><div class="content"><h1>estim_options</h1><!--introduction--><p>Sets options for estim.pars</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">warnings</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../estim_options.m"><b>estim_options</b></a> (key, val)</p><h2 id="4">Description</h2><p>Sets options for estimation one by one, some apply to methods nm and mmea, others to mmea only</p><p>Input</p><div><ul><li>no input: print values to screen</li><li>one input:</li></ul></div><pre>  'default': sets options at default values
    any other key (see below): print value to screen</pre><div><ul><li>two inputs</li></ul></div><pre>  'loss_function':
     'sb': multiplicative symmetric bounded (default)
     'su': multiplicative symmetric unbounded
-    're': relative error (not recommanded)</pre><pre>  'filter':
+    're': relative error (not recommanded)
+    'SMAE': symmetric mean absolute error</pre><pre>  'filter':
     0: do not use filters;
     1: use filters (default)</pre><pre>  'pars_init_method':
     0: get initial estimates from automatized computation
@@ -84,26 +86,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     5, -5 - like 4 (or -4), but includes related species in the implied traits
     6     - like 5, but also prints html with population traits</pre><pre>  'method':
     'no': do not estimate
-    'nm': Nelder-Mead method (default)
+    'nm': Nelder-Mead simplex method (default)
     'mmea': multimodal evolutionary algorithm</pre><pre>  'max_fun_evals': maximum number of function evaluations (default 10000)</pre><pre>  'report':
      0 - do not report
      1 - report steps to screen (default)</pre><pre>  'max_step_number': maximum number of steps (default 500)</pre><pre>  'tol_simplex': tolerance for how close the simplex points must be together to call them the same (default 1e-4)</pre><pre>  'tol_fun': tolerance for how close the loss-function values must be together to call them the same (default 1e-4)</pre><pre>  'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)</pre><pre>  'search_method' (method mmea only):
-    'mm1' - use shade method (default)
-    'mm2' - do not estimate</pre><pre>  'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
-     100 for SHADE ('search_method mm1', default)
-     18 * number of free parameters for L-SHADE ('search method mm2')</pre><pre>  'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method mmea only):
+    'mm_shade' - use mm_shade method (default)</pre><pre>  'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
+     50 for mm_shade ('search_method mm_shade', default)
+     18 * number of free parameters for L-mm_shade ('search method l-mm_shade')</pre><pre>  'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)</pre><pre>  'bounds_from_ind' (method mmea only):
     0: use ranges from pseudodata if exist (these ranges not existing will be taken from data)
-    1: use ranges from data (default)</pre><pre>  'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)</pre><pre>  'num_runs' (method mmea only): the number of independent runs to perform (default 1)</pre><pre>  'add_initial' (method mmea only): if the initial individual is added in the first  population.
+    1: use ranges from data (default)</pre><pre>  'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)
+  'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach
+                                                  to continue the calibration process (default 1e-4)
+  'max_pop_dist': the maximum distance allowed between the solutions of the MMEA population to
+                   continue the calibration process (default 0.2).
+  'num_runs' (method mmea only): the number of independent runs to perform (default 1)</pre><pre>  'add_initial' (method mmea only): if the initial individual is added in the first  population.
     1: activated
-    0: not activated (default)</pre><pre>  'refine_initial' (method mmea only): if the initial individual is refined using Nelder-Mead.
+    0: not activated (default)</pre><pre>  'refine_best'  (method mmea only): if the best individual found is refined using Nelder-Mead.
     0: not activated (default)
-    1: activated</pre><pre>  'refine_best'  (method mmea only): if the best individual found is refined using Nelder-Mead.
-    0: not activated (default)
-    1: activated</pre><pre>  'refine_running' (method mmea only): If to apply local search to some individuals while simulation is running
-    0: not activated (default)
-    1: activated</pre><pre>  'refine_run_prob' (method mmea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)</pre><pre>  'refine_firsts' (method mmea only): If to apply a local search to the first population
-     0: not activated (default)
-     1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)</pre><pre>  'verbose_options' (method mmea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method mmea only): prints some information while the calibration  process is running
+    1: activated</pre><pre>  'verbose_options' (method mmea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)</pre><pre>  'verbose' (method mmea only): prints some information while the calibration  process is running
      0: not activated (default)
      1: activated</pre><pre>  'seed_index' (method mmea only): index of vector with values for the seeds used to generate random values
      each one is used in a single run of the algorithm (default 1, must be between 1 and 30)</pre><pre>  'ranges' (method mmea only): Structure with ranges for the parameters to be calibrated (default empty)
@@ -122,7 +122,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
      0: no saving (default)
      1: saving</pre><pre>  'mat_file' (method mmea only): The name of the .mat-file with results from where to initialize the calibration parameters
      (only useful if pars_init_method option is equal to 1 and if there is a result file)
-     This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><p>Typical simplex options are also used in the evolutionary algorithm via local_search in shade and lshade</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+     This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.</pre><pre>  'sigma_share': The value of the sigma share parameter (that is used
+     into the fitness sharing niching method if it is activated)</pre><p>Output</p><div><ul><li>no output, but globals are set to values or values are printed to screen</li></ul></div><h2 id="5">Remarks</h2><p>See <a href="estim_pars.html"><b>estim_pars</b></a> for application of the option settings. Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file. A typical estimation procedure is</p><div><ul><li>first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),</li><li>then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)</li><li>type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file</li></ul></div><p>If results_output equals 5 or higher, the comparison species can be specified by declaring variable refPets as global and fill it with a cell-string of AmP species names.</p><p>The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence. Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.</p><p>Typical simplex options are also used in the evolutionary algorithm via local_search in mm_shade and lmm_shade</p><h2 id="6">Example of use</h2><pre>estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')</pre><h2 id="7">warnings</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% estim_options
 % Sets options for estim.pars
@@ -131,7 +132,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
   %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
-  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles
+  %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles,
+  %    2021/10/20, 2022/04/24 by Juan Robles
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -153,6 +155,7 @@ function estim_options (key, val)
   %      'sb': multiplicative symmetric bounded (default)
   %      'su': multiplicative symmetric unbounded
   %      're': relative error (not recommanded)
+  %      'SMAE': symmetric mean absolute error
   %
   %    'filter': 
   %      0: do not use filters;
@@ -174,7 +177,7 @@ function estim_options (key, val)
   %   
   %    'method': 
   %      'no': do not estimate
-  %      'nm': Nelder-Mead method (default)
+  %      'nm': Nelder-Mead simplex method (default)
   %      'mmea': multimodal evolutionary algorithm
   %
   %    'max_fun_evals': maximum number of function evaluations (default 10000)
@@ -192,12 +195,11 @@ function estim_options (key, val)
   %    'simplex_size': fraction added (subtracted if negative) to the free parameters when building the simplex (default 0.05)
   %
   %    'search_method' (method mmea only): 
-  %      'mm1' - use shade method (default)
-  %      'mm2' - do not estimate
+  %      'mm_shade' - use mm_shade method (default)
   %     
   %    'num_results' (method mmea only): The size for the multimodal algorithm's population. The author recommended
-  %       100 for SHADE ('search_method mm1', default) 
-  %       18 * number of free parameters for L-SHADE ('search method mm2')
+  %       50 for mm_shade ('search_method mm_shade', default) 
+  %       18 * number of free parameters for L-mm_shade ('search method l-mm_shade')
   %
   %    'gen_factor' (method mmea only): percentage to build the ranges for initializing the first population of individuals (default 0.5)                  
   %
@@ -206,31 +208,21 @@ function estim_options (key, val)
   %      1: use ranges from data (default) 
   %
   %    'max_calibration_time' (method mmea only): maximum calibration time in minutes (default 30)
-  %
+  %    'min_convergence_threshold' (method mmea only): the minimum improvement the mmea needs to reach 
+  %                                                    to continue the calibration process (default 1e-4)
+  %    'max_pop_dist': the maximum distance allowed between the solutions of the MMEA population to 
+  %                     continue the calibration process (default 0.2). 
   %    'num_runs' (method mmea only): the number of independent runs to perform (default 1)
   %
   %    'add_initial' (method mmea only): if the initial individual is added in the first  population.
   %      1: activated
   %      0: not activated (default)
   %
-  %    'refine_initial' (method mmea only): if the initial individual is refined using Nelder-Mead.
-  %      0: not activated (default)
-  %      1: activated
   %     
   %    'refine_best'  (method mmea only): if the best individual found is refined using Nelder-Mead.
   %      0: not activated (default)
   %      1: activated
   %     
-  %    'refine_running' (method mmea only): If to apply local search to some individuals while simulation is running 
-  %      0: not activated (default)
-  %      1: activated
-  %
-  %    'refine_run_prob' (method mmea only): The probability to apply a local search to an individual while algorithm is running (default 0.05)
-  %
-  %    'refine_firsts' (method mmea only): If to apply a local search to the first population
-  %       0: not activated (default)
-  %       1: activated (this is recommended when the algorithm is not able to converge to good solutions till the end of its execution)
-  %
   %    'verbose_options' (method mmea only): The number of solutions to show from the set of optimal solutions found by the algorithm through the calibration process (default 10)                                           
   %
   %    'verbose' (method mmea only): prints some information while the calibration  process is running              
@@ -266,36 +258,43 @@ function estim_options (key, val)
   %       (only useful if pars_init_method option is equal to 1 and if there is a result file)
   %       This file is outputted as results_my_pet.mat ("my pet" replaced by name of species) using method nm, results_output 0, 2-6.
   %
+  %    'sigma_share': The value of the sigma share parameter (that is used
+  %       into the fitness sharing niching method if it is activated)
+  %
   % Output
   %
   % * no output, but globals are set to values or values are printed to screen
   %
   %% Remarks
   % See <estim_pars.html *estim_pars*> for application of the option settings.
-  % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file
+  % Initial estimates are controlled by option 'pars_init_method', but the free-setting is always taken from the pars_init file.
   % A typical estimation procedure is
   % 
   % * first use estim_options('pars_init_method',2) with estim_options('max_step_number',500),
   % * then estim_options('pars_init_method',1), repeat till satiation or convergence (using arrow-up + enter)
   % * type mat2pars_init in the Matlab's command window to copy the results in the .mat file to the pars_init file
   %
+  % If results_output equals 5 or higher, the comparison species can be
+  % specified by declaring variable refPets as global and fill it with a
+  % cell-string of AmP species names.
+  %
   % The default setting for max_step_number on 500 in method nm is on purpose not enough to reach convergence.
   % Continuation (using arrow-up + 'enter' after 'pars_init_method' set on 1) is important to restore simplex size.
   %
-  % Typical simplex options are also used in the evolutionary algorithm via local_search in shade and lshade
+  % Typical simplex options are also used in the evolutionary algorithm via local_search in mm_shade and lmm_shade
   %
   %% Example of use
   %  estim_options('default'); estim_options('filter', 0); estim_options('method', 'no')
   
   global method lossfunction filter pars_init_method results_output max_fun_evals 
   global report max_step_number tol_simplex tol_fun simplex_size 
-  global search_method num_results gen_factor bounds_from_ind % method mmea only
-  global max_calibration_time  num_runs add_initial  
-  global refine_initial refine_best  refine_running refine_run_prob refine_firsts 
-  global verbose verbose_options random_seeds seed_index ranges mat_file
-  global results_display results_filename save_results
-
-  availableMethodOptions = {'no', 'nm', 'mmea'};
+  global search_method num_results gen_factor factor_type bounds_from_ind % method mmea only
+  global max_calibration_time num_runs add_initial refine_best
+  global verbose verbose_options
+  global random_seeds seed_index ranges mat_file results_display
+  global results_filename save_results sigma_share
+  
+  availableMethodOptions = {'no', 'nm', 'mmea', 'nr'};
 
   if exist('key','var') == 0
     key = 'inexistent';
@@ -317,34 +316,36 @@ function estim_options (key, val)
       simplex_size = 0.05;
 
       % for mmea method (taken from calibration_options)
-      search_method = 'mm1'; % Use SHADE: Success-History based Adaptive Differential Evolution 
-      num_results = 100;   % The size for the multimodal algorithm's population.
+      search_method = 'mm_shade'; % Use mm_shade: Success-History based Adaptive Differential Evolution 
+      num_results = 50;   % The size for the multimodal algorithm's population.
                            % If not defined then sets the values recommended by the author, 
-                           % which are 100 for SHADE ('mm1') and 18 * problem size for L-SHADE.
+                           % which are 100 for mm_shade ('mm_shade') and 18 * problem size for L-mm_shade.
       gen_factor = 0.5;    % Percentage bounds for individual 
                            % initialization. (e.g. A value of 0.9 means that, for a parameter value of 1, 
                            % the range for generation is [(1 - 0.9) * 1, 1 * (1 + 0.9)] so
                            % the new parameter value will be a random between [0.1, 1.9]
+      factor_type = 'mult'; % The kind of factor to be applied when generatin individuals 
+                           %('mult' is multiplicative (Default) | 'add' if
+                           % additive);
       bounds_from_ind = 1; % This options selects from where the parameters for the initial population of individuals are taken. 
                            % If the value is equal to 1 the parameters are generated from the data initial values 
                            % if is 0 then the parameters are generated from the pseudo data values. 
-      add_initial = 0;     % If to add an invidivual taken from initial data into first population.
-      refine_initial = 0;  % If a refinement is applied to the initial individual of the population 
-                           % (only if it the 'add_initial' option is activated)
+      add_initial = 0;     % If to add an invidivual taken from initial data into first population.                     % (only if it the 'add_initial' option is activated)
       refine_best = 0;     % If a local search is applied to the best individual found. 
-      refine_running = 0;  % If to apply local search to some individuals while simulation is running. 
-      refine_run_prob = 0.05; % The probability to apply a local search to an individual while algorithm is  running. 
-      refine_firsts = 0;   % If to apply a local search to the first population (this is recommended when the
-                           % algorithm is not able to converge to good solutions till the end of its execution). 
       max_calibration_time = 30; % The maximum calibration time calibration process. 
-      num_runs = 1; % The number of runs to perform. 
+      num_runs = 5; % The number of runs to perform. 
       verbose = 0;  % If to print some information while the calibration process is running. 
-      verbose_options = 10; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
+      verbose_options = 5; % The number of solutions to show from the  set of optimal solutions found by the  algorithm through the calibration process.
       random_seeds = [2147483647, 2874923758, 1284092845, ... % The values of the seed used to
-                      2783758913, 3287594328, 9328947617, ... % generate random values (each one is used in a
-                      1217489374, 9815931031, 3278479237, ... % single run of the algorithm).
-                      8342427357, 8923758927, 7891375891, ... 
-                      8781589371, 8134872397, 2784732823]; 
+                      2783758913, 3287594328, 2328947617, ... % generate random values (each one is used in a
+                      1217489374, 1815931031, 3278479237, ... % single run of the algorithm).
+                      3342427357, 223758927, 3891375891, ... 
+                      1781589371, 1134872397, 2784732823, ... 
+                      2183647447, 24923758, 122845, ...
+                      2783784093, 394328, 2328757617, ...
+                      12174974, 18593131, 3287237, ...
+                      33442757, 2235827, 3837891, ... 
+                      17159371, 34211397, 2842823]; 
       seed_index = 1; % index for seeds for random number generator
       rng(random_seeds(seed_index), 'twister'); % initialize the number generator is with a seed, to be updated for each run of the calibration method.
       ranges = struct(); % The range struct is empty by default. 
@@ -352,8 +353,9 @@ function estim_options (key, val)
       results_filename = 'Default';
       save_results = false; % If results output are saved.
       mat_file = '';
-
-    case 'loss_function'
+      sigma_share = 0.1;
+    
+      case 'loss_function'
       if exist('val','var') == 0
         if numel(lossfunction) ~= 0
           fprintf(['loss_function = ', lossfunction,' \n']);  
@@ -363,6 +365,7 @@ function estim_options (key, val)
         fprintf('sb - multiplicative symmetric bounded \n');
         fprintf('su - multiplicative symmetric unbounded \n');
         fprintf('re - relative error \n');
+        fprintf('SMAE - symmetric mean absolute error \n');
       else
         lossfunction = val;
       end
@@ -435,9 +438,9 @@ function estim_options (key, val)
         end	      
       else
         max_fun_evals = val;
-        % max_calibration_time = Inf; % mmea method only
+        max_calibration_time = Inf; % mmea method only
       end
-   
+      
     case 'report'
       if ~exist('val','var')
         if numel(report) ~= 0
@@ -487,7 +490,7 @@ function estim_options (key, val)
     % method mmea only, taken from calibatrion_options
     case 'search_method'
       if ~exist('val','var')
-        search_method = 'mm1'; % Select SHADE as the default method.
+        search_method = 'mm_shade'; % Select mm_shade as the default method.
       else
         search_method = val;
       end 
@@ -500,8 +503,8 @@ function estim_options (key, val)
           fprintf('num_results = unknown \n');
         end	      
       else
-        if num_results < 100 
-          num_results = 100;
+        if num_results < 1 
+          num_results = 10;
         else
           num_results = val;
         end
@@ -515,13 +518,16 @@ function estim_options (key, val)
           fprintf('gen_factor = unknown \n');
         end	      
       else
-        if val >= 1.0
-           val = 0.99;
-        elseif val <= 0.0
-           val = .01;
-        end
         gen_factor = val;
       end
+      
+    case 'factor_type'
+      if ~exist('val','var')
+        factor_type = 'mult';
+        fprintf(['factor_type = ', factor_type,' \n']);  
+      else
+          factor_type = val;
+      end	 
       
     case 'bounds_from_ind'
       if ~exist('val','var')
@@ -543,50 +549,6 @@ function estim_options (key, val)
         end	      
       else
         add_initial = val;
-      end
-      
-    case 'refine_running'
-      if ~exist('val','var')
-        if numel(refine_running) ~= 0
-          fprintf(['refine_running = ', num2str(refine_running),' \n']);  
-        else
-          fprintf('refine_running = unknown \n');
-        end	      
-      else
-        refine_running = val;
-      end
-      
-    case 'refine_run_prob'
-      if ~exist('val','var')
-        if numel(refine_run_prob) ~= 0
-          fprintf(['refine_run_prob = ', num2str(refine_run_prob),' \n']);  
-        else
-          fprintf('refine_run_prob = unknown \n');
-        end	      
-      else
-        refine_run_prob = val;
-      end
-      
-    case 'refine_firsts'
-      if ~exist('val','var')
-        if numel(refine_firsts) ~= 0
-          fprintf(['refine_firsts = ', num2str(refine_firsts),' \n']);  
-        else
-          fprintf('refine_firsts = unknown \n');
-        end	      
-      else
-        refine_firsts = val;
-      end
-      
-    case 'refine_initial'
-      if ~exist('val','var')
-        if numel(refine_initial) ~= 0
-          fprintf(['refine_initial = ', num2str(refine_initial),' \n']);  
-        else
-          fprintf('refine_initial = unknown \n');
-        end	      
-      else
-        refine_initial = val;
       end
       
     case 'refine_best'
@@ -614,7 +576,7 @@ function estim_options (key, val)
       
     case 'num_runs'
       if ~exist('val','var')
-        if numel(max_fun_evals) ~= 0
+        if numel(num_runs) ~= 0
           fprintf(['num_runs = ', num2str(num_runs),' \n']);
         else
           fprintf('num_runs = unkown \n');
@@ -660,7 +622,7 @@ function estim_options (key, val)
     case 'ranges'
       if ~exist('val','var')
         if numel(ranges) ~= 0
-          fprintf(['ranges = structure with fields: \n']);
+          fprintf('ranges = structure with fields: \n');
           disp(struct2table(ranges));
         else
           fprintf('ranges = unkown \n');
@@ -716,7 +678,23 @@ function estim_options (key, val)
       else
         mat_file = val;
       end
-
+         
+      case 'sigma_share'
+         if ~exist('val','var')
+            if numel(sigma_share) ~= 0.0
+               fprintf(['sigma_share = ', num2str(sigma_share),' \n']);  
+            else
+               fprintf('sigma_share = unknown \n');
+            end	      
+         else
+            if val > 1.0
+               val = 1.0;
+            elseif val < 0.0
+               val = .0;
+            end
+            sigma_share = val;
+         end
+         
     % only a single input
     case 'inexistent' 
       if numel(lossfunction) ~= 0
@@ -801,6 +779,12 @@ function estim_options (key, val)
         fprintf('gen_factor = unknown \n');
       end
       
+      if numel(factor_type) ~= 0
+        fprintf(['factor_type = ', factor_type,' \n']);
+      else
+        fprintf('factor_type = unkown \n');
+      end
+      
       if numel(bounds_from_ind) ~= 0.0
         fprintf(['bounds_from_ind = ', num2str(bounds_from_ind),' (method mmea)\n']);
       else
@@ -831,30 +815,6 @@ function estim_options (key, val)
         fprintf('add_initial = unkown \n');
       end
       
-      if numel(refine_running) ~= 0
-        fprintf(['refine_running = ', num2str(refine_running),' (method mmea)\n']);
-      else
-        fprintf('refine_running = unkown \n');
-      end
-      
-      if numel(refine_run_prob) ~= 0
-        fprintf(['refine_run_prob = ', num2str(refine_run_prob),' (method mmea)\n']);
-      else
-        fprintf('refine_run_prob = unkown \n');
-      end
-      
-      if numel(refine_firsts) ~= 0
-        fprintf(['refine_firsts = ', num2str(refine_firsts),' (method mmea)\n']);
-      else
-        fprintf('refine_firsts = unkown \n');
-      end
-      
-      if numel('refine_initial') ~= 0
-        fprintf(['refine_initial = ', num2str(refine_initial),' (method mmea)\n']);
-      else
-        fprintf('refine_initial = unkown \n');
-      end
-      
       if numel(refine_best) ~= 0
         fprintf(['refine_best = ', num2str(refine_best),' (method mmea)\n']);
       else
@@ -880,7 +840,7 @@ function estim_options (key, val)
       end
       
       if numel(ranges) ~= 0 
-        fprintf(['ranges = structure with fields (method mmea)\n']);
+        fprintf('ranges = structure with fields (method mmea)\n');
         disp(struct2table(ranges));
       else
         fprintf('ranges = unkown \n');
@@ -903,10 +863,21 @@ function estim_options (key, val)
       else
         fprintf('mat_file = unkown \n');
       end
-
+      
+      if strcmp(sigma_share, '') ~= 0
+        fprintf(['sigma_share = ', sigma_share,' \n']);
+      else
+        fprintf('sigma_share = unkown \n');
+      end
+      
     otherwise
         fprintf(['key ', key, ' is unkown \n\n']);
         estim_options;
+  end
+  
+  %% warnings
+  if strcmp(method,'mmea') && filter==0
+    fprintf('Warning from estim_options: method mmea without using filters amounts to asking for trouble\n');
   end
 end
 ##### SOURCE END #####
