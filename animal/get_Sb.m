@@ -54,8 +54,13 @@ function [S_b, q_b, h_Ab, tau_b, tau_0b, u_E0, l_b, info] = get_Sb(p, f)
   [u_E0, l_b, info] = get_ue0(p(1:3), f);
 
   ulvqhS_0 = [1.001*u_E0; 1e-5; 0; 0; 0; 1; 0;]; % initial value
-  options = odeset('Events',@birth, 'NonNegative',ones(10,1), 'AbsTol',1e-9, 'RelTol',1e-9);  
-  [tau, ulvqhS] = ode45(@dget_ulvqhS, [0 1e8], ulvqhS_0, options, p);
+  options = odeset('Events',@birth, 'NonNegative',ones(10,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
+  try
+    [tau, ulvqhS] = ode45(@dget_ulvqhS, [0 1e8], ulvqhS_0, options, p);
+  catch
+    options = odeset('Events',@birth, 'AbsTol',1e-8, 'RelTol',1e-8); 
+    [tau, ulvqhS] = ode23(@dget_ulvqhS, [0 1e8], ulvqhS_0, options, p);
+  end
   tau_b = tau(end); q_b = max(0,ulvqhS(end,4)); h_Ab = max(0,ulvqhS(end,5)); S_b = max(0,ulvqhS(end,6)); 
   tau_0b = ulvqhS(end,7); % \int_0^tau_b exp(-rho_N*tau) S(tau) dtau; 
   % stable-age pdf for embryo's equals exp(-rho_N*tau) S(tau)/ l0 

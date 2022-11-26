@@ -6,7 +6,7 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
   % created at 2016/11/24 by Bas Kooijman
   
   %% Syntax
-  % [tR, tp, tx, tb, lR, lp, lx, lb, info] = <../get_tR.m *get_tR*>(p, f, lb0)
+  % [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = <../get_tR.m *get_tR*>(p, f, lb0)
   
   %% Description
   % Obtains scaled age and length at 1st brood, puberty, fledging, birth.
@@ -61,24 +61,24 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     lp = vHp^(1/3);
     li = f - lT;
     rB = 1 / 3/ (1 + f/g);
-    tp = tb + log((li - lb)/ (li - lp))/ rB;
+    tau_p = tb + log((li - lb)/ (li - lp))/ rB;
     info = 1;
   elseif f * (f - lT)^2 <= vHx * k % fledging is not reached
-    [tb lb] = get_tb ([g, k, vHb], f, lb0); 
-    tx = NaN; lx = NaN; % lx is never reached
-    tp = NaN; lp = NaN; % lp is never reached
-    tR = NaN; lR = NaN; 
+    [tau_b lb] = get_tb ([g, k, vHb], f, lb0); 
+    tau_x = NaN; lx = NaN; % lx is never reached
+    tau_p = NaN; lp = NaN; % lp is never reached
+    tau_R = NaN; lR = NaN; 
     info = 0;
   elseif f * (f - lT)^2 <= vHp * k % reproduction is not possible
-    [tb, lb] = get_tb ([g, k, vHb] , f, lb0); 
+    [tau_b, lb] = get_tb ([g, k, vHb] , f, lb0); 
     li = f - lT; irB = 3 * (1 + f/ g); % k_M/ r_B
     [lx, lb] = get_lp([g, k, lT, vHb, vHx], f, lb);
-    tx = tb + irB * log((li - lb)/ (li - lx));
-    tp = NaN; lp = NaN; 
-    tR = NaN; lR = NaN; 
-    info = 0;
+    tau_x = tau_b + irB * log((li - lb)/ (li - lx));
+    tau_p = NaN; lp = NaN; 
+    tau_R = NaN; lR = NaN; 
+    info = 0; 
   else % reproduction is possible
-    [tau_b, lb, info] = get_tb ([g, k, vHb] , f, lb0); 
+    [tau_b, lb, info] = get_tb ([g, k, vHb], f, lb0); 
     options = odeset('Events', @event_xpR); 
     [tau, vHlR, tau_xpR, vHlR_xpR] = ode45(@dget_vHlR, [0; 1e20], [vHb; lb; 0], options, f, g, k, lT, vHx, vHp, tN);
     if length(tau_xpR)<3
@@ -87,13 +87,12 @@ function [tau_R, tau_p, tau_x, tau_b, lR, lp, lx, lb, info] = get_tR(p, f, lb0)
     end
     tau_x = tau_b + tau_xpR(1); tau_p = tau_b + tau_xpR(2); tau_R = tau_b + tau_xpR(3); 
     lx = vHlR_xpR(1,2); lp = vHlR_xpR(2,2); lR = vHlR_xpR(3,2);
-    if isreal(tau_b) == 0 || isreal(tau_x) == 0 || isreal(tau_p) == 0 || isreal(tau_R) == 0 % tb, tx, tp and tR must be real and positive
-      info = 0;
-    elseif tau_b < 0 || tau_x < 0 || tau_p < 0 || tau_R < 0 
+    if ~isreal(tau_b) || ~isreal(tau_x) || ~isreal(tau_p) || ~isreal(tau_R) || ...
+       isempty(tau_b) || isempty(tau_x) || isempty(tau_p) || isempty(tau_R) || ... 
+       tau_b < 0 || tau_x < 0 || tau_p < 0 || tau_R < 0 % tb, tx, tp and tR must be real and positive and non-empty
       info = 0;
     end
   end
-  
 end
 
 %% subfunctions
