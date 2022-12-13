@@ -211,14 +211,18 @@ function [stat, txtStat] = ssd_hex(stat, code, par, T_pop, f_pop, sgr)
   Y_PX = J_P/ J_X;                        % mol/mol, yield of faeces on food
   stat.(fldf).(fldt).(fldg).Y_PX = Y_PX; txtStat.units.Y_PX  = 'mol/mol'; txtStat.label.Y_PX  = 'yield of faeces on food';
   %
-  Y_VX = M_V * (del_an * S_b * R * L_b^3 + rL3_bj)/ J_X;           % mol/mol, yield of living structure on food
+  %Y_VX = M_V * (del_an * S_b * R * L_b^3 + rL3_bj)/ J_X;           % mol/mol, yield of living structure on food
+  Y_VX = sgr * M_V * L3_bi/ J_X;           % mol/mol, yield of living structure on food
   stat.(fldf).(fldt).(fldg).Y_VX = Y_VX; txtStat.units.Y_VX  = 'mol/mol'; txtStat.label.Y_VX  = 'yield of living structure on food';
-  Y_VX_dead = M_V * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X;% mol/mol, yield of dead structure on food
+  %Y_VX_dead = M_V * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X;% mol/mol, yield of dead structure on food
+  Y_VX_dead = hL3_bi * M_V * L3_bi/ J_X;% mol/mol, yield of dead structure on food
   stat.(fldf).(fldt).(fldg).Y_VX_d = Y_VX_dead; txtStat.units.Y_VX_d  = 'mol/mol'; txtStat.label.Y_VX_d  = 'yield of dead structure on food';
   %
-  Y_EX = f * E_m/ mu_E * (del_an * S_b * R * L_b^3 + rL3_bj)/ J_X; % mol/mol, yield of living reserve on food
+  %Y_EX = f * E_m/ mu_E * (del_an * S_b * R * L_b^3 + rL3_bj)/ J_X; % mol/mol, yield of living reserve on food
+  Y_EX = sgr * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
   stat.(fldf).(fldt).(fldg).Y_EX = Y_EX; txtStat.units.Y_EX  = 'mol/mol'; txtStat.label.Y_EX  = 'yield of living reserve on food';
-  Y_EX_dead = f * E_m/ mu_E * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X; % mol/mol, yield of dead reserve on food
+  %Y_EX_dead = f * E_m/ mu_E * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X; % mol/mol, yield of dead reserve on food
+  Y_EX_dead = hL3_bi * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
   stat.(fldf).(fldt).(fldg).Y_EX_d = Y_EX_dead; txtStat.units.Y_EX_d  = 'mol/mol'; txtStat.label.Y_EX_d  = 'yield of dead reserve on food';
   %
   n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_X]); n_O = n_O(:,[1 2 2 3 3 4]); % chemical indices of organics on food: (in cols)  X V V_dead E E_dead P
