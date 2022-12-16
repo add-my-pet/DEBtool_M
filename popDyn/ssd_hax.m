@@ -159,15 +159,25 @@ function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
   [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; tT_N], qhSL_0, options, pars_qhSL{:});
   t_bi = qhSL(end,4);       % d, \int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt
   t_bp = qhSL_event(1,4);   % d, \int_{a_b}^{a_p} S(t)*exp(-sgr*t) dt
-  t_bj = qhSL_event(2,4);   % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
-  t_ei = t_bi - qhSL_event(3,4);   % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
+  try 
+    t_bj = qhSL_event(2,4);   % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
+    t_ei = t_bi - qhSL_event(3,4);   % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
+  catch
+    t_bj = NaN;
+    t_ei = NaN;
+  end
 
   S_p = qhSL_event(1,3);  % -, survival prob at puberty
   stat.(fldf).(fldt).(fldg).S_p = S_p; txtStat.units.S_p  = '-'; txtStat.label.S_p = 'survival probability at puberty';
-  S_j = qhSL_event(2,3);  % -, survival prob at pupation
-  stat.(fldf).(fldt).(fldg).S_j = S_j; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at pupation';
-  S_e = qhSL_event(3,3);  % -, survival prob at emergence
-  stat.(fldf).(fldt).(fldg).S_e = S_e; txtStat.units.S_e  = '-'; txtStat.label.S_e = 'survival probability at emergence';
+  try
+    S_j = qhSL_event(2,3);  % -, survival prob at pupation
+    stat.(fldf).(fldt).(fldg).S_j = S_j; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at pupation';
+    S_e = qhSL_event(3,3);  % -, survival prob at emergence
+    stat.(fldf).(fldt).(fldg).S_e = S_e; txtStat.units.S_e  = '-'; txtStat.label.S_e = 'survival probability at emergence';
+  catch
+    stat.(fldf).(fldt).(fldg).S_j = NaN; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at pupation';
+    stat.(fldf).(fldt).(fldg).S_e = NaN; txtStat.units.S_e  = '-'; txtStat.label.S_e = 'survival probability at emergence';
+  end
   
   % survival probability (at individual level)
   stat.(fldf).(fldt).(fldg).tS = [0 1; t + aT_b, min(1, qhSL(:,3))];     % d,-, convert time since birth to age for survivor probability
@@ -178,10 +188,16 @@ function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).theta_0b = theta_0b; txtStat.units.theta_0b = '-'; txtStat.label.theta_0b = 'frac of ind that is embryo';
   theta_bj = qhSL_event(1,4)/ (t_0b + t_bi);      % -, fraction of individuals that is larva
   stat.(fldf).(fldt).(fldg).theta_bj = theta_bj; txtStat.units.theta_bj = '-'; txtStat.label.theta_bj = 'frac of ind that is larva';
-  theta_je = qhSL_event(2,4)/ (t_0b + t_bi) - theta_bj; % -, fraction of individuals that is pupa
-  stat.(fldf).(fldt).(fldg).theta_je = theta_je; txtStat.units.theta_je = '-'; txtStat.label.theta_je = 'frac of ind that is pupa';
-  theta_ei = 1 - theta_0b - theta_bj - theta_je;  % -, fraction of individuals that is imago
-  stat.(fldf).(fldt).(fldg).theta_ei = theta_ei; txtStat.units.theta_ei = '-'; txtStat.label.theta_ei = 'frac of ind that is imago';
+  try
+    theta_je = qhSL_event(2,4)/ (t_0b + t_bi) - theta_bj; % -, fraction of individuals that is pupa
+    stat.(fldf).(fldt).(fldg).theta_je = theta_je; txtStat.units.theta_je = '-'; txtStat.label.theta_je = 'frac of ind that is pupa';
+    theta_ei = 1 - theta_0b - theta_bj - theta_je;  % -, fraction of individuals that is imago
+    stat.(fldf).(fldt).(fldg).theta_ei = theta_ei; txtStat.units.theta_ei = '-'; txtStat.label.theta_ei = 'frac of ind that is imago';
+  catch
+    theta_je = NaN; theta_ei = NaN;
+    stat.(fldf).(fldt).(fldg).theta_je = theta_je; txtStat.units.theta_je = '-'; txtStat.label.theta_je = 'frac of ind that is pupa';
+    stat.(fldf).(fldt).(fldg).theta_ei = theta_ei; txtStat.units.theta_ei = '-'; txtStat.label.theta_ei = 'frac of ind that is imago';
+  end
   del_an = theta_ei/ (theta_bj + theta_ei); % fraction of (larvae + imago) that is imago
 
   % mean L^i for post-natals: \frac{\int_{a_b}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_b}^\infty S(t)*exp(-sgr*t) dt}
@@ -196,8 +212,12 @@ function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
   hL3_bj = qhSL_event(1,9)/ t_bj; % cm^3/d, \frac{\int_{a_b}^{a_m} h(t) L^3*S(t)*exp(-sgr*t) dt} {\int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt}
 
   % mean L^i for imago: \frac{\int_{a_p}^\infty L^i*S(t)*exp(-sgr*t) dt} {\int_{a_p}^{a_m} S(t)*exp(-sgr*t) dt}
-  t_ei = t_bi - qhSL_event(2,4); % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
-  L_ei = (qhSL(end,5)-qhSL_event(2,5))/ t_ei; L2_ei = (qhSL(end,6)-qhSL_event(2,6))/ t_ei; L3_ei = (qhSL(end,7)-qhSL_event(2,7))/ t_ei; % mean L^1,2,3 for adults
+  try
+    t_ei = t_bi - qhSL_event(2,4); % d, \int_{a_e}^{a_m} S(t)*exp(-sgr*t) dt
+    L_ei = (qhSL(end,5)-qhSL_event(2,5))/ t_ei; L2_ei = (qhSL(end,6)-qhSL_event(2,6))/ t_ei; L3_ei = (qhSL(end,7)-qhSL_event(2,7))/ t_ei; % mean L^1,2,3 for adults
+  catch
+    t_ei = NaN; L_ei = NaN; L2_ei = NaN; L3_ei = NaN;
+  end
   stat.(fldf).(fldt).(fldg).L_ei  = L_ei;  txtStat.units.L_ei  = 'cm';   txtStat.label.L_ei  = 'mean structural length of imagos';
   stat.(fldf).(fldt).(fldg).L2_ei = L2_ei; txtStat.units.L2_ei = 'cm^2'; txtStat.label.L2_ei = 'mean squared structural length of imagos';
   stat.(fldf).(fldt).(fldg).L3_ei = L3_ei; txtStat.units.L3_ei = 'cm^3'; txtStat.label.L3_ei = 'mean cubed structural length of imagos';
@@ -220,18 +240,18 @@ function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
   Y_VX = sgr * M_V * L3_bi/ J_X;           % mol/mol, yield of living structure on food
   stat.(fldf).(fldt).(fldg).Y_VX = Y_VX; txtStat.units.Y_VX  = 'mol/mol'; txtStat.label.Y_VX  = 'yield of living structure on food';
   %Y_VX_dead = M_V * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X;% mol/mol, yield of dead structure on food
-  Y_VX_dead = hL3_bi * M_V * L3_bi/ J_X;% mol/mol, yield of dead structure on food
+  Y_VX_dead = hL3_bj * M_V * L3_bi/ J_X;% mol/mol, yield of dead structure on food
   stat.(fldf).(fldt).(fldg).Y_VX_d = Y_VX_dead; txtStat.units.Y_VX_d  = 'mol/mol'; txtStat.label.Y_VX_d  = 'yield of dead structure on food';
   %
   %Y_EX = f * E_m/ mu_E * (del_an * S_b * R * L_b^3 + rL3_bj)/ J_X; % mol/mol, yield of living reserve on food
   Y_EX = sgr * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
   stat.(fldf).(fldt).(fldg).Y_EX = Y_EX; txtStat.units.Y_EX  = 'mol/mol'; txtStat.label.Y_EX  = 'yield of living reserve on food';
   %Y_EX_dead = f * E_m/ mu_E * (del_an * (1 - S_b) * R * L_b^3 + hL3_bj)/ J_X; % mol/mol, yield of dead reserve on food
-  Y_EX_dead = hL3_bi * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
+  Y_EX_dead = hL3_bj * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
   stat.(fldf).(fldt).(fldg).Y_EX_d = Y_EX_dead; txtStat.units.Y_EX_d  = 'mol/mol'; txtStat.label.Y_EX_d  = 'yield of dead reserve on food';
   %
-  n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_X]); n_O = n_O(:,[1 2 2 3 3 4]); % chemical indices of organics on food: (in cols)  X V V_dead E E_dead P
-  Y_M = -(n_M\n_O) * [-1; Y_VX; Y_VX_dead; Y_EX; Y_EX_dead; Y_PX];     % mol/mol, yields od minerals on food
+  n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_P]);  % -, chemical indices of organics on food: (in cols)  X V V_dead E E_dead P
+  Y_M = -(n_M\n_O) * [-1; Y_VX+Y_VX_dead; Y_EX+Y_EX_dead; Y_PX];     % mol/mol, yields od minerals on food
   Y_CX = Y_M(1); Y_HX = Y_M(2); Y_OX = Y_M(3); Y_NX = Y_M(4);
   %
   stat.(fldf).(fldt).(fldg).Y_CX = Y_CX; txtStat.units.Y_CX  = 'mol/mol'; txtStat.label.Y_CX  = 'yield of CO2 on food';

@@ -204,8 +204,8 @@ function [stat, txtStat] = ssd_abp(stat, code, par, T_pop, f_pop, sgr)
   Y_EX_dead = hL3_bi * L3_bi * f * E_m/ mu_E/ J_X; % mol/mol, yield of living reserve on food
   stat.(fldf).(fldt).(fldg).Y_EX_d = Y_EX_dead; txtStat.units.Y_EX_d  = 'mol/mol'; txtStat.label.Y_EX_d  = 'yield of dead reserve on food';
   % 
-  n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_X]); n_O = n_O(:,[1 2 2 3 3 4]); % chemical indices for organics (in cols)  X V V_dead E E_dead P
-  Y_M = -(n_M\n_O) * [-1; Y_VX; Y_VX_dead; Y_EX; Y_EX_dead; Y_PX]; % mol/mol, yields for minerals on food
+  n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_P]); % -, chemical indices for organics (in cols)  X V V_dead E E_dead P
+  Y_M = -(n_M\n_O) * [-1; Y_VX+Y_VX_dead; Y_EX+Y_EX_dead; Y_PX]; % mol/mol, yields for minerals on food
   Y_CX = Y_M(1); Y_HX = Y_M(2); Y_OX = Y_M(3); Y_NX = Y_M(4);
   %
   stat.(fldf).(fldt).(fldg).Y_CX = Y_CX; txtStat.units.Y_CX  = 'mol/mol'; txtStat.label.Y_CX  = 'yield of CO2 on food';
