@@ -292,7 +292,7 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
     stat = ssd_mod(model, stat, '10m', par, T, 1, r_10); stat.f1.thin0.m.ER = [];   
   end
   
-return % 2022/12/14 added in repair action of Y_VX
+  % return % 2022/12/14 added in repair action of Y_VX
   % graphics
  
   Hfig_surv = figure(1); % survivor prob
