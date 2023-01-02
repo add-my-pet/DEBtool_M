@@ -275,12 +275,12 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               if k == 3 && length(txtData.(pets{i}).units.(nm{j})) == 3 && length(txtData.(pets{i}).label.(nm{j})) == 3 % yyaxis
                 %% here the plotyy stuff for bi-variate data
                 xData = st.(nm{j})(:,1); 
-                xPred = st.(nm{j})(:,1); 
                 y1Data = st.(nm{j})(:,2);
                 y2Data = st.(nm{j})(:,3);
-                yPred = predict_pets(par, data, auxData); yPred = yPred.(pets{i}).(nm{j});
                 if treat{1} > 1; fprintf('treat{1} must be 0 or 1 for plotyy\n'); return; 
                 elseif treat{1} == 0 % do not interpolate 1st and 2nd independent var and plot markers
+                  xPred = st.(nm{j})(:,1); 
+                  yPred = predict_pets(par, data, auxData); yPred = yPred.(pets{i}).(nm{j});         
                   yyaxis left
                   plot(xPred, yPred(:,1), 'o', 'Color','r', 'Markersize',3)
                   plot(xData, y1Data, '.', 'Color','r', 'Markersize',15)
@@ -290,6 +290,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   plot(xData, y2Data, '.', 'Color','b', 'Markersize',15)
                   ylabel([txtData.(pets{i}).label.(nm{j}){3}, ', ', txtData.(pets{i}).units.(nm{j}){3}]);
                 else % treat{1} == 1, do not interpolate 2nd independent var and plot curves
+                  xPred = data2plot.(pets{i}).(nm{j})(:,1); 
+                  yPred = prdData_x.(pets{i}).(nm{j});         
                   yyaxis left
                   plot(xPred, yPred(:,1), '-', 'Color','r', 'linewidth',2)
                   plot(xData, y1Data, '.', 'Color','r', 'Markersize',15)
