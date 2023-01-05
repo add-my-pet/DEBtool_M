@@ -66,7 +66,7 @@ function [merr, rerr, prdInfo] = mre_st(func, par, data, auxData, weights)
     else
       meanval = abs(var); diff = abs(prdVar - var);
     end
-    wsum(i) = sum(w(sel)); 
+    wsum(i) = sum(w(sel));
 
     
     if all(meanval > 0)
