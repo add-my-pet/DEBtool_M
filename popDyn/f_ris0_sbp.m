@@ -123,7 +123,8 @@ function dqhSC = dget_qhSC(t, qhSC, f, kap, kap_R, k_M, v, g, k, u_E0, L_b, L_p,
   dS = - h * S; % 1/d, change in survival prob
     
   l = L_p/ L_m; % -, scaled structural length
-  R = (t > t_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l) - k * v_Hp) * (1 - kap)/ u_E0; % 1/d, reprod rate
+  R = (t > t_p) * kap_R * k_M * (f * l^2 - kap * l^3 - k * v_Hp * (1-kap)) / u_E0; % 1/d, reprod rate
+  % R = (t > t_p) * kap_R * k_M * (f * l^2/ (f + g) * (g + l) - k * v_Hp) * (1 - kap)/ u_E0; % 1/d, reprod rate
   dCharEq = S * R;
   
   dqhSC = [dq; dh_A; dS; dCharEq]; 
