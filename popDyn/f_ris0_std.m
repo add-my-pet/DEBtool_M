@@ -9,7 +9,7 @@ function [f, info] = f_ris0_std (par)
   % [f, info] = <../f_ris0_std.m *f_ris0_std*> (par)
   
   %% Description
-  % Obtains the scaled function response at which specific population growth rate for the std model equals zero, 
+  % Obtains the scaled functional response at which specific population growth rate for the std model equals zero, 
   %   by solving the characteristic equation. We work at T_ref here.
   %
   % Input

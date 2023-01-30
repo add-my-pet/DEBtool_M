@@ -9,7 +9,7 @@ function [f, info] = f_ris0_sbp (par)
   % [f, info] = <../f_ris0_sbp.m *f_ris0_sbp*> (par)
   
   %% Description
-  % Obtains the scaled function response at which specific population growth rate for the sbp model equals zero, 
+  % Obtains the scaled functional response at which specific population growth rate for the sbp model equals zero, 
   %   by solving the characteristic equation. We work at T_ref here.
   %
   % Input
