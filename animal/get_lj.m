@@ -4,7 +4,7 @@
 %%
 function [lj, lp, lb, info] = get_lj(p, f, lb0)
   %  created at 2010/02/10 by Bas Kooijman, 
-  %  modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
+  %  modified 2014/03/03 Starrlight Augustine, 2015/01/18, 2023/02/15 Bas Kooijman;
   
   %% Syntax
   % [lj, lp, lb, info] = <../get_lj.m *get_lj*>(p, f, lb0)
@@ -69,7 +69,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
     lb0 = [];
   end
   if isempty(lb0)
-    [lb info] = get_lb([g; k; vHb], f, lb0);
+    [lb, info] = get_lb([g; k; vHb], f, lb0);
   else
     info = 1;
     lb = lb0;
@@ -104,7 +104,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
     %options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9); 
     %[t, vHl] = ode45(@dget_l_ISO_t, [0; 1e6], [vHj; lj], options, k, lT, g, f, sM, vHp); lp = vHl(end,2);
     % options = odeset('AbsTol',1e-8, 'RelTol',1e-8); 
-    [vH, l] = ode45(@dget_l_ISO, [vHb; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
+    [vH, l] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
   else
     lp = [];
   end
