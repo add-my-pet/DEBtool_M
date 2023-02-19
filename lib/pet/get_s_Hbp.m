@@ -70,7 +70,7 @@ switch order
     score = 7;
   case 'Apodiformes'
     score = 1;
-  case 'Caprimulgiformes'
+  case {'Caprimulgiformes','Nyctibiiformes','Steatornithiformes','Podargiformes'}
     score = 3;
   case 'Aegotheliformes'
     score = 3;
@@ -141,7 +141,7 @@ switch order
   case 'Passeriformes'
     score = 1;
   otherwise
-    fprintf(['warning from get_s_Hbp: order ', order , 'could not be identified: score = 1\n'])
+    fprintf(['warning from get_s_Hbp: order ', order , ' could not be identified: score = 1\n'])
     score = 1; info = 0;
 end
 
