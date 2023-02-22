@@ -36,6 +36,6 @@ function t = wblrnd(lambda,k,r,c)
   end
 
   % Generate uniform random values, and apply the Weibull inverse CDF.
-  t = 1/lambda .* (-log(rand(r,c))) .^ (1/k); 
+  t = lambda * (-log(rand(r,c))) .^ (1/k); 
 
 end

@@ -32,6 +32,6 @@ function [par_ML, info] = wblML(t)
   wbl = @(shape, t) sum(t.^shape .* log(t))/ sum(t.^shape) - 1/shape - mean(log(t)); % ML fn for shape par
 
   [par_ML(2), ~, info] = fzero(@(shape) wbl(shape,t), 3);
-  par_ML(1) = 1/mean(t.^par_ML(2))^(1/par_ML(2));
+  par_ML(1) = mean(t.^par_ML(2))^(1/par_ML(2));
 
 end
