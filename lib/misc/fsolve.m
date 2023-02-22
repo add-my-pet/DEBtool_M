@@ -1,5 +1,5 @@
 %% fsolve
-% find x for which 0 = nm(x) using Nead-Melder simplex method
+% find x for which 0 = func(x) using Nead-Melder simplex method
 
 %%
 function [x, fval, info] = fsolve(func, xin, opt, varargin)
@@ -9,13 +9,12 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
 % [x, fval, info] = <../fsolve.m *fsolve*> (func, x, varargin)
 
 %% Description
-% find the vector-valued x for which 0 = funcnm(x), where funcnm is a valid
-% function name
+% find the vector-valued x for which 0 = func(x), where func is a valid function name
 %
 % Input:
 %
 % * func: character string with name of function (without handle)
-% * x: n-vector with initial value
+% * x: n-vector with initial values
 % * opt: optional structure with iteration parameters (might be empty)
 % * varargin: variables that are passed to function nm
 %
@@ -51,7 +50,6 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   if ~exist('report','var') || isempty(report)
     report = 0;
   end
-
 
   % Initialize parameters
   rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
