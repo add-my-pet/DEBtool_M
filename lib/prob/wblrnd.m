@@ -20,7 +20,7 @@ function t = wblrnd(lambda,k,r,c)
   %
   % Output:
   %
-  % * t: (r,c)-matrix with random trials of a Weibull distribution
+  % * t: (r,c)-matrix with random trials from a Weibull distribution
   
   %% Remarks
   % estimate parameters of the Weibull distribution with wblML;

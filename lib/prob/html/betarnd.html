@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">betarnd</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">betarnd</h2><p>generates random trials from a beta distribution</p><h2 id="3">Syntax</h2><p>x = <a href="../betarnd.m"><b>betarnd</b></a> (alpha,beta,r,c)</p><h2 id="4">Description</h2><p>generates random trials from the beta distribution:    pdf(x)=x^(alpha-1)(1-x)^(beta-1)/ B(alpha, beta);</p><p>Input:</p><div><ul><li>alpha: scalar with scale parameter</li><li>beta: scalar with scale parameter</li><li>r: optional scalar with number of rows of output (default 1)</li><li>c: optional scalar with number of columns of output (default 1)</li></ul></div><p>Output:</p><div><ul><li>x: (r,c)-matrix with random trials of a beta distribution</li></ul></div><h2 id="5">Remarks</h2><p>estimate parameters of the beata distribution with betaML; dim(alpha) = 0 and dim(beta) = 0.</p><h2 id="6">Example of use</h2><p>betarnd(2,4,5,6)</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">betarnd</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="1">betarnd</h2><p>generates random trials from a beta distribution</p><h2 id="3">Syntax</h2><p>x = <a href="../betarnd.m"><b>betarnd</b></a> (alpha,beta,r,c)</p><h2 id="4">Description</h2><p>generates random trials from the beta distribution:    pdf(x)=x^(alpha-1)(1-x)^(beta-1)/ B(alpha, beta);</p><p>Input:</p><div><ul><li>alpha: scalar with scale parameter</li><li>beta: scalar with scale parameter</li><li>r: optional scalar with number of rows of output (default 1)</li><li>c: optional scalar with number of columns of output (default 1)</li></ul></div><p>Output:</p><div><ul><li>x: (r,c)-matrix with random trials from a beta distribution</li></ul></div><h2 id="5">Remarks</h2><p>estimate parameters of the beta distribution with betaML; dim(alpha) = 0 and dim(beta) = 0.</p><h2 id="6">Example of use</h2><p>betarnd(2,4,5,6)</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% betarnd
 % generates random trials from a beta distribution
@@ -91,10 +91,10 @@ function x = betarnd(alpha,beta,r,c)
   %
   % Output:
   %
-  % * x: (r,c)-matrix with random trials of a beta distribution
+  % * x: (r,c)-matrix with random trials from a beta distribution
   
   %% Remarks
-  % estimate parameters of the beata distribution with betaML;
+  % estimate parameters of the beta distribution with betaML;
   % dim(alpha) = 0 and dim(beta) = 0.
   
   %% Example of use
@@ -108,8 +108,9 @@ function x = betarnd(alpha,beta,r,c)
   end
 
   % Generate gamma-distributed random values, and transform to beta-distributed ones
-  X = gammarnd(alpha,1,r,c); Y = gammarnd(beta,1,r,c); x = X ./ (X + Y); 
+  X = gammarnd(1,alpha,r,c); Y = gammarnd(1,beta,r,c); x = X ./ (X + Y); 
 
+  
 end
 ##### SOURCE END #####
 --></body></html>

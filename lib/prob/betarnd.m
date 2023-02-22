@@ -20,10 +20,10 @@ function x = betarnd(alpha,beta,r,c)
   %
   % Output:
   %
-  % * x: (r,c)-matrix with random trials of a beta distribution
+  % * x: (r,c)-matrix with random trials from a beta distribution
   
   %% Remarks
-  % estimate parameters of the beata distribution with betaML;
+  % estimate parameters of the beta distribution with betaML;
   % dim(alpha) = 0 and dim(beta) = 0.
   
   %% Example of use

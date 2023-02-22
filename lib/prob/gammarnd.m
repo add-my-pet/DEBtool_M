@@ -20,8 +20,7 @@ function x = gammarnd(theta,alpha,r,c)
   %
   % Output:
   %
-  % * x: (r,c)-matrix with random trials of a gamma distribution
-  
+  % * x: (r,c)-matrix with random trials from a gamma distribution
   
   %% Example of use
   % gammarnd(2,4,5,6)
@@ -36,10 +35,10 @@ function x = gammarnd(theta,alpha,r,c)
   del = mod(alpha,1); k = ceil(alpha) - 1; n = r * c; x = NaN(n,1); i = 0; j = 0;
   
   while i<n && j<100*n
-    if rand(1,1) <= exp(1)/ (exp(1) + del)
-      xi = rand(1,1)^(1/del); nu = rand(1,1)*xi^(del-1);
+    if rand <= exp(1)/ (exp(1) + del)
+      xi = rand^(1/del); nu = rand*xi^(del-1);
     else
-      xi = 1 - log(rand(1,1)); nu = rand(1,1)*exp(-xi);
+      xi = 1 - log(rand); nu = rand*exp(-xi);
     end
     if nu <= xi.^(del-1) * exp(-xi)
       i=i+1; x(i) = theta*(xi - sum(log(rand(k,1))));
