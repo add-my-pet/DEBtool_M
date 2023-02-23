@@ -9,7 +9,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % modified 2016/03/25 by Dina Lika & Goncalo Marques
 % modified 2016/04/14 by Bas Kooijman, 2016/09/21 by Starrlight, 
 % modified 2016/09/22, 2017/01/05, 2017/10/17, 2017/11/20 by Bas Kooijman
-% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05, 2021/10/24, 2022/01/31 by Bas Kooijman
+% modified 2018/08/18, 2018/08/22, 2019/04/25, 2021/10/05, 2021/10/24, 2022/01/31, 2023/02/23 by Bas Kooijman
 
 %% Syntax
 % [stat, txtStat] = <statistics_st.m *statistics_st*>(model, par, T, f)
@@ -65,7 +65,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 %     - : wet weight at max growth; all models
 %     - dWm: max growth in wet weight; all models
 %
-%     - M_E*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
+%     - E_H*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
 %     - E_0: energy investment in egg/foetus; all
 %     - M_E0: reserve invested in egg/foetus; all
 %     - Ww_0: initial wet weight; all except stf, stx
@@ -277,18 +277,21 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   for i = 1:length(mat_index)
     switch mat_index{i}
       case 'h'
+        stat.E_Hh = M_Hh; units.E_Hh = 'J'; label.E_Hh = 'maturity level at hatch'; temp.E_Hh = NaN; fresp.E_Hh = NaN;
         stat.M_Hh = M_Hh; units.M_Hh = 'mol'; label.M_Hh = 'maturity level at hatch'; temp.M_Hh = NaN; fresp.M_Hh = NaN;
         stat.U_Hh = U_Hh; units.U_Hh = 'cm^2.d'; label.U_Hh = 'scaled maturity level at hatch'; temp.U_Hh = T_ref; fresp.U_Hh = NaN;
         stat.V_Hh = V_Hh; units.V_Hh = 'cm^2.d'; label.V_Hh = 'scaled maturity level at hatch'; temp.V_Hh = T_ref; fresp.V_Hh = NaN;
         stat.u_Hh = u_Hh; units.u_Hh = '-'; label.u_Hh = 'scaled maturity level at hatch'; temp.u_Hh = NaN; fresp.u_Hh = NaN;
         stat.v_Hh = v_Hh; units.v_Hh = '-'; label.v_Hh = 'scaled maturity level at hatch'; temp.v_Hh = NaN; fresp.v_Hh = NaN;
       case 'b'
+        stat.E_Hb = E_Hb; units.E_Hb = 'J'; label.E_Hb = 'maturity level at birth'; temp.E_Hb = NaN; fresp.E_Hb = NaN;
         stat.M_Hb = M_Hb; units.M_Hb = 'mol'; label.M_Hb = 'maturity level at birth'; temp.M_Hb = NaN; fresp.M_Hb = NaN;
         stat.U_Hb = U_Hb; units.U_Hb = 'cm^2.d'; label.U_Hb = 'scaled maturity level at birth'; temp.U_Hb = T_ref; fresp.U_Hb = NaN;
         stat.V_Hb = V_Hb; units.V_Hb = 'cm^2.d'; label.V_Hb = 'scaled maturity level at birth'; temp.V_Hb = T_ref; fresp.V_Hb = NaN;
         stat.u_Hb = u_Hb; units.u_Hb = '-'; label.u_Hb = 'scaled maturity level at birth'; temp.u_Hb = NaN; fresp.u_Hb = NaN;
         stat.v_Hb = v_Hb; units.v_Hb = '-'; label.v_Hb = 'scaled maturity level at birth'; temp.v_Hb = NaN; fresp.v_Hb = NaN;
       case 'x'
+        stat.E_Hx = E_Hx; units.E_Hx = 'J'; label.E_Hx = 'maturity level at weaning/fletching'; temp.E_Hx = NaN; fresp.E_Hx = NaN;
         stat.M_Hx = M_Hx; units.M_Hx = 'mol'; label.M_Hx = 'maturity level at weaning/fletching'; temp.M_Hx = NaN; fresp.M_Hx = NaN;
         stat.U_Hx = U_Hx; units.U_Hx = 'cm^2.d'; label.U_Hx = 'scaled maturity level at weaning/fletching'; temp.U_Hx = T_ref; fresp.U_Hx = NaN;
         stat.V_Hx = V_Hx; units.V_Hx = 'cm^2.d'; label.V_Hx = 'scaled maturity level at weaning/fletching'; temp.V_Hx = T_ref; fresp.V_Hx = NaN;
@@ -296,12 +299,14 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
         stat.v_Hx = v_Hx; units.v_Hx = '-'; label.v_Hx = 'scaled maturity level at weaning/fletching'; temp.v_Hx = NaN; fresp.v_Hx = NaN;
       case 's'
         if strcmp(model, 'ssj')
+          stat.E_Hs = E_Hs; units.E_Hs = 'J'; label.E_Hs = 'maturity level at S1/S2 transition'; temp.E_Hs = NaN; fresp.E_Hs = NaN;
           stat.M_Hs = M_Hs; units.M_Hs = 'mol'; label.M_Hs = 'maturity level at S1/S2 transition'; temp.M_Hs = NaN; fresp.M_Hs = NaN;
           stat.U_Hs = U_Hs; units.U_Hs = 'cm^2.d'; label.U_Hs = 'scaled maturity level at S1/S2 transition'; temp.U_Hs = T_ref; fresp.U_Hs = NaN;
           stat.V_Hs = V_Hs; units.V_Hs = 'cm^2.d'; label.V_Hs = 'scaled maturity level at S1/S2 transition'; temp.V_Hs = T_ref; fresp.V_Hs = NaN;
           stat.u_Hs = u_Hs; units.u_Hs = '-'; label.u_Hs = 'scaled maturity level at S1/S2 transition'; temp.u_Hs = NaN; fresp.u_Hs = NaN;
           stat.v_Hs = v_Hs; units.v_Hs = '-'; label.v_Hs = 'scaled maturity level at S1/S2 transition'; temp.v_Hs = NaN; fresp.v_Hs = NaN;
         else % asj
+          stat.E_Hs = E_Hs; units.E_Hs = 'J'; label.E_Hs = 'maturity level at start acceleration'; temp.E_Hs = NaN; fresp.E_Hs = NaN;
           stat.M_Hs = M_Hs; units.M_Hs = 'mol'; label.M_Hs = 'maturity level at start acceleration'; temp.M_Hs = NaN; fresp.M_Hs = NaN;
           stat.U_Hs = U_Hs; units.U_Hs = 'cm^2.d'; label.U_Hs = 'scaled maturity level at start acceleration'; temp.U_Hs = T_ref; fresp.U_Hs = NaN;
           stat.V_Hs = V_Hs; units.V_Hs = 'cm^2.d'; label.V_Hs = 'scaled maturity level at start acceleration'; temp.V_Hs = T_ref; fresp.V_Hs = NaN;
@@ -309,19 +314,22 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
           stat.v_Hs = v_Hs; units.v_Hs = '-'; label.v_Hs = 'scaled maturity level at start acceleration'; temp.v_Hs = NaN; fresp.v_Hs = NaN;
         end
       case 'j'
+        stat.E_Hj = E_Hj; units.E_Hj = 'J'; label.E_Hj = 'maturity level at metamorphosis'; temp.E_Hj = NaN; fresp.E_Hj = NaN;
         stat.M_Hj = M_Hj; units.M_Hj = 'mol'; label.M_Hj = 'maturity level at metamorphosis'; temp.M_Hj = NaN; fresp.M_Hj = NaN;
         stat.U_Hj = U_Hj; units.U_Hj = 'cm^2.d'; label.U_Hj = 'scaled maturity level at metamorphosis'; temp.U_Hj = T_ref; fresp.U_Hj = NaN;
         stat.V_Hj = V_Hj; units.V_Hj = 'cm^2.d'; label.V_Hj = 'scaled maturity level at metamorphosis'; temp.V_Hj = T_ref; fresp.V_Hj = NaN;
         stat.u_Hj = u_Hj; units.u_Hj = '-'; label.u_Hj = 'scaled maturity level at metamorphosis'; temp.u_Hj = NaN; fresp.u_Hj = NaN;
         stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis'; temp.v_Hj = NaN; fresp.v_Hj = NaN;
       case 'p'
+        stat.E_Hp = E_Hp; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; temp.E_Hp = NaN; fresp.E_Hp = NaN;
         stat.M_Hp = M_Hp; units.M_Hp = 'mol'; label.M_Hp = 'maturity level at puberty'; temp.M_Hp = NaN; fresp.M_Hp = NaN;
         stat.U_Hp = U_Hp; units.U_Hp = 'cm^2.d'; label.U_Hp = 'scaled maturity level at puberty'; temp.U_Hp = T_ref; fresp.U_Hp = NaN;
         stat.V_Hp = V_Hp; units.V_Hp = 'cm^2.d'; label.V_Hp = 'scaled maturity level at puberty'; temp.V_Hp = T_ref; fresp.V_Hp = NaN;
         stat.u_Hp = u_Hp; units.u_Hp = '-'; label.u_Hp = 'scaled maturity level at puberty'; temp.u_Hp = NaN; fresp.u_Hp = NaN;
         stat.v_Hp = v_Hp; units.v_Hp = '-'; label.v_Hp = 'scaled maturity level at puberty'; temp.v_Hp = NaN; fresp.v_Hp = NaN;
       case 'e' % hex
-        stat.M_He = M_He; units.M_He = 'mol'; label.M_He = 'maturity level at emergence'; temp.M_He = M_He; fresp.M_He = NaN;
+        stat.E_He = E_He; units.E_He = 'J'; label.E_He = 'maturity level at emergence'; temp.E_He = NaN; fresp.E_He = NaN;
+        stat.M_He = M_He; units.M_He = 'mol'; label.M_He = 'maturity level at emergence'; temp.M_He = NaN; fresp.M_He = NaN;
         stat.U_He = U_He; units.U_He = 'cm^2.d'; label.U_He = 'scaled maturity level at emergence'; temp.U_He = T_ref; fresp.U_He = NaN;
         stat.V_He = V_He; units.V_He = 'cm^2.d'; label.V_He = 'scaled maturity level at emergence'; temp.V_He = T_ref; fresp.V_He = NaN;
         stat.u_He = u_He; units.u_He = '-'; label.u_He = 'scaled maturity level at emergence'; temp.u_He = NaN; fresp.u_He = NaN;
