@@ -137,7 +137,7 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
     tau_p = [];
   elseif  li <=  lp                  % reproduction is not possible
     tau_p = 1e20;                    % tau_p is never reached
-    lp = 1;                          % lp is nerver reached
+    lp = 1;                          % lp is never reached
   else % reproduction is possible
     if length(lb0) ~= 2 % lb0 is absent, empty or a scalar
       tau_p = tau_j + log((li - lj)/ (li - lp))/ rB;
