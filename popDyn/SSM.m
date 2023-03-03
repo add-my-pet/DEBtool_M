@@ -9,7 +9,7 @@ function txNL23W = SSM(species, tT, tJX, x_0, V_X, h, t_max)
 % txNL23W = <../SSM.m *SSM*> (species, tT, tJX, x_0, V_X, h, t_max) 
 
 %% Description
-% Semi Structured Model: Plots population trajectories in a generalised reactor for a selected species that reproduce as a continuous flux. 
+% Semi Structured Model: Plots population trajectories in a generalised reactor for a selected species that reproduces as a continuous flux. 
 % Opens 2 html-pages in system browser to report species traits and ebt parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
