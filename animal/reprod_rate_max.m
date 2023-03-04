@@ -44,7 +44,7 @@ function R_m = reprod_rate_max(mod, par)
   v_Hb = E_Hb/ (1 - kap)/ g/ E_m/ L^3; % -, scaled maturity at birth
   
   % scaled with scaled reserve at t=0: U_E^0 g^2 k_M^3/ v^2 with U_E^0 = E_0/ p_Am
-  if strcmp(mod,'stf')
+  if strcmp(mod,'stf') || strcmp(mod,'stx')
     E_0 = g * E_m * L^3 * get_ue0_foetus([g, k, v_Hb]); 
   else
     E_0 = g * E_m * L^3 * get_ue0([g, k, v_Hb]); 
@@ -56,7 +56,7 @@ function R_m = reprod_rate_max(mod, par)
       v_Hp = E_Hp/ (1 - kap)/ g/ E_m/ L^3; % -, scaled maturity at puberty
       [~, l_p] = get_lj([g, k, 0, v_Hb, v_Hj, v_Hp]); L = L * l_p; % cm, struc length
       R_m = kap_R * (L^2 * s_M * p_Am - p_M * L^3 - k_J * E_Hp)/ E_0; % 1/d, max reprod rate
-    case {'std','stf','ssj','abj','asj'}
+    case {'std','stf','stx','ssj','abj','asj'}
       R_m = kap_R * ((1 - kap) * E_m * s_M^3 * L^2 * v - k_J * E_Hp)/ E_0; % 1/d, max reprod rate
     otherwise
       R_m = NaN;
