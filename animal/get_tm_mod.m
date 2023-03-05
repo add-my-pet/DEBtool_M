@@ -129,14 +129,14 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hp v_Hp+1e-9], f); 
-      [tau, qhSt] = ode45(@dget_qhSt_abp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, rho_j, g, s_G, h_a, h_B, thinning);
-      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
+      [tau, qhSt] = ode45(@dget_qhSt_abp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_j - tau_b, l_b, l_p, rho_j, g, s_G, h_a, h_B, thinning);
+      tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_j];
     case 'hep' % ignore aging till emergence (fitted data concerns life span as imago)
       S_b = 1; S_p = 1; S_j = 1; qhSt_j = [0 0 1 0]; %[S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       %qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_hep([g, k, v_Hb, v_Hp, v_Rj], f);
       %[tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p - tau_b; tau_j - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, tau_j- tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; 1e-6; 1e8], qhSt_j, options, f,  1e-6, l_j, g, s_G, h_a, h_B);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; 1e-6; 1e8], qhSt_j, options, f,  1e-6, l_b, l_p, l_j, g, s_G, h_a, h_B);
       tau_m = qhSt(end,4); S = [S_b; S_p; S_j]; tau = [tau_b; tau_p; tau_j]; 
     case 'hax' % ignore aging till emergence (fitted data concerns life span as imago)
       S_b = 1; S_p = 1; S_j = 1; qhSt_j = [0 0 1 0]; % [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
@@ -144,7 +144,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       %qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
       %[tau, qhSt] = ode45(@dget_qhSt_hep, [0; tau_p-tau_b; tau_j-tau_b; 1e8], qhSt_b, options, f, tau_p-tau_b, tau_j-tau_b, l_b, l_p, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       %tau_m = qhSt(end,4); S_p = qhSt(2,3); S_j = qhSt(min(3,end),3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e-tau_j, l_e, g, s_G, h_a, h_B);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e-tau_j, l_b, l_p, l_e, g, s_G, h_a, h_B);
       S_e = qhSt(2,3); S = [S_b; S_p; S_j; S_e]; tau = [tau_b; tau_p; tau_j; tau_e];  tau_m = qhSt(3,4);
     case 'hex' % ignore aging till emergence (fitted data concerns life span as imago)
       S_b = 1; S_j = 1; qhSt_j = [0 0 1 0]; %[S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
@@ -152,7 +152,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
       %[tau, qhSt] = ode45(@dget_qhSt_hex_bj, [0; tau_j - tau_b], qhSt_b, [], f, l_b, rho_j, g, s_G, h_a, h_B, thinning);
       %tau_m = qhSt(end,4); S_j = qhSt(end,3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e, l_e, g, s_G, h_a, h_B);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e, l_b, l_j, l_e, g, s_G, h_a, h_B);
       S_e = qhSt(2,3); S = [S_b; S_j; S_e]; tau = [tau_b; tau_j; tau_e]; tau_m = qhSt(3,4);
   end
 
@@ -302,17 +302,20 @@ function dqhSt = dget_qhSt_abj(tau, qhSt, f, tau_j, tau_p, l_b, l_j, l_i, rho_j,
     h_B = h_B(2);
     l = l_b * exp(tau * rho_j);
     r = rho_j;
+    s_M = l/l_b;
   elseif tau < tau_p
     h_B = h_B(3);
     l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
+    s_M = l_j/l_b;
   else % adult
     h_B = h_B(4);
     l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
+    s_M = l_j/l_b;
   end
   
-  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dq = f * (q * l^3 * s_G + h_a) * (g * s_M/ l - r) - r * q;
   dh_A = q - r * h_A;
   h_X = thinning * r * 2/3;
   h = h_A + h_B + h_X; 
@@ -334,21 +337,25 @@ function dqhSt = dget_qhSt_asj(tau, qhSt, f, tau_s, tau_j, tau_p, l_b, l_s, l_j,
     rho_B = 1/ 3/ (1 + f/ g); 
     l = f - (f - l_b) * exp(- tau * rho_B);
     r = 3 * rho_B * (f/ l - 1);
+    s_M = 1;
   elseif tau < tau_j
     h_B = h_B(3);
     l = l_s * exp((tau - tau_s) * rho_j);
     r = rho_j;
+    s_M = l/l_s;
   elseif tau < tau_p
     h_B = h_B(4);
     l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
+    s_M = l_j/l_s;
   else % adult
     h_B = h_B(5);
     l = l_i - (l_i - l_j) * exp(- (tau - tau_j) * rho_B);
     r = 3 * rho_B * (f/ l - 1);
+    s_M = l_j/l_s;
   end
   
-  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dq = f * (q * l^3 * s_G + h_a) * (g * s_M/ l - r) - r * q;
   dh_A = q - r * h_A;
   h_X = thinning * r * 2/3;
   h = h_A + h_B + h_X; 
@@ -369,13 +376,15 @@ function dqhSt = dget_qhSt_abp(tau, qhSt, f, tau_p, l_b, l_p, rho_j, g, s_G, h_a
     h_B = h_B(2);
     l = l_b * exp(tau * rho_j);
     r = rho_j;
+    s_M = l/l_b;
   else % adult
     h_B = h_B(3);
     l = l_p;
     r = 0;
+    s_M = l_p/l_b;
   end
   
-  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dq = f * (q * l^3 * s_G + h_a) * (g * s_M/ l - r) - r * q;
   dh_A = q - r * h_A;
   h_X = thinning * r * 2/3;
   h = h_A + h_B + h_X; 
@@ -397,17 +406,20 @@ function dqhSt = dget_qhSt_hep(tau, qhSt, f, tau_p, tau_j, l_b, l_p, l_i, rho_j,
     h_B = h_B(2);
     l = l_b * exp(tau * rho_j);
     r = rho_j;
+    s_M = l/l_b;
   elseif tau < tau_j % adult till metam
     h_B = h_B(3);
     l = l_i - (l_i - l_p) * exp(- (tau - tau_p) * rho_B);
     r = 3 * rho_B * (l_i/ l - 1);
+    s_M = lp/l_b;
   else % adult imago
     h_B = h_B(4);
-    l = l_i - (l_i - l_p) * exp(- (tau - tau_p) * rho_B);
-    r = 3 * rho_B * (l_i/ l - 1);
+    l = l_i - (l_i - l_p) * exp(- (tau_j - tau_p) * rho_B);
+    r = 0;
+    s_M = lp/l_b;
   end
   
-  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dq = f * (q * l^3 * s_G + h_a) * (g * s_M/ l - r) - r * q;
   dh_A = q - r * h_A;
   h_X = thinning * r * 2/3;
   h = h_A + h_B + h_X; 
@@ -427,8 +439,9 @@ function dqhSt = dget_qhSt_hex_bj(tau, qhSt, f, l_b, rho_j, g, s_G, h_a, h_B, th
   h_B = h_B(2);
   l = l_b * exp(tau * rho_j);
   r = rho_j;
+  s_M = l/l_b;
   
-  dq = f * (q * l^3 * s_G + h_a) * (g/ l - r) - r * q;
+  dq = f * (q * l^3 * s_G + h_a) * (g * s_M/ l - r) - r * q;
   dh_A = q - r * h_A;
   h_X = thinning * r * 2/3;
   h = h_A + h_B + h_X; 
@@ -438,7 +451,7 @@ function dqhSt = dget_qhSt_hex_bj(tau, qhSt, f, l_b, rho_j, g, s_G, h_a, h_B, th
   dqhSt = [dq; dh_A; dS; dt]; 
 end
 
-function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_e, g, s_G, h_a, h_B)
+function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_b, l_p, l_e, g, s_G, h_a, h_B)
   % tau: scaled time since pupation
   q   = qhSt(1); % -, scaled aging acceleration
   h_A = qhSt(2); % -, scaled hazard rate due to aging
@@ -451,7 +464,8 @@ function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_e, g, s_G, h_a, h_B)
     dh_A = 0;
   else
     h_B = h_B(4);
-    dq = f * (q * l_e^3 * s_G + h_a) * g/ l_e;
+    s_M = l_p/l_b;
+    dq = f * (q * l_e^3 * s_G + h_a) * g * s_M/ l_e;
     dh_A = q;
   end
   
