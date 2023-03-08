@@ -45,16 +45,33 @@
       On top of that, a large number of other population characteristics is computed, such as yield coefficients, as described for the standard DEB model
       <a href="https://debtool.debtheory.org/popDyn/html/ssd_std.html" target="_blank"><b>ssd_std</b></a>.
 
-      <h2><a name="dynamic">Dynamic environments, with interaction</a></h2>
+      <h2><a name="dynamic">Dynamic environments, with interaction via competition</a></h2>
       The next level of DEBtool/popDyn functions considers a generalized well-stirred reaktor environment with a pre-described, possibly varying, food input,
       and hazard rates for (inert) food particles and the various stages of individuals. Chemostats and fed-batch cultures are special cases of generalized reaktors.
       
-      <h3><a name="CMP">Cohort Projection Models</a></h3>
+      <h3><a name="CMP">Cohort Projection Models (CPMs)</a></h3>
 
-      <h3><a name="EBT">Escalator Boxcar Trains</a></h3>
+      <h3><a name="EBT">Escalator Boxcar Trains (EBT)</a></h3>
 
-      <h3><a name="IBM">Individual-Based Models</a></h3>
+      <h3><a name="IBM">Individual-Based Models (IBMs)</a></h3>
+      The function <a href="https://debtool.debtheory.org/popDyn/html/IBM.html" target="_blank">IBM</a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
+      set_pars.txt as input files for NetLogo (see below).
+      NetLogo then runs automatically or can be started independently by hitting button "go" in the gui), while it  writes an output file txNL23W.txt.
+      This output file is either shown in the NetLogo gui, or can be imported in Matlab.
 
+      <p>
+      Pressing button "setup" in the NetLogo gui, forces Netlogo to import set_pars.txt to set the parameters; they can be modified in the gui (hit button "Settings").
+      The file eaLE.txt is used to get the embryo-states by interpolation and can best be changed via IBM, since the numbers depend on some parameters.
+      The file spline_JX.txt (units: d,mol/d) sets the knots of the spline for the food-input to the reactor as function of time.
+      The temperature correction factor is given as function of time by spline_TC.txt (units: d,-). If just the reference-temperature is chosen for 1e4 days,
+      this file has the contents: line 1: 0 1; line 2: 1e4 1. So 4 numbers only.
+      One can also mimic seasonally changing trajectories, both for food and for temperature (correction factors).
+      These spline-files can be edited.
+      Notice the physiological rate parameters depend on temperature, but the background hazards do not.
+
+      <p>
+      The various DEB models are described in the NetLogo gui (dropdown "Tabs", then "Info"), while the code can be seen via dropdown "Tabs", then "Code".
+      
       <h2><font color="red">To be extended</font></h2>
 
 
