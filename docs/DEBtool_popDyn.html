@@ -72,6 +72,14 @@
 
       <p>
       The various DEB models are described in the NetLogo gui (dropdown "Tabs", then "Info"), while the code can be seen via dropdown "Tabs", then "Code".
+
+      <p>
+      Since NetLogo follows individuals, the required computation time (which can be considerable) directly relates to the total integration time (t_max), the
+       number of integration steps per unit of time (tickRate) and the number of individuals in the population.
+      The latter is mainly controlled by the food input into the reactor, i.e. spline_JX.
+      The idea is that the tickRate is chosen as small as possible, without affecting the trajectories too much.
+      The food-input to the reactor is best chosen such that the numbers range somewhere between 100 and 1000, wile t_max such be several times the maximum lifespan of individuals.
+       
       
       <h2><font color="red">To be extended</font></h2>
 
