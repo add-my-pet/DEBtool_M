@@ -28,9 +28,10 @@
       
 
       <hr>
-      <h2><a name="constant">Constant environments</a></h2>
+      <h2><a name="constant">Constant environments, no interaction</a></h2>
       If a homogenous environment remains constant in terms of food availability and temperature, the population will eventually grow exponentially
-      at a rate that follows from the chacteristic equation.
+      at a rate that follows from the <a href="" title="1=int_{a_p}^{a_m} S(a) R(a) exp(-r_N a) da, with a=age, a_p=age at puberty, a_m=age at death, 
+       S=survivor prob, R=reprod rate, r_N = spec pop growth rate">chacteristic equation</a>.
       This equation determines this rate implicitly only, and the specific population growth rate needs to be obtained numerically from this equation.
 
       <p>
@@ -44,11 +45,15 @@
       On top of that, a large number of other population characteristics is computed, such as yield coefficients, as described for the standard DEB model
       <a href="https://debtool.debtheory.org/popDyn/html/ssd_std.html" target="_blank"><b>ssd_std</b></a>.
 
-      <h2><a name="CMP">Cohort Projection Models</a></h2>
+      <h2><a name="dynamic">Dynamic environments, with interaction</a></h2>
+      The next level of DEBtool/popDyn functions considers a generalized well-stirred reaktor environment with a pre-described, possibly varying, food input,
+      and hazard rates for (inert) food particles and the various stages of individuals. Chemostats and fed-batch cultures are special cases of generalized reaktors.
+      
+      <h3><a name="CMP">Cohort Projection Models</a></h3>
 
-      <h2><a name="EBT">Escalator Boxcar Trains</a></h2>
+      <h3><a name="EBT">Escalator Boxcar Trains</a></h3>
 
-      <h2><a name="IB"M>Individual-Based Models</a></h2>
+      <h3><a name="IBM">Individual-Based Models</a></h3>
 
       <h2><font color="red">To be extended</font></h2>
 
