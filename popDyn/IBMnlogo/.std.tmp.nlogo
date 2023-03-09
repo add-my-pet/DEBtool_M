@@ -432,6 +432,23 @@ ticks
 30.0
 
 BUTTON
+0
+0
+0
+0
+NIL
+NIL
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
 170
 30
 280
@@ -471,7 +488,7 @@ INPUTBOX
 520
 90
 tickRate
-24.0
+1.0
 1
 0
 Number

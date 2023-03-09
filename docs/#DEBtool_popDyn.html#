@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEBtool_popDyn</title>
+  <link rel="stylesheet" type="text/css" href="sys/style.css"> 
+  <script src="sys/jscripts.js"></script>
+</head>
+<body>
+
+  <div w3-include-html="sys/wallpaper_DEBtool.html"></div>
+  <div id="tb"></div><script>include_toolbar('DEBtool')</script>
+
+<!--------------------------------------------------------------->
+<!--   PART main                                               -->
+<!--   Where all of the text is placed                         -->
+<!--   use "contentFull" for 1 column                          -->
+<!--   use "content" if you want two columns"                  -->
+<!--------------------------------------------------------------->
+<div id="main">
+  <div id="main-wrapper">    
+    <div id="contentFull">
+
+      <h1>DEBtool Toolbox: popDyn</h1>
+
+      A collection of functions that computes population trajectories of individuals.
+      The step from individuals to populations can be made in several ways, each with their own weak and strong poperties,
+      as discussed at the <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/popDyn/popDyn.html" target="_blank">popDyn page</a>.
+      
+
+      <hr>
+      <h2><a name="constant">Constant environments, no interaction</a></h2>
+      If a homogenous environment remains constant in terms of food availability and temperature, the population will eventually grow exponentially
+      at a rate that follows from the <a href="" title="1=int_{a_p}^{a_m} S(a) R(a) exp(-r_N a) da, with a=age, a_p=age at puberty, a_m=age at death, 
+       S=survivor prob, R=reprod rate, r_N = spec pop growth rate">chacteristic equation</a>.
+      This equation determines this rate implicitly only, and the specific population growth rate needs to be obtained numerically from this equation.
+
+      <p>
+      Function <a href="https://debtool.debtheory.org/popDyn/html/sgr_mod.html" target="_blank"><b>sgr_mod</b></a>,
+      standing for "specific (population) growth rate", solves the characteristic equation for all the DEB models.
+      This growth rate depends on temperature and food availability.
+      Function <a href="https://debtool.debtheory.org/popDyn/html/f_ris0_mod.html" target="_blank"><b>f_ris0_mod</b></a>
+      finds the scaled functional response (f) for which the specific population growth rate is zero (ris0), again for all DEB models.
+      Function <a href="https://debtool.debtheory.org/popDyn/html/ssd_mod.html" target="_blank"><b>ssd_mod</b></a> computes a number of population characteristics:
+      The mean length, squared length, cubed length and wet weight of the individuals in the population, if at pseudo steady state (meaning that the stable age distribution is reached).
+      On top of that, a large number of other population characteristics is computed, such as yield coefficients, as described for the standard DEB model
+      <a href="https://debtool.debtheory.org/popDyn/html/ssd_std.html" target="_blank"><b>ssd_std</b></a>.
+
+      <h2><a name="dynamic">Dynamic environments, with interaction via competition</a></h2>
+      The next level of DEBtool/popDyn functions considers a generalized well-stirred reaktor environment with a pre-described, possibly varying, food input,
+      and hazard rates for (inert) food particles and the various stages of individuals. Chemostats and fed-batch cultures are special cases of generalized reaktors.
+      
+      <h3><a name="CMP">Cohort Projection Models (CPMs)</a></h3>
+
+      <h3><a name="EBT">Escalator Boxcar Trains (EBT)</a></h3>
+
+      <h3><a name="IBM">Individual-Based Models (IBMs)</a></h3>
+      The function <a href="https://debtool.debtheory.org/popDyn/html/IBM.html" target="_blank"><b>IBM</b></a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
+      set_pars.txt as input files for NetLogo (see below).
+      NetLogo then runs automatically or can be started independently by hitting button "go" in the gui, while it  writes an output file txNL23W.txt.
+      This output file is a table with time, food density, sum over all individuals of lengths to the power 0,1,2,3 and weight, and is either shown in the NetLogo gui,
+      or can be imported in Matlab.
+
+      <p>
+      Pressing button "setup" in the NetLogo gui, forces Netlogo to import set_pars.txt to set the parameters; they can be modified in the gui (hit button "Settings").
+      The file eaLE.txt is used to get the embryo-states by interpolation and can best be changed via IBM, since the numbers depend on some parameters.
+      The file spline_JX.txt (units: d,mol/d) sets the knots of the spline for the food-input to the reactor as function of time.
+      The temperature correction factor is given as function of time by spline_TC.txt (units: d,-). If just the reference-temperature is chosen for 1e4 days,
+      this file has the contents: line 1: 0 1; line 2: 1e4 1. So 4 numbers only.
+      One can also mimic seasonally changing trajectories, both for food and for temperature (correction factors).
+      These spline-files can be edited.
+      Notice the physiological rate parameters depend on temperature, but the background hazards do not.
+
+      <p>
+      The various DEB models are described in the NetLogo gui (dropdown "Tabs", then "Info"), while the code can be seen via dropdown "Tabs", then "Code".
+      The population starts from a single female embryo, gender assignment is randomly for all other individuals with equal probability.
+      Males might differ from females by specific assimilation and maturity at puberty.
+      Males migh be absent, depending on the reproduction-setting.
+
+      <p>
+      Since NetLogo follows individuals, the required computation time (which can be considerable) directly relates to the total integration time (t_max), the
+       number of integration steps per unit of time (tickRate) and the number of individuals in the population.
+      The latter is mainly controlled by the food input into the reactor, i.e. spline_JX.
+      The idea is that the tickRate is chosen as small as possible, without affecting the trajectories too much.
+      The food-input to the reactor is best chosen such that the numbers range somewhere between 100 and 1000, wile t_max such be several times the maximum lifespan of individuals.
+       
+      
+      <h2><font color="red">To be extended</font></h2>
+
+
+    </div> <!-- end of contentFull -->
+
+    <div w3-include-html="sys/footer_amp.html"></div>
+    <script>w3IncludeHTML();</script>
+
+  </div> <!-- end of main wrapper -->
+</div> <!-- end of main -->
+</body>
+</html>
