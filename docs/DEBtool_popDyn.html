@@ -54,7 +54,7 @@
       <h3><a name="EBT">Escalator Boxcar Trains (EBT)</a></h3>
 
       <h3><a name="IBM">Individual-Based Models (IBMs)</a></h3>
-      The function <a href="https://debtool.debtheory.org/popDyn/html/IBM.html" target="_blank">IBM</a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
+      The function <a href="https://debtool.debtheory.org/popDyn/html/IBM.html" target="_blank"><b>IBM</b></a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
       set_pars.txt as input files for NetLogo (see below).
       NetLogo then runs automatically or can be started independently by hitting button "go" in the gui, while it  writes an output file txNL23W.txt.
       This output file is a table with time, food density, sum over all individuals of lengths to the power 0,1,2,3 and weight, and is either shown in the NetLogo gui,
@@ -68,10 +68,13 @@
       this file has the contents: line 1: 0 1; line 2: 1e4 1. So 4 numbers only.
       One can also mimic seasonally changing trajectories, both for food and for temperature (correction factors).
       These spline-files can be edited.
-      Notice the physiological rate parameters depend on temperature, but the background hazards do not.
+      Notice the physiological rate parameters depend on temperature, but the background hazards and food supply to the reactor do not.
 
       <p>
       The various DEB models are described in the NetLogo gui (dropdown "Tabs", then "Info"), while the code can be seen via dropdown "Tabs", then "Code".
+      The population starts from a single female embryo, gender assignment is randomly for all other individuals with equal probability.
+      Males might differ from females by specific assimilation and maturity at puberty.
+      Males migh be absent, depending on the reproduction-setting.
 
       <p>
       Since NetLogo follows individuals, the required computation time (which can be considerable) directly relates to the total integration time (t_max), the
