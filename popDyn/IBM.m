@@ -292,7 +292,7 @@ oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 fprintf(oid, '<!DOCTYPE html>\n');
 fprintf(oid, '<HTML>\n');
 fprintf(oid, '<HEAD>\n');
-fprintf(oid, '  <TITLE>EBT %s</TITLE>\n', strrep(species, '_', ' '));
+fprintf(oid, '  <TITLE>IBM %s</TITLE>\n', strrep(species, '_', ' '));
 fprintf(oid, '  <style>\n');
 fprintf(oid, '    .newspaper {\n');
 fprintf(oid, '      column-count: 3;\n');
