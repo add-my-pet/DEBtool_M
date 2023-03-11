@@ -79,6 +79,9 @@ function [r, info] = sgr_hax (par, T_pop, f_pop)
   if exist('T_L','var') && exist('T_AL','var')
     pars_T = [T_A; T_L; T_AL];
   end
+  if exist('T_H','var') && exist('T_AH','var')
+    pars_T = [T_A; T_H; T_AH];
+  end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
