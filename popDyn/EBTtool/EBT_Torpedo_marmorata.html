@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+  <TITLE>EBT Torpedo marmorata</TITLE>
+  <style>
+    .newspaper {
+      column-count: 3;
+      height: 500px;
+    }
+
+    div.temp {
+      width: 100%;
+    }
+
+    div.par {
+      width: 100%;
+      padding-bottom: 100px;
+    }
+
+    .head {
+      background-color: #FFE7C6
+    }
+
+    #par {
+      border-style: solid hidden solid hidden;
+    }
+
+    tr:nth-child(even){background-color: #f2f2f2}
+  </style>
+</HEAD>
+
+<BODY>
+
+  <div>
+  <h1>Torpedo marmorata</h1>
+  </div>
+
+  <div class="newspaper">
+  <div class="par">
+  <TABLE id="par">
+    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>
+    <TR><TD>model</TD> <TD>-</TD> <TD>std</TD> <TD>model type</TD></TR>
+    <TR><TD>reprodCode</TD> <TD>-</TD> <TD>O</TD> <TD>ecoCode reprod</TD></TR>
+    <TR><TD>genderCode</TD> <TD>-</TD> <TD>D</TD> <TD>ecoCode gender</TD></TR>
+
+    <TR><TD>k_JX</TD> <TD>1/d</TD> <TD>2e-05</TD> <TD>rejuvenation rate</TD></TR>
+    <TR><TD>h_J</TD> <TD>1/d</TD> <TD>0.0001</TD> <TD>hazard rate for rejuvenation</TD></TR>
+    <TR><TD>h_X</TD> <TD>1/d</TD> <TD>0.1</TD> <TD>hazard rate for food from reactor</TD></TR>
+    <TR><TD>thin</TD> <TD>-</TD> <TD>  0</TD> <TD>boolean for thinning</TD></TR>
+    <TR><TD>h_B0b</TD> <TD>1/d</TD> <TD>1e-35</TD> <TD>background hazard rate from 0 to b</TD></TR>
+    <TR><TD>h_Bbp</TD> <TD>1/d</TD> <TD>1e-35</TD> <TD>background hazard rate from b to p</TD></TR>
+    <TR><TD>h_Bpi</TD> <TD>1/d</TD> <TD>1e-35</TD> <TD>background hazard rate from p to i</TD></TR>
+    <TR><TD>X_0</TD> <TD>mol/L</TD> <TD>0.001584</TD> <TD>initial food density</TD></TR>
+    <TR><TD>V_X</TD> <TD>L</TD> <TD>1.355e+06</TD> <TD>volume of reactor</TD></TR>
+    <TR><TD>t_max</TD> <TD>-</TD> <TD>5.475e+04</TD> <TD>maximum integration time</TD></TR>
+  </TABLE>
+  </div>
+
+  <div class="par">
+  <TABLE id="par">
+    <TR  class="head"> <TH>Knots for<br>temperature</TH> <TH>units<br>&deg;C</TH> </TR>
+    <TR><TD>  0</TD> <TD> 15</TD></TR>
+    <TR><TD>5.475e+04</TD> <TD> 15</TD></TR>
+  </TABLE>
+  </div>
+
+  <div class="par">
+  <TABLE id="par">
+    <TR  class="head"> <TH>Knots for<br>food supply</TH> <TH>units<br>mol/d</TH> </TR>
+    <TR><TD>  0</TD> <TD>3871</TD></TR>
+    <TR><TD>5.475e+04</TD> <TD>3871</TD></TR>
+  </TABLE>
+  </div>
+
+  <div class="par">
+  <TABLE id="par">
+    <TR  class="head"> <TH>Numerical parameters</TH> <TH>value</TH> </TR>
+    <TR><TD>Time integration method</TD> <TD>DOPRI5</TD>
+    <TR><TD>Fixed step size or integration accuracy when adaptive</TD> <TD>1e-08</TD>
+    <TR><TD>Cohort/Integration cycle time interval</TD> <TD>  2</TD>
+    <TR><TD>Tolerance value, determining identity with zero</TD> <TD>1e-06</TD>
+    <TR><TD>Output time interval</TD> <TD>10.95</TD>
+    <TR><TD>Complete state output interval, 0 for none</TD> <TD>  0</TD>
+    <TR><TD>Minimum allowable number of individuals in cohort</TD> <TD>0.001</TD>
+    <TR><TD>Relative tolerance for age a</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for aging acceleration q</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for hazard for aging h</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for structural length L</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for reserve density [E]</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for reprod buffer E_R</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for maturity E_H</TD> <TD>1e-07</TD>
+    <TR><TD>Relative tolerance for wet weight Ww</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for age a</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for aging acceleration q</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for hazard for aging h</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for structural length L</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for reserve density [E]</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for reprod buffer E_R</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for maturity E_H</TD> <TD>1e-07</TD>
+    <TR><TD>Absolute tolerance for wet weight Ww</TD> <TD>1e-07</TD>
+  </TABLE>
+  </div>
+
+  </div>
+
+</BODY>
+</HTML>
