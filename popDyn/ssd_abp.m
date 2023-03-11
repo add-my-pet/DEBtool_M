@@ -247,7 +247,7 @@ function dqhSL = dget_qhSL(t, qhSL, a_b, t_p, sgr, f, v, L_b, L_p, L_m, r_j, s_G
     h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
   end
 
-  dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+  dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v * s_M/ L - r) - r * q;
   dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
 
   h = h_A + h_B + h_X; 
