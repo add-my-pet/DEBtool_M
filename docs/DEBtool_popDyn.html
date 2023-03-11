@@ -25,8 +25,8 @@
       A collection of functions that computes population trajectories of individuals.
       The step from individuals to populations can be made in several ways, each with their own weak and strong poperties,
       as discussed at the <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/popDyn/popDyn.html" target="_blank">popDyn page</a>.
+      This page assumes that the popDyn page is known; it partly serves as manual an just gives some supplementary information.
       
-
       <hr>
       <h2><a name="constant">Constant environments, no interaction</a></h2>
       If a homogenous environment remains constant in terms of food availability and temperature, the population will eventually grow exponentially
@@ -52,6 +52,23 @@
       <h3><a name="CMP">Cohort Projection Models (CPMs)</a></h3>
 
       <h3><a name="EBT">Escalator Boxcar Trains (EBT)</a></h3>
+      The function <a href="https://debtool.debtheory.org/popDyn/html/EBT.html" target="_blank"><b>EBT</b></a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
+      set_pars.txt as input files for EBT (see below).
+      EBT writes an outout file, which in readinto Matlab for be presently graphically.
+
+      <p>
+      The file eaLE.txt is used to get the embryo-states by interpolation and can best be changed via IBM, since the numbers depend on some parameters.
+      The file spline_JX.txt (units: d,mol/d) sets the knots of the spline for the food-input to the reactor as function of time.
+      The temperature correction factor is given as function of time by spline_TC.txt (units: d,-). If just the reference-temperature is chosen for 1e4 days,
+      this file has the contents: line 1: 0 1; line 2: 1e4 1. So 4 numbers only.
+      One can also mimic seasonally changing trajectories, both for food and for temperature (correction factors).
+      Notice the physiological rate parameters depend on temperature, but the background hazards and food supply to the reactor do not.
+
+      <p>
+      The population starts from a single female embryo, gender assignment is randomly for all other individuals with equal probability.
+      Males might differ from females by specific assimilation and maturity at puberty.
+      Males might be absent, depending on the reproduction-setting.
+
 
       <h3><a name="IBM">Individual-Based Models (IBMs)</a></h3>
       The function <a href="https://debtool.debtheory.org/popDyn/html/IBM.html" target="_blank"><b>IBM</b></a> writes the txt-files eaLE.txt, spline_JX.txt, spline_TC.txt and
@@ -74,7 +91,7 @@
       The various DEB models are described in the NetLogo gui (dropdown "Tabs", then "Info"), while the code can be seen via dropdown "Tabs", then "Code".
       The population starts from a single female embryo, gender assignment is randomly for all other individuals with equal probability.
       Males might differ from females by specific assimilation and maturity at puberty.
-      Males migh be absent, depending on the reproduction-setting.
+      Males might be absent, depending on the reproduction-setting.
 
       <p>
       Since NetLogo follows individuals, the required computation time (which can be considerable) directly relates to the total integration time (t_max), the
