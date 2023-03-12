@@ -117,6 +117,9 @@ function [stat, txtStat] = ssd_hax(stat, code, par, T_pop, f_pop, sgr)
   if exist('T_L','var') && exist('T_AL','var')
     pars_T = [T_A; T_L; T_AL];
   end
+  if exist('T_H','var') && exist('T_AH','var')
+    pars_T = [T_A; T_H; T_AH];
+  end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
@@ -306,10 +309,8 @@ function dqhSL = dget_qhSL(t, qhSL, a_b, t_p, t_j, t_e, sgr, f, v, L_b, L_p, L_j
     s_M = L_p/ L_b;
     r = 0; % 1/d, spec growth rate of structure
     h_X = 0; % 1/d, hazard due to thinning
-    %dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
-    dq = (q * s_G + h_a) * f * v * s_M/ L;
-    %dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
-    dh_A = q; % 1/d^2, change in hazard due to aging
+    dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+    dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
   end
 
   h = h_A + h_B + h_X; 

@@ -114,6 +114,9 @@ function [stat, txtStat] = ssd_abj(stat, code, par, T_pop, f_pop, sgr)
   if exist('T_L','var') && exist('T_AL','var')
     pars_T = [T_A; T_L; T_AL];
   end
+  if exist('T_H','var') && exist('T_AH','var')
+    pars_T = [T_A; T_H; T_AH];
+  end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
   end
@@ -258,7 +261,7 @@ function dqhSL = dget_qhSL(t, qhSL, a_b, t_j, t_p, sgr, f, v, L_b, L_j, L_i, L_m
     h_X = thinning * r * 2/3; % 1/d, hazard due to thinning
   end
 
-  dq = (q * s_G * L^3/ L_m^3/ s_M^3 + h_a) * f * (v * s_M/ L - r) - r * q;
+  dq = (q * s_G * L^3/ L_m^3 + h_a) * f * (v * s_M/ L - r) - r * q;
   dh_A = q - r * h_A; % 1/d^2, change in hazard due to aging
 
   h = h_A + h_B + h_X; 
