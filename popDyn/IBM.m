@@ -11,7 +11,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
 %  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
-% Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
+% Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
@@ -23,7 +23,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 % Input:
 %
-% * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}
+% * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}
 % * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max
 %     If scalar, the temperature is assumed to be constant
 % * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max
@@ -87,7 +87,7 @@ end
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
-  metaData = species{1}; metaPar = species{2}; par = species{3};  
+  metaData = species{1}; metaPar = species{2}; par = species{3};  txtPar = species{4}; 
   species = metaData.species; info = 1;
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
@@ -138,7 +138,7 @@ if ~exist('X_0','var') || isempty(X_0)
 end
 
 % account for male production
-if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
+if strcmp(reprodCode(1), 'O') && strcmp(genderCode(1), 'D')
   par.fProb = 0.5;  % probability of embryo to be female
 else
   par.fProb = 0.999; % probability of embryo to be female   
@@ -333,8 +333,8 @@ fprintf(oid, '  <div class="par">\n');
 fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>\n');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'model', '-', model, 'model type');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode{1}, 'ecoCode reprod');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode, 'ecoCode reprod');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode, 'ecoCode gender');
 
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');

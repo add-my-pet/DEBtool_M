@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>IBM</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-18"><meta name="DC.source" content="IBM.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>IBM</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-12"><meta name="DC.source" content="IBM.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,9 +67,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>IBM</h1><!--introduction--><p>Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">plotting</a></li><li><a href="#10">report_my_pet.html</a></li><li><a href="#11">IBMnlogo_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txNL23W = <a href="../IBM.m"><b>IBM</b></a> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo)</p><h2 id="4">Description</h2><p>Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. Sex allocation is randomised. If dioecy applies, the default (mean) sex-ratio is 1:1. Fertilisation is assumed to be sure. Males might differ in {p_Am} and/or E_Hp. The initial population is a single fertilized (female) egg from a well-fed mother. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>X_0: optional scalar with initial food density (default: 0)</li><li>t_R: optional scalar for reproduction buffer handling rule with</li></ul></div><pre>  - 0 for spawning as soon as reproduction buffer allows (default)
+  </style></head><body><div class="content"><h1>IBM</h1><!--introduction--><p>Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">plotting</a></li><li><a href="#10">report_my_pet.html</a></li><li><a href="#11">IBMnlogo_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txNL23W = <a href="../IBM.m"><b>IBM</b></a> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo)</p><h2 id="4">Description</h2><p>Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. Sex allocation is randomised. If dioecy applies, the default (mean) sex-ratio is 1:1. Fertilisation is assumed to be sure. Males might differ in {p_Am} and/or E_Hp. The initial population is a single fertilized (female) egg from a well-fed mother. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>X_0: optional scalar with initial food density (default: 0)</li><li>t_R: optional scalar for reproduction buffer handling rule with</li></ul></div><pre>  - 0 for spawning as soon as reproduction buffer allows (default)
   - 1 for spawning after accumulation over an incubation period
-  - time between spawning events</pre><div><ul><li>t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span)</li><li>tickRate: optional scalar number of ticks per day</li><li>runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: boolean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified. Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo (via dropdown File, item Open), after running this function with runNetLogo = 0, to set parameters. The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions. Hitting setup initiates the output file txNL23W.txt.</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function IBM only controls input/output; computations are done in NetLogo. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do.</p><p>Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. Progress can be monitored by inspecting output-file txNL23W.txt</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>IBM('Torpedo_marmorata');</li><li>IBM('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="8">plotting</h2><h2 id="10">report_my_pet.html</h2><h2 id="11">IBMnlogo_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  - time between spawning events</pre><div><ul><li>t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span)</li><li>tickRate: optional scalar number of ticks per day</li><li>runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: boolean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified. Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo (via dropdown File, item Open), after running this function with runNetLogo = 0, to set parameters. The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions. Hitting setup initiates the output file txNL23W.txt.</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function IBM only controls input/output; computations are done in NetLogo. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do.</p><p>Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. Progress can be monitored by inspecting output-file txNL23W.txt</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>IBM('Torpedo_marmorata');</li><li>IBM('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="8">plotting</h2><h2 id="10">report_my_pet.html</h2><h2 id="11">IBMnlogo_my_pet.html</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% IBM
 % Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor
@@ -83,7 +84,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
 %  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
-% Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures.
+% Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
@@ -95,7 +96,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 % Input:
 %
-% * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}
+% * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}
 % * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max
 %     If scalar, the temperature is assumed to be constant
 % * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max
@@ -145,24 +146,22 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 WD = cdIBMnlogo;
 
-if ~exist ('runNetLogo', 'var') || ismepty(runNetLogo)
+if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
 end
 
-if ~exist ('t_R', 'var') || ismepty(t_R)
+if ~exist ('t_R', 'var') || isempty(t_R)
   t_R = 0;
 end
 
-if ~exist ('tickRate', 'var') || ismepty(t_R)
+if ~exist ('tickRate', 'var') || isempty(tickRate)
   tickRate = 24;
 end
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
-  metaData = species{1}; metaPar = species{2}; par = species{3};  
+  metaData = species{1}; metaPar = species{2}; par = species{3};  txtPar = species{4}; 
   species = metaData.species; info = 1;
-  par.reprodCode = metaData.ecoCode.reprod{1};
-  par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species);
@@ -170,10 +169,10 @@ else  % use allStat.mat as parameter source
     fprintf('Species not recognized\n');
     txNL23W = []; return
   end
-  reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
-  genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
 end
+par.reprodCode = metaData.ecoCode.reprod{1};
+par.genderCode = metaData.ecoCode.gender{1};
 model = metaPar.model;
 
 % unpack par and compute compound pars
@@ -212,7 +211,7 @@ if ~exist('X_0','var') || isempty(X_0)
 end
 
 % account for male production
-if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
+if strcmp(reprodCode(1), 'O') && strcmp(genderCode(1), 'D')
   par.fProb = 0.5;  % probability of embryo to be female
 else
   par.fProb = 0.999; % probability of embryo to be female   
@@ -348,6 +347,8 @@ xlabel('time, d');
 ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
+else % runNetLogo=0: Netlogo is run from its gui
+  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File"), edit and press "go"\n',model);
 end
 
 %% report_my_pet.html
@@ -364,7 +365,7 @@ oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 fprintf(oid, '<!DOCTYPE html>\n');
 fprintf(oid, '<HTML>\n');
 fprintf(oid, '<HEAD>\n');
-fprintf(oid, '  <TITLE>EBT %s</TITLE>\n', strrep(species, '_', ' '));
+fprintf(oid, '  <TITLE>IBM %s</TITLE>\n', strrep(species, '_', ' '));
 fprintf(oid, '  <style>\n');
 fprintf(oid, '    .newspaper {\n');
 fprintf(oid, '      column-count: 3;\n');
@@ -405,8 +406,8 @@ fprintf(oid, '  <div class="par">\n');
 fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>\n');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'model', '-', model, 'model type');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode{1}, 'ecoCode reprod');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode, 'ecoCode reprod');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode, 'ecoCode gender');
 
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
