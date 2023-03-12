@@ -276,6 +276,8 @@ xlabel('time, d');
 ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
+else % runNetLogo=0: Netlogo is run from its gui
+  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File"), edit and press "go"\n',model);
 end
 
 %% report_my_pet.html
