@@ -89,8 +89,6 @@ end
 if iscell(species) 
   metaData = species{1}; metaPar = species{2}; par = species{3};  
   species = metaData.species; info = 1;
-  par.reprodCode = metaData.ecoCode.reprod{1};
-  par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species);
@@ -98,10 +96,10 @@ else  % use allStat.mat as parameter source
     fprintf('Species not recognized\n');
     txNL23W = []; return
   end
-  reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
-  genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
 end
+par.reprodCode = metaData.ecoCode.reprod{1};
+par.genderCode = metaData.ecoCode.gender{1};
 model = metaPar.model;
 
 % unpack par and compute compound pars
