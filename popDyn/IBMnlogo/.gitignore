@@ -1,8 +1,0 @@
-
-
-
-# Ignore txt and html files generated with each IBM run #
-######################
-*.txt
-*.html
-!/html/*.html
