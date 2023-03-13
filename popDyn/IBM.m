@@ -73,6 +73,9 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 WD = cdIBMnlogo;
 
+% make sure that results of previous runs are removed
+delete spline_TC.txt spline_JX.txt set_pars.txt eaLE.txt txNL23W.txt 
+
 if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
 end

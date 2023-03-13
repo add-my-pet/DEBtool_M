@@ -75,10 +75,11 @@
       set_pars.txt as input files for NetLogo (see below).
       NetLogo then runs automatically or can be started independently by hitting button "go" in the gui, while it  writes an output file txNL23W.txt.
       This output file is a table with time, food density, sum over all individuals of lengths to the power 0,1,2,3 and weight, and is either shown in the NetLogo gui,
-      or can be imported in Matlab.
+      or is imported and shown graphically in Matlab.
 
       <p>
-      Pressing button "setup" in the NetLogo gui, forces Netlogo to import set_pars.txt to set the parameters; they can be modified in the gui (hit button "Settings").
+	If IBM is run in the NetLogo gui, pressing button "setup" forces Netlogo to import set_pars.txt to set the parameters; they can be modified in the gui (hit button "Settings").
+      In this mode, the gui updates the graphs while running, but this takes quite a bit of extra computation time.
       The file eaLE.txt is used to get the embryo-states by interpolation and can best be changed via IBM, since the numbers depend on some parameters.
       The file spline_JX.txt (units: d,mol/d) sets the knots of the spline for the food-input to the reactor as function of time.
       The temperature correction factor is given as function of time by spline_TC.txt (units: d,-). If just the reference-temperature is chosen for 1e4 days,
@@ -100,9 +101,6 @@
       The idea is that the tickRate is chosen as small as possible, without affecting the trajectories too much.
       The food-input to the reactor is best chosen such that the numbers range somewhere between 100 and 1000, wile t_max such be several times the maximum lifespan of individuals.
        
-      
-      <h2><font color="red">To be extended</font></h2>
-
 
     </div> <!-- end of contentFull -->
 
