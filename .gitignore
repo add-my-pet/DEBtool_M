@@ -1,8 +1,8 @@
 *.asv
 
-popDyn\IBMnlogo\*.txt
-popDyn\IBMnlogo\*.html
-!popDyn\IBMnlogo\html\*.html
+\popDyn\IBMnlogo\*.txt
+\popDyn\IBMnlogo\*.html
+!\popDyn\IBMnlogo\html\*.html
 
 
 
