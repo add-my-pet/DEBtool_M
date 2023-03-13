@@ -73,8 +73,8 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 WD = cdIBMnlogo;
 
-% make sure that results of previous runs are removed
-delete spline_TC.txt spline_JX.txt set_pars.txt eaLE.txt txNL23W.txt 
+% make sure that results of previous runs are removed (NetLogo deletes existing txNL23W.txt file)
+delete spline_TC.txt spline_JX.txt set_pars.txt eaLE.txt 
 
 if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
@@ -278,7 +278,7 @@ ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
 else % runNetLogo=0: Netlogo is run from its gui
-  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File"), edit and press "go"\n',model);
+  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File>Open"), edit and press "go"\n',model);
 end
 
 %% report_my_pet.html

@@ -40,7 +40,7 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time between spawns
+  ; t_R      ; d, time between reproduction events
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbx    ; 1/d, background hazard between b and x
   ; h_Bxp    ; 1/d, background hazard between x and p
@@ -72,7 +72,7 @@ globals[
 
 turtles-own[
   a        ; d, age
-  t_spawn  ; d, time since last spawning
+  t_spawn  ; d, time since last reproduction event
   L        ; cm, structural length
   ee       ; -, scaled reserve density; DEB notation is e, but NetLogo takes this to be exponent
   E_H      ; J, maturity
