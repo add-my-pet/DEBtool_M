@@ -1,10 +1,5 @@
 *.asv
 
-\popDyn\IBMnlogo\*.txt
-\popDyn\IBMnlogo\*.html
-!\popDyn\IBMnlogo\html\*.html
-
-
 
 # OS generated files #
 ######################
