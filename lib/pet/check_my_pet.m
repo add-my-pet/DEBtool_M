@@ -172,6 +172,14 @@ for i = 1:size(auxDataTypes, 1)
   end
 end
 
+% checking if all comment-fields correspond with data fields
+if isfield(txtData,'comment')
+  commFields = fields(txtData.comment); diff = commFields(~ismember(commFields,dataFields));
+  if ~isempty(diff)
+    fprintf('Comment-fields that have no data-field: %s, \n', diff{:});
+  end
+end
+
 % checking the weights fields match data fields
 if sum(strcmp(weightFields, 'psd'))
   psdWeightFields = fields(weights.psd);

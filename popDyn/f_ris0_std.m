@@ -32,7 +32,7 @@ function [f, info] = f_ris0_std (par)
 
   % unpack par and compute statisitics
   cPar = parscomp_st(par); vars_pull(par);  vars_pull(cPar);  
-  if strcmp(reprodCode{1},'O') && strcmp(genderCode{1},'D')
+  if strcmp(reprodCode(1),'O') && strcmp(genderCode(1),'D')
     kap_R = kap_R/2; % take cost of male production into account
   end
 
