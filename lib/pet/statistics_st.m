@@ -163,6 +163,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
 % If argument T is not specified or is empty, then temperature-dependent quantities are presented at reference temperature.
+% If it is specified, food-dependent rates are corrected for temperature.
 % The output values are for females; males might have deviating parameters, which are frequently also available.
 %
 % For required model-specific fields, see <get_parfields.html *get_parfields*>.
@@ -208,6 +209,9 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   pars_T = T_A;
   if exist('T_L','var') && exist('T_AL','var')
     pars_T = [T_A; T_L; T_AL];
+  end
+  if exist('T_H','var') && exist('T_AH','var')
+    pars_T = [T_A; T_H; T_AH];
   end
   if exist('T_L','var') && exist('T_AL','var') && exist('T_H','var') && exist('T_AH','var')
     pars_T = [T_A; T_L; T_H; T_AL; T_AH]; 
