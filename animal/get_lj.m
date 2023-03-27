@@ -72,7 +72,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
     [lb, info] = get_lb([g; k; vHb], f, lb0);
   else
     info = 1;
-    lb = lb0;
+    lb = lb0(1);
   end
 
   if lT > f - lb % no growth is possible at birth
@@ -95,6 +95,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
   end
 
   % get lj
+  if length(lb0)==3; lb = lb0(1); vHb = lb0(2); end
   options = odeset('Events',@end_of_accel, 'AbsTol',1e-9, 'RelTol',1e-9); 
   [t, vHl] = ode45(@dget_l_V1_t, [0; 1e6], [vHb; lb], options, k, lT, g, f, lb, vHj); 
   lj = vHl(end,2); sM = lj/ lb;

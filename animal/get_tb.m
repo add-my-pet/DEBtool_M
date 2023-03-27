@@ -1,5 +1,5 @@
 %% get_tb
-%
+% Get scaled age and length at birth
 
 %%
 function [tau_b, lb, info] = get_tb(p, eb, lb)

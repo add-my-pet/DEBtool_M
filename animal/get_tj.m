@@ -1,4 +1,5 @@
-%% get_tj Gets scaled age at metamorphosis
+%% get_tj 
+% Gets scaled age at metamorphosis
 
 %%
 function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
@@ -24,8 +25,8 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   %
   % * f: optional scalar with functional response (default f = 1)
   % * lb0: optional scalar with scaled length at birth
-  %      or optional 2-vector with scaled length, l, and scaled maturity, vH
-  %      for a juvenile that is now exposed to f, but previously at another f
+  %      or 2-vector with scaled length, l, and scaled maturity, vH
+  %        for a juvenile that is now exposed to f, but previously at another f
   %  
   % Output
   %
@@ -71,6 +72,7 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   elseif isempty(f)
     f = 1;
   end
+  
   if ~exist('lb0','var')
     lb0 = [];
   end
@@ -119,17 +121,17 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
   
   if isempty(lb0)
     [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0); 
-  else
+  elseif ~(length(lb0)==3)
     [tau_b, lb, info_tb] = get_tb (p([1 2 4]), f, lb0(1)); 
   end
-  [lj, lp, lb, info_tj] = get_lj(p, f, lb);
+  [lj, lp, lb, info_tj] = get_lj(p, f, lb0);
   if info_tj == 0
      tau_j = [];  tau_p = [];  tau_b = []; lj = []; lp = []; lb = []; li = []; rj = []; rB = [];
      info = 0; return
   end
   sM = lj/ lb;                       % acceleration factor
   rj = g * (f/ lb - 1 - lT/ lb)/ (f + g); % scaled exponential growth rate between b and j
-  tau_j = tau_b + log(sM) * 3/ rj;        % scaled age at metamorphosis
+  tau_j = tau_b + log(sM) * 3/ rj;   % scaled age at metamorphosis
   rB = 1/ 3/ (1 + f/ g);             % scaled von Bert growth rate between j and i
   li = f * sM - lT;                  % scaled ultimate length
 
@@ -142,7 +144,7 @@ function [tau_j, tau_p, tau_b, lj, lp, lb, li, rj, rB, info] = get_tj(p, f, lb0)
     if length(lb0) ~= 2 % lb0 is absent, empty or a scalar
       tau_p = tau_j + log((li - lj)/ (li - lp))/ rB;
     else % lb0 = l and t for a juvenile
-      tau_b = NaN;
+      %tau_b = NaN;
       l = lb0(1);
       tau_p = log((li - l)/ (li - lp))/ rB;
     end

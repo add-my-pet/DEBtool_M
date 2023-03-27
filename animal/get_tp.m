@@ -1,5 +1,5 @@
 %% get_tp
-% Gets scaled age at puberty
+% Gets scaled age and length at puberty, birth
 
 %%
 function [tau_p, tau_b, lp, lb, info] = get_tp(p, f, lb0)
