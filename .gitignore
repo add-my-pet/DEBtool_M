@@ -10,3 +10,16 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+*.txt
+popDyn/IBMnlogo/eaLE.txt
+popDyn/IBMnlogo/set_pars.txt
+popDyn/IBMnlogo/spline_JX.txt
+popDyn/IBMnlogo/spline_TC.txt
+popDyn/IBMnlogo/txNL23W.txt
+popDyn/IBMnlogo/eaLE.txt
+popDyn/IBMnlogo/set_pars.txt
+popDyn/IBMnlogo/spline_JX.txt
+popDyn/IBMnlogo/spline_TC.txt
+popDyn/IBMnlogo/txNL23W.txt
