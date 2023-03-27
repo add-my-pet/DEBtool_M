@@ -65,20 +65,18 @@ function [txNL23W, M_N, M_L, M_L2, M_L3, M_W, NL23Wt] = CPM(species, tT, tJX, x_
 
 % get core parameters (2 possible routes for getting pars), species and model
 if iscell(species) 
-  metaData = species{1}; metaPar = species{2}; par = species{3};  
+  metaData = species{1}; metaPar = species{2}; par = species{3}; txtPar = species{4}; 
   species = metaData.species;
-  par.reprodCode = metaData.ecoCode.reprod{1};
-  par.genderCode = metaData.ecoCode.gender{1};
   datePrintNm = ['date: ',datestr(date, 'yyyy/mm/dd')];
 else  % use allStat.mat as parameter source 
   [par, metaPar, txtPar, metaData, info] = allStat2par(species); 
   if info == 0
     txNL23W=[]; M_N=[]; M_L = []; M_L2 = []; M_L3 = []; M_W=[]; NL23Wt = []; return
   end
-  reprodCode = read_eco({species}, 'reprod'); par.reprodCode = reprodCode{1};
-  genderCode = read_eco({species}, 'gender'); par.genderCode = genderCode{1};
   datePrintNm = ['allStat version: ', datestr(date_allStat, 'yyyy/mm/dd')];
 end
+par.reprodCode = metaData.ecoCode.reprod{1};
+par.genderCode = metaData.ecoCode.gender{1};
 model = metaPar.model;
 
 % unpack par and compute compound pars
@@ -125,7 +123,7 @@ if ~exist('x_0','var') || isempty(x_0)
 end
 
 % account for cost of male production
-if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
+if strcmp(reprodCode(1), 'O') && strcmp(genderCode(1), 'D')
   kap_R = kap_R/2; par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
 
@@ -341,8 +339,8 @@ fprintf(oid, '  <div class="par">\n');
 fprintf(oid, '  <TABLE id="par">\n');
 fprintf(oid, '    <TR  class="head"><TH>symbol</TH> <TH>units</TH> <TH>value</TH>  <TH>description</TH> </TR>\n');
 fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'model', '-', model, 'model type');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode{1}, 'ecoCode reprod');
-fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode{1}, 'ecoCode gender');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n', 'reprodCode', '-', reprodCode, 'ecoCode reprod');
+fprintf(oid, '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%s</TD> <TD>%s</TD></TR>\n\n', 'genderCode', '-', genderCode, 'ecoCode gender');
 
        str = '    <TR><TD>%s</TD> <TD>%s</TD> <TD>%3.4g</TD> <TD>%s</TD></TR>\n';
 fprintf(oid, str, 'k_JX', '1/d', k_JX, 'rejuvenation rate');
