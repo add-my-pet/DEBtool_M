@@ -3,7 +3,7 @@
 
 %%
 function varargout = get_tpm(p, f, tel_b, tau)
-  % created at 2012/03/26 by Bas Kooijman, 
+  % created at 2023/03/26 by Bas Kooijman, 
  
   %% Syntax
   % varargout = <../get_tpm.m *get_tpm*> (p, f, tel_b, tau)
@@ -35,8 +35,12 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % The m in get_tpm stands for male, see get_tp for female
   
   %% Example of use
-  %  get_tjm([.5, .1, 0, .01, .05, .2])
-  
+  %  get_tjm([.5, .1, 0, .01, .05, .2]) or: 
+  %  tel_b = [t_b, f*z/z_m, l_b*z/z_m]; % for males assumes same absolute reserve density at birth
+  %  pars_tpm = [g_m k l_T v_Hb v_Hx v_Hpm]; 
+  %  tau = t * k_M * TC; % -, scaled time since birth corrected for temperature
+  %  [tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(pars_tpm, f, tel_b, tau);
+   
   % unpack pars
   g    = p(1); % energy investment ratio
   k    = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
@@ -57,7 +61,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   
   % specify times since birth in trajectory
   if ~exist('tau', 'var') || isempty(tau)
-    tau_int = [0; 1e6]; tau_end = tau_ind(end); n_tau = 2;
+    tau_int = [0; 1e6]; tau_end = tau_int(end); n_tau = 2;
   else
     if tau(1)>0
       tau_int = [0; tau]; 
