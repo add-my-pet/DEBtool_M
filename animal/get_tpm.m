@@ -98,7 +98,6 @@ function varargout = get_tpm(p, f, tel_b, tau)
     end
   end
   
-  
   info = min(info_tb, info_tvel);
   
   if exist('tau','var')
@@ -111,7 +110,7 @@ end
 
 function dvel = dget_vel(tau, vel, f, g, k, l_T, v_Hp)
   % unpack vel
-  v_H = vel(1); % -, scaled maturity v_H
+  v_H = vel(1); % -, scaled maturity 
   e = vel(2);   % -, scaled reserve density
   l = vel(3);   % -, scaled structural length
   
