@@ -35,7 +35,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % The m in get_tpm stands for male, see get_tp for female
   
   %% Example of use
-  %  get_tjm([.5, .1, 0, .01, .05, .2]) or: 
+  %  get_tpm([.5, .1, 0, .01, .05]) or: 
   %  tel_b = [t_b, f*z/z_m, l_b*z/z_m]; % for males assumes same absolute reserve density at birth
   %  pars_tpm = [g_m k l_T v_Hb v_Hx v_Hpm]; 
   %  tau = t * k_M * TC; % -, scaled time since birth corrected for temperature
@@ -92,7 +92,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
     else
       e_p = vel_p(1,2); l_p = vel_p(1,3); info_tvel = 1;
     end
-    tvel = [tau, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
+    tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
     if exist('tau', 'var') && tau(1)>0 
       tvel(1,:)=[]; 
     end
