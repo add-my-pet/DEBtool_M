@@ -95,6 +95,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
     if exist('tau', 'var') && tau(1)>0 
       tvel(1,:)=[]; 
     end
+  end
   
   info = min(info_tb, info_tvel);
   
