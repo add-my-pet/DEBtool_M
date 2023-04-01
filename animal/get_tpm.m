@@ -86,16 +86,15 @@ function varargout = get_tpm(p, f, tel_b, tau)
   else
     options = odeset('Events',@pub, 'AbsTol',1e-8, 'RelTol',1e-8); 
     [t, vel, tau_p, vel_p, ie] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, v_Hp); 
-    if isempty(lp); 
+    if isempty(lp)
       e_p = NaN; l_p = NaN; info_tvel = 0;
     else
       e_p = vel_p(1,2); l_p = vel_p(1,3); info_tvel = 1;
-  end
-  tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
-  if exist('tau', 'var') && tau(1)>0 
-    tvel(1,:)=[]; 
-  end
-  %tvel = tvel(1:n_tau,:); 
+    end
+    tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
+    if exist('tau', 'var') && tau(1)>0 
+      tvel(1,:)=[]; 
+    end
   
   info = min(info_tb, info_tvel);
   
