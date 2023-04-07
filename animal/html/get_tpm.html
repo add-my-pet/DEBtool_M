@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tpm</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-27"><meta name="DC.source" content="get_tpm.m"><style type="text/css">
+      --><title>get_tpm</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-04-06"><meta name="DC.source" content="get_tpm.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,14 +67,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_tpm</h1><!--introduction--><p>Gets scaled age, length at puberty, birth for std model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>varargout = <a href="../get_tpm.m"><b>get_tpm</b></a> (p, f, tel_b, tau)</p><h2 id="4">Description</h2><p>Obtains scaled ages, lengths at puberty, birth for the std model at constant food, temperature; Notice p-b sequence in output, due to the name of the routine. State at birth (scaled age, reserve density, length) can optionally be specified E.g. for female: [tau_b, f, l_b] with zoom factor z, but for male: [tau_b, f*z/z_m, l_b*z/z_m] with zoom factor z_m</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li><li>tel_b: optional 3-vector with scaled age, reserve density and length at birth</li><li>tau: optional n-vector with scaled times since birth</li></ul></div><p>Output</p><div><ul><li>tvel: optional (n,4)-array with time since birth, scaled maturity, reserve density and length</li><li>tau_p: scaled age at puberty \tau_p = a_p * k_M</li><li>tau_b: scaled age at birth \tau_b = a_b * k_M</li><li>l_p: scaled length at puberty l_b = L_b/ L_m</li><li>l_b: scaled length at birth l_p = L_/p L_m</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>If tel_b is specified and different from the DEB value for p and f, see get_tb, initial growth deviates from vBert The m in get_tpm stands for male, see get_tp for female</p><h2 id="6">Example of use</h2><pre>get_tjm([.5, .1, 0, .01, .05, .2])</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_tpm</h1><!--introduction--><p>Gets scaled age, length at puberty, birth for std model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>varargout = <a href="../get_tpm.m"><b>get_tpm</b></a> (p, f, tel_b, tau)</p><h2 id="4">Description</h2><p>Obtains scaled ages, lengths at puberty, birth for the std model at constant food, temperature; Notice p-b sequence in output, due to the name of the routine. State at birth (scaled age, reserve density, length) can optionally be specified E.g. for female: [tau_b, f, l_b] with zoom factor z, but for male: [tau_b, f*z/z_m, l_b*z/z_m] with zoom factor z_m</p><p>Input</p><div><ul><li>p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p</li><li>f: optional scalar with functional response (default f = 1)</li><li>tel_b: optional 3-vector with scaled age, reserve density and length at birth</li><li>tau: optional n-vector with scaled times since birth</li></ul></div><p>Output</p><div><ul><li>tvel: optional (n,4)-array with time since birth, scaled maturity, reserve density and length</li><li>tau_p: scaled age at puberty \tau_p = a_p * k_M</li><li>tau_b: scaled age at birth \tau_b = a_b * k_M</li><li>l_p: scaled length at puberty l_b = L_b/ L_m</li><li>l_b: scaled length at birth l_p = L_/p L_m</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>If tel_b is specified and different from the DEB value for p and f, see get_tb, initial growth deviates from vBert The m in get_tpm stands for male, see get_tp for female</p><h2 id="6">Example of use</h2><pre>get_tpm([.5, .1, 0, .01, .05]) or:
+tel_b = [t_b, f*z/z_m, l_b*z/z_m]; % for males assumes same absolute reserve density at birth
+pars_tpm = [g_m k l_T v_Hb v_Hx v_Hpm];
+tau = t * k_M * TC; % -, scaled time since birth corrected for temperature
+[tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(pars_tpm, f, tel_b, tau);</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tpm
 % Gets scaled age, length at puberty, birth for std model
 
 %%
 function varargout = get_tpm(p, f, tel_b, tau)
-  % created at 2012/03/26 by Bas Kooijman, 
+  % created at 2023/03/26 by Bas Kooijman, 
  
   %% Syntax
   % varargout = <../get_tpm.m *get_tpm*> (p, f, tel_b, tau)
@@ -106,8 +110,12 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % The m in get_tpm stands for male, see get_tp for female
   
   %% Example of use
-  %  get_tjm([.5, .1, 0, .01, .05, .2])
-  
+  %  get_tpm([.5, .1, 0, .01, .05]) or: 
+  %  tel_b = [t_b, f*z/z_m, l_b*z/z_m]; % for males assumes same absolute reserve density at birth
+  %  pars_tpm = [g_m k l_T v_Hb v_Hx v_Hpm]; 
+  %  tau = t * k_M * TC; % -, scaled time since birth corrected for temperature
+  %  [tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(pars_tpm, f, tel_b, tau);
+   
   % unpack pars
   g    = p(1); % energy investment ratio
   k    = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
@@ -128,7 +136,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   
   % specify times since birth in trajectory
   if ~exist('tau', 'var') || isempty(tau)
-    tau_int = [0; 1e6]; tau_end = tau_ind(end); n_tau = 2;
+    tau_int = [0; 1e6]; tau_end = tau_int(end); n_tau = 2;
   else
     if tau(1)>0
       tau_int = [0; tau]; 
@@ -141,26 +149,31 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % get trajectory and traits
   if exist('tau','var')
     options = odeset('AbsTol',1e-8, 'RelTol',1e-8); 
-    [t, vel] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, l_b, v_Hp);
+    [t, vel] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, v_Hp);
     if vel(end,1)<v_Hp
       tau_p = NaN; e_p = NaN; l_p = NaN; info_tvel = 0;
     else
       tau_p = tau_b + spline1(v_Hp, [vel(:,1),t]);
-      e_p = spline1(v_Hp, vel(:,[1 2])); % equals f if e is in equilibrium at j, p
+      e_p = spline1(v_Hp, vel(:,[1 2])); % equals f if e is in equilibrium at p
       l_p = spline1(v_Hp, vel(:,[1 3]));
       info_tvel = 1;
     end
-  else
+    tvel = [t, vel]; 
+    if length(tau_int)==2; tvel = tvel([1;end],:); end
+    if tau(1)>0; tvel(1,:)=[]; end
+  else 
     options = odeset('Events',@pub, 'AbsTol',1e-8, 'RelTol',1e-8); 
     [t, vel, tau_p, vel_p, ie] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, v_Hp); 
-    e_p = vel_p(1,2); l_p = tau_b + vel_p(1,3);
-    info_tvel = (length(ie)==1);
+    if isempty(tau_p)
+      e_p = NaN; l_p = NaN; info_tvel = 0;
+    else
+      e_p = vel_p(1,2); l_p = vel_p(1,3); info_tvel = 1;
+    end
+    tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
+    if exist('tau', 'var') && tau(1)>0 
+      tvel(1,:)=[]; 
+    end
   end
-  tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
-  if exist('tau', 'var') && tau(1)>0 
-    tvel(1,:)=[]; 
-  end
-  tvel = tvel(1:n_tau,:); 
   
   info = min(info_tb, info_tvel);
   
@@ -174,7 +187,7 @@ end
 
 function dvel = dget_vel(tau, vel, f, g, k, l_T, v_Hp)
   % unpack vel
-  v_H = vel(1); % -, scaled maturity v_H
+  v_H = vel(1); % -, scaled maturity 
   e = vel(2);   % -, scaled reserve density
   l = vel(3);   % -, scaled structural length
   

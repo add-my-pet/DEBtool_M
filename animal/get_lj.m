@@ -46,7 +46,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
   %% Example of use
   % get_lj([.5, .1, .1, .01, .2, .3])
   
-  n_p = length(p);
+  n_p = length(p); p=p(:);
 
   % unpack pars
   g   = p(1); % energy investment ratio
@@ -93,35 +93,43 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
       return
     end
   end
-
-  % get lj
-  if length(lb0)==3; lb = lb0(1); vHb = lb0(2); end
-  options = odeset('Events',@end_of_accel, 'AbsTol',1e-9, 'RelTol',1e-9); 
-  [t, vHl] = ode45(@dget_l_V1_t, [0; 1e6], [vHb; lb], options, k, lT, g, f, lb, vHj); 
-  lj = vHl(end,2); sM = lj/ lb;
   
+  % get sM, lj
+  rj = (f - lT - lb)/ lb/ (1 + f/ g); % -, scaled exponential growth rate
+  get_sM = @(sM) f*lb^3*(1/lb-rj/g)/(k+rj)*(sM^3-sM^(-3*k/rj))-vHj+vHb*sM^(-3*k/rj);
+  [sM, ~, info_sM] = fzero(get_sM, [1 500]); lj = sM * lb; 
+  if isnan(sM) || ~(info_sM==1) % repair if fzero failed
+    if length(lb0)==3; lb = lb0(1); vHb = lb0(2); end
+    options = odeset('Events',@end_of_accel, 'AbsTol',1e-9, 'RelTol',1e-9); 
+    [t, vHl] = ode45(@dget_l_V1_t, [0; 1e6], [vHb; lb], options, k, lT, g, f, lb, vHj); 
+    lj = vHl(end,2); sM = lj/ lb;
+  end
+
   % get lp
   if n_p > 5
     %options = odeset('Events',@puberty, 'AbsTol',1e-9, 'RelTol',1e-9); 
     %[t, vHl] = ode45(@dget_l_ISO_t, [0; 1e6], [vHj; lj], options, k, lT, g, f, sM, vHp); lp = vHl(end,2);
     % options = odeset('AbsTol',1e-8, 'RelTol',1e-8); 
-    [vH, l] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
+    %[vH, l] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
+    [lp, ~, info_lp] = get_lp1([p([1 2 3 5 6]); sM], f, lj);
   else
     lp = [];
   end
+
+  info = info_sM==1 && info_lp==1;
 end
 
-% end_of_accel
+% end_of_accel is only used if fzero fails
 function [value,isterminal,direction] = end_of_accel(t, vHl, k, lT, g, f, lb, vHj)
   value = vHl(1) - vHj;  % trigger 
   isterminal = 1;    % terminate after event
   direction  = [];   % get all the zeros
 end
 
-% puberty
-function [value,isterminal,direction] = puberty(t, vHl, k, lT, g, f, sM, vHp)
-  value = vHl(1) - vHp;  % trigger 
-  isterminal = 1;    % terminate after event
-  direction  = [];   % get all the zeros
-end
+% % puberty
+% function [value,isterminal,direction] = puberty(t, vHl, k, lT, g, f, sM, vHp)
+%   value = vHl(1) - vHp;  % trigger 
+%   isterminal = 1;    % terminate after event
+%   direction  = [];   % get all the zeros
+% end
 

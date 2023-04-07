@@ -78,7 +78,7 @@ function varargout = get_tjm(p, f, tel_b, tau)
   
   % get trajectory and traits
   if exist('tau','var')
-    options = odeset('AbsTol',1e-8, 'RelTol',1e-8); 
+    options = odeset('AbsTol',1e-9, 'RelTol',1e-9); 
     [t, vel] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, l_b, v_Hj, v_Hp); 
     tau_j = tau_b + spline1(v_Hj, [vel(:,1),t]); e_j = spline1(v_Hj, vel(:,[1 2])); l_j = spline1(v_Hj, [vel(:,3),t]);
     if vel(end,1)<v_Hp

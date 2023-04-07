@@ -83,7 +83,9 @@ function varargout = get_tpm(p, f, tel_b, tau)
       l_p = spline1(v_Hp, vel(:,[1 3]));
       info_tvel = 1;
     end
-    tvel = [t, vel]; if tau(1)>0; tvel(1,:)=[]; end
+    tvel = [t, vel]; 
+    if length(tau_int)==2; tvel = tvel([1;end],:); end
+    if tau(1)>0; tvel(1,:)=[]; end
   else 
     options = odeset('Events',@pub, 'AbsTol',1e-8, 'RelTol',1e-8); 
     [t, vel, tau_p, vel_p, ie] = ode45(@dget_vel, tau_int, [v_Hb; e_b; l_b], options, f, g, k, l_T, v_Hp); 

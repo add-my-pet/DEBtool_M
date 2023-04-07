@@ -1,5 +1,5 @@
 %% get_lp
-% Gest scaled length at puberty
+% Get scaled length at puberty
 
 %%
 function [lp, lb, info] = get_lp (p, f, lb0)
@@ -32,7 +32,8 @@ function [lp, lb, info] = get_lp (p, f, lb0)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  % Similar to <get_lp1.html *get_lp1*>, which uses root finding, rather than integration
+  % Similar to <get_lp1.html *get_lp1*>, which uses root finding, rather than integration.
+  % Obsolate function; use get_lp1 for faster and more accurate results.
   % Function <get_lp_foetus.html *get_lp_foetus*> does the same, but then for foetal development. 
 
   %% Example of use

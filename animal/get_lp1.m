@@ -68,7 +68,7 @@ function [lp, lb, info] = get_lp1 (p, f, l0)
       lb = l0;
   else % for a juvenile of length l and maturity vH
       l = l0(1); vH0 = l0(2); % juvenile now exposed to f
-      [lb, info] = get_lb([g; k; vH0], f);
+      [lb, info_lb] = get_lb([g; k; vH0], f);
   end
   
   rB = g / 3 / (f + g); % -, scaled von Bertalanffy growth rate
@@ -85,16 +85,22 @@ function [lp, lb, info] = get_lp1 (p, f, l0)
   a3 = - b3 * ld^3 / (3 * rB - k);
 
   if vHp > -a0      % vH can only reach -a0
-    lp = [];
-    info = 0;
-    fprintf('Warning in get_lp: maturity at puberty cannot be reached \n');
+    lp = NaN;
+    info_lp = 0;
+    fprintf('Warning in get_lp1: maturity at puberty cannot be reached \n');
   elseif vH0 > vHp  % intial maturity is already higher than maturity at puberty
-    lp = l;
-    info = 0;
-    fprintf('Warning in get_lp: initial maturity exceeds puberty threshold \n')
+    lp = 1;
+    info_lp = 0;
+    fprintf('Warning in get_lp1: initial maturity exceeds puberty threshold \n')
   elseif k == 1
     lp = vHp^(1/3);
+    info_lp = 1;
   else
-    lp = fzero(@fnget_lp, [lb, li], [], a0, a1, a2, a3, lb, li, k, rB, vH0, vHp);
+    [lp,~,info_lp]  = fzero(@fnget_lp, [lb, li], [], a0, a1, a2, a3, lb, li, k, rB, vH0, vHp);
   end
-  
+
+  if exist('info_lb','var') 
+    info = min(info_lb,info_lp); 
+  else
+    info = info_lp;
+  end  
