@@ -113,7 +113,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
     %[vH, l] = ode45(@dget_l_ISO, [vHj; vHp], lj, [], k, lT, g, f, sM); lp = l(end);
     [lp, ~, info_lp] = get_lp1([p([1 2 3 5 6]); sM], f, lj);
   else
-    lp = [];
+    lp = []; info_lp = 1;
   end
 
   info = info_sM==1 && info_lp==1;

@@ -55,15 +55,16 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
 
   pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
   [tp, tpp, tb, lp, lpp, lb, li, rj, rB, info] = get_tj(pars_tj, f);
-  if info == 0 || isempty(lp)
-    tj = []; lj = [];  info = 0; return
-  end
+%   if info == 0 || isempty(lp)
+%     tj = []; lj = [];  info = 0; return
+%   end
   sM = lp/ lb; % -, acceleration factor
 
-  [vR tl] = ode45(@dget_tj_hep, [0; vRj], [0; lp], [], f, sM, rB, li, g, k, vHp);
+  [vR, tl] = ode45(@dget_tj_hep, [0; vRj], [0; lp], [], f, sM, rB, li, g, k, vHp);
   tj = tp + tl(end,1); % -, scaled age at emergence 
   lj = tl(end,2);      % -, scaled length at emergence
         
+  info=1; % temporary fix
 end
 
 %% subfunction
