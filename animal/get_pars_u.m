@@ -16,7 +16,7 @@ function [par, aLM] = get_pars_u(q, p)
   %
   % * q: 4-vector with
   %
-  %    1 JXAm  % mmol/d.mm^2 % {J_{XAm}} max spec food uptake rate
+  %    1 JXAm  % mol/d.cm^2 % {J_{XAm}} max spec food uptake rate
   %    2 K     % M    % half saturation coefficient
   %    3 ME0   % mol  % M_E^0 mass at time 0 (all mass consists of reserve)
   %    4 MWb   % mol  % M_W^b mass at birth (reserve plus structure)
@@ -31,27 +31,27 @@ function [par, aLM] = get_pars_u(q, p)
   %    3 g     % -      % energy investment ratio
   %    4 kJ    % d^-1   % maturity maintenance rate coefficient
   %    5 kM    % d^-1   % somatic maintenance rate coefficient
-  %    6 v     % mm/d   % energy conductance
-  %    7 Hb    % d.mm^2 % scaled maturity at birth M_H^b/{J_EAm}
-  %    8 Hp    % d.mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  %    6 v     % cm/d   % energy conductance
+  %    7 Hb    % d.cm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  %    8 Hp    % d.cm^2 % scaled maturity at puberty M_H^p/{J_EAm}
   %    this vector is output of get_pars_s
   %
   % Output
   %
   % * par: 12-vector with primary pars of standard DEB model
   %
-  %    1  JEAm % mmol/d.mm^2 % {J_{EAm}} max spec assimilation rate
-  %    2  b    % m^3/ d.mm^2 % {b} spec searching rate
+  %    1  JEAm % mol/d.cm^2 % {J_{EAm}} max spec assimilation rate
+  %    2  b    % m^3/ d.cm^2 % {b} spec searching rate
   %    3  yEX  % mol/mol     % y_EX yield of reserve on food
   %    4  yVE  % mol/mol     % y_VE yield of structure on reserve
-  %    5  v    % mm/d        % energy conductance
-  %    6  JEM  % mol/d.mm^3  % [J_{EM}] spec somatic maintenance costs
+  %    5  v    % cm/d        % energy conductance
+  %    6  JEM  % mol/d.cm^3  % [J_{EM}] spec somatic maintenance costs
   %    7  kJ   % 1/d         % k_J maturity maintenance rate coefficient
   %    8  kap  % -           % \kappa fraction to som maint + growth
   %    9  kapR % -           % \kappa_R fraction fixed in embryo 
   %   10  MHb  % mol         % M_H^b maturity at birth
   %   11  MHp  % mol         % M_H^p maturity at puberty
-  %   12  MV   % mol/ mm^3   % [M_V] mass-volume converter for structure
+  %   12  MV   % mol/ cm^3   % [M_V] mass-volume converter for structure
   %
   % * aLM: (4,4)-matrix with 
   %

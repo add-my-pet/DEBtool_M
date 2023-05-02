@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_pars_u</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-02-06"><meta name="DC.source" content="get_pars_u.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>get_pars_u</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-04-27"><meta name="DC.source" content="get_pars_u.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -51,11 +52,22 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>get_pars_u</h1><!--introduction--><p>Gets primary parameters from compound parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[par, aLM] = <a href="../get_pars_u.m"><b>get_pars_u</b></a>(q, p)</p><h2>Description<a name="4"></a></h2><p>Gets primary parameters from compound parameters Surface linked somatic maintenance costs are not included</p><p>Input</p><div><ul><li>q: 4-vector with</li></ul></div><pre>  1 JXAm  % mmol/d.mm^2 % {J_{XAm}} max spec food uptake rate
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_pars_u</h1><!--introduction--><p>Gets primary parameters from compound parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[par, aLM] = <a href="../get_pars_u.m"><b>get_pars_u</b></a>(q, p)</p><h2 id="4">Description</h2><p>Gets primary parameters from compound parameters Surface linked somatic maintenance costs are not included</p><p>Input</p><div><ul><li>q: 4-vector with</li></ul></div><pre>  1 JXAm  % mol/d.cm^2 % {J_{XAm}} max spec food uptake rate
   2 K     % M    % half saturation coefficient
   3 ME0   % mol  % M_E^0 mass at time 0 (all mass consists of reserve)
   4 MWb   % mol  % M_W^b mass at birth (reserve plus structure)
@@ -66,23 +78,22 @@ span.syscmd { color:#B28C00 }
   3 g     % -      % energy investment ratio
   4 kJ    % d^-1   % maturity maintenance rate coefficient
   5 kM    % d^-1   % somatic maintenance rate coefficient
-  6 v     % mm/d   % energy conductance
-  7 Hb    % d.mm^2 % scaled maturity at birth M_H^b/{J_EAm}
-  8 Hp    % d.mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
-  this vector is output of get_pars_s</pre><p>Output</p><div><ul><li>par: 12-vector with primary pars of standard DEB model</li></ul></div><pre>  1  JEAm % mmol/d.mm^2 % {J_{EAm}} max spec assimilation rate
-  2  b    % m^3/ d.mm^2 % {b} spec searching rate
+  6 v     % cm/d   % energy conductance
+  7 Hb    % d.cm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  8 Hp    % d.cm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  this vector is output of get_pars_s</pre><p>Output</p><div><ul><li>par: 12-vector with primary pars of standard DEB model</li></ul></div><pre>  1  JEAm % mol/d.cm^2 % {J_{EAm}} max spec assimilation rate
+  2  b    % m^3/ d.cm^2 % {b} spec searching rate
   3  yEX  % mol/mol     % y_EX yield of reserve on food
   4  yVE  % mol/mol     % y_VE yield of structure on reserve
-  5  v    % mm/d        % energy conductance
-  6  JEM  % mol/d.mm^3  % [J_{EM}] spec somatic maintenance costs
+  5  v    % cm/d        % energy conductance
+  6  JEM  % mol/d.cm^3  % [J_{EM}] spec somatic maintenance costs
   7  kJ   % 1/d         % k_J maturity maintenance rate coefficient
   8  kap  % -           % \kappa fraction to som maint + growth
   9  kapR % -           % \kappa_R fraction fixed in embryo
  10  MHb  % mol         % M_H^b maturity at birth
  11  MHp  % mol         % M_H^p maturity at puberty
- 12  MV   % mol/ mm^3   % [M_V] mass-volume converter for structure</pre><div><ul><li>aLM: (4,4)-matrix with</li></ul></div><pre>  age a, length L, mass of reserve M_E, mass of structure M_V
-  at age 0, at birth, at puberty, at infinity</pre><h2>Remarks<a name="5"></a></h2><p>Notice that all quantities that involve length depend on the shape unless if chosen for volumetric lengths</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../mydata_get_pars.m"><b>mydata_get_pars</b></a></p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+ 12  MV   % mol/ cm^3   % [M_V] mass-volume converter for structure</pre><div><ul><li>aLM: (4,4)-matrix with</li></ul></div><pre>  age a, length L, mass of reserve M_E, mass of structure M_V
+  at age 0, at birth, at puberty, at infinity</pre><h2 id="5">Remarks</h2><p>Notice that all quantities that involve length depend on the shape unless if chosen for volumetric lengths</p><h2 id="6">Example of use</h2><p>See <a href="../mydata_get_pars.m"><b>mydata_get_pars</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_pars_u
 % Gets primary parameters from compound parameters
@@ -102,7 +113,7 @@ function [par, aLM] = get_pars_u(q, p)
   %
   % * q: 4-vector with
   %
-  %    1 JXAm  % mmol/d.mm^2 % {J_{XAm}} max spec food uptake rate
+  %    1 JXAm  % mol/d.cm^2 % {J_{XAm}} max spec food uptake rate
   %    2 K     % M    % half saturation coefficient
   %    3 ME0   % mol  % M_E^0 mass at time 0 (all mass consists of reserve)
   %    4 MWb   % mol  % M_W^b mass at birth (reserve plus structure)
@@ -117,27 +128,27 @@ function [par, aLM] = get_pars_u(q, p)
   %    3 g     % -      % energy investment ratio
   %    4 kJ    % d^-1   % maturity maintenance rate coefficient
   %    5 kM    % d^-1   % somatic maintenance rate coefficient
-  %    6 v     % mm/d   % energy conductance
-  %    7 Hb    % d.mm^2 % scaled maturity at birth M_H^b/{J_EAm}
-  %    8 Hp    % d.mm^2 % scaled maturity at puberty M_H^p/{J_EAm}
+  %    6 v     % cm/d   % energy conductance
+  %    7 Hb    % d.cm^2 % scaled maturity at birth M_H^b/{J_EAm}
+  %    8 Hp    % d.cm^2 % scaled maturity at puberty M_H^p/{J_EAm}
   %    this vector is output of get_pars_s
   %
   % Output
   %
   % * par: 12-vector with primary pars of standard DEB model
   %
-  %    1  JEAm % mmol/d.mm^2 % {J_{EAm}} max spec assimilation rate
-  %    2  b    % m^3/ d.mm^2 % {b} spec searching rate
+  %    1  JEAm % mol/d.cm^2 % {J_{EAm}} max spec assimilation rate
+  %    2  b    % m^3/ d.cm^2 % {b} spec searching rate
   %    3  yEX  % mol/mol     % y_EX yield of reserve on food
   %    4  yVE  % mol/mol     % y_VE yield of structure on reserve
-  %    5  v    % mm/d        % energy conductance
-  %    6  JEM  % mol/d.mm^3  % [J_{EM}] spec somatic maintenance costs
+  %    5  v    % cm/d        % energy conductance
+  %    6  JEM  % mol/d.cm^3  % [J_{EM}] spec somatic maintenance costs
   %    7  kJ   % 1/d         % k_J maturity maintenance rate coefficient
   %    8  kap  % -           % \kappa fraction to som maint + growth
   %    9  kapR % -           % \kappa_R fraction fixed in embryo 
   %   10  MHb  % mol         % M_H^b maturity at birth
   %   11  MHp  % mol         % M_H^p maturity at puberty
-  %   12  MV   % mol/ mm^3   % [M_V] mass-volume converter for structure
+  %   12  MV   % mol/ cm^3   % [M_V] mass-volume converter for structure
   %
   % * aLM: (4,4)-matrix with 
   %

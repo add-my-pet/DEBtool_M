@@ -76,7 +76,7 @@ function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
   pA = assim * f .* sM .* l.^2;              % assim
-  pC = l.^2 .* ((g + lT) .* sM + l )/ (1 + g/ f);   % mobilisation
+  pC = l.^2 .* ((g + lT) .* sM + l )./ (1 + g/ f);   % mobilisation
   pS = kap * l.^2 .* (l + lT);               % somatic  maint
   pJ = k * uH;                               % maturity maint
   pG = kap * pC - pS;                        % growth
