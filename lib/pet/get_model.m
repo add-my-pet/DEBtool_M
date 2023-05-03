@@ -88,6 +88,8 @@ switch phylum
                 model = 'std';
             case 'Thaliacea'
                 model = 'stf';
+            case 'Elasmobranchii'
+                model = 'std';
             case 'Actinopterygii'
                 switch order
                     case {'Polypteriformes', 'Acipenseriformes', 'Lepisosteiformes', 'Amiiformes'}
