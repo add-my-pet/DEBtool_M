@@ -84,12 +84,10 @@ switch phylum
         switch class
             case 'Leptocardii'
                 model = 'abj';
-            case {'Appendicularia', 'Ascidiacea', 'Myxini', 'Cephalaspidomorphi', 'Chondrichthyes'}
+            case {'Appendicularia', 'Ascidiacea', 'Myxini', 'Cephalaspidomorphi', 'Chondrichthyes', 'Elasmobranchii'}
                 model = 'std';
             case 'Thaliacea'
                 model = 'stf';
-            case 'Elasmobranchii'
-                model = 'std';
             case 'Actinopterygii'
                 switch order
                     case {'Polypteriformes', 'Acipenseriformes', 'Lepisosteiformes', 'Amiiformes'}
