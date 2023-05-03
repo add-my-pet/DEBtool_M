@@ -17,7 +17,7 @@ function [uE0, lb, info] = get_ue0(p, eb, lb0)
   % Input
   %
   % * p: 1 or 3 -vector with parameters g, k_J/ k_M, v_H^b, see get_lb
-  % * eb: optional scalar with scaled reserbe density at birth 
+  % * eb: optional scalar with scaled reserve density at birth 
   %   (default: eb = 1)
   % * lb0: optional scalar with scaled length at birth 
   %   (default: lb is optained from get_lb)
