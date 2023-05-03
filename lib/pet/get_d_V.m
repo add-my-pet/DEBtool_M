@@ -81,7 +81,7 @@ switch phylum
               d_V = 0.3;
             case {'Aves', 'Amphibia'}
               d_V = 0.28;
-            case {'Chondrichthyes', 'Actinopterygii', 'Sarcopterygii'}
+            case {'Chondrichthyes', 'Elasmobranchii', 'Actinopterygii', 'Sarcopterygii'}
               d_V = 0.2;
             case 'Myxini'
               d_V = 0.17;
