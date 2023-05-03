@@ -218,7 +218,7 @@ else % fill fields
 
       case 'curator'
         curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
-        emailList = {'starrlight.augustine@akvaplan.niva.no', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
+        emailList = {'starrlight@tecnico.ulisboa.pt', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
         if ~isempty(metaData.curator)
           i = 1:5; i = i(ismember(curList, metaData.curator));
         else
