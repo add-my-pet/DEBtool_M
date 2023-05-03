@@ -185,7 +185,9 @@ fprintf(fid, 'txtData.units = units;\n');
 fprintf(fid, 'txtData.label = label;\n');
 fprintf(fid, 'txtData.bibkey = bibkey;\n');
 if isfield(txtData, 'comment') & ~isempty(txtData.comment)
-  fprintf(fid, 'txtData.comment = comment;\n');
+  flds_comment = fieldnames(txtData.comment); n_fld = length(flds_comment); n=0;
+  for i=1:n_fld; if isempty(txtData.comment.(flds_comment{i})); n=n+1; end; end
+  if n<n_fld; fprintf(fid, 'txtData.comment = comment;\n'); end
 end
 fprintf(fid, '\n');
 

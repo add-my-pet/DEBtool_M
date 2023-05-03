@@ -561,9 +561,9 @@ else % fill fields
           end
           H0l(i) = uicontrol('Parent',ddata_0,                         'Position',[320, hight, 220, 20], 'Style','text', 'String',txtData.label.(fld{i})); % label
           H0b(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[550, hight,  70, 20], 'Style','edit', 'String',cell2str(txtData.bibkey.(fld{i}))); % bibkey
-          if ~isfield(txtData.comment, fld{i})
-            txtData.comment.(fld{i}) = [];
-          end          
+%           if ~isfield(txtData.comment, fld{i})
+%             txtData.comment.(fld{i}) = [];
+%           end          
           H0c(i) = uicontrol('Parent',ddata_0,   'Callback',{@d0Cb,i}, 'Position',[650, hight, 300, 20], 'Style','edit', 'String',txtData.comment.(fld{i})); % comment
           uicontrol('Parent',ddata_0, 'Callback',{@deleteCb,'data_0',fld{i},ddata_0}, 'Position',[1000, hight, 20, 20], 'String','X', 'ForegroundColor',[1 0 0], 'FontWeight','bold');
         end
