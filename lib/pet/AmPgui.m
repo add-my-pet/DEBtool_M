@@ -339,7 +339,8 @@ else % fill fields
       
         select_id(1:7) = true; % general websites
         if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
-          metaData.links.id_ITIS = get_id_ITIS(metaData.species);
+          % metaData.links.id_ITIS = get_id_ITIS(metaData.species);
+          % the ITIS website is frequently not responding and holds progress
         end
         if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
           metaData.links.id_EoL = get_id_EoL(metaData.species);
