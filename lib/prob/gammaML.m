@@ -10,6 +10,7 @@ function [par_ML, info] = gammaML(t)
   %% Description
   % Calculates ML estimates for scale parameter theta and shape parameter alpha for the gamma distribution:
   %    pdf(t)=theta^(-alpha)/gamma(alpha)*t^(alpha-1)*exp(-t/theta); 
+  %    F(t)=gammainc(t/theta,alpha) ;
   %
   % Input:
   %
@@ -17,7 +18,7 @@ function [par_ML, info] = gammaML(t)
   %
   % Output:
   %
-  % * par_ML: 2-vector with ML estimates for the scale parameter teta and shape parameter alpha
+  % * par_ML: 2-vector with ML estimates for the scale parameter theta and shape parameter alpha
   % * info: boolean for success (1) or failure (0)
   
   %% Remarks
