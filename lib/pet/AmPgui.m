@@ -47,7 +47,7 @@ function AmPgui(action)
 
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
 global data auxData metaData txtData select_id id_links eco_types color infoAmPgui list_spec handfilled
-global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
+global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE Hwait
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db 
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 
@@ -818,8 +818,8 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec
-  hwait = waitbar(0,'Please wait...');
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK Hwait color dmydata infoAmPgui list_spec
+  Hwait = waitbar(0,'Please wait...');
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
@@ -861,14 +861,15 @@ function speciesCb(~, ~, dspecies)
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
-    close(dspecies); close(hwait);
+    close(dspecies); close(Hwait);
     AmPgui('links')
   end
 end
 
 function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
-  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK handfilled
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK Hwait handfilled
   handfilled = true; % taxonomy handfilled, links also filled manually
+  close(Hwait);
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
   Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
