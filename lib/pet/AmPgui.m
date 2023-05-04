@@ -46,7 +46,7 @@ function AmPgui(action)
 % metaData.bibkey.Fi and Ci specify the bibkeys for facts Fi and discussion Di
 
 persistent dmydata hspecies hecoCode hT_typical hauthor hcurator hgrp hdiscussion hfacts hacknowledgment hlinks hbiblist hdata_0 hCOMPLETE   
-global data auxData metaData txtData select_id id_links eco_types color infoAmPgui list_spec
+global data auxData metaData txtData select_id id_links eco_types color infoAmPgui list_spec handfilled
 global dspecies Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK HCOMPLETE
 global Hauthor Hemail Haddress HK HD HDb HF HFb HT Hlinks H0v H0T H0b H0c D1 Hb ddata_0 Db 
 global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
@@ -55,9 +55,11 @@ global Hclimate Hecozone Hhabitat Hembryo Hmigrate Hfood Hgender Hreprod
 set(0, 'DefaultUIControlFontSize', 9);
 %set(0, 'DefaultUIControlFontSize', UIControl_FontSize_bak);
 
+
 if nargin == 0 % initiate structures and create the GUI
 
   % initiation
+  handfilled = false; % taxonomy is not handfilled; links set automatically
 
   if ~isfield(data, 'data_0'); data.data_0 = []; end   
   if ~isfield(data, 'data_1'); data.data_1 = []; end  
@@ -84,10 +86,9 @@ if nargin == 0 % initiate structures and create the GUI
   id_links = {'id_CoL', 'id_ITIS', 'id_EoL', 'id_Wiki', 'id_ADW', 'id_Taxo', 'id_WoRMS', ...                                                
     'id_molluscabase', 'id_scorpion', 'id_spider', 'id_collembola', 'id_orthoptera', 'id_phasmida', 'id_aphid', 'id_diptera', 'id_lepidoptera', ... 
     'id_fishbase', 'id_amphweb', 'id_ReptileDB', 'id_avibase', 'id_birdlife', 'id_MSW3', 'id_AnAge'};
-  if ~isfield(metaData, 'links'); metaData.links = []; n = length(id_links);
-    for i=1:n
-      metaData.links.(id_links{i}) = '';
-    end
+  if ~isfield(metaData, 'links'); metaData.links = []; n_id = length(id_links);
+    for i=1:n_id; metaData.links.(id_links{i}) = ''; end
+    select_id = true(1,n_id);
   end
 
   if ~isfield(metaData, 'author'); metaData.author = []; end
@@ -312,121 +313,123 @@ else % fill fields
         dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
         links = {...
           % general links
-          'https://www.catalogueoflife.org/col/'; ...
-          'https://www.itis.gov/'; ...
-          'https://eol.org/'; ...
-          'https://en.wikipedia.org/wiki/'; ...
-          'https://animaldiversity.org/'; ...
-          'http://taxonomicon.taxonomy.nl/'; ...
-          'https://marinespecies.org/'; ...
+          'https://www.catalogueoflife.org/col/'
+          'https://www.itis.gov/'
+          'https://eol.org/'
+          'https://en.wikipedia.org/wiki/'
+          'https://animaldiversity.org/'
+          'http://taxonomicon.taxonomy.nl/'
+          'https://marinespecies.org/'
           % taxon-specific links
-          'https://www.molluscabase.org/'; ...
-          'https://www.ntnu.no/ub/scorpion-files/'; ...
-          'https://wsc.nmbe.ch/'; ...
-          'https://www.collembola.org/'; ...
-          'http://Orthoptera.SpeciesFile.org'; ...
-          'http://phasmida.speciesfile.org/'; ...
-          'http://aphid.speciesfile.org/'; ...
-          'https://diptera.info/'; ...
-          'http://www.nhm.ac.uk/our-science/data/lepindex/'; ...
-          'https://www.fishbase.org/'; ...
-          'https://amphibiaweb.org/search/'; ...
-          'https://reptile-database.reptarium.cz/'; ...
-          'https://avibase.bsc-eoc.org/'; ...
-          'http://datazone.birdlife.org/'; ...
-          'https://www.departments.bucknell.edu/biology/resources/msw3/'; ...
-          'https://genomics.senescence.info/'};             
-      
-        select_id(1:7) = true; % general websites
-        if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
-          % metaData.links.id_ITIS = get_id_ITIS(metaData.species);
-          % the ITIS website is frequently not responding and holds progress
-        end
-        if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
-          metaData.links.id_EoL = get_id_EoL(metaData.species);
-        end
-        if isfield(metaData.links, 'id_Wiki') && isempty(metaData.links.id_Wiki)
-          metaData.links.id_Wiki = get_id_Wiki(metaData.species);
-        end
-        if isfield(metaData.links, 'id_ADW') && isempty(metaData.links.id_ADW)
+          'https://www.molluscabase.org/'
+          'https://www.ntnu.no/ub/scorpion-files/'
+          'https://wsc.nmbe.ch/'
+          'https://www.collembola.org/'
+          'http://Orthoptera.SpeciesFile.org'
+          'http://phasmida.speciesfile.org/'
+          'http://aphid.speciesfile.org/'
+          'https://diptera.info/'
+          'http://www.nhm.ac.uk/our-science/data/lepindex/'
+          'https://www.fishbase.org/'
+          'https://amphibiaweb.org/search/'
+          'https://reptile-database.reptarium.cz/'
+          'https://avibase.bsc-eoc.org/'
+          'http://datazone.birdlife.org/'
+          'https://www.departments.bucknell.edu/biology/resources/msw3/'
+          'https://genomics.senescence.info/'};   
+         
+        if ~handfilled % if taxonomy is handfilled include all websites and fill with empty       
+          select_id(1:7) = true; % general websites
+          if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
+            % metaData.links.id_ITIS = get_id_ITIS(metaData.species);
+            % the ITIS website is frequently not responding and holds progress
+          end
+          if isfield(metaData.links, 'id_EoL') && isempty(metaData.links.id_EoL)
+            metaData.links.id_EoL = get_id_EoL(metaData.species);
+          end
+          if isfield(metaData.links, 'id_Wiki') && isempty(metaData.links.id_Wiki)
+            metaData.links.id_Wiki = get_id_Wiki(metaData.species);
+          end
+          if isfield(metaData.links, 'id_ADW') && isempty(metaData.links.id_ADW)
             metaData.links.id_ADW = get_id_ADW(metaData.species);
-        end
-        if isfield(metaData.links, 'id_Taxo') && isempty(metaData.links.id_Taxo)
-          metaData.links.id_Taxo = get_id_Taxo(metaData.species);
-        end
-        if isfield(metaData.links, 'id_WoRMS') && isempty(metaData.links.id_WoRMS)
-          metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
+          end
+          if isfield(metaData.links, 'id_Taxo') && isempty(metaData.links.id_Taxo)
+            metaData.links.id_Taxo = get_id_Taxo(metaData.species);
+          end
+          if isfield(metaData.links, 'id_WoRMS') && isempty(metaData.links.id_WoRMS)
+            metaData.links.id_WoRMS = get_id_WoRMS(metaData.species);
+          end
+        
+          select_id(8:23) = false; % taxon-specific websites
+          if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
+            select_id(8) = true;
+            metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Scorpiones') & isempty(metaData.links.id_scorpion)
+            select_id(9) = true;
+            metaData.links.id_scorpion = get_id_scorpion(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Araneae') & isempty(metaData.links.id_spider)
+            select_id(10) = true;
+            metaData.links.id_spider = get_id_spider(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, 'Entognatha') & isempty(metaData.links.id_collembola)
+            select_id(11) = true;
+            metaData.links.id_collembola = get_id_collembola(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Orthoptera') & isempty(metaData.links.id_orthoptera)
+            select_id(12) = true;
+            metaData.links.id_orthoptera = get_id_orthoptera(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Phasmatodea') & isempty(metaData.links.id_phasmida)
+            select_id(13) = true;
+            metaData.links.id_phasmida = get_id_phasmida(metaData.species);
+          end
+          if ~isempty(metaData.family) & ismember(metaData.family, 'Aphididae') & isempty(metaData.links.id_aphid)
+            select_id(14) = true;
+            metaData.links.id_aphid = get_id_aphid(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Diptera') & isempty(metaData.links.id_diptera)
+            select_id(15) = true;
+            metaData.links.id_diptera = get_id_diptera(metaData.species);
+          end
+          if ~isempty(metaData.order) & ismember(metaData.order, 'Lepidoptera') & isempty(metaData.links.id_lepidoptera)
+            select_id(16) = true;
+            metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) & isempty(metaData.links.id_fishbase)
+            select_id(17) = true;
+            metaData.links.id_fishbase = get_id_fishbase(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, 'Amphibia') & isempty(metaData.links.id_amphweb)
+            select_id(18) = true;
+            metaData.links.id_amphweb = get_id_amphweb(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) & isempty(metaData.links.id_ReptileDB)
+            select_id(19) = true;
+            metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
+            select_id(20) = true;
+            metaData.links.id_avibase = get_id_avibase(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_birdlife)
+            select_id(21) = true;
+            metaData.links.id_birdlife = get_id_birdlife(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
+            select_id(22) = true;
+            metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
+          end
+          if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
+            select_id(23) = true;
+            metaData.links.id_AnAge = get_id_AnAge(metaData.species);
+          end
         end
         
-        select_id(8:23) = false; % taxon-specific websites
-        if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
-          select_id(8) = true;
-          metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Scorpiones') & isempty(metaData.links.id_scorpion)
-          select_id(9) = true;
-          metaData.links.id_scorpion = get_id_scorpion(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Araneae') & isempty(metaData.links.id_spider)
-          select_id(10) = true;
-          metaData.links.id_spider = get_id_spider(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, 'Entognatha') & isempty(metaData.links.id_collembola)
-          select_id(11) = true;
-          metaData.links.id_collembola = get_id_collembola(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Orthoptera') & isempty(metaData.links.id_orthoptera)
-          select_id(12) = true;
-          metaData.links.id_orhtoptera = get_id_orthoptera(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Phasmatodea') & isempty(metaData.links.id_phasmida)
-          select_id(13) = true;
-          metaData.links.id_phasmida = get_id_phasmida(metaData.species);
-        end
-        if ~isempty(metaData.family) & ismember(metaData.family, 'Aphididae') & isempty(metaData.links.id_aphid)
-          select_id(14) = true;
-          metaData.links.id_aphid = get_id_aphid(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Diptera') & isempty(metaData.links.id_diptera)
-          select_id(15) = true;
-          metaData.links.id_diptera = get_id_diptera(metaData.species);
-        end
-        if ~isempty(metaData.order) & ismember(metaData.order, 'Lepidoptera') & isempty(metaData.links.id_lepidoptera)
-          select_id(16) = true;
-          metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) & isempty(metaData.links.id_fishbase)
-          select_id(17) = true;
-          metaData.links.id_fishbase = get_id_fishbase(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, 'Amphibia') & isempty(metaData.links.id_amphweb)
-          select_id(18) = true;
-          metaData.links.id_amphweb = get_id_amphweb(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) & isempty(metaData.links.id_ReptileDB)
-          select_id(19) = true;
-          metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
-          select_id(20) = true;
-          metaData.links.id_avibase = get_id_avibase(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_birdlife)
-          select_id(21) = true;
-          metaData.links.id_birdlife = get_id_birdlife(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
-          select_id(22) = true;
-          metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
-        end
-        if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
-          select_id(23) = true;
-          metaData.links.id_AnAge = get_id_AnAge(metaData.species);
-        end
-                       
         select_id = logical(select_id); ID_links = id_links(select_id); Links = links(select_id); n_Links = length(ID_links);
         for i= 1:n_Links 
-          if i>1
+          if i>1 && ~handfilled
             web(Links{i},'-browser');
           end
           hight = 275 - i * 25;
@@ -435,7 +438,7 @@ else % fill fields
           end
           uicontrol('Parent',dlinks, 'Position',[0, hight, 146, 20], 'String',ID_links{i}, 'Style','text');
           uicontrol('Parent',dlinks, 'Callback',{@OKCb,dlinks}, 'Position',[110 10 20 20], 'Style','pushbutton', 'String','OK'); 
-          if i == 1
+          if i == 1 && ~handfilled
             Hlinks(1) = uicontrol('Parent',dlinks, 'Position',[110, hight, 210, 20], 'Style','text', 'String',metaData.links.(ID_links{i})); 
           else
             Hlinks(i)  = uicontrol('Parent',dlinks, 'Callback',{@linksCb,ID_links,i}, 'Position',[110, hight, 210, 20], 'Style','edit', 'String',metaData.links.(ID_links{i})); 
@@ -684,7 +687,7 @@ else % fill fields
     case 'pause'
       nm = ['results_', metaData.species, '.mat'];
       %save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
-      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links');
+      save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'handfilled');
       dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
@@ -834,12 +837,12 @@ function speciesCb(~, ~, dspecies)
     fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc)
     metaData.species = my_pet_acc;
   end
-  if isempty(id_CoL)
+  if isempty(lin) || isempty(rank) || isempty(id_CoL)
     web('http://www.catalogueoflife.org/col/','-browser');
     set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
     set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
     set(Hwarning, 'String','species not recognized, search CoL');
-    set(HwarningOK, 'String','OK proceeds to filling lineage manually');
+    set(HwarningOK, 'String','OK proceeds to filling lineage');
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
     AmPgui('setColors')
   else
@@ -864,7 +867,8 @@ function speciesCb(~, ~, dspecies)
 end
 
 function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
-  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK handfilled
+  handfilled = true; % taxonomy handfilled, links also filled manually
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
   Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
