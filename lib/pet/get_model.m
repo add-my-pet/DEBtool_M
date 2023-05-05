@@ -72,7 +72,9 @@ switch phylum
                         model = 'hep';
                     case {'Orthoptera', 'Hemiptera'}
                         model = 'abp';
-                    case {'Lepidoptera','Hymenoptera','Diptera'}
+                    case {'Diptera'}
+                        model = 'hax';
+                    case {'Lepidoptera','Hymenoptera'}
                         model = 'hex';
                 end
         end
