@@ -124,6 +124,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   sel_Clade = ismember(model_Clade, model_def); 
   if ~any(sel_Clade)
     fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model definition ', model_def, '\n']);
+    sel_Clade(1) = true; % keep one with the wrong model
   end
   for i = 1:n_Clade % delete the results files of the related species that do not match model_def
     if ~sel_Clade(i)
