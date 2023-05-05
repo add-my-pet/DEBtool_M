@@ -129,6 +129,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   for i = 1:n_Clade % delete the results files of the related species that do not match model_def
     if ~sel_Clade(i)
       delete(['results_', Clade{i}, '.mat']); 
+      Clade(i) = '';
     end
   end
   Clade = Clade(sel_Clade); n_clade = length(Clade); 
