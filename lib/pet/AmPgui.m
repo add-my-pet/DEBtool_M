@@ -109,7 +109,9 @@ if nargin == 0 % initiate structures and create the GUI
     color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
   end
 
-  infoAmPgui = ~isempty(metaData.species); % AmPgui exit flag
+  if isempty(infoAmPgui)
+    infoAmPgui = ~isempty(metaData.species); % AmPgui exit flag
+  end
 
   % setup gui
   dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
@@ -1491,7 +1493,7 @@ function proceedCb(~, ~, H)
   elseif check_bibitem
     OKCb([], [], H); AmPgui('biblist'); 
   else
-    save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
+    save(['results_', metaData.species, '.mat'], 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types', 'infoAmPgui');
     OKCb([], [], H); AmPeps(infoAmPgui);
   end
       
