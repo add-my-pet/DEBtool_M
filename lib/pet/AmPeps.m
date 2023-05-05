@@ -132,7 +132,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
       Clade(i) = '';
     end
   end
-  Clade = Clade(sel_Clade); n_clade = length(Clade); 
+  n_clade = length(Clade); 
   criterion = criterion(sel_Clade); [~, i_Clade] = sort(criterion);
   if any(sel_Clade) % at least 1  clade species with default model
     i_Clade = i_Clade(sel_Clade);
