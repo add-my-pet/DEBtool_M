@@ -889,7 +889,7 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
   %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
   set(Hwarning, 'String',''); 
-  set(HwarningOK, 'String','OK when done, then please wait for closing dialog');
+  set(HwarningOK, 'String','');
   uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
   AmPgui('color')
 end
@@ -905,11 +905,11 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   Hwait = waitbar(0,'Please wait for checking lineage ...');
 
   if isempty(list_genus)
-    list_genus  = list_taxa('',3); 
-    list_family = list_taxa('',4); 
-    list_order  = list_taxa('',5); 
-    list_class  = list_taxa('',6); 
-    list_phylum = list_taxa('',7); 
+    list_genus  = list_taxa('',3); waitbar(0.2,Hwait);
+    list_family = list_taxa('',4); waitbar(0.4,Hwait);
+    list_order  = list_taxa('',5); waitbar(0.6,Hwait); 
+    list_class  = list_taxa('',6); waitbar(0.8,Hwait); 
+    list_phylum = list_taxa('',7); waitbar(1.0,Hwait); 
   end
 
   genus = strsplit(metaData.species,'_'); genus = genus{1};
