@@ -114,7 +114,8 @@ if nargin == 0 % initiate structures and create the GUI
   end
 
   % setup gui
-  dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
+  %dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
+  dmydata = dialog('Position',[30 550 250 275], 'Name','AmPgui');
   hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 230 100 20], 'String','species',        'Style','pushbutton');
   hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 205 100 20], 'String','ecoCode',        'Style','pushbutton');
   hT_typical= uicontrol('Parent',dmydata, 'Callback','AmPgui T_typical',      'Position',[10 180 100 20], 'String','T_typical',      'Style','pushbutton');
@@ -699,6 +700,8 @@ else % fill fields
   end
 end
   % color settings: run this part only with AmPgui('setColor')
+  if isvalid(Hwait); close(Hwait); end % close any wait warnings
+  if isvalid(dmydata); figure(dmydata); end % bring the main dialog window to the front
   
   if ~any([isempty(metaData.species), isempty(metaData.family), isempty(metaData.order), isempty(metaData.class), isempty(metaData.phylum)])
     color.species = [0 .6 0]; set(hspecies, 'ForegroundColor', color.species);
@@ -846,6 +849,7 @@ function speciesCb(~, ~, dspecies)
     set(Hwarning, 'String','species not recognized, search CoL');
     set(HwarningOK, 'String','OK proceeds to filling lineage');
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
+    frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
     AmPgui('setColors')
   else
     metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
@@ -863,15 +867,15 @@ function speciesCb(~, ~, dspecies)
     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
     infoAmPgui = 1;
-    close(dspecies); close(Hwait);
+    close(dspecies); 
     AmPgui('links')
   end
 end
 
 function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
-  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK Hwait handfilled
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK handfilled
+  
   handfilled = true; % taxonomy handfilled, links also filled manually
-  close(Hwait);
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
   Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
@@ -885,17 +889,20 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
   %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
   set(Hwarning, 'String',''); 
-  set(HwarningOK, 'String','OK proceeds to setting lineage manually');
+  set(HwarningOK, 'String','OK when done, then please wait for closing dialog');
   uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
   AmPgui('color')
 end
 
 function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   persistent list_genus list_family list_order  list_class list_phylum
-  global metaData Hwarning HwarningOK infoAmPgui 
+  global metaData Hwarning HwarningOK infoAmPgui Hwait
+  
+  % the lowest level in the manually filled dialog window dspecies that is in AmP is used; 
+  % higher levels are overwritten by those in the AmP lineage
   
   set(Hwarning, 'String','checking lineage, see Matlab window'); 
-  set(HwarningOK, 'String','please wait for closing dialog');
+  Hwait = waitbar(0,'Please wait for checking lineage ...');
 
   if isempty(list_genus)
     list_genus  = list_taxa('',3); 
