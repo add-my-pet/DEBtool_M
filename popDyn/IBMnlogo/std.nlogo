@@ -471,7 +471,7 @@ INPUTBOX
 520
 90
 tickRate
-24.0
+100.0
 1
 0
 Number
@@ -504,7 +504,7 @@ INPUTBOX
 400
 150
 V_X
-1355000.0
+1.0
 1
 0
 Number
@@ -526,7 +526,7 @@ INPUTBOX
 160
 210
 h_X
-0.1
+1.0E-4
 1
 0
 Number
@@ -592,7 +592,7 @@ INPUTBOX
 400
 270
 h_a
-6.503E-8
+5.202E-6
 1
 0
 Number
@@ -614,7 +614,7 @@ INPUTBOX
 160
 330
 E_Hb
-379.6
+1.193E-8
 1
 0
 Number
@@ -625,7 +625,7 @@ INPUTBOX
 280
 330
 E_Hp
-44380.0
+3.177E-6
 1
 0
 Number
@@ -636,7 +636,7 @@ INPUTBOX
 400
 330
 E_Hpm
-44380.0
+3.177E-6
 1
 0
 Number
@@ -647,7 +647,7 @@ INPUTBOX
 520
 330
 fProb
-0.5
+0.999
 1
 0
 Number
@@ -658,7 +658,7 @@ INPUTBOX
 160
 390
 kap
-0.9609
+0.9987
 1
 0
 Number
@@ -680,7 +680,7 @@ INPUTBOX
 400
 390
 kap_G
-0.7999
+0.8001
 1
 0
 Number
@@ -702,7 +702,7 @@ INPUTBOX
 160
 450
 t_R
-0.0
+1.0
 1
 0
 Number
@@ -724,7 +724,7 @@ INPUTBOX
 400
 450
 p_Am
-432.4
+28.63
 1
 0
 Number
@@ -735,7 +735,7 @@ INPUTBOX
 520
 450
 p_Amm
-432.4
+28.63
 1
 0
 Number
@@ -746,7 +746,7 @@ INPUTBOX
 160
 510
 v
-0.01667
+0.02058
 1
 0
 Number
@@ -757,7 +757,7 @@ INPUTBOX
 280
 510
 p_M
-17.43
+1049.0
 1
 0
 Number
@@ -790,7 +790,7 @@ INPUTBOX
 160
 570
 E_G
-5231.0
+4445.0
 1
 0
 Number
@@ -801,7 +801,7 @@ INPUTBOX
 280
 570
 ome
-5.636
+0.3556
 1
 0
 Number

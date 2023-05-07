@@ -701,7 +701,8 @@ else % fill fields
 end
   % color settings: run this part only with AmPgui('setColor')
   if isvalid(Hwait); close(Hwait); end % close any wait warnings
-  if isvalid(dmydata); figure(dmydata); end % bring the main dialog window to the front
+  figure(dmydata); % bring the main dialog window to the front
+  %close(Hwait); % close any wait warnings
   
   if ~any([isempty(metaData.species), isempty(metaData.family), isempty(metaData.order), isempty(metaData.class), isempty(metaData.phylum)])
     color.species = [0 .6 0]; set(hspecies, 'ForegroundColor', color.species);

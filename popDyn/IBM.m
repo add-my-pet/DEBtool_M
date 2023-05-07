@@ -10,7 +10,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
-%  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
+%  a choice of 3 reproduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
 % Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
@@ -24,9 +24,9 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % Input:
 %
 % * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}
-% * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max
+% * tT: optional (nT,2)-array with time (d) and temperature (K) (default: T_typical); time between 0 (= start) and t_max
 %     If scalar, the temperature is assumed to be constant
-% * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max
+% * tJX: optional (nX,2)-array with time (d) and food supply (mod/d); time scaled between 0 (= start) and t_max
 %     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate) 
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
@@ -168,49 +168,49 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbp = h(3); h_Bpi = h(5);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpi = h(4);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpi = h_Bpi; 
   case 'stx'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbx = 1e-35; h_Bxp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbx = h(4); h_Bxp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbx = h(3); h_Bxp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsj = h(5); h_Bjp = h(6); h_Bpi = h(7);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
-      h_B0b = h(3); h_Bbp = h(4); h_Bpj = h(5);  h_Bji = h(6);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bje = h(5); h_Bei = h(6);    
+      h_B0b = h(2); h_Bbj = h(3); h_Bje = h(4); h_Bei = h(5);    
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bje = h_Bje; par.h_Bei = h_Bei; 
   otherwise
