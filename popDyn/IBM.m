@@ -63,6 +63,8 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 % Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. 
 % Progress can be monitored by inspecting output-file txNL23W.txt
+% NetLogo uses Euler integration with stepsize 1/tickRate, which should be small relative to the state that changes fastest.
+% For this reason, embryo dynamics is not included explicitly, but its states are "frozen" till birth.
 
 %% Example of use
 %
@@ -119,7 +121,7 @@ if ~exist('tT','var') || isempty(tT)
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tT(end,1) < t_max)
   tT = [tT; t_max tT(end,2)];
 elseif size(tT,1) == 1
-  T = tT; tT = [0 T; (t_max + 1) T];   
+  T = tT; tT = [0 T; t_max T];   
 end
 
 % volume of reactor
@@ -129,10 +131,14 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
-  J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; t_max J_X]; 
-else tJX(1,1) == 0 & ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
+  J_X = 75 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max*1.1 J_X]; 
+end
+if tJX(1,1) > 0
+  tJX = [0 tJX(1,2); tJX];
+end
+if tJX(end,1) <= t_max
+  tJX = [tJX; t_max*1.1 tJX(end,2)];    
 end
 
 % initial food density
@@ -189,14 +195,14 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(5);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'

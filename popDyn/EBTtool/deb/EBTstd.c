@@ -199,7 +199,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
         }
     }
   
-  /* The derivatives of environmental vars: time & scaled food density */
+  /* The derivatives of environmental vars: time & scaled food density x=X/K*/
   envgrad[0] = 1.0; /* 1/d, change in time */
   for(i=0, sumL2 = 0.; i<cohort_no[0]; i++) sumL2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) : 0; 
   envgrad[1] = spline_JX(time)/ V_X/ K - hT_X * food - JT_X_Am * f * sumL2/ K; /* 1/d, change in scaled food density */

@@ -1,6 +1,6 @@
 ; Model definition for a std-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/01
+; date: 2021/01/01, modified 2023/05/09
 
 extensions [matrix]
 
@@ -10,7 +10,9 @@ extensions [matrix]
 
 globals[
   tTC      ; (d,-), (n,2)-matrix of spline-knots with time, temperature correction factor
+  n_tTC    ; -, number of rows of tTC
   tJX      ; (d,mol/d), (n,2)-matrix of spline-knots with time, food supply rate to the reactor
+  n_tJX    ; -, number of rows of tJX
   eaLE     ; (-,d,cm,J), (n,4)-matrix of spline-knots with scaled reserve density, age and structural length at birth, initial reserve
   n_eaLE   ; -, number of rows of eaLE
 
@@ -25,6 +27,7 @@ globals[
   p_C      ; J/d, reserve mobilisation rate
   spawn-number ;  #, list with positive number of eggs per female
   spawn-quality ; #, list with scaled reserve density at birth for laying female
+  totN0i   ; #, total number of individuals in the reactor
 
   ; compound parameters
   K        ; Mol, half saturation coefficient for females
@@ -114,6 +117,7 @@ to setup
   file-close
   set tJX matrix:from-row-list tJX ; convert list to matrix
   set tJX_i 0 ; current row-index of tJX
+  set n_tJX item 0 matrix:dimensions tJX; number of rows in matrix tJX
 
   ; read matrix tTC with time, temperature correction factors
   set tTC (list) ; initiate list
@@ -127,6 +131,7 @@ to setup
   file-close
   set tTC matrix:from-row-list tTC ; convert list to matrix
   set tTC_i 0 ; current row-index of tTC
+  set n_tTC item 0 matrix:dimensions tTC; number of rows in matrix tTC
 
   ; read matrix eaLE with embryo settings
   set eaLE (list) ; empty list
@@ -183,14 +188,18 @@ to go
   set time ticks / tickRate ; d, time
 
   ; get current temperature correction factor
-  if time > matrix:get tTC (tTC_i + 1) 0 and t_max < matrix:get tTC (tTC_i + 1) 0 [set tTC_i tTC_i + 1]
+  ; if (time > matrix:get tTC (tTC_i + 1) 0) and (t_max > matrix:get tTC (tTC_i + 1) 0) [set tTC_i tTC_i + 1]
+  if (time > matrix:get tTC (tTC_i + 1) 0) and (n_tTC > tTC_i  + 2) [set tTC_i tTC_i + 1]
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 
   ; get current food input into reactor
-  if time > matrix:get tJX (tJX_i + 1) 0 and t_max < matrix:get tJX (tJX_i + 1) 0 [set tJX_i tJX_i + 1]
+  ; if time > matrix:get tJX (tJX_i + 1) 0 and t_max > matrix:get tJX (tJX_i + 1) 0 [set tJX_i tJX_i + 1]
+  if (time > matrix:get tJX (tJX_i + 1) 0) and (n_tJX > tJX_i + 2) [set tJX_i tJX_i + 1]
   set w (time - matrix:get tJX tJX_i 0) / (matrix:get tJX (tJX_i + 1) 0 - matrix:get tJX tJX_i 0)
   set JX w * matrix:get tJX (tJX_i + 1) 1 + (1  - w) * matrix:get tJX tJX_i 1
+
+  set totN0i count turtles ; total number of individuals in the reactor
 
   ; birth
   ask turtles with [(a > a_b / TC) and (E_H = E_Hb)] [set E_H E_Hb + 0.0001] ; embryo becomes juvenile and starts feeding, growing, developing
@@ -216,6 +225,7 @@ to go
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
     if E_H < E_Hmax [set E_Hmax E_H]
+    ; if E_H > E_Hmax [set E_Hmax E_H]
     if E_H > E_Hpi [
       set E_H E_Hpi ; J, do not allow maturity to exceed puberty level
       set E_Hmax E_Hpi ; J, keep both maturities equal
@@ -225,7 +235,7 @@ to go
     set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
     ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
-    if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
+    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
       set t_spawn t_spawn + 1 / tickRate ; d, time since last spawning
@@ -247,7 +257,7 @@ to go
       ]
     ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
       set a_b get_ab ee
-      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 egg
+      if (E_R >= E_0 / kap_R) and (t_spawn > a_b / TC) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -255,7 +265,7 @@ to go
         set t_spawn 0 ; reset time since last spawn
       ]
     ] [ ; spawn if reprod buffer accumulation time exceeds t_R
-      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 egg
+      if (E_R > E_0 / kap_R) and (t_spawn > t_R) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -295,7 +305,7 @@ to go
     file-print " "    ; new line
   ]
 
-  if count turtles = 0 or time > t_max [
+  if totN0i = 0 or totN0i > 15000 or time > t_max [
     file-close-all
     stop
   ]
@@ -471,7 +481,7 @@ INPUTBOX
 520
 90
 tickRate
-100.0
+24.0
 1
 0
 Number
@@ -482,7 +492,7 @@ INPUTBOX
 160
 150
 t_max
-54750.0
+150.0
 1
 0
 Number
@@ -504,7 +514,7 @@ INPUTBOX
 400
 150
 V_X
-1.0
+0.002026
 1
 0
 Number
@@ -526,7 +536,7 @@ INPUTBOX
 160
 210
 h_X
-1.0E-4
+0.1
 1
 0
 Number
@@ -702,7 +712,7 @@ INPUTBOX
 160
 450
 t_R
-1.0
+0.0
 1
 0
 Number
@@ -835,7 +845,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.0001
 true
 false
 "" ""
@@ -1182,7 +1192,7 @@ This model simulates the trajectory of a std-DEB-structured population in a well
 Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
 Except for being eaten, food disappears from the reactor with hazard h_X.
 Effects of temperature on physiology are specified via a spline with knots tTC, with time and temperature correction factors.
-Feeding and changes in state variable of individuals depend on temperature, but food in- and output or background hazards for individuals do not depend on temperature. 
+Feeding and changes in state variable of individuals depend on temperature, but food in-  output or background hazards for individuals do not depend on temperature. 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
@@ -1238,7 +1248,7 @@ adding a large section with code for shape-definitions to move shapes across the
 ZOOM
 ---
 
-Depending on the resolution of the display you are using with your computer, you might not be able to see all elements of the Interface. In that case, please either use the scoll bars are the "Zoom" option in the menu.
+Depending on the resolution of the display you are using with your computer, you might not be able to see all elements of the Interface. In that case, please either use the scroll bars or the "Zoom" option in the menu.
 
 SPEED
 -----

@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>EBT</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-26"><meta name="DC.source" content="EBT.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>EBT</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-05-09"><meta name="DC.source" content="EBT.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -78,7 +79,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
  	- RADAU5: an implicit Runge-Kutta method of order 5 with step size  control and dense output.</pre><pre>   The DOPRI5, DOPRI8 and RADAU5 methods can detect and locate discontinuities or events.
    These events are signalled by the routine	EventLocation() in the program definition file.
    Integration will be carried out exactly up to the moment that the event takes place and will be restarted subsequently.
-   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: booelean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified. This C-code was written by Andre de Roos. This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <a href="../html/get_EBT.html"><b>get_EBT</b></a>. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>EBT('Torpedo_marmorata');</li><li>EBT('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">EBT_my_pet.html</h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+   Default: DOPRI5</pre><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: boolean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified. This C-code was written by Andre de Roos. This Matlab function only uses the computational core of EBTtool, which required tiny modifications; the required modified files have been copied into DEBtool_M/EBTtool</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function EBT only controls input/output; computations are done in EBTtool of Andre de Roos via <a href="../html/get_EBT.html"><b>get_EBT</b></a>. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do. For modification of EBTtool, see <a href="https://add-my-pet.github.io/DEBtool_M/EBTtool/EBTmanual.pdf"><b>manual</b></a></p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>EBT('Torpedo_marmorata');</li><li>EBT('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="7">plotting</h2><h2 id="8">report_my_pet.html</h2><h2 id="9">EBT_my_pet.html</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% EBT
 % escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor
@@ -139,7 +140,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % Output:
 %
 % * txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight
-% * info: booelean with failure (0) of success (1)
+% * info: boolean with failure (0) of success (1)
 %
 %% Remarks
 % The function assumes that a C-compiler with name gcc.exe has been installed and a path to it specified.
@@ -202,20 +203,24 @@ end
 
 % volume of reactor
 if ~exist('V_X','var') || isempty(V_X)
-  V_X = 1e3 * L_m^3; % cm^3, volume of reactor
+  V_X = 1e2 * L_m^3; % cm^3, volume of reactor
 end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
-  J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; t_max J_X]; 
-else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
+  J_X = 75 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max*1.1 J_X]; 
+end
+if tJX(1,1) > 0
+  tJX = [0 tJX(1,2); tJX];
+end
+if tJX(end,1) <= t_max
+  tJX = [tJX; t_max*1.1 tJX(end,2)];    
 end
 
 % initial scaled food density
 if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 10; % -, X/K at t=0
+  x_0 = 0; % -, X/K at t=0
 end
 
 % account for cost of male production
@@ -244,49 +249,49 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbp = h(3); h_Bpi = h(5);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpi = h(4);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpi = h_Bpi; 
   case 'stx'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbx = 1e-35; h_Bxp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbx = h(4); h_Bxp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbx = h(3); h_Bxp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsj = h(5); h_Bjp = h(6); h_Bpi = h(7);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
-      h_B0b = h(3); h_Bbp = h(4); h_Bpj = h(5);  h_Bji = h(6);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bje = h(5); h_Bei = h(6);    
+      h_B0b = h(2); h_Bbj = h(3); h_Bje = h(4); h_Bei = h(4);    
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bje = h_Bje; par.h_Bei = h_Bei; 
   otherwise
@@ -339,15 +344,15 @@ end
 txNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, opt);
 
 % delete created files
-% delete(['EBT', model, '.csb'])
-% delete(['EBT', model, '.cvf'])
-% delete(['EBT', model, '.esf'])
-% delete(['EBT', model, '.exe'])
-% delete(['EBT', model, '.isf'])
-% delete(['EBT', model, '.out'])
-% delete(['EBT', model, '.rep'])
-% delete('spline_JX.c')
-% delete('spline_TC.c')
+delete(['EBT', model, '.csb'])
+delete(['EBT', model, '.cvf'])
+delete(['EBT', model, '.esf'])
+delete(['EBT', model, '.exe'])
+delete(['EBT', model, '.isf'])
+delete(['EBT', model, '.out'])
+delete(['EBT', model, '.rep'])
+delete('spline_JX.c')
+delete('spline_TC.c')
 
 cd(WD);
 
@@ -409,7 +414,6 @@ set(gca, 'FontSize', 15, 'Box', 'on')
 
 fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
-web(fileName,'-browser') % open html in systems browser
 
 %%  EBT_my_pet.html
 

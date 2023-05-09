@@ -125,15 +125,19 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
-  J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; t_max J_X]; 
-else tJX(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
+  J_X = 75 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max*1.1 J_X]; 
+end
+if tJX(1,1) > 0
+  tJX = [0 tJX(1,2); tJX];
+end
+if tJX(end,1) <= t_max
+  tJX = [tJX; t_max*1.1 tJX(end,2)];    
 end
 
 % initial scaled food density
 if ~exist('x_0','var') || isempty(x_0)
-  x_0 = 10; % -, X/K at t=0
+  x_0 = 0; % -, X/K at t=0
 end
 
 % account for cost of male production
@@ -162,49 +166,49 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbp = h(3); h_Bpi = h(5);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpi = h(4);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpi = h_Bpi; 
   case 'stx'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbx = 1e-35; h_Bxp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbx = h(4); h_Bxp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbx = h(3); h_Bxp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsj = h(5); h_Bjp = h(6); h_Bpi = h(7);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
-      h_B0b = h(3); h_Bbp = h(4); h_Bpj = h(5);  h_Bji = h(6);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bje = h(5); h_Bei = h(6);    
+      h_B0b = h(2); h_Bbj = h(3); h_Bje = h(4); h_Bei = h(4);    
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bje = h_Bje; par.h_Bei = h_Bei; 
   otherwise
@@ -327,7 +331,6 @@ set(gca, 'FontSize', 15, 'Box', 'on')
 
 fileName = ['report_', species, '.html'];
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
-web(fileName,'-browser') % open html in systems browser
 
 %%  EBT_my_pet.html
 

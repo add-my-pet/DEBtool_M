@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>IBM</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-12"><meta name="DC.source" content="IBM.m"><style type="text/css">
+      --><title>IBM</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-05-09"><meta name="DC.source" content="IBM.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,9 +67,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>IBM</h1><!--introduction--><p>Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">plotting</a></li><li><a href="#10">report_my_pet.html</a></li><li><a href="#11">IBMnlogo_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txNL23W = <a href="../IBM.m"><b>IBM</b></a> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo)</p><h2 id="4">Description</h2><p>Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. Sex allocation is randomised. If dioecy applies, the default (mean) sex-ratio is 1:1. Fertilisation is assumed to be sure. Males might differ in {p_Am} and/or E_Hp. The initial population is a single fertilized (female) egg from a well-fed mother. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>X_0: optional scalar with initial food density (default: 0)</li><li>t_R: optional scalar for reproduction buffer handling rule with</li></ul></div><pre>  - 0 for spawning as soon as reproduction buffer allows (default)
+  </style></head><body><div class="content"><h1>IBM</h1><!--introduction--><p>Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">plotting</a></li><li><a href="#10">report_my_pet.html</a></li><li><a href="#11">IBMnlogo_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txNL23W = <a href="../IBM.m"><b>IBM</b></a> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo)</p><h2 id="4">Description</h2><p>Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using  a choice of 3 reproduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. Sex allocation is randomised. If dioecy applies, the default (mean) sex-ratio is 1:1. Fertilisation is assumed to be sure. Males might differ in {p_Am} and/or E_Hp. The initial population is a single fertilized (female) egg from a well-fed mother. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}</li><li>tT: optional (nT,2)-array with time (d) and temperature (K) (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time (d) and food supply (mod/d); time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>X_0: optional scalar with initial food density (default: 0)</li><li>t_R: optional scalar for reproduction buffer handling rule with</li></ul></div><pre>  - 0 for spawning as soon as reproduction buffer allows (default)
   - 1 for spawning after accumulation over an incubation period
-  - time between spawning events</pre><div><ul><li>t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span)</li><li>tickRate: optional scalar number of ticks per day</li><li>runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: boolean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified. Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo (via dropdown File, item Open), after running this function with runNetLogo = 0, to set parameters. The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions. Hitting setup initiates the output file txNL23W.txt.</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function IBM only controls input/output; computations are done in NetLogo. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do.</p><p>Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. Progress can be monitored by inspecting output-file txNL23W.txt</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>IBM('Torpedo_marmorata');</li><li>IBM('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="8">plotting</h2><h2 id="10">report_my_pet.html</h2><h2 id="11">IBMnlogo_my_pet.html</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  - time between spawning events</pre><div><ul><li>t_max: optional scalar with simulation time (d, default 250*a_m, where a_m is mean life span)</li><li>tickRate: optional scalar number of ticks per day</li><li>runNetLogo: optional boolean for running NetLogo under Matlab in command-line (default 1)</li></ul></div><p>Output:</p><div><ul><li>txNL23W: (n,7)-array with times and densities of scaled food, total number, length, squared length, cubed length, weight</li><li>info: boolean with failure (0) of success (1)</li></ul></div><h2 id="5">Remarks</h2><p>The function assumes that NetLogo (version 6.2.0 was tested) and java.exe has been installed and a path to them specified. Model DEBtool_M/popDyn/IBMnlogo/std.nlogo (and other DEB models) can also be loaded directly into NetLogo (via dropdown File, item Open), after running this function with runNetLogo = 0, to set parameters. The parameters in NetLogo are set by hitting setup in NetLogo's gui and can subsequently be modified. See, however, info in NetLogo for restrictions. Hitting setup initiates the output file txNL23W.txt.</p><p>If species is specified by string (rather than by data), its parameters are obtained from allStat.mat. The starvation parameters can only be set different from the default values by first input in the form of data and adding them to the par-structure. Empty inputs are allowed, default values are then used. The (first) html-page has traits at inidvidual level using the possibly modified parameter values. This function IBM only controls input/output; computations are done in NetLogo. Temperature changes during embryo-period are ignored; age at birth uses T(0); All embryo's start with f=1. Background hazards do not depend on temperature, ageing hazards do.</p><p>Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. Progress can be monitored by inspecting output-file txNL23W.txt NetLogo uses Euler integration with stepsize 1/tickRate, which should be small relative to the state that changes fastest. For this reason, embryo dynamics is not included explicitly, but its states are "frozen" till birth.</p><h2 id="6">Example of use</h2><div><ul><li>If results_My_Pet.mat exists in current directory (where "My_Pet" is replaced by the name of some species, but don't replace "my_pet"):   load('results_My_Pet.mat'); prt_my_pet_pop({metaData, metaPar, par}, [], T, f, destinationFolder)</li><li>IBM('Torpedo_marmorata');</li><li>IBM('Torpedo_marmorata', C2K(18));</li></ul></div><h2 id="8">plotting</h2><h2 id="10">report_my_pet.html</h2><h2 id="11">IBMnlogo_my_pet.html</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% IBM
 % Individual-Based-Model for NetLogo: runs NetLogo's Java-code using a generalized reactor
@@ -83,7 +83,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
-%  a choice of 3 reprocduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
+%  a choice of 3 reproduction-buffer-handling rules: (1) as soon as buffer allows (2) at accumulation during period a_b {3} at accumulation during period t_R. 
 % Opens 2 html-pages in system browser to report species traits and IBM parameter settings, and plots 4 figures.
 % The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}.
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
@@ -97,9 +97,9 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % Input:
 %
 % * species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par, txtPar}
-% * tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max
+% * tT: optional (nT,2)-array with time (d) and temperature (K) (default: T_typical); time between 0 (= start) and t_max
 %     If scalar, the temperature is assumed to be constant
-% * tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max
+% * tJX: optional (nX,2)-array with time (d) and food supply (mod/d); time scaled between 0 (= start) and t_max
 %     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate) 
 % * h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning
 %     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]
@@ -136,6 +136,8 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 %
 % Be aware that the required computation time is roughly proportional to the number of individuals in the reactor, which can be very large, depending on the parameter settings. 
 % Progress can be monitored by inspecting output-file txNL23W.txt
+% NetLogo uses Euler integration with stepsize 1/tickRate, which should be small relative to the state that changes fastest.
+% For this reason, embryo dynamics is not included explicitly, but its states are "frozen" till birth.
 
 %% Example of use
 %
@@ -145,6 +147,9 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % * IBM('Torpedo_marmorata', C2K(18));
 
 WD = cdIBMnlogo;
+
+% make sure that results of previous runs are removed (NetLogo deletes existing txNL23W.txt file)
+delete spline_TC.txt spline_JX.txt set_pars.txt eaLE.txt 
 
 if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
@@ -186,10 +191,10 @@ end
 % temperature
 if ~exist('tT','var') || isempty(tT) 
   T = metaData.T_typical; tT = [0 T; t_max T];
-elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
+elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tT(end,1) < t_max)
   tT = [tT; t_max tT(end,2)];
 elseif size(tT,1) == 1
-  T = tT; tT = [0 T; (t_max + 1) T];   
+  T = tT; tT = [0 T; t_max T];   
 end
 
 % volume of reactor
@@ -199,10 +204,14 @@ end
 
 % supply food 
 if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
-  J_X = 1500*V_X/mu_X; % 500 * J_X_Am * L_m^2 ;
-  tJX = [0 J_X; t_max J_X]; 
-else tJX(1,1) == 0 & ~(tJX(end,1) < t_max)
-  tJX = [tJX; t_max tJX(end,2)];    
+  J_X = 75 * J_X_Am * L_m^2 ;
+  tJX = [0 J_X; t_max*1.1 J_X]; 
+end
+if tJX(1,1) > 0
+  tJX = [0 tJX(1,2); tJX];
+end
+if tJX(end,1) <= t_max
+  tJX = [tJX; t_max*1.1 tJX(end,2)];    
 end
 
 % initial food density
@@ -238,49 +247,49 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbp = h(3); h_Bpi = h(5);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpi = h(4);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpi = h_Bpi; 
   case 'stx'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbx = 1e-35; h_Bxp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbx = h(4); h_Bxp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbx = h(3); h_Bxp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbj = h(3); h_Bjp = h(4); h_Bpi = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'asj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(3); h_Bbs = h(4); h_Bsj = h(5); h_Bjp = h(6); h_Bpi = h(7);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
     end
     par.h_B0b = h_B0b; par.h_Bbs = h_Bbs;par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'hep'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
-      h_B0b = h(3); h_Bbp = h(4); h_Bpj = h(5);  h_Bji = h(6);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
-      h_B0b = h(3); h_Bbj = h(4); h_Bje = h(5); h_Bei = h(6);    
+      h_B0b = h(2); h_Bbj = h(3); h_Bje = h(4); h_Bei = h(5);    
     end
     par.h_B0b = h_B0b; par.h_Bbj = h_Bbj; par.h_Bje = h_Bje; par.h_Bei = h_Bei; 
   otherwise
@@ -348,7 +357,7 @@ ylabel('mean wet weight per individual, g');
 set(gca, 'FontSize', 15, 'Box', 'on')
 
 else % runNetLogo=0: Netlogo is run from its gui
-  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File"), edit and press "go"\n',model);
+  fprintf('Load DEBtool_M/popDyn/IBMnlogo/%s.nlogo into Netlogo (dropdown "File>Open"), edit and press "go"\n',model);
 end
 
 %% report_my_pet.html
