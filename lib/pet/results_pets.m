@@ -268,7 +268,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 print(plotNm, '-dpng')
               end
             
-            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && length(auxData.(pets{i}).treat.(nm{j}))>1 && ~iscell(auxData.(pets{i}).treat.(nm{j}){1}) % bi-variate data
+            elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && ...
+                    length(auxData.(pets{i}).treat.(nm{j}){2})==2 && ~iscell(auxData.(pets{i}).treat.(nm{j}){1}) % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               hold on;
@@ -387,7 +388,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                     LEGENDlabel.([plotNm,'_legend']) = '';
                   end
                  
-                elseif treat{1} > 1 % interpolate 2nd independent var and plot mesh or surface
+                elseif treat{1} > 1 && length(treat{2})<3 % interpolate 2nd independent var and plot mesh or surface
                   zData = data.(pets{i}).(nm{j}); xData = zData(:,1); zData(:,1) = []; yData = treat{2};
                   nX = length(xData); % number of values for 1st independent var
                   zPred = predict_pets(par, data, auxData); zPred = zPred.(pets{i}).(nm{j});

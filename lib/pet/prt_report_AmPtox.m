@@ -202,7 +202,7 @@ function prt_report_AmPtox(title)
     % plots
     fprintf(oid, '  <div class="right">\n');
     png = list(contains(list,'.png')); png = png(contains(png,[title,'_'])); n_png = length(png);
-    n_data = size(dataSet_nFig,1); % nummer of data sets wih png's
+    n_data = size(dataSet_nFig,1); % number of data sets wih png's
     for i = 1:n_png % find bibkeys for the data set that was plotted in the png's
       if contains(png{i},'legend')
         txt = '';
