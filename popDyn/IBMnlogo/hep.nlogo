@@ -1,6 +1,6 @@
 ; Model definition for a hep-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/15
+; date: 2021/01/15, modified 2023/05/11
 
 extensions [matrix]
 
@@ -10,7 +10,9 @@ extensions [matrix]
 
 globals[
   tTC      ; (d,-), (n,2)-matrix of spline-knots with time, temperature correction factor
+  n_tTC    ; -, number of rows of tTC
   tJX      ; (d,mol/d), (n,2)-matrix of spline-knots with time, food supply rate to the reactor
+  n_tJX    ; -, number of rows of tJX
   eaLE     ; (-,d,cm,J), (n,4)-matrix of spline-knots with scaled reserve density, age and structural length at birth, initial reserve
   n_eaLE   ; -, number of rows of eaLE
 
@@ -25,6 +27,7 @@ globals[
   p_C      ; J/d, reserve mobilisation rate
   spawn-number ;  #, list with positive number of eggs per female
   spawn-quality ; #, list with scaled reserve density at birth for laying female
+  totN0i   ; #, total number of individuals in the reactor
 
   ; compound parameters
   K        ; Mol, half saturation coefficient for females
@@ -115,6 +118,7 @@ to setup
   file-close
   set tJX matrix:from-row-list tJX ; convert list to matrix
   set tJX_i 0 ; current row-index of tJX
+  set n_tJX item 0 matrix:dimensions tJX; number of rows in matrix tJX
 
   ; read matrix tTC with time, temperature correction factors
   set tTC (list) ; initiate list
@@ -128,6 +132,7 @@ to setup
   file-close
   set tTC matrix:from-row-list tTC ; convert list to matrix
   set tTC_i 0 ; current row-index of tTC
+  set n_tTC item 0 matrix:dimensions tTC; number of rows in matrix tTC
 
   ; read matrix eaLE with embryo settings
   set eaLE (list) ; empty list
@@ -184,14 +189,16 @@ to go
   set time ticks / tickRate ; d, time
 
   ; get current temperature correction factor
-  if time > matrix:get tTC (tTC_i + 1) 0 and t_max < matrix:get tTC (tTC_i + 1) 0 [set tTC_i tTC_i + 1]
+  if (time > matrix:get tTC (tTC_i + 1) 0) and (n_tTC > tTC_i  + 2) [set tTC_i tTC_i + 1]
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 
   ; get current food input into reactor
-  if time > matrix:get tJX (tJX_i + 1) 0 and t_max < matrix:get tJX (tJX_i + 1) 0 [set tJX_i tJX_i + 1]
+  if (time > matrix:get tJX (tJX_i + 1) 0) and (n_tJX > tJX_i + 2) [set tJX_i tJX_i + 1]
   set w (time - matrix:get tJX tJX_i 0) / (matrix:get tJX (tJX_i + 1) 0 - matrix:get tJX tJX_i 0)
   set JX w * matrix:get tJX (tJX_i + 1) 1 + (1  - w) * matrix:get tJX tJX_i 1
+
+  set totN0i count turtles ; total number of individuals in the reactor
 
   ; birth
   ask turtles with [(a > a_b / TC) and (E_H = E_Hb)] [set E_H E_Hb + 0.0001] ; embryo becomes juvenile and starts feeding, growing, developing
@@ -230,7 +237,7 @@ to go
     (thin = 1) and (E_H >= E_Hpi) [set h_thin r * 2 / 3] ; thinning after acceleration
     [set h_thin 0]) ; 1/d, hazard rate due to thinning
     if E_R / L / L / L > E_Rj [set gender 2] ; change female larva to fresh imago stage (males have E_R=0)
-    if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
+    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
     ]
@@ -285,7 +292,7 @@ to go
     file-print " "    ; new line
   ]
 
-  if count turtles = 0 or time > t_max [
+  if totN0i = 0 or totN0i > 15000 or time > t_max [
     file-close-all
     stop
   ]
@@ -1198,7 +1205,7 @@ Feeding and changes in state variable of individuals depend on temperature, but 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
-Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
+Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpj, h_Bji) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
 Thinning never applies to embryos; it exactly compensates the increase of total food intake by a cohort due to growth, by a reduction in numbers. 
 Food intake and use follow the rules of the standard DEB model (see AmP website). 
 Male and female embryos are identical, but juveniles and adults can differ by max specific assimilation and maturity levels at puberty.
@@ -1214,12 +1221,13 @@ Gender is assigned at egg-production (gender 0 for female and 1 for male); ferti
 Rejuvenation, due to failing to pay maturity maintenance costs, affects reproduction and survival.
 Shrinking, due to failure to pay somatic maintenance costs, can occur till structural length zero.  
 
+The hep model is a hax model without a pupation stage.
 For a general background, see the tab "population dynamics" of the AmP website. 
 
 USER MANUAL
 -----------
 
-Run terminates if all individuals died or time exceeds t_max.
+Run terminates if time exceeds t_max or if the number of individuals hits zero or exceeds 15000.
 Output file txNL23W.txt is written with time (d), scaled food density (-), and for post-natals: total number, structural length to the power 1, 2, 3 (in cm, cm^2, cm^3) and total wet weight (in g).
 Food density is scaled with the half-saturation coefficient for females.
 The weights do not include contributions from reproduction buffers (in adult females).

@@ -209,9 +209,16 @@ switch model
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
     else
-      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);        
     end
-    par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
+    par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji;  
+  case 'hax'
+    if ~exist('h','var') || isempty(h)
+      h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
+    else
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bje = h(5); h_Bei = h(6);   
+    end
+    par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bje = h_Bje; par.h_Bei = h_Bei;
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 

@@ -188,13 +188,11 @@ to go
   set time ticks / tickRate ; d, time
 
   ; get current temperature correction factor
-  ; if (time > matrix:get tTC (tTC_i + 1) 0) and (t_max > matrix:get tTC (tTC_i + 1) 0) [set tTC_i tTC_i + 1]
   if (time > matrix:get tTC (tTC_i + 1) 0) and (n_tTC > tTC_i  + 2) [set tTC_i tTC_i + 1]
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 
   ; get current food input into reactor
-  ; if time > matrix:get tJX (tJX_i + 1) 0 and t_max > matrix:get tJX (tJX_i + 1) 0 [set tJX_i tJX_i + 1]
   if (time > matrix:get tJX (tJX_i + 1) 0) and (n_tJX > tJX_i + 2) [set tJX_i tJX_i + 1]
   set w (time - matrix:get tJX tJX_i 0) / (matrix:get tJX (tJX_i + 1) 0 - matrix:get tJX tJX_i 0)
   set JX w * matrix:get tJX (tJX_i + 1) 1 + (1  - w) * matrix:get tJX tJX_i 1
@@ -1217,7 +1215,7 @@ For a general background, see the tab "population dynamics" of the AmP website.
 USER MANUAL
 -----------
 
-Run terminates if all individuals died or time exceeds t_max.
+Run terminates if time exceeds t_max or if the number of individuals hits zero or exceeds 15000.
 Output file txNL23W.txt is written with time (d), scaled food density (-), and for post-natals: total number, structural length to the power 1, 2, 3 (in cm, cm^2, cm^3) and total wet weight (in g).
 Food density is scaled with the half-saturation coefficient for females.
 The weights do not include contributions from reproduction buffers (in adult females).

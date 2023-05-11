@@ -872,7 +872,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.0001
 true
 false
 "" ""
@@ -1264,7 +1264,7 @@ For a general background, see the tab "population dynamics" of the AmP website.
 USER MANUAL
 -----------
 
-Run terminates if all individuals died or time exceeds t_max.
+Run terminates if time exceeds t_max or if the number of individuals hits zero or exceeds 15000.
 Output file txNL23W.txt is written with time (d), scaled food density (-), and for post-natals: total number, structural length to the power 1, 2, 3 (in cm, cm^2, cm^3) and total wet weight (in g).
 Food density is scaled with the half-saturation coefficient for females.
 The weights do not include contributions from reproduction buffers (in adult females).
