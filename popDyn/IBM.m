@@ -76,7 +76,15 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 WD = cdIBMnlogo;
 
 % make sure that results of previous runs are removed (NetLogo deletes existing txNL23W.txt file)
-delete spline_TC.txt spline_JX.txt set_pars.txt eaLE.txt 
+if exist('spline_TC.txt', 'file')==2
+  delete('spline_TC.txt');
+end
+if exist('spline_JX.txt', 'file')==2
+  delete('spline_JX.txt');
+end
+if exist('eaLE.txt', 'file')==2
+  delete('eaLE.txt');
+end
 
 if ~exist ('runNetLogo', 'var') || isempty(runNetLogo)
   runNetLogo = true;
