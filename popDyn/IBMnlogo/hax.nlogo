@@ -46,7 +46,9 @@ globals[
   ; t_R      ; d, time for imago's to lay all eggs
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
-  ; h_Bpi    ; 1/d, background hazard between p and i
+  ; h_Bpj    ; 1/d, background hazard between p and j
+  ; h_Bje    ; 1/d, background hazard between j and e
+  ; h_Bei    ; 1/d, background hazard between e and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
   ; mu_X     ; J/mol, chemical potential of food
@@ -67,6 +69,8 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; E_He     ; J, maturity at emergence
+  ; E_Rj     ; J/cm^3, reproduction buffer density at pupation
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
