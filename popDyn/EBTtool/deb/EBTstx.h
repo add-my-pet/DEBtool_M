@@ -1,6 +1,6 @@
 /***
   NAME
-    deb\EBTabj.h
+    deb\EBTstx.h
 
   PURPOSE
     header file used by the Escalator Boxcar Train program for DEB models
@@ -14,7 +14,7 @@
 #define I_CONST_DIM     0
 #define ENVIRON_DIM     2 /* time, scaled food density */
 #define OUTPUT_VAR_NR   6 /* (time,) scaled food density, nr ind, tot struc length, surface, vol, weight */
-#define PARAMETER_NR    32
+#define PARAMETER_NR    34
 #define TIME_METHOD     DOPRI5 /* we need events */
-#define EVENT_NR        2 /*  birth, puberty */
+#define EVENT_NR        3 /*  birth, puberty */
 #define DYNAMIC_COHORTS 0

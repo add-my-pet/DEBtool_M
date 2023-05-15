@@ -10,5 +10,7 @@ Parameter fields:
 Text fields:
   upper-left corners
     upper-left corner of corresponding par field + 70, 5
+    x: 120 240 360 480
+    y: 35 95 155 215 275 335 395 455 515 575 
   lower-right corners
     upper-left corners + 40, 15

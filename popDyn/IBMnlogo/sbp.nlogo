@@ -1,6 +1,6 @@
 ; Model definition for a sbp-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/01, modified 2023/05/11
+; date: 2021/01/01, modified 2023/05/14
 
 extensions [matrix]
 
@@ -67,6 +67,7 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; fProb    ; -, probability of becoming female at b
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
@@ -232,7 +233,7 @@ to go
     set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
     ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
-    if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
+    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
       set t_spawn t_spawn + 1 / tickRate ; d, time since last spawning
@@ -254,7 +255,7 @@ to go
       ]
     ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
       set a_b get_ab ee
-      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 egg
+      if E_R >= (E_0 / kap_R) and (t_spawn > a_b / TC) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -262,7 +263,7 @@ to go
         set t_spawn 0 ; reset time since last spawn
       ]
     ] [ ; spawn if reprod buffer accumulation time exceeds t_R
-      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 egg
+      if E_R > (E_0 / kap_R) and (t_spawn > t_R) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -296,8 +297,8 @@ to go
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
     file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm, total length^2 of post-natals
-    file-write totL3  ; cm, total length^3 of post-natals
+    file-write totL2  ; cm^2, total length^2 of post-natals
+    file-write totL3  ; cm^3, total length^3 of post-natals
     file-write totW   ; g,  total weight of post-natals
     file-print " "    ; new line
   ]

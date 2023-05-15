@@ -3,7 +3,7 @@
 
 %%
 function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
-% created 2020/04/03 by Bas Kooijman
+% created 2020/04/03 by Bas Kooijman, modified 2023/05/13
 
 %% Syntax
 % txL23W = <../EBT.m *EBT*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
@@ -111,11 +111,11 @@ end
 
 % temperature
 if ~exist('tT','var') || isempty(tT) 
-  T = metaData.T_typical; tT = [0 T; t_max T];
+  T = metaData.T_typical; tT = [0 T; t_max*1.1 T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];
+  tT = [tT; t_max*1.1 tT(end,2)];
 elseif size(tT,1) == 1
-  T = tT; tT = [0 T; t_max T];   
+  T = tT; tT = [0 T; t_max*1.1 T];   
 end
 
 % volume of reactor
@@ -200,6 +200,13 @@ switch model
   case 'hep'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bji = 1e-10; 
+    else
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
+    end
+    par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
+  case 'hax'
+    if ~exist('h','var') || isempty(h)
+      h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
     else
       h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end

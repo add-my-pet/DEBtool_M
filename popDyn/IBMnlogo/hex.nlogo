@@ -1,6 +1,6 @@
 ; Model definition for a hex-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/15, modified 2023/05/09
+; date: 2021/01/15, modified 2023/05/15
 
 extensions [matrix]
 
@@ -67,6 +67,7 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; fProb    ; -, probability of becoming female at b
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
@@ -286,8 +287,8 @@ to go
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
     file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm, total length^2 of post-natals
-    file-write totL3  ; cm, total length^3 of post-natals
+    file-write totL2  ; cm^2, total length^2 of post-natals
+    file-write totL3  ; cm^3, total length^3 of post-natals
     file-write totW   ; g,  total weight of post-natals
     file-print " "    ; new line
   ]
@@ -545,7 +546,7 @@ INPUTBOX
 150
 400
 210
-h_Bbp
+h_Bbj
 0
 1
 0
@@ -556,7 +557,7 @@ INPUTBOX
 150
 520
 210
-h_Bpi
+h_Bje
 0
 1
 0
@@ -566,6 +567,17 @@ INPUTBOX
 50
 210
 160
+270
+h_Bei
+0
+1
+0
+Number
+
+INPUTBOX
+170
+210
+280
 270
 thin
 0
@@ -574,22 +586,11 @@ thin
 Number
 
 INPUTBOX
-170
-210
-280
-270
-h_J
-0
-1
-0
-Number
-
-INPUTBOX
 290
 210
 400
 270
-h_a
+h_J
 0
 1
 0
@@ -600,7 +601,7 @@ INPUTBOX
 210
 520
 270
-s_G
+h_a
 0
 1
 0
@@ -611,7 +612,7 @@ INPUTBOX
 270
 160
 330
-E_Hb
+s_G
 0
 1
 0
@@ -622,7 +623,7 @@ INPUTBOX
 270
 280
 330
-E_Hp
+E_Hb
 0
 1
 0
@@ -633,7 +634,7 @@ INPUTBOX
 270
 400
 330
-E_Hpm
+E_Rj
 0
 1
 0
@@ -644,7 +645,7 @@ INPUTBOX
 270
 520
 330
-E_Rj
+E_He
 0
 1
 0
@@ -967,7 +968,7 @@ TEXTBOX
 215
 160
 230
--
+1/d
 11
 0.0
 1
@@ -977,7 +978,7 @@ TEXTBOX
 215
 280
 230
-1/d
+-
 11
 0.0
 1
@@ -987,7 +988,7 @@ TEXTBOX
 215
 400
 230
-1/d2
+1/d
 11
 0.0
 1
@@ -997,7 +998,7 @@ TEXTBOX
 215
 520
 230
--
+1/d2
 11
 0.0
 1
@@ -1007,7 +1008,7 @@ TEXTBOX
 275
 160
 290
-J
+-
 11
 0.0
 1
@@ -1027,7 +1028,7 @@ TEXTBOX
 275
 400
 290
-J
+-
 11
 0.0
 1
@@ -1037,7 +1038,7 @@ TEXTBOX
 275
 520
 290
-J/cm3
+J
 11
 0.0
 1

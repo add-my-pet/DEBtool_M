@@ -141,7 +141,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
+  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, E_H, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
@@ -169,24 +169,26 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       /* help quantities */
       e = pop[0][i][resDens]/ E_m;                                /* -, scaled reserve density e = [E]/[E_m] */
       L = pop[0][i][length]; L2 = L * L; L3 = L * L2;             /* cm, struc length */
+      E_H = pop[0][i][maturity];                                  /* J, maturity */
       kapG = e>=L/L_m ? 1. : kap_G;                               /* kap_G if shrinking, else 1 */
       r = vT * (e/ L - 1./ L_m)/ (e + kapG * g);                  /* 1/d, spec growth rate of structure */
-      p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
+      p_J = kT_J * E_H;                                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (vT/ L - r);                           /* J/d, reserve mobilisation rate */
       p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
       p_A = pT_Am * f * L2;                                       /* J/d, assimilation flux (overwritten for embryo's) */
       h_thin = thin==0. ? 0. : r * 2./3.;                         /* 1/d, thinning hazard */
-      if  (pop[0][i][maturity]<E_Hx) hazard = pop[0][i][ageHaz] + h_Bbx + h_thin;
-      else hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bxp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
- 
+      if  (E_H<E_Hx) hazard = pop[0][i][ageHaz] + h_Bbx + h_thin;
+      else if (E_H<E_Hp) hazard = pop[0][i][ageHaz] + h_Bxp + h_thin;
+      else hazard = pop[0][i][ageHaz] + h_Bpi + h_thin;
+
       popgrad[0][i][number]    = - hazard * pop[0][i][number];                                                                 /*   */
       popgrad[0][i][age]       = 1.0;                                                                                          /* 0 */
       popgrad[0][i][accel]     = (pop[0][i][accel] * s_G * L3/ L_m/ L_m/ L_m + hT_a) * e * (vT/ L - r) - r * pop[0][i][accel]; /* 1 */
       popgrad[0][i][ageHaz]    = pop[0][i][accel] - r * pop[0][i][ageHaz];                                                     /* 2 */
       popgrad[0][i][length]    = L * r/ 3.;                                                                                    /* 3 */
       popgrad[0][i][resDens]   = p_A/ L3 - vT * e * E_m/ L; /* J/d.cm^3, change in reserve density [E] */                      /* 4 */
-      popgrad[0][i][maturity]  = pop[0][i][maturity] < E_Hp ? p_R : 0.;                                                        /* 5 */
-      popgrad[0][i][reprodBuf] = pop[0][i][maturity] >= E_Hp ? p_R : 0.;                                                       /* 6 */
+      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                        /* 5 */
+      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */

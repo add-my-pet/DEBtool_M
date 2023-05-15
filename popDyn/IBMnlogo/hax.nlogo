@@ -1,6 +1,6 @@
 ; Model definition for a hax-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2023/03/13, modified 2023/05/11
+; date: 2023/03/13, modified 2023/05/13
 
 extensions [matrix]
 
@@ -15,6 +15,8 @@ globals[
   n_tJX    ; -, number of rows of tJX
   eaLE     ; (-,d,cm,J), (n,4)-matrix of spline-knots with scaled reserve density, age and structural length at birth, initial reserve
   n_eaLE   ; -, number of rows of eaLE
+  eaLE_pupa; (-,d,cm,J), (n,4)-matrix of spline-knots with scaled reserve density, age and structural length at emergence, initial reserve
+  n_eaLE_pupa; -, number of rows of eaLE_pupa
 
   time     ; d, current time
   tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i+1,0)
@@ -71,6 +73,7 @@ globals[
   ; E_Hpm    ; J, maturity at puberty of males
   ; E_He     ; J, maturity at emergence
   ; E_Rj     ; J/cm^3, reproduction buffer density at pupation
+  ; fProb    ; -, probability of becoming female at b
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,7 +92,8 @@ turtles-own[
   h_thin   ; 1/d, hazard rate due to thinning
   h_rejuv  ; 1/d, hazard rate due to rejuvenation
 
-  gender   ; -, 0 (female) 1 (male) 2 (female fresh imago) 3 (female initiated imago)
+  gender   ; -, 0 (female) 1 (male) 
+  stage    ; -, 0 (embryo) 1 (juvenile larva) 2 (adult larva) 3 (pupa) 4 (imago)
   a_b      ; d, age at birth at 20 C (set at creation)
   Ki       ; Mol, half saturation coefficient (female or male value)
   p_Ami    ; J/d.cm^2, max spec assimilation rate  (female or male value)
@@ -152,6 +156,21 @@ to setup
   file-close
   set eaLE matrix:from-row-list eaLE ; convert list to matrix
   set n_eaLE item 0 matrix:dimensions eaLE ; number of rows in matrix eaLE
+
+  ; read matrix eaLE_pupa with pupa settings
+  set eaLE_pupa (list) ; empty list
+  file-open "eaLE_pupa.txt" ; knots with pupa settings
+  while [file-at-end? = false] [
+    let row (list) ; empty list
+    set row insert-item 0 row file-read ; eb
+    set row insert-item 1 row file-read ; ab
+    set row insert-item 2 row file-read ; Lb
+    set row insert-item 3 row file-read ; E0
+    set eaLE_pupa lput row eaLE_pupa ; new row is added to list
+  ]
+  file-close
+  set eaLE_pupa matrix:from-row-list eaLE_pupa ; convert list to matrix
+  set n_eaLE_pupa item 0 matrix:dimensions eaLE_pupa ; number of rows in matrix eaLE_pupa
 
   ; read parameters from file
   if file-exists? "set_pars.txt" [
@@ -237,27 +256,26 @@ to go
     ifelse E_H < E_Hmax [set h_rejuv TC * h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
     set q q + ((q * L * L * L / L_mi / L_mi / L_mi / s_M / s_M / s_M * s_G + TC * TC * h_a) * ee * (TC * s_M * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
-    (ifelse (thin = 1) and (E_H < E_Hpi) [set h_thin r]  ; thinning during acceleration
-    (thin = 1) and (E_H >= E_Hpi) [set h_thin r * 2 / 3] ; thinning after acceleration
+    (ifelse (thin = 1) and (E_H < E_Hp) [set h_thin r]  ; thinning during acceleration
+    (thin = 1) and (E_H >= E_Hp) [set h_thin r * 2 / 3] ; thinning after acceleration
     [set h_thin 0]) ; 1/d, hazard rate due to thinning
-    if E_R / L / L / L > E_Rj [set gender 2] ; change female larva to fresh imago stage (males have E_R=0)
-    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
+    if E_R / L / L / L > E_Rj [set stage 3] ; change female larva to pupa 
+    if (E_H >= E_Hp) and (stage = 2) [ ; update reproduction buffer and time-since-spawning
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
     ]
   ]
 
-  ; spawning events for female imago's which empty E_R in period t_R. When ready to spawn, gender becomes 2 and, when 2, it becomes 3
+  ; spawning events for female imago's which empty E_R in period t_R. When ready to spawn
   set spawn-number (list)  ; create a list for egg numbers
   set spawn-quality (list) ; create a list for egg scaled reserve density at birth
-  ask turtles with [gender = 2][ ; check fresh female imago's
+  ask turtles with [(stage = 4) and (gender = 0)][ ; imago's
     let E_0 get_E0 ee ; J, cost of egg
     set E_R floor(kap_R * E_R / E_0) ; #, number of eggs to spawn. Notice that E_R is now an integer, no longer energy
     set t_R t_R / E_R ; d, period between eggs. Notice that t_R changed from total egg-laying period  to time between eggs
-    set gender 3 ; fresh female imago becomes initiated imago
     set t_spawn 0 
   ] 
-  ask turtles with [(gender = 3) and (E_R > 0)] [ ; egg to spawn for initiated imago
+  ask turtles with [(gender = 0) and (E_R > 0)] [ ; egg to spawn for initiated imago
     ifelse t_spawn > t_R [ 
       set spawn-number insert-item 0 spawn-number 1 ; prepend number of eggs to list
       set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -269,8 +287,11 @@ to go
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_H < E_Hp)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [stage = 1] [if (h_Bpj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [stage = 2] [if (h_Bpj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [stage = 3] [if (h_Bje + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [stage = 4] [if (h_Bei + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
   ; write daily population state to output matrix tNL23W.txt
@@ -290,8 +311,8 @@ to go
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
     file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm, total length^2 of post-natals
-    file-write totL3  ; cm, total length^3 of post-natals
+    file-write totL2  ; cm^2, total length^2 of post-natals
+    file-write totL3  ; cm^3, total length^3 of post-natals
     file-write totW   ; g,  total weight of post-natals
     file-print " "    ; new line
   ]
@@ -353,6 +374,7 @@ end
 ; ==========================================================================================================================================
 
 to set-embryo [eei genderi]
+  set stage 0
   set a 0 ; d, age
   set a_b get_ab eei ; d, age at birth at 20 C (used to trigger birth)
   set t_spawn 0 ; d, time since last spawning (only plays an active role in adult females)
@@ -374,6 +396,92 @@ to set-embryo [eei genderi]
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
     set E_Hpi E_Hp ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
+    set L_mi L_m ; cm, max structural length
+    set E_mi E_m ; J/cm^3, max reserve density
+    set gi g ; -, energy investment ratio
+  ][ ; male setting
+    set Ki K_male ; Mol, half saturation coefficient
+    set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
+    set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
+    set E_Hpi E_Hpm ; J, maturity at puberty
+    set L_b L ; cm, structural length at birth
+    set L_mi L_mm ; cm, max structural length
+    set E_mi E_mm ; J/cm^3, max reserve density
+    set gi g_m ; -, energy investment ratio
+  ]
+end
+
+; ==========================================================================================================================================
+; ========================== PROCEDURES to interpolate in eaLE_pupa table for pupa-settings  ==================================================
+; ==========================================================================================================================================
+
+to-report get_ab_pupa [eei]
+  (ifelse eei = 1 [
+    report  matrix:get eaLE_pupa (n_eaLE - 1) 1
+  ] eei <= matrix:get eaLE_pupa 0 0 [
+    report  matrix:get eaLE_pupa 0 1
+  ][
+    let i 0
+    while [matrix:get eaLE i 0 < eei] [set i i + 1]
+    let w (eei - matrix:get eaLE_pupa (i - 1) 0) / (matrix:get eaLE_pupa i 0 - matrix:get eaLE_pupa (i - 1) 0)
+    report w * matrix:get eaLE_pupa i 1 + (1  - w) * matrix:get eaLE_pupa (i - 1) 1 ; d, age at birth
+  ])
+end
+
+to-report get_Lb_pupa [eei]
+  (ifelse eei = 1 [
+    report  matrix:get eaLE_pupa (n_eaLE - 1) 2
+  ] eei <= matrix:get eaLE_pupa 0 0 [
+    report  matrix:get eaLE_pupa 0 2
+  ][
+    let i 0
+    while [matrix:get eaLE_pupa i 0 < eei] [set i i + 1]
+    let w (eei - matrix:get eaLE_pupa (i - 1) 0) / (matrix:get eaLE_pupa i 0 - matrix:get eaLE_pupa (i - 1) 0)
+    report w * matrix:get eaLE_pupa i 2 + (1  - w) * matrix:get eaLE_pupa (i - 1) 2 ; cm, structural length at birth
+  ])
+end
+
+to-report get_E0_pupa [eei]
+  (ifelse eei = 1 [
+    report  matrix:get eaLE_pupa (n_eaLE - 1) 3
+  ] eei <= matrix:get eaLE_pupa 0 0 [
+    report  matrix:get eaLE_pupa 0 3
+  ][
+    let i 0
+    while [matrix:get eaLE_pupa i 0 < eei] [set i i + 1]
+    let w (eei - matrix:get eaLE_pupa (i - 1) 0) / (matrix:get eaLE_pupa i 0 - matrix:get eaLE_pupa (i - 1) 0)
+    report w * matrix:get eaLE_pupa i 3 + (1  - w) * matrix:get eaLE_pupa (i - 1) 3 ; J, initial reserve
+  ])
+end
+
+
+; ==========================================================================================================================================
+; ========================== PROCEDURE to set pupa-states  ==============================================================================
+; ==========================================================================================================================================
+
+to set-pupa [eei genderi]
+  set stage 3
+  set a 0 ; d, age reset to time since pupation
+  set a_b get_ab eei ; d, age at emergence at 20 C (used to trigger emergence)
+  set t_spawn 0 ; d, time since last spawning (only plays an active role in adult females)
+  set s_M 1     ; -, acceleration factor 
+  set ee eei ; -, scaled reserve density at emergence (starts to change after emergence)
+  set L get_Lb eei ; cm, structural length (starts to change after emergence)
+  set E_H E_He ; J, maturity 
+  set E_Hmax E_Hb ; J, max maturity (starts to change after emergence)
+  ; set E_R 0 ; J, empty reproduction buffer (only plays an active role in adult females)
+  set q 0 ; 1/d^2, aging acceleration (starts to change after emergence)
+  set h_age 0 ; 1/d, no aging hazard (starts to change after emergence)
+  set h_thin 0 ; 1/d, no thinning (starts to change after emergence) 
+  set h_rejuv 0 ; 1/d, no rejuvenation hazard (might change after emergence)
+
+  set gender genderi
+  ifelse gender = 0 [ ; female setting
+    set Ki K ; Mol, half saturation coefficient
+    set p_Ami p_Am ; J/d.cm^2, max spec assim rate
+    set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
+    set E_Hpi E_Hp ; J, maturity at puberty
+    set L_e L ; cm, structural length at birth
     set L_mi L_m ; cm, max structural length
     set E_mi E_m ; J/cm^3, max reserve density
     set gi g ; -, energy investment ratio
@@ -560,7 +668,7 @@ INPUTBOX
 150
 520
 210
-h_Bpi
+h_Bpj
 0
 1
 0
@@ -570,6 +678,28 @@ INPUTBOX
 50
 210
 160
+270
+h_Bje
+0
+1
+0
+Number
+
+INPUTBOX
+170
+210
+280
+270
+h_Bei
+0
+1
+0
+Number
+
+INPUTBOX
+290
+210
+400
 270
 thin
 0
@@ -578,9 +708,9 @@ thin
 Number
 
 INPUTBOX
-170
+410
 210
-280
+520
 270
 h_J
 0
@@ -589,10 +719,10 @@ h_J
 Number
 
 INPUTBOX
-290
-210
-400
+50
 270
+160
+330
 h_a
 0
 1
@@ -600,10 +730,10 @@ h_a
 Number
 
 INPUTBOX
-410
-210
-520
+170
 270
+280
+330
 s_G
 0
 1
@@ -611,9 +741,9 @@ s_G
 Number
 
 INPUTBOX
-50
+290
 270
-160
+400
 330
 E_Hb
 0
@@ -622,9 +752,9 @@ E_Hb
 Number
 
 INPUTBOX
-170
+410
 270
-280
+520
 330
 E_Hp
 0
@@ -633,10 +763,10 @@ E_Hp
 Number
 
 INPUTBOX
-290
-270
-400
+50
 330
+160
+390
 E_Hpm
 0
 1
@@ -644,10 +774,10 @@ E_Hpm
 Number
 
 INPUTBOX
-410
-270
-520
+170
 330
+280
+390
 E_Rj
 0
 1
@@ -655,9 +785,20 @@ E_Rj
 Number
 
 INPUTBOX
-50
+290
 330
-160
+400
+390
+E_He
+0
+1
+0
+Number
+
+INPUTBOX
+410
+330
+520
 390
 fProb
 0
@@ -666,10 +807,10 @@ fProb
 Number
 
 INPUTBOX
-170
-330
-280
+50
 390
+160
+450
 kap
 0
 1
@@ -677,10 +818,10 @@ kap
 Number
 
 INPUTBOX
-290
-330
-400
+170
 390
+280
+450
 kap_X
 0
 1
@@ -688,10 +829,10 @@ kap_X
 Number
 
 INPUTBOX
-410
-330
-520
+290
 390
+400
+450
 kap_G
 0
 1
@@ -699,9 +840,9 @@ kap_G
 Number
 
 INPUTBOX
-50
+410
 390
-160
+520
 450
 kap_R
 0
@@ -710,10 +851,10 @@ kap_R
 Number
 
 INPUTBOX
-170
-390
-280
+50
 450
+160
+510
 t_R
 0
 1
@@ -721,10 +862,10 @@ t_R
 Number
 
 INPUTBOX
-290
-390
-400
+170
 450
+280
+510
 F_m
 0
 1
@@ -732,10 +873,10 @@ F_m
 Number
 
 INPUTBOX
-410
-390
-520
+290
 450
+400
+510
 p_Am
 0
 1
@@ -743,9 +884,9 @@ p_Am
 Number
 
 INPUTBOX
-50
+410
 450
-160
+520
 510
 p_Amm
 0
@@ -754,10 +895,10 @@ p_Amm
 Number
 
 INPUTBOX
-170
-450
-280
+50
 510
+160
+570
 v
 0
 1
@@ -765,44 +906,11 @@ v
 Number
 
 INPUTBOX
-290
-450
-400
-510
-p_M
-0
-1
-0
-Number
-
-INPUTBOX
-410
-450
-520
-510
-k_J
-0
-1
-0
-Number
-
-INPUTBOX
-50
-510
-160
-570
-k_JX
-0
-1
-0
-Number
-
-INPUTBOX
 170
 510
 280
 570
-E_G
+p_M
 0
 1
 0
@@ -813,6 +921,39 @@ INPUTBOX
 510
 400
 560
+k_J
+0
+1
+0
+Number
+
+INPUTBOX
+410
+510
+520
+560
+k_JX
+0
+1
+0
+Number
+
+INPUTBOX
+50
+570
+160
+620
+E_G
+0
+1
+0
+Number
+
+INPUTBOX
+170
+570
+280
+620
 ome
 0
 1
@@ -971,7 +1112,7 @@ TEXTBOX
 215
 160
 230
--
+1/d
 11
 0.0
 1
@@ -991,7 +1132,7 @@ TEXTBOX
 215
 400
 230
-1/d2
+-
 11
 0.0
 1
@@ -1001,7 +1142,7 @@ TEXTBOX
 215
 520
 230
--
+1/d
 11
 0.0
 1
@@ -1011,7 +1152,7 @@ TEXTBOX
 275
 160
 290
-J
+1/d2
 11
 0.0
 1
@@ -1021,7 +1162,7 @@ TEXTBOX
 275
 280
 290
-J
+-
 11
 0.0
 1
@@ -1041,7 +1182,7 @@ TEXTBOX
 275
 520
 290
-J/cm3
+J
 11
 0.0
 1
@@ -1051,7 +1192,7 @@ TEXTBOX
 335
 150
 350
--
+J
 11
 0.0
 1
@@ -1061,7 +1202,7 @@ TEXTBOX
 335
 280
 350
--
+J
 11
 0.0
 1
@@ -1071,7 +1212,7 @@ TEXTBOX
 335
 400
 350
--
+J
 11
 0.0
 1
@@ -1101,26 +1242,66 @@ TEXTBOX
 395
 480
 410
+-
+11
+0.0
+1
+
+TEXTBOX
+360
+395
+400
+410
+-
+11
+0.0
+1
+
+TEXTBOX
+480
+395
+520
+410
+-
+11
+0.0
+1
+
+TEXTBOX
+120
+455
+160
+470
 d
 11
 0.0
 1
 
 TEXTBOX
-360
-395
-400
-410
+240
+455
+280
+470
 L/d.cm2
 11
 0.0
 1
 
 TEXTBOX
+360
+455
+400
+470
+J/d.cm2
+11
+0.0
+1
+
+TEXTBOX
 480
-395
+455
 520
-410
+470
 J/d.cm2
 11
 0.0
@@ -1128,39 +1309,39 @@ J/d.cm2
 
 TEXTBOX
 120
-455
+515
 160
-470
-J/d.cm2
-11
-0.0
-1
-
-TEXTBOX
-240
-455
-280
-470
+530
 cm/d
 11
 0.0
 1
 
 TEXTBOX
-360
-455
-400
-470
+240
+515
+280
+530
 J/d.cm3
 11
 0.0
 1
 
 TEXTBOX
+360
+515
+400
+530
+1/d
+11
+0.0
+1
+
+TEXTBOX
 480
-455
+515
 520
-470
+530
 1/d
 11
 0.0
@@ -1168,34 +1349,23 @@ TEXTBOX
 
 TEXTBOX
 120
-515
-160
-530
-1/d
-11
-0.0
-1
-
-TEXTBOX
-240
-515
-280
-530
+575
+190
+580
 J/cm3
 11
 0.0
 1
 
 TEXTBOX
-360
-515
-400
-530
+240
+575
+310
+580
 -
 11
 0.0
 1
-
 @#$#@#$#@
 MODEL DESCRIPTION: hax DEB model	
 -----------
@@ -1225,7 +1395,10 @@ Gender is assigned at egg-production (gender 0 for female and 1 for male); ferti
 Rejuvenation, due to failing to pay maturity maintenance costs, affects reproduction and survival.
 Shrinking, due to failure to pay somatic maintenance costs, can occur till structural length zero.  
 
-The hax model is a hep model with an extra pupation stage before the imago (like the hex model); it is intermediate between a hep and a hex model
+The hax model is a hep model with an extra pupation stage before the imago (like the hex model); 
+it is intermediate between a hep and a hex model, but, contrary to hex, no acceleration after puberty.
+The imago lays at constant rate over a period of t_R, when the reproduction buffer is empty; however, it might die before that moment.
+Imago's do not eat.
 For a general background, see the tab "population dynamics" of the AmP website. 
 
 USER MANUAL

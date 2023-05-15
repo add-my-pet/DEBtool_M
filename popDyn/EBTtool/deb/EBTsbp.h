@@ -1,6 +1,6 @@
 /***
   NAME
-    deb\EBTabj.h
+    deb\EBTsbp.h
 
   PURPOSE
     header file used by the Escalator Boxcar Train program for DEB models

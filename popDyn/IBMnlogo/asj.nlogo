@@ -71,6 +71,7 @@ globals[
   ; E_Hj     ; J, maturity at end acceleration
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; fProb    ; -, probability of becoming female at b
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
@@ -305,8 +306,8 @@ to go
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
     file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm, total length^2 of post-natals
-    file-write totL3  ; cm, total length^3 of post-natals
+    file-write totL2  ; cm^2, total length^2 of post-natals
+    file-write totL3  ; cm^3, total length^3 of post-natals
     file-write totW   ; g,  total weight of post-natals
     file-print " "    ; new line
   ]

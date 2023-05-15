@@ -1,6 +1,6 @@
 ; Model definition for a hep-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/15, modified 2023/05/11
+; date: 2021/01/15, modified 2023/05/15
 
 extensions [matrix]
 
@@ -46,7 +46,8 @@ globals[
   ; t_R      ; d, time for imago's to lay all eggs
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
-  ; h_Bpi    ; 1/d, background hazard between p and i
+  ; h_Bpj    ; 1/d, background hazard between p and j
+  ; h_Bji    ; 1/d, background hazard between j and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
   ; mu_X     ; J/mol, chemical potential of food
@@ -67,6 +68,8 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; E_Rj     ; J/cm^3, reproduction buffer density at j
+  ; fProb    ; -, probability of becoming female at b
 ]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
@@ -237,8 +240,8 @@ to go
     (thin = 1) and (E_H >= E_Hpi) [set h_thin r * 2 / 3] ; thinning after acceleration
     [set h_thin 0]) ; 1/d, hazard rate due to thinning
     if E_R / L / L / L > E_Rj [set gender 2] ; change female larva to fresh imago stage (males have E_R=0)
-    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
-      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
+    if (E_H = E_Hpi) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
+      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hpi) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
     ]
   ]
@@ -266,7 +269,8 @@ to go
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
   ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H = E_Hpi) and (gender = 1)] [if (h_Bpj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H = E_Hpi) and (gender > 1)] [if (h_Bji + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
   ; write daily population state to output matrix tNL23W.txt
@@ -286,9 +290,9 @@ to go
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
     file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm, total length^2 of post-natals
-    file-write totL3  ; cm, total length^3 of post-natals
-    file-write totW   ; g,  total weight of post-natals
+    file-write totL2  ; cm^2, total length^2 of post-natals
+    file-write totL3  ; cm^3, total length^3 of post-natals
+    file-write totW   ; g, total weight of post-natals
     file-print " "    ; new line
   ]
 
@@ -401,6 +405,7 @@ to spawn [list-n list-eb] ; both lists should be eqally long
     set i i + 1
   ]
 end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 50
@@ -556,7 +561,7 @@ INPUTBOX
 150
 520
 210
-h_Bpi
+h_Bpj
 0
 1
 0
@@ -566,6 +571,17 @@ INPUTBOX
 50
 210
 160
+270
+h_Bji
+0
+1
+0
+Number
+
+INPUTBOX
+170
+210
+280
 270
 thin
 0
@@ -574,9 +590,9 @@ thin
 Number
 
 INPUTBOX
-170
+290
 210
-280
+400
 270
 h_J
 0
@@ -585,9 +601,9 @@ h_J
 Number
 
 INPUTBOX
-290
+410
 210
-400
+520
 270
 h_a
 0
@@ -596,10 +612,10 @@ h_a
 Number
 
 INPUTBOX
-410
-210
-520
+50
 270
+160
+330
 s_G
 0
 1
@@ -607,9 +623,9 @@ s_G
 Number
 
 INPUTBOX
-50
+170
 270
-160
+280
 330
 E_Hb
 0
@@ -618,9 +634,9 @@ E_Hb
 Number
 
 INPUTBOX
-170
+290
 270
-280
+400
 330
 E_Hp
 0
@@ -629,9 +645,9 @@ E_Hp
 Number
 
 INPUTBOX
-290
+410
 270
-400
+520
 330
 E_Hpm
 0
@@ -640,10 +656,10 @@ E_Hpm
 Number
 
 INPUTBOX
-410
-270
-520
+50
 330
+160
+390
 E_Rj
 0
 1
@@ -651,9 +667,9 @@ E_Rj
 Number
 
 INPUTBOX
-50
+170
 330
-160
+280
 390
 fProb
 0
@@ -662,9 +678,9 @@ fProb
 Number
 
 INPUTBOX
-170
+290
 330
-280
+400
 390
 kap
 0
@@ -673,9 +689,9 @@ kap
 Number
 
 INPUTBOX
-290
+410
 330
-400
+520
 390
 kap_X
 0
@@ -684,10 +700,10 @@ kap_X
 Number
 
 INPUTBOX
-410
-330
-520
+50
 390
+160
+450
 kap_G
 0
 1
@@ -695,9 +711,9 @@ kap_G
 Number
 
 INPUTBOX
-50
+170
 390
-160
+280
 450
 kap_R
 0
@@ -706,9 +722,9 @@ kap_R
 Number
 
 INPUTBOX
-170
+290
 390
-280
+400
 450
 t_R
 0
@@ -717,9 +733,9 @@ t_R
 Number
 
 INPUTBOX
-290
+410
 390
-400
+520
 450
 F_m
 0
@@ -728,10 +744,10 @@ F_m
 Number
 
 INPUTBOX
-410
-390
-520
+50
 450
+160
+510
 p_Am
 0
 1
@@ -739,9 +755,9 @@ p_Am
 Number
 
 INPUTBOX
-50
+170
 450
-160
+280
 510
 p_Amm
 0
@@ -750,22 +766,11 @@ p_Amm
 Number
 
 INPUTBOX
-170
-450
-280
-510
-v
-0
-1
-0
-Number
-
-INPUTBOX
 290
 450
 400
 510
-p_M
+v
 0
 1
 0
@@ -776,7 +781,7 @@ INPUTBOX
 450
 520
 510
-k_J
+p_M
 0
 1
 0
@@ -787,7 +792,7 @@ INPUTBOX
 510
 160
 570
-k_JX
+k_J
 0
 1
 0
@@ -798,7 +803,7 @@ INPUTBOX
 510
 280
 570
-E_G
+k_JX
 0
 1
 0
@@ -808,6 +813,17 @@ INPUTBOX
 290
 510
 400
+560
+E_G
+0
+1
+0
+Number
+
+INPUTBOX
+410
+510
+520
 560
 ome
 0
@@ -967,7 +983,7 @@ TEXTBOX
 215
 160
 230
--
+1/d
 11
 0.0
 1
@@ -977,7 +993,7 @@ TEXTBOX
 215
 280
 230
-1/d
+-
 11
 0.0
 1
@@ -987,7 +1003,7 @@ TEXTBOX
 215
 400
 230
-1/d2
+1/d
 11
 0.0
 1
@@ -997,7 +1013,7 @@ TEXTBOX
 215
 520
 230
--
+1/d2
 11
 0.0
 1
@@ -1007,7 +1023,7 @@ TEXTBOX
 275
 160
 290
-J
+-
 11
 0.0
 1
@@ -1037,7 +1053,7 @@ TEXTBOX
 275
 520
 290
-J/cm3
+J
 11
 0.0
 1
@@ -1047,7 +1063,7 @@ TEXTBOX
 335
 150
 350
--
+J/cm3
 11
 0.0
 1
@@ -1096,6 +1112,16 @@ TEXTBOX
 240
 395
 480
+410
+-
+11
+0.0
+1
+
+TEXTBOX
+360
+395
+400
 410
 d
 11
@@ -1103,9 +1129,9 @@ d
 1
 
 TEXTBOX
-360
+480
 395
-400
+520
 410
 L/d.cm2
 11
@@ -1113,16 +1139,6 @@ L/d.cm2
 1
 
 TEXTBOX
-480
-395
-520
-410
-J/d.cm2
-11
-0.0
-1
-
-TEXTBOX
 120
 455
 160
@@ -1136,6 +1152,16 @@ TEXTBOX
 240
 455
 280
+470
+J/d.cm2
+11
+0.0
+1
+
+TEXTBOX
+360
+455
+400
 470
 cm/d
 11
@@ -1143,21 +1169,11 @@ cm/d
 1
 
 TEXTBOX
-360
-455
-400
-470
-J/d.cm3
-11
-0.0
-1
-
-TEXTBOX
 480
 455
 520
 470
-1/d
+J/d.cm3
 11
 0.0
 1
@@ -1177,7 +1193,7 @@ TEXTBOX
 515
 280
 530
-J/cm3
+1/d
 11
 0.0
 1
@@ -1186,6 +1202,16 @@ TEXTBOX
 360
 515
 400
+530
+J/cm3
+11
+0.0
+1
+
+TEXTBOX
+480
+515
+520
 530
 -
 11

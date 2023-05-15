@@ -46,7 +46,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %% Remarks
 %
 % * writes spline_TC.c and spline_JX.c (first degree spline function for temp correction and food input)
-% * writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 10 DEB models
+% * writes EBTmod.exe EBTmod.h, EBTmod.cvf and EBTmod.isf where mod is one of 11 DEB models
 % * uses deb/EBTmod.c, which is written in C directly
 % * runs EBTmod.exe in Window's PowerShell, which writes EBTmod.out
 % * reads EBTmod.out for output
@@ -159,6 +159,13 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
         'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
         '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
         'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d', 'N_batch, -'};
+    case 'hax' 
+      par = {E_He, E_Hp, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbp, h_Bpj, h_Bje, h_Bei, h_a, s_G, thin,  ...
+        L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_j, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab, numPar.cycle_interval}/ t_m;
+      txtPar = {'E_He', 'E_Hp, J', 'E_Hb, J', 'V_X, L', 'h_X, 1/d', 'h_J, 1/d', 'h_B0b, 1/d',  'h_Bbp, 1/d', 'h_Bpj, 1/d', 'h_Bje, 1/d', 'h_Bei', '1/d', 'h_a, 1/d', 's_G, -', 'thin, -', ...
+        'L_m, cm', 'E_m, J/cm^3', 'k_J, 1/d', 'k_JX, 1/d', 'v, cm/d', 'g, -', ...
+        '[p_M] J/d.cm^3', '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', ...
+        'ome, -', 'E_0, J', 'E_Rj, J/cm^3', 'L_b, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d', 'N_batch, -'};
     case 'hex' 
       par = {E_He, E_Hb, V_X, h_X, h_J, h_B0b, h_Bbj, h_Bje, h_Bei, h_a, s_G, thin,  ...
         L_m, E_m, k_J, k_JX, v, g, p_M, p_Am, J_X_Am, K, kap, kap_G, ome, E_0, E_Rj, L_b, L_j, L_e, a_b, aT_b, q_b, qT_b, h_Ab, hT_Ab, numPar.cycle_interval}/ t_m;
@@ -173,12 +180,12 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
   if strcmp(numPar.TIME_METHOD, 'DOPRI5') || strcmp(numPar.TIME_METHOD, 'DOPRI8') || strcmp(numPar.TIME_METHOD, 'RADAU5')
     switch model
-      case {'std','stf','sbp','abp'}
+      case {'std','stf','sbp','abp'} % b,p
         n_events = 2;
-      case {'stx','ssj','abj','hep','hex'}
+      case {'stx','ssj','abj','hep'} % b,j,p
         n_events = 3;
-      case 'asj'
-        n_events = 4;
+      case {'asj','hax','hex'}
+        n_events = 4; % b,s,j,p or b,p,j,e
     end
   else
     n_events = 0;
@@ -287,7 +294,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   eval([TxT, ' -o EBT', model, '.o   -c deb\EBT', model, '.c']);
   end
   eval(['!gcc -o EBT', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o EBT', model, '.o -lm']); % link o-files in EBTmod.exe
-  delete('*.o')
+  %delete('*.o')
   if ismac
     eval(['!./EBT', model, '.exe EBT', model]); % run EBTtool using input files run.cvf and run.isf
   else

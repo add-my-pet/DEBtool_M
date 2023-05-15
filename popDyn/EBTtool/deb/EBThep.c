@@ -142,7 +142,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
+  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, E_H, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
