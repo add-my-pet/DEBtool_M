@@ -194,11 +194,11 @@ switch model
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
+      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsp = 1e-35; h_Bpi = 1e-35; 
     else
-      h_B0b = h(2); h_Bbs = h(3); h_Bsj = h(4); h_Bjp = h(5); h_Bpi = h(6);       
+      h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
-    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
+    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsp = h_Bsp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 

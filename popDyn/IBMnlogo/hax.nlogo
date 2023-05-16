@@ -1,6 +1,7 @@
 ; Model definition for a hax-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2023/03/13, modified 2023/05/13
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -45,7 +46,7 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time for imago's to lay all eggs
+  ; t_R      ; d, time for imgao's to lay all eggs
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpj    ; 1/d, background hazard between p and j
@@ -100,6 +101,7 @@ turtles-own[
   J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
+  L_e      ; cm, structural length at emergence
   L_mi     ; cm, max structural length  (female or male value)
   E_mi     ; J/cm^3, max reserve density  (female or male value)
   gi       ; -, energy investment ratio  (female or male value)
@@ -481,7 +483,7 @@ to set-pupa [eei genderi]
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
     set E_Hpi E_Hp ; J, maturity at puberty
-    set L_e L ; cm, structural length at birth
+    set L_e L ; cm, structural length at emergence
     set L_mi L_m ; cm, max structural length
     set E_mi E_m ; J/cm^3, max reserve density
     set gi g ; -, energy investment ratio
@@ -1016,6 +1018,16 @@ PENS
 "adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and ((gender = 0) or (gender > 1))]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
 "adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
+
+TEXTBOX
+120
+35
+160
+50
+hax
+11
+0.0
+1
 
 TEXTBOX
 480

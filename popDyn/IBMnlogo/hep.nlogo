@@ -1,6 +1,7 @@
 ; Model definition for a hep-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/15, modified 2023/05/15
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -43,11 +44,11 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time for imago's to lay all eggs
+  ; t_R      ; d, time for imago's to lays all eggs
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpj    ; 1/d, background hazard between p and j
-  ; h_Bji    ; 1/d, background hazard between j and i
+  ; h_Bji    ; 1/d, background hazard between j and e
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
   ; mu_X     ; J/mol, chemical potential of food
@@ -405,7 +406,6 @@ to spawn [list-n list-eb] ; both lists should be eqally long
     set i i + 1
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 50
@@ -889,6 +889,16 @@ PENS
 "adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
 
 TEXTBOX
+120
+35
+160
+50
+hep
+11
+0.0
+1
+
+TEXTBOX
 480
 35
 520
@@ -1217,6 +1227,7 @@ TEXTBOX
 11
 0.0
 1
+
 
 @#$#@#$#@
 MODEL DESCRIPTION: hep DEB model	

@@ -1,6 +1,7 @@
 ; Model definition for an abp-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/01, modified 2023/05/11
+; date: 2021/01/01, modified 2023/05/16
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -43,7 +44,7 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time between spawns
+  ; t_R      ; d, time between spawning events (0 as soon as possible; 1 at a_b)
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpi    ; 1/d, background hazard between p and i
@@ -92,6 +93,7 @@ turtles-own[
   J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
+  s_M      ; - , acceleration factor
   L_mi     ; cm, max structural length  (female or male value)
   E_mi     ; J/cm^3, max reserve density  (female or male value)
   gi       ; -, energy investment ratio  (female or male value)
@@ -210,7 +212,7 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    let s_M L / L_b ; -, acceleration factor
+    set s_M L / L_b ; -, acceleration factor
     set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
@@ -869,6 +871,16 @@ PENS
 "adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and (gender = 0)]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
 "adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
+
+TEXTBOX
+120
+35
+160
+50
+abp
+11
+0.0
+1
 
 TEXTBOX
 480

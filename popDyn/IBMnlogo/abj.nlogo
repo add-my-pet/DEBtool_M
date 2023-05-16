@@ -1,6 +1,7 @@
 ; Model definition for an abj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/12, modified 2023/05/09
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -43,7 +44,7 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time between spawns
+  ; t_R      ; d, time between spawning events (0 as soon as possible; 1 at a_b)
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbj    ; 1/d, background hazard between b and j
   ; h_Bjp    ; 1/d, background hazard between j and p
@@ -900,6 +901,16 @@ PENS
 "adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and (gender = 0)]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
 "adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
+
+TEXTBOX
+120
+35
+160
+50
+abj
+11
+0.0
+1
 
 TEXTBOX
 480

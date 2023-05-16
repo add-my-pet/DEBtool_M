@@ -1,6 +1,7 @@
 ; Model definition for a ssj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/01, modified 2023/05/11
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -43,7 +44,7 @@ globals[
   k_M      ; 1/d, somatic maintenance rate coefficient
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time between spawns
+  ; t_R      ; d, time between spawning events (0 as soon as possible; 1 at a_b)
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpi    ; 1/d, background hazard between p and i
@@ -69,8 +70,8 @@ globals[
   ; E_Hs     ; J, maturity at metam
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; del_sj   ; -, faction of (instantaneous) shrinking of structure are s
   ; fProb    ; -, probability of becoming female at b
-]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -283,7 +284,8 @@ to go
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_H < E_Hs)] [if (h_Bbs + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hs) and (E_H < E_Hpi)] [if (h_Bsp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
@@ -563,7 +565,7 @@ INPUTBOX
 150
 400
 210
-h_Bbp
+h_Bbs
 0
 1
 0
@@ -574,7 +576,7 @@ INPUTBOX
 150
 520
 210
-h_Bpi
+h_Bsp
 0
 1
 0
@@ -584,6 +586,17 @@ INPUTBOX
 50
 210
 160
+270
+h_Bpi
+0
+1
+0
+Number
+
+INPUTBOX
+170
+210
+280
 270
 thin
 0
@@ -592,9 +605,9 @@ thin
 Number
 
 INPUTBOX
-170
+290
 210
-280
+400
 270
 h_J
 0
@@ -603,9 +616,9 @@ h_J
 Number
 
 INPUTBOX
-290
+410
 210
-400
+520
 270
 h_a
 0
@@ -614,10 +627,10 @@ h_a
 Number
 
 INPUTBOX
-410
-210
-520
+50
 270
+160
+330
 s_G
 0
 1
@@ -625,9 +638,9 @@ s_G
 Number
 
 INPUTBOX
-50
+170
 270
-160
+280
 330
 E_Hb
 0
@@ -636,9 +649,9 @@ E_Hb
 Number
 
 INPUTBOX
-170
+290
 270
-280
+400
 330
 E_Hs
 0
@@ -647,9 +660,9 @@ E_Hs
 Number
 
 INPUTBOX
-290
+410
 270
-400
+520
 330
 E_Hp
 0
@@ -658,10 +671,10 @@ E_Hp
 Number
 
 INPUTBOX
-410
-270
-520
+50
 330
+160
+390
 E_Hpm
 0
 1
@@ -669,9 +682,9 @@ E_Hpm
 Number
 
 INPUTBOX
-50
+170
 330
-160
+280
 390
 fProb
 0
@@ -680,9 +693,9 @@ fProb
 Number
 
 INPUTBOX
-170
+290
 330
-280
+400
 390
 kap
 0
@@ -691,9 +704,9 @@ kap
 Number
 
 INPUTBOX
-290
+410
 330
-400
+520
 390
 kap_X
 0
@@ -702,10 +715,10 @@ kap_X
 Number
 
 INPUTBOX
-410
-330
-520
+50
 390
+160
+450
 kap_G
 0
 1
@@ -713,9 +726,9 @@ kap_G
 Number
 
 INPUTBOX
-50
+170
 390
-160
+280
 450
 kap_R
 0
@@ -724,22 +737,11 @@ kap_R
 Number
 
 INPUTBOX
-170
-390
-280
-450
-t_R
-0
-1
-0
-Number
-
-INPUTBOX
 290
 390
 400
 450
-F_m
+t_R
 0
 1
 0
@@ -750,7 +752,7 @@ INPUTBOX
 390
 520
 450
-p_Am
+F_m
 0
 1
 0
@@ -761,7 +763,7 @@ INPUTBOX
 450
 160
 510
-p_Amm
+p_Am
 0
 1
 0
@@ -772,7 +774,7 @@ INPUTBOX
 450
 280
 510
-v
+p_Amm
 0
 1
 0
@@ -783,7 +785,7 @@ INPUTBOX
 450
 400
 510
-p_M
+v
 0
 1
 0
@@ -794,7 +796,7 @@ INPUTBOX
 450
 520
 510
-del_sj
+p_M
 0
 1
 0
@@ -827,7 +829,7 @@ INPUTBOX
 510
 400
 570
-E_G
+del_sj
 0
 1
 0
@@ -838,6 +840,17 @@ INPUTBOX
 510
 520
 570
+E_G
+0
+1
+0
+Number
+
+INPUTBOX
+50
+570
+160
+620
 ome
 0
 1
@@ -900,6 +913,16 @@ PENS
 "adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and (gender = 0)]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
 "adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
+
+TEXTBOX
+120
+35
+160
+50
+ssj
+11
+0.0
+1
 
 TEXTBOX
 480
@@ -996,7 +1019,7 @@ TEXTBOX
 215
 160
 230
--
+1/d
 11
 0.0
 1
@@ -1006,7 +1029,7 @@ TEXTBOX
 215
 280
 230
-1/d
+-
 11
 0.0
 1
@@ -1016,7 +1039,7 @@ TEXTBOX
 215
 400
 230
-1/d2
+1/d
 11
 0.0
 1
@@ -1026,7 +1049,7 @@ TEXTBOX
 215
 520
 230
--
+1/d2
 11
 0.0
 1
@@ -1036,7 +1059,7 @@ TEXTBOX
 275
 160
 290
-J
+-
 11
 0.0
 1
@@ -1076,7 +1099,7 @@ TEXTBOX
 335
 150
 350
--
+J
 11
 0.0
 1
@@ -1126,7 +1149,7 @@ TEXTBOX
 395
 480
 410
--,d
+-
 11
 0.0
 1
@@ -1136,7 +1159,7 @@ TEXTBOX
 395
 400
 410
-L/d.cm2
+d
 11
 0.0
 1
@@ -1166,7 +1189,7 @@ TEXTBOX
 455
 280
 470
-cm/d
+J/d.cm2
 11
 0.0
 1
@@ -1176,7 +1199,7 @@ TEXTBOX
 455
 400
 470
-J/d.cm3
+cm/d
 11
 0.0
 1
@@ -1186,7 +1209,7 @@ TEXTBOX
 455
 520
 470
--
+J/d.cm3
 11
 0.0
 1
@@ -1216,7 +1239,7 @@ TEXTBOX
 515
 400
 530
-J/cm3
+-
 11
 0.0
 1
@@ -1226,11 +1249,20 @@ TEXTBOX
 515
 520
 530
--
+J/cm3
 11
 0.0
 1
 
+TEXTBOX
+120
+575
+160
+590
+-
+11
+0.0
+1
 @#$#@#$#@
 MODEL DESCRIPTION: ssj DEB model	
 -----------

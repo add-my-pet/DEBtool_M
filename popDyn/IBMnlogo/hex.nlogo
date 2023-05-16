@@ -1,6 +1,7 @@
 ; Model definition for a hex-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
 ; date: 2021/01/15, modified 2023/05/15
+; warning: this script is case-insensitive
 
 extensions [matrix]
 
@@ -41,6 +42,7 @@ globals[
   g        ; - , energy investment ratio for females
   g_m      ; - , energy investment ratio for males
   k_M      ; 1/d, somatic maintenance rate coefficient
+  k_E      ; 1/d, spec reserve mobilisation at b
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
   ; t_R      ; d, time for imago's to lay all eggs
@@ -67,6 +69,7 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
+  ; s_j      ; -, fraction of max E_Rj at j
   ; fProb    ; -, probability of becoming female at b
 ]
 
@@ -81,6 +84,7 @@ turtles-own[
   E_H      ; J, maturity
   E_Hmax   ; J, max maturity reached
   E_R      ; J, reproduction buffer, but for imago's it becomes number of eggs
+  E_Rj     ; J, reproduction buffer at j, it becomes number of eggs
   q        ; 1/d^2, ageing acceleration
   h_age    ; 1/d, hazard rate due to aging
   h_thin   ; 1/d, hazard rate due to thinning
@@ -237,9 +241,10 @@ to go
     (ifelse (thin = 1) and (E_H < E_Hpi) [set h_thin r]  ; thinning during acceleration
     (thin = 1) and (E_H >= E_Hpi) [set h_thin r * 2 / 3] ; thinning after acceleration
     [set h_thin 0]) ; 1/d, hazard rate due to thinning
+    set E_Rj s_j * (1 - kap) * E_m * g * (v / L_b + k_M) / (v / L_b - g * k_M); % J/cm^3, threshold reprod buffer density at pupation
     if E_R / L / L / L > E_Rj [set gender 2] ; change female larva to fresh imago stage (males have E_R=0)
-    if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
-      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
+    if (E_H = E_Hpi) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
+      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hpi) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
     ]
   ]
@@ -266,8 +271,9 @@ to go
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_R < E_Rj)] [if (h_Bbj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H < E_He) and (E_R >= E_Rj)] [if (h_Bje + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [E_H = E_He] [if (h_Bei + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
   ; write daily population state to output matrix tNL23W.txt
@@ -369,7 +375,6 @@ to set-embryo [eei genderi]
     set Ki K ; Mol, half saturation coefficient
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
-    set E_Hpi E_Hp ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_m ; cm, max structural length
     set E_mi E_m ; J/cm^3, max reserve density
@@ -378,7 +383,6 @@ to set-embryo [eei genderi]
     set Ki K_male ; Mol, half saturation coefficient
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
-    set E_Hpi E_Hpm ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_mm ; cm, max structural length
     set E_mi E_mm ; J/cm^3, max reserve density
@@ -634,7 +638,7 @@ INPUTBOX
 270
 400
 330
-E_Rj
+s_j
 0
 1
 0
@@ -845,7 +849,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.0001
 true
 false
 "" ""
@@ -869,9 +873,19 @@ true
 "" ""
 PENS
 "juvFemales" 1.0 0 -1069655 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hp) and (gender = 0)]"
-"adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and ((gender = 0) or (gender > 1))]"
+"adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hpi) and ((gender = 0) or (gender > 1))]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
-"adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
+"adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpi) and (gender = 1)]"
+
+TEXTBOX
+120
+35
+160
+50
+hex
+11
+0.0
+1
 
 TEXTBOX
 480
