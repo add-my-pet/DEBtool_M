@@ -700,7 +700,7 @@ else % fill fields
   end
 end
   % color settings: run this part only with AmPgui('setColor')
-  if isvalid(Hwait); close(Hwait); end % close any wait warnings
+  try; close(Hwait); catch; end % close any wait warnings; function isvalid requires Toolbox Image Acquisition, Instrument control or OPC
   figure(dmydata); % bring the main dialog window to the front
   
   if ~any([isempty(metaData.species), isempty(metaData.family), isempty(metaData.order), isempty(metaData.class), isempty(metaData.phylum)])

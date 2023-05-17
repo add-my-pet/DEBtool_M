@@ -49,7 +49,7 @@
 #define h_Bsj  parameter[9]   /*   1/d      */
 #define h_Bjp  parameter[10]  /*   1/d      */
 #define h_Bpi  parameter[11]  /*   1/d      */
-#define h_a    parameter[12]  /*   1/d      */
+#define h_a    parameter[12]  /*  1/d^2     */
 #define s_G    parameter[13]  /*    -       */
 #define thin   parameter[14]  /*    -       */
 #define L_m    parameter[15]  /*   cm       */
