@@ -269,7 +269,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
               end
             
             elseif isfield(auxData.(pets{i}), 'treat') && isfield(auxData.(pets{i}).treat, nm{j}) && ...
-                    ~iscell(auxData.(pets{i}).treat.(nm{j}){2}(1)) % bi-variate data
+                    size(size(data.(pets{i}).(nm{j})),2)==2 % bi-variate data
               aux =  auxData.(pets{i});
               treat = aux.treat.(nm{j}); % 2-cell string, 2nd element values of 2nd independent variable, might be non-numeric
               hold on;
