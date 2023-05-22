@@ -1,10 +1,10 @@
 %% get_EBT
-% get population trajectories from Escalaor Boxcar Train
+% get population trajectories from Escalator Boxcar Train
 
 %%
 function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 
-% created 2020/04/03 by Bas Kooijman
+% created 2020/04/03 by Bas Kooijman, modified 2023/05/22
   
 %% Syntax
 % tXNL23W = <../get_EBT.m *get_EBT*> (model, par, tT, tJX, x_0, V_X, t_max, numPar)
@@ -27,6 +27,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
 %  - E_R: J, reprod buffer
 %  - E_H: J, maturity
 %  - W: g, wet weight
+%  - s_M: -, acceleration factor (for a and h models)
 %
 % Input:
 %
@@ -124,6 +125,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'K, Mol', 'kap, -', 'kap_G, -', 'ome, -', 'E_0, J', ...
           'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', ...
           'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '8 /* a, q, h_a, L, E, E_R, E_H, W */';
     case 'stx'
       par = {E_Hp, E_Hx, E_Hb, V_X, h_X, ...
           h_J, h_B0b, h_Bbx, h_Bxp, h_Bpi, ...
@@ -139,6 +141,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, Mol', 'kap, -', 'kap_G, -', ...
           'ome, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', ...
           'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '8 /* a, q, h_a, L, E, E_R, E_H, W */';
     case 'ssj' 
       del_sj = exp(-k_E * t_sj/ 3); % reduction factor for structural length at end of leptocephalus stage
       par = {E_Hp, E_Hs, E_Hb, V_X, h_X, ...
@@ -155,6 +158,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           '{J_X_Am}, mol/d.cm^2', 'K, mol/L', 'kap, -', 'kap_G, -', 'ome, -', ...
           'del_s, -', 'E_0, J', 'L_b, cm', 'a_b, d', 'aT_b, d', ...
           'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '8 /* a, q, h_a, L, E, E_R, E_H, W */';
     case 'abj'
       par = {E_Hp, E_Hj, E_Hb, V_X, h_X, ...
           h_J, h_B0b, h_Bbj, h_Bjp, h_Bpi, ...
@@ -170,6 +174,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           '{p_Am}, J/d.cm^2', '{J_X_Am}, mol/d.cm^2', 'K, Mol', 'kap, -', 'kap_G, -', ...
           'ome, -', 'E_0, J', 'L_b, cm', 'L_j, cm', 'a_b, d', ...
           'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
     case 'asj'
       par = {E_Hp, E_Hj, E_Hs, E_Hb, V_X, ...
           h_X, h_J, h_B0b, h_Bbs, h_Bsj, ...
@@ -187,6 +192,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'kap, -', 'kap_G, -', 'ome, -', 'E_0, J', 'L_b, cm', ...
           'L_s, cm', 'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', ...
           'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
     case 'abp'
       par = {E_Hp, E_Hb, V_X, h_X, h_J, ...
           h_B0b, h_Bbp, h_Bpi, h_a, s_G, ...
@@ -202,6 +208,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'K, Mol', 'kap, -', 'kap_G, -', 'ome, -', 'E_0, J', ...
           'L_b, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', ...
           'h_Ab, 1/d', 'hT_Ab, 1/d'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
     case 'hep' 
       par = {E_Hp, E_Hb, V_X, h_X, h_J, ...
           h_B0b, h_Bbp, h_Bpj, h_Bji, h_a, ...
@@ -219,6 +226,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'E_0, J', '[E_Rj], J/cm^3', 'L_b, cm', 'L_j, cm', 'a_b, d', ...
           'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', 'hT_Ab, 1/d', ...
           'N_batch, -'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
     case 'hax' 
       par = {E_He, E_Hp, E_Hb, V_X, h_X, ...
           h_J, h_B0b, h_Bbp, h_Bpj, h_Bje, ...
@@ -236,6 +244,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'kap_G, -', 'ome, -', 'E_0, J', '[E_Rj], J/cm^3', 'L_b, cm', ...
           'L_j, cm', 'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', ...
           'h_Ab, 1/d', 'hT_Ab, 1/d', 'N_batch, -'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
     case 'hex' 
       par = {E_He, E_Hb, V_X, h_X, h_J, ...
           h_B0b, h_Bbj, h_Bje, h_Bei, h_a, ...
@@ -253,6 +262,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
           'E_0, J', '[E_Rj], J/cm^3', 'L_b, cm', 'L_j, cm', 'L_e, cm', ...
           'a_b, d', 'aT_b, d', 'q_b, 1/d^2', 'qT_b, 1/d^2', 'h_Ab, 1/d', ...
           'hT_Ab, 1/d', 'N_batch, -'};
+      txtStates = '9 /* a, q, h_a, L, E, E_R, E_H, W, s_M */';
   end
   n_par = length(par); % number of parameters
       
@@ -282,13 +292,13 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '    SK - 2020/04/13: Created by DEBtool_M/animal/get_EBT\n');
   fprintf(oid, '***/\n\n');
   fprintf(oid, '#define POPULATION_NR   1\n');
-  fprintf(oid, '#define I_STATE_DIM     8 /* a, q, h_a, L, E, E_R, E_H, W */\n');
+  fprintf(oid, '#define I_STATE_DIM     %s\n', txtStates);
   fprintf(oid, '#define I_CONST_DIM     0\n');
   fprintf(oid, '#define ENVIRON_DIM     2 /* time, scaled food density */\n'); 
   fprintf(oid, '#define OUTPUT_VAR_NR   6 /* (time,) scaled food density, nr ind, tot struc length, surface, vol, weight */\n');
   fprintf(oid, '#define PARAMETER_NR    %d\n', n_par);
   fprintf(oid, '#define TIME_METHOD     %s /* we need events */\n', numPar.TIME_METHOD);
-  fprintf(oid, '#define EVENT_NR        %d /*  birth, puberty */\n', n_events);
+  fprintf(oid, '#define EVENT_NR        %d /* birth, weaning, puberty */\n', n_events);
   fprintf(oid, '#define DYNAMIC_COHORTS 0\n');
   fclose(oid);
   
@@ -315,6 +325,9 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_E_R, numPar.relTol_E_R); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_E_H, numPar.relTol_E_H); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_W, numPar.relTol_W);
+  if any(strcmp(model,{'abj','abp','asj'}))
+    fprintf(oid, '"%s" %5.3e\n',  numPar.txt.relTol_s_M, numPar.relTol_s_M);
+  end
   
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_a, numPar.absTol_a); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_q, numPar.absTol_q); 
@@ -324,6 +337,9 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_E_R, numPar.absTol_E_R); 
   fprintf(oid, '"%s" %5.3e\n',  numPar.txt.absTol_E_H, numPar.absTol_E_H); 
   fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.absTol_W, numPar.absTol_W); 
+  if any(strcmp(model,{'abj','abp','asj'}))
+    fprintf(oid, '"%s" %5.3e\n\n',numPar.txt.absTol_s_M, numPar.absTol_s_M); 
+  end
 
   for i=1:n_par
   fprintf(oid, '"%s" %5.4g\n',  txtPar{i}, par{i});
@@ -337,8 +353,8 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   % initial time, scaled food density; length equals ENVIRON_DIM, empty line added
   fprintf(oid, '%5.4e %5.4e\n\n', 0, x_0); 
   
-  % initial #, a, q, h_a, L, E, E_R, E_H, W; length equals 1+I_STATE_DIM, empty line added
-  fprintf(oid, '%5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e\n\n', 1, 0, q_b, h_Ab, L_b, E_m, 0, E_Hb, Ww_b); 
+  % initial #, a, q, h_a, L, E, E_R, E_H, W, s_M; length equals 1+I_STATE_DIM, empty line added
+  fprintf(oid, '%5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4e %5.4\n\n', 1, 0, q_b, h_Ab, L_b, E_m, 0, E_Hb, Ww_b, 1); 
 
   fclose(oid);
   % initial i-states are values at birth, but for t < a_b, changes in i-states are set to 0
@@ -371,7 +387,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     eval([txt, ' -o ebtcohrt.o -c fns\ebtcohrt.c']);
     eval([txt, ' -o ebtutils.o -c fns\ebtutils.c']);
     eval([txt, ' -o ebtstop.o  -c fns\ebtstop.c']);
-  eval([TxT, ' -o EBT', model, '.o   -c deb\EBT', model, '.c']);
+    eval([TxT, ' -o EBT', model, '.o   -c deb\EBT', model, '.c']);
   end
   eval(['!gcc -o EBT', model, '.exe ebtinit.o ebtmain.o ebtcohrt.o ebttint.o ebtutils.o ebtstop.o EBT', model, '.o -lm']); % link o-files in EBTmod.exe
   %delete('*.o')
@@ -396,8 +412,6 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
   % read complete state binary output file run.csb
 
 end
-
-
 
 function [value,isterminal,direction] = puberty(t, Xvars, E_Hp, varargin)
   n_c = (length(Xvars) - 1)/ 7; % #, number of cohorts

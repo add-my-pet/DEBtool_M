@@ -46,7 +46,8 @@ globals[
   ; globals set through inputboxes (here just for presenting units and descriptions)
   ; t_R      ; d, time between spawning events (0 as soon as possible; 1 at a_b)
   ; h_B0b    ; 1/d, background hazard between 0 and b
-  ; h_Bbp    ; 1/d, background hazard between b and p
+  ; h_Bbs    ; 1/d, background hazard between b and s
+  ; h_Bsp    ; 1/d, background hazard between s and p
   ; h_Bpi    ; 1/d, background hazard between p and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
@@ -70,8 +71,9 @@ globals[
   ; E_Hs     ; J, maturity at metam
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
-  ; del_sj   ; -, faction of (instantaneous) shrinking of structure are s
+  ; del_sj   ; -, faction of (instantaneous) shrinking of structure at s
   ; fProb    ; -, probability of becoming female at b
+]
 
 ; ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -232,7 +234,7 @@ to go
       set E_H E_Hpi ; J, do not allow maturity to exceed puberty level
       set E_Hmax E_Hpi ; J, keep both maturities equal
     ]
-    if E_H > E_Hs and metam = 0 [
+    if (E_H > E_Hs) and (metam = 0) [
       set L L * del_sj  ; instantaneous length reduction due to metam
       set metam 1
     ]
@@ -241,7 +243,7 @@ to go
     set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
     ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
-    if E_H = E_Hp and gender = 0 [ ; update reproduction buffer and time-since-spawning in adult females
+    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
       set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
       set t_spawn t_spawn + 1 / tickRate ; d, time since last spawning
@@ -263,7 +265,7 @@ to go
       ]
     ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
       set a_b get_ab ee
-      if E_R >= E_0 / kap_R and t_spawn > a_b / TC [ ; reprod buffer has at least 1 egg
+      if (E_R >= E_0 / kap_R) and (t_spawn > a_b / TC) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -271,7 +273,7 @@ to go
         set t_spawn 0 ; reset time since last spawn
       ]
     ] [ ; spawn if reprod buffer accumulation time exceeds t_R
-      if E_R > E_0 / kap_R and t_spawn > t_R [ ; reprod buffer has at least 1 egg
+      if (E_R > E_0 / kap_R) and (t_spawn > t_R) [ ; reprod buffer has at least 1 egg
         let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
         set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
         set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
@@ -886,7 +888,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.001
 true
 false
 "" ""
@@ -1276,7 +1278,7 @@ Feeding and changes in state variable of individuals depend on temperature, but 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
-Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
+Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbs, h_Bsp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
 Thinning never applies to embryos; it exactly compensates the increase of total food intake by a cohort due to growth, by a reduction in numbers. 
 Food intake and use follow the rules of the standard DEB model (see AmP website). 
 Male and female embryos are identical, but juveniles and adults can differ by max specific assimilation and maturity levels at puberty.

@@ -1,6 +1,6 @@
 ; Model definition for an abj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/12, modified 2023/05/09
+; date: 2021/01/12, modified 2023/05/21
 ; warning: this script is case-insensitive
 
 extensions [matrix]
@@ -209,7 +209,7 @@ to go
 
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
-  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * J_XAmi * L * L] ; Mol/d, food consumption
+  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * s_M * J_XAmi * L * L] ; Mol/d, food consumption
   set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
   if X < 0 [set X 0] ; do not allow negative food
 

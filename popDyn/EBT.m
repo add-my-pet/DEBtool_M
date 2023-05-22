@@ -15,7 +15,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
 % If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
-% The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
+% The present implementation ignores males. 
 % The initial population is a single fertilized (female) egg. 
 % Starvation parameters are added to parameter structure, if not present.
 % Like all parameters, default settings can be changed by changing structure par in cell-string input.
@@ -124,9 +124,11 @@ if ~exist('V_X','var') || isempty(V_X)
 end
 
 % supply food 
-if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
+if ~exist('tJX','var') || isempty(tJX)
   J_X = 75 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max*1.1 J_X]; 
+elseif size(tJX,2) == 1
+  tJX = [0 tJX; t_max*1.1 tJX]; 
 end
 if tJX(1,1) > 0
   tJX = [0 tJX(1,2); tJX];
@@ -140,7 +142,7 @@ if ~exist('x_0','var') || isempty(x_0)
   x_0 = 0; % -, X/K at t=0
 end
 
-% account for cost of male production
+% account for cost of male production, but presently not implemented in ETB
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2;  par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
@@ -182,7 +184,7 @@ switch model
     else
       h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
-    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
+    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
@@ -224,8 +226,8 @@ end
 
 % fields for numerical parameters
 flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
-    'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
-    'absTol_a','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W'};
+    'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W','relTol_s_M', ...
+    'absTol_a','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W','absTol_s_M'};
 n_flds = length(flds);
 % set default numerical parameters
 opt.TIME_METHOD = 'DOPRI5';  opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
@@ -245,6 +247,7 @@ opt.relTol_E = tol;         opt.txt.relTol_E = 'Relative tolerance for reserve d
 opt.relTol_E_R = tol;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
 opt.relTol_E_H = tol;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
 opt.relTol_W = tol;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
+opt.relTol_s_M = tol;       opt.txt.relTol_s_M = 'Relative tolerance for acceleration factor s_M';
 
 opt.absTol_a = tol;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
 opt.absTol_q = tol;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
@@ -254,6 +257,7 @@ opt.absTol_E = tol;         opt.txt.absTol_E = 'Absolute tolerance for reserve d
 opt.absTol_E_R = tol;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
 opt.absTol_E_H = tol;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
 opt.absTol_W = tol;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
+opt.absTol_s_M = tol;       opt.txt.absTol_s_M = 'Absolute tolerance for acceleration factor s_M';
 
 % overwrite with specified numerical parameters
 if exist('numPar', 'var') && ~isempty(numPar)
@@ -275,6 +279,7 @@ delete(['EBT', model, '.exe'])
 delete(['EBT', model, '.isf'])
 delete(['EBT', model, '.out'])
 delete(['EBT', model, '.rep'])
+delete(['deb\EBT', model, '.h'])
 delete('spline_JX.c')
 delete('spline_TC.c')
 

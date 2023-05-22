@@ -30,6 +30,7 @@
 #define reprodBuf i_state(5)   /*   J    */
 #define maturity i_state(6)    /*   J    */
 #define weight i_state(7)      /*   g    */
+#define accelFac i_state(8)    /*   -    */
 
 /*
  *==========================================================================
@@ -106,6 +107,7 @@ void SetBpoints(double *env, population *pop, population *bpoints)
   bpoints[0][0][maturity]  = E_Hb;
   bpoints[0][0][reprodBuf] = 0.0;
   bpoints[0][0][weight]    = L_b * L_b * L_b * (1 + ome);
+  bpoints[0][0][accelFac]  = 1.0;
 
   return;
 }
@@ -138,7 +140,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
+  double sumsmL2, TC, s_M, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_X, hT_J, hT_a, JT_X_Am, r, f, e, hazard, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
@@ -159,6 +161,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
   ofsgrad[0][0][maturity]  = 0.0;                                /* 5 */
   ofsgrad[0][0][reprodBuf] = 0.0;                                /* 6 */
   ofsgrad[0][0][weight]    = 0.0;                                /* 7 */
+  ofsgrad[0][0][accelFac]  = 0.0;                                /* 8 */
           
   /* The derivatives for all internal cohorts */
   for(i=0; i<cohort_no[0]; i++) 
@@ -166,7 +169,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       /* help quantities */
       e = pop[0][i][resDens]/ E_m;                                /* -, scaled reserve density e = [E]/[E_m] */
       L = pop[0][i][length]; L2 = L * L; L3 = L * L2;             /* cm, struc length */
-      s_M = L<L_p ? L/ L_b : L_p/ L_b;                            /* -, acceleration factor */
+      s_M = pop[0][i][accelFac];                                  /* -, acceleration factor */
       kapG = e>=L/L_m ? 1. : kap_G;                               /* kap_G if shrinking, else 1 */
       r = pop[0][i][maturity]<E_Hp ? s_M * vT * (e/ L - 1./ L_m)/ (e + kapG * g) : 0; /* 1/d, spec growth rate of structure */
       p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
@@ -187,6 +190,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][maturity]  = pop[0][i][maturity] < E_Hp ? p_R : 0.;                                                        /* 5 */
       popgrad[0][i][reprodBuf] = pop[0][i][maturity] >= E_Hp ? p_R : 0.;                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
+      popgrad[0][i][accelFac]  = pop[0][i][maturity] < E_Hp ? popgrad[0][i][length]/ L_b: 0.;                                  /* 8 */                                                                                    /* 3 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */
       if (pop[0][i][age] < aT_b)
@@ -199,13 +203,14 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
           popgrad[0][i][maturity]  = 0.;
           popgrad[0][i][reprodBuf] = 0.;
           popgrad[0][i][weight]    = 0.;
+          popgrad[0][i][accelFac]  = 0.;
         }
     }
   
   /* The derivatives of environmental vars: time & scaled food density */
   envgrad[0] = 1.0; /* 1/d, change in time */
-  for(i=0, sumL2 = 0.; i<cohort_no[0]; i++) sumL2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) : 0; 
-  envgrad[1] = spline_JX(time)/ V_X/ K - hT_X * food - JT_X_Am * f * sumL2/ V_X/ K; /* 1/d, change in scaled food density */
+  for(i=0, sumsML2 = 0.; i<cohort_no[0]; i++) sumsML2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) * pop[0][i][accelFac]; 
+  envgrad[1] = spline_JX(time)/ V_X/ K - hT_X * food - JT_X_Am * f * sumsML2/ V_X/ K; /* 1/d, change in scaled food density */
     
   return;
 }
@@ -238,6 +243,7 @@ void InstantDynamics(double *env, population *pop, population *ofs)
   ofs[0][0][maturity]  = E_Hb;
   ofs[0][0][reprodBuf] = 0.0;
   ofs[0][0][weight]    = L_b * L_b * L_b * (1 + ome);
+  ofs[0][0][accelFac]  = 1.0;
   
   return;
 }

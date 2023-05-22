@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>EBT</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-05-09"><meta name="DC.source" content="EBT.m"><style type="text/css">
+      --><title>EBT</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-05-22"><meta name="DC.source" content="EBT.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>EBT</h1><!--introduction--><p>escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">report_my_pet.html</a></li><li><a href="#9">EBT_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txL23W = <a href="../EBT.m"><b>EBT</b></a> (species, tT, tJX, x_0, V_X, h, t_max, numPar)</p><h2 id="4">Description</h2><p>Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)</li><li>t_max: optional scalar with simulation time (d, default 250*365).</li><li>numPar: optional structure with numerical parameter settings.      Possible fields:</li></ul></div><pre>      TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
+  </style></head><body><div class="content"><h1>EBT</h1><!--introduction--><p>escalator boxcar train: runs Andre de Roos' C-code using a generalized reactor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#7">plotting</a></li><li><a href="#8">report_my_pet.html</a></li><li><a href="#9">EBT_my_pet.html</a></li></ul></div><h2 id="3">Syntax</h2><p>txL23W = <a href="../EBT.m"><b>EBT</b></a> (species, tT, tJX, x_0, V_X, h, t_max, numPar)</p><h2 id="4">Description</h2><p>Escalator Boxcar Train: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce continuously. Opens 2 html-pages in system browser to report species traits and EBT parameter settings, and plots 4 figures. The parameters of species are obtained either from allStat.mat, or from a cell-string {par, metaPar, metaData}. The 3 cells are obtained by loading a copy of <a href="https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries"><b>results_my_pet.mat</b></a>. Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model. If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure. The present implementation ignores males. The initial population is a single fertilized (female) egg. Starvation parameters are added to parameter structure, if not present. Like all parameters, default settings can be changed by changing structure par in cell-string input. If specified background hazards in 6th input are too high, the population goes extinct.</p><p>Input:</p><div><ul><li>species: character-string with name of entry or cell-string with structures: {metaData, metaPar, par}</li><li>tT: optional (nT,2)-array with time and temperature in Kelvin (default: T_typical); time between 0 (= start) and t_max     If scalar, the temperature is assumed to be constant</li><li>tJX: optional (nX,2)-array with time and food supply; time scaled between 0 (= start) and t_max     If scalar, the food supply is assumed to be constant (default 100 times max ingestion rate)</li><li>h: optional vector with dilution and background hazards for each stage (depending on the model) and boolean for thinning     Default value for the std model: [h_X, h_B0b, h_Bbp, h_Bpi, thin] = [0 0 0 0 0]</li><li>V_X: optional scalar with reactor volume (default 1000*V_m, where V_m is max struct volume)</li><li>x_0: optional scalar with initial scaled food density as fraction of half saturation constant (default: 0)</li><li>t_max: optional scalar with simulation time (d, default 250*365).</li><li>numPar: optional structure with numerical parameter settings.      Possible fields:</li></ul></div><pre>      TIME_METHOD,integr_accuracy,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
       relTol_a,relTol_q,relTol_h_a,relTol_L,relTol_E,relTol_E_R,relTol_E_H,relTol_W, ...
       absTol_a,absTol_q,absTol_h_a,absTol_L,absTol_E,absTol_E_R,absTol_E_H,absTol_W</pre><pre>    Possible values for TIME_METHOD:
    	- rk2: the 2nd order Runge-Kutta integration method with fixed step size,
@@ -86,7 +86,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 %%
 function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
-% created 2020/04/03 by Bas Kooijman
+% created 2020/04/03 by Bas Kooijman, modified 2023/05/13
 
 %% Syntax
 % txL23W = <../EBT.m *EBT*> (species, tT, tJX, x_0, V_X, h, t_max, numPar) 
@@ -98,7 +98,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % The 3 cells are obtained by loading a copy of <https://www.bio.vu.nl/thb/deb/deblab/add_my_pet/entries *results_my_pet.mat*>.
 % Structure metaData is required to get species-name, T_typical and ecoCode, metaPar to get model.
 % If dioecy applies, the sex-ratio is assumed to be 1:1 and fertilisation is assumed to be sure.
-% The energy cost for male-production is taken into account by halving kap_R, but male parameters are assumed to be the same as female parameters. 
+% The present implementation ignores males. 
 % The initial population is a single fertilized (female) egg. 
 % Starvation parameters are added to parameter structure, if not present.
 % Like all parameters, default settings can be changed by changing structure par in cell-string input.
@@ -119,7 +119,7 @@ function [txNL23W, info] = EBT(species, tT, tJX, x_0, V_X, h, t_max, numPar)
 % * numPar: optional structure with numerical parameter settings.
 %      Possible fields: 
 %
-%        TIME_METHOD,integr_accurary,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
+%        TIME_METHOD,integr_accuracy,cycle_interval,tol_zero,time_interval_out,state_out_interval,min_cohort_nr, ...
 %        relTol_a,relTol_q,relTol_h_a,relTol_L,relTol_E,relTol_E_R,relTol_E_H,relTol_W, ...
 %        absTol_a,absTol_q,absTol_h_a,absTol_L,absTol_E,absTol_E_R,absTol_E_H,absTol_W
 %
@@ -194,11 +194,11 @@ end
 
 % temperature
 if ~exist('tT','var') || isempty(tT) 
-  T = metaData.T_typical; tT = [0 T; t_max T];
+  T = metaData.T_typical; tT = [0 T; t_max*1.1 T];
 elseif size(tT,2) == 2 && tT(1,1) == 0 && ~(tJX(end,1) < t_max)
-  tT = [tT; t_max tT(end,2)];
+  tT = [tT; t_max*1.1 tT(end,2)];
 elseif size(tT,1) == 1
-  T = tT; tT = [0 T; t_max T];   
+  T = tT; tT = [0 T; t_max*1.1 T];   
 end
 
 % volume of reactor
@@ -207,9 +207,11 @@ if ~exist('V_X','var') || isempty(V_X)
 end
 
 % supply food 
-if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
+if ~exist('tJX','var') || isempty(tJX)
   J_X = 75 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max*1.1 J_X]; 
+elseif size(tJX,2) == 1
+  tJX = [0 tJX; t_max*1.1 tJX]; 
 end
 if tJX(1,1) > 0
   tJX = [0 tJX(1,2); tJX];
@@ -223,7 +225,7 @@ if ~exist('x_0','var') || isempty(x_0)
   x_0 = 0; % -, X/K at t=0
 end
 
-% account for cost of male production
+% account for cost of male production, but presently not implemented in ETB
 if strcmp(reprodCode{1}, 'O') && strcmp(genderCode{1}, 'D')
   kap_R = kap_R/2;  par.kap_R = kap_R; % reprod efficiency is halved, assuming sex ratio 1:1
 end
@@ -265,7 +267,7 @@ switch model
     else
       h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
-    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsj = h_Bsj; par.h_Bjp = h_Bjp; par.h_Bpi = h_Bpi; 
+    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsp = h_Bjp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
@@ -287,6 +289,13 @@ switch model
       h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
     end
     par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
+  case 'hax'
+    if ~exist('h','var') || isempty(h)
+      h_B0b = 1e-10; h_Bbp = 1e-10; h_Bpj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
+    else
+      h_B0b = h(2); h_Bbp = h(3); h_Bpj = h(4);  h_Bji = h(5);       
+    end
+    par.h_B0b = h_B0b; par.h_Bbp = h_Bbp; par.h_Bpj = h_Bpj; par.h_Bji = h_Bji; 
   case 'hex'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-10; h_Bbj = 1e-10; h_Bje = 1e-10; h_Bei = 1e-10; 
@@ -300,8 +309,8 @@ end
 
 % fields for numerical parameters
 flds = {'TIME_METHOD','integr_accurary','cycle_interval','tol_zero','time_interval_out','state_out_interval','min_cohort_nr', ...
-    'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W', ...
-    'absTol_a','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W'};
+    'relTol_a','relTol_q','relTol_h_a','relTol_L','relTol_E','relTol_E_R','relTol_E_H','relTol_W','relTol_s_M', ...
+    'absTol_a','absTol_q','absTol_h_a','absTol_L','absTol_E','absTol_E_R','absTol_E_H','absTol_W','absTol_s_M'};
 n_flds = length(flds);
 % set default numerical parameters
 opt.TIME_METHOD = 'DOPRI5';  opt.txt.TIME_METHOD = 'Time integration method'; % should be 'DOPRI5'
@@ -321,6 +330,7 @@ opt.relTol_E = tol;         opt.txt.relTol_E = 'Relative tolerance for reserve d
 opt.relTol_E_R = tol;       opt.txt.relTol_E_R = 'Relative tolerance for reprod buffer E_R';
 opt.relTol_E_H = tol;       opt.txt.relTol_E_H = 'Relative tolerance for maturity E_H'; 
 opt.relTol_W = tol;         opt.txt.relTol_W = 'Relative tolerance for wet weight Ww';
+opt.relTol_s_M = tol;       opt.txt.relTol_s_M = 'Relative tolerance for acceleration factor s_M';
 
 opt.absTol_a = tol;         opt.txt.absTol_a = 'Absolute tolerance for age a'; 
 opt.absTol_q = tol;         opt.txt.absTol_q = 'Absolute tolerance for aging acceleration q'; 
@@ -330,6 +340,7 @@ opt.absTol_E = tol;         opt.txt.absTol_E = 'Absolute tolerance for reserve d
 opt.absTol_E_R = tol;       opt.txt.absTol_E_R = 'Absolute tolerance for reprod buffer E_R';
 opt.absTol_E_H = tol;       opt.txt.absTol_E_H = 'Absolute tolerance for maturity E_H'; 
 opt.absTol_W = tol;         opt.txt.absTol_W = 'Absolute tolerance for wet weight Ww';
+opt.absTol_s_M = tol;       opt.txt.absTol_s_M = 'Absolute tolerance for acceleration factor s_M';
 
 % overwrite with specified numerical parameters
 if exist('numPar', 'var') && ~isempty(numPar)
@@ -351,6 +362,7 @@ delete(['EBT', model, '.exe'])
 delete(['EBT', model, '.isf'])
 delete(['EBT', model, '.out'])
 delete(['EBT', model, '.rep'])
+delete(['deb\EBT', model, '.h'])
 delete('spline_JX.c')
 delete('spline_TC.c')
 

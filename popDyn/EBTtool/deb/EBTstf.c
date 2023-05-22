@@ -169,7 +169,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       E_H = pop[0][i][maturity];                                  /* J, maturity */
       kapG = e>=L/L_m ? 1. : kap_G;                               /* kap_G if shrinking, else 1 */
       r = vT * (e/ L - 1./ L_m)/ (e + kapG * g);                  /* 1/d, spec growth rate of structure */
-      p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
+      p_J = kT_J * E_H;                                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (vT/ L - r);                           /* J/d, reserve mobilisation rate */
       p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
       p_A = pT_Am * f * L2;                                       /* J/d, assimilation flux (overwritten for embryo's) */
@@ -182,8 +182,8 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][ageHaz]    = pop[0][i][accel] - r * pop[0][i][ageHaz];                                                     /* 2 */
       popgrad[0][i][length]    = L * r/ 3.;                                                                                    /* 3 */
       popgrad[0][i][resDens]   = p_A/ L3 - vT * e * E_m/ L; /* J/d.cm^3, change in reserve density [E] */                      /* 4 */
-      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                        /* 5 */
-      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                       /* 6 */
+      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                                        /* 5 */
+      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */

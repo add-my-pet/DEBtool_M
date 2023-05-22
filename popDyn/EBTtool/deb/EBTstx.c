@@ -42,31 +42,37 @@
 #define E_Hb   parameter[2]   /*    J       */
 #define V_X    parameter[3]   /*    L       */
 #define h_X    parameter[4]   /*   1/d      */
+
 #define h_J    parameter[5]   /*   1/d      */
 #define h_B0b  parameter[6]   /*   1/d      */
 #define h_Bbx  parameter[7]   /*   1/d      */
 #define h_Bxp  parameter[8]   /*   1/d      */
 #define h_Bpi  parameter[9]   /*   1/d      */
+
 #define h_a    parameter[10]  /*   1/d^2    */
 #define s_G    parameter[11]  /*    -       */
 #define thin   parameter[12]  /*    -       */
 #define L_m    parameter[13]  /*   cm       */
 #define E_m    parameter[14]  /*  J/cm^3    */
+
 #define k_J    parameter[15]  /*   1/d      */
 #define k_JX   parameter[16]  /*   1/d      */
 #define v      parameter[17]  /*   cm/d     */
 #define g      parameter[18]  /*    -       */
 #define p_M    parameter[19]  /* J/d.cm^3   */
+
 #define p_Am   parameter[20]  /* J/d.cm^2   */
 #define J_X_Am parameter[21]  /* mol/d.cm^2 */
 #define K      parameter[22]  /*   mol/L    */
 #define kap    parameter[23]  /*     -      */
 #define kap_G  parameter[24]  /*     -      */
+
 #define ome    parameter[25]  /*     -      */
 #define E_0    parameter[26]  /*     J      */
 #define L_b    parameter[27]  /*    cm      */
 #define a_b    parameter[28]  /*     d      */
 #define aT_b   parameter[29]  /*     d      */
+
 #define q_b    parameter[30]  /*    1/d^2   */
 #define qT_b   parameter[31]  /*    1/d^2   */
 #define h_Ab   parameter[32]  /*    1/d     */
@@ -187,8 +193,8 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][ageHaz]    = pop[0][i][accel] - r * pop[0][i][ageHaz];                                                     /* 2 */
       popgrad[0][i][length]    = L * r/ 3.;                                                                                    /* 3 */
       popgrad[0][i][resDens]   = p_A/ L3 - vT * e * E_m/ L; /* J/d.cm^3, change in reserve density [E] */                      /* 4 */
-      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                        /* 5 */
-      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                       /* 6 */
+      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                                        /* 5 */
+      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */

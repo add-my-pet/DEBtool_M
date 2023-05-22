@@ -6,7 +6,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % created 2021/01/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickrate, runNetLogo) 
+% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRate, runNetLogo) 
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
@@ -138,9 +138,11 @@ if ~exist('V_X','var') || isempty(V_X)
 end
 
 % supply food 
-if ~exist('tJX','var') || isempty(tJX) || size(tJX,2) == 1
+if ~exist('tJX','var') || isempty(tJX)
   J_X = 75 * J_X_Am * L_m^2 ;
   tJX = [0 J_X; t_max*1.1 J_X]; 
+elseif size(tJX,2) == 1
+  tJX = [0 tJX; t_max*1.1 tJX]; 
 end
 if tJX(1,1) > 0
   tJX = [0 tJX(1,2); tJX];
@@ -378,8 +380,7 @@ switch model
   case 'ssj'
       fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
       fprintf(oid, str, 'h_Bbs', '1/d', h_Bbs, 'background hazard rate from b to s');
-      fprintf(oid, str, 'h_Bsj', '1/d', h_Bsj, 'background hazard rate from s to j');
-      fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
+      fprintf(oid, str, 'h_Bsp', '1/d', h_Bsp, 'background hazard rate from s to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
   case 'abj'
       fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
