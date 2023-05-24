@@ -180,11 +180,11 @@ switch model
     par.h_B0b = h_B0b; par.h_Bbx = h_Bbx; par.h_Bxp = h_Bxp; par.h_Bpi = h_Bpi; 
   case 'ssj'
     if ~exist('h','var') || isempty(h)
-      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
+      h_B0b = 1e-35; h_Bbs = 1e-35; h_Bsp = 1e-35; h_Bpi = 1e-35; 
     else
       h_B0b = h(2); h_Bbs = h(3); h_Bsp = h(4); h_Bpi = h(5);       
     end
-    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsp = h_Bjp; par.h_Bpi = h_Bpi; 
+    par.h_B0b = h_B0b; par.h_Bbs = h_Bbs; par.h_Bsp = h_Bsp; par.h_Bpi = h_Bpi; 
   case 'abj'
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbj = 1e-35; h_Bjp = 1e-35; h_Bpi = 1e-35; 
@@ -414,8 +414,7 @@ switch model
   case 'ssj'
       fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');
       fprintf(oid, str, 'h_Bbs', '1/d', h_Bbs, 'background hazard rate from b to s');
-      fprintf(oid, str, 'h_Bsj', '1/d', h_Bsj, 'background hazard rate from s to j');
-      fprintf(oid, str, 'h_Bjp', '1/d', h_Bjp, 'background hazard rate from j to p');
+      fprintf(oid, str, 'h_Bsp', '1/d', h_Bsp, 'background hazard rate from s to p');
       fprintf(oid, str, 'h_Bpi', '1/d', h_Bpi, 'background hazard rate from p to i');
   case 'abj'
       fprintf(oid, str, 'h_B0b', '1/d', h_B0b, 'background hazard rate from 0 to b');

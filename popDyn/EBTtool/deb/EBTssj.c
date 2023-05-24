@@ -44,7 +44,7 @@
 #define h_X    parameter[4]   /*   1/d      */
 #define h_J    parameter[5]   /*   1/d      */
 #define h_B0b  parameter[6]   /*   1/d      */
-#define h_Bbj  parameter[7]   /*   1/d      */
+#define h_Bbs  parameter[7]   /*   1/d      */
 #define h_Bsp  parameter[8]   /*   1/d      */
 #define h_Bpi  parameter[9]   /*   1/d      */
 #define h_a    parameter[10]  /*  1/d^2     */
@@ -124,7 +124,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
   {
     events[0] = fabs(pop[0][i][age]-aT_b)<fabs(events[0]) ? pop[0][i][age] - aT_b : events[0];
     events[1] = fabs(pop[0][i][maturity]-E_Hs)<fabs(events[1]) ? pop[0][i][maturity] - E_Hs : events[1];
-    events[2] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[1]) ? pop[0][i][maturity] - E_Hp : events[2];
+    events[2] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[2]) ? pop[0][i][maturity] - E_Hp : events[2];
   }
 }
 
@@ -142,7 +142,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
 
 void Gradient(double *env, population *pop, population *ofs, double *envgrad, population *popgrad, population *ofsgrad, population *bpoints)
 {
-  double sumL2, TC, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, E_H, L, L2, L3, kapG;
+  double sumL2, TC, hT_X, kT_J, kT_JX, vT, pT_Am, p_A, p_J, p_C, p_R, h_thin, hT_D, hT_J, hT_a, JT_X_Am, r, f, e, hazard, E_H, L, L2, L3, kapG;
   register int i;
 
   /* temp correction */
@@ -175,11 +175,11 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       r = vT * (e/ L - 1./ L_m)/ (e + kapG * g);                  /* 1/d, spec growth rate of structure */
       p_J = kT_J * pop[0][i][maturity];                           /* J/d, maturity maintenance */
       p_C = L3 * e * E_m * (vT/ L - r);                           /* J/d, reserve mobilisation rate */
-      p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0;        /* J/d, flux to maturation or reprod */
+      p_R = (1.-kap)*p_C>p_J ? (1. - kap) * p_C - p_J : 0.;       /* J/d, flux to maturation or reprod */
       p_A = pT_Am * f * L2;                                       /* J/d, assimilation flux (overwritten for embryo's) */
       h_thin = thin==0. ? 0. : r * 2./3.;                         /* 1/d, thinning hazard */
       if  (pop[0][i][maturity]<E_Hs)  hazard = pop[0][i][ageHaz] + h_Bbs + h_thin;
-      else hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bjp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
+      else hazard = pop[0][i][maturity]<E_Hp ? pop[0][i][ageHaz] + h_Bsp + h_thin : pop[0][i][ageHaz] + h_Bpi + h_thin;
 
       popgrad[0][i][number]    = - hazard * pop[0][i][number];                                                                 /*   */
       popgrad[0][i][age]       = 1.0;                                                                                          /* 0 */
@@ -231,7 +231,7 @@ void InstantDynamics(double *env, population *pop, population *ofs)
         eggs += pop[0][i][number] * pop[0][i][reprodBuf]/ E_0; /* add all eggs */
         pop[0][i][reprodBuf] = 0.0; /* reset reproduction buffer */
       }
-    if (pop[0][i][maturity] == E_Hs) pop[0][i][length] = pop[0][i][length] * del_sj
+    if (pop[0][i][maturity] == E_Hs) pop[0][i][length] = pop[0][i][length] * del_sj;
   }
   
   /* specify i-states at birth, because changes are set to 0, except for age */

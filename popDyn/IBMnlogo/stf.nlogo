@@ -156,6 +156,7 @@ to setup
     while [file-at-end? = false] [run file-read] ; set parameter-name, value
     file-close
   ]
+
   set X X_0 ; Mol, initial value for food density
 
   ; frequently-used compound-parameters
@@ -844,7 +845,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.001
 true
 false
 "" ""
