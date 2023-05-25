@@ -1,6 +1,6 @@
 ; Model definition for an asj-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/12, modified 2023/05/11
+; date: 2021/01/12, modified 2023/05/25
 ; warning: this script is case-insensitive
 
 extensions [matrix]
@@ -217,6 +217,7 @@ to go
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
     if E_H < E_Hs [set L_s L]
+    if E_H < E_Hs [set s_M 1]
     if (E_H > E_Hs) and (E_H < E_Hj) [set s_M L / L_s] ; keep s_M fixed otherwise at L_j/ L_s, where L_s = L at E_Hs
     set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
@@ -229,7 +230,7 @@ to go
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
-    if E_H < E_Hmax [set E_Hmax E_H]
+    if E_H > E_Hmax [set E_Hmax E_H]
     if E_H > E_Hpi [
       set E_H E_Hpi ; J, do not allow maturity to exceed puberty level
       set E_Hmax E_Hpi ; J, keep both maturities equal
@@ -313,7 +314,7 @@ to go
     file-print " "    ; new line
   ]
 
-  if count turtles = 0 or time > t_max [
+  if totN0i = 0 or totN0i > 15000 or time > t_max [
     file-close-all
     stop
   ]
@@ -898,7 +899,7 @@ Mol
 0.0
 10.0
 0.0
-0.1
+0.001
 true
 false
 "" ""

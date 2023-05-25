@@ -224,8 +224,7 @@ to go
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
-    if E_H < E_Hmax [set E_Hmax E_H]
-    ; if E_H > E_Hmax [set E_Hmax E_H]
+    if E_H > E_Hmax [set E_Hmax E_H]
     if E_H > E_Hpi [
       set E_H E_Hpi ; J, do not allow maturity to exceed puberty level
       set E_Hmax E_Hpi ; J, keep both maturities equal

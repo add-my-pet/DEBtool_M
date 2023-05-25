@@ -129,8 +129,8 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
   {
     events[0] = fabs(pop[0][i][age]-aT_b)<fabs(events[0]) ? pop[0][i][age] - aT_b : events[0];
     events[1] = fabs(pop[0][i][maturity]-E_Hs)<fabs(events[1]) ? pop[0][i][maturity] - E_Hs : events[1];
-    events[2] = fabs(pop[0][i][maturity]-E_Hj)<fabs(events[1]) ? pop[0][i][maturity] - E_Hj : events[2];
-    events[3] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[1]) ? pop[0][i][maturity] - E_Hp : events[3];
+    events[2] = fabs(pop[0][i][maturity]-E_Hj)<fabs(events[2]) ? pop[0][i][maturity] - E_Hj : events[2];
+    events[3] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[3]) ? pop[0][i][maturity] - E_Hp : events[3];
   }
 }
 
@@ -198,10 +198,10 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
       popgrad[0][i][ageHaz]    = pop[0][i][accel] - r * pop[0][i][ageHaz];                                                     /* 2 */
       popgrad[0][i][length]    = L * r/ 3.;                                                                                    /* 3 */
       popgrad[0][i][resDens]   = s_M * (p_A/ L3 - vT * e * E_m/ L); /* J/d.cm^3, change in reserve density [E] */              /* 4 */
-      popgrad[0][i][maturity]  = pop[0][i][maturity] < E_Hp ? p_R : 0.;                                                        /* 5 */
-      popgrad[0][i][reprodBuf] = pop[0][i][maturity] >= E_Hp ? p_R : 0.;                                                       /* 6 */
+      popgrad[0][i][maturity]  = E_H < E_Hp ? p_R : 0.;                                                        /* 5 */
+      popgrad[0][i][reprodBuf] = E_H >= E_Hp ? p_R : 0.;                                                       /* 6 */
       popgrad[0][i][weight]    = 3. * L2 * popgrad[0][i][length] * (1. + ome * e) + L3 * ome * popgrad[0][i][resDens]/ E_m;    /* 7 */
-      popgrad[0][i][accelFac]  = (E_H > E_Hs && E_H < E_Hj) ? popgrad[0][i][length]/ L_b : 0. ;                                /* 8 */                                                                                 /* 3 */
+      popgrad[0][i][accelFac]  = (E_H > E_Hs && E_H < E_Hj) ? popgrad[0][i][length]/ L_s : 0. ;                                /* 8 */                                                                                 /* 3 */
       
       /* overwrite changes for embryo's since i-states other than age are already set at birth values */
       if (pop[0][i][age] < aT_b)
