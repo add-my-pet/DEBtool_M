@@ -126,7 +126,7 @@ void EventLocation(double *env, population *pop, population *ofs, population *bp
   {
     events[0] = fabs(pop[0][i][age]-aT_b)<fabs(events[0]) ? pop[0][i][age] - aT_b : events[0];
     events[1] = fabs(pop[0][i][maturity]-E_Hj)<fabs(events[1]) ? pop[0][i][maturity] - E_Hj : events[1];
-    events[2] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[1]) ? pop[0][i][maturity] - E_Hp : events[2];
+    events[2] = fabs(pop[0][i][maturity]-E_Hp)<fabs(events[2]) ? pop[0][i][maturity] - E_Hp : events[2];
   }
 }
 
@@ -215,7 +215,7 @@ void Gradient(double *env, population *pop, population *ofs, double *envgrad, po
   
   /* The derivatives of environmental vars: time & scaled food density */
   envgrad[0] = 1.0; /* 1/d, change in time */
-  for(i=0, sumsML2 = 0.; i<cohort_no[0]; i++) sumsML2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) * pop[0][i][accelFac]: 0; 
+  for(i=0, sumsML2 = 0.; i<cohort_no[0]; i++) sumsML2 += pop[0][i][age]>aT_b ? pop[0][i][number] * pow(pop[0][i][length], 2.0) * pop[0][i][accelFac]: 0.; 
   envgrad[1] = spline_JX(time)/ V_X/ K - hT_X * food - JT_X_Am * f * sumsML2/ V_X/ K; /* 1/d, change in scaled food density */
     
   return;

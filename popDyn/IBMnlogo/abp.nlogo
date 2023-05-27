@@ -205,7 +205,7 @@ to go
 
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
-  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * J_XAmi * L * L] ; Mol/d, food consumption
+  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * s_M * J_XAmi * L * L] ; Mol/d, food consumption
   set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
   if X < 0 [set X 0] ; do not allow negative food
 
@@ -219,7 +219,7 @@ to go
     ifelse ee >= L / L_mi / s_M
       [ifelse E_H < E_Hpi [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + gi)] [set r 0]]; 1/d, positive spec growth rate
       [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
-    set L L + L * r / 3 / tickRate ; cm, structural length
+    if E_H < E_Hpi [set L L + L * r / 3 / tickRate] ; cm, structural length
     set p_C ee * E_mi * L * L * L * (TC * s_M * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition

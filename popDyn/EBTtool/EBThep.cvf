@@ -1,0 +1,63 @@
+"Fixed step size or integration accuracy when adaptive" 1.000e-08
+"Cohort/Integration cycle time interval" 2.000e+00
+"Tolerance value, determining identity with zero" 1.000e-06
+
+"Maximum integration time" 5.000e+02
+"Output time interval" 1.000e-01
+
+"Complete state output interval, 0 for none" 0.000e+00
+"Minimum allowable number of individuals in cohort" 1.000e-03
+
+"Relative tolerance for age a" 1.000e-07
+"Relative tolerance for aging acceleration q" 1.000e-07
+"Relative tolerance for hazard for aging h" 1.000e-07
+"Relative tolerance for structural length L" 1.000e-07
+"Relative tolerance for reserve density [E]" 1.000e-07
+"Relative tolerance for reprod buffer E_R" 1.000e-07
+"Relative tolerance for maturity E_H" 1.000e-07
+"Relative tolerance for wet weight Ww" 1.000e-07
+"Absolute tolerance for age a" 1.000e-07
+"Absolute tolerance for aging acceleration q" 1.000e-07
+"Absolute tolerance for hazard for aging h" 1.000e-07
+"Absolute tolerance for structural length L" 1.000e-07
+"Absolute tolerance for reserve density [E]" 1.000e-07
+"Absolute tolerance for reprod buffer E_R" 1.000e-07
+"Absolute tolerance for maturity E_H" 1.000e-07
+"Absolute tolerance for wet weight Ww" 1.000e-07
+
+"E_Hp, J" 0.7389
+"E_Hb, J" 0.0008076
+"V_X, L"  1000
+"h_X, 1/d"     0
+"h_J, 1/d" 0.0001
+"h_B0b, 1/d" 1e-05
+"h_Bbp, 1/d" 5e-05
+"h_Bpj, 1/d" 5e-05
+"h_Bji, 1/d"     0
+"h_a, 1/d^2" 126.1
+"s_G, -"     1
+"thin, -"     0
+"L_m, cm" 0.1278
+"[E_m], J/cm^3" 6.309e+04
+"k_J, 1/d" 0.002
+"k_JX, 1/d" 2e-05
+"v, cm/d" 0.001695
+"g, -" 0.1371
+"[p_M] J/d.cm^3" 429.2
+"{p_Am}, J/d.cm^2" 106.9
+"{J_X_Am}, mol/d.cm^2" 0.0002546
+"K, Mol" 3.917e-05
+"kap, -" 0.5129
+"kap_G, -" 0.8019
+"ome, -" 16.13
+"E_0, J" 0.01138
+"[E_Rj], J/cm^3"  7337
+"L_b, cm" 0.00536
+"L_j, cm" 0.1412
+"a_b, d" 9.868
+"aT_b, d" 9.868
+"q_b, 1/d^2" 0.2026
+"qT_b, 1/d^2" 0.2026
+"h_Ab, 1/d" 0.5034
+"hT_Ab, 1/d" 0.5034
+"N_batch, -" -0.03653
