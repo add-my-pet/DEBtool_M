@@ -3,8 +3,8 @@ double spline_JX(double tt)
   int i, n; n = 2;
   double t[n+1], JX[n+1];
 
-  t[1] =     0; JX[1] =  0.01;
-  t[2] =   550; JX[2] =  0.01;
+  t[1] =     0; JX[1] =   0.1;
+  t[2] =   550; JX[2] =   0.1;
 
   for (i = n - 1; i >= 1; i--)
   {

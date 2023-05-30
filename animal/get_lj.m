@@ -11,7 +11,7 @@ function [lj, lp, lb, info] = get_lj(p, f, lb0)
   
   %% Description
   % Type M-acceleration: Isomorph, but V1-morph between vHb and vHj
-  % This routine obtaines scaled length at metamorphosis lj given scaled muturity at metamorphosis vHj. 
+  % This routine obtains scaled length at metamorphosis lj given scaled maturity at metamorphosis vHj. 
   % The theory behind get_lj, is discussed in the comments to DEB3. 
   % If scaled length at birth (third input) is not specified, it is computed (using automatic initial estimate); 
   %  if it is specified. however, is it just copied to the (third) output. 

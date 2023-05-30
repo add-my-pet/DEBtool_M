@@ -7,7 +7,7 @@
 "set h_B0b 1e-05"
 "set h_Bbp 5e-05"
 "set h_Bpj 5e-05"
-"set h_Bji     0"
+"set h_Bji 5e-05"
 "set thin     0"
 "set h_J 0.0001"
 "set h_a 126.1"
