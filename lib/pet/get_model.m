@@ -112,7 +112,7 @@ switch phylum
                         model = 'abj';
                     case {'Beryciformes', 'Holocentriformes'}
                         model = 'std';
-                    case {'Ophidiiforems'}
+                    case {'Ophidiiformes'}
                         model = 'ssj';
                     case {'Batrachoidiformes'}
                         model = 'std';
