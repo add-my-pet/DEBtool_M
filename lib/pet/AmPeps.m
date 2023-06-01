@@ -30,7 +30,7 @@ global data metaData txtData auxData pets hclimateLand hclimateSea hecozones hoc
 
 % check if wget exists on mac
 if ismac || isunix
-  PATH = getenv('PATH'); if isempty(strfind(PATH,':/usr/local/bin')); setenv('PATH', [PATH, ':/usr/local/bin']); end;
+  PATH = getenv('PATH'); if isempty(strfind(PATH,':/usr/local/bin')); setenv('PATH', [PATH, ':/usr/local/bin']); end
   status = system('which wget');
   if ~(status == 0)
     fprintf('Warning from AmPeps: system-function wget is not found, please install wget first\nl');

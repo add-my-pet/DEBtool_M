@@ -836,41 +836,60 @@ function speciesCb(~, ~, dspecies)
     set(hleave, 'ForegroundColor', [1 0 0]); 
     return
   end
-
-  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet); sel = strcmp('Gigaclass',rank);
-  if any(sel) && ~any(strcmp('Class',rank)); rank{sel} = 'Class'; end
+  
+  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet);
   if ~strcmp(name_status,'accepted name') && ~isempty(my_pet) && ~isempty(name_status) && ~isempty(my_pet_acc)
     fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc)
     metaData.species = my_pet_acc;
   end
-  if isempty(lin) || isempty(rank) || isempty(id_CoL)
-    web('http://www.catalogueoflife.org/col/','-browser');
-    set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
-    set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
-    set(Hwarning, 'String','species not recognized, search CoL');
-    set(HwarningOK, 'String','OK proceeds to filling lineage');
-    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
-    frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
-    AmPgui('setColors')
+  
+  % newly added
+  lin = lineage_short(metaData.species);
+  metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
+  nms = get_common_CoL(id_CoL); 
+  if isempty(nms)
+    metaData.species_en = 'no_english_name'; 
   else
-    metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
-    nms = get_common_CoL(id_CoL); 
-    if isempty(nms)
-      metaData.species_en = 'no_english_name'; 
-    else
-      metaData.species_en = nms{1}; 
-    end
-    set(Hcommon,'String',['common name: ',metaData.species_en]);
-    nm = lin(ismember(rank, 'Family')); if ~isempty(nm); metaData.family = nm{1}; end; set(Hfamily,'String',['family: ',metaData.family]);
-    nm = lin(ismember(rank, 'Order')); if ~isempty(nm); metaData.order = nm{1}; end; set(Horder,'String',['order: ',metaData.order]);
-    nm = lin(ismember(rank, 'Class'));  if ~isempty(nm); metaData.class = nm{1}; end; set(Hclass,'String',['class: ',metaData.class]);
-    nm = lin(ismember(rank, 'Phylum')); if ~isempty(nm); metaData.phylum = nm{1}; end; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
-    color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
-    uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
-    infoAmPgui = 1;
-    close(dspecies); 
-    AmPgui('links')
+    metaData.species_en = nms{1}; 
   end
+  set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
+  set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
+  %set(Hwarning, 'String','species not recognized, search CoL');
+  set(HwarningOK, 'String','OK proceeds to filling lineage');
+  color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
+  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  infoAmPgui = 1;
+  close(dspecies); 
+  AmPgui('links')
+
+%   if isempty(lin) || isempty(rank) || isempty(id_CoL)
+%     web('http://www.catalogueoflife.org/col/','-browser');
+%     set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
+%     set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
+%     set(Hwarning, 'String','species not recognized, search CoL');
+%     set(HwarningOK, 'String','OK proceeds to filling lineage');
+%     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
+%     frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
+%     AmPgui('setColors')
+%   else
+%     metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
+%     nms = get_common_CoL(id_CoL); 
+%     if isempty(nms)
+%       metaData.species_en = 'no_english_name'; 
+%     else
+%       metaData.species_en = nms{1}; 
+%     end
+%     set(Hcommon,'String',['common name: ',metaData.species_en]);
+%     nm = lin(ismember(rank, 'Family')); if ~isempty(nm); metaData.family = nm{1}; end; set(Hfamily,'String',['family: ',metaData.family]);
+%     nm = lin(ismember(rank, 'Order')); if ~isempty(nm); metaData.order = nm{1}; end; set(Horder,'String',['order: ',metaData.order]);
+%     nm = lin(ismember(rank, 'Class'));  if ~isempty(nm); metaData.class = nm{1}; end; set(Hclass,'String',['class: ',metaData.class]);
+%     nm = lin(ismember(rank, 'Phylum')); if ~isempty(nm); metaData.phylum = nm{1}; end; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
+%     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
+%     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+%     infoAmPgui = 1;
+%     close(dspecies); 
+%     AmPgui('links')
+%   end
 end
 
 function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
