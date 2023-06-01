@@ -857,7 +857,8 @@ function speciesCb(~, ~, dspecies)
   %set(Hwarning, 'String','species not recognized, search CoL');
   set(HwarningOK, 'String','OK proceeds to filling lineage');
   color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
-  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
+  frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
   infoAmPgui = 1;
   close(dspecies); 
   AmPgui('links')
