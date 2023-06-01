@@ -837,7 +837,8 @@ function speciesCb(~, ~, dspecies)
     return
   end
 
-  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet); 
+  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet); sel = strcmp('Gigaclass',rank);
+  if any(sel) && ~any(strcmp('Class',rank)); rank{sel} = 'Class'; end
   if ~strcmp(name_status,'accepted name') && ~isempty(my_pet) && ~isempty(name_status) && ~isempty(my_pet_acc)
     fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc)
     metaData.species = my_pet_acc;
