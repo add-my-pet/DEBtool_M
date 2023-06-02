@@ -114,7 +114,6 @@ if nargin == 0 % initiate structures and create the GUI
   end
 
   % setup gui
-  %dmydata = dialog('Position',[150 100 250 275], 'Name','AmPgui');
   dmydata = dialog('Position',[30 550 250 275], 'Name','AmPgui');
   hspecies  = uicontrol('Parent',dmydata, 'Callback','AmPgui species',        'Position',[10 230 100 20], 'String','species',        'Style','pushbutton');
   hecoCode  = uicontrol('Parent',dmydata, 'Callback','AmPgui ecoCode',        'Position',[10 205 100 20], 'String','ecoCode',        'Style','pushbutton');
@@ -157,8 +156,13 @@ else % fill fields
         Hclass   = uicontrol('Parent',dspecies, 'Position',[350 110 150 20], 'Style','text', 'String',['class: ', metaData.class]);
         Hphylum  = uicontrol('Parent',dspecies, 'Position',[ 50  80 150 20], 'Style','text', 'String',['phylum: ',metaData.phylum]);
         Hcommon  = uicontrol('Parent',dspecies, 'Position',[200  80 240 20], 'Style','text', 'String',['common name: ',metaData.species_en]);
-        Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
-         
+        if ~handfilled
+          Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
+        else
+          set(Hfamily, 'String',''); set(Horder, 'String',''); set(Hclass, 'String',''); set(Hphylum, 'String',''); set(Hcommon, 'String',''); 
+          Hspecies = uicontrol('Parent',dspecies, 'Callback',{@OKspeciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
+        end
+        
       case 'ecoCode'
         decoCode = dialog('Position',[550 250 500 270], 'Name','ecoCode dlg');
         
@@ -677,10 +681,10 @@ else % fill fields
       list_backup = list_res(Contains(list_res,'_backup')); n_backup = length(list_backup);
       if n_backup > 0
         load(list_backup{1})  
-        AmPgui('setColor')
+        AmPgui('setColors')
       elseif (n_res - n_backup) == 1
         load(list_res{1});
-        AmPgui('setColor')
+        AmPgui('setColors')
       elseif n_res == 0
         fprintf('Warning from AmPgui: no results_my_pet.mat found\n');
       else
@@ -699,7 +703,7 @@ else % fill fields
       set(HAmPeps, 'ForegroundColor',[0 0.6 0]); set(Hquit, 'ForegroundColor',[1 0 0]);
   end
 end
-  % color settings: run this part only with AmPgui('setColor')
+  % color settings: run this part only with AmPgui('setColors')
   try; close(Hwait); catch; end % close any wait warnings; function isvalid requires Toolbox Image Acquisition, Instrument control or OPC
   figure(dmydata); % bring the main dialog window to the front
   
@@ -822,9 +826,8 @@ end
 end
 
 %% callback functions
-function speciesCb(~, ~, dspecies)  
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK Hwait color dmydata infoAmPgui list_spec
-  Hwait = waitbar(0,'Please wait...');
+function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec handfilled
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
@@ -843,7 +846,6 @@ function speciesCb(~, ~, dspecies)
     metaData.species = my_pet_acc;
   end
   
-  % newly added
   lin = lineage_short(metaData.species);
   metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
   nms = get_common_CoL(id_CoL); 
@@ -852,51 +854,21 @@ function speciesCb(~, ~, dspecies)
   else
     metaData.species_en = nms{1}; 
   end
-  set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
-  set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
-  %set(Hwarning, 'String','species not recognized, search CoL');
-  set(HwarningOK, 'String','OK proceeds to filling lineage');
+  set(Hfamily, 'String',metaData.family); set(Horder, 'String',metaData.order); 
+  set(Hclass, 'String',metaData.class); set(Hphylum, 'String',metaData.phylum); set(Hcommon, 'String',metaData.species_en);
   color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
-  uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
-  frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
+  frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1);
   infoAmPgui = 1;
+  handfilled = true; % do not use this function speciesCb again, but use OKspeciesCb instead
   close(dspecies); 
-  AmPgui('links')
-
-%   if isempty(lin) || isempty(rank) || isempty(id_CoL)
-%     web('http://www.catalogueoflife.org/col/','-browser');
-%     set(Hfamily,'String',metaData.family); set(Horder,'String',metaData.order); 
-%     set(Hclass,'String',metaData.class); set(Hphylum,'String',metaData.phylum); set(Hcommon,'String',metaData.species_en);
-%     set(Hwarning, 'String','species not recognized, search CoL');
-%     set(HwarningOK, 'String','OK proceeds to filling lineage');
-%     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKspeciesCb,dspecies}, 'Style','pushbutton', 'String','OK');
-%     frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1); 
-%     AmPgui('setColors')
-%   else
-%     metaData.links.id_CoL = id_CoL; % fill id's of all sites; empty if not present
-%     nms = get_common_CoL(id_CoL); 
-%     if isempty(nms)
-%       metaData.species_en = 'no_english_name'; 
-%     else
-%       metaData.species_en = nms{1}; 
-%     end
-%     set(Hcommon,'String',['common name: ',metaData.species_en]);
-%     nm = lin(ismember(rank, 'Family')); if ~isempty(nm); metaData.family = nm{1}; end; set(Hfamily,'String',['family: ',metaData.family]);
-%     nm = lin(ismember(rank, 'Order')); if ~isempty(nm); metaData.order = nm{1}; end; set(Horder,'String',['order: ',metaData.order]);
-%     nm = lin(ismember(rank, 'Class'));  if ~isempty(nm); metaData.class = nm{1}; end; set(Hclass,'String',['class: ',metaData.class]);
-%     nm = lin(ismember(rank, 'Phylum')); if ~isempty(nm); metaData.phylum = nm{1}; end; set(Hphylum,'String',['phylum: ',metaData.phylum]); 
-%     color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
-%     uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKCb,dspecies}, 'Style','pushbutton', 'String','OK');
-%     infoAmPgui = 1;
-%     close(dspecies); 
-%     AmPgui('links')
-%   end
+  AmPgui('setColors')
+  AmPgui('species') % repeat case species, but now with run OKspeciesCb because handfilled is true
 end
 
-function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manually
-  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK handfilled
+function OKspeciesCb(~, ~, dspecies)  % fill/correct lineage manually
+  global metaData Hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK %handfilled
   
-  handfilled = true; % taxonomy handfilled, links also filled manually
+  %handfilled = true; % taxonomy handfilled, links also filled manually
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   uicontrol('Parent',dspecies, 'Position',[10 110 60 20], 'Style','text', 'String','family: ');
   Hfamily  = uicontrol('Parent',dspecies, 'Callback',@familyCb, 'Position',[70 110 90 20], 'Style','edit', 'String',metaData.family);
@@ -908,11 +880,11 @@ function OKspeciesCb(~, ~, dspecies)  % species not in CoL, fill lineage manuall
   Hphylum  = uicontrol('Parent',dspecies, 'Callback',@phylumCb, 'Position',[80 80 90 20], 'Style','edit', 'String',metaData.phylum);
   uicontrol('Parent',dspecies, 'Position',[200 80 120 20], 'Style','text', 'String','common name: ');
   Hcommon = uicontrol('Parent',dspecies, 'Callback',@species_enCb, 'Position',[350 80 160 20], 'Style','edit', 'String',metaData.species_en);
-  %Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
+  Hspecies = uicontrol('Parent',dspecies, 'Callback',{@speciesCb,dspecies}, 'Position',[110 15 350 20], 'Style','edit', 'String',metaData.species); 
   set(Hwarning, 'String',''); 
   set(HwarningOK, 'String','');
   uicontrol('Parent',dspecies, 'Position',[40 15 20 20], 'Callback',{@OKlineageCb,dspecies}, 'Style','pushbutton', 'String','OK');
-  AmPgui('color')
+  AmPgui('setColors')
 end
 
 function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
@@ -1013,7 +985,7 @@ function climateCb(~, ~, Hclimate)
   set(Hclimate, 'String', cell2str(metaData.ecoCode.climate)); 
   set(hclimateLand,'Position',[300 450 500 300]); % climate figure normal size
   set(hclimateSea, 'Position',[900 450 500 300]); % climate figure normal size
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function ecozoneCb(~, ~, Hecozone)   
@@ -1038,7 +1010,7 @@ function ecozoneCb(~, ~, Hecozone)
    set(Hecozone, 'String', cell2str(metaData.ecoCode.ecozone)); 
    set(hecozones,'Position',[300  50 500 300]); % ecozone figures normal size
    set(hoceans,  'Position',[900  50 500 300]); % ecozone figures normal size
-   AmPgui('setColor')
+   AmPgui('setColors')
 end
  
 function habitatCb(~, ~, Hhabitat)  
@@ -1060,7 +1032,7 @@ function habitatCb(~, ~, Hhabitat)
   habitatCode = prependStage(i_habitat, habitatCode, habitatCodeList, 'habitat');
   metaData.ecoCode.habitat = habitatCode; 
   set(Hhabitat, 'String', cell2str(metaData.ecoCode.habitat)); 
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function embryoCb(~, ~, Hembryo)  
@@ -1079,7 +1051,7 @@ function embryoCb(~, ~, Hembryo)
   i_embryo =  listdlg('ListString',embryoCodeList, 'Name','embryo dlg', 'ListSize',[450 500], 'InitialValue',i_embryo);
   metaData.ecoCode.embryo = embryoCode(i_embryo); 
   set(Hembryo, 'String', cell2str(metaData.ecoCode.embryo));
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function migrateCb(~, ~, Hmigrate)  
@@ -1099,7 +1071,7 @@ function migrateCb(~, ~, Hmigrate)
   i_migrate =  listdlg('ListString',migrateCodeList, 'Name','migrate dlg', 'ListSize',[600 180], 'InitialValue',i_migrate);
   metaData.ecoCode.migrate = migrateCode(i_migrate); 
   set(Hmigrate, 'String', cell2str(metaData.ecoCode.migrate)); 
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function foodCb(~, ~, Hfood)  
@@ -1121,7 +1093,7 @@ function foodCb(~, ~, Hfood)
   foodCode = prependStage(i_food, foodCode, foodCodeList, 'food');
   metaData.ecoCode.food = foodCode; 
   set(Hfood, 'String', cell2str(metaData.ecoCode.food)); 
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function genderCb(~, ~, Hgender)  
@@ -1140,7 +1112,7 @@ function genderCb(~, ~, Hgender)
   i_gender =  listdlg('ListString',genderCodeList, 'Name','gender dlg', 'ListSize',[600 190], 'InitialValue',i_gender);
   metaData.ecoCode.gender = genderCode(i_gender); 
   set(Hgender, 'String', cell2str(metaData.ecoCode.gender)); 
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function reprodCb(~, ~, Hreprod)  
@@ -1159,19 +1131,19 @@ function reprodCb(~, ~, Hreprod)
   i_reprod =  listdlg('ListString',reprodCodeList, 'Name','reprod dlg', 'ListSize',[600 120], 'InitialValue',i_reprod);
   metaData.ecoCode.reprod = reprodCode(i_reprod); 
   set(Hreprod, 'String', cell2str(metaData.ecoCode.reprod));
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function T_typicalCb(~, ~)  
    global metaData HT
    metaData.T_typical = C2K(str2double(get(HT, 'string')));
-   AmPgui('setColor')
+   AmPgui('setColors')
 end
  
  function authorCb(~, ~)  
    global metaData Hauthor
    metaData.author = str2cell(get(Hauthor, 'string'));
-   AmPgui('setColor')
+   AmPgui('setColors')
  end
  
  function emailCb(~, ~) 
@@ -1406,7 +1378,7 @@ end
 function COMPLETECb(~, ~)  
   global metaData HCOMPLETE
   metaData.COMPLETE = str2double(get(HCOMPLETE, 'string'));
-  AmPgui('setColor')
+  AmPgui('setColors')
 end
 
 function stayCb(~, ~, H) 

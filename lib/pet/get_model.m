@@ -53,8 +53,8 @@ switch phylum
                 model = 'hex';
             case 'Branchiopoda'
                 model = 'std';
-            case 'Maxillopoda'
-                model = 'abp';
+            case {'Ichthyostraca', 'Hexanauplia'}
+                model = 'abj';
             case 'Malacostraca'
                 switch order
                     case {'Isopoda', 'Euphausiacea'}
@@ -74,7 +74,7 @@ switch phylum
                         model = 'abp';
                     case {'Diptera'}
                         model = 'hax';
-                    case {'Lepidoptera','Hymenoptera'}
+                    case {'Lepidoptera', 'Hymenoptera'}
                         model = 'hex';
                 end
         end
