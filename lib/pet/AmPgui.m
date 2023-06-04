@@ -827,7 +827,8 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK color dmydata infoAmPgui list_spec handfilled
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  global color dmydata infoAmPgui list_spec handfilled my_pet_lineage
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
@@ -846,7 +847,7 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     metaData.species = my_pet_acc;
   end
   
-  lin = lineage_short(metaData.species);
+  [lin, ~, my_pet_lineage]s = lineage_short(metaData.species);
   metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
   nms = get_common_CoL(id_CoL); 
   if isempty(nms)

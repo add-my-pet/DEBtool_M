@@ -26,7 +26,7 @@ function AmPeps(infoAmPgui)
 %   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
 %   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
 
-global data metaData txtData auxData pets hclimateLand hclimateSea hecozones hoceans
+global data metaData txtData auxData pets hclimateLand hclimateSea hecozones hoceans my_pet_lineage
 
 % check if wget exists on mac
 if ismac || isunix
