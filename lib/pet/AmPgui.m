@@ -847,7 +847,7 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     metaData.species = my_pet_acc;
   end
   
-  [lin, ~, my_pet_lineage]s = lineage_short(metaData.species);
+  [lin, ~, my_pet_lineage] = lineage_short(metaData.species);
   metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
   nms = get_common_CoL(id_CoL); 
   if isempty(nms)
