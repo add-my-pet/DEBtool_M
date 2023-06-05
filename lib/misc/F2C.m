@@ -17,10 +17,10 @@ function C = F2C(F)
   %  
   % Output
   %
-  % * C: temperature(s) in Celsiu
+  % * C: temperature(s) in Celsius
   
   %% Example 
-  % C2K(20)
+  % F2C(68)
 
   C = (F - 32) * 5/9 ; % C, temperature in Celsius
 end
