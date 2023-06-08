@@ -281,7 +281,11 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     n_events = 0;
   end
 
-  fileName = ['deb\EBT', model,'.h'];
+  if ismac
+    fileName = ['deb/EBT', model,'.h'];
+  else
+    fileName = ['deb\EBT', model,'.h'];
+  end
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
   fprintf(oid, '/***\n');
   fprintf(oid, '  NAME\n');

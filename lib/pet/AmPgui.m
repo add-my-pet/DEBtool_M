@@ -502,6 +502,8 @@ else % fill fields
           'L4',  'cm', 0, 'length at 4th instar'
           'L5',  'cm', 0, 'length at 5th instar'
           'L6',  'cm', 0, 'length at 6th instar'
+          'Lx',  'cm', 0, 'length at weanig/fledging'
+          'Ls',  'cm', 0, 'length at start acceleration'
           'Lj',  'cm', 0, 'length at end acceleration'
           'Lp',  'cm', 0, 'length at puberty';
           'Lpm', 'cm', 0, 'length at puberty for males';
@@ -518,6 +520,8 @@ else % fill fields
           'Ww4',  'g', 0, 'wet weight at 4th instar';
           'Ww5',  'g', 0, 'wet weight at 5th instar';
           'Ww6',  'g', 0, 'wet weight at 6th instar';
+          'Wwx',  'g', 0, 'wet weight at weanig/fledging'
+          'Wws',  'g', 0, 'wet weight at start acceleration'
           'Wwj',  'g', 0, 'wet weight at end acceleration';
           'Wwp',  'g', 0, 'wet weight at puberty';
           'Wwpm', 'g', 0, 'wet weight at puberty for males';
@@ -533,6 +537,8 @@ else % fill fields
           'Wd4',  'g', 0, 'dry weight at 4th instar';
           'Wd5',  'g', 0, 'dry weight at 5th instar';
           'Wd6',  'g', 0, 'dry weight at 6th instar';
+          'Wdx',  'g', 0, 'dry weight at weanig/fledging'
+          'Wds',  'g', 0, 'dry weight at start acceleration'
           'Wdj',  'g', 0, 'dry weight at end acceleration';
           'Wdp',  'g', 0, 'dry weight at puberty';
           'Wdpm', 'g', 0, 'dry weight at puberty for males';
@@ -828,7 +834,7 @@ end
 %% callback functions
 function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
   global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
-  global color dmydata infoAmPgui list_spec handfilled my_pet_lineage
+  global color dmydata infoAmPgui list_spec handfilled my_pet_lineage lin
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
   if ismember(my_pet,list_spec) % species is already in AmP
@@ -841,14 +847,27 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     return
   end
   
-  [lin, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet);
+  [lin_CoL, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet);
+  genus = strsplit(my_pet,'_'); genus = genus{1};
+  id_CoL = get_id_CoL(genus);
+  if isempty(rank) && isempty(id_CoL)
+    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by CoL\n', my_pet, genus);
+    return
+  end
   if ~strcmp(name_status,'accepted name') && ~isempty(my_pet) && ~isempty(name_status) && ~isempty(my_pet_acc)
-    fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc)
+    fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc);
     metaData.species = my_pet_acc;
   end
   
-  [lin, ~, my_pet_lineage]s = lineage_short(metaData.species);
-  metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
+  [lin, ~, my_pet_lineage] = lineage_short(metaData.species);
+  if isempty(lin)
+    metaData.family = lin_CoL{ismember(rank,'family')};  
+    metaData.order = lin_CoL{ismember(rank,'order')};  
+    metaData.class = lin_CoL{ismember(rank,'class')};  
+    metaData.phylum = lin_CoL{ismember(rank,'phylum')};  
+  else
+    metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
+  end
   nms = get_common_CoL(id_CoL); 
   if isempty(nms)
     metaData.species_en = 'no_english_name'; 
@@ -890,7 +909,7 @@ end
 
 function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   persistent list_genus list_family list_order  list_class list_phylum
-  global metaData Hwarning HwarningOK infoAmPgui Hwait
+  global metaData Hwarning HwarningOK infoAmPgui Hwait lin
   
   % the lowest level in the manually filled dialog window dspecies that is in AmP is used; 
   % higher levels are overwritten by those in the AmP lineage
@@ -910,18 +929,17 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   if ismember(genus, list_genus)
     fprintf(['Genus "', genus, '" is present in AmP\n'])
     infoAmPgui = 2;
-    list_lin = lineage(genus); 
-    metaData.family = cell2str(list_family(ismember(list_family,list_lin)));
-    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
-    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
-    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+    metaData.family = lin{5};
+    metaData.order  = lin{4};
+    metaData.class  = lin{3};
+    metaData.phylum = lin{2};
   elseif ismember(metaData.family, list_family)
     fprintf(['Genus is not present in AmP, but family "', metaData.family, '" is\n'])
     infoAmPgui = 3;
-    list_lin = lineage(metaData.family); 
-    metaData.order = cell2str(list_order(ismember(list_order,list_lin)));
-    metaData.class = cell2str(list_class(ismember(list_class,list_lin)));
-    metaData.phylum = cell2str(list_phylum(ismember(list_phylum,list_lin)));
+    list_lin = lineage_short(metaData.family); 
+    metaData.order  = list_lin{4};
+    metaData.class  = list_lin{3};
+    metaData.phylum = list_lin{2};
   elseif ismember(metaData.order, list_order)
     fprintf(['Family is not present in AmP, but order "', metaData.order, '" is\n'])
     infoAmPgui = 4;

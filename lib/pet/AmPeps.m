@@ -160,7 +160,6 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   par = rmfield(par, otherParFields(~selPar)); % remove unnessasary parameters
   addParFields = auxParFld(~ismember(auxParFld, otherParFields(selPar))); % parameters fields that must be added
   n_add = length(addParFields);
-
   
   if n_add > 0 % edit par & txtPar
     load auxPar
