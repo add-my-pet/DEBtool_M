@@ -860,6 +860,7 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   end
   
   [lin, ~, my_pet_lineage] = lineage_short(metaData.species);
+<<<<<<< HEAD
   if isempty(lin)
     metaData.family = lin_CoL{ismember(rank,'family')};  
     metaData.order = lin_CoL{ismember(rank,'order')};  
@@ -868,6 +869,9 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   else
     metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
   end
+=======
+  metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
+>>>>>>> 2fbdb83c677d46ed81a3aa189166f3b44b7a989f
   nms = get_common_CoL(id_CoL); 
   if isempty(nms)
     metaData.species_en = 'no_english_name'; 
