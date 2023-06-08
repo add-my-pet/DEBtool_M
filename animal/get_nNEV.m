@@ -6,7 +6,7 @@ function n_NEV = get_nNEV (f, n_NW, m_Em)
   % created 2023/05/06 by Bas Kooijman
   
   %% Syntax
-  % m_Em, n_NEV] =  = <../get_nNEV.m *get_nNEV*> (f, n_NW, m_Em)
+  % [m_Em, n_NEV] =  = <../get_nNEV.m *get_nNEV*> (f, n_NW, m_Em)
   
   %% Description
   % Gets chemical indices for nitrogen of reserve (E) and structure (V), 
@@ -15,9 +15,9 @@ function n_NEV = get_nNEV (f, n_NW, m_Em)
   %
   % Input
   %
-  % * m_Em: 100-vector with max reserve capacity
+  % * f: -, scalar scaled func response
   % * n_NW: 2-vector with c_NW
-  % * m_Em: optinal scalar or vector with m_Em
+  % * m_Em: optinal scalar or 100-vector with m_Em
   %  
   % Output
   %
