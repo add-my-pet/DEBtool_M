@@ -281,7 +281,7 @@ function tXNL23W = get_EBT(model, par, tT, tJX, x_0, V_X, t_max, numPar)
     n_events = 0;
   end
 
-  if ismac
+  if ismac || isunix
     fileName = ['deb/EBT', model,'.h'];
   else
     fileName = ['deb\EBT', model,'.h'];
