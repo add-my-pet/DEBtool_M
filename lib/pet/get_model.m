@@ -49,11 +49,9 @@ switch phylum
         model = 'abj';
     case 'Arthropoda'
         switch class
-            case {'Pycnogonida', 'Arachnida', 'Ostracoda'}
-                model = 'hex';
             case 'Branchiopoda'
                 model = 'std';
-            case {'Ichthyostraca', 'Hexanauplia'}
+            case {'Pycnogonida', 'Arachnida', 'Ostracoda', 'Ichthyostraca', 'Hexanauplia'}
                 model = 'abj';
             case 'Malacostraca'
                 switch order
