@@ -48,7 +48,7 @@ function filenm = zip_my_pet(my_pet, basefolder)
     filenm = [my_pet, '_',  datestr(datenum(metaData.date_acc), 'yyyymmdd')];   % name of generated zip file
   cd(WD)
 
-   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*.csv']};
+   list = {[ my_pet, '\*_', my_pet, '.m'], [ my_pet, '\*.csv'], [ my_pet, '\*.txt']};
   
    if nargin == 1
           basefolder = '.'; % default path to the basefolder
