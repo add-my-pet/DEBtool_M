@@ -22,7 +22,7 @@ function varargout = get_tp(p, f, tel_b, tau)
   % * f: optional scalar with functional response (default f = 1)
   % * tel_b: optional scalar with scaled length at birth
   %
-  %      or 3-vector with scaled age at birth, reserve density and length at 
+  %      or 3-vector with scaled age at birth, reserve density and length at 0
   % * tau: optional n-vector with scaled times since birth
   %
   % Output
