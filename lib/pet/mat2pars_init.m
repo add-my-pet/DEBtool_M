@@ -61,7 +61,7 @@ if all(strcmp(metaPar.model,'nat'))
 end
 
 if exist(pars_initFile, 'file') == 2
-  prompt = [pars_initFile, ' already exists. Do you want to overwrite it? (y/n) '];
+  prompt = [pars_initFile, ' already exists. \n Do you want to overwrite it? (y/n) '];
   overwr = lower(input(prompt, 's'));
   if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
     fprintf([pars_initFile, ' was not overwritten.\n']);
