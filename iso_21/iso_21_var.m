@@ -2,11 +2,11 @@
 % computes age and length at birth, intitial reserve of the iso_21 model
 
 %%
-function [L_b a_b M_E10 M_E20 info] = iso_21_var(m_E1b, m_E2b, p)
+function [L_b, a_b, M_E10, M_E20, info] = iso_21_var(m_E1b, m_E2b, p)
   % created 2012/03/06 by Bas Kooijman
 
   %% Syntax
-  % [L_b a_b M_E10 M_E20 info] = <../iso_21_var.m *iso_21_var*> (m_E1b, m_E2b, p)
+  % [L_b, a_b, M_E10, M_E20, info] = <../iso_21_var.m *iso_21_var*> (m_E1b, m_E2b, p)
 
   %% Description
   % computes age and length at birth, intitial reserve of the iso_21 model
@@ -15,7 +15,7 @@ function [L_b a_b M_E10 M_E20 info] = iso_21_var(m_E1b, m_E2b, p)
   %
   % * m_E1b: scalar with reserve density 1 at birth (mol/mol)
   % * m_E2b: scalar with reserve density 2 at birth (mol/mol)
-  % * p: 14-vector with parameters: v, kap, mu_E1, mu_E2, mu_V, j_E1M, MV, k_J, kap_G, kap_E1, kap+E2, E_Hb
+  % * p: 12-vector with parameters: v, kap, mu_E1, mu_E2, mu_V, j_E1M, j_E2M, MV, k_J, kap_E1, kap_E2, E_Hb
   %
   % Output:
   %
@@ -35,14 +35,15 @@ function [L_b a_b M_E10 M_E20 info] = iso_21_var(m_E1b, m_E2b, p)
   mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
   mu_V      = p(5);  % J/mol, chemical potenial of structure
   j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-  MV        = p(7);  % mol/cm^3, [M_V] density of structure                
-  %k_J       = p(8);  % 1/d, mat maint rate coeff                                
-  kap_G     = p(9);  % -, preference for reserve 1 to be used for som maint
-  %kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-  %kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
+  j_E2M     = p(7);  % mol/d.mol, specific som maint costs
+  MV        = p(8);  % mol/cm^3, [M_V] density of structure                
+  k_J       = p(9);  % 1/d, mat maint rate coeff                                
+  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
+  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
   E_Hb      = p(12);% J, maturity threshold at birth
 
   % initial guess for M_E0 given m_Eb
+  kap_G = 0.8;                       % -, initial guess for growth efficiency
   E_G = MV * mu_V/ kap_G;            % J/cm^3, [E_G] spec cost for structure
   V_b = E_Hb * kap/ E_G/ (1 - kap);  % cm^3, initial guess for length at birth
   M_Vb = MV * V_b;                   % mol, initial guess for structural mass at birth
@@ -51,7 +52,7 @@ function [L_b a_b M_E10 M_E20 info] = iso_21_var(m_E1b, m_E2b, p)
   mu_E1V = mu_E1/ mu_V; mu_E2V = mu_E2/ mu_V; % -, ratios of mu's
   M_E1G = MV * V_b/ mu_E1V; M_E2G = (1/ kap_G - 1) * MV * V_b/ mu_E2V; % mol, cost for structure at birth
   M_E10 = M_E1b + M_E1G/ kap;        % mol, initial guess for initial reserve 1
-  J_E2Mb = M_Vb * j_E1M * mu_E1/ mu_E2; % mol/d, som maint for 2 at birth
+  J_E2Mb = M_Vb * j_E2M;             % mol/d, som maint for 2 at birth
   M_E2M = 0.75 * J_E2Mb * L_b/ v;     % mol, initial guess for initial reserve 2
   M_E20 = M_E2b + (M_E2M + M_E2G)/ kap; % mol, initial guess for initial reserve 2
 
@@ -72,18 +73,18 @@ function [F L_b a_b] = fniso_21_var(M_E0, m_E1b, m_E2b, p)
 M_E10 = M_E0(1); M_E20 = M_E0(2);    % mol, initial reserve
 
 % unpack some parameters, see diso_21_var for a full list
-v         = p(1);  % cm/d, energy conductance
-kap       = p(2);  % -, allocation fraction to soma
-mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
-mu_V      = p(5);  % J/mol, chemical potenial of structure
-%j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-MV        = p(7);  % mol/cm^3, [M_V] density of structure                
-%k_J       = p(8);  % 1/d, mat maint rate coeff                                
-kap_G     = p(9);  % -, preference for reserve 1 to be used for som maint
-%kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-%kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
-E_Hb     = p(12);% J, maturity threshold at birth
+  v         = p(1);  % cm/d, energy conductance
+  kap       = p(2);  % -, allocation fraction to soma
+  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
+  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
+  mu_V      = p(5);  % J/mol, chemical potenial of structure
+  j_E1M     = p(6);  % mol/d.mol, specific som maint costs
+  j_E2M     = p(7);  % mol/d.mol, specific som maint costs
+  MV        = p(8);  % mol/cm^3, [M_V] density of structure                
+  k_J       = p(9);  % 1/d, mat maint rate coeff                                
+  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
+  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
+  E_Hb      = p(12);% J, maturity threshold at birth
 
 % conditions for small age a_0 as fraction of guess value for a_b at which 
 %   maintenance is not yet important and m_E0 not very large any longer
@@ -112,18 +113,18 @@ function dLEa = diso_21_var(E_H, LEa, p)
 %   derivatives of (L, m_E1, m_E2, a) with respect to E_H during embryo stage, used by iso_21
 
 % unpack parameters
-v         = p(1);  % cm/d, energy conductance
-kap       = p(2);  % -, allocation fraction to soma
-mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
-mu_V      = p(5);  % J/mol, chemical potenial of structure
-j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-MV        = p(7);  % mol/cm^3, [M_V] density of structure                
-k_J       = p(8);  % 1/d, mat maint rate coeff                                
-kap_G     = p(9);  % -, preference for reserve 1 to be used for som maint
-kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
-%E_Hb     = p(12);% J, maturity threshold at birth
+  v         = p(1);  % cm/d, energy conductance
+  kap       = p(2);  % -, allocation fraction to soma
+  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
+  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
+  mu_V      = p(5);  % J/mol, chemical potenial of structure
+  j_E1M     = p(6);  % mol/d.mol, specific som maint costs
+  j_E2M     = p(7);  % mol/d.mol, specific som maint costs
+  MV        = p(8);  % mol/cm^3, [M_V] density of structure                
+  k_J       = p(9);  % 1/d, mat maint rate coeff                                
+  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
+  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
+  %E_Hb      = p(12);% J, maturity threshold at birth
 
 % unpack states
 L = LEa(1);                                                   % cm, structural length
@@ -133,9 +134,8 @@ m_E2 = LEa(3);                                                % mol/mol, reserve
 M_V = MV * L^3;                                               % mol, structural mass 
 
 %growth
-j_E2M = j_E1M * mu_E1/ mu_E2;                                 % mol/d.mol, spec som maint for 2
 [r, j_E1_M, j_E2_M, j_E1C, j_E2C, j_E1P, j_E2P] = ...                      % cm/d, change in L, ..
-    sgr_iso_21_var (m_E1, m_E2, j_E1M, j_E2M, mu_E1, mu_E2, mu_V, v/L, kap_G, kap);
+    sgr_iso_21_var (m_E1, m_E2, j_E1M, j_E2M, mu_E1, mu_E2, mu_V, v/L, kap);
 J_E1C = j_E1C * M_V; J_E2C = j_E2C * M_V; % mol/d, mobilisation flux
 dL = r * L/ 3; 
 

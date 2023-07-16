@@ -25,7 +25,7 @@ function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
   %
   %                            if empty or undefined 0, else previous result is used
   %
-  % Output
+  % Output:
   %
   % * r: 1/d,                  scalar with spec growth rate
   % * j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux

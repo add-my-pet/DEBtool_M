@@ -42,6 +42,7 @@ function [L_b a_b M_E10 M_E20 info] = iso_21(m_E1b, m_E2b, p)
 
   % initial guess for M_E0 given m_Eb
   kap_G = mu_V/ (mu_E1 * y_VE1 + mu_E2 * y_VE2); % -, growth efficiency
+  % this is wrong and should be updated, see comment on section 5.2.7
   E_G = MV * mu_V/ kap_G;            % J/cm^3, [E_G] spec cost for structure
   V_b = E_Hb * kap/ E_G/ (1 - kap);  % cm, initial guess for length at birth
   M_Vb = MV * V_b;                   % mol,initial guess for mass at birth

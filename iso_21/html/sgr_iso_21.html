@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>sgr_iso_21</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-22"><meta name="DC.source" content="sgr_iso_21.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>sgr_iso_21</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-07-15"><meta name="DC.source" content="sgr_iso_21.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -51,12 +52,22 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>sgr_iso_21</h1><!--introduction--><p>specific growth rate for isomorph with 2 reserves</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = <a href="../sgr_iso_21_var.m"><b>sgr_iso_21</b></a> (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)</p><h2>Description<a name="4"></a></h2><p>specific growth rate for isomorph with 2 reserves, allowing for shrinking</p><p>Input:</p><div><ul><li>m_E1, m_E2:   mol/mol,   scalars with reserve density</li><li>j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve</li><li>y_VE1, y_VE2: mol/mol,   scalars with yield of structure on reserve</li><li>mu_EV:        -,         scalar with mu_E1/ mu_V (mu_E1 j_E1S = mu_E2 j_E2S)</li><li>k_E:  1/d,               scalar with reserve turnover rate v/ L</li><li>kap: -,                  scalar with allocation fraction to soma</li><li>rho1: -,                 scalar with preference (default 0)</li><li>r0: 1/d,                 optional scalar with initial estimate for r</li></ul></div><pre>                          if empty or undefined 0, else previous result is used</pre><p>Output</p><div><ul><li>r: 1/d,                  scalar with spec growth rate</li><li>j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux</li><li>j_E1C, j_E2C: mol/d.mol, scalars with rejected flux of reserve from growth SUs</li><li>info: -,                 scalar with numerical failure (0) or success (1)</li></ul></div><h2>Remarks<a name="5"></a></h2><p>see <a href="gr_iso_21.html"><b>gr_iso_21</b></a> for growth rate d/dt L (for embryo case); see <a href="sgr_iso_21_var.html"><b>sgr_iso_21_var</b></a> for variable stoichiometry</p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>sgr_iso_21</h1><!--introduction--><p>specific growth rate for isomorph with 2 reserves</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = <a href="../sgr_iso_21_var.m"><b>sgr_iso_21</b></a> (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)</p><h2 id="4">Description</h2><p>specific growth rate for isomorph with 2 reserves, allowing for shrinking</p><p>Input:</p><div><ul><li>m_E1, m_E2:   mol/mol,   scalars with reserve density</li><li>j_E1S, j_E2S: mol/d.mol, scalars with spec maintenance flux if from reserve</li><li>y_VE1, y_VE2: mol/mol,   scalars with yield of structure on reserve</li><li>mu_EV:        -,         scalar with mu_E1/ mu_V (mu_E1 j_E1S = mu_E2 j_E2S)</li><li>k_E:  1/d,               scalar with reserve turnover rate v/ L</li><li>kap: -,                  scalar with allocation fraction to soma</li><li>rho1: -,                 scalar with preference (default 0)</li><li>r0: 1/d,                 optional scalar with initial estimate for r</li></ul></div><pre>                          if empty or undefined 0, else previous result is used</pre><p>Output:</p><div><ul><li>r: 1/d,                  scalar with spec growth rate</li><li>j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux</li><li>j_E1C, j_E2C: mol/d.mol, scalars with rejected flux of reserve from growth SUs</li><li>info: -,                 scalar with numerical failure (0) or success (1)</li></ul></div><h2 id="5">Remarks</h2><p>see <a href="gr_iso_21.html"><b>gr_iso_21</b></a> for growth rate d/dt L (for embryo case); see <a href="sgr_iso_21_var.html"><b>sgr_iso_21_var</b></a> for variable stoichiometry</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% sgr_iso_21
 % specific growth rate for isomorph with 2 reserves
@@ -85,7 +96,7 @@ function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
   %
   %                            if empty or undefined 0, else previous result is used
   %
-  % Output
+  % Output:
   %
   % * r: 1/d,                  scalar with spec growth rate
   % * j_E1_S, j_E2_S: mol/d.mol, scalars with  spec som maintenance flux

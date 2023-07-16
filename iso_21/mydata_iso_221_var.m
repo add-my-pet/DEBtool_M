@@ -21,8 +21,7 @@ mu_V      = 5e5;    j_E1M     = 0.09;  % J/mol, chemical potenial of structure; 
 J_E1T     = 0;      MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
                                        % mol/cm^3, [M_V] density of structure
 k_J       = 0.002;  k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
-kap_G      = 0.8;   del_V     = 0.8;   % -, growth efficiency
-                                       % -, threshold for death by  shrinking
+del_V     = 0.8;                       % -, threshold for death by  shrinking
 kap_E1    = 1;      kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
 % since j_E1P = 0, kap_E1 is not relevant
 kap_R1    = 0.95;   kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
@@ -38,11 +37,11 @@ par_iso_221 = [...
     M_X1;   M_X2;  F_X1m;  F_X2m; y_P1X1; y_P2X2; y_E1X1; y_E2X1;
 %      9      10      11      12      13      14      15      16
   y_E1X2; y_E2X2; J_X1Am; J_X2Am;      v;    kap;  mu_E1;  mu_E2;
-%     17      18      19      20      21      22      23      24 
-    mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;  kap_G;  del_V; 
-%     25      26      27      28      29      30      31      32   
+%     17      18      19      20      21      22      23  
+    mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;  del_V; 
+%     24      25      26      27      28      29      30      31   
   kap_E1; kap_E2; kap_R1; kap_R2;   E_Hb;   E_Hp;    T_A;    h_H; 
-%     33      34 
+%     32      33 
      h_a;    s_G];
 
 % set chemical indices
@@ -72,7 +71,7 @@ tXT(:,4) = 293;                               % K, temperature (does not need to
 %% run iso_221
 [var flux]  = iso_221_var(tXT, var_b, par_iso_221, n_O, n_M); % from birth to t = tXT(end,1)
 
-if 1
+if 0
 % continue with a period with only food type 2
 t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
 tXT2(:,2) = 4000; tXT2(:,3) = 0; tXT2(:,4) = 293;         % set food, temp

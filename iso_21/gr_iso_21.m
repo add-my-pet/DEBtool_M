@@ -66,7 +66,7 @@ function [v_B_out, j_E1_M, j_E2_M, j_E1C, j_E2C, info] = ...
     th_G2 = - y_VE2 * (kap * m_E2 + dj_E2_M);
     dH = th_G1/ v_G1^2 + th_G2/ v_G2^2 - (th_G1 + th_G2)/ (v_G1 + v_G2)^2; 
     dH = 1 - dH * (v_B - H)^2;                                  % -, d/dv_H H
-    
+        
     v_B = min(v/ 3 - 1e-10, max(1e-10, v_B - H/ dH));           % new step in NR-procedure
     i = i + 1;                                                  % increase step counter
   end
