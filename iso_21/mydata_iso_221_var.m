@@ -1,5 +1,5 @@
 %% mydata_iso_221_var
-% created 2011/05/04 by Bas Kooijman, modified 2012/01/30
+% created 2011/05/04 by Bas Kooijman, modified 2012/01/30, 2023/07/16
 % isomorph with 1 structure
 % 2 reserves: protein (1) and non-protein (2)
 %  somatic maintenance and growth overhead preferably paid from non-protein
@@ -16,10 +16,8 @@ J_X1Am    = 1.0e-3; J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific inges
 v         = 0.02;   kap       = 0.8;   % cm/d, energy conductance, 
                                        % -, allocation fraction to soma
 mu_E1     = 4e5;    mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
-mu_V      = 5e5;    j_E1M     = 0.09;  % J/mol, chemical potenial of structure; j_E2M = j_E1M * mu_E1/ mu_E2
-                                       % mol/d.mol, specific som maint costs
-J_E1T     = 0;      MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
-                                       % mol/cm^3, [M_V] density of structure
+mu_V      = 5e5;    MV        = 4e-3;  % J/mol, chemical potenial of structure;  mol/cm^3, [M_V] density of structure                                       
+j_E1M     = 0.09;   j_E2M     = j_E1M * mu_E1/ mu_E2; % mol/d.mol, specific som maint costs                                     
 k_J       = 0.002;  k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 del_V     = 0.8;                       % -, threshold for death by  shrinking
 kap_E1    = 1;      kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
@@ -37,8 +35,8 @@ par_iso_221 = [...
     M_X1;   M_X2;  F_X1m;  F_X2m; y_P1X1; y_P2X2; y_E1X1; y_E2X1;
 %      9      10      11      12      13      14      15      16
   y_E1X2; y_E2X2; J_X1Am; J_X2Am;      v;    kap;  mu_E1;  mu_E2;
-%     17      18      19      20      21      22      23  
-    mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;  del_V; 
+%     17      18      19      20      21      22      23      
+    mu_V;     MV;  j_E1M;  j_E2M;    k_J;   k1_J;  del_V; 
 %     24      25      26      27      28      29      30      31   
   kap_E1; kap_E2; kap_R1; kap_R2;   E_Hb;   E_Hp;    T_A;    h_H; 
 %     32      33 
@@ -65,18 +63,21 @@ tXT(:,2) = 4000;     tXT(:,3) = 4000;               % mol/dm^2, food densities (
 tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
-[var_b a_b M_E10 M_E20] = iso_21_b_var(tXT, par_iso_221);
-
+par_e = [v, kap, mu_E1, mu_E2, mu_V, j_E1M, j_E2M, MV, k_J, kap_E1, kap_E2, E_Hb];
+L_m = kap * y_E1X1 * J_X1Am/ j_E1M; % not sure that this is the best quantifier for L_m
+m_E1 = y_E1X1 * J_X1Am * L_m^3/ v; m_E2 = y_E2X2 * J_X2Am * L_m^3/ v;
+[L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, par_e);
 %return
+
 %% run iso_221
-[var flux]  = iso_221_var(tXT, var_b, par_iso_221, n_O, n_M); % from birth to t = tXT(end,1)
+[var, flux]  = iso_221_var(tXT, var_b, par_iso_221, n_O, n_M); % from birth to t = tXT(end,1)
 
 if 0
 % continue with a period with only food type 2
 t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
 tXT2(:,2) = 4000; tXT2(:,3) = 0; tXT2(:,4) = 293;         % set food, temp
 var_0 = var(end,:)';                                   % copy last state to initial state
-[var2 flux2]  = iso_221_var(tXT2, var_0, par_iso_221, n_O, n_M, 0); % run iso_221_var
+[var2, flux2]  = iso_221_var(tXT2, var_0, par_iso_221, n_O, n_M, 0); % run iso_221_var
 % catenate results for plotting
 t = [t; t2]; var = [var; var2]; flux = [flux; flux2];
 end

@@ -1,5 +1,6 @@
 %% iso_21_var
 % computes age and length at birth, intitial reserve of the iso_21 model
+% created by Bas kooijman, modified 2023/07/16
 
 %%
 function [L_b, a_b, M_E10, M_E20, info] = iso_21_var(m_E1b, m_E2b, p)
@@ -89,6 +90,7 @@ M_E10 = M_E0(1); M_E20 = M_E0(2);    % mol, initial reserve
 % conditions for small age a_0 as fraction of guess value for a_b at which 
 %   maintenance is not yet important and m_E0 not very large any longer
 mu_E1V = mu_E1/ mu_V; mu_E2V = mu_E1/mu_V; % mol/mol
+kap_G = 0.80;                         % -, growth efficiency
 E_G = MV * mu_V/ kap_G;              % J/cm^3, [E_G] spec cost for structure
 V_b = E_Hb * kap/ E_G/ (1 - kap);    % cm, initial guess for length at birth
 a_b = V_b^(1/3) * 3/ v;              % d, initial guess for age at birth
