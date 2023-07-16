@@ -171,7 +171,12 @@ function prt_report_AmPtox(title)
     for i=1:n_flds
       txt = metaData.(flds{i}); if isnumeric(txt); txt = num2str(txt); end      
       if iscell(txt)
-        n_txt = length(txt); ltxt=txt{1}; for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+        n_txt = length(txt); ltxt=txt{1}; 
+        if n_txt == 2
+          ltxt=[ltxt,', ', txt{2}];  
+        elseif length(n_txt)>2
+            for j=2:n_txt; ltxt=[ltxt,', ', txt{j}];end
+        end
         txt = ltxt;
       end
       if strcmp(flds{i},'DEBmodel')
