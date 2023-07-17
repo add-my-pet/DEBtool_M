@@ -54,15 +54,18 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
   M_E1G = MV * V_b/ mu_E1V; M_E2G = (1/ kap_G - 1) * MV * V_b/ mu_E2V; % mol, cost for structure at birth
   M_E10 = M_E1b + M_E1G/ kap;        % mol, initial guess for initial reserve 1
   J_E2Mb = M_Vb * j_E2M;             % mol/d, som maint for 2 at birth
-  M_E2M = 0.75 * J_E2Mb * L_b/ v;     % mol, initial guess for initial reserve 2
-  M_E20 = M_E2b + (M_E2M + M_E2G)/ kap; % mol, initial guess for initial reserve 2
+  
 
-  % solve initial amounts of reserves
+  % solve struc length at birth
   [L_b, fn, info] = fzero(@fniso_21_var, [.01 100], [], m_E1b, m_E2b, p);
 
   % get L_b and a_b
   [F, L_b, a_b] = fniso_21_var(L_b, m_E1b, m_E2b, p);
+  LE12a_b = [L; M_E1b; M_E2b; 0]; % states at birth
+  [E_H, LE12a] = ode23(@diso_21_var,[E_Hb;0], LE12a_b, [], p);
 
+   M_E10 = LE12a(end,2); % mol, initial reserve 1
+   M_E20 = LE12a(end,3); % mol, initial reserve 2
 end
 % subfunction fniso_21_var
 
@@ -70,17 +73,17 @@ function [F, L_b, a_b] = fniso_21_var(L, m_E1b, m_E2b, p)
   % for use by fsolve in iso_21: F = 0 if L(0) = 0
 
   % unpack parameters
-  v         = p(1);  % cm/d, energy conductance
-  kap       = p(2);  % -, allocation fraction to soma
-  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
+  %v         = p(1);  % cm/d, energy conductance
+  %kap       = p(2);  % -, allocation fraction to soma
+  %mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
+  %mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
   mu_V      = p(5);  % J/mol, chemical potenial of structure
   MV        = p(6);  % mol/cm^3, [M_V] density of structure                
-  j_E1M     = p(7);  % mol/d.mol, specific som maint costs
-  j_E2M     = p(8);  % mol/d.mol, specific som maint costs
+  %j_E1M     = p(7);  % mol/d.mol, specific som maint costs
+  %j_E2M     = p(8);  % mol/d.mol, specific som maint costs
   k_J       = p(9);  % 1/d, mat maint rate coeff                                
-  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
+  %kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
+  %kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
   E_Hb      = p(12);% J, maturity threshold at birth
 
   % struc mass, reserve at birth
@@ -91,11 +94,11 @@ function [F, L_b, a_b] = fniso_21_var(L, m_E1b, m_E2b, p)
   LE12a_b = [L; M_E1b; M_E2b; 0]; % states at birth
   [E_H, LE12a] = ode23(@diso_21_var,[E_Hb;0], LE12a_b, [], p);
 
-  % complete outputs
+  % outputs
+  F = LE12a(end,1); % cm, initial length
   L_b = LE12a(1,1); % cm, length at birth
   a_b = -LE12a(end,4); % d, age at birth
 
-  F = LE12a(end,1); % cm, initial length
 end
 
 % subfunction diso_21_var
