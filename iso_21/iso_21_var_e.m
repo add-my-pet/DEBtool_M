@@ -55,9 +55,9 @@ function F = fniso_21_var_e(L, m_E1, m_E2, p)
   % back-integrate back in E_H, but anly to 1e-4, else m_Ei becomes very large 
   options = odeset('RelTol', 1e-9, 'AbsTol', 1e-9);
   LE12a_b = [L; m_E1; m_E2; 0]; % states at birth
-  [E_H, LE12a] = ode23(@diso_21_var_e,[p.E_Hb;1e-6], LE12a_b, options, p);
+  [E_H, LE12a] = ode45(@diso_21_var_e,[p.E_Hb;1e-6], LE12a_b, options, p);
 
-  F = LE12a(end,1)-1e-4 % cm, norm
+  F = LE12a(end,1)-1e-4; % cm, norm
 
 end
 
