@@ -16,7 +16,7 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var(m_E1b, m_E2b, p)
   %
   % * m_E1b: scalar with reserve density 1 at birth (mol/mol)
   % * m_E2b: scalar with reserve density 2 at birth (mol/mol)
-  % * p: 12-vector with parameters: v, kap, mu_E1, mu_E2, mu_V, j_E1M, j_E2M, MV, k_J, kap_E1, kap_E2, E_Hb
+  % * p: structure with parameters
   %
   % Output:
   %
@@ -29,33 +29,19 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var(m_E1b, m_E2b, p)
   %% Remarks
   % requires fniso_21_var, diso_21_var (see below)
 
-  % unpack some parameters, see diso_21_var for a full list
-  v         = p(1);  % cm/d, energy conductance
-  kap       = p(2);  % -, allocation fraction to soma
-  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
-  mu_V      = p(5);  % J/mol, chemical potenial of structure
-  j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-  j_E2M     = p(7);  % mol/d.mol, specific som maint costs
-  MV        = p(8);  % mol/cm^3, [M_V] density of structure                
-  k_J       = p(9);  % 1/d, mat maint rate coeff                                
-  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
-  E_Hb      = p(12);% J, maturity threshold at birth
-
   % initial guess for M_E0 given m_Eb
   kap_G = 0.8;                       % -, initial guess for growth efficiency
-  E_G = MV * mu_V/ kap_G;            % J/cm^3, [E_G] spec cost for structure
-  V_b = E_Hb * kap/ E_G/ (1 - kap);  % cm^3, initial guess for length at birth
-  M_Vb = MV * V_b;                   % mol, initial guess for structural mass at birth
+  E_G = p.MV * p.mu_V/ kap_G;        % J/cm^3, [E_G] spec cost for structure
+  V_b = p.E_Hb * p.kap/ E_G/ (1 - p.kap);  % cm^3, initial guess for length at birth
+  M_Vb = p.MV * V_b;                 % mol, initial guess for structural mass at birth
   M_E1b = M_Vb * m_E1b; M_E2b = M_Vb * m_E2b; % mol, initial guess for reserve mass at birth
   L_b = V_b^(1/3);                   % cm. initial guess for langth at birth
-  mu_E1V = mu_E1/ mu_V; mu_E2V = mu_E2/ mu_V; % -, ratios of mu's
-  M_E1G = MV * V_b/ mu_E1V; M_E2G = (1/ kap_G - 1) * MV * V_b/ mu_E2V; % mol, cost for structure at birth
-  M_E10 = M_E1b + M_E1G/ kap;        % mol, initial guess for initial reserve 1
-  J_E2Mb = M_Vb * j_E2M;             % mol/d, som maint for 2 at birth
-  M_E2M = 0.75 * J_E2Mb * L_b/ v;     % mol, initial guess for initial reserve 2
-  M_E20 = M_E2b + (M_E2M + M_E2G)/ kap; % mol, initial guess for initial reserve 2
+  mu_E1V = p.mu_E1/ p.mu_V; mu_E2V = p.mu_E2/ p.mu_V; % -, ratios of mu's
+  M_E1G = p.MV * V_b/ p.mu_E1V; M_E2G = (1/ kap_G - 1) * p.MV * V_b/ mu_E2V; % mol, cost for structure at birth
+  M_E10 = M_E1b + M_E1G/ p.kap;        % mol, initial guess for initial reserve 1
+  J_E2Mb = M_Vb * p.j_E2M;             % mol/d, som maint for 2 at birth
+  M_E2M = 0.75 * J_E2Mb * L_b/ p.v;     % mol, initial guess for initial reserve 2
+  M_E20 = M_E2b + (M_E2M + M_E2G)/ p.kap; % mol, initial guess for initial reserve 2
 
   % solve initial amounts of reserves
   [M_E0 fn info] = fsolve(@fniso_21_var, [M_E10; M_E20], [], m_E1b, m_E2b, p);
@@ -73,25 +59,11 @@ function [F L_b a_b] = fniso_21_var(M_E0, m_E1b, m_E2b, p)
 % unpack variables
 M_E10 = M_E0(1); M_E20 = M_E0(2);    % mol, initial reserve
 
-% unpack some parameters, see diso_21_var for a full list
-  v         = p(1);  % cm/d, energy conductance
-  kap       = p(2);  % -, allocation fraction to soma
-  mu_E1     = p(3);  % J/mol, chemical potential of reserve 1
-  mu_E2     = p(4);  % J/mol, chemical potential of reserve 2
-  mu_V      = p(5);  % J/mol, chemical potenial of structure
-  j_E1M     = p(6);  % mol/d.mol, specific som maint costs
-  j_E2M     = p(7);  % mol/d.mol, specific som maint costs
-  MV        = p(8);  % mol/cm^3, [M_V] density of structure                
-  k_J       = p(9);  % 1/d, mat maint rate coeff                                
-  kap_E1    = p(10); % -, fraction of rejected mobilised flux that is returned to reserve
-  kap_E2    = p(11); % -, fraction of rejected mobilised flux that is returned to reserve
-  E_Hb      = p(12);% J, maturity threshold at birth
-
 % conditions for small age a_0 as fraction of guess value for a_b at which 
 %   maintenance is not yet important and m_E0 not very large any longer
-mu_E1V = mu_E1/ mu_V; mu_E2V = mu_E1/mu_V; % mol/mol
+mu_E1V = p.mu_E1/ p.mu_V; mu_E2V = p.mu_E1/ p.mu_V; % mol/mol
 kap_G = 0.80;                         % -, growth efficiency
-E_G = MV * mu_V/ kap_G;              % J/cm^3, [E_G] spec cost for structure
+E_G = p.MV * p.mu_V/ kap_G;              % J/cm^3, [E_G] spec cost for structure
 V_b = E_Hb * kap/ E_G/ (1 - kap);    % cm, initial guess for length at birth
 a_b = V_b^(1/3) * 3/ v;              % d, initial guess for age at birth
 a_0 = a_b/ 100;                      % d, initial age from where integration starts

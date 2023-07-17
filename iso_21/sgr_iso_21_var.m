@@ -4,7 +4,7 @@
 %%
 function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
     sgr_iso_21_var (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap)
-  % created: 2012/03/07 by Bas Kooijman, modified 2023/07/16
+  % created: 2012/03/07 by Bas Kooijman, modified 2023/07/17
   
   %% Syntax
   % [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = <../sgr_iso_21_var.m *sgr_iso_21_var*> (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap_G, kap) 
@@ -54,6 +54,7 @@ else
     end
   end
 end
+
 
 % compute fluxes, given mode
 switch mode

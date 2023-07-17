@@ -18,7 +18,7 @@ function [var flux] = iso_221_var(tXT, var_0, p, n_O, n_M, r0)
   %        assumption: tXT(1,1) = 0: time that applies to vars_0
   %
   % * var_0: 13-vector with values of state variables at t = 0; see under var
-  % * p: vector of parameters (see diso_221)
+  % * p: structure with parameters, mydata_iso_221_var 
   % * n_O: (4,7)-matrix with chemical indices for organics X1, X2, V, E1, E2, P1, P2
   % * n_M: (4,4)-matrix with chemical indices for minerals C, H, O, N
   % * r0: optional scalar with initial estimate for spec growth rate r
@@ -48,18 +48,8 @@ function [var flux] = iso_221_var(tXT, var_0, p, n_O, n_M, r0)
   % see <iso_221.html *iso_221*> for fixed stoichiometry;
   % model is presented in comment for 5.2.7 of DEB3
 
-  % unpack some parameters, see diso_211_var for a full list
-  M_X1      = p( 1); M_X2      = p( 2); % mol, size of food particle of type i
-  F_X1m     = p( 3); F_X2m     = p( 4); % dm^2/d.cm^2, {F_Xim} spec searching rates
-  y_E1X1    = p( 7); y_E2X1    = p( 8); % mol/mol, yield of reserve Ei on food X1
-  y_E1X2    = p( 9); y_E2X2    = p(10); % mol/mol, yield of reserve Ei on food X2
-  J_X1Am    = p(11); J_X2Am    = p(12); % mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-  v         = p(13);                    % cm/d, energy conductance, 
-  MV        = p(20);                    % mol/cm^3, [M_V] density of structure
-  E_Hb      = p(29);                    % J, maturity at birth
-
   % get variables
-  [t var] = ode45(@diso_221_var, tXT(:,1), var_0, [], tXT, p);
+  [t, var] = ode45(@diso_221_var, tXT(:,1), var_0, [], tXT, p);
 
   % unpack some variables
   M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 
