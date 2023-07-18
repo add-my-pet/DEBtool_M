@@ -36,40 +36,46 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
   L_b = V_b^(1/3);                   % cm. initial guess for length at birth
   
   % solve struc length at birth L_b
-  [L_b, fn, info] = fzero(@fniso_21_var_e, [1e-5 20], [], m_E1b, m_E2b, p);
+  [L_b, fn, info] = fzero(@fniso_21_var_e, L_b, [], m_E1b, m_E2b, p);
+  if ~(info == 1)
+    fprintf('Warning from iso_21_var_e: no convergence for L_b')
+  end
 
   % get L_b and a_b
-  LE12a_b = [L_b; m_E1b; m_E2b; 0]; % states at birth, L_b is guessed
-  options = odeset('RelTol', 1e-9, 'AbsTol', 1e-9);
-  [E_H, LE12a] = ode45(@diso_21_var_e,[p.E_Hb;1e-6], LE12a_b, [], p);
-  a_b = -LE12a(end,4); % d, age at birth
+  LE12H_b = [L_b; m_E1b; m_E2b; p.E_Hb]; % states at birth, L_b is guessed
+  options = odeset('Events',@start,'RelTol', 1e-9, 'AbsTol', 1e-9);
+  [a, LE12H, a_start, LE12H_start] = ode45(@diso_21_var_e,[0,-1e3], LE12H_b, options, p);
+  a_b = -a_start; % d, age at birth
   % get initial reserves
-  M_E10 = p.MV * LE12a(end,1)^3 * LE12a(end,2); % mol, initial reserve 1
-  M_E20 = p.MV * LE12a(end,1)^3 * LE12a(end,3); % mol, initial reserve 2
+  M_E10 = p.MV * LE12H(end,1)^3 * LE12H(end,2); % mol, initial reserve 1
+  M_E20 = p.MV * LE12H(end,1)^3 * LE12H(end,3); % mol, initial reserve 2
 end
 
 function F = fniso_21_var_e(L, m_E1, m_E2, p)
-  % for use by fsolve in iso_21: F = 0 if L(0) = 0
+  % for use by fzero in iso_21_var_e: F = 0 if L(0) = 0
   % parameters p are only used to pass to diso_21_var
-
-  % back-integrate back in E_H, but anly to 1e-4, else m_Ei becomes very large 
-  options = odeset('RelTol', 1e-9, 'AbsTol', 1e-9);
-  LE12a_b = [L; m_E1; m_E2; 0]; % states at birth
-  [E_H, LE12a] = ode45(@diso_21_var_e,[p.E_Hb;1e-6], LE12a_b, options, p);
-
-  F = LE12a(end,1)-1e-4; % cm, norm
+ 
+  % back-integrate back in time till L(t)=0
+  options = odeset('Events',@start, 'RelTol', 1e-9, 'AbsTol', 1e-9);
+  LE12H_b = [L; m_E1; m_E2; p.E_Hb]; % states at birth
+  try
+    [~, LE12H] = ode45(@diso_21_var_e,[0;-1e3], LE12H_b, options, p); 
+    F = LE12H(end,1)-1e-3; % cm, norm
+  catch % L (at birth) too low, which leads to failure of the integration near start
+    F = 1; % just a value different from zero, so fzero will not select this L
+  end
 
 end
 
-function dLE12a = diso_21_var_e(E_H, LE12a, p)
-% ode's for iso_21_var:
-%   derivatives of (L, m_E1, m_E2, a) with respect to maturity during embryo stage, used by iso_21
+function dLE12H = diso_21_var_e(a, LE12H, p)
+% ode's for iso_21_var_e:
+%   derivatives of (L, m_E1, m_E2, a) with respect to time during embryo stage, used by iso_21_var_e
 
 % unpack states
-  L    = LE12a(1);                                            % cm, structural length
-  m_E1 = LE12a(2);                                            % mol/mol, reserve density 1
-  m_E2 = LE12a(3);                                            % mol/mol, reserve density 2
-  a    = LE12a(4);                                            % d, age (negative)
+  L    = LE12H(1);                                            % cm, structural length
+  m_E1 = LE12H(2);                                            % mol/mol, reserve density 1
+  m_E2 = LE12H(3);                                            % mol/mol, reserve density 2
+  E_H  = LE12H(4);                                            % J, maturity
 
 %growth
 [r, j_E1_M, j_E2_M, j_E1C, j_E2C, j_E1P, j_E2P] = ...         % cm/d, change in L, ..
@@ -78,7 +84,7 @@ dL = r * L/ 3;
 
 % maturation
 M_V = p.MV * L^3;                                             % mol, mass of structure
-J_E1C = j_E1C * M_V; J_E2C = j_E2C * M_V;               % mol/d, mobilisation flux
+J_E1C = j_E1C * M_V; J_E2C = j_E2C * M_V;                     % mol/d, mobilisation flux
 p_C = p.mu_E1 * J_E1C + p.mu_E2 * J_E2C;                      % J/d, total mobilisation
 dE_H = (1 - p.kap) * p_C - p.k_J * E_H;                       % J/d, maturation
 
@@ -86,7 +92,7 @@ dE_H = (1 - p.kap) * p_C - p.k_J * E_H;                       % J/d, maturation
 dm_E1 = p.kap_E1 * j_E1P - m_E1 * p.v/ L;                     % mol/d.mol, change in m_E1
 dm_E2 = p.kap_E2 * j_E2P - m_E2 * p.v/ L;                     % mol/d.mol, change in m_E2
 
-dLE12a = [dL; dm_E1; dm_E2; 1]/ dE_H;                         % pack output
+dLE12H = [dL; dm_E1; dm_E2; dE_H];                            % pack output
 end
 
 function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P] = ...
@@ -101,3 +107,10 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P] = ...
   j_E1P = 0; j_E2P = j_E2G - r * (1/ kap_G - 1) * mu_V/ mu_E2;  % mol/d.mol, specific rejection flux
 end
     
+% event start development
+function [value,isterminal,direction] = start(t, LE12H, r, varargin)
+  value = LE12H(1) - 1e-3;  % trigger 
+  isterminal = 1;   % terminate after the first event
+  direction  = [];  % get all the zeros
+end
+

@@ -1,12 +1,12 @@
 %% mydata_iso_221_var
-% created 2011/05/04 by Bas Kooijman, modified 2012/01/30, 2023/07/16
+% created 2011/05/04 by Bas Kooijman, modified 2012/01/30, 2023/07/18
 % isomorph with 1 structure
 % 2 reserves: protein (1) and non-protein (2)
 %  somatic maintenance and growth overhead preferably paid from non-protein
 % 2 types of food
 %  preference depends on stress of non-filled reserve
 
-%% set parameters at T_ref = 293 K
+%% set parameters at T_ref = 293 K in strupture p
 p.M_X1      = 1e-3;   p.M_X2      = 1e-3;  % mol, size of food particle of type i
 p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
@@ -17,7 +17,7 @@ p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance,
                                            % -, allocation fraction to soma
 p.mu_E1     = 4e5;    p.mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
 p.mu_V      = 5e5;    p.MV        = 4e-2;  % J/mol, chemical potenial of structure;  mol/cm^3, [M_V] density of structure                                       
-p.j_E1M     = 0.09;   p.j_E2M     = j_E1M * mu_E1/ mu_E2; % mol/d.mol, specific som maint costs                                     
+p.j_E1M     = 0.09;   p.j_E2M     = p.j_E1M * p.mu_E1/ p.mu_E2; % mol/d.mol, specific som maint costs                                     
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 p.del_V     = 0.8;                         % -, threshold for death by  shrinking
 p.kap_E1    = 1;      p.kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
@@ -49,12 +49,18 @@ tXT(:,2) = 4000;     tXT(:,3) = 4000;         % mol/dm^2, food densities (don't 
 tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
-m_E1 = (p.y_E1X1 * p.J_X1Am + p.y_E1X2 * p.J_X2Am)/ p.v/ p.MV; 
-m_E2 = (p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV;
-[L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, p);
+m_E1 = (p.y_E1X1 * p.J_X1Am + p.y_E1X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reverve 1 density
+m_E2 = (p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reverve 2 density
+[L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, p);  % get states
+M_Vb = L_b^3 * p.MV; M_E1b = m_E1 * M_Vb; M_E2b = m_E2 * M_Vb; % mol of structure, reserves at birth
 %return
 
 %% run iso_221
+% var_b:
+%        1      2     3       4      5        6   7        8      9      10  11 12 13
+%    cM_X1  cM_X2  M_E1    M_E2    E_H  max_E_H M_V  max_M_V cM_ER1  cM_ER2   q  h  S
+%    cum food eaten, reserves, (max)structure, (max)maturity , cumulative, allocation to reprod, acell, hazard, surv prob
+var_b = [0; 0; M_E1b; M_E2b; p.E_Hb; p.E_Hb; M_Vb; M_Vb; 0; 0; 0; 0; 1];
 [var, flux]  = iso_221_var(tXT, var_b, p, n_O, n_M); % from birth to t = tXT(end,1)
 
 if 0
