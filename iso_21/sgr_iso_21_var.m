@@ -34,7 +34,7 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
   
 % identify mode
 j_E1C = k_E * m_E1; j_E2C = k_E * m_E2; % mol/d.mol mobilisation rates if r = 0
-if kap * j_E2C < j_E2S && kap * j_E1C < j_E1S * (1 - kap * j_E2C/j_E2S)
+if kap * j_E2C < j_E2S && kap * j_E1C < j_E1S * (1 - kap * j_E2C/ j_E2S)
   mode = 4;
 else
   r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate if mode = 1
@@ -55,10 +55,9 @@ else
   end
 end
 
-
 % compute fluxes, given mode
 switch mode
-  case 1 % case 1: reserve 2 fuels all maintenance and growth overheads
+  case 1 % reserve 2 fuels all maintenance and growth overheads
     r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate
     j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;        % mol/d.mol, specific mobilisation rates
     j_E2_S = min(kap * j_E2C, j_E2S); j_E1_S = min(kap * j_E1C, j_E1S * (1 - j_E2_S/ j_E2S)); % mol/d.mol specific som maint rates
@@ -73,7 +72,7 @@ switch mode
     j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;       % mol/d.mol, specific mobilisation rates
     j_E1P = 0; j_E2P = 0;                                       % mol/d.mol, specific rejection flux
           
-  case 3  % case 3: reserve 1 can fuel all somatic maintenance and pays all growth overhead
+  case 3 % reserve 1 can fuel all somatic maintenance and pays all growth overhead
     mm = m_E1 + m_E2 * j_E1S/ j_E2S;
     r = (mm * kap * k_E - j_E1S)/ (mm * kap + mu_V/ kap_G/ mu_E1); % 1/d, specific growth rate
     j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;     % mol/d.mol, specific mobilisation rates

@@ -1,16 +1,15 @@
 %% iso_21_var_e
-% computes age and length at birth, intitial reserve of the iso_21 model
-% created by Bas kooijman, modified 2023/07/16
+% computes age and length at birth, initial reserve of the iso_21 model
 
 %%
 function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
-  % created 2012/03/06 by Bas Kooijman
+  % created 2012/03/06 by Bas Kooijman, modified 2023/07/16
 
   %% Syntax
   % [L_b, a_b, M_E10, M_E20, info] = <../iso_21_var.m *iso_21_var*> (m_E1b, m_E2b, p)
 
   %% Description
-  % computes age and length at birth, intitial reserve of the iso_21 model
+  % computes age and length at birth, intitial reserves of the iso_21 model
   %
   % Input:
   %
@@ -29,6 +28,8 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
   %% Remarks
   % requires fniso_21_var_e, diso_21_var_e, sgr_iso_21_var_e (see below)
 
+  global L_b % only used to check solution
+  
   % guess L_b
   kap_G = 0.8;                       % -, initial guess for growth efficiency
   E_G = p.MV * p.mu_V/ kap_G;        % J/cm^3, [E_G] spec cost for structure
@@ -43,27 +44,44 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
 
   % get L_b and a_b
   LE12H_b = [L_b; m_E1b; m_E2b; p.E_Hb]; % states at birth, L_b is guessed
-  options = odeset('Events',@start,'RelTol', 1e-9, 'AbsTol', 1e-9);
-  [a, LE12H, a_start, LE12H_start] = ode45(@diso_21_var_e,[0,-1e3], LE12H_b, options, p);
+  options = odeset('Events',@start, 'RelTol',1e-9, 'AbsTol',1e-9);
+  [a, LE12H, a_start, LE12H_start] = ode45(@diso_21_var_e,[0;-1e3], LE12H_b, options, p);
   a_b = -a_start; % d, age at birth
+  
   % get initial reserves
-  M_E10 = p.MV * LE12H(end,1)^3 * LE12H(end,2); % mol, initial reserve 1
-  M_E20 = p.MV * LE12H(end,1)^3 * LE12H(end,3); % mol, initial reserve 2
+  L_0 = LE12H(end,1);          % cm, initial structural length (near 0)      
+  M_V0  = p.MV * L_0^3;        % mol, initial structure (near 0)
+  M_E10 = M_V0 * LE12H(end,2); % mol, initial reserve 1
+  M_E20 = M_V0 * LE12H(end,3); % mol, initial reserve 2
+  
+  return % comment out if you want to see the results of the check
+  % check result by foreward integration
+  options = odeset('Events',@birth, 'RelTol',1e-9, 'AbsTol',1e-9);
+  [a, LE12H, a_birth, LE12H_birth] = ode45(@diso_21_var_e,[0; 1e3], [L_0; M_E10/ M_V0; M_E20/ M_V0; 0], options, p);
+  [L_b LE12H_birth(1)]
+  [m_E1b LE12H_birth(2)]
+  [m_E2b LE12H_birth(3)]
+  [p.E_Hb LE12H_birth(4)]
+  
 end
 
 function F = fniso_21_var_e(L, m_E1, m_E2, p)
   % for use by fzero in iso_21_var_e: F = 0 if L(0) = 0
   % parameters p are only used to pass to diso_21_var
- 
+  
+  warning('off','all'); % suppress failure warnings to meet integration tolerances
+  
   % back-integrate back in time till L(t)=0
   options = odeset('Events',@start, 'RelTol', 1e-9, 'AbsTol', 1e-9);
   LE12H_b = [L; m_E1; m_E2; p.E_Hb]; % states at birth
   try
     [~, LE12H] = ode45(@diso_21_var_e,[0;-1e3], LE12H_b, options, p); 
-    F = LE12H(end,1)-1e-3; % cm, norm
+    F = LE12H(end,1)-1e-3; % cm, norm L(0) = 0
   catch % L (at birth) too low, which leads to failure of the integration near start
     F = 1; % just a value different from zero, so fzero will not select this L
   end
+  
+  warning('on','all'); % activate all warnings
 
 end
 
@@ -108,9 +126,16 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P] = ...
 end
     
 % event start development
-function [value,isterminal,direction] = start(t, LE12H, r, varargin)
-  value = LE12H(1) - 1e-3;  % trigger 
+function [value,isterminal,direction] = start(t, LE12H, p)
+  value = LE12H(4) - 1e-3;  % trigger E_H(0)=0
   isterminal = 1;   % terminate after the first event
   direction  = [];  % get all the zeros
 end
 
+% event birth
+function [value,isterminal,direction] = birth(t, LE12H, p)
+  global L_b
+  value = LE12H(1) - L_b;  % trigger L(a_b) = L_b
+  isterminal = 1;   % terminate after the first event
+  direction  = [];  % get all the zeros
+end
