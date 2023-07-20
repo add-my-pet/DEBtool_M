@@ -28,7 +28,7 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
   %% Remarks
   % requires fniso_21_var_e, diso_21_var_e, sgr_iso_21_var_e (see below)
 
-  global L_b % only used to check solution
+  global L_b % only used to check solution in subfunction birth
   
   % guess L_b
   kap_G = 0.8;                       % -, initial guess for growth efficiency
@@ -58,9 +58,10 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1b, m_E2b, p)
   % check result by foreward integration
   options = odeset('Events',@birth, 'RelTol',1e-9, 'AbsTol',1e-9);
   [a, LE12H, a_birth, LE12H_birth] = ode45(@diso_21_var_e,[0; 1e3], [L_0; M_E10/ M_V0; M_E20/ M_V0; 0], options, p);
-  [L_b LE12H_birth(1)]
-  [m_E1b LE12H_birth(2)]
-  [m_E2b LE12H_birth(3)]
+  [a_b    a_birth]
+  [L_b    LE12H_birth(1)]
+  [m_E1b  LE12H_birth(2)]
+  [m_E2b  LE12H_birth(3)]
   [p.E_Hb LE12H_birth(4)]
   
 end
@@ -96,9 +97,9 @@ function dLE12H = diso_21_var_e(a, LE12H, p)
   E_H  = LE12H(4);                                            % J, maturity
 
 %growth
-[r, j_E1_M, j_E2_M, j_E1C, j_E2C, j_E1P, j_E2P] = ...         % cm/d, change in L, ..
+[r, j_E1_M, j_E2_M, j_E1C, j_E2C, j_E1P, j_E2P] = ...         % 1/d, spec growth rate, notice k_E = v/L      
     sgr_iso_21_var_e (m_E1, m_E2, p.j_E1M, p.j_E2M, p.mu_E1, p.mu_E2, p.mu_V, p.v/L, p.kap);
-dL = r * L/ 3; 
+dL = r * L/ 3;                                                % cm/d, change in L, ..
 
 % maturation
 M_V = p.MV * L^3;                                             % mol, mass of structure

@@ -12,7 +12,7 @@ p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
 p.y_E1X1    = 0.55;   p.y_E2X1    = 0.25;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
 p.y_E1X2    = 0.25;   p.y_E2X2    = 0.55;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-p.J_X1Am    = 1.0e-3; p.J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+p.J_X1Am    = 1.0e-2; p.J_X2Am    = 1.0e-2;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
 p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance; -, allocation fraction to soma                                         
 p.mu_E1     = 4e5;    p.mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
 p.mu_V      = 5e5;    p.MV        = 4e-3;  % J/mol, chemical potenial of structure;  mol/cm^3, [M_V] density of structure                                       
@@ -51,9 +51,14 @@ m_E1 = (p.y_E1X1 * p.J_X1Am + p.y_E1X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max re
 m_E2 = (p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reserve 2 density
 [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, p);  % get states
 M_Vb = L_b^3 * p.MV; M_E1b = m_E1 * M_Vb; M_E2b = m_E2 * M_Vb; % mol of structure, reserves at birth
+[~, ~, ~, ~, ~, ~, ~, mode] = sgr_iso_21_var (m_E1, m_E2, p.j_E1M, p.j_E2M, p.mu_E1, p.mu_E2, p.mu_V, p.v/L_b, p.kap);
+fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol; mode = %g\n', a_b, L_b, M_Vb, m_E1, m_E2, mode);
 
-fprintf('A birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol\n', a_b, L_b, M_Vb, m_E1, m_E2);
-return
+%% get max size L_m, M_Vm
+L_m = p.kap * p.v * max((p.mu_E1 * m_E1 + p.mu_E2 * m_E2)/ (p.mu_E2 * p.j_E2M), m_E1/ p.j_E1M + m_E2/ p.j_E2M); % cm, max struc length
+M_Vm = p.MV * L_m^3; % mol, max struc mass
+fprintf('max struc length L_m = %g cm; max struc mass M_Vm = %g mol;\n', L_m, M_Vm);
+%return
 
 %% run iso_221
 % var_b:
