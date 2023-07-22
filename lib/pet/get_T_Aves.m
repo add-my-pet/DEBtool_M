@@ -33,7 +33,7 @@ function T = get_T_Aves(order)
 % The remaining temperatures are copied from related orders.
 
 %% Example
-% AvesTemp('Coliiformes')
+% get_T_Aves('Coliiformes')
 
 Torder = { ...
   40.0  'Accipitriformes'    % copied from Falconiformes   
