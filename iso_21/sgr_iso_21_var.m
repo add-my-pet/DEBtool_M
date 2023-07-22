@@ -82,8 +82,8 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
       m_E12 = m_E1 + m_E2 * j_E1S/ j_E2S;                         % mol/mol, total mol of reserve density
       r = (m_E12 * kap * k_E - j_E1S)/ (m_E12 * kap + mu_V/ kap_G/ mu_E1); % 1/d, specific growth rate
       j_E1C =  (k_E - r) * m_E1; j_E2C =  (k_E - r) * m_E2;       % mol/d.mol, specific mobilisation rates
-      j_E2_S = kap * j_E2C;
-      j_E1_S = j_E1S * (1 - j_E2_S/ j_E2S);
+      j_E2_S = min(kap * j_E2C, j_E2S);
+      j_E1_S = min(kap * j_E1C, j_E1S * (1 - j_E2_S/ j_E2S));
       j_E1P = 0; j_E2P = 0;
     
     case 4 % structure pays part of somatic maintenance

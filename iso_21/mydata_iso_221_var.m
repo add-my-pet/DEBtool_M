@@ -52,7 +52,7 @@ m_E2 = (p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max re
 [L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, p);  % get states
 M_Vb = L_b^3 * p.MV; M_E1b = m_E1 * M_Vb; M_E2b = m_E2 * M_Vb; % mol of structure, reserves at birth
 [~, ~, ~, ~, ~, ~, ~, mode] = sgr_iso_21_var (m_E1, m_E2, p.j_E1M, p.j_E2M, p.mu_E1, p.mu_E2, p.mu_V, p.v/L_b, p.kap);
-fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol; mode = %g\n', a_b, L_b, M_Vb, m_E1, m_E2, mode);
+fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol; growth mode at birth = %g\n', a_b, L_b, M_Vb, m_E1, m_E2, mode);
 
 %% get max size L_m, M_Vm
 L_m = p.kap * p.v * max((p.mu_E1 * m_E1 + p.mu_E2 * m_E2)/ (p.mu_E2 * p.j_E2M), m_E1/ p.j_E1M + m_E2/ p.j_E2M); % cm, max struc length

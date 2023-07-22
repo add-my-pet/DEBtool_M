@@ -72,7 +72,7 @@ function F = fniso_21_var_e(L, m_E1, m_E2, p)
   
   warning('off','all'); % suppress failure warnings to meet integration tolerances
   
-  % back-integrate back in time till L(t)=0
+  % back-integrate back in time till E_H(t)=0
   options = odeset('Events',@start, 'RelTol', 1e-9, 'AbsTol', 1e-9);
   LE12H_b = [L; m_E1; m_E2; p.E_Hb]; % states at birth
   try
@@ -116,7 +116,7 @@ end
 
 function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P] = ...
     sgr_iso_21_var_e (m_E1, m_E2, j_E1S, j_E2S, mu_E1, mu_E2, mu_V, k_E, kap)
-  % like sgr_iso_21_var, but for embryos, with mode =  1 assumed
+  % like sgr_iso_21_var, but for embryos, with mode =  1 assumed: reserve 2 fuels all maintenance and growth overheads
   
   r = mu_E1 * kap * m_E1 * k_E/ (mu_V + mu_E1 * kap * m_E1);  % 1/d, specific growth rate if mode = 1
   j_E1C = (k_E - r) * m_E1; j_E2C = (k_E - r) * m_E2; % mol/d.mol mobilisation rates if mode = 1

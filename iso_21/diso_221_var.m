@@ -62,34 +62,47 @@ function dvar = diso_221_var(t, var, tX12T, p)
   % correct rates for temperature; rate values in p-structure are at T_ref; other rates are at T current
   TC = tempcorr(T, C2K(20), p.T_A);    % -, temperature correction factor, T_ref = 293 K
   F_X1m     = TC * p.F_X1m;  F_X2m     = TC * p.F_X2m;  % dm^2/d.cm^2, {F_Xim} spec searching rates
-  J_X1Am    = TC * p.J_X1Am; J_X2Am    = TC * p.J_X2Am; % mol/d.cm^2, {J_EiAm^Xi} max specfific assim rate for food X1
+  J_X1Am    = TC * p.J_X1Am; J_X2Am    = TC * p.J_X2Am; % mol/d.cm^2, {J_EiAm^Xi} max spec assim rate
   j_E1S     = TC * p.j_E1M;  j_E2S     = TC * p.j_E2M;  % mol/d.mol, specific som maint costs
   v         = TC * p.v;      k_E       = v/ L;          % cm/d, 1/d, energy conductance, reserve turnover rate
   k_J       = TC * p.k_J;    k1_J      = TC * p.k1_J;   % 1/d mat maint rate coeff, spec rejuvenation rate
 
+%   % feeding
+%   J_E1Am_X1 = p.y_E1X1 * J_X1Am; J_E1Am_X2 = p.y_E1X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1
+%   J_E2Am_X1 = p.y_E2X1 * J_X1Am; J_E2Am_X2 = p.y_E2X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
+%   J_E1S = j_E1S * M_V;  J_E2S = j_E2S * M_V;                    % mol/d.cm^3 total spec somatic maint
+%   m_E1m = (J_E1Am_X1 + J_E1Am_X2)/ v/ M_V;                      % mol/mol, max reserve 1 density
+%   m_E2m = (J_E2Am_X1 + J_E2Am_X2)/ v/ M_V;                      % mol/mol, max reserve 2 density
+%   s1 = max(0, 1 - m_E1/ m_E1m); s2 = max(0, 1 - m_E2/ m_E2m);   % -, stress factors for reserve 1, 2
+%   rho_X1X2 = s1 * max(0, p.M_X1/ p.M_X2 * p.y_E1X1/ p.y_E1X2 - 1) + s2 * max(0, p.M_X1/ p.M_X2 * p.y_E2X1/ p.y_E2X2 - 1);
+%   rho_X2X1 = s1 * max(0, p.M_X2/ p.M_X1 * p.y_E1X2/ p.y_E1X1 - 1) + s2 * max(0, p.M_X2/ p.M_X1 * p.y_E2X2/ p.y_E2X1 - 1);
+%   h_X1Am = J_X1Am/ p.M_X1; h_X2Am = J_X2Am/ p.M_X2;             % #/d.cm^2, max spec feeding rates
+%   alpha_X1 = h_X1Am + F_X1m * X1 + F_X2m * rho_X2X1 * X2; 
+%   alpha_X2 = h_X2Am + F_X2m * X2 + F_X1m * rho_X1X2 * X1;
+%   beta_X1 = F_X1m * X1 * (1 - rho_X1X2);  beta_X2 = F_X2m * X2 * (1 - rho_X2X1);
+%   f1 = (alpha_X2 * F_X1m * X1 - beta_X1 * F_X2m * X2)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2);
+%   f2 = (alpha_X1 * F_X2m * X2 - beta_X2 * F_X1m * X1)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2);
+%   dcM_X1 = f1 * J_X1Am * L^2; dcM_X2 = f2 * J_X2Am * L^2; % mol/d, feeding rates
+
   % feeding
-  J_E1Am_X1 = p.y_E1X1 * J_X1Am; J_E1Am_X2 = p.y_E1X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1
-  J_E2Am_X1 = p.y_E2X1 * J_X1Am; J_E2Am_X2 = p.y_E2X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
-  J_E1S = j_E1S * M_V;  J_E2S = j_E2S * M_V;                    % mol/d.cm^3 total spec somatic maint
-  m_E1m = max(J_E1Am_X1/ v/ M_V, J_E1Am_X2/ v/ M_V);            % mol/mol, max reserve 1 density
-  m_E2m = max(J_E2Am_X1/ v/ M_V, J_E2Am_X2/ v/ M_V);            % mol/mol, max reserve 2 density
+  J_E1Am = p.y_E1X1 * J_X1Am + p.y_E1X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1
+  J_E2Am = p.y_E2X1 * J_X1Am + p.y_E2X2 * J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
+  J_E1S = j_E1S * M_V;  J_E2S = j_E2S * M_V;      % mol/d total spec somatic maint
+  m_E1m = J_E1Am/ v/ M_V; m_E2m = J_E2Am/ v/ M_V; % mol/mol, max reserve i density
   s1 = max(0, 1 - m_E1/ m_E1m); s2 = max(0, 1 - m_E2/ m_E2m);   % -, stress factors for reserve 1, 2
   rho_X1X2 = s1 * max(0, p.M_X1/ p.M_X2 * p.y_E1X1/ p.y_E1X2 - 1) + s2 * max(0, p.M_X1/ p.M_X2 * p.y_E2X1/ p.y_E2X2 - 1);
   rho_X2X1 = s1 * max(0, p.M_X2/ p.M_X1 * p.y_E1X2/ p.y_E1X1 - 1) + s2 * max(0, p.M_X2/ p.M_X1 * p.y_E2X2/ p.y_E2X1 - 1);
-  h_X1Am = J_X1Am/ p.M_X1; h_X2Am = J_X2Am/ p.M_X2;             % #/d.cm^2, max spec feeding rates
-  alpha_X1 = h_X1Am + F_X1m * X1 + F_X2m * rho_X2X1 * X2; 
-  alpha_X2 = h_X2Am + F_X2m * X2 + F_X1m * rho_X1X2 * X1;
+  alpha_X1 = J_X1Am/ p.M_X1 + F_X1m * X1 + F_X2m * rho_X2X1 * X2; 
+  alpha_X2 = J_X2Am/ p.M_X2 + F_X2m * X2 + F_X1m * rho_X1X2 * X1;
   beta_X1 = F_X1m * X1 * (1 - rho_X1X2);  beta_X2 = F_X2m * X2 * (1 - rho_X2X1);
-  f1 = (alpha_X2 * F_X1m * X1 - beta_X1 * F_X2m * X2)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2);
-  f2 = (alpha_X1 * F_X2m * X2 - beta_X2 * F_X1m * X1)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2);
+  f1 = (alpha_X2 * F_X1m * X1 - beta_X1 * F_X2m * X2)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2); % -, scaled func response for food 1
+  f2 = (alpha_X1 * F_X2m * X2 - beta_X2 * F_X1m * X1)/ (alpha_X1 * alpha_X2 - beta_X1 * beta_X2); % -, scaled func response for food 2
   dcM_X1 = f1 * J_X1Am * L^2; dcM_X2 = f2 * J_X2Am * L^2; % mol/d, feeding rates
 
   % assimilation
-  J_E1A = f1 * p.y_E1X1 * J_X1Am + f2 * p.y_E1X2 * J_X2Am; % mol/d.cm^2, {J_E1A}, specific assimilation flux
-  J_E2A = f1 * p.y_E2X1 * J_X1Am + f2 * p.y_E2X2 * J_X2Am; % mol/d.cm^2, {J_E2A}, specific assimilation flux
-  j_E1A = J_E1A/ p.MV/ L; j_E2A = J_E2A/ p.MV/ L;          % mol/d.mol, {J_EA}/ L.[M_V], specific assim flux
-  J_E1Am = J_E1Am_X1 + J_E1Am_X2;                          % mol/d.cm^2, total max spec assim rate for reserve 1
-  J_E2Am = J_E2Am_X1 + J_E2Am_X2;                          % mol/d.cm^2, total max spec assim rate for reserve 2
+  J_E1A = f1 * p.y_E1X1 * J_X1Am + f2 * p.y_E1X2 * J_X2Am; % mol/d.cm^2, {J_E1A}, area-specific assimilation flux
+  J_E2A = f1 * p.y_E2X1 * J_X1Am + f2 * p.y_E2X2 * J_X2Am; % mol/d.cm^2, {J_E2A}, area-specific assimilation flux
+  j_E1A = J_E1A/ L/ p.MV; j_E2A = J_E2A/ L/ p.MV;          % mol/d.mol, {J_EA}/ L.[M_V], mass-specific assim flux
 
   % reserve dynamics
   [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P] = ...      % 1/d, specific growth rate, ....
