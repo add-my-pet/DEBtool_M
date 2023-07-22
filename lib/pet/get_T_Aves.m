@@ -2,7 +2,7 @@
 % get body temperature of a bird order
 %%
 function T = get_T_Aves(order)
-% created 2023/06/22 by Bas Kooijman
+% created 2023/07/22 by Bas Kooijman
 
 %% Syntax
 % T = <AvesTemp  *AvesTemp*>(order)
