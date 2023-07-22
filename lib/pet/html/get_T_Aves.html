@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_T_Aves</h1><!--introduction--><p>get body temperature of a bird order</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example</a></li></ul></div><h2 id="3">Syntax</h2><p>T = <a href="AvesTemp"> <b>AvesTemp</b></a>(order)</p><h2 id="4">Description</h2><p>get the typical body temperature of a bird order based on PrinPres1991</p><p>bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 'doi = {10.1016/0300-9629(91)90122-S}, ' ... 'author = {R. Prinzinger and A.Pre{\ss}mar and E. Schleucher}, ' ... 'year = {1991}, ' ... 'title = {BODY TEMPERATURE IN BIRDS}, ' ... 'journal = {Comp. Biochem. Physiol.}, ' ... 'volume = {99A(4)}, ' ... 'pages = {499-506}']; metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];</p><p>Input:</p><div><ul><li>order: character string with name of bird order, as accepted by AmP</li></ul></div><p>Output:</p><p>T: scalar with typical body temperature in C</p><h2 id="5">Remarks</h2><p>PrinPres1991 lists 26 of the 45 orders that are presently recognized. The remaining temperatures are copied from related orders.</p><h2 id="6">Example</h2><p>get_T_Aves('Coliiformes')</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_T_Aves</h1><!--introduction--><p>get body temperature of a bird order</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example</a></li></ul></div><h2 id="3">Syntax</h2><p>T = <a href="get_T_Aves"> <b>get_T_Aves</b></a>(order)</p><h2 id="4">Description</h2><p>get the typical body temperature of a bird order based on PrinPres1991</p><p>bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 'doi = {10.1016/0300-9629(91)90122-S}, ' ... 'author = {R. Prinzinger and A.Pre{\ss}mar and E. Schleucher}, ' ... 'year = {1991}, ' ... 'title = {BODY TEMPERATURE IN BIRDS}, ' ... 'journal = {Comp. Biochem. Physiol.}, ' ... 'volume = {99A(4)}, ' ... 'pages = {499-506}']; metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];</p><p>Input:</p><div><ul><li>order: character string with name of bird order, as accepted by AmP</li></ul></div><p>Output:</p><p>T: scalar with typical body temperature in C</p><h2 id="5">Remarks</h2><p>PrinPres1991 lists 26 of the 45 orders that are presently recognized. The remaining temperatures are copied from related orders.</p><h2 id="6">Example</h2><p>get_T_Aves('Coliiformes')</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_T_Aves
 % get body temperature of a bird order
@@ -76,7 +76,7 @@ function T = get_T_Aves(order)
 % created 2023/07/22 by Bas Kooijman
 
 %% Syntax
-% T = <AvesTemp  *AvesTemp*>(order)
+% T = <get_T_Aves  *get_T_Aves*>(order)
 
 %% Description
 % get the typical body temperature of a bird order based on PrinPres1991

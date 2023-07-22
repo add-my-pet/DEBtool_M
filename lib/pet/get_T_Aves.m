@@ -5,7 +5,7 @@ function T = get_T_Aves(order)
 % created 2023/07/22 by Bas Kooijman
 
 %% Syntax
-% T = <AvesTemp  *AvesTemp*>(order)
+% T = <get_T_Aves  *get_T_Aves*>(order)
 
 %% Description
 % get the typical body temperature of a bird order based on PrinPres1991
