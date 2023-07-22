@@ -1,0 +1,160 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_T_Aves</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-07-22"><meta name="DC.source" content="get_T_Aves.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_T_Aves</h1><!--introduction--><p>get body temperature of a bird order</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example</a></li></ul></div><h2 id="3">Syntax</h2><p>T = <a href="AvesTemp"> <b>AvesTemp</b></a>(order)</p><h2 id="4">Description</h2><p>get the typical body temperature of a bird order based on PrinPres1991</p><p>bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 'doi = {10.1016/0300-9629(91)90122-S}, ' ... 'author = {R. Prinzinger and A.Pre{\ss}mar and E. Schleucher}, ' ... 'year = {1991}, ' ... 'title = {BODY TEMPERATURE IN BIRDS}, ' ... 'journal = {Comp. Biochem. Physiol.}, ' ... 'volume = {99A(4)}, ' ... 'pages = {499-506}']; metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];</p><p>Input:</p><div><ul><li>order: character string with name of bird order, as accepted by AmP</li></ul></div><p>Output:</p><p>T: scalar with typical body temperature in C</p><h2 id="5">Remarks</h2><p>PrinPres1991 lists 26 of the 45 orders that are presently recognized. The remaining temperatures are copied from related orders.</p><h2 id="6">Example</h2><p>AvesTemp('Coliiformes')</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_T_Aves
+% get body temperature of a bird order
+%%
+function T = get_T_Aves(order)
+% created 2023/06/22 by Bas Kooijman
+
+%% Syntax
+% T = <AvesTemp  *AvesTemp*>(order)
+
+%% Description
+% get the typical body temperature of a bird order based on PrinPres1991
+%
+% bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 
+% 'doi = {10.1016/0300-9629(91)90122-S}, ' ...
+% 'author = {R. Prinzinger and A.Pre{\ss}mar and E. Schleucher}, ' ... 
+% 'year = {1991}, ' ...
+% 'title = {BODY TEMPERATURE IN BIRDS}, ' ...
+% 'journal = {Comp. Biochem. Physiol.}, ' ...
+% 'volume = {99A(4)}, ' ...
+% 'pages = {499-506}'];
+% metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+%
+% Input:
+%
+% * order: character string with name of bird order, as accepted by AmP
+%
+% Output:
+%
+% T: scalar with typical body temperature in C
+
+%% Remarks
+% PrinPres1991 lists 26 of the 45 orders that are presently recognized.
+% The remaining temperatures are copied from related orders.
+
+%% Example
+% AvesTemp('Coliiformes')
+
+Torder = { ...
+  40.0  'Accipitriformes'    % copied from Falconiformes   
+  39.7  'Aegotheliformes'    % copied from Caprimulgiformes   
+  41.3  'Anseriformes'       
+  38.1  'Apodiformes'        % incl Trochiliformes; Apodiformes 40.0
+  38.3  'Apterygiformes'     
+  40.0  'Bucerotiformes'     % copied from Coraciiformes    
+  39.7  'Caprimulgiformes'   
+  40.0  'Cariamiformes'      % copied from Falconiformes     
+  38.8  'Casuariiformes'     
+  40.0  'Cathartiformes'     % copied from Falconiformes    
+  40.9  'Charadriiformes'    
+  40.5  'Ciconiiformes'      
+  39.5  'Coliiformes'        
+  40.9  'Columbiformes'      
+  40.0  'Coraciiformes'      
+  41.3  'Cuculiformes'       
+  40.4  'Eurypygiformes'     % copied from Gruiformes    
+  40.0  'Falconiformes'      
+  41.4  'Galliformes'        
+  39.3  'Gaviiformes'        
+  40.4  'Gruiformes'         
+  41.3  'Leptosomiformes'    % copied from Cuculiformes   
+  41.3  'Mesitornithiformes' % copied from Cuculiformes
+  41.3  'Musophagiformes'    % copied from Cuculiformes
+  40.0  'Nyctibiiformes'     % copied from Apodiformes   
+  41.3  'Opisthocomiformes'  % copied from Cuculiformes 
+  40.4  'Otidiformes'        % copied from Gruiformes       
+  41.6  'Passeriformes'      
+  40.6  'Pelecaniformes'     
+  40.9  'Phaethontiformes'   % copied from Charadriiformes 
+  40.4  'Phoenicopteriformes' % copied from Gruiformes
+  41.8  'Piciformes'         
+  39.7  'Podargiformes'      % copied from Caprimulgiformes     
+  39.5  'Podicipediformes'   
+  39.4  'Procellariiformes'  
+  41.3  'Psittaciformes'     
+  40.9  'Pteroclidiformes'   % copied from Columbiformes  
+  39.3  'Rheiformes'         % copied from Struthioniformes        
+  38.2  'Sphenisciformes'    
+  39.7  'Steatornithiformes' % copied from Caprimulgiformes
+  40.2  'Strigiformes'       
+  39.3  'Struthioniformes'   
+  40.6  'Suliformes'         % copied from Pelecaniformes       
+  40.4  'Tinamiformes'       
+  40.0  'Trogoniformes'      % copied from Coraciiformes     
+};
+T = Torder{strcmp(order, Torder(:,2)),1};
+
+
+##### SOURCE END #####
+--></body></html>
