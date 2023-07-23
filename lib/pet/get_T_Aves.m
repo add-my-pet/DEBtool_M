@@ -31,14 +31,14 @@ function T = get_T_Aves(order)
 % T: scalar with typical body temperature in C
 
 %% Remarks
-% PrinPres1991 lists 26 of the 45 orders that are presently recognized.
+% PrinPres1991 lists (all) 26 bird orders in 1991 of the 45 orders that are presently recognized.
 % The remaining temperatures are copied from orders to which they belonged in 1991.
 % The Phoenicopteriformes and the now-related Podicipediformes made wild taxonomic associations over the years;
 % This also applies to the Opisthocomiformes. 
 % The Falconiformes, splitted off the Accipitriformes, Cariamiformes and Cathartiformes and are now associated with the Psittaciformes.
 % The Trogoniformes and Leptosomiformes are now more associated with the Coliiformes. 
 % The Apodiformes presently includes the Trochiliformes.
-% What this means in terms of typical body temperature is not certain.
+% What this means in terms of typical body temperature is not fully certain.
 
 %% Example
 % get_T_Aves('Coliiformes')
