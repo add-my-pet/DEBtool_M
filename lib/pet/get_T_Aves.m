@@ -33,6 +33,8 @@ function T = get_T_Aves(order)
 %% Remarks
 % PrinPres1991 lists 26 of the 45 orders that are presently recognized.
 % The remaining temperatures are copied from orders to which they belonged in 1991.
+% The Phoenicopteriformes and the now-related Podicipediformes made wild taxonomic associations over the years;
+% This also applies to the Opisthocomiformes
 
 %% Example
 % get_T_Aves('Coliiformes')
@@ -68,7 +70,7 @@ Torder = { ...
   41.6  'Passeriformes'      
   40.6  'Pelecaniformes'     
   40.9  'Phaethontiformes'   % copied from Charadriiformes 
-  39.5  'Phoenicopteriformes'% copied from Podicipediformes
+  39.5  'Phoenicopteriformes'% copied from Podicipediformes (?)
   41.8  'Piciformes'         
   39.7  'Podargiformes'      % copied from Caprimulgiformes     
   39.5  'Podicipediformes'   
