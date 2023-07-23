@@ -32,7 +32,7 @@ function T = get_T_Aves(order)
 
 %% Remarks
 % PrinPres1991 lists 26 of the 45 orders that are presently recognized.
-% The remaining temperatures are copied from related orders.
+% The remaining temperatures are copied from orders to which they belonged in 1991.
 
 %% Example
 % get_T_Aves('Coliiformes')
