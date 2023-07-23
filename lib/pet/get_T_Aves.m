@@ -35,7 +35,7 @@ function T = get_T_Aves(order)
 % The remaining temperatures are copied from orders to which they belonged in 1991.
 % The Phoenicopteriformes and the now-related Podicipediformes made wild taxonomic associations over the years;
 % This also applies to the Opisthocomiformes. 
-% The Falconiformes, splitted of the Accipitriformes, Cariamiformes and Cathartiformes and associated with the Psittaciformes.
+% The Falconiformes, splitted of the Accipitriformes, Cariamiformes and Cathartiformes and are now associated with the Psittaciformes.
 % The Trogoniformes and Leptosomiformes are now more associated with the Coliiformes. 
 % What this means in terms of typical body temperature is not certain.
 
