@@ -37,7 +37,7 @@ function T = get_T_Aves(order)
 % This also applies to the Opisthocomiformes. 
 % The Falconiformes, splitted off the Accipitriformes, Cariamiformes and Cathartiformes and are now associated with the Psittaciformes.
 % The Trogoniformes and Leptosomiformes are now more associated with the Coliiformes. 
-% The Apodiformes presently includes the Trochiliformes.
+% The Apodiformes presently includes the Trochiliformes, but PrinPres1991 gives different temperatures.
 % What this means in terms of typical body temperature is not fully certain.
 
 %% Example
