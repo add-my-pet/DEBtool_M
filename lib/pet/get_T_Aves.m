@@ -82,7 +82,7 @@ Torder = { ...
   39.3  'Struthioniformes'   
   40.6  'Suliformes'         % copied from Pelecaniformes       
   40.4  'Tinamiformes'       
-  39.5  'Trogoniformes'      % copied from Coliiformes     
+  40.0  'Trogoniformes'      % copied from Coraciiformes     
 };
 T = Torder{strcmp(order, Torder(:,2)),1};
 
