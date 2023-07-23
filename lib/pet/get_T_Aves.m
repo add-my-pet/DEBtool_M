@@ -9,8 +9,8 @@ function T = get_T_Aves(order)
 
 %% Description
 % get the typical body temperature of a bird order based on PrinPres1991.
-% They are thought to apply post fledging; embryos are ectothermic.
-% Their boy temperature depends on environmental conditions and parental care.
+% They are thought to apply post-natal or post-fledging; embryos are ectothermic.
+% Mean embryo body temperature depends on environmental conditions and parental care.
 %
 % bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 
 % 'doi = {10.1016/0300-9629(91)90122-S}, ' ...
