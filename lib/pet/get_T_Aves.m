@@ -8,7 +8,9 @@ function T = get_T_Aves(order)
 % T = <get_T_Aves  *get_T_Aves*>(order)
 
 %% Description
-% get the typical body temperature of a bird order based on PrinPres1991
+% get the typical body temperature of a bird order based on PrinPres1991.
+% They are thought to apply post fledging; embryos are ectothermic.
+% Their boy temperature depends on environmental conditions and parental care.
 %
 % bibkey = 'PrinPres1991'; type = 'Article'; bib = [ ... 
 % 'doi = {10.1016/0300-9629(91)90122-S}, ' ...
@@ -39,7 +41,7 @@ Torder = { ...
   40.0  'Accipitriformes'    % copied from Falconiformes   
   39.7  'Aegotheliformes'    % copied from Caprimulgiformes   
   41.3  'Anseriformes'       
-  38.1  'Apodiformes'        % incl Trochiliformes; Apodiformes 40.0
+  38.1  'Apodiformes'        % incl Trochiliformes 38.1; Apodiformes 40.0
   38.3  'Apterygiformes'     
   40.0  'Bucerotiformes'     % copied from Coraciiformes    
   39.7  'Caprimulgiformes'   

@@ -12,14 +12,14 @@ p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
 p.y_E1X1    = 0.55;   p.y_E2X1    = 0.25;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
 p.y_E1X2    = 0.25;   p.y_E2X2    = 0.55;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-p.J_X1Am    = 1.0e-2; p.J_X2Am    = 1.0e-2;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+p.J_X1Am    = 1.0e-3; p.J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
 p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance; -, allocation fraction to soma                                         
 p.mu_E1     = 4e5;    p.mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
 p.mu_V      = 5e5;    p.MV        = 4e-3;  % J/mol, chemical potenial of structure;  mol/cm^3, [M_V] density of structure                                       
 p.j_E1M     = 0.09;   p.j_E2M     = p.j_E1M * p.mu_E1/ p.mu_E2; % mol/d.mol, specific som maint costs                                     
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 p.del_V     = 0.8;                         % -, threshold for death by  shrinking
-p.kap_E1    = 1;      p.kap_E2    = 1;     % -, fraction of rejected mobilised flux that is returned to reserve
+p.kap_E1    = .1;      p.kap_E2    = .1;     % -, fraction of rejected mobilised flux that is returned to reserve
 % since j_E1P = 0, kap_E1 is not relevant
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty

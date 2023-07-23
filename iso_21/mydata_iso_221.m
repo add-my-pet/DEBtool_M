@@ -1,5 +1,5 @@
 %% mydata_iso_221
-% created 2011/05/04 by Bas Kooijman, modified 2012/01/30
+% created 2011/05/04 by Bas Kooijman, modified 2012/01/30, 2023/07/23
 % isomorph with 1 structure
 % 2 reserves: protein (1) and non-protein (2)
 %  maintenance preferably paid from non-protein
@@ -8,45 +8,45 @@
 %  preference depends on stress of non-filled reserve
 
 %% set parameters at T_ref = 293 K
-M_X1      = 1e-3;   M_X2      = 1e-3;  % mol, size of food particle of type i
-F_X1m     = 10;     F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
-y_P1X1    = 0.15;   y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
-y_E1X1    = 0.45;   y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
-y_E1X2    = 0.35;   y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-J_X1Am    = 2.0e-3; J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-v         = 0.02;   kap       = 0.8;   % cm/d, energy conductance, 
+p.M_X1      = 1e-3;   p.M_X2      = 1e-3;  % mol, size of food particle of type i
+p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
+p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
+p.y_E1X1    = 0.45;   p.y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
+p.y_E1X2    = 0.35;   p.y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
+p.J_X1Am    = 2.0e-3; p.J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance, 
                                        % -, allocation fraction to soma
-mu_E1     = 4e5;    mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
-mu_V      = 5e5;    j_E1M     = 0.09;  % J/mol, chemical potenial of structure
+p.mu_E1     = 4e5;    p.mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
+p.mu_V      = 5e5;    p.j_E1M     = 0.09;  % J/mol, chemical potenial of structure
                                        % mol/d.mol, specific som maint costs
-J_E1T     = 0;      MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
+p.J_E1T     = 0;      p.MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
                                        % mol/cm^3, [M_V] density of structure
-k_J       = 0.002;  k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
-rho1      = 0.01;   del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
+p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
+p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
                                        % -, threshold for death by shrinking
-y_VE1     = 0.8;    y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
-kap_E1    = 0.8;    kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
-kap_R1    = 0.95;   kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
-E_Hb      = 1e1;    E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
-T_A       = 8000;   h_H       = 1e-5;  % K, Arrhenius temperature
+p.y_VE1     = 0.8;    p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
+p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
+p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
+p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
+p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
                                        % 1/d, hazerd due to rejuvenation
-h_a       = 2e-8;   s_G       = 1e-4;  % 1/d^2, aging acceleration
+p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
                                        % -, Gompertz stress coefficient
-kap_G = mu_V/ (mu_E1 * y_VE1 + mu_E2 * y_VE2); % -, growth efficiency
-% y_VE1 and y_VE2 are dummies; kap_G can also be signed directly
+p.kap_G = p.mu_V/ (p.mu_E1 * p.y_VE1 + p.mu_E2 * p.y_VE2); % -, growth efficiency
+% y_VE1 and y_VE2 are dummies; kap_G can also be assigned directly
 
-% pack parameters
-par_iso_221 = [...
-%      1       2       3       4       5       6       7       8
-    M_X1;   M_X2;  F_X1m;  F_X2m; y_P1X1; y_P2X2; y_E1X1; y_E2X1;
-%      9      10      11      12      13      14      15      16
-  y_E1X2; y_E2X2; J_X1Am; J_X2Am;      v;    kap;  mu_E1;  mu_E2;
-%     17      18      19      20      21      22      23      24 
-    mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;   rho1;  del_V; 
-%     25      26      27      28      29      30      31      32   
-   y_VE1;  y_VE2; kap_E1; kap_E2; kap_R1; kap_R2;   E_Hb;   E_Hp; 
-%     33      34      35      36      37
-     T_A;    h_H;    h_a;    s_G;  kap_G];
+% % pack parameters
+% par_iso_221 = [...
+% %      1       2       3       4       5       6       7       8
+%     M_X1;   M_X2;  F_X1m;  F_X2m; y_P1X1; y_P2X2; y_E1X1; y_E2X1;
+% %      9      10      11      12      13      14      15      16
+%   y_E1X2; y_E2X2; J_X1Am; J_X2Am;      v;    kap;  mu_E1;  mu_E2;
+% %     17      18      19      20      21      22      23      24 
+%     mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;   rho1;  del_V; 
+% %     25      26      27      28      29      30      31      32   
+%    y_VE1;  y_VE2; kap_E1; kap_E2; kap_R1; kap_R2;   E_Hb;   E_Hp; 
+% %     33      34      35      36      37
+%      T_A;    h_H;    h_a;    s_G;  kap_G];
 
 % set chemical indices
 %    X1   X2    V   E1   E2   P1   P2  organics
@@ -69,17 +69,17 @@ tXT(:,2) = 20000;     tXT(:,3) = 20000;       % mol/dm^2, food densities (don't 
 tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
-[var_b a_b M_E10 M_E20] = iso_21_b(tXT, par_iso_221);
+[var_b a_b M_E10 M_E20] = iso_21_b(tXT, p);
 
 %% run iso_221
-[var flux]  = iso_221(tXT, var_b, par_iso_221, n_O, n_M); % from birth to t = tXT(end,1)
+[var flux]  = iso_221(tXT, var_b, p, n_O, n_M); % from birth to t = tXT(end,1)
 
 if 1
 % continue with a period with only food type 2
 t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
 tXT2(:,2) = 0; tXT2(:,3) = 2e4; tXT2(:,4) = 293;       % set food, temp
 var_0 = var(end,:)';                                   % copy last state to initial state
-[var2 flux2]  = iso_221(tXT2, var_0, par_iso_221, n_O, n_M, 0); % run iso_221
+[var2 flux2]  = iso_221(tXT2, var_0, p, n_O, n_M, 0); % run iso_221
 % catenate results for plotting
 t = [t; t2]; var = [var; var2]; flux = [flux; flux2];
 end
@@ -138,7 +138,7 @@ xlabel('time since birth, d')
 ylabel('structure, mol')
 
 subplot(2,4,6)
-plot(t, (M_V/ MV).^(1/3), 'g')
+plot(t, (M_V/ p.MV).^(1/3), 'g')
 xlabel('time since birth, d')
 ylabel('length, cm')
 
