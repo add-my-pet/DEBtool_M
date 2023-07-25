@@ -34,6 +34,7 @@ global loss_function
 % set pseudodata
 data.psd.v = 0.02;     units.psd.v = 'cm/d';       label.psd.v = 'energy conductance';
 data.psd.p_M = 18;     units.psd.p_M = 'J/d.cm^3'; label.psd.p_M = 'vol-spec som maint';   
+data.psd.k_J = 0.002;  units.psd.k_J = '1/d';      label.psd.k_J = 'maturity maintenance rate coefficient';
 data.psd.k = 0.3;      units.psd.k = '-';          label.psd.k = 'maintenance ratio';
 data.psd.kap = 0.8;    units.psd.kap = '-';        label.psd.kap = 'allocation fraction to soma';
 data.psd.kap_G = 0.8;  units.psd.kap_G = '-';      label.psd.kap_G = 'growth efficiency'; 
@@ -43,15 +44,17 @@ data.psd.kap_R = 0.95; units.psd.kap_R = '-';      label.psd.kap_R = 'reproducti
 weights.psd = setweights(data.psd, []);
 weights.psd.v     = 0.1 * weights.psd.v;
 weights.psd.p_M   = 0.1 * weights.psd.p_M;
-weights.psd.k     = 0.1 * weights.psd.k;
+weights.psd.k_J   = 0.1 * weights.psd.k_J;
+weights.psd.k     = 0 * weights.psd.k;
 weights.psd.kap   = 0.1 * weights.psd.kap;
-%weights.psd.kap_G = 0.1 * weights.psd.kap_G;
+weights.psd.kap_G = 20 * weights.psd.kap_G;
 weights.psd.kap_R = 0.1 * weights.psd.kap_R;
 
 if strcmp(loss_function, 'su')
   weights.psd.v     = 1e-4 * weights.psd.v;
   weights.psd.p_M   = 1e-4 * weights.psd.p_M;
-  weights.psd.k     = 1e-4 * weights.psd.k;
+  weights.psd.k_J   = 1e-4 * weights.psd.k_J;
+  weights.psd.k     = 0 * weights.psd.k;
   weights.psd.kap   = 1e-4 * weights.psd.kap;
   weights.psd.kap_G = 1e-4 * weights.psd.kap_G;
   weights.psd.kap_R = 1e-4 * weights.psd.kap_R;
