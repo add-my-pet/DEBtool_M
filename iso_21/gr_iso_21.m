@@ -49,7 +49,7 @@ function [v_B_out, j_E1_M, j_E2_M, j_E1C, j_E2C, info] = ...
   while (abs(H) > 1e-8) && (i < n) % test norm
     r = 3 * v_B/ L;                                             % 1/d, specific growth rate
     j_E1C = m_E1 * (v/ L - r); j_E2C = m_E2 * (v/ L - r);       % mol/d.mol, spec mobilisation rates
-    A = rho1 * j_E1C * j_E2M^2/ j_E1M; C = - kap * j_E2C * (j_E1C + j_E2C);
+    A = rho1 * j_E1C * j_E1M; C = - kap * j_E2C * (j_E1C + j_E2C);
     B = C + (j_E1C + (1 - rho1) * j_E2C) * j_E2M; sq = sqrt(B * B - 4 * A * C);
     j_E1_M = min(kap * j_E1C, 2 * A * j_E1M/ (2 * A + sq - B)); % mol/d.mol, spec som maint rate 1
     j_E2_M = min(kap * j_E2C, j_E2M * (1 - j_E1_M/ j_E1M));     % mol/d.mol, spec som maint rate 2
