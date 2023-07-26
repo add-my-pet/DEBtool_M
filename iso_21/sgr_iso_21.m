@@ -7,7 +7,7 @@ function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
   % created: 2011/05/03 by Bas Kooijman, modified 2011/08/05
 
   %% Syntax
-  % [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = <../sgr_iso_21_var.m *sgr_iso_21*> (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)
+  % [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = <../sgr_iso_21.m *sgr_iso_21*> (m_E1, m_E2, j_E1S, j_E2S, y_VE1, y_VE2, mu_EV, k_E, kap, rho1, r0)
 
   %% Description
   % specific growth rate for isomorph with 2 reserves, allowing for shrinking

@@ -32,21 +32,6 @@ p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
                                        % 1/d, hazerd due to rejuvenation
 p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
                                        % -, Gompertz stress coefficient
-p.kap_G = p.mu_V/ (p.mu_E1 * p.y_VE1 + p.mu_E2 * p.y_VE2); % -, growth efficiency
-% y_VE1 and y_VE2 are dummies; kap_G can also be assigned directly
-
-% % pack parameters
-% par_iso_221 = [...
-% %      1       2       3       4       5       6       7       8
-%     M_X1;   M_X2;  F_X1m;  F_X2m; y_P1X1; y_P2X2; y_E1X1; y_E2X1;
-% %      9      10      11      12      13      14      15      16
-%   y_E1X2; y_E2X2; J_X1Am; J_X2Am;      v;    kap;  mu_E1;  mu_E2;
-% %     17      18      19      20      21      22      23      24 
-%     mu_V;  j_E1M;  J_E1T;     MV;    k_J;   k1_J;   rho1;  del_V; 
-% %     25      26      27      28      29      30      31      32   
-%    y_VE1;  y_VE2; kap_E1; kap_E2; kap_R1; kap_R2;   E_Hb;   E_Hp; 
-% %     33      34      35      36      37
-%      T_A;    h_H;    h_a;    s_G;  kap_G];
 
 % set chemical indices
 %    X1   X2    V   E1   E2   P1   P2  organics

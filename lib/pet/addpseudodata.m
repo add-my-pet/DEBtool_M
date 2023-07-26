@@ -34,7 +34,7 @@ global loss_function
 % set pseudodata
 data.psd.v = 0.02;     units.psd.v = 'cm/d';       label.psd.v = 'energy conductance';
 data.psd.p_M = 18;     units.psd.p_M = 'J/d.cm^3'; label.psd.p_M = 'vol-spec som maint';   
-data.psd.k_J = 0.002;  units.psd.k_J = '1/d';      label.psd.k_J = 'maturity maintenance rate coefficient';
+data.psd.k_J = 0.002;  units.psd.k_J = '1/d';      label.psd.k_J = 'maturity maint rate coefficient';
 data.psd.k = 0.3;      units.psd.k = '-';          label.psd.k = 'maintenance ratio';
 data.psd.kap = 0.8;    units.psd.kap = '-';        label.psd.kap = 'allocation fraction to soma';
 data.psd.kap_G = 0.8;  units.psd.kap_G = '-';      label.psd.kap_G = 'growth efficiency'; 
