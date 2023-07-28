@@ -1,7 +1,7 @@
 %% web2local
 % copy a directory on the web to local on the pc
 %%
-function list = web2local(dirLocal,dirWeb)
+function web2local(dirLocal,dirWeb)
 % created 2023/07/28 by  Bas Kooijman
 
 %% Syntax
