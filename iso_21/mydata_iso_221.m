@@ -15,23 +15,24 @@ p.y_E1X1    = 0.45;   p.y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on foo
 p.y_E1X2    = 0.35;   p.y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
 p.J_X1Am    = 2.0e-3; p.J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
 p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance, 
-                                       % -, allocation fraction to soma
+                                           % -, allocation fraction to soma
 p.mu_E1     = 4e5;    p.mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
-p.mu_V      = 5e5;    p.j_E1M     = 0.09;  % J/mol, chemical potenial of structure
-                                       % mol/d.mol, specific som maint costs
+p.mu_V      = 5e5;    p.j_E1M     = 0.09;  % J/mol, chemical potential of structure
+                                           % mol/d.mol, specific som maint costs
 p.J_E1T     = 0;      p.MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
-                                       % mol/cm^3, [M_V] density of structure
+                                           % mol/cm^3, [M_V] density of structure
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
-                                       % -, threshold for death by shrinking
+                                           % -, threshold for death by shrinking
 p.y_VE1     = 0.8;    p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
 p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
 p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
-                                       % 1/d, hazerd due to rejuvenation
+                                           % 1/d, hazerd due to rejuvenation
 p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
-                                       % -, Gompertz stress coefficient
+                                           % -, Gompertz stress coefficient
+p.E_G       = 7900;                        % J/cm^3, specific cost for structure
 
 % set chemical indices
 %    X1   X2    V   E1   E2   P1   P2  organics
