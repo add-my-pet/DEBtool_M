@@ -9,7 +9,7 @@ function web2local(varargin)
 
 %% Description
 % Copies a file or directory on the web to local. 
-% A directory directory might contain files or directories, but these directories might not contain directories.
+% A directory might contain files or directories, but these directories might not contain directories.
 % The names of the local subdirectories are tha same as on the web
 %
 % Input:
