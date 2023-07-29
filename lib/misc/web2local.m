@@ -10,7 +10,7 @@ function web2local(varargin)
 %% Description
 % Copies a file or directory on the web to local. 
 % A directory directory might contain files or directories, but these directories might not contain directories.
-% The names of the local dubdirectories are tha same as on the web
+% The names of the local subdirectories are tha same as on the web
 %
 % Input:
 %
@@ -61,7 +61,7 @@ function web2local(varargin)
       nSub = -1+length(strfind(dirSub,'<tr>')); % number of rows of table
       mkdir(nm); cd(nm); % goto local sub directory
       for j = 1:nSub % scan rows of table of sub folder
-        ind_0 = strfind(dirSub,'<tr>'); ind_1 = 5+strfind(dirSub,'</tr>'); % row i of table
+        ind_0 = strfind(dirSub,'<tr>'); ind_1 = 5+strfind(dirSub,'</tr>'); % row j of table
         dirSub_j = dirSub(ind_0:ind_1); dirSub(1:ind_1) = [];
         ind_0 = 11 + strfind(dirSub_j, '"></td><td>'); 
         ind_1 = ind_0 -2 + strfind(dirSub_j(ind_0:end), '</td>'); ind_1 = ind_1(1);
