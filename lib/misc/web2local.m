@@ -46,11 +46,11 @@ function web2local(varargin)
   n = -1+length(strfind(dir,'<tr>')); % number of rows of table
   for i = 1:n % scan rows
     ind_0 = strfind(dir,'<tr>'); ind_1 = 5+strfind(dir,'</tr>'); % row i of table
-    dir_i = dir(ind_0:ind_1); dir(1:ind_1) = [];
+    dir_i = dir(ind_0:ind_1); dir(1:ind_1) = []; % copy row and reduce table
     ind_0 = 11 + strfind(dir_i, '"></td><td>'); 
     ind_1 = ind_0 -2 + strfind(dir_i(ind_0:end), '</td>'); ind_1 = ind_1(1);
-    nm = stripHTML(dir_i(ind_0:ind_1));
-    if contains(dir_i,'folder.gif') % table row refers to folder
+    nm = stripHTML(dir_i(ind_0:ind_1)); % name of file or folder without html 
+    if contains(dir_i,'folder.gif') % table row refers to folder, nm is a folder
       if ismac || isunix
         system(['wget -O dirSub_w2l ', dirWeb, '/', nm]);
       else
@@ -65,7 +65,7 @@ function web2local(varargin)
         dirSub_j = dirSub(ind_0:ind_1); dirSub(1:ind_1) = [];
         ind_0 = 11 + strfind(dirSub_j, '"></td><td>'); 
         ind_1 = ind_0 -2 + strfind(dirSub_j(ind_0:end), '</td>'); ind_1 = ind_1(1);
-        nmSub = stripHTML(dirSub_j(ind_0:ind_1));
+        nmSub = stripHTML(dirSub_j(ind_0:ind_1)); % name of file (should not be a folder)
         if ismac || isunix
           system(['wget -O ', nmSub, ' ', dirWeb, '/', nm, '/', nmSub]);
         else
