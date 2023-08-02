@@ -1,15 +1,15 @@
 %% iso_221
-% Obtains fluxes in case of 2-food, 2-reserve, 1-structure isomorph with fixed stoichiometry for growth
+% Obtains coefficients in case of 2-food, 2-reserve, 1-structure isomorph with fixed stoichiometry for growth
 
 %%
-function [var, flux] = iso_221(tXT, var_0, p, n_O, n_M, r0)
+function [var, coeff] = iso_221(tX12T, var_0, p, n_O, n_M, r0)
   % created 2011/04/29 by Bas Kooijman, modified 2012/01/30, 2023/07/26
 
   %% Syntax
-  % [var, flux] = <../iso_221.m *iso_221*> (tXT, var_0, p, n_O, n_M, r0)
+  % [var, coeff] = <../iso_221.m *iso_221*> (tXT, var_0, p, n_O, n_M, r0)
 
   %% Description
-  % Obtains fluxes in case of 2-food, 2-reserve, 1-structure isomorph with fixed stoichiometry for growth
+  % Obtains coefficients in case of 2-food, 2-reserve, 1-structure isomorph with fixed stoichiometry for growth
   %
   % Input:
   %
@@ -31,7 +31,7 @@ function [var, flux] = iso_221(tXT, var_0, p, n_O, n_M, r0)
   %    cM_X1  cM_X2  M_E1    M_E2    E_H  max_E_H M_V  max_M_V cM_ER1  cM_ER2   q  h  S
   %    cum food eaten, reserves, (max)structure, (max)maturity , cumulative, allocation to reprod, acell, hazard, surv prob
   %
-  % * flux: (n,20)-matrix with fluxes
+  % * coeff: (n,20)-matrix with coefficients
   %
   %     f1, f2: func responses
   %     J_X1A, J_X2A: food eaten
@@ -52,10 +52,10 @@ function [var, flux] = iso_221(tXT, var_0, p, n_O, n_M, r0)
   %   first get dL_0 from gr_iso_21; previous call to iso_21 left gr_iso_21 v_B at start
   TC = tempcorr(tXT(1,4), 293, p.T_A); % -, temperature correction factor, T_ref = 293 K
   vT = TC * p.v;                  % cm/d, temp-corrected energy conductance 
-  M_V_0 = var_0(7);               % mol, initial structural mass
-  L_0 = (M_V_0/ p.MV)^(1/3);      % cm, initial structural length
-  m_E10 = var_0(3)/ M_V_0;        % mol/mol, initial reserve 1 density
-  m_E20 = var_0(4)/ M_V_0;        % mol/mol, initial reserve 2 density
+  M_V_0 = var_0(7);               % mol, initial structural mass (at birth)
+  L_0 = (M_V_0/ p.MV)^(1/3);      % cm, initial structural length (at birth)
+  m_E10 = var_0(3)/ M_V_0;        % mol/mol, initial reserve 1 density (at birth)
+  m_E20 = var_0(4)/ M_V_0;        % mol/mol, initial reserve 2 density (at birth)
   jT_E1M = TC * p.j_E1M;          % mol/d.mol, spec som maint for 1
   jT_E2M = jT_E1M * p.mu_E1/ p.mu_E2;   % mol/d.mol, spec som maint for 2
   JT_E1T = TC * p.J_E1T;          % mol/d.cm^2, area-spec som maint
@@ -75,14 +75,16 @@ function [var, flux] = iso_221(tXT, var_0, p, n_O, n_M, r0)
   rT = sgr_iso_21 (m_E10, m_E20, jT_E1S, jT_E2S, p.y_VE1, p.y_VE2, mu_EV, kT_E, p.kap, p.rho1, r0); % 1/d, sgr
 
   % get variables
-  [t, var] = ode45(@diso_221, tXT(:,1), var_0, [], tXT, p);
+  [t, var] = ode45(@diso_221, tX12T(:,1), var_0, [], tX12T, p);
 
   % unpack some variables
   M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 
   m_E1 = M_E1 ./ M_V; m_E2 = M_E2 ./ M_V;
+  
+  % get food environment
+  X1 = tX12T(:,2); X2 = tX12T(:,3);   % M, food densities
 
-  % get fluxes
-  X1 = tXT(:,2); X2 = tXT(:,3);   % M, food densities
+  % get coefficients (dimless, so no temp corr)
   JT_X1Am = TC * p.J_X1Am; JT_X2Am = TC * p.J_X2Am;
   JT_E1Am_X1 = p.y_E1X1 * JT_X1Am; JT_E1Am_X2 = p.y_E1X2 * JT_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1 
   JT_E2Am_X1 = p.y_E2X1 * JT_X1Am; JT_E2Am_X2 = p.y_E2X2 * JT_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
@@ -100,4 +102,4 @@ function [var, flux] = iso_221(tXT, var_0, p, n_O, n_M, r0)
   f1 = f1 .* (E_H > p.E_Hb); f2 = f2 .* (E_H > p.E_Hb); % -, no feeding in embryo
 
   % more quantities are planned in future releases, such as respiration, which involves n_O and n_M
-  flux = [f1, f2, s1, s2, rho_X1X2, rho_X2X1]; 
+  coeff = [f1, f2, s1, s2, rho_X1X2, rho_X2X1]; 

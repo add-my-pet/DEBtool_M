@@ -10,22 +10,28 @@
 p.M_X1      = 1e-3;   p.M_X2      = 1e-3;  % mol, size of food particle of type i
 p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
-p.y_E1X1    = 0.55;   p.y_E2X1    = 0.25;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
-p.y_E1X2    = 0.25;   p.y_E2X2    = 0.55;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-p.J_X1Am    = 1.0e-3; p.J_X2Am    = 1.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance; -, allocation fraction to soma                                         
-p.mu_E1     = 4e5;    p.mu_E2     = 4e5;   % J/mol, chemical potential of reserve i
-p.mu_V      = 5e5;    p.MV        = 4e-3;  % J/mol, chemical potenial of structure;  mol/cm^3, [M_V] density of structure                                       
-p.j_E1M     = 0.09;   p.j_E2M     = p.j_E1M * p.mu_E1/ p.mu_E2; % mol/d.mol, specific som maint costs                                     
+p.y_E1X1    = 0.45;   p.y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
+p.y_E1X2    = 0.35;   p.y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
+p.J_X1Am    = 2.0e-3; p.J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance, 
+                                           % -, allocation fraction to soma
+p.mu_E1     = 4e5;    p.mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
+p.mu_V      = 5e5;                          % J/mol, chemical potential of structure
+p.j_E1M     = 0.09;   p.j_E2M = p.j_E1M*p.mu_E2/p.mu_E1; % mol/d.mol, specific som maint costs
+p.J_E1T     = 0;      p.MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
+                                           % mol/cm^3, [M_V] density of structure
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
-p.del_V     = 0.8;                         % -, threshold for death by  shrinking
-p.kap_E1    = .1;      p.kap_E2    = .1;     % -, fraction of rejected mobilised flux that is returned to reserve
-% since j_E1P = 0, kap_E1 is not relevant
+p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
+                                           % -, threshold for death by shrinking
+p.y_VE1     = 0.8;    p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
+p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
-p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature; 1/d, hazerd due to rejuvenation
-p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration; -, Gompertz stress coefficient
-                                            
+p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
+                                           % 1/d, hazard due to rejuvenation
+p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
+                                           % -, Gompertz stress coefficient
+
 % set chemical indices
 %    X1   X2    V   E1   E2   P1   P2  organics
 n_O = [...
@@ -47,12 +53,12 @@ tX12T(:,2) = 100;     tX12T(:,3) = 100;         % mol/dm^2, food densities (don'
 tX12T(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
-m_E1 = (p.y_E1X1 * p.J_X1Am + p.y_E1X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reserve 1 density
-m_E2 = (p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reserve 2 density
-[L_b, a_b, M_E10, M_E20, info] = iso_21_var_e(m_E1, m_E2, p);  % get states
+m_E1 = max(p.y_E1X1 * p.J_X1Am, p.y_E1X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reserve 1 density
+m_E2 = max(p.y_E2X1 * p.J_X1Am, p.y_E2X2 * p.J_X2Am)/ p.v/ p.MV; % mol/mol, max reserve 2 density
+[L_b, a_b, M_E10, M_E20, info] = iso_21_var_b(m_E1, m_E2, p);  % get states
 M_Vb = L_b^3 * p.MV; M_E1b = m_E1 * M_Vb; M_E2b = m_E2 * M_Vb; % mol of structure, reserves at birth
-[~, ~, ~, ~, ~, ~, ~, mode] = sgr_iso_21_var (m_E1, m_E2, p.j_E1M, p.j_E2M, p.mu_E1, p.mu_E2, p.mu_V, p.v/L_b, p.kap);
-fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol; growth mode at birth = %g\n', a_b, L_b, M_Vb, m_E1, m_E2, mode);
+fprintf('At initial: M_E10 = %g mol; M_E20 = %g mol\n', M_E10, M_E20);
+fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol; m_E2 = %g mol/mol\n', a_b, L_b, M_Vb, m_E1, m_E2);
 
 %% get max size L_m, M_Vm
 L_m = p.kap * p.v * max((p.mu_E1 * m_E1 + p.mu_E2 * m_E2)/ (p.mu_E2 * p.j_E2M), m_E1/ p.j_E1M + m_E2/ p.j_E2M); % cm, max struc length

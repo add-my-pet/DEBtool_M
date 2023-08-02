@@ -9,12 +9,12 @@
 
 %% set parameters at T_ref = 293 K
 M_X1      = .003012343;   M_X2      = .003012343;  % mol, size of food particle of type i
-F_X1m     = 6.5;     F_X2m     = 6.5;    % dm^2/d.cm^2, {F_Xim} spec searching rates
-y_P1X1    = 0.1;    y_P2X2    = 0.1;  % mol/mol, yield of feaces i on food i
+F_X1m     = 6.5;     F_X2m     = 6.5;  % dm^2/d.cm^2, {F_Xim} spec searching rates
+y_P1X1    = 0.1;    y_P2X2    = 0.1;   % mol/mol, yield of feaces i on food i
 y_E1X1    = 0.56;   y_E2X1    = 0.24;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
 y_E1X2    = 0.24;   y_E2X2    = 0.56;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
-J_X1Am    = 0.0004425425; J_X2Am    = 0.0004425425;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-v         = 0.07262;   kap       = 0.9844;   % cm/d, energy conductance, 
+J_X1Am    = 0.0004425425; J_X2Am  = 0.0004425425;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
+v         = 0.07262;   kap    = 0.9844;   % cm/d, energy conductance, 
                                        % -, allocation fraction to soma
 mu_E1     = 550000; mu_E2     = 550000;   % J/mol, chemical potential of reserve i
 mu_V      = 5e5;    j_E1M     = 0.02495413;  % J/mol, chemical potenial of structure

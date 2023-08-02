@@ -17,10 +17,11 @@ p.J_X1Am    = 2.0e-3; p.J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific i
 p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance, 
                                            % -, allocation fraction to soma
 p.mu_E1     = 4e5;    p.mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
-p.mu_V      = 5e5;    p.j_E1M     = 0.09;  % J/mol, chemical potential of structure
+p.mu_V      = 5e5;                         % J/mol, chemical potential of structure
+p.j_E1M     = 0.09;   p.j_E2M = p.j_E1M*p.mu_E2/p.mu_E1; % mol/d.mol, specific som maint costs 
                                            % mol/d.mol, specific som maint costs
-p.J_E1T     = 0;      p.MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
-                                           % mol/cm^3, [M_V] density of structure
+p.J_E1T     = 0;      p.J_E2T     = 0;     % mol/d.cm^2, {J_EiT}, spec surface-area-linked som maint costs
+p.MV        = 4e-3;                        % mol/cm^3, [M_V] density of structure
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
                                            % -, threshold for death by shrinking
@@ -29,11 +30,9 @@ p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised f
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
 p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
-                                           % 1/d, hazerd due to rejuvenation
+                                           % 1/d, hazard due to rejuvenation
 p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
                                            % -, Gompertz stress coefficient
-p.E_G       = 7900;                        % J/cm^3, specific cost for structure
-
 % set chemical indices
 %    X1   X2    V   E1   E2   P1   P2  organics
 n_O = [...
@@ -55,10 +54,11 @@ tXT(:,2) = 20000;     tXT(:,3) = 20000;       % mol/dm^2, food densities (don't 
 tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
-[var_b a_b M_E10 M_E20] = iso_21_b(tXT, p);
+[var_b, a_b, M_E10, M_E20] = iso_21_b(p);
+%[L_b, a_b, M_E10, M_E20, info] = iso_21(m_E1b, m_E2b, p)
 
 %% run iso_221
-[var flux]  = iso_221(tXT, var_b, p, n_O, n_M); % from birth to t = tXT(end,1)
+[var, flux]  = iso_221(tXT, var_b, p, n_O, n_M); % from birth to t = tXT(end,1)
 
 if 1
 % continue with a period with only food type 2
