@@ -31,13 +31,13 @@ function dvar = diso_221(t, var, tX12T, p)
  q     = var(11); h       = var(12); % 1/d, 1/d^2 acceleration, harzard
  S     = var(13);                    % -, survival probability
  
-% repair numerical problems: M_Ei must be real and positive
-if ~isreal(M_E1) || M_E1 < 0
-    M_E1 = 1e-10;
-end
-if ~isreal(M_E2) || M_E2 < 0
-    M_E2 = 1e-10;
-end
+% % repair numerical problems: M_Ei must be real and positive
+% if ~isreal(M_E1) || M_E1 < 0
+%     M_E1 = 1e-10;
+% end
+% if ~isreal(M_E2) || M_E2 < 0
+%     M_E2 = 1e-10;
+% end
 
 % get environmental variables at age t (linear interpolation)
 X1 = spline1(t, tX12T(:,[1 2])); % mol/cd^2, food density of type 1
@@ -51,7 +51,6 @@ end
 
 % help quantities
 L = (M_V/ p.MV)^(1/3);               % cm, structural length
-k_E = p.v/ L;                        % 1/d,  reserve turnover rate
 mu_EV = p.mu_E1/ p.mu_V;             % -, ratio of chemical potential
 m_E1 = M_E1/ M_V; m_E2 = M_E2/ M_V;% mol/mol, reserve density
 % somatic maintenance
@@ -61,14 +60,14 @@ J_E1S = j_E1S * p.MV;                % mol/d.cm^3 total spec somatic maint
 J_E2S = j_E2S * p.MV;                % mol/d.cm^3 total spec somatic maint
 
 % correct rates for temperature
-TC = tempcorr(T, 293, p.T_A); % -, temperature correction factor, T_ref = 293 K
+TC = tempcorr(T, C2K(20), p.T_A); % -, temperature correction factor, T_ref = 293 K
 FT_X1m  = TC * p.F_X1m; FT_X2m = TC * p.F_X2m;  % dm^2/d.cm^2, {F_Xim} spec searching rates
 JT_X1Am = TC * p.J_X1Am; JT_X2Am = TC * p.J_X2Am; % mol/d.cm^2, {J_EiAm^Xi} max specfific assim rate for food X1
 jT_E1S = TC * j_E1S; jT_E2S = TC * j_E2S;   % mol/d.mol, specific som maint costs
-vT = TC * p.v;                                 % cm/d, 1/d, energy conductance, reserve turnover rate
-kT_J = TC * p.k_J; k1T_J = TC * p.k1_J; % 1/d mat maint rate coeff, spec rejuvenation rate
-kT_E = TC * k_E;                                 % 1/d, reserve turnover rate
 JT_E1S = TC * J_E1S; JT_E2S = TC * J_E2S; % mol/d, somatic maint rate
+vT = TC * p.v;                                 % cm/d, 1/d, energy conductance, reserve turnover rate
+kT_E = vT/ L;                                 % 1/d, reserve turnover rate
+kT_J = TC * p.k_J; k1T_J = TC * p.k1_J; % 1/d mat maint rate coeff, spec rejuvenation rate
 
 % feeding
 JT_E1Am_X1 = p.y_E1X1 * JT_X1Am; JT_E1Am_X2 = p.y_E1X2 * JT_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1 
@@ -94,19 +93,8 @@ JT_E1Am = max(JT_E1Am_X1, JT_E1Am_X2);                      % mol/d.cm^2, total 
 JT_E2Am = max(JT_E2Am_X1, JT_E2Am_X2);                      % mol/d.cm^2, total max spec assim rate for reserve 2
 
 % reserve dynamics
-[rT, jT_E1_S, jT_E2_S, jT_E1C, jT_E2C, info] = ...         % 1/d, specific growth rate, ....
+[rT, jT_E1_S, jT_E2_S, jT_E1C, jT_E2C, info] = ...   % 1/d, specific growth rate, ....
     sgr_iso_21(m_E1, m_E2, jT_E1S, jT_E2S, p.y_VE1, p.y_VE2, mu_EV, kT_E, p.kap, p.rho1); % use continuation
-if info == 0 % try to repair in case of lack of convergence by starting from r_0 = 1e-4
-  [rT, jT_E1_S, jT_E2_S, jT_E1C, jT_E2C, info] = ...       % 1/d, specific growth rate, ....
-    sgr_iso_21(m_E1, m_E2, jT_E1S, jT_E2S, p.y_VE1, p.y_VE2, p.mu_EV, kT_E, p.kap, p.rho1, 1e-4);
-  if info == 1
-    fprintf('diso_221 message: successful repair of lack of convergence with NR\n');
-  else % info == 0
-    fprintf('diso_221 warning: sgr_iso_21 does not convergence\n');
-    fprintf(['t = ',num2str(t),'; r = ',num2str(r), '\n']);
-  end
-end
-
 jT_V_S = max(0, -rT);                                % mol/d.mol, specific shrinking rate
 jT_E1P = p.kap * jT_E1C - jT_E1_S - (rT + jT_V_S)/ p.y_VE1; % mol/d.mol, rejected flux
 jT_E2P = p.kap * jT_E2C - jT_E2_S - (rT + jT_V_S)/ p.y_VE2; % mol/d.mol

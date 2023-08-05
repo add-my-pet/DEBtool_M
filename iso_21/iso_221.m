@@ -50,7 +50,7 @@ function [var, coeff] = iso_221(tX12T, var_0, p, n_O, n_M, r0)
 
   % initialize r in sgr_iso_21 via call to sgr_iso_21 with r_0 specified; sgr_iso_21 works with continuation
   %   first get dL_0 from gr_iso_21; previous call to iso_21 left gr_iso_21 v_B at start
-  TC = tempcorr(tXT(1,4), 293, p.T_A); % -, temperature correction factor, T_ref = 293 K
+  TC = tempcorr(tX12T(1,4), 293, p.T_A); % -, temperature correction factor, T_ref = 293 K
   vT = TC * p.v;                  % cm/d, temp-corrected energy conductance 
   M_V_0 = var_0(7);               % mol, initial structural mass (at birth)
   L_0 = (M_V_0/ p.MV)^(1/3);      % cm, initial structural length (at birth)

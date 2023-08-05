@@ -49,23 +49,23 @@ n_M = [...
       0    0    0    1];% N
 
 %% set environmental variables
-t = linspace(0,8e3,5e2)'; tXT = [t, t, t, t]; % d, time points
-tXT(:,2) = 20000;     tXT(:,3) = 20000;       % mol/dm^2, food densities (don't need to be constant)
-tXT(:,4) = 293;                               % K, temperature (does not need to be constant)
+t = linspace(0,8e3,5e2)'; tX12T = [t, t, t, t]; % d, time points
+tX12T(:,2) = 20000;     tX12T(:,3) = 20000;       % mol/dm^2, food densities (don't need to be constant)
+tX12T(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
 [var_b, a_b, M_E10, M_E20] = iso_21_b(p);
 %[L_b, a_b, M_E10, M_E20, info] = iso_21(m_E1b, m_E2b, p)
 
 %% run iso_221
-[var, flux]  = iso_221(tXT, var_b, p, n_O, n_M); % from birth to t = tXT(end,1)
+[var, flux]  = iso_221(tX12T, var_b, p, n_O, n_M); % from birth to t = tX12T(end,1)
 
 if 1
 % continue with a period with only food type 2
-t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
-tXT2(:,2) = 0; tXT2(:,3) = 2e4; tXT2(:,4) = 293;       % set food, temp
+t2 = linspace(8e3,10e3,1e2)'; tX12T2 = [t2, t2, t2, t2]; % d, set time points
+tX12T2(:,2) = 0; tX12T2(:,3) = 2e4; tX12T2(:,4) = 293;       % set food, temp
 var_0 = var(end,:)';                                   % copy last state to initial state
-[var2 flux2]  = iso_221(tXT2, var_0, p, n_O, n_M, 0); % run iso_221
+[var2, flux2]  = iso_221(tX12T2, var_0, p, n_O, n_M, 0); % run iso_221
 % catenate results for plotting
 t = [t; t2]; var = [var; var2]; flux = [flux; flux2];
 end
@@ -136,7 +136,7 @@ ylabel('maturity, J')
 subplot(2,4,8)
 plot(t, cM_E1R, 'b', t, cM_E2R, 'r')
 xlabel('time since birth, d')
-ylabel('cum reprod, mol')
+ylabel('cum reprod buffer, mol')
 
 figure
 subplot(1,3,1)

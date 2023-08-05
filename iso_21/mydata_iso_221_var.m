@@ -8,25 +8,25 @@
 
 %% set parameters at T_ref = 293 K in strupture p
 p.M_X1      = 1e-3;   p.M_X2      = 1e-3;  % mol, size of food particle of type i
-p.F_X1m     = 10;     p.F_X2m     = 10;    % dm^2/d.cm^2, {F_Xim} spec searching rates
+p.F_X1m     = 0.2;     p.F_X2m     = 0.2;    % dm^2/d.cm^2, {F_Xim} spec searching rates
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
 p.y_E1X1    = 0.45;   p.y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
 p.y_E1X2    = 0.35;   p.y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
 p.J_X1Am    = 2.0e-3; p.J_X2Am    = 2.0e-3;% mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-p.v         = 0.02;   p.kap       = 0.8;   % cm/d, energy conductance, 
-                                           % -, allocation fraction to soma
+p.v         = 0.02;   % cm/d, energy conductance, 
+p.kap       = 0.8;    p.kap_E1    = 0;     % -, allocation fraction to soma, fraction of rejected reserve returned to reserve
 p.mu_E1     = 4e5;    p.mu_E2     = 6e5;   % J/mol, chemical potential of reserve i
-p.mu_V      = 5e5;                          % J/mol, chemical potential of structure
-p.j_E1M     = 0.09;   p.j_E2M = p.j_E1M*p.mu_E2/p.mu_E1; % mol/d.mol, specific som maint costs
-p.J_E1T     = 0;      p.MV        = 4e-3;  % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
-                                           % mol/cm^3, [M_V] density of structure
+p.mu_V      = 5e5;                         % J/mol, chemical potential of structure
+p.j_E1M     = 0.09;   p.j_E2M = p.j_E1M*p.mu_E2/p.mu_E1; % mol/d.mol, specific som maint costs. Do not chnage p.j_E2M
+p.J_E1T     = 0;      p.J_E2T     = 0;     % mol/d.cm^2, {J_E1T}, spec surface-area-linked som maint costs J_E1T/ J_E2T = j_E1M/ j_E2M
+p.MV        = 4e-3;   % mol/cm^3, [M_V] density of structure                                      
 p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rejuvenation rate                                    
 p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
                                            % -, threshold for death by shrinking
-p.y_VE1     = 0.8;    p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
-p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
+p.y_VE1     = 0.8;    %p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
+%p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
-p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
+p.E_Hb      = 1e1;    p.E_Hp      = 2e2;   % J, maturity thresholds at birth, puberty
 p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
                                            % 1/d, hazard due to rejuvenation
 p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
@@ -49,7 +49,7 @@ n_M = [...
 
 %% set environmental variables
 t = linspace(0,8e3,5e2)'; tX12T = [t, t, t, t]; % d, time points
-tX12T(:,2) = 100;     tX12T(:,3) = 100;         % mol/dm^2, food densities (don't need to be constant)
+tX12T(:,2) = 0.2;     tX12T(:,3) = 0.4;         % mol/dm^2, food densities (don't need to be constant)
 tX12T(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth
@@ -77,8 +77,8 @@ var_b = [0; 0; M_E1b; M_E2b; p.E_Hb; p.E_Hb; M_Vb; M_Vb; 0; 0; 0; 0; 1]; % vars 
 
 if 0
 % continue with a period with only food type 2
-t2 = linspace(8e3,10e3,1e2)'; tXT2 = [t2, t2, t2, t2]; % d, set time points
-tX12T2(:,2) = 4000; tX12T2(:,3) = 0; tX12T2(:,4) = 293;      % set food, temp
+t2 = linspace(8e3,10e3,1e2)'; tX12T2 = [t2, t2, t2, t2]; % d, set time points
+tX12T2(:,2) = 40; tX12T2(:,3) = 20; tX12T2(:,4) = 293;      % set food, temp
 var_0 = var(end,:)';                                   % copy last state to initial state
 [var2, coeff2]  = iso_221_var(tX12T2, var_0, p, n_O, n_M, 0); % run iso_221_var
 % catenate results for plotting
@@ -145,7 +145,7 @@ ylabel('maturity, J')
 subplot(2,4,8)
 plot(t, cM_E1R, 'b', t, cM_E2R, 'r')
 xlabel('time since birth, d')
-ylabel('cum reprod, mol')
+ylabel('cum reprod buffer, mol')
 
 figure
 subplot(1,3,1)
