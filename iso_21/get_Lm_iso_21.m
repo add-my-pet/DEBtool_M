@@ -13,7 +13,7 @@ function [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p)
   %
   % Input:
   %
-  % * p, structure with parameters
+  % * p, structure with parameters, see mydata_iso_221
   %
   % Output:
   %
