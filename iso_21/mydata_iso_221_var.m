@@ -8,7 +8,7 @@
 
 %% set parameters at T_ref = 293 K in strupture p
 p.M_X1      = 1e-3;   p.M_X2      = 1e-3;  % mol, size of food particle of type i
-p.F_X1m     = 0.2;     p.F_X2m     = 0.2;    % dm^2/d.cm^2, {F_Xim} spec searching rates
+p.F_X1m     = 2;      p.F_X2m     = 3;    % dm^2/d.cm^2, {F_Xim} spec searching rates
 p.y_P1X1    = 0.15;   p.y_P2X2    = 0.15;  % mol/mol, yield of feaces i on food i
 p.y_E1X1    = 0.45;   p.y_E2X1    = 0.35;  % mol/mol, yield of reserve Ei on food X1 (protein, non-protein)
 p.y_E1X2    = 0.35;   p.y_E2X2    = 0.45;  % mol/mol, yield of reserve Ei on food X2 (protein, non-protein)
@@ -26,7 +26,7 @@ p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be u
 p.y_VE1     = 0.8;    %p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
 %p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilised flux that is returned to reserve
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
-p.E_Hb      = 1e1;    p.E_Hp      = 2e2;   % J, maturity thresholds at birth, puberty
+p.E_Hb      = 1e0;    p.E_Hp      = 2e2;   % J, maturity thresholds at birth, puberty
 p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature
                                            % 1/d, hazard due to rejuvenation
 p.h_a       = 2e-8;   p.s_G       = 1e-4;  % 1/d^2, aging acceleration
@@ -49,7 +49,7 @@ n_M = [...
 
 %% set environmental variables
 t = linspace(0,8e3,5e2)'; tX12T = [t, t, t, t]; % d, time points
-tX12T(:,2) = 0.2;     tX12T(:,3) = 0.4;         % mol/dm^2, food densities (don't need to be constant)
+tX12T(:,2) = 2;     tX12T(:,3) = 3;         % mol/dm^2, food densities (don't need to be constant)
 tX12T(:,4) = 293;                               % K, temperature (does not need to be constant)
 
 %% get state at birth

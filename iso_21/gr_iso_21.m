@@ -20,14 +20,12 @@ function [v_B_out, j_E1_M, j_E2_M, j_E1C, j_E2C, info] = ...
   % * j_E1M, j_E2M: mol/d.mol, scalars with spec maintenance flux if from that reserve
   % * y_VE1, y_VE2: mol/mol,   scalars with yield of structure on reserve
   % * v:            cm/d,      scalar with energy conductance
-  % * kap:          -,         scalar with allowcation fraction to soma
+  % * kap:          -,         scalar with allocation fraction to soma
   % * rho1:         -,         scalar with preference (default 0)
+  % * v_B_0:        cm/d,      optional scalar with initial estimate for change in length v_B 
+  %                            if empty or undefined v/3, else previous result is used
   %
   % Output:
-  %
-  % * v_B_0:        cm/d,      optional scalar with initial estimate for change in length v_B 
-  %
-  %                            if empty or undefined v/3, else previous result is used
   %
   % * v_B_out:      cm/d,      scalar with change in length
   % * j_E1_M, j_E2_M: mol/d.mol, scalars with spec som maintenance flux
@@ -43,10 +41,8 @@ function [v_B_out, j_E1_M, j_E2_M, j_E1C, j_E2C, info] = ...
     v_B = v/ 3 - 1e-4;
   end                          % otherwise: continuation
 
-  [v_B, fval, info] = fzero(@fn_v_B,1e-4,[], L, m_E1, m_E2, j_E1M, j_E2M, y_VE1, y_VE2, v, kap, rho1);
-  %[v_B, fval, info] = fzero(@fn_v_B,v_B,[], L, m_E1, m_E2, j_E1M, j_E2M, y_VE1, y_VE2, v, kap, rho1);
+  [v_B, fval, info] = fzero(@fn_v_B,v_B,[], L, m_E1, m_E2, j_E1M, j_E2M, y_VE1, y_VE2, v, kap, rho1);
   if ~(info==1); fprintf('warning in gr_iso_21: no convergence for v_B\n');   end
-
 
   r = 3 * v_B/ L; % 1/d, spec growth rate
   j_E1C = m_E1 * (v/ L - r); j_E2C = m_E2 * (v/ L - r); % mol/d.mol, spec mobilisation rates
