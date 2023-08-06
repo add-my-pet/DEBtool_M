@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_Lm_iso_21_var</h1><!--introduction--><p>finds L_m for iso_221_var model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[L_m, m_E1, m_E2, M_Vm] = <a href="../get_Lm_iso_21_var.m"><b>get_Lm_iso_21_var</b></a> (p)</p><h2 id="4">Description</h2><p>Finds L_m at max assimilation, i.e. L such that r = 0</p><p>Input:</p><div><ul><li>p, structure with parameters, see mydata_iso_221</li></ul></div><p>Output:</p><div><ul><li>L_m:          cm,     max structural length</li><li>m_E1m, m_E2m  mol/mol max reserve densities</li><li>M_Vm          mol     max body mass (incl reserves, excl reprod buffer)</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_Lm_iso_21_var</h1><!--introduction--><p>finds L_m for iso_221_var model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[L_m, m_E1, m_E2, M_Vm] = <a href="../get_Lm_iso_21_var.m"><b>get_Lm_iso_21_var</b></a> (p)</p><h2 id="4">Description</h2><p>Finds L_m at max assimilation, i.e. L such that r = 0</p><p>Input:</p><div><ul><li>p, structure with parameters, see mydata_iso_221_var</li></ul></div><p>Output:</p><div><ul><li>L_m:          cm,     max structural length</li><li>m_E1m, m_E2m  mol/mol max reserve densities</li><li>M_Vm          mol     max body mass (incl reserves, excl reprod buffer)</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_Lm_iso_21_var
 % finds L_m for iso_221_var model
@@ -84,7 +84,7 @@ function [L_m, m_E1m, m_E2m, M_Vm] = get_Lm_iso_21_var (p)
   %
   % Input:
   %
-  % * p, structure with parameters, see mydata_iso_221
+  % * p, structure with parameters, see mydata_iso_221_var
   %
   % Output:
   %
