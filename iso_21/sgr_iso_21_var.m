@@ -12,7 +12,7 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
   %% Description
   % specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry.
   % The anabolic part of growth is paid from reserve 1, but the catabolic part (growth overhead) and somatic maintenacne
-  %   can be paid from reserve 1 (with absolute preference above reserve 1), as well as from reserve 1.
+  %   can be paid from reserve 1 (with absolute preference above reserve 1), as well as from reserve 2.
   % 4 modes of growth/maintenance are delineated
   %
   % * mode 1: the E_2 flux that is allocated to soma is more than can be used for somatic maintenance plus growth overheads

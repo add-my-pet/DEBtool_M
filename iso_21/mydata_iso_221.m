@@ -25,7 +25,7 @@ p.k_J       = 0.002;  p.k1_J      = 0.002; % 1/d, mat maint rate coeff, spec rej
 p.rho1      = 0.01;   p.del_V     = 0.8;   % -, preference for reserve 1 to be used for som maint
                                            % -, threshold for death by shrinking
 p.y_VE1     = 0.8;    p.y_VE2     = 0.8;   % mol/mol, yield of structure on reserve i 
-p.kap_E1    = 0.8;    p.kap_E2    = 0.8;   % -, fraction of rejected mobilixed flux that is returned to reserve
+p.kap_E1    = 0;      p.kap_E2    = 0;     % -, fraction of rejected mobilixed flux that is returned to reserve
 p.kap_R1    = 0.95;   p.kap_R2    = 0.95;  % -, reproduction efficiency for reserve i
 p.E_Hb      = 1e1;    p.E_Hp      = 2e4;   % J, maturity thresholds at birth, puberty
 p.T_A       = 8000;   p.h_H       = 1e-5;  % K, Arrhenius temperature

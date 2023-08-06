@@ -24,9 +24,9 @@ function [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p)
 
   J_E1Am = p.y_E1X1 * p.J_X1Am + p.y_E1X2 * p.J_X2Am; J_E2Am = p.y_E2X1 * p.J_X1Am + p.y_E2X2 * p.J_X2Am; % mol/d, max assim
   m_E1m = J_E1Am/ p.v/ p.MV; m_E2m = J_E2Am/ p.v/ p.MV; % mol/mol, max reserve densities
-   
+
   [L_m, fval, info] = fzero(@(L) sgr_iso_21(m_E1m, m_E2m, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.mu_E1/ p.mu_V, p.v/L, p.kap, p.rho1), 1);
-  M_Vm = p.MV * L_m^3 * (1 + m_E1m + m_E2m); % mol, max mass excl reprod buffer
+  M_Vm = p.MV * L_m^3; % mol, max mass of structure
   if ~(info==1); fprintf('Warning from get_Lm_iso_21: max length not found\n'); end
   
 end
