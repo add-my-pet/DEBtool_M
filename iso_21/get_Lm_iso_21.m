@@ -30,8 +30,7 @@ function [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p)
   %fprintf('L_m = %g cm; fval = %g 1/d; info = %g\n', L_m, fval, info)
   if ~(info==1); fprintf('Warning from get_Lm_iso_21: max length not found\n'); end
   
-%   L=linspace(1,5,500); r=0*L;info=r; 
-%   for i=1:500; 
-%     [r(i), ~, ~, ~, ~, info(i)] =sgr_iso_21(m_E1m, m_E2m, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.mu_E1/ p.mu_V, p.v/L(i), p.kap, p.rho1); end
+%   L=linspace(1,5,500); r=0*L; 
+%   for i=1:500; r(i)=sgr_iso_21(m_E1m, m_E2m, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.mu_E1/ p.mu_V, p.v/L(i), p.kap, p.rho1); end
 %   plot(L,r,'b'); xlabel('struc length L, cm'); ylabel('spec growth rate r, 1/d')
 end

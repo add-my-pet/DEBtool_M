@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_Lm_iso_21</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-08-06"><meta name="DC.source" content="get_Lm_iso_21.m"><style type="text/css">
+      --><title>get_Lm_iso_21_var</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-08-06"><meta name="DC.source" content="get_Lm_iso_21_var.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,17 +67,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_Lm_iso_21</h1><!--introduction--><p>finds L_m for iso_221 model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[L_m, m_E1, m_E2, M_Vm, info] = <a href="../get_Lm_iso_21.m"><b>get_Lm_iso_21</b></a> (p)</p><h2 id="4">Description</h2><p>Finds L_m at max assimilation, i.e. L such that r = 0</p><p>Input:</p><div><ul><li>p, structure with parameters, see mydata_iso_221</li></ul></div><p>Output:</p><div><ul><li>L_m:          cm,     max structural length</li><li>m_E1m, m_E2m  mol/mol max reserve densities</li><li>M_Vm          mol     max body mass (incl reserves, excl reprod buffer)</li><li>info          -       scalar with numerical failure (0) or success (1)</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_Lm_iso_21_var</h1><!--introduction--><p>finds L_m for iso_221_var model</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li></ul></div><h2 id="3">Syntax</h2><p>[L_m, m_E1, m_E2, M_Vm] = <a href="../get_Lm_iso_21_var.m"><b>get_Lm_iso_21_var</b></a> (p)</p><h2 id="4">Description</h2><p>Finds L_m at max assimilation, i.e. L such that r = 0</p><p>Input:</p><div><ul><li>p, structure with parameters, see mydata_iso_221</li></ul></div><p>Output:</p><div><ul><li>L_m:          cm,     max structural length</li><li>m_E1m, m_E2m  mol/mol max reserve densities</li><li>M_Vm          mol     max body mass (incl reserves, excl reprod buffer)</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% get_Lm_iso_21
-% finds L_m for iso_221 model
+%% get_Lm_iso_21_var
+% finds L_m for iso_221_var model
 
 %%
-function [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p)
+function [L_m, m_E1m, m_E2m, M_Vm] = get_Lm_iso_21_var (p)
   % created: 2023/08/05 by Bas Kooijman
 
   %% Syntax
-  % [L_m, m_E1, m_E2, M_Vm, info] = <../get_Lm_iso_21.m *get_Lm_iso_21*> (p)
+  % [L_m, m_E1, m_E2, M_Vm] = <../get_Lm_iso_21_var.m *get_Lm_iso_21_var*> (p)
 
   %% Description    
   % Finds L_m at max assimilation, i.e. L such that r = 0
@@ -91,19 +91,13 @@ function [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p)
   % * L_m:          cm,     max structural length 
   % * m_E1m, m_E2m  mol/mol max reserve densities
   % * M_Vm          mol     max body mass (incl reserves, excl reprod buffer)
-  % * info          -       scalar with numerical failure (0) or success (1)
 
   J_E1Am = max(p.y_E1X1 * p.J_X1Am, p.y_E1X2 * p.J_X2Am); J_E2Am = max(p.y_E2X1 * p.J_X1Am, p.y_E2X2 * p.J_X2Am); % mol/d, max assim
   m_E1m = J_E1Am/ p.v/ p.MV; m_E2m = J_E2Am/ p.v/ p.MV; % mol/mol, max reserve densities
 
-  [L_m, fval, info] = fzero(@(L) sgr_iso_21(m_E1m, m_E2m, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.mu_E1/ p.mu_V, p.v/L, p.kap, p.rho1), 10);
-  M_Vm = p.MV * L_m^3; % mol, max mass of structure
-  %fprintf('L_m = %g cm; fval = %g 1/d; info = %g\n', L_m, fval, info)
-  if ~(info==1); fprintf('Warning from get_Lm_iso_21: max length not found\n'); end
+  L_m = p.kap * p.v * max((p.mu_E1 * m_E1m + p.mu_E2 * m_E2m)/ (p.mu_E2 * p.j_E2M), m_E1m/ p.j_E1M + m_E2m/ p.j_E2M); % cm, max struc length
+  M_Vm = p.MV * L_m^3; % mol, max struc mass
   
-%   L=linspace(1,5,500); r=0*L; 
-%   for i=1:500; r(i)=sgr_iso_21(m_E1m, m_E2m, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.mu_E1/ p.mu_V, p.v/L(i), p.kap, p.rho1); end
-%   plot(L,r,'b'); xlabel('struc length L, cm'); ylabel('spec growth rate r, 1/d')
 end
 ##### SOURCE END #####
 --></body></html>
