@@ -41,7 +41,8 @@ function [var, coeff] = iso_221_var(tX12T, var_0, p, n_O, n_M)
   % model is presented in comment for 5.2.7 of DEB3
 
   % get variables
-  [t, var] = ode45(@diso_221_var, tX12T(:,1), var_0, [], tX12T, p);
+  options = odeset('AbsTol',1e-10, 'RelTol',1e-10);
+  [t, var] = ode45(@diso_221_var, tX12T(:,1), var_0, options, tX12T, p);
 
   % unpack some variables
   M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 

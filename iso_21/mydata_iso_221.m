@@ -69,7 +69,7 @@ fprintf('max struc length L_m = %g cm; max struc mass M_Vm = %g mol;\n', L_m, M_
 %% run iso_221
 [var, flux]  = iso_221(tX12T, var_b, p, n_O, n_M); % from birth to t = tX12T(end,1)
 
-if 1
+if 0
 % continue with a period with only food type 2
 t2 = linspace(8e3,10e3,1e2)'; tX12T2 = [t2, t2, t2, t2]; % d, set time points
 tX12T2(:,2) = 0; tX12T2(:,3) = 2e4; tX12T2(:,4) = 293;       % set food, temp

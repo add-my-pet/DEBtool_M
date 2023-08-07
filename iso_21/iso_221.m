@@ -75,7 +75,8 @@ function [var, coeff] = iso_221(tX12T, var_0, p, n_O, n_M, r0)
   rT = sgr_iso_21 (m_E10, m_E20, jT_E1S, jT_E2S, p.y_VE1, p.y_VE2, mu_EV, kT_E, p.kap, p.rho1, r0); % 1/d, sgr
 
   % get variables
-  [t, var] = ode45(@diso_221, tX12T(:,1), var_0, [], tX12T, p);
+  options = odeset('AbsTol',1e-10, 'RelTol',1e-10);
+  [t, var] = ode45(@diso_221, tX12T(:,1), var_0, options, tX12T, p);
 
   % unpack some variables
   M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 

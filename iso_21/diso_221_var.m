@@ -72,7 +72,7 @@ function dvar = diso_221_var(t, var, tX12T, p)
   betaT_X1 = FT_X1m * X1 * (1 - rho_X1X2);  betaT_X2 = FT_X2m * X2 * (1 - rho_X2X1);
   f1 = (alphaT_X2 * FT_X1m * X1 - betaT_X1 * FT_X2m * X2)/ (alphaT_X1 * alphaT_X2 - betaT_X1 * betaT_X2); % -, scaled func response for food 1
   f2 = (alphaT_X1 * FT_X2m * X2 - betaT_X2 * FT_X1m * X1)/ (alphaT_X1 * alphaT_X2 - betaT_X1 * betaT_X2); % -, scaled func response for food 2
-  dcM_X1 = f1 * JT_X1Am * L^2; dcM_X2 = f2 * JT_X2Am * L^2; % mol/d, feeding rates
+  dcM_X1 = f1 * JT_X1Am * L^2; dcM_X2 = f2 * JT_X2Am * L^2;         % mol/d, feeding rates
 
   % assimilation
   JT_E1A = f1 * p.y_E1X1 * JT_X1Am + f2 * p.y_E1X2 * JT_X2Am; % mol/d.cm^2, {J_E1A}, area-specific assimilation flux
@@ -82,8 +82,8 @@ function dvar = diso_221_var(t, var, tX12T, p)
   JT_E2Am = max(JT_E2Am_X1, JT_E2Am_X2);                      % mol/d.cm^2, total max spec assim rate for reserve 2 
 
   % reserve dynamics
-  [rT, jT_E1_S, jT_E2_S, jT_E1C, jT_E2C, jT_E1P, jT_E2P] = ...      % 1/d, specific growth rate, ....
-    sgr_iso_21_var(m_E1, m_E2, jT_E1S, jT_E2S, p.mu_E1, p.mu_E2, p.mu_V, kT_E, p.kap, p.y_VE1); % use continuation            
+  [rT, jT_E1_S, jT_E2_S, jT_E1C, jT_E2C, jT_E1P, jT_E2P] = ... % 1/d, specific growth rate, ....
+    sgr_iso_21_var(m_E1, m_E2, jT_E1S, jT_E2S, p.mu_E1, p.mu_E2, p.mu_V, kT_E, p.kap, p.y_VE1);          
   dm_E1 = jT_E1A - jT_E1C + p.kap_E1 * jT_E1P - rT * m_E1; % mol/d.mol, change in reserve density
   dm_E2 = jT_E2A - jT_E2C + p.kap_E2 * jT_E2P - rT * m_E2; % mol/d.mol
   dM_E1 = M_V * (dm_E1 + rT * m_E1);                   % mol/d, change in reserve

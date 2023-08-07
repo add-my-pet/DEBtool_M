@@ -45,10 +45,10 @@ function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
     r = 0;
   end                       % otherwise: continuation
   
-  i = 0; n = 1e3; info = 1;  % initiate iteration pars
+  i = 0; n = 5e3; info = 1;  % initiate iteration pars
   H = 1; % initiate norm; make sure that iteration procedure is started
     
-  while (abs(H) > 1e-16) && (i < n) % test norm
+  while (abs(H) > 1e-10) && (i < n) % test norm
     j_E1C = m_E1 * (k_E - r); j_E2C = m_E2 * (k_E - r);                          % mol/d.mol, mobilisation flux
     A = rho1 * j_E1C * j_E2S^2/ j_E1S; C = - kap * j_E2C * (j_E1C + j_E2C);
     B = C + (j_E1C + (1 - rho1) * j_E2C) * j_E2S; sq = sqrt(B * B - 4 * A * C); D = 2 * A + sq - B;
@@ -93,7 +93,7 @@ function [r_out, j_E1_S, j_E2_S, j_E1C, j_E2C, info] = ...
  
   if i == n || isnan(r) || ~isreal(r)
     info = 0;  % no convergence
-  %  fprintf(['warning in sgr_iso_21: no convergence in ', num2str(i), ' steps', '; r = ', num2str(r), '\n']);
+    fprintf('warning in sgr_iso_21: no convergence in %g steps; norm = %g; sgr r = %g\n', i,H,r);
     r = 1e-20;                                                                   % 1/d, set r for next call to sgr_iso_21
     j_E1C = m_E1 * (k_E - r); j_E2C = m_E2 * (k_E - r);                          % mol/d.mol, mobilisation flux
     A = rho1 * j_E1C * j_E2S^2/ j_E1S; C = - kap * j_E2C * (j_E1C + j_E2C);
