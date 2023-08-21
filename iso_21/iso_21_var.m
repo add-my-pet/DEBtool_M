@@ -10,7 +10,7 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var(m_E1b, m_E2b, p)
   % [L_b, a_b, M_E10, M_E20, info] = <../iso_21_var.m *iso_21_var*> (m_E1b, m_E2b, p)
 
   %% Description
-  % computes age and length at birth, intitial reserve of the iso_21 model
+  % computes age and length at birth, initial reserve of the iso_21 model
   %
   % Input:
   %

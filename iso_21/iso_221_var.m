@@ -1,5 +1,5 @@
 %% iso_221_var
-% fluxes with 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
+% coefficients with 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
 
 %%
 function [var, coeff] = iso_221_var(tX12T, var_0, p, n_O, n_M)
@@ -9,7 +9,7 @@ function [var, coeff] = iso_221_var(tX12T, var_0, p, n_O, n_M)
   % [var, coeff] = <../iso_221_var.m *iso_221_var*> (tX12T, var_0, p, n_O, n_M, r0)
   
   %% Description
-  % Obtains fluxes in case of 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
+  % Obtains coefficients in case of 2-food, 2-reserve, 1-structure isomorph with variable stoichiometry for growth
   %
   % Input:
   %
@@ -41,7 +41,8 @@ function [var, coeff] = iso_221_var(tX12T, var_0, p, n_O, n_M)
   % model is presented in comment for 5.2.7 of DEB3
 
   % get variables
-  [t, var] = ode45(@diso_221_var, tX12T(:,1), var_0, [], tX12T, p);
+  options = odeset('AbsTol',1e-10, 'RelTol',1e-10);
+  [t, var] = ode45(@diso_221_var, tX12T(:,1), var_0, options, tX12T, p);
 
   % unpack some variables
   M_E1 = var(:,3); M_E2 = var(:,4); E_H = var(:,5); M_V = var(:,7); 
@@ -50,7 +51,7 @@ function [var, coeff] = iso_221_var(tX12T, var_0, p, n_O, n_M)
   % get food environment
   X1 = tX12T(:,2); X2 = tX12T(:,3);   % M, food densities
 
-  % get coefficient (dimless, so no temp corr)
+  % get coefficients (dimless, so no temp corr)
   J_E1Am_X1 = p.y_E1X1 * p.J_X1Am; J_E1Am_X2 = p.y_E1X2 * p.J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 1 
   J_E2Am_X1 = p.y_E2X1 * p.J_X1Am; J_E2Am_X2 = p.y_E2X2 * p.J_X2Am; % mol/d.cm^2, max spec assim rate for reserve 2
   m_E1m = max(J_E1Am_X1/ p.v/ p.MV, J_E1Am_X2/ p.v/ p.MV);

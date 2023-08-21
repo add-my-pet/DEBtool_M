@@ -1,61 +1,103 @@
 %% iso_21_b
-% gets values of state variables at birth
+% gets values of variables at birth and initial reserves
 
 %%
-function [var_b a_b M_E10 M_E20] = iso_21_b(X1X2, p)
+function [var_b, a_b, M_E10, M_E20] = iso_21_b(p)
 
   %% Syntax
-  % [var_b a_b M_E10 M_E20] = <../iso_21_b.m *iso_21_b*> (X1X2, p)
+  % [var_b, a_b, M_E10, M_E20] = <../iso_21_b.m *iso_21_b*> (p)
 
   %% Description
-  % gets values of state variables at birth; assumption: no aging during embryo stage
+  % gets values of variables at birth and initial reserves
+  % assumptions: no aging during embryo stage; reserves of mother are maximally filled
   %
   % Input:
   %
-  % * X1X2: 2-vector with food densities to specify the maternal effect
-  % * p: 36-vector with parameters, see diso_211 for a full list
+  % * p: structure with parameters, see diso_211 for a full list
   %
   % Output:
   %
   % * var_b: 13-vector with state variables 
   %      cM_X1, cM_X2, M_E1, M_E2, E_H, max_E_H, M_V, max_M_V, cM_ER1, cM_ER2, q, h,  S
-  % * a_b: scalar with age at birth
-  % * M_E10, M_E20: scalars with intitial reserves
+  % * a_b: scalar with age at birth at T_ref
+  % * M_E10, M_E20: scalars with initial reserves
 
-%   % unpack some parameters
-%   F_X1m     = p( 3); F_X2m     = p( 4); % dm^2/d.cm^2, {F_Xim} spec searching rates
-%   y_E1X1    = p( 7); y_E2X1    = p( 8); % mol/mol, yield of reserve Ei on food X1
-%   y_E1X2    = p( 9); y_E2X2    = p(10); % mol/mol, yield of reserve Ei on food X2
-%   J_X1Am    = p(11); J_X2Am    = p(12); % mol/d.cm^2, {J_XiAm} max specific ingestion rate for food Xi
-%   v         = p(13); kap       = p(14); % cm/d, energy conductance, 
-%                                         % -, allocation fraction to soma
-%   mu_E1     = p(15); mu_E2     = p(16); % J/mol, chemical potential of reserve i
-%   mu_V      = p(17); j_E1M     = p(18); % J/mol, chemical potential of structure
-%                                         % mol/d.mol, spec som maint for reserve 1
-%   MV        = p(20);                    % mol/cm^3, [M_V] density of structure
-%   k_J       = p(21);                    % 1/d, maturity maint rate coefficient
-%   rho1      = p(23);                    % -, preference for reserve 1 for som maintenance
-%   y_VE1     = p(25); y_VE2     = p(26); % mol/mol, yield of structure on reserve i 
-%   kap_E1    = p(27); kap_E2    = p(28); % -, fraction of rejected mobilised flux that is returned to reserve
-%   E_Hb      = p(31);                    % J, maturity at birth
-%   T_A       = p(33);                    % K, Arrhenius temperature
-
-  % get state at birth and M_E0
-  X1 = X1X2(1); X2 = X1X2(2);                                   % M, food densities
-  K1 = p.J_X1Am/ p.F_X1m; K2 = p.J_X2Am/ p.F_X2m;                       % M, half saturation coefficients
-  f1 = X1/ (X1 + K1); f2 = X2/ (X2 + K2);                       % -, scaled functional responses
+  % reserve density at birth m_Eb
   J_E1Am_X1 = p.y_E1X1 * p.J_X1Am; J_E2Am_X1 = p.y_E2X1 * p.J_X1Am;     % mol/d, max assim rate
   J_E1Am_X2 = p.y_E1X2 * p.J_X2Am; J_E2Am_X2 = p.y_E2X2 * p.J_X2Am;     % mol/d, max assim rate
-  m_E1b = max(f1 * J_E1Am_X1/ p.v/ p.MV, f2 * J_E1Am_X2/ p.v/ p.MV);    % mol/mol, reserve density 1 at birth
-  m_E2b = max(f1 * J_E2Am_X1/ p.v/ p.MV, f2 * J_E2Am_X2/ p.v/ p.MV);    % mol/mol, reserve density 2 at birth
-  %pars_iso_21 = [v; kap; mu_E1; mu_E2; mu_V; j_E1M; MV; k_J; rho1; y_VE1; y_VE2; kap_E1; kap_E2; E_Hb];
-  [L_b a_b M_E10 M_E20 info] = iso_21(m_E1b, m_E2b, p); % a_b is not corrected for temperature!
-  if info == 0
-    fprintf('warning in iso_21: no convergence for embryo states \n')
-  end
+  m_E1b = max(J_E1Am_X1/ p.v/ p.MV, J_E1Am_X2/ p.v/ p.MV);    % mol/mol, reserve density 1 at birth
+  m_E2b = max(J_E2Am_X1/ p.v/ p.MV, J_E2Am_X2/ p.v/ p.MV);    % mol/mol, reserve density 2 at birth
+  
+  % guess for M_E0 given m_Eb
+  E_G = 2 * (p.y_VE1 * p.mu_E1 + p.y_VE2 * p.mu_E2) * p.MV; % J/cm^3, guess for spec cost for structure
+  % fuzz factor 2 roughly accounts for maintenance costs during embryo period
+  V_b = p.E_Hb * p.kap/ (1 - p.kap)/ E_G; % cm^3, guess for struc vol at birth, see DEB3 Eq (2.32)
+  M_Vb = p.MV * V_b; % mol, initial guess for mass at birth
+  M_E10 = M_Vb * (1 + 1/ p.y_VE1/ (m_E1b + m_E2b)) * m_E1b; % mol, guess for initial reserve 1
+  M_E20 = M_Vb * (1 + 1/ p.y_VE2/ (m_E1b + m_E2b)) * m_E2b; % mol, guess for initial reserve 2
+  M_E0 = [M_E10; M_E20]; % mol, guess for initial reserves
+
+  % get states: initial and at birth 
+  M_E0 = fsolve(@fniso_21, M_E0, [], m_E1b, m_E2b, p); % mol, initial reserves
+  [M_E0, fn, info] = fsolve(@fniso_21, M_E0, [], m_E1b, m_E2b, p); % continuate and assign output
+  if ~info; fprintf('Warning from iso_21_b: fsolve did not converge to the initial reserves\n'); end
+  M_E10 = M_E0(1); M_E20 = M_E0(2); % assign output
+  [~, L_b, a_b] = fniso_21(M_E0, m_E1b, m_E2b, p); % cm, d, length and age at birth
   M_Vb = p.MV * L_b^3; M_E1b = m_E1b * M_Vb; M_E2b = m_E2b * M_Vb; % mol, masses at birth
 
   % compose variables at birth
   %        1     2       3       4      5      6     7      8      9      10     11 12 13
   %      cM_X1  cM_X2  M_E1    M_E2    E_H  max_E_H M_V  max_M_V cM_ER1  cM_ER2   q  h  S
   var_b = [0,    0,   M_E1b,  M_E2b,  p.E_Hb,  p.E_Hb, M_Vb,  M_Vb,    0,      0,     0  0  1]; % mol, 
+end
+
+function [F, L_b, a_b] = fniso_21(M_E0, m_E1b, m_E2b, p)
+  % for use by fsolve in iso_21: F = 0 if M_E0 are such that m_Eb are specified values
+
+  LE12H_0 = [1e-4; M_E0(1); M_E0(2); 0]; % states at birth
+  options = odeset('Events',@birth, 'RelTol',1e-9, 'AbsTol',1e-9);
+
+  [a, LE12H, a_b, LE12H_b] = ode45(@diso_21,[0; 1e3], LE12H_0, options, p);
+  L_b = LE12H_b(1); M_Vb = L_b^3 * p.MV; % cm, mol, structural length, mass at birth
+  F = [m_E1b; m_E2b] - LE12H_b([2 3])'/M_Vb; % mol/mol, norm function set to zero
+end
+
+function dLE12H = diso_21(a, LE12H, p)
+  % ode's for iso_21:
+  %   derivatives of (L, M_E1, M_E2, E_H) with respect to age during embryo stage, used by iso_21
+
+  % unpack states
+  L = LE12H(1);                                   % cm, structural length
+  M_E1 = LE12H(2);                                % mol, reserve 1
+  M_E2 = LE12H(3);                                % mol, reserve 2
+  E_H = LE12H(4);                                 % J, maturity
+  M_V = p.MV * L^3;                               % mol, structural mass 
+  m_E1 = M_E1/ M_V; m_E2 = M_E2/ M_V;             % mol/mol, reserve density 1,2
+
+  %growth
+  [dL, j_E1_M, j_E2_M, j_E1C, j_E2C] = ...        % cm/d, change in L, ..
+    gr_iso_21 (L, m_E1, m_E2, p.j_E1M, p.j_E2M, p.y_VE1, p.y_VE2, p.v, p.kap, p.rho1);
+  J_E1C = j_E1C * M_V; J_E2C = j_E2C * M_V;       % mol/d, mobilisation flux
+  r = 3 * dL/ L;                                  % 1/d, spec growth rate
+
+  % maturation
+  p_C = p.mu_E1 * J_E1C + p.mu_E2 * J_E2C;        % J/d, total mobilisation
+  dE_H = (1 - p.kap) * p_C - p.k_J * E_H;         % J/d, maturation
+
+  % reserve dynamics
+  j_E1P = p.kap * j_E1C - j_E1_M - r/ p.y_VE1;    % mol/d.mol, rejected flux 1 from growth SU's
+  j_E2P = p.kap * j_E2C - j_E2_M - r/ p.y_VE2;    % mol/d.mol, rejected flux 2 from growth SU's
+  dm_E1 = p.kap_E1 * j_E1P - m_E1 * p.v/ L;       % mol/d.mol, change in m_E1
+  dm_E2 = p.kap_E2 * j_E2P - m_E2 * p.v/ L;       % mol/d.mol, change in m_E2
+  dM_E1 = M_V * (dm_E1 + m_E1 * r);               % mol/d, change in M_E1
+  dM_E2 = M_V * (dm_E2 + m_E2 * r);               % mol/d, change in M_E2
+
+  dLE12H = [dL; dM_E1; dM_E2; dE_H];              % pack output
+end 
+
+% event birth
+function [value,isterminal,direction] = birth(a, LE12H, p)
+  value = LE12H(4) - p.E_Hb;  % trigger E_H(a_b) = E_Hb
+  isterminal = 1;   % terminate after the first event
+  direction  = [];  % get all the zeros
+end
