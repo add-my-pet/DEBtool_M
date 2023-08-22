@@ -29,12 +29,12 @@ function [L_b, a_b, M_E10, M_E20, info] = iso_21_var_b(m_E1b, m_E2b, p)
   % requires fniso_21_var_b, diso_21_var_b, sgr_iso_21_var_b (see below)
   
   %  guess for M_E0 given m_Eb
-  E_G = 2 * (p.y_VE1 * p.mu_E1 + p.y_VE2 * p.mu_E2) * p.MV; % J/cm^3, guess for spec cost for structure
+  E_G = 2 * p.y_VE1 * p.mu_E1 * p.MV; % J/cm^3, guess for spec cost for structure
   % fuzz factor 2 roughly accounts for maintenance costs during embryo period
   V_b = p.E_Hb * p.kap/ E_G/ (1 - p.kap); % cm^3, guess for struc vol at birth
   M_Vb = p.MV * V_b; % mol, guess for mass at birth
   M_E10 = M_Vb * (m_E1b + 1/ p.y_VE1/ p.kap); % mol, guess for initial reserve 1
-  M_E20 = M_Vb * (m_E2b + 1/ p.y_VE2/ p.kap); % mol, guess for initial reserve 2
+  M_E20 = M_Vb * m_E2b; % mol, guess for initial reserve 2
   M_E0 = [M_E10; M_E20]; % mol, guess for initial reserves
   
   % get states: at initial and at birth 
@@ -81,8 +81,8 @@ function dLE12H = diso_21_var_b(a, LE12H, p)
   dE_H = (1 - p.kap) * p_C - p.k_J * E_H;                       % J/d, maturation
 
   % reserve dynamics
-  dm_E1 = p.kap_E1 * j_E1P - m_E1 * p.v/ L;                     % mol/d.mol, change in m_E1
-  dm_E2 = p.kap_E2 * j_E2P - m_E2 * p.v/ L;                     % mol/d.mol, change in m_E2
+  dm_E1 = - m_E1 * p.v/ L;                                      % mol/d.mol, change in m_E1
+  dm_E2 = - m_E2 * p.v/ L;                                      % mol/d.mol, change in m_E2
   dM_E1 = M_V * (dm_E1 + r * m_E1);                             % mol/d, chnage in M_E1
   dM_E2 = M_V * (dm_E2 + r * m_E2);                             % mol/d, chnage in M_E2
 

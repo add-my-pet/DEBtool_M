@@ -64,7 +64,6 @@ fprintf('At birth:\n a_b = %g d; L_b = %g cm; M_Vb = %g mol;\n m_E1 = %g mol/mol
 %% get max size L_m, M_Vm
 [L_m, m_E1m, m_E2m, M_Vm, info] = get_Lm_iso_21 (p);
 fprintf('max struc length L_m = %g cm; max struc mass M_Vm = %g mol;\n', L_m, M_Vm);
-return
 
 %% run iso_221
 [var, flux]  = iso_221(tX12T, var_b, p, n_O, n_M); % from birth to t = tX12T(end,1)
