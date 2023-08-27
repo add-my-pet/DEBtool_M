@@ -9,7 +9,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % varargout = <../get_tpm.m *get_tpm*> (p, f, tel_b, tau)
   
   %% Description
-  % Obtains scaled ages, lengths at puberty, birth for the std model at constant food, temperature;
+  % Obtains scaled ages, lengths at puberty, birth for the std model at constant or varying food, constant temperature;
   % Notice p-b sequence in output, due to the name of the routine.
   % State at birth (scaled age, reserve density, length) can optionally be specified
   % E.g. for female: [tau_b, f, l_b] with zoom factor z, but for male: [tau_b, f*z/z_m, l_b*z/z_m] with zoom factor z_m
@@ -17,7 +17,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   % Input
   %
   % * p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p 
-  % * f: optional scalar with functional response (default f = 1)
+  % * f: optional scalar with functional response (default f = 1) or (n,2)-array
   % * tel_b: optional 3-vector with scaled age, reserve density and length at birth
   % * tau: optional n-vector with scaled times since birth
   %  
@@ -49,12 +49,16 @@ function varargout = get_tpm(p, f, tel_b, tau)
   v_Hp = p(5); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
     
   if ~exist('f', 'var') || isempty(f)
-    f = 1;
+    f = 1; f_b = 1;
+  elseif size(f,2) == 1
+    f_b = f; % -, f at birth
+  else
+    f_b = spline1(0,f); % -, f at birth
   end
   
   % get states at birth
   if ~exist('tel_b','var') || isempty(tel_b)
-    [tau_b, l_b, info_tb] = get_tb([g, k, v_Hb], f); e_b = f; 
+    [tau_b, l_b, info_tb] = get_tb([g, k, v_Hb], f_b); e_b = f_b; 
   else
     tau_b = tel_b(1); e_b = tel_b(2); l_b = tel_b(3); info_tb = 1; 
   end
@@ -94,7 +98,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
     else
       e_p = vel_p(1,2); l_p = vel_p(1,3); info_tvel = 1;
     end
-    tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<e6 
+    tvel = [t, vel]; % t(end)=1e6 if tau_p>1e6 or t(end)=tau_p if tau_p<1e6 
     if exist('tau', 'var') && tau(1)>0 
       tvel(1,:)=[]; 
     end
@@ -107,7 +111,7 @@ function varargout = get_tpm(p, f, tel_b, tau)
   else
     varargout = {tau_p, tau_b, l_p, l_b, info};
   end
-
+  
 end
 
 function dvel = dget_vel(tau, vel, f, g, k, l_T, v_Hp)
@@ -115,6 +119,8 @@ function dvel = dget_vel(tau, vel, f, g, k, l_T, v_Hp)
   v_H = vel(1); % -, scaled maturity 
   e = vel(2);   % -, scaled reserve density
   l = vel(3);   % -, scaled structural length
+  
+  if size(f,2)==2; f = spline1(tau,f); end
   
   de = (f - e) * g/ l;  % d/dtau e
   rho = g * (e/ l - (1 + l_T/ l))/ (e + g); % scaled specific growth rate

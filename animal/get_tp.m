@@ -54,16 +54,28 @@ function varargout = get_tp(p, f, tel_b, tau)
     f = 1;
   end
 
+  if ~exist('tel_b','var'); tel_b = []; end
+  if size(f,2)==2
+    if ~exist('tau','var')
+      fprintf('Warning from get_tp: f has 2 columns, but tau is not specified\n') 
+      varargout = {}; return
+    end
+    [tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(p, f, tel_b, tau);
+    varargout = {tvel, tau_p, tau_b, l_p, l_b, info};
+    return
+  end
+      
   if exist('tel_b', 'var') && ~isempty(tel_b)
     if length(tel_b) == 1
       tau_b = get_tb(p([1 2 4]), f);
 %      e_b = f;
       l_b = tel_b;
-    elseif ~tel_b(2)==f && exist('tau', 'var')
-      varargout = get_tpm(p, f, tel_b, tau);
+    elseif ~tel_b(2)==f && exist('tau','var')
+      [tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(p, f, tel_b, tau);
       return
     elseif ~tel_b(2)==f 
-      varargout = get_tpm(p, f, tel_b);
+      [tvel, tau_p, tau_b, l_p, l_b, info] = get_tpm(p, f, tel_b);
+      varargout = {tvel, tau_p, tau_b, l_p, l_b, info};
       return
     else
       tau_b = tel_b(1);
