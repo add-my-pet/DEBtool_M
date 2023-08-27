@@ -28,11 +28,11 @@ function varargout = get_tp(p, f, tel_b, tau)
   % Output
   %
   % * tvel: optional (n,4)-array with scaled time-since-birth, maturity, reserve density and length
-  % * tau_p: scaled with age at puberty \tau_p = a_p k_M
-  % * tau_b: scaled with age at birth \tau_b = a_b k_M
-  % * lp: scaler length at puberty
-  % * lb: scaler length at birth
-  % * info: indicator equals 1 if successful
+  % * tau_p: scaled age at puberty \tau_p = a_p k_M
+  % * tau_b: scaled age at birth \tau_b = a_b k_M
+  % * lp: scaled length at puberty
+  % * lb: scaled length at birth
+  % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
   % Function <get_tp_foetus.html *get_tp_foetus*> does the same for foetal development; the result depends on embryonal development.
@@ -50,9 +50,7 @@ function varargout = get_tp(p, f, tel_b, tau)
   v_Hb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = M_H^b/ {J_EAm} = E_H^b/ {p_Am}
   v_Hp = p(5); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = M_H^p/ {J_EAm} = E_H^p/ {p_Am}
   
-  if ~exist('f', 'var')
-    f = 1;
-  elseif isempty(f)
+  if ~exist('f', 'var') || isempty(f)
     f = 1;
   end
 
