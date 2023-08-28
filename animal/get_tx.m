@@ -11,11 +11,8 @@ function varargout = get_tx(p, f, tel_b, tau)
   %% Description
   % Obtains scaled age and length at puberty, weaning, birth for foetal development. 
   % An extra optional parameter, the stress coefficient for foetal development can modify the rate of development from fast 
-  %    (default, and a large stress coefficient, s_F, of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). 
-  % Divide all times that are output with the (temperature-corrected) somatic maintenance rate coefficient to arrive at age at puberty, weaning and birth. 
-  % Make sure the times (first column of f when it is an (n,2)-array, first
-  % column of tau) as scales with the temperature corrected somatic
-  % maintenance rate coefficient. 
+  %    (default, and a large stress coefficient of 1e8) to slow (value 1 gives von Bertalanffy growth of the same rate as post-natal development). 
+  % Multiply the result with the somatic maintenance rate coefficient to arrive at age at puberty, weaning and birth. 
   %
   % Input
   %
@@ -23,8 +20,8 @@ function varargout = get_tx(p, f, tel_b, tau)
   % * f: optional (default f = 1)
   %
   %      - scalar with scaled functional response for period bi
-  %      - 2-vector with scaled functional responses for periods bx and xi (
-  %      - (n,2)-array with scaled times and functional responses in the columns
+  %      - 2-vector with scaled functional responses for periods bx and xi
+  %      - (n,2)-array with scaled time since birth and functional responses in the columns
   %
   % * tel_b: optional scalar with scaled length at birth
   %
@@ -47,15 +44,8 @@ function varargout = get_tx(p, f, tel_b, tau)
   % uses integration over scaled age with event detection; this function replaces get_tx_old 
   
   %% Examples
-  % See predict_Moschus_berezovskii for a gradual change from f_bx to f_xi (tf = [50 f_bx; 100 f_xi]; tf(:,1) = tf(:,1) * kT_M;
-  % tvel = get_tx(pars_tx, tf, [], tW(:,1) * kT_M));). 
-  % See predict_Moschiola_meminna for an instantaneous change: (pars_tx = [g k l_T v_Hb v_Hx v_Hp 1];  
-  % [tau_p, tau_x, tau_b, l_p, l_x, l_b, info] = get_tx(pars_tx, [f_bx
-  % f]);)
-  % Notice how the input times (first column of the tW matrix, and first column of the input time varying food tf in the first
-  % case) must be multiplied by the temperature corrected somatic
-  % maintenance rate in order to scale them appropriately given that this
-  % function only works in scaled times. 
+  % See predict_Moschus_berezovskii for a gradual change from f_bx to f_xi;
+  % and predict_Moschiola_meminna for an instantaneous change
 
   % unpack pars
   g    = p(1); % -, energy investment ratio
@@ -114,7 +104,7 @@ function varargout = get_tx(p, f, tel_b, tau)
   end
   tvel = [tau, vel]; tvel(1,:) = []; info = 1;
 
-  if ~isreal(tau_b) || ~isreal(tau_x) || ~isreal(tau_p) || tau_b < 0 || tau_x < 0 || tau_p < 0 % tb, tx and tp must be real and positive
+  if ~isreal(tau_b) | ~isreal(tau_x) | ~isreal(tau_p) | tau_b < 0 | tau_x < 0 | tau_p < 0 % tb, tx and tp must be real and positive
     info = 0;
   end
 
