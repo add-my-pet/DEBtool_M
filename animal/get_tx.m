@@ -77,17 +77,19 @@ function varargout = get_tx(p, f, tel_b, tau)
   elseif size(f,1)==1 && size(f,2)==2
     f_0b = f(2);
   else
-    f_0b = spline1(1e10, f); % ultimate f of mother
+    f_0b = f(end,2); % ultimate f of mother
   end
-  options = odeset('Events',@event_b, 'AbsTol',1e-9, 'RelTol',1e-9); 
-  [~, ~, tau_b, vl_b] = ode45(@dget_lb, [0; 1e10], [1e-20; 1e-20], options, f_0b, s_F, g, k, v_Hb);
-  l_b = vl_b(1,2);
   
+  options = odeset('Events',@event_b, 'AbsTol',1e-9, 'RelTol',1e-9);   
   % optional input tel_b
   if ~exist('tel_b','var') || isempty(tel_b)
+    [~, ~, tau_b, vl_b] = ode45(@dget_lb, [0; 1e10], [1e-20; 1e-20], options, f_0b, s_F, g, k, v_Hb);
+    l_b = vl_b(1,2);
     vel_b = [v_Hb;f_0b;l_b]; 
   elseif length(tel_b) == 1
+    [~, ~, tau_b, vl_b] = ode45(@dget_lb, [0; 1e10], [1e-20; 1e-20], options, f_0b, s_F, g, k, v_Hb);
     vel_b = [v_Hb;f_0b;tel_b]; 
+    if ~tel_b == l_b; fprintf('Warning from get_tx: specified l_b differs from predicted l_b based on g, k, v_Hb and f\n'); end
   else
     vel_b = [v_Hb;f_0b;tel_b(2);tel_b(3)]; tau_b = tel_b(1); 
   end
