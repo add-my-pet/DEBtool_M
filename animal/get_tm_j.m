@@ -50,7 +50,7 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
   x0 = [uE0; 1e-4; 0; 0; 1; 0]; % initiate uE l q h S cS
   [t, x]= ode45(@dget_tm_egg, [0; tb], x0, [], g, ha, sG);
   xb = x(end,:)'; xb(1) = []; % l q h S cS at birth
-  options = odeset('Events', @dead_for_sure, 'NonNegative', ones(5,1));  
+  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(5,1));  
   [t, x]= ode45(@dget_tm_adult, [tb; tj; tp; 1e10], xb, options, g, lT, lb, lj, ha, sG, f);
   if size(x,1)==4
     S_b = x(1,4); S_p = x(3,4); tau_m = x(4,5);

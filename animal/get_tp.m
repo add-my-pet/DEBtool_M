@@ -19,7 +19,7 @@ function varargout = get_tp(p, f, tel_b, tau)
   % Input
   %
   % * p: 5-vector with parameters: g, k, l_T, v_H^b, v_H^p 
-  % * f: optional scalar with functional response (default f = 1)
+  % * f: optional scalar with functional response (default f = 1) or (n,2)-array with scaled time since birth and functional response
   % * tel_b: optional scalar with scaled length at birth
   %
   %      or 3-vector with scaled age at birth, reserve density and length at 0
