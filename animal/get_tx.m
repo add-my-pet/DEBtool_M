@@ -72,14 +72,15 @@ function varargout = get_tx(p, f, tel_b, tau)
   end
   
   % embryo
-  if size(f,1)==1 && size(f,2)==1
-    f_0b = f;
-  elseif size(f,1)==1 && size(f,2)==2
-    f_0b = f(2);
-  else
-    f_0b = f(end,2); % ultimate f of mother
-  end
-  
+%   if size(f,1)==1 && size(f,2)==1
+%     f_0b = f;
+%   elseif size(f,1)==1 && size(f,2)==2
+%     f_0b = f(2);
+%   else
+%     f_0b = f(end,2); % ultimate f of mother
+%   end
+  f_0b = 1; % embryo development is independent of nutritional state of the mother
+  %
   options = odeset('Events',@event_b, 'AbsTol',1e-9, 'RelTol',1e-9);   
   % optional input tel_b
   if ~exist('tel_b','var') || isempty(tel_b)
