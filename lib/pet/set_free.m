@@ -26,7 +26,7 @@ function set_free(my_pet, mode)
   
   
   %% Examples
-  % set_free('Daphnia_magna',0)
+  % set_free('Daphnia_magna',0) on the assumption that pars_init_Daphia_magna.m is in the current dir
 
   core_pars = {'z','v','kap','p_M','E_G','E_H','h_a'};
   
