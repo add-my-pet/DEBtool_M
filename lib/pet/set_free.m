@@ -2,7 +2,7 @@
 % sets free settings in a pars_init file
 
 %%
-function set_free(my_pet, mode)
+function set_free(my_pet, mode, pars_free)
   % created 2023/80/28 by Bas Kooijman
   %% Syntax
   % <../set_free.m *set_free*> (my_pet, mode)
@@ -13,12 +13,14 @@ function set_free(my_pet, mode)
   % Input
   %
   % * my_pet: string with entry-name for loading/writing pars_init_my_pet
-  % * mode: scalar with mode setting
+  % * mode: optional scalar (default 0) with 
   %
   %     - 0 all free settings are 0
   %     - 1 all free settings are 0, except f_*
-  %     - 2 all free settings are 0, except core pars
+  %     - 2 all free settings are 0, except pars_core
   %     - 3 all free settings are 0, except f_* and core_pars
+  %
+  % * pars_free: optional cell-string with parameters to set free, all others will be fixed
   %
   % Output
   %
@@ -28,7 +30,10 @@ function set_free(my_pet, mode)
   %% Examples
   % set_free('Daphnia_magna',0) on the assumption that pars_init_Daphia_magna.m is in the current dir
 
-  core_pars = {'z','v','kap','p_M','E_G','E_H','h_a'};
+  if ~exist('mode','var'); mode = 0; end
+  if ~exist('pars_free','var'); pars_free = {}; end
+  
+  pars_core = {'z','v','kap','p_M','E_G','E_H','h_a'};
   
   fnm = ['pars_init_', my_pet, '.m'];
   pars_init = fileread(fnm);
@@ -39,11 +44,11 @@ function set_free(my_pet, mode)
     pars_init(ind_free) = '0'; % set free.* = 0 for all pars
     switch mode
       case 1
-        if contains(par,'f_'); pars_init(ind_free)='1'; end
+        if contains(par,['f_',pars_free]); pars_init(ind_free)='1'; end
       case 2
-        if any(contains(par, core_pars)); pars_init(ind_free)='1'; end
+        if any(contains(par,[pars_core,pars_free])); pars_init(ind_free)='1'; end
       case 3
-        if any(contains(par, [core_pars, 'f_'])); pars_init(ind_free)='1'; end
+        if any(contains(par, [pars_core,'f_',pars_free])); pars_init(ind_free)='1'; end
       otherwise
     end
   end
