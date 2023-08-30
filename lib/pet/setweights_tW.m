@@ -8,11 +8,11 @@ function [factor_cur, nm] = setweights_tW(my_pet, factor_new)
   % <../setweights_tW.m *setweights_tW*> (my_pet, factor_new)
   
   %% Description
-  % Weight-coefficients can only be set in mydata files my specifying multiplication factor for default settings.
+  % Weight-coefficients can only be set in mydata files by specifying multiplication factors on default settings.
   % The functions modifies the factors for data sets of type tW in a mydata-file. 
   % The first call might avoid the second input to obtain the current setting.
   % A second call might modify the current setting, by specifying the second input.
-  % If that happens, the first output equals the second input.
+  % If that happens, the first output equals the second input and the mydata file is overwritten.
   %
   % Input
   %

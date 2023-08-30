@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>setweights_tW</h1><!--introduction--><p>sets weights of tW data in a mydata-file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Examples</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../setweights_tW.m"><b>setweights_tW</b></a> (my_pet, factor_new)</p><h2 id="4">Description</h2><p>Weight-coefficients can only be set in mydata files my specifying multiplication factor for default settings. The functions modifies the factors for data sets of type tW in a mydata-file. The first call might avoid the second input to obtain the current setting. A second call might modify the current setting, by specifying the second input. If that happens, the first output equals the second input.</p><p>Input</p><div><ul><li>my_pet: string with entry-name for loading/writing mydata_my_pet</li><li>factor_new: optional vector with new multipliers for weights for tW data</li></ul></div><p>Output</p><div><ul><li>factor_cur: vector with current multipliers for weights of tW data</li><li>nm: cell string with fieldnames of tW data</li></ul></div><h2 id="5">Examples</h2><p>setweights_tW('Daphnia_magna',0) on the assumption that mydata_Daphia_magna.m is in the current dir</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>setweights_tW</h1><!--introduction--><p>sets weights of tW data in a mydata-file</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Examples</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../setweights_tW.m"><b>setweights_tW</b></a> (my_pet, factor_new)</p><h2 id="4">Description</h2><p>Weight-coefficients can only be set in mydata files by specifying multiplication factors on default settings. The functions modifies the factors for data sets of type tW in a mydata-file. The first call might avoid the second input to obtain the current setting. A second call might modify the current setting, by specifying the second input. If that happens, the first output equals the second input and the mydata file is overwritten.</p><p>Input</p><div><ul><li>my_pet: string with entry-name for loading/writing mydata_my_pet</li><li>factor_new: optional vector with new multipliers for weights for tW data</li></ul></div><p>Output</p><div><ul><li>factor_cur: vector with current multipliers for weights of tW data</li><li>nm: cell string with fieldnames of tW data</li></ul></div><h2 id="5">Examples</h2><p>setweights_tW('Daphnia_magna',0) on the assumption that mydata_Daphia_magna.m is in the current dir</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% setweights_tW
 % sets weights of tW data in a mydata-file
@@ -79,11 +79,11 @@ function [factor_cur, nm] = setweights_tW(my_pet, factor_new)
   % <../setweights_tW.m *setweights_tW*> (my_pet, factor_new)
   
   %% Description
-  % Weight-coefficients can only be set in mydata files my specifying multiplication factor for default settings.
+  % Weight-coefficients can only be set in mydata files by specifying multiplication factors on default settings.
   % The functions modifies the factors for data sets of type tW in a mydata-file. 
   % The first call might avoid the second input to obtain the current setting.
   % A second call might modify the current setting, by specifying the second input.
-  % If that happens, the first output equals the second input.
+  % If that happens, the first output equals the second input and the mydata file is overwritten.
   %
   % Input
   %
