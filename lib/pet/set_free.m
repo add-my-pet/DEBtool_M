@@ -34,7 +34,7 @@ function set_free(my_pet, mode, pars_free)
   if ~exist('mode','var'); mode = 0; end
   if ~exist('pars_free','var'); pars_free = {}; end
   
-  pars_core = {'z','v','kap','p_M','E_G','E_Hh','E_Hb','E_Hj','E_Hp','E_Hpm','E_He','h_a'};
+  pars_core = {'z','v','kap','p_M','E_G','E_Hh','E_Hb','E_Hs','E_Hj','E_Hp','E_Hpm','E_He','h_a'};
   
   fnm = ['pars_init_', my_pet, '.m'];
   pars_init = fileread(fnm);
