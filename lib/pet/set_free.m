@@ -34,7 +34,7 @@ function set_free(my_pet, mode, pars_free)
   if ~exist('mode','var'); mode = 0; end
   if ~exist('pars_free','var'); pars_free = {}; end
   
-  pars_core = {'z','v','kap','p_M','E_G','E_H','h_a'};
+  pars_core = {'z','v','kap','p_M','E_G','E_Hh','E_Hb','E_Hj','E_Hp','E_Hpm','E_He','h_a'};
   
   fnm = ['pars_init_', my_pet, '.m'];
   pars_init = fileread(fnm);
@@ -45,13 +45,13 @@ function set_free(my_pet, mode, pars_free)
     pars_init(ind_free) = '0'; % set free.* = 0 for all pars
     switch mode
       case 0
-        if contains(par,pars_free); pars_init(ind_free)='1'; end
+        if any(strcmp(par,pars_free)); pars_init(ind_free)='1'; end
       case 1
-        if contains(par,['f_',pars_free]); pars_init(ind_free)='1'; end
+        if any(contains(par,'f_')) || any(strcmp(par,pars_free)); pars_init(ind_free)='1'; end
       case 2
-        if any(contains(par,[pars_core,pars_free])); pars_init(ind_free)='1'; end
+        if any(strcmp(par,[pars_core,pars_free])); pars_init(ind_free)='1'; end
       case 3
-        if any(contains(par, [pars_core,'f_',pars_free])); pars_init(ind_free)='1'; end
+        if any(contains(par,'f_')) || any(strcmp(par,[pars_core,pars_free])); pars_init(ind_free)='1'; end
       otherwise
     end
   end

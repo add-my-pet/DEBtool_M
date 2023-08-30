@@ -87,9 +87,9 @@ function varargout = get_tj(p, tf, tel_b, tau)
   [tau, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
   tvel = [tau, vel]; tvel(1,:) = []; 
   if isempty(vel_jp)
-    tau_j = NaN; tau_p = NaN; l_j = NaN; l_p = NaN; l_i = NaN;
+    tau_j = NaN; tau_p = NaN; l_j = NaN; l_p = NaN; l_i = NaN; info = 0;
   elseif length(tau_jp) == 1
-    tau_j = tau_b + tau_jp(1);  l_j = vel_jp(1,3); tau_p = NaN; l_p = NaN; l_i = f_i * l_j/ l_b; 
+    tau_j = tau_b + tau_jp(1);  l_j = vel_jp(1,3); tau_p = NaN; l_p = NaN; l_i = f_i * l_j/ l_b; info = 0;
   else
     tau_j = tau_b + tau_jp(1); tau_p = tau_b + tau_jp(2); 
     l_j = vel_jp(1,3); l_p = vel_jp(2,3); l_i = f_i * l_j/ l_b; 
