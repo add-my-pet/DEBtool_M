@@ -8,7 +8,8 @@ function set_free(my_pet, mode, pars_free)
   % <../set_free.m *set_free*> (my_pet, mode)
   
   %% Description
-  % Sets free settings in a local pars_init file, using mode-settings
+  % Sets free settings in a local pars_init file, using mode-settings. 
+  % The parameters listed in pars_free will have free = 1, independent of the mode setting.
   %
   % Input
   %
@@ -43,6 +44,8 @@ function set_free(my_pet, mode, pars_free)
     ind_par = strfind(pars_init(ind(i):end), ' '); par = pars_init(ind(i)+(1:ind_par(1)-2)); % name of parameter
     pars_init(ind_free) = '0'; % set free.* = 0 for all pars
     switch mode
+      case 0
+        if contains(par,pars_free); pars_init(ind_free)='1'; end
       case 1
         if contains(par,['f_',pars_free]); pars_init(ind_free)='1'; end
       case 2
