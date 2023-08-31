@@ -65,6 +65,6 @@ function [factor_cur, flds] = setweights_tW(my_pet, factor_new)
   end
   factor_cur = factor_new;
 
-  write mydata
+  %write mydata
   fid_mydata = fopen(fnm, 'w+'); fprintf(fid_mydata, '%s', mydata); fclose(fid_mydata);
 
