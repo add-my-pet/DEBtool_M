@@ -53,25 +53,27 @@ if exist(matFile, 'file') == 0
   return
 end
 
-pars_initFile = ['pars_init_', my_pet, '.m'];
+% pars_initFile = ['pars_init_', my_pet, '.m'];
 
 load(matFile);
 if all(strcmp(metaPar.model,'nat'))
   mat2pars_init_nat; return
 end
 
-if exist(pars_initFile, 'file') == 2
-  prompt = [pars_initFile, ' already exists. \n Do you want to overwrite it? (y/n) '];
-  overwr = lower(input(prompt, 's'));
-  if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
-    fprintf([pars_initFile, ' was not overwritten.\n']);
-    return
-  end
-end
+% if exist(pars_initFile, 'file') == 2
+%   prompt = [pars_initFile, ' already exists. \n Do you want to overwrite it? (y/n) '];
+%   overwr = lower(input(prompt, 's'));
+%   if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
+%     fprintf([pars_initFile, ' was not overwritten.\n']);
+%     return
+%   end
+% end
 
 % open pars_init file
 pars_init_id = fopen(['pars_init_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
 fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', my_pet,'(metaData)\n\n']);
+
+fprintf([matFile, ' successfully overwritten.\n']);
 
 if ~iscell(metaPar.model)
   fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n']);
