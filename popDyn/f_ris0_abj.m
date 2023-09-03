@@ -55,7 +55,7 @@ function [f, info] = f_ris0_abj (par)
   end
   
   % set lower boundary of f
-  f_0 = 1e-5 + get_ep_min_j([g k l_T v_Hb v_Hj v_Hp]); % -, scaled functional response at which puberty can just be reached
+  f_0 = 1e-2 + get_ep_min_j([g k l_T v_Hb v_Hj v_Hp]); % -, scaled functional response at which puberty can just be reached
   pars_charEq0 = {L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, h_a, h_B0b, h_Bbj, h_Bjp, h_Bpi, thinning, semel};
   if charEq0(f_0, pars_charEq0{:}) > 0
     fprintf(['Warning from f_ris0_abj: f for which r = 0 is very close to that for R_i = 0 and thinning = ', num2str(thinning), '\n']);
@@ -133,8 +133,8 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, 
 
   else % iteroparous reproduction
     u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g, k, 0, v_Hb, v_Hj, v_Hp], f); 
-    if isempty(tau_j)
+    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g, k, 0, v_Hb, v_Hj, v_Hp], f); 
+    if isempty(tau_j) || ~info 
       val = -1; return
     end
     a_b = tau_b/ k_M; t_j = (tau_j - tau_b)/ k_M; t_p = (tau_p - tau_b)/ k_M; % unscale

@@ -2,7 +2,7 @@
 % Gets scaled age at metamorphosis
 
 %%
-function varargout = get_tj(p, tf, tel_b, tau)
+function varargout = get_tj(p, f, tel_b, tau)
   % created at 2011/04/25 by Bas Kooijman, 
   % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
   % modified 2018/09/10 (t -> tau) Nina Marn, 2023/04/05, 2023/08/28 Bas Kooijman 
@@ -74,7 +74,7 @@ function varargout = get_tj(p, tf, tel_b, tau)
     end
   else
     e_b = f_i;
-    [tau_b, l_b, info] = get_tb(p([1 2 4]), e_b);
+    [tau_b, l_b] = get_tb(p([1 2 4]), e_b);
   end
   vel_b = [v_Hb; e_b; l_b]; % states at birth
   
@@ -84,8 +84,8 @@ function varargout = get_tj(p, tf, tel_b, tau)
   
   % juvenile & adult
   options = odeset('Events',@event_jp, 'AbsTol',1e-9, 'RelTol',1e-9); 
-  [tau, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
-  tvel = [tau, vel]; tvel(1,:) = []; 
+  [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
+  tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
   if isempty(vel_jp)
     tau_j = NaN; tau_p = NaN; l_j = NaN; l_p = NaN; l_i = NaN; info = 0;
   elseif length(tau_jp) == 1
@@ -137,4 +137,5 @@ function dvel = dget_lj (tau, vel, info_tau, tf, l_b, g, k, l_T, v_Hj, v_Hp)
   dl = l * rho/ 3; % -, d/d tau l  
   dv_H = e * l^3 * (s_M/ l - rho/ g) - k * v_H; % -, d/d tau v_H
   dvel = [dv_H; de; dl]; % pack to output
+ 
 end

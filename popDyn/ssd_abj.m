@@ -124,7 +124,7 @@ function [stat, txtStat] = ssd_abj(stat, code, par, T_pop, f_pop, sgr)
   kT_M = k_M * TC; kT_J = k_J * TC; vT = v * TC; hT_a = h_a * TC^2; pT_Am = TC * p_Am;
 
   % supporting statistics
-  [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k l_T v_Hb v_Hj v_Hp], f);
+  [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj_old([g k l_T v_Hb v_Hj v_Hp], f);
   if isempty(tau_j)
     stat = setNaN(stat, fldf, fldt, fldg); % set all statistics to NaN
     txtStat = NaN;
