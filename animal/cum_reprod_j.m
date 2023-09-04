@@ -67,7 +67,7 @@ function [N, L, UE0, Lb, Lj, Lp, t_b, t_j, t_p, info] = cum_reprod_j(t, f, p, Lf
   
   if length(Lf) <= 1
     l0 = Lf/ Lm; % scaled length at birth
-    [tau_j, tau_p, tau_b, lj, lp, lb, li, rhoj, rhoB, info_tj] = get_tj(p_tj, f, l0);
+    [tau_j, tau_p, tau_b, lj, lp, lb, li, rhoj, rhoB, info_tj] = get_tj_old(p_tj, f, l0);
     ap = tau_p/ kM; aj = tau_j/ kM; ab = tau_b/ kM; % d, age at puberty, metamorphosis, birth
     t_b = 0;       % d, time since birth at birth
     t_j = aj - ab; % d, time since birth at metamorphosis
