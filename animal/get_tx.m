@@ -92,7 +92,8 @@ function varargout = get_tx(p, f, tel_b, tau)
     vel_b = [v_Hb;f_0b;tel_b]; 
     if ~tel_b == l_b; fprintf('Warning from get_tx: specified l_b differs from predicted l_b based on g, k, v_Hb and f\n'); end
   else
-    vel_b = [v_Hb;f_0b;tel_b(2);tel_b(3)]; tau_b = tel_b(1); 
+%     vel_b = [v_Hb;f_0b;tel_b(2);tel_b(3)]; tau_b = tel_b(1); 
+    vel_b = [v_Hb;tel_b(2);tel_b(3)]; tau_b = tel_b(1); l_b = tel_b(3); 
   end
 
   % juvenile & adult
@@ -107,7 +108,7 @@ function varargout = get_tx(p, f, tel_b, tau)
   end
   tvel = [tau, vel]; tvel(1,:) = []; info = 1;
 
-  if ~isreal(tau_b) | ~isreal(tau_x) | ~isreal(tau_p) | tau_b < 0 | tau_x < 0 | tau_p < 0 % tb, tx and tp must be real and positive
+  if ~isreal(tau_b) || ~isreal(tau_x) || ~isreal(tau_p) || tau_b < 0 || tau_x < 0 || tau_p < 0 % tb, tx and tp must be real and positive
     info = 0;
   end
 
