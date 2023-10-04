@@ -45,16 +45,18 @@ else
   load(matFile, 'par');
 end
 
-pars_init = ['pars_init_', my_pet, '.m'];
-if exist(pars_init, 'file') == 2
-  prompt = [pars_init, ' already exists. Do you want to overwrite it? (y/n) '];
-  overwr = lower(input(prompt, 's'));
-  if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
-    fprintf([pars_init, ' was not overwritten.\n']);
-    return
-  end
-end
+% pars_init = ['pars_init_', my_pet, '.m'];
+% if exist(pars_init, 'file') == 2
+%   prompt = [pars_init, ' already exists. Do you want to overwrite it? (y/n) '];
+%   overwr = lower(input(prompt, 's'));
+%   if ~strcmp(overwr, 'y') && ~strcmp(overwr, 'yes')
+%     fprintf([pars_init, ' was not overwritten.\n']);
+%     return
+%   end
+% end
 pars_initFile = fileread(pars_init);
+
+fprintf([matFile, ' successfully overwritten.\n'])
 
 if contains(pars_initFile, 'addchem')
   fprintf('Warning from mat2pars_init_nat: addchem detected while model = nat\n')

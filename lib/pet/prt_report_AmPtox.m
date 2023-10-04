@@ -182,7 +182,7 @@ function prt_report_AmPtox(title)
       if strcmp(flds{i},'DEBmodel')
         fprintf(oid, '    <b>%s: </b><a href="https://add-my-pet.github.io/AmPtool/docs/models/%s.pdf">%s</a><br>\n', flds{i}, txt, txt);
       else
-        fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt); 
+        fprintf(oid, '    <b>%s: </b>%s<br>\n', flds{i}, txt);  
       end                  
     end
     fprintf(oid, '  </div>\n\n');
