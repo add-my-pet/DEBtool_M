@@ -46,7 +46,7 @@ function shregr (func, p, varargin)
       listxyw = ['xyw', ci,',']; % initiate list xyw
       listX = ['X', ci,',']; % initiate list X
       listf = ['f', ci,',']; % initiate list f
-      listg = ['g', ci,',']; % initiate list f
+      listg = ['g', ci,',']; % initiate list g
     else     
       listxyw = [listxyw, ' xyw', ci,',']; % append list xyw
       listX = [listX, ' X', ci,',']; % append list X
@@ -106,7 +106,7 @@ function shregr (func, p, varargin)
     end    
   end
     
-  nS = max(size(dataset)); % set number of data sets to be plotted  
+  nS = max(size(dataset))/2; % set number of data sets to be plotted  
 
   for i = 1:nxyw  %% set independent variables
     eval(['X', num2str(i), ' = linspace(', ...

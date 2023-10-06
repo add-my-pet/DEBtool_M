@@ -90,16 +90,16 @@ w_P = w_O(4);
 % -------------------------------------------------------------------------
 % Conversions and compound parameters cPar
 M_V     = p.d_V/ w_V;            % mol/cm^3, [M_V], volume-specific mass of structure
-y_V_E   = p.mu_E * M_V/ p.E_G;     % mol/mol, yield of structure on reserve
-y_E_V   = 1/ y_V_E;            % mol/mol, yield of reserve on structure
-k_M     = p.p_M/ p.E_G;            % 1/d, somatic maintenance rate coefficient
+y_V_E   = p.mu_E * M_V/ p.E_G;   % mol/mol, yield of structure on reserve
+y_E_V   = 1/ y_V_E;              % mol/mol, yield of reserve on structure
+k_M     = p.p_M/ p.E_G;          % 1/d, somatic maintenance rate coefficient
 k       = p.k_J/ k_M;            % -, maintenance ratio
 E_m     = p_Am/ p.v;             % J/cm^3, [E_m], reserve capacity 
 m_Em    = y_E_V * E_m / p.E_G;   % mol/mol, reserve capacity
-g       = p.E_G/ p.kap/ E_m ;      % -, energy investment ratio
+g       = p.E_G/ p.kap/ E_m ;    % -, energy investment ratio
 L_m     = p.v/ k_M/ g;           % cm, maximum length
-L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic work)
-l_T     = L_T/ L_m;            % - , scaled heating length
+L_T     = p.p_T/ p.p_M ;         % cm, heating length (also applies to osmotic work)
+l_T     = L_T/ L_m;              % - , scaled heating length
 ome     = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 w       = ome;                   % -, just for consistency with the past
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
