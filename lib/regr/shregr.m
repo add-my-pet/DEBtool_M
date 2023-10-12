@@ -106,7 +106,7 @@ function shregr (func, p, varargin)
     end    
   end
     
-  nS = max(size(dataset))/2; % set number of data sets to be plotted  
+  nS = max(size(dataset)); % set number of data sets to be plotted  
 
   for i = 1:nxyw  %% set independent variables
     eval(['X', num2str(i), ' = linspace(', ...
