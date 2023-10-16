@@ -73,7 +73,7 @@ end
 pars_init_id = fopen(['pars_init_', my_pet, '.m'], 'w+'); % open file for reading and writing, delete existing content
 fprintf(pars_init_id, ['function [par, metaPar, txtPar] = pars_init_', my_pet,'(metaData)\n\n']);
 
-fprintf([matFile, ' successfully overwritten.\n']);
+fprintf(['pars_init_', my_pet, '.m', ' successfully overwritten.\n']);
 
 if ~iscell(metaPar.model)
   fprintf(pars_init_id, ['metaPar.model = ''', metaPar.model,'''; \n']);
