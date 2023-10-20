@@ -45,7 +45,7 @@ switch phylum
         d_V = 0.06;
     case {'Platyhelminthes', 'Nemertea', 'Acanthocephala', 'Chaetognatha'}
         d_V = 0.07;
-    case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'}   % Spiralia 
+    case {'Bryozoa', 'Entoprocta', 'Phoronida', 'Brachiopoda'} % Spiralia 
         d_V = 0.07;
     case 'Annelida'
         d_V = 0.16;
@@ -62,7 +62,7 @@ switch phylum
             otherwise
               d_V = 0.1;
         end
-    case {'Tardigrada', 'Priapulida', 'Nematoda'}   % Ecdysozoa
+    case {'Tardigrada', 'Priapulida', 'Nematoda'} % Ecdysozoa
         d_V = 0.07;
     case 'Arthropoda'
         switch class
