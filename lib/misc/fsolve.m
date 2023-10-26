@@ -188,7 +188,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   
   if fv >=  tol_fun
     if report 
-      fprintf('No convergence; function tolerance %6.4g exceeds limit %6.4g\n', fv, tol_n);
+      fprintf('No convergence; function tolerance %6.4g exceeds limit %6.4g\n', fv, tol_fun);
     end
     if func_evals >= max_fun_evals
       if report 
