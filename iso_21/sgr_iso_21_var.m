@@ -11,7 +11,7 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
 
   %% Description
   % specific growth rate for isomorph with 2 reserves, allowing for shrinking and variable stoichiometry.
-  % The anabolic part of growth is paid from reserve 1, but the catabolic part (growth overhead) and somatic maintenacne
+  % The anabolic part of growth is paid from reserve 1, but the catabolic part (growth overhead) and somatic maintenance
   %   can be paid from reserve 1 (with absolute preference above reserve 1), as well as from reserve 2.
   % 4 modes of growth/maintenance are delineated
   %
@@ -39,7 +39,7 @@ function [r, j_E1_S, j_E2_S, j_E1C, j_E2C, j_E1P, j_E2P, mode] = ...
   
   %% remarks
   % spec growth rate r = j_VG and kap_G = mu_V*y_VE1/mu_E1
-  % at max size, where r = 0 (and kap_G = 0):
+  % at max size, where r = 0:
   %  mode 1 can only occur if m_E1 = 0 and L_i is not well defined
   %  mode 2,3 L_i = kap * v * (mu_E1 * m_E1 + mu_E2 * m_E2)/ (mu_E2 * j_E2S);
   %  mode 4 only applies when shrinking
