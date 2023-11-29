@@ -2,11 +2,11 @@
 % Gets specific density of structure from phylum or class
 
 %%
-function [d_V info] = get_d_V(phylum, class)
+function [d_V, info] = get_d_V(phylum, class)
   % created 2015/01/18 by Bas Kooijman, modified 2015/08/24; 2016/05/12; 2017/02/16, 2018/05/25
   
   %% Syntax
-  % [d_V info] = <../get_d_V.m *get_d_V*> (phylum, class)
+  % [d_V, info] = <../get_d_V.m *get_d_V*> (phylum, class)
   
   %% Description
   % Sets specific density d_V according to taxonomic classification
@@ -22,9 +22,11 @@ function [d_V info] = get_d_V(phylum, class)
   %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
-  % Since the specific density of wet mass is taken to be 1 g/cm^3,
-  %   d_V can also be considered as a dry/wet mass ratio
-  % Check spelling if info = 0
+  % Since the specific density of wet mass is taken to be d_V^w = 1 g/cm^3,
+  %   d_V can also be considered as a dry/wet mass ratio;
+  % Check spelling if info = 0.
+  % The relationship with molar density is [M_V] = d_V^w/w_V, 
+  %   where w_V is the mol-weight of dry structure
   
 info = 1;
 

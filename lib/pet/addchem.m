@@ -15,12 +15,12 @@ function [par, units, label, free] = addchem(par, units, label, free, phylum, cl
   %
   % Input
   %
-  % * par: strucutre with parameters - each field is a scalar
+  % * par: structure with parameters - each field is a scalar
   % * units: structure with units of each parameters - each field is a string
   % * label: structure with the description of each parameter - each field is a string
   % * free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed to not during estimation
-  % * phylum, character or cell string used to get d_V
-  % * class, character or cell string used to get d_V
+  % * phylum, character or cell string used to get_d_V, get_N_waste, get_s_s
+  % * class, character or cell string used to get d_V, get_N_waste, get_s_s
   %  
   % Output
   %
