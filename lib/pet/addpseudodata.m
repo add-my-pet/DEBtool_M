@@ -54,7 +54,7 @@ if strcmp(loss_function, 'su')
   weights.psd.v     = 1e-4 * weights.psd.v;
   weights.psd.p_M   = 1e-4 * weights.psd.p_M;
   weights.psd.k_J   = 1e-4 * weights.psd.k_J;
-  weights.psd.k     = 0 * weights.psd.k;
+  weights.psd.k     = 1e-4 * weights.psd.k;
   weights.psd.kap   = 1e-4 * weights.psd.kap;
   weights.psd.kap_G = 1e-4 * weights.psd.kap_G;
   weights.psd.kap_R = 1e-4 * weights.psd.kap_R;
