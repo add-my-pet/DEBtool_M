@@ -18,9 +18,9 @@ globals[
   n_eaLE   ; -, number of rows of eaLE
 
   time     ; d, current time
-  tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i+1,0)
+  tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i + 1,0)
   TC       ; -, current temperature correction factor
-  tJX_i    ; -, current lower row-index for tJX, so tJX(tJX_i,0) < time < tJX(tJX_i+1,0)
+  tJX_i    ; -, current lower row-index for tJX, so tJX(tJX_i,0) < time < tJX(tJX_i + 1,0)
   JX       ; mol/d, current food supply rate to the reactor
   X        ; Mol, food density
   eaten    ; mol/d, food that is eaten
@@ -190,7 +190,7 @@ to go
   set time ticks / tickRate ; d, time
 
   ; get current temperature correction factor
-  if (time > matrix:get tTC (tTC_i + 1) 0) and (n_tTC > tTC_i  + 2) [set tTC_i tTC_i + 1]
+  if (time > matrix:get tTC (tTC_i + 1) 0) and (n_tTC > tTC_i + 2) [set tTC_i tTC_i + 1]
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 

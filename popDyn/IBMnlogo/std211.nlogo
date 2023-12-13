@@ -1,7 +1,9 @@
-; Model definition for a hex-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for a std211-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/15, modified 2023/05/15
+; date: 2023/12/12
 ; warning: this script is case-insensitive
+; the graphical interface of NetLogo is assumed not to be used but still relevant to define parameters names 
+; parameters are read from set-pars.txt, output file is called txxNL23W.txt
 
 extensions [matrix]
 
@@ -12,18 +14,24 @@ extensions [matrix]
 globals[
   tTC      ; (d,-), (n,2)-matrix of spline-knots with time, temperature correction factor
   n_tTC    ; -, number of rows of tTC
-  tJX      ; (d,mol/d), (n,2)-matrix of spline-knots with time, food supply rate to the reactor
-  n_tJX    ; -, number of rows of tJX
+  tJX1     ; (d,mol/d), (n,2)-matrix of spline-knots with time, food 1 supply rate to the reactor
+  n_tJX1   ; -, number of rows of tJX1
+  tJX2     ; (d,mol/d), (n,2)-matrix of spline-knots with time, food 2 supply rate to the reactor
+  n_tJX2   ; -, number of rows of tJX2
   eaLE     ; (-,d,cm,J), (n,4)-matrix of spline-knots with scaled reserve density, age and structural length at birth, initial reserve
   n_eaLE   ; -, number of rows of eaLE
 
   time     ; d, current time
   tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i + 1,0)
   TC       ; -, current temperature correction factor
-  tJX_i    ; -, current lower row-index for tJX, so tJX(tJX_i,0) < time < tJX(tJX_i + 1,0)
-  JX       ; mol/d, current food supply rate to the reactor
-  X        ; Mol, food density
-  eaten    ; mol/d, food that is eaten
+  tJX1_i   ; -, current lower row-index for tJX1, so tJX1(tJX1_i,0) < time < tJX1(tJX1_i + 1,0)
+  tJX2_i   ; -, current lower row-index for tJX2, so tJX2(tJX2_i,0) < time < tJX2(tJX2_i + 1,0)
+  JX1      ; mol/d, current food 1 supply rate to the reactor
+  JX2      ; mol/d, current food 2 supply rate to the reactor
+  X1       ; Mol, food 1 density
+  X2       ; Mol, food 2 density
+  eaten1   ; mol/d, food 1 that is eaten
+  eaten2   ; mol/d, food 2 that is eaten
   r        ; 1/d, specific growth rate of individual
   p_C      ; J/d, reserve mobilisation rate
   spawn-number ;  #, list with positive number of eggs per female
@@ -31,10 +39,14 @@ globals[
   totN0i   ; #, total number of individuals in the reactor
 
   ; compound parameters
-  K        ; Mol, half saturation coefficient for females
-  K_male   ; Mol, half saturation coefficient for males (cannot be called K_m, since NetLogo makes no difference with k_M)
-  J_XAm    ; mol/d.cm^2, max spec food intake rate for females
-  J_XAmm   ; mol/d.cm^2, max spec food intake rate for males
+  K1        ; Mol, half saturation coefficient for females for food 1
+  K2        ; Mol, half saturation coefficient for females for food 2
+  K1_male   ; Mol, half saturation coefficient for males for food 1 (cannot be called K_m, since NetLogo makes no difference with k_M)
+  K2_male   ; Mol, half saturation coefficient for males for food 2 (cannot be called K_m, since NetLogo makes no difference with k_M)
+  J_X1Am   ; mol/d.cm^2, max spec food 1 intake rate for females
+  J_X2Am   ; mol/d.cm^2, max spec food 2 intake rate for females
+  J_X1Amm  ; mol/d.cm^2, max spec food 1 intake rate for males
+  J_X2Amm  ; mol/d.cm^2, max spec food 2 intake rate for males
   L_m      ; cm, max structural length for females
   L_mm     ; cm, max structural length for males
   E_m      ; J/cm^3, reserve capacity for females
@@ -42,18 +54,19 @@ globals[
   g        ; - , energy investment ratio for females
   g_m      ; - , energy investment ratio for males
   k_M      ; 1/d, somatic maintenance rate coefficient
-  k_E      ; 1/d, spec reserve mobilisation at b
 
   ; globals set through inputboxes (here just for presenting units and descriptions)
-  ; t_R      ; d, time for imago's to lay all eggs
+  ; t_R      ; d, time between spawning events (0 as soon as possible; 1 at a_b)
   ; h_B0b    ; 1/d, background hazard between 0 and b
   ; h_Bbp    ; 1/d, background hazard between b and p
   ; h_Bpi    ; 1/d, background hazard between p and i
   ; h_J      ; 1/d, hazard due to rejuvenation
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
-  ; mu_X     ; J/mol, chemical potential of food
+  ; mu_X1    ; J/mol, chemical potential of food 1
+  ; mu_X2    ; J/mol, chemical potential of food 2
   ; F_m      ; L/d.cm^2, specific searching rate
-  ; kap_X    ; -, digestion efficiency
+  ; kap_X1    ; -, digestion efficiency for food 1
+  ; kap_X2    ; -, digestion efficiency for food 2
   ; p_Am     ; J/d^.cm^2, max specific assimilation rate of females
   ; p_Amm    ; J/d^.cm^2, max specific assimilation rate of males
   ; v        ; cm/d, energy conductance
@@ -69,7 +82,6 @@ globals[
   ; E_Hb     ; J, maturity at birth
   ; E_Hp     ; J, maturity at puberty of females
   ; E_Hpm    ; J, maturity at puberty of males
-  ; s_j      ; -, fraction of max E_Rj at j
   ; fProb    ; -, probability of becoming female at b
 ]
 
@@ -78,23 +90,23 @@ globals[
 turtles-own[
   a        ; d, age
   t_spawn  ; d, time since last spawning
-  s_M      ; -, acceleration factor >= 1
   L        ; cm, structural length
   ee       ; -, scaled reserve density; DEB notation is e, but NetLogo takes this to be exponent
   E_H      ; J, maturity
   E_Hmax   ; J, max maturity reached
-  E_R      ; J, reproduction buffer, but for imago's it becomes number of eggs
-  E_Rj     ; J, reproduction buffer at j, it becomes number of eggs
+  E_R      ; J, reproduction buffer
   q        ; 1/d^2, ageing acceleration
   h_age    ; 1/d, hazard rate due to aging
   h_thin   ; 1/d, hazard rate due to thinning
   h_rejuv  ; 1/d, hazard rate due to rejuvenation
 
-  gender   ; -, 0 (female) 1 (male) 2 (female fresh imago) 3 (female initiated imago)
+  gender   ; -, 0 (female) 1 (male)
   a_b      ; d, age at birth at 20 C (set at creation)
-  Ki       ; Mol, half saturation coefficient (female or male value)
+  K1i      ; Mol, half saturation coefficient for food 1 (female or male value)
+  K2i      ; Mol, half saturation coefficient for food 2 (female or male value)
   p_Ami    ; J/d.cm^2, max spec assimilation rate  (female or male value)
-  J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
+  J_X1Ami   ; mol/d.cm^2, max spec food intake rate  for food 1 (female or male value)
+  J_X2Ami   ; mol/d.cm^2, max spec food intake rate  for food 2 (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
   L_mi     ; cm, max structural length  (female or male value)
@@ -111,19 +123,33 @@ to setup
   clear-all
   file-close-all
 
-  ; read matrix tJX with time, food supply
-  set tJX (list) ; initiate list
-  file-open "spline_JX.txt"    ; knots with time, food input into the reactor
+  ; read matrix tJX1 with time, food 1 supply
+  set tJX1 (list) ; initiate list
+  file-open "spline_JX1.txt"    ; knots with time, food 1 input into the reactor
   while [file-at-end? = false] [
     let row (list) ; empty list
     set row insert-item 0 row file-read ; t
-    set row insert-item 1 row file-read ; JX
-    set tJX lput row tJX ; new row is added to list
+    set row insert-item 1 row file-read ; JX1
+    set tJX1 lput row tJX1 ; new row is added to list
   ]
   file-close
-  set tJX matrix:from-row-list tJX ; convert list to matrix
-  set tJX_i 0 ; current row-index of tJX
-  set n_tJX item 0 matrix:dimensions tJX; number of rows in matrix tJX
+  set tJX1 matrix:from-row-list tJX1 ; convert list to matrix
+  set tJX1_i 0 ; current row-index of tJX1
+  set n_tJX1 item 0 matrix:dimensions tJX1; number of rows in matrix tJX1
+
+  ; read matrix tJX2 with time, food 2 supply
+  set tJX2 (list) ; initiate list
+  file-open "spline_JX2.txt"    ; knots with time, food 2 input into the reactor
+  while [file-at-end? = false] [
+    let row (list) ; empty list
+    set row insert-item 0 row file-read ; t
+    set row insert-item 1 row file-read ; JX2
+    set tJX2 lput row tJX2 ; new row is added to list
+  ]
+  file-close
+  set tJX2 matrix:from-row-list tJX2 ; convert list to matrix
+  set tJX2_i 0 ; current row-index of tJX2
+  set n_tJX2 item 0 matrix:dimensions tJX2; number of rows in matrix tJX2
 
   ; read matrix tTC with time, temperature correction factors
   set tTC (list) ; initiate list
@@ -160,13 +186,18 @@ to setup
     while [file-at-end? = false] [run file-read] ; set parameter-name, value
     file-close
   ]
-  set X X_0 ; Mol, initial value for food density
+  set X1 X1_0 ; Mol, initial value for food 1 density
+  set X2 X2_0 ; Mol, initial value for food 2 density
 
   ; frequently-used compound-parameters
-  set K p_Am / kap_X / mu_X / F_m       ;  Mol, half saturation coefficient for females
-  set K_male p_Amm / kap_X / mu_X / F_m ;  Mol, half saturation coefficient for males
-  set J_XAm p_Am / kap_X / mu_X         ;  mol/d.cm^2 max spec food intake rate for females
-  set J_XAmm p_Amm / kap_X / mu_X       ;  mol/d.cm^2 max spec food intake rate for males
+  set K1 p_Am / kap_X1 / mu_X1 / F_m    ;  Mol, half saturation coefficient for females
+  set K2 p_Am / kap_X2 / mu_X2 / F_m    ;  Mol, half saturation coefficient for females
+  set K1_male p_Amm / kap_X1 / mu_X1 / F_m ;  Mol, half saturation coefficient for males
+  set K2_male p_Amm / kap_X2 / mu_X2 / F_m ;  Mol, half saturation coefficient for males
+  set J_X1Am p_Am / kap_X1 / mu_X1      ;  mol/d.cm^2 max spec food 1 intake rate for females
+  set J_X2Am p_Am / kap_X2 / mu_X2      ;  mol/d.cm^2 max spec food 2 intake rate for females
+  set J_X1Amm p_Amm / kap_X1 / mu_X1    ;  mol/d.cm^2 max spec food 1 intake rate for males
+  set J_X2Amm p_Amm / kap_X2 / mu_X2    ;  mol/d.cm^2 max spec food 2 intake rate for males
   set E_m p_Am / v                      ;  J/cm^3, reserve capacity for females
   set E_mm p_Amm / v                    ;  J/cm^3, reserve capacity for males
   set g E_G / E_m / kap                 ;  - , energy investment ratio for females
@@ -175,9 +206,9 @@ to setup
   set L_mm kap * p_Amm / p_M            ;  cm, max structural length for males
   set k_M p_M / E_G                     ;  1/d, somatic maintenance rate coefficient
 
-  ; initiate output file tNL23W.txt
-  if file-exists? "txNL23W.txt" [file-delete "txNL23W.txt"]
-  file-open "txNL23W.txt"    ; append to an empty file
+  ; initiate output file txxNL23W.txt
+  if file-exists? "txxNL23W.txt" [file-delete "txxNL23W.txt"]
+  file-open "txxNL23W.txt"    ; append to an empty file
 
   create-turtles 1 [set-embryo 1 0] ; female embryo with e_b=1
 
@@ -198,34 +229,48 @@ to go
   let w (time - matrix:get tTC tTC_i 0) / (matrix:get tTC (tTC_i + 1) 0 - matrix:get tTC tTC_i 0)
   set TC w * matrix:get tTC (tTC_i + 1) 1 + (1  - w) * matrix:get tTC tTC_i 1
 
-  ; get current food input into reactor
-  if (time > matrix:get tJX (tJX_i + 1) 0) and (n_tJX > tJX_i + 2) [set tJX_i tJX_i + 1]
-  set w (time - matrix:get tJX tJX_i 0) / (matrix:get tJX (tJX_i + 1) 0 - matrix:get tJX tJX_i 0)
-  set JX w * matrix:get tJX (tJX_i + 1) 1 + (1  - w) * matrix:get tJX tJX_i 1
+  ; get current food 1 input into reactor
+  if (time > matrix:get tJX1 (tJX1_i + 1) 0) and (n_tJX1 > tJX1_i + 2) [set tJX1_i tJX1_i + 1]
+  set w (time - matrix:get tJX1 tJX1_i 0) / (matrix:get tJX1 (tJX1_i + 1) 0 - matrix:get tJX1 tJX1_i 0)
+  set JX1 w * matrix:get tJX1 (tJX1_i + 1) 1 + (1  - w) * matrix:get tJX1 tJX1_i 1
+
+  ; get current food 2 input into reactor
+  if (time > matrix:get tJX2 (tJX2_i + 1) 0) and (n_tJX2 > tJX2_i + 2) [set tJX2_i tJX2_i + 1]
+  set w (time - matrix:get tJX2 tJX2_i 0) / (matrix:get tJX2 (tJX2_i + 1) 0 - matrix:get tJX2 tJX2_i 0)
+  set JX2 w * matrix:get tJX2 (tJX2_i + 1) 1 + (1  - w) * matrix:get tJX2 tJX2_i 1
 
   set totN0i count turtles ; total number of individuals in the reactor
 
   ; birth
   ask turtles with [(a > a_b / TC) and (E_H = E_Hb)] [set E_H E_Hb + 0.0001] ; embryo becomes juvenile and starts feeding, growing, developing
 
-  ; food density in the reactor
-  set eaten 0 ; mol/d, initiate food disappearence rate
-  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * J_XAmi * L * L] ; Mol/d, food consumption
-  set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
-  if X < 0 [set X 0] ; do not allow negative food
+  ; food densities in the reactor
+  set eaten1 0 ; mol/d, initiate food 1 disappearence rate
+  set eaten2 0 ; mol/d, initiate food 2 disappearence rate
+  ask turtles with [E_H > E_Hb] [
+    ifelse E_H < E_Hpi 
+      [set eaten1 eaten1 + TC * X1 / (X1 + K1i) * J_X1Ami * L * L] ; Mol/d, food 1 consumption for juveniles
+      [set eaten1 eaten1 + TC * X1 / K1i / (1 + X1 / K1i + X2 / K2i) * J_X1Ami * L * L  ; Mol/d, food 1 consumption for adults
+       set eaten2 eaten2 + TC * X2 / K2i / (1 + X1 / K1i + X2 / K2i) * J_X2Ami * L * L] ; Mol/d, food 2 consumption for adults
+  ]
+  set X1 X1 + (JX1 / V_X - h_X1 * X1 - eaten1 / V_X) / tickRate ; Mol, food 1 density
+  set X2 X2 + (JX2 / V_X - h_X2 * X1 - eaten2 / V_X) / tickRate ; Mol, food 2 density
+  if X1 < 0 [set X1 0] ; do not allow negative food 1
+  if X2 < 0 [set X2 0] ; do not allow negative food 2
 
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    if E_H < E_Hpi [set s_M L / L_b] ; -, acceleration factor
-    set ee ee + (X / (X + Ki) - ee) * TC * s_M * v / L / tickRate ; -, scaled reserve density
+    ifelse E_H < E_Hpi 
+      [set ee ee + (X1 / (X1 + K1i) - ee) * TC * v / L / tickRate] ; -, scaled reserve density for juveniles
+      [set ee ee + ((X1 / K1i + X2 / K2i) / (1 + X1 / K1i + X2 / K2i) - ee) * TC * v / L / tickRate] ; -, scaled reserve density for adults
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
-    ifelse ee >= L / L_mi / s_M
-      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + gi)] ; 1/d, positive spec growth rate
-      [set r TC * s_M * v * (ee / L - 1 / L_mi / s_M) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
+    ifelse ee >= L / L_mi
+      [set r TC * v * (ee / L - 1 / L_mi) / (ee + gi)] ; 1/d, positive spec growth rate
+      [set r TC * v * (ee / L - 1 / L_mi) / (ee + kap_G * gi)] ; 1/d, negative spec growth rate (shrinking)
     set L L + L * r / 3 / tickRate ; cm, structural length
-    set p_C ee * E_mi * L * L * L * (TC * s_M * v / L - r) ; J/d, reserve mobilisation rate
+    set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
       [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
@@ -236,47 +281,57 @@ to go
     ]
     if E_H < E_Hb [set E_H E_Hb] ; J, do not allow maturity to pass birth level during rejuvenation
     ifelse E_H < E_Hmax [set h_rejuv TC * h_J * (1 - (1 - kap) * p_C / k_J / E_Hmax)] [set h_rejuv 0] ; 1/d, hazard due to rejuvenation
-    set q q + ((q * L * L * L / L_mi / L_mi / L_mi / s_M / s_M / s_M * s_G + TC * TC * h_a) * ee * (TC * s_M * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
+    set q q + ((q * L * L * L / L_mi / L_mi / L_mi * s_G + TC * TC * h_a) * ee * (TC * v / L - r) - r * q) / tickRate ; 1/d^2, aging acceleration
     set h_age h_age + (q - r * h_age) / tickRate ; 1/d, aging hazard
-    (ifelse (thin = 1) and (E_H < E_Hpi) [set h_thin r]  ; thinning during acceleration
-    (thin = 1) and (E_H >= E_Hpi) [set h_thin r * 2 / 3] ; thinning after acceleration
-    [set h_thin 0]) ; 1/d, hazard rate due to thinning
-    set E_Rj s_j * (1 - kap) * E_m * g * (v / L_b + k_M) / (v / L_b - g * k_M); % J/cm^3, threshold reprod buffer density at pupation
-    if E_R / L / L / L > E_Rj [set gender 2] ; change female larva to fresh imago stage (males have E_R=0)
-    if (E_H = E_Hpi) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
-      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hpi) / tickRate ; J, reproduction buffer
+    ifelse thin = 1 [set h_thin r * 2 / 3] [set h_thin 0] ; 1/d, hazard rate due to thinning
+    if (E_H = E_Hp) and (gender = 0) [ ; update reproduction buffer and time-since-spawning in adult females
+      set E_R E_R + ((1 - kap) * p_C - TC * k_J * E_Hp) / tickRate ; J, reproduction buffer
       if E_R < 0 [set E_R 0] ; do not allow negative reprod buffer
+      set t_spawn t_spawn + 1 / tickRate ; d, time since last spawning
     ]
   ]
 
-  ; spawning events for female imago's which empty E_R in period t_R. When ready to spawn, gender becomes 2 and, when 2, it becomes 3
+  ; spawning events
   set spawn-number (list)  ; create a list for egg numbers
   set spawn-quality (list) ; create a list for egg scaled reserve density at birth
-  ask turtles with [gender = 2][ ; check fresh female imago's
+  ask turtles with [(E_H = E_Hp) and (gender = 0) and (E_R > 0)][ ; check adult females with positive reprod buffer
     let E_0 get_E0 ee ; J, cost of egg
-    set E_R floor(kap_R * E_R / E_0) ; #, number of eggs to spawn. Notice that E_R is now an integer, no longer energy
-    set t_R t_R / E_R ; d, period between eggs. Notice that t_R changed from total egg-laying period  to time between eggs
-    set gender 3 ; fresh female imago becomes initiated imago
-    set t_spawn 0 
-  ] 
-  ask turtles with [(gender = 3) and (E_R > 0)] [ ; egg to spawn for initiated imago
-    ifelse t_spawn > t_R [ 
-      set spawn-number insert-item 0 spawn-number 1 ; prepend number of eggs to list
-      set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
-      set E_R E_R - 1 ; #, reduce eggs-to-spawn
-      set t_spawn 0 ; d, reset time since last spawning
-    ][set t_spawn t_spawn + 1 / tickRate]
+    (ifelse t_R = 0 [ ; spawn as soon as reprod buffer allows
+      if E_R >= E_0 / kap_R [ ; reprod buffer allows one egg
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn (should be 1 if tickRate is not too small)
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+        set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
+        set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
+        set t_spawn 0 ; reset time since last spawn
+      ]
+    ] t_R = 1 [ ; spawn if reprod buffer accumulation time exceeds incubation time
+      set a_b get_ab ee
+      if (E_R >= E_0 / kap_R) and (t_spawn > a_b / TC) [ ; reprod buffer has at least 1 egg
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+        set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
+        set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
+        set t_spawn 0 ; reset time since last spawn
+      ]
+    ] [ ; spawn if reprod buffer accumulation time exceeds t_R
+      if (E_R > E_0 / kap_R) and (t_spawn > t_R) [ ; reprod buffer has at least 1 egg
+        let n_spawn floor (kap_R * E_R / E_0) ; number of eggs to spawn
+        set spawn-number insert-item 0 spawn-number n_spawn ; prepend number of eggs to list
+        set spawn-quality insert-item 0 spawn-quality ee ; prepend scaled reserve density to list
+        set E_R E_R - n_spawn * E_0 / kap_R ; empty reprod buffer
+        set t_spawn 0 ; reset time since last spawn
+      ]
+    ])
   ]
   if length spawn-number > 0 [spawn spawn-number spawn-quality] ; create new turtles
 
   ; death events
   ask turtles with [E_H = E_Hb] [if h_B0b / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H > E_Hb) and (E_R < E_Rj)] [if (h_Bbj + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [(E_H < E_He) and (E_R >= E_Rj)] [if (h_Bje + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
-  ask turtles with [E_H = E_He] [if (h_Bei + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [(E_H > E_Hb) and (E_H < E_Hpi)] [if (h_Bbp + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
+  ask turtles with [E_H = E_Hpi] [if (h_Bpi + h_thin + h_age + h_rejuv) / tickRate > random-float 1 [ die ]]
   ask turtles with [L < L_b] [ die ]
 
-  ; write daily population state to output matrix tNL23W.txt
+  ; write daily population state to output matrix txxNL23W.txt
   if ticks mod tickRate = 0 [ ; only at full days, not at each tick
     let totL 0
     let totL2 0
@@ -289,14 +344,15 @@ to go
       set totL3 totL3 + L * L * L ; total structural volume
       set totW totW + L * L * L * (1 + ee * ome) ; total weight
     ]
-    file-write time   ; d, time
-    file-write X / K  ; -, scaled food density
-    file-write totN   ; #,  total number of post-natals
-    file-write totL   ; cm, total length of post-natals
-    file-write totL2  ; cm^2, total length^2 of post-natals
-    file-write totL3  ; cm^3, total length^3 of post-natals
-    file-write totW   ; g,  total weight of post-natals
-    file-print " "    ; new line
+    file-write time     ; d, time
+    file-write X1 / K1  ; -, scaled food 1 density
+    file-write X2 / K2  ; -, scaled food 2 density
+    file-write totN     ; #,  total number of post-natals
+    file-write totL     ; cm, total length of post-natals
+    file-write totL2    ; cm^2, total length^2 of post-natals
+    file-write totL3    ; cm^3, total length^3 of post-natals
+    file-write totW     ; g,  total weight of post-natals
+    file-print " "      ; new line
   ]
 
   if totN0i = 0 or totN0i > 15000 or time > t_max [
@@ -359,7 +415,6 @@ to set-embryo [eei genderi]
   set a 0 ; d, age
   set a_b get_ab eei ; d, age at birth at 20 C (used to trigger birth)
   set t_spawn 0 ; d, time since last spawning (only plays an active role in adult females)
-  set s_M 1     ; -, acceleration factor 
   set ee eei ; -, scaled reserve density at birth (starts to change after birth)
   set L get_Lb eei ; cm, structural length (starts to change after birth)
   set E_H E_Hb ; J, maturity (starts to change after birth)
@@ -372,17 +427,23 @@ to set-embryo [eei genderi]
 
   set gender genderi
   ifelse gender = 0 [ ; female setting
-    set Ki K ; Mol, half saturation coefficient
+    set K1i K1 ; Mol, half saturation coefficient for food 1
+    set K2i K2 ; Mol, half saturation coefficient for food 2
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
-    set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
+    set J_X1Ami J_X1Am ; mol/d.cm^2, max spec food intake rate for food 1
+    set J_X2Ami J_X2Am ; mol/d.cm^2, max spec food intake rate for food 2
+    set E_Hpi E_Hp ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_m ; cm, max structural length
     set E_mi E_m ; J/cm^3, max reserve density
     set gi g ; -, energy investment ratio
   ][ ; male setting
-    set Ki K_male ; Mol, half saturation coefficient
+    set K1i K1_male ; Mol, half saturation coefficient for food 1
+    set K2i K2_male ; Mol, half saturation coefficient for food 2
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
-    set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
+    set J_X1Ami J_X1Amm ; mol/d.cm^2, max spec food intake rate for food 1
+    set J_X2Ami J_X2Amm ; mol/d.cm^2, max spec food intake rate for food 2
+    set E_Hpi E_Hpm ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_mm ; cm, max structural length
     set E_mi E_mm ; J/cm^3, max reserve density
@@ -474,7 +535,7 @@ INPUTBOX
 520
 90
 tickRate
-0
+24.0
 1
 0
 Number
@@ -485,7 +546,7 @@ INPUTBOX
 160
 150
 t_max
-0
+150.0
 1
 0
 Number
@@ -495,8 +556,19 @@ INPUTBOX
 90
 280
 150
-X_0
+X1_0
+0.0
+1
 0
+Number
+
+INPUTBOX
+170
+90
+280
+150
+X2_0
+0.0
 1
 0
 Number
@@ -507,7 +579,7 @@ INPUTBOX
 400
 150
 V_X
-0
+0.002026
 1
 0
 Number
@@ -517,8 +589,19 @@ INPUTBOX
 90
 520
 150
-mu_X
+mu_X1
+525000.0
+1
 0
+Number
+
+INPUTBOX
+410
+90
+520
+150
+mu_X2
+525000.0
 1
 0
 Number
@@ -528,8 +611,19 @@ INPUTBOX
 150
 160
 210
-h_X
+h_X1
+0.1
+1
 0
+Number
+
+INPUTBOX
+50
+150
+160
+210
+h_X2
+0.1
 1
 0
 Number
@@ -540,7 +634,7 @@ INPUTBOX
 280
 210
 h_B0b
-0
+1.0E-35
 1
 0
 Number
@@ -550,8 +644,8 @@ INPUTBOX
 150
 400
 210
-h_Bbj
-0
+h_Bbp
+1.0E-35
 1
 0
 Number
@@ -561,8 +655,8 @@ INPUTBOX
 150
 520
 210
-h_Bje
-0
+h_Bpi
+1.0E-35
 1
 0
 Number
@@ -571,31 +665,31 @@ INPUTBOX
 50
 210
 160
-270
-h_Bei
-0
-1
-0
-Number
-
-INPUTBOX
-170
-210
-280
 270
 thin
-0
+0.0
 1
 0
 Number
 
 INPUTBOX
-290
+170
 210
-400
+280
 270
 h_J
+1.0E-4
+1
 0
+Number
+
+INPUTBOX
+290
+210
+400
+270
+h_a
+5.202E-6
 1
 0
 Number
@@ -605,8 +699,8 @@ INPUTBOX
 210
 520
 270
-h_a
-0
+s_G
+1.0E-4
 1
 0
 Number
@@ -615,20 +709,20 @@ INPUTBOX
 50
 270
 160
-330
-s_G
-0
-1
-0
-Number
-
-INPUTBOX
-170
-270
-280
 330
 E_Hb
+1.193E-8
+1
 0
+Number
+
+INPUTBOX
+170
+270
+280
+330
+E_Hp
+3.177E-6
 1
 0
 Number
@@ -638,8 +732,8 @@ INPUTBOX
 270
 400
 330
-s_j
-0
+E_Hpm
+3.177E-6
 1
 0
 Number
@@ -649,8 +743,8 @@ INPUTBOX
 270
 520
 330
-E_He
-0
+fProb
+0.999
 1
 0
 Number
@@ -659,20 +753,31 @@ INPUTBOX
 50
 330
 160
-390
-fProb
-0
-1
-0
-Number
-
-INPUTBOX
-170
-330
-280
 390
 kap
+0.9987
+1
 0
+Number
+
+INPUTBOX
+170
+330
+280
+390
+kap_X1
+0.8
+1
+0
+Number
+
+INPUTBOX
+170
+330
+280
+390
+kap_X2
+0.8
 1
 0
 Number
@@ -681,20 +786,20 @@ INPUTBOX
 290
 330
 400
-390
-kap_X
-0
-1
-0
-Number
-
-INPUTBOX
-410
-330
-520
 390
 kap_G
+0.8001
+1
 0
+Number
+
+INPUTBOX
+410
+330
+520
+390
+kap_R
+0.95
 1
 0
 Number
@@ -703,31 +808,31 @@ INPUTBOX
 50
 390
 160
-450
-kap_R
-0
-1
-0
-Number
-
-INPUTBOX
-170
-390
-280
 450
 t_R
-0
+0.0
 1
 0
 Number
 
 INPUTBOX
-290
+170
 390
-400
+280
 450
 F_m
+6.5
+1
 0
+Number
+
+INPUTBOX
+290
+390
+400
+450
+p_Am
+28.63
 1
 0
 Number
@@ -737,8 +842,8 @@ INPUTBOX
 390
 520
 450
-p_Am
-0
+p_Amm
+28.63
 1
 0
 Number
@@ -748,8 +853,8 @@ INPUTBOX
 450
 160
 510
-p_Amm
-0
+v
+0.02058
 1
 0
 Number
@@ -759,8 +864,8 @@ INPUTBOX
 450
 280
 510
-v
-0
+p_M
+1049.0
 1
 0
 Number
@@ -770,8 +875,8 @@ INPUTBOX
 450
 400
 510
-p_M
-0
+k_J
+0.002
 1
 0
 Number
@@ -781,8 +886,8 @@ INPUTBOX
 450
 520
 510
-k_J
-0
+k_JX
+2.0E-5
 1
 0
 Number
@@ -792,8 +897,8 @@ INPUTBOX
 510
 160
 570
-k_JX
-0
+E_G
+4445.0
 1
 0
 Number
@@ -803,19 +908,8 @@ INPUTBOX
 510
 280
 570
-E_G
-0
-1
-0
-Number
-
-INPUTBOX
-290
-510
-400
-560
 ome
-0
+0.3556
 1
 0
 Number
@@ -831,7 +925,7 @@ time, d
 0.0
 10.0
 0.0
-5
+5.0
 true
 false
 "" ""
@@ -854,7 +948,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plotxy time X"
+"default" 1.0 0 -16777216 true "" "plotxy time X1"
 
 PLOT
 534
@@ -867,22 +961,22 @@ time, d
 0.0
 10.0
 0.0
-5
+5.0
 true
 true
 "" ""
 PENS
 "juvFemales" 1.0 0 -1069655 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hp) and (gender = 0)]"
-"adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hpi) and ((gender = 0) or (gender > 1))]"
+"adFemales" 1.0 0 -2674135 true "" "plotxy time count turtles with [(E_H = E_Hp) and (gender = 0)]"
 "juvMales" 1.0 0 -5516827 true "" "plotxy time count turtles with [(E_H > E_Hb) and (E_H < E_Hpm) and (gender = 1)]"
-"adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpi) and (gender = 1)]"
+"adMales" 1.0 0 -13791810 true "" "plotxy time count turtles with [(E_H = E_Hpm) and (gender = 1)]"
 
 TEXTBOX
 120
 35
 160
 50
-hex
+std
 11
 0.0
 1
@@ -891,7 +985,7 @@ TEXTBOX
 480
 35
 520
-50
+53
 1/d
 11
 0.0
@@ -901,7 +995,7 @@ TEXTBOX
 120
 95
 160
-110
+113
 d
 11
 0.0
@@ -911,7 +1005,7 @@ TEXTBOX
 240
 95
 280
-110
+113
 Mol
 11
 0.0
@@ -921,7 +1015,7 @@ TEXTBOX
 360
 95
 400
-110
+113
 L
 11
 0.0
@@ -931,7 +1025,7 @@ TEXTBOX
 480
 95
 520
-110
+113
 J/mol
 11
 0.0
@@ -941,7 +1035,7 @@ TEXTBOX
 120
 155
 160
-170
+173
 1/d
 11
 0.0
@@ -951,7 +1045,7 @@ TEXTBOX
 240
 155
 280
-170
+173
 1/d
 11
 0.0
@@ -961,7 +1055,7 @@ TEXTBOX
 360
 155
 400
-170
+173
 1/d
 11
 0.0
@@ -971,7 +1065,7 @@ TEXTBOX
 480
 155
 520
-170
+173
 1/d
 11
 0.0
@@ -981,8 +1075,8 @@ TEXTBOX
 120
 215
 160
-230
-1/d
+233
+-
 11
 0.0
 1
@@ -991,8 +1085,8 @@ TEXTBOX
 240
 215
 280
-230
--
+233
+1/d
 11
 0.0
 1
@@ -1001,28 +1095,28 @@ TEXTBOX
 360
 215
 400
-230
-1/d
-11
-0.0
-1
-
-TEXTBOX
-480
-215
-520
-230
+233
 1/d2
 11
 0.0
 1
 
 TEXTBOX
+480
+215
+520
+233
+-
+11
+0.0
+1
+
+TEXTBOX
 120
 275
 160
-290
--
+293
+J
 11
 0.0
 1
@@ -1031,7 +1125,7 @@ TEXTBOX
 240
 275
 280
-290
+293
 J
 11
 0.0
@@ -1041,8 +1135,8 @@ TEXTBOX
 360
 275
 400
-290
--
+293
+J
 11
 0.0
 1
@@ -1051,8 +1145,8 @@ TEXTBOX
 480
 275
 520
-290
-J
+293
+-
 11
 0.0
 1
@@ -1061,7 +1155,7 @@ TEXTBOX
 120
 335
 150
-350
+353
 -
 11
 0.0
@@ -1071,7 +1165,7 @@ TEXTBOX
 240
 335
 280
-350
+353
 -
 11
 0.0
@@ -1081,7 +1175,7 @@ TEXTBOX
 360
 335
 400
-350
+353
 -
 11
 0.0
@@ -1091,7 +1185,7 @@ TEXTBOX
 480
 335
 520
-350
+353
 -
 11
 0.0
@@ -1101,8 +1195,8 @@ TEXTBOX
 120
 395
 160
-410
--
+413
+-,d
 11
 0.0
 1
@@ -1111,27 +1205,27 @@ TEXTBOX
 240
 395
 480
-410
-d
-11
-0.0
-1
-
-TEXTBOX
-360
-395
-400
-410
+413
 L/d.cm2
 11
 0.0
 1
 
 TEXTBOX
+360
+395
+400
+413
+J/d.cm2
+11
+0.0
+1
+
+TEXTBOX
 480
 395
 520
-410
+413
 J/d.cm2
 11
 0.0
@@ -1141,28 +1235,28 @@ TEXTBOX
 120
 455
 160
-470
-J/d.cm2
-11
-0.0
-1
-
-TEXTBOX
-240
-455
-280
-470
+473
 cm/d
 11
 0.0
 1
 
 TEXTBOX
+240
+455
+280
+473
+J/d.cm3
+11
+0.0
+1
+
+TEXTBOX
 360
 455
 400
-470
-J/d.cm3
+473
+1/d
 11
 0.0
 1
@@ -1171,7 +1265,7 @@ TEXTBOX
 480
 455
 520
-470
+473
 1/d
 11
 0.0
@@ -1181,8 +1275,8 @@ TEXTBOX
 120
 515
 160
-530
-1/d
+533
+J/cm3
 11
 0.0
 1
@@ -1191,36 +1285,27 @@ TEXTBOX
 240
 515
 280
-530
-J/cm3
-11
-0.0
-1
-
-TEXTBOX
-360
-515
-400
-530
+533
 -
 11
 0.0
 1
 
 @#$#@#$#@
-MODEL DESCRIPTION: hex DEB model	
+MODEL DESCRIPTION: std211 DEB model	
 -----------
 
-This model simulates the trajectory of a hex-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
+This model simulates the trajectory of a std-DEB-structured population in a well-stirred generalized reactor, starting from a single newly-produced embryo.
+It is identical to std DEB model, but juveniles feed on food X1 and adults on X1 and X2.
 
-Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX.
-Except for being eaten, food disappears from the reactor with hazard h_X.
+Food supply (in mol/d) to the reactor of volume V_X is specified by a spline with knots tJX1 and tJX2.
+Except for being eaten, food disappears from the reactor with hazard h_X1 and h_X2.
 Effects of temperature on physiology are specified via a spline with knots tTC, with time and temperature correction factors.
-Feeding and changes in state variable of individuals depend on temperature, but food in- and output or background hazards for individuals do not depend on temperature. 
+Feeding and changes in state variable of individuals depend on temperature, but food in-  output or background hazards for individuals do not depend on temperature. 
 The reactor is homogeneous in terms of food and population density, so this model does not work with patches.
 The population starts with a single embryo of age 0 from a well-fed mother and food density X_0.
 
-Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbj, h_Bje ,h_Bei) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
+Apart from aging, individuals are subjected to stage-specific hazards (h_B0b, h_Bbp, h_Bpi) and, optionally, to thinning (with a hazard equal to the specific growth rate times 2/3).
 Thinning never applies to embryos; it exactly compensates the increase of total food intake by a cohort due to growth, by a reduction in numbers. 
 Food intake and use follow the rules of the standard DEB model (see AmP website). 
 Male and female embryos are identical, but juveniles and adults can differ by max specific assimilation and maturity levels at puberty.
@@ -1236,7 +1321,6 @@ Gender is assigned at egg-production (gender 0 for female and 1 for male); ferti
 Rejuvenation, due to failing to pay maturity maintenance costs, affects reproduction and survival.
 Shrinking, due to failure to pay somatic maintenance costs, can occur till structural length zero.  
 
-Puberty and birth coincide in the hex model, so the juvenile stage is absent, but a pupa stage is present between the larva and imago stages.
 For a general background, see the tab "population dynamics" of the AmP website. 
 
 USER MANUAL
@@ -1250,15 +1334,15 @@ See Matlab function DEBtool_M/animal/IBM for the use of this NetLogo model.
 This Matlab function sets the parameter values (via the files set_pars.txt, spline_TC.txt, spline_JX.txt and eaLE.txt), using the AmP collection.
 DEBtool_M is available via the add_my_pet website.
 
-This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model hex.nlogo --experiment experiment".
+This NetLogo model is meant to run from the command-line under Matlab in the powershell with command "netlogo-headless.bat --model std.nlogo --experiment experiment".
 Please make sure that paths have been set to NetLogo and java.exe.
 The file "set_pars.txt" is used to overwrite the settings in the graphical interface in the setup-procedure.
 This is specifically meant for running the model via the command-line.
 Each line should exist of "set var val" (including the quotes), where var is the name of a parameter, and val its value, e.g. "set X_0 0.321".
 
-The model can also be run directly under NetLogo and its gui (simply load hex.nlogo in NetLogo).
+The model can also be run directly under NetLogo and its gui (simply load std.nlogo in NetLogo).
 Apart from the globals set in the interface, matrices food input tJX, temperature correction factors tTC and embryo-settings eaLE are read from txt-files.
-Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as hex.nlogo. 
+Make sure that files spline_JX.txt, spline_TC.txt and eaLE.txt exist in the same directory as std.nlogo. 
 The easiest way to proceed is first run IBM via Matlab to set the parameters (you can suppress its call to NetLogo), then start NetLogo and hit setup.
 Change parameter values in the file set_pars.txt, not in NetLogo's interface, since these values are overwriiten at hitting setup.
 Be aware, however, that the parameters E_Hb, v, p_Am, kap, p_M, k_J and E_G should affect the embryo-settings in eaLE.txt, and p_Am and v should affect parameter ome.
@@ -1267,14 +1351,13 @@ So any change in their values makes it necessary to update eaLE, as is done by M
 The descriptions of the parameters in the interface are given in the code (with the declarations), and reported by the Malab function IBM in an html-page.
 
 Notice that names of variables and parameters are case-insensitive in NetLogo and that e stands for exponent.
-Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition hex.nlogo, 
+Any edits in code within NetLogo leads automatically to an overwrite of the stored model-definition std.nlogo, 
 adding a large section with code for shape-definitions to move shapes across the screen, even if these shapes are not used (like in this model).
 
 ZOOM
 ---
 
-Depending on the resolution of the display you are using with your computer, you might not be able to see all elements of the Interface. 
-In that case, please either use the scoll bars are the "Zoom" option in the menu.
+Depending on the resolution of the display you are using with your computer, you might not be able to see all elements of the Interface. In that case, please either use the scroll bars or the "Zoom" option in the menu.
 
 SPEED
 -----
@@ -1288,6 +1371,310 @@ To export model output:
 - Use the file output primitives of NetLogo
 - Right-click on the plots to export the data displayed to files
 @#$#@#$#@
+default
+true
+0
+Polygon -7500403 true true 150 5 40 250 150 205 260 250
+
+airplane
+true
+0
+Polygon -7500403 true true 150 0 135 15 120 60 120 105 15 165 15 195 120 180 135 240 105 270 120 285 150 270 180 285 210 270 165 240 180 180 285 195 285 165 180 105 180 60 165 15
+
+arrow
+true
+0
+Polygon -7500403 true true 150 0 0 150 105 150 105 293 195 293 195 150 300 150
+
+box
+false
+0
+Polygon -7500403 true true 150 285 285 225 285 75 150 135
+Polygon -7500403 true true 150 135 15 75 150 15 285 75
+Polygon -7500403 true true 15 75 15 225 150 285 150 135
+Line -16777216 false 150 285 150 135
+Line -16777216 false 150 135 15 75
+Line -16777216 false 150 135 285 75
+
+bug
+true
+0
+Circle -7500403 true true 96 182 108
+Circle -7500403 true true 110 127 80
+Circle -7500403 true true 110 75 80
+Line -7500403 true 150 100 80 30
+Line -7500403 true 150 100 220 30
+
+butterfly
+true
+0
+Polygon -7500403 true true 150 165 209 199 225 225 225 255 195 270 165 255 150 240
+Polygon -7500403 true true 150 165 89 198 75 225 75 255 105 270 135 255 150 240
+Polygon -7500403 true true 139 148 100 105 55 90 25 90 10 105 10 135 25 180 40 195 85 194 139 163
+Polygon -7500403 true true 162 150 200 105 245 90 275 90 290 105 290 135 275 180 260 195 215 195 162 165
+Polygon -16777216 true false 150 255 135 225 120 150 135 120 150 105 165 120 180 150 165 225
+Circle -16777216 true false 135 90 30
+Line -16777216 false 150 105 195 60
+Line -16777216 false 150 105 105 60
+
+car
+false
+0
+Polygon -7500403 true true 300 180 279 164 261 144 240 135 226 132 213 106 203 84 185 63 159 50 135 50 75 60 0 150 0 165 0 225 300 225 300 180
+Circle -16777216 true false 180 180 90
+Circle -16777216 true false 30 180 90
+Polygon -16777216 true false 162 80 132 78 134 135 209 135 194 105 189 96 180 89
+Circle -7500403 true true 47 195 58
+Circle -7500403 true true 195 195 58
+
+circle
+false
+0
+Circle -7500403 true true 0 0 300
+
+circle 2
+false
+0
+Circle -7500403 true true 0 0 300
+Circle -16777216 true false 30 30 240
+
+cow
+false
+0
+Polygon -7500403 true true 200 193 197 249 179 249 177 196 166 187 140 189 93 191 78 179 72 211 49 209 48 181 37 149 25 120 25 89 45 72 103 84 179 75 198 76 252 64 272 81 293 103 285 121 255 121 242 118 224 167
+Polygon -7500403 true true 73 210 86 251 62 249 48 208
+Polygon -7500403 true true 25 114 16 195 9 204 23 213 25 200 39 123
+
+cylinder
+false
+0
+Circle -7500403 true true 0 0 300
+
+dot
+false
+0
+Circle -7500403 true true 90 90 120
+
+face happy
+false
+0
+Circle -7500403 true true 8 8 285
+Circle -16777216 true false 60 75 60
+Circle -16777216 true false 180 75 60
+Polygon -16777216 true false 150 255 90 239 62 213 47 191 67 179 90 203 109 218 150 225 192 218 210 203 227 181 251 194 236 217 212 240
+
+face neutral
+false
+0
+Circle -7500403 true true 8 7 285
+Circle -16777216 true false 60 75 60
+Circle -16777216 true false 180 75 60
+Rectangle -16777216 true false 60 195 240 225
+
+face sad
+false
+0
+Circle -7500403 true true 8 8 285
+Circle -16777216 true false 60 75 60
+Circle -16777216 true false 180 75 60
+Polygon -16777216 true false 150 168 90 184 62 210 47 232 67 244 90 220 109 205 150 198 192 205 210 220 227 242 251 229 236 206 212 183
+
+fish
+false
+0
+Polygon -1 true false 44 131 21 87 15 86 0 120 15 150 0 180 13 214 20 212 45 166
+Polygon -1 true false 135 195 119 235 95 218 76 210 46 204 60 165
+Polygon -1 true false 75 45 83 77 71 103 86 114 166 78 135 60
+Polygon -7500403 true true 30 136 151 77 226 81 280 119 292 146 292 160 287 170 270 195 195 210 151 212 30 166
+Circle -16777216 true false 215 106 30
+
+flag
+false
+0
+Rectangle -7500403 true true 60 15 75 300
+Polygon -7500403 true true 90 150 270 90 90 30
+Line -7500403 true 75 135 90 135
+Line -7500403 true 75 45 90 45
+
+flower
+false
+0
+Polygon -10899396 true false 135 120 165 165 180 210 180 240 150 300 165 300 195 240 195 195 165 135
+Circle -7500403 true true 85 132 38
+Circle -7500403 true true 130 147 38
+Circle -7500403 true true 192 85 38
+Circle -7500403 true true 85 40 38
+Circle -7500403 true true 177 40 38
+Circle -7500403 true true 177 132 38
+Circle -7500403 true true 70 85 38
+Circle -7500403 true true 130 25 38
+Circle -7500403 true true 96 51 108
+Circle -16777216 true false 113 68 74
+Polygon -10899396 true false 189 233 219 188 249 173 279 188 234 218
+Polygon -10899396 true false 180 255 150 210 105 210 75 240 135 240
+
+house
+false
+0
+Rectangle -7500403 true true 45 120 255 285
+Rectangle -16777216 true false 120 210 180 285
+Polygon -7500403 true true 15 120 150 15 285 120
+Line -16777216 false 30 120 270 120
+
+leaf
+false
+0
+Polygon -7500403 true true 150 210 135 195 120 210 60 210 30 195 60 180 60 165 15 135 30 120 15 105 40 104 45 90 60 90 90 105 105 120 120 120 105 60 120 60 135 30 150 15 165 30 180 60 195 60 180 120 195 120 210 105 240 90 255 90 263 104 285 105 270 120 285 135 240 165 240 180 270 195 240 210 180 210 165 195
+Polygon -7500403 true true 135 195 135 240 120 255 105 255 105 285 135 285 165 240 165 195
+
+line
+true
+0
+Line -7500403 true 150 0 150 300
+
+line half
+true
+0
+Line -7500403 true 150 0 150 150
+
+pentagon
+false
+0
+Polygon -7500403 true true 150 15 15 120 60 285 240 285 285 120
+
+person
+false
+0
+Circle -7500403 true true 110 5 80
+Polygon -7500403 true true 105 90 120 195 90 285 105 300 135 300 150 225 165 300 195 300 210 285 180 195 195 90
+Rectangle -7500403 true true 127 79 172 94
+Polygon -7500403 true true 195 90 240 150 225 180 165 105
+Polygon -7500403 true true 105 90 60 150 75 180 135 105
+
+plant
+false
+0
+Rectangle -7500403 true true 135 90 165 300
+Polygon -7500403 true true 135 255 90 210 45 195 75 255 135 285
+Polygon -7500403 true true 165 255 210 210 255 195 225 255 165 285
+Polygon -7500403 true true 135 180 90 135 45 120 75 180 135 210
+Polygon -7500403 true true 165 180 165 210 225 180 255 120 210 135
+Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
+Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
+Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
+
+sheep
+false
+15
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
+
+square
+false
+0
+Rectangle -7500403 true true 30 30 270 270
+
+square 2
+false
+0
+Rectangle -7500403 true true 30 30 270 270
+Rectangle -16777216 true false 60 60 240 240
+
+star
+false
+0
+Polygon -7500403 true true 151 1 185 108 298 108 207 175 242 282 151 216 59 282 94 175 3 108 116 108
+
+target
+false
+0
+Circle -7500403 true true 0 0 300
+Circle -16777216 true false 30 30 240
+Circle -7500403 true true 60 60 180
+Circle -16777216 true false 90 90 120
+Circle -7500403 true true 120 120 60
+
+tree
+false
+0
+Circle -7500403 true true 118 3 94
+Rectangle -6459832 true false 120 195 180 300
+Circle -7500403 true true 65 21 108
+Circle -7500403 true true 116 41 127
+Circle -7500403 true true 45 90 120
+Circle -7500403 true true 104 74 152
+
+triangle
+false
+0
+Polygon -7500403 true true 150 30 15 255 285 255
+
+triangle 2
+false
+0
+Polygon -7500403 true true 150 30 15 255 285 255
+Polygon -16777216 true false 151 99 225 223 75 224
+
+truck
+false
+0
+Rectangle -7500403 true true 4 45 195 187
+Polygon -7500403 true true 296 193 296 150 259 134 244 104 208 104 207 194
+Rectangle -1 true false 195 60 195 105
+Polygon -16777216 true false 238 112 252 141 219 141 218 112
+Circle -16777216 true false 234 174 42
+Rectangle -7500403 true true 181 185 214 194
+Circle -16777216 true false 144 174 42
+Circle -16777216 true false 24 174 42
+Circle -7500403 false true 24 174 42
+Circle -7500403 false true 144 174 42
+Circle -7500403 false true 234 174 42
+
+turtle
+true
+0
+Polygon -10899396 true false 215 204 240 233 246 254 228 266 215 252 193 210
+Polygon -10899396 true false 195 90 225 75 245 75 260 89 269 108 261 124 240 105 225 105 210 105
+Polygon -10899396 true false 105 90 75 75 55 75 40 89 31 108 39 124 60 105 75 105 90 105
+Polygon -10899396 true false 132 85 134 64 107 51 108 17 150 2 192 18 192 52 169 65 172 87
+Polygon -10899396 true false 85 204 60 233 54 254 72 266 85 252 107 210
+Polygon -7500403 true true 119 75 179 75 209 101 224 135 220 225 175 261 128 261 81 224 74 135 88 99
+
+wheel
+false
+0
+Circle -7500403 true true 3 3 294
+Circle -16777216 true false 30 30 240
+Line -7500403 true 150 285 150 15
+Line -7500403 true 15 150 285 150
+Circle -7500403 true true 120 120 60
+Line -7500403 true 216 40 79 269
+Line -7500403 true 40 84 269 221
+Line -7500403 true 40 216 269 79
+Line -7500403 true 84 40 221 269
+
+wolf
+false
+0
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
+
+x
+false
+0
+Polygon -7500403 true true 270 75 225 30 30 225 75 270
+Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 6.2.0
 @#$#@#$#@

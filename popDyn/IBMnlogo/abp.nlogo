@@ -18,9 +18,9 @@ globals[
   n_eaLE   ; -, number of rows of eaLE
 
   time     ; d, current time
-  tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i+1,0)
+  tTC_i    ; -, current lower row-index for tTC, so tTC(tTC_i,0) < time < tTC(tTC_i + 1,0)
   TC       ; -, current temperature correction factor
-  tJX_i    ; -, current lower row-index for tJX, so tJX(tJX_i,0) < time < tJX(tJX_i+1,0)
+  tJX_i    ; -, current lower row-index for tJX, so tJX(tJX_i,0) < time < tJX(tJX_i + 1,0)
   JX       ; mol/d, current food supply rate to the reactor
   X        ; Mol, food density
   eaten    ; mol/d, food that is eaten
