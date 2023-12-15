@@ -288,6 +288,7 @@ to go
     let totL3 0
     let totW 0
     let totN count turtles with [E_H > E_Hb] ; #, number of post-natals
+    ; let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
     ask turtles with [E_H > E_Hb] [
       set totL totL + L ; total structural length
       set totL2 totL2 + L * L ; total structural surface area
