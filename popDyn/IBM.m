@@ -180,7 +180,7 @@ end
 par.h_X = h_X; par.thin = thin; 
 %
 switch model
-  case {'std','stf','sbp','abp','stdrnd'}
+  case {'std','stf','sbp','abp','stdrnd','stdmigr','stdsoc'}
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
@@ -308,6 +308,8 @@ end
 
 fileName = ['report_', species, '.html'];
 if strcmp(metaPar.model,'stdrnd'); metaPar.model = 'std'; end
+if strcmp(metaPar.model,'stdmigr'); metaPar.model = 'std'; end
+if strcmp(metaPar.model,'stdsoc'); metaPar.model = 'std'; end
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 
