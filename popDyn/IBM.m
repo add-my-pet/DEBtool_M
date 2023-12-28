@@ -180,7 +180,7 @@ end
 par.h_X = h_X; par.thin = thin; 
 %
 switch model
-  case {'std','stf','sbp','abp','stdrnd','stdmigr','stdsoc'}
+  case {'std','stf','sbp','abp','stdrnd','stdmigr','stdsoc','stdslp','stdadlt'}
     if ~exist('h','var') || isempty(h)
       h_B0b = 1e-35; h_Bbp = 1e-35; h_Bpi = 1e-35; 
     else
@@ -245,7 +245,7 @@ txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runN
 
 cd(WD);
 
-if runNetLogo
+if runNetLogo && ~strcmp(metaPar.model,'stdadlt')
 
 %% plotting
 close all
@@ -307,9 +307,10 @@ end
 %% report_my_pet.html
 
 fileName = ['report_', species, '.html'];
-if strcmp(metaPar.model,'stdrnd'); metaPar.model = 'std'; end
-if strcmp(metaPar.model,'stdmigr'); metaPar.model = 'std'; end
-if strcmp(metaPar.model,'stdsoc'); metaPar.model = 'std'; end
+switch metaPar.model
+  case {'stdslp','stdmigr','stdrnd','stdsoc','stdadlt'}
+    metaPar.model = 'std';
+end
 prt_report_my_pet({par, metaPar, txtPar, metaData}, [], [], [], [], fileName);
 web(fileName,'-browser') % open html in systems browser
 

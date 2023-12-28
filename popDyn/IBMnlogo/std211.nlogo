@@ -39,10 +39,10 @@ globals[
   totN0i   ; #, total number of individuals in the reactor
 
   ; compound parameters
-  K1       ; Mol, half saturation coefficient for females for food 1
-  K2       ; Mol, half saturation coefficient for females for food 2
-  K1_male  ; Mol, half saturation coefficient for males for food 1 (cannot be called K1_m, since NetLogo makes no difference with k_M)
-  K2_male  ; Mol, half saturation coefficient for males for food 2 (cannot be called K2_m, since NetLogo makes no difference with k_M)
+  K_1      ; Mol, half saturation coefficient for females for food 1
+  K_2      ; Mol, half saturation coefficient for females for food 2
+  K_1_male ; Mol, half saturation coefficient for males for food 1 (cannot be called K_1_m, since NetLogo makes no difference with k_M)
+  K_2_male ; Mol, half saturation coefficient for males for food 2 (cannot be called K_2_m, since NetLogo makes no difference with k_M)
   J_X1Am   ; mol/d.cm^2, max spec food 1 intake rate for females
   J_X2Am   ; mol/d.cm^2, max spec food 2 intake rate for females
   J_X1Amm  ; mol/d.cm^2, max spec food 1 intake rate for males
@@ -91,6 +91,8 @@ turtles-own[
   a        ; d, age
   t_spawn  ; d, time since last spawning
   L        ; cm, structural length
+  eaten1i  ; mol/d, food 1 intake
+  eaten2i  ; mol/d, food 2 intake
   ee       ; -, scaled reserve density; DEB notation is e, but NetLogo takes this to be exponent
   E_H      ; J, maturity
   E_Hmax   ; J, max maturity reached
@@ -102,8 +104,16 @@ turtles-own[
 
   gender   ; -, 0 (female) 1 (male)
   a_b      ; d, age at birth at 20 C (set at creation)
-  K1i      ; Mol, half saturation coefficient for food 1 (female or male value)
-  K2i      ; Mol, half saturation coefficient for food 2 (female or male value)
+  K_1i     ; Mol, half saturation coefficient for food 1 (female or male value)
+  K_2i     ; Mol, half saturation coefficient for food 2 (female or male value)
+  k1i      ; mol/d, max dissociation rate of E from food 1
+  k2i      ; mol/d, max dissociation rate of E from food 2
+  b1       ; 1/d, association rate of X1 to th_.
+  b12      ; 1/d, association rate of X1 to th_X2
+  b2       ; 1/d, association rate of X2 to th_.
+  b21      ; 1/d, association rate of X2 to th_X1
+  th1      ; -, fraction of SUs bound to X1
+  th2      ; -, fraction of SUs bound to X2
   p_Ami    ; J/d.cm^2, max spec assimilation rate  (female or male value)
   J_X1Ami  ; mol/d.cm^2, max spec food intake rate  for food 1 (female or male value)
   J_X2Ami  ; mol/d.cm^2, max spec food intake rate  for food 2 (female or male value)
@@ -190,14 +200,14 @@ to setup
   set X2 X2_0 ; Mol, initial value for food 2 density
 
   ; frequently-used compound-parameters
-  set K1 p_Am / kap_X1 / mu_X1 / F_m    ;  Mol, half saturation coefficient for females
-  set K2 p_Am / kap_X2 / mu_X2 / F_m    ;  Mol, half saturation coefficient for females
-  set K1_male p_Amm / kap_X1 / mu_X1 / F_m ;  Mol, half saturation coefficient for males
-  set K2_male p_Amm / kap_X2 / mu_X2 / F_m ;  Mol, half saturation coefficient for males
   set J_X1Am p_Am / kap_X1 / mu_X1      ;  mol/d.cm^2 max spec food 1 intake rate for females
   set J_X2Am p_Am / kap_X2 / mu_X2      ;  mol/d.cm^2 max spec food 2 intake rate for females
   set J_X1Amm p_Amm / kap_X1 / mu_X1    ;  mol/d.cm^2 max spec food 1 intake rate for males
   set J_X2Amm p_Amm / kap_X2 / mu_X2    ;  mol/d.cm^2 max spec food 2 intake rate for males
+  set K_1 J_X1Am / F_m                  ;  Mol, half saturation coefficient for females
+  set K_2 J_X2Am / F_m                  ;  Mol, half saturation coefficient for females
+  set K_1_male J_X1Amm / F_m            ;  Mol, half saturation coefficient for males
+  set K_2_male J_X2Amm / F_m            ;  Mol, half saturation coefficient for males
   set E_m p_Am / v                      ;  J/cm^3, reserve capacity for females
   set E_mm p_Amm / v                    ;  J/cm^3, reserve capacity for males
   set g E_G / E_m / kap                 ;  - , energy investment ratio for females
@@ -248,22 +258,39 @@ to go
   set eaten1 0 ; mol/d, initiate food 1 disappearence rate
   set eaten2 0 ; mol/d, initiate food 2 disappearence rate
   ask turtles with [E_H > E_Hb] [
-    ifelse E_H < E_Hpi 
-      [set eaten1 eaten1 + TC * X1 / (X1 + K1i) * J_X1Ami * L * L]                      ; Mol/d, food 1 consumption for juveniles
-      [set eaten1 eaten1 + TC * X1 / K1i / (1 + X1 / K1i + X2 / K2i) * J_X1Ami * L * L  ; Mol/d, food 1 consumption for adults
-       set eaten2 eaten2 + TC * X2 / K2i / (1 + X1 / K1i + X2 / K2i) * J_X2Ami * L * L] ; Mol/d, food 2 consumption for adults
+    ifelse E_H < E_Hpi [
+      set b1 TC * X1 * F_m * L * L
+      set b2 0
+      set b12 0 ; juveniles have absolute preference for X1
+      set b21 0
+    ][
+      set b1 TC * X1 * F_m * L * L
+      set b2 TC * X2 * F_m * L * L
+      set b12 b1 ; adults have absolute preference for X1
+      set b21 0
+    ]
+    set k1i TC * J_X1Ami * L * L ; dissociation rate for E from X1
+    set k2i TC * J_X2Ami * L * L ; dissociation rate for E from X2
+    let alpha1 k1i + b1 + b21
+    let alpha2 k2i + b2 + b12
+    let beta1 b1 - b12
+    let beta2 b2 - b21
+    set th1 (alpha2 * b1 - beta1 * b2) / (alpha1 * alpha2 - beta1 * beta2)
+    set th2 (alpha1 * b2 - beta2 * b1) / (alpha1 * alpha2 - beta1 * beta2)
+    set eaten1i (1 - th1 - th2) * b1 + th2 * b12 - th1 * b21
+    set eaten2i (1 - th1 - th2) * b2 + th1 * b21 - th2 * b12
+    set eaten1 eaten1 + eaten1i ; Mol/d, total food 1 consumption
+    set eaten2 eaten2 + eaten2i ; Mol/d, total food 2 consumption                  
   ]
   set X1 X1 + (JX1 / V_X - h_X1 * X1 - eaten1 / V_X) / tickRate ; Mol, food 1 density
-  set X2 X2 + (JX2 / V_X - h_X2 * X1 - eaten2 / V_X) / tickRate ; Mol, food 2 density
+  set X2 X2 + (JX2 / V_X - h_X2 * X2 - eaten2 / V_X) / tickRate ; Mol, food 2 density
   if X1 < 0 [set X1 0] ; do not allow negative food 1
   if X2 < 0 [set X2 0] ; do not allow negative food 2
 
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    ifelse E_H < E_Hpi 
-      [set ee ee + (X1 / (X1 + K1i) - ee) * TC * v / L / tickRate]                                   ; -, scaled reserve density for juveniles
-      [set ee ee + ((X1 / K1i + X2 / K2i) / (1 + X1 / K1i + X2 / K2i) - ee) * TC * v / L / tickRate] ; -, scaled reserve density for adults
+    set ee ee + (th1 * k1i / k2i * mu_X1 / mu_X2 * kap_X1 / kap_X2 + th2 - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
     ifelse ee >= L / L_mi
@@ -345,8 +372,8 @@ to go
       set totW totW + L * L * L * (1 + ee * ome) ; total weight
     ]
     file-write time     ; d, time
-    file-write X1 / K1  ; -, scaled food 1 density
-    file-write X2 / K2  ; -, scaled food 2 density
+    file-write X1 / K_1  ; -, scaled food 1 density
+    file-write X2 / K_2  ; -, scaled food 2 density
     file-write totN     ; #,  total number of post-natals
     file-write totL     ; cm, total length of post-natals
     file-write totL2    ; cm^2, total length^2 of post-natals
@@ -427,8 +454,8 @@ to set-embryo [eei genderi]
 
   set gender genderi
   ifelse gender = 0 [ ; female setting
-    set K1i K1 ; Mol, half saturation coefficient for food 1
-    set K2i K2 ; Mol, half saturation coefficient for food 2
+    set K_1i K_1 ; Mol, half saturation coefficient for food 1
+    set K_2i K_2 ; Mol, half saturation coefficient for food 2
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_X1Ami J_X1Am ; mol/d.cm^2, max spec food intake rate for food 1
     set J_X2Ami J_X2Am ; mol/d.cm^2, max spec food intake rate for food 2
@@ -438,8 +465,8 @@ to set-embryo [eei genderi]
     set E_mi E_m ; J/cm^3, max reserve density
     set gi g ; -, energy investment ratio
   ][ ; male setting
-    set K1i K1_male ; Mol, half saturation coefficient for food 1
-    set K2i K2_male ; Mol, half saturation coefficient for food 2
+    set K_1i K_1_male ; Mol, half saturation coefficient for food 1
+    set K_2i K_2_male ; Mol, half saturation coefficient for food 2
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
     set J_X1Ami J_X1Amm ; mol/d.cm^2, max spec food intake rate for food 1
     set J_X2Ami J_X2Amm ; mol/d.cm^2, max spec food intake rate for food 2

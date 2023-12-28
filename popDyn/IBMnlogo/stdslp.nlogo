@@ -1,6 +1,6 @@
-; Model definition for a std-DEB-structured population in a generalized stirred reactor for NetLogo 6.2.0
+; Model definition for a std-DEB-structured population with sleep in a generalized stirred reactor for NetLogo 6.2.0
 ; Author: Bas Kooijman
-; date: 2021/01/01, modified 2023/05/09
+; date: 2023/12/25
 ; warning: this script is case-insensitive
 
 extensions [matrix]
@@ -52,6 +52,8 @@ globals[
   ; thin     ; 0 or 1, hazard for thinning. If 1 it changes in time for each turtle
   ; mu_X     ; J/mol, chemical potential of food
   ; F_m      ; L/d.cm^2, specific searching rate
+  ; k_Y      ; 1/d, one over duration of an interaction
+  ; F_Y      ; L/d.# meeting rate with other individuals 
   ; kap_X    ; -, digestion efficiency
   ; p_Am     ; J/d^.cm^2, max specific assimilation rate of females
   ; p_Amm    ; J/d^.cm^2, max specific assimilation rate of males
@@ -93,9 +95,19 @@ turtles-own[
   J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
+  L_p      ; cm, structural length at puberty
   L_mi     ; cm, max structural length  (female or male value)
   E_mi     ; J/cm^3, max reserve density  (female or male value)
   gi       ; -, energy investment ratio  (female or male value)
+
+  p_A      ; J/d.cm^3, vol-spec assililationpower
+  p_D      ; J/d.cm^3, vol-spec dissipation power
+  p_G      ; J/d.cm^3, vol-spec growthpower
+  J_O      ; mol/d.cm^3, vol-spec O2 consumpton rate
+  b_X      ; 1/d, association rate with food
+  b_Y      ; 1/d, association rate with sleep
+  k_YO     ; 1/d, dissociation rate with sleep
+  th_X     ; -, fraction of SU assiciated with X
 ]
 
 ; ==========================================================================================================================================
@@ -206,14 +218,31 @@ to go
 
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
-  ask turtles with [E_H > E_Hb] [set eaten eaten + TC * X / (X + Ki) * J_XAmi * L * L] ; Mol/d, food consumption
+  ask turtles with [E_H > E_Hb] [
+    set p_A p_M * X / (Ki + X) * L_mi / kap / L ; J/d.cm^3, vol-spec assim rate
+    ifelse E_H < E_Hpi
+    [ set L_p L ; kap_R = 0, no reprod
+       set p_D p_M * (1 + (1 - kap) / kap * ee * (gi * L_mi / L + 1) / (gi + ee)) ; J/d.cm^3, vol-spec dissipation rate
+    ][ set L_p min list L L_p 
+      set p_D p_M * (1 + (1 - kap) / kap * (kap_R * (L_p / L) ^ 3 + (1 - kap_R) * ee * (gi * L_mi / L + 1) / (gi + ee))) ; J/d.cm^3, vol-spec dispation rate
+    ]
+    set p_G p_M * (ee * L_mi / L - 1) / (ee / gi + 1) ; J/d.cm^3, vol-spec growth rate
+    set J_O TC * (0.0198 * p_A + 0.1977 * p_D + 0.0012 * p_G) ; mol/d.cm^3, vol-spec O2 consumption rate
+    let k_E J_XAmi * L * L ; dissociation rate of E with SU
+    set b_X X * F_m * L * L ; association rate of X with SU
+    set b_Y F_y ; association rate of sleep with SU
+    set k_YO k_Y / J_O ; dissociation rate of sleep with SU
+    set th_X 1 / (1 + k_E / b_X + b_Y * k_E / b_X / k_YO + b_Y / (k_E + k_YO) * (1 + k_E / k_YO + k_E / b_X + k_E * b_Y / k_YO / b_X))
+    set eaten eaten + TC * th_X * (k_E + b_Y * k_E / (k_E + k_YO)) ; Mol/d, food consumption
+  ] 
   set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
-  if X < 0 [set X 0] ; do not allow negative food
+  if X < 0 [set X 1e-8] ; do not allow negative food
 
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    set ee ee + (X / (X + Ki) - ee) * TC * v / L / tickRate ; -, scaled reserve density
+    let k_E J_XAmi * L * L ; dissociation rate of E with SU
+    set ee ee + (th_X * (1 + b_Y / (k_E + k_YO)) - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
     ifelse ee >= L / L_mi
@@ -723,6 +752,28 @@ INPUTBOX
 280
 450
 F_m
+6.5
+1
+0
+Number
+
+INPUTBOX
+170
+390
+280
+450
+F_Y
+6.5
+1
+0
+Number
+
+INPUTBOX
+170
+390
+280
+450
+k_Y
 6.5
 1
 0

@@ -50,7 +50,7 @@ function cPar = parscomp_st(p)
   % * y_P_X: mol/mol, yield of faeces on food 
   % * y_X_P: mol/mol, yield of food on faeces
   % * y_P_E: mol/mol, yield of faeces on reserve
-  % * eta_XA, eta_PA, eta_VG; eta_O: mol/J, mass-power couplers
+  % * eta_XA, eta_PA, eta_VG, eta_O, eta_M: mol/J, mass-power couplers
   % * J_E_M: mol/d.cm^3, [J_EM], vol-spec somatic  maint costs
   % * J_E_T: mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs
   % * j_E_M: mol/d.mol, mass-spec somatic  maint costs
@@ -187,7 +187,8 @@ if isfield(p,'kap_X') && isfield(p,'kap_P')
   cPar.eta_XA = eta_XA;  
   cPar.eta_PA = eta_PA;
   cPar.eta_VG = eta_VG;  
-  cPar.eta_O = eta_O;  
+  cPar.eta_O = eta_O;
+  cPar.eta_M = - n_M\n_O * eta_O;
 end
 
 if isfield(p,'F_m') 

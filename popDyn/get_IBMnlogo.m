@@ -2,7 +2,7 @@
 % get population trajectories from NetLogo
 
 %%
-function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runNetLogo)
+function txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runNetLogo)
 
 % created 2021/01/08 by Bas Kooijman
   
@@ -139,7 +139,7 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
   
   % specify input parameters, to be written in set_pars.txt
   switch model
-    case {'std','stf','sbp','stdrnd'}
+    case {'std','stf','sbp','stdrnd','stdadlt'}
       par = {tickRate, ...
           t_max, X_0, V_X, mu_X, ...
           h_X, h_B0b, h_Bbp, h_Bpi, ...
@@ -177,7 +177,7 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
           't_R', 'F_m', 'p_Am', 'p_Amm', ...
           'v', 'p_M', 'k_J', 'k_JX', ...
           'E_G', 'ome'};
-    case 'stdsoc'
+    case {'stdsoc','stdslp'}
       par = {tickRate, ...
           t_max, X_0, V_X, mu_X, ...
           h_X, h_B0b, h_Bbp, h_Bpi, ...
@@ -365,16 +365,20 @@ function tXNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickR
   end
   fclose(oid);
       
-  %% run NetLogo and read output file tXNL23W.txt
+  %% run NetLogo and read output file txNL23W.txt
   
-  tXNL23W = []; % initiate output
+  txNL23W = []; % initiate output
   if runNetLogo
     eval(['!netlogo-headless --model ', model, '.nlogo --experiment experiment']); % run NetLogo in background
     out = fopen('tXNL23W.txt', 'r'); % open output-file for reading
     data = fscanf(out,'%e');
     fclose(out);
     n = length(data);
-    tXNL23W = wrap(data, floor(n/7), 7); % output (n,7)-array
+    if strcmp(model,'stdadlt')
+      txNL23W = wrap(data, floor(n/8), 8); % output (n,8)-array
+    else
+      txNL23W = wrap(data, floor(n/7), 7); % output (n,7)-array
+    end
   else
     path = which('cdCur'); 
     if ismac

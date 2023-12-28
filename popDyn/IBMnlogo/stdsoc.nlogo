@@ -99,6 +99,11 @@ turtles-own[
   L_mi     ; cm, max structural length  (female or male value)
   E_mi     ; J/cm^3, max reserve density  (female or male value)
   gi       ; -, energy investment ratio  (female or male value)
+
+  th_X     ; -, faction of Sus bound to X
+  k_E      ; 1/d, dissociation rate of E from SU
+  b_X      ; 1/d, association rate of X to SU
+  b_Y      ; 1/d, association rate of Y to SU
 ]
 
 ; ==========================================================================================================================================
@@ -211,11 +216,11 @@ to go
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
   ask turtles with [E_H > E_Hb] [
-    let k_E J_XAmi * L * L ; dissociation rate of E with SU
-    let b_X X * F_m * L * L ; association rate of X with SU
-    let b_Y Y * F_Y ; association rate of Y with SU
-    let th_X 1 / (1 + b_Y / k_E + b_Y / k_Y + (k_E + b_Y) / b_X * (1 + b_Y / k_Y))
-    set eaten eaten + TC * th_X * (k_E + b_Y)
+    set k_E J_XAmi * L * L ; dissociation rate of E with SU
+    set b_X X * F_m * L * L ; association rate of X with SU
+    set b_Y Y * F_Y ; association rate of Y with SU
+    set th_X 1 / (1 + k_E / b_X + b_Y * k_E / b_X / k_Y + b_Y / (k_E + k_Y) * (1 + k_E / k_Y + k_E / b_X + k_E * b_Y / k_Y / b_X))
+    set eaten eaten + TC * th_X * (k_E + b_Y * k_E / (k_E + k_Y))
   ] ; Mol/d, food consumption
   set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
   if X < 0 [set X 0] ; do not allow negative food
@@ -223,11 +228,7 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    let k_E J_XAmi * L * L ; dissociation rate of E with SU
-    let b_X X * F_m * L * L ; association rate of X with SU
-    let b_Y Y * F_Y ; association rate of Y with SU
-    let th_X 1 / (1 + b_Y / k_E + b_Y / k_Y + (k_E + b_Y) / b_X * (1 + b_Y / k_Y))
-    set ee ee + (th_X * (1 + b_Y / k_E) - ee) * TC * v / L / tickRate ; -, scaled reserve density
+    set ee ee + (th_X * (1 + b_Y / (k_E + k_Y)) - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
     ifelse ee >= L / L_mi
