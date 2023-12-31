@@ -22,7 +22,7 @@
 "set t_R     0"
 "set F_m 30.17"
 "set p_Am 313.2"
-"set p_Amm 313.2"
+"set p_Amm 180.9"
 "set v 0.1858"
 "set p_M  1200"
 "set k_J 0.2537"

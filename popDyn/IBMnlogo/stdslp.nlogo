@@ -35,6 +35,8 @@ globals[
   K_male   ; Mol, half saturation coefficient for males (cannot be called K_m, since NetLogo makes no difference with k_M)
   J_XAm    ; mol/d.cm^2, max spec food intake rate for females
   J_XAmm   ; mol/d.cm^2, max spec food intake rate for males
+  J_EAm    ; mol/d.cm^2, max spec assimilation rate for females
+  J_EAmm   ; mol/d.cm^2, max spec assimilation rate for males
   L_m      ; cm, max structural length for females
   L_mm     ; cm, max structural length for males
   E_m      ; J/cm^3, reserve capacity for females
@@ -93,6 +95,7 @@ turtles-own[
   Ki       ; Mol, half saturation coefficient (female or male value)
   p_Ami    ; J/d.cm^2, max spec assimilation rate  (female or male value)
   J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
+  J_EAmi   ; mol/d.cm^2, max spec assimilation rate (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
   L_p      ; cm, structural length at puberty
@@ -106,7 +109,8 @@ turtles-own[
   J_O      ; mol/d.cm^3, vol-spec O2 consumpton rate
   b_X      ; 1/d, association rate with food
   b_Y      ; 1/d, association rate with sleep
-  k_YO     ; 1/d, dissociation rate with sleep
+  k_YO     ; 1/d, dissociation rate from sleep
+  k_E      ; 1/d, dissociation rate of reserve
   th_X     ; -, fraction of SU assiciated with X
 ]
 
@@ -175,6 +179,8 @@ to setup
   set K_male p_Amm / kap_X / mu_X / F_m ;  Mol, half saturation coefficient for males
   set J_XAm p_Am / kap_X / mu_X         ;  mol/d.cm^2 max spec food intake rate for females
   set J_XAmm p_Amm / kap_X / mu_X       ;  mol/d.cm^2 max spec food intake rate for males
+  set J_EAm p_Am / mu_E                 ;  mol/d.cm^2 max spec assimilation rate for females
+  set J_EAmm p_Amm / mu_E               ;  mol/d.cm^2 max spec assimilation rate for males
   set E_m p_Am / v                      ;  J/cm^3, reserve capacity for females
   set E_mm p_Amm / v                    ;  J/cm^3, reserve capacity for males
   set g E_G / E_m / kap                 ;  - , energy investment ratio for females
@@ -228,12 +234,12 @@ to go
     ]
     set p_G p_M * (ee * L_mi / L - 1) / (ee / gi + 1) ; J/d.cm^3, vol-spec growth rate
     set J_O TC * (0.0198 * p_A + 0.1977 * p_D + 0.0012 * p_G) ; mol/d.cm^3, vol-spec O2 consumption rate
-    let k_E J_XAmi * L * L ; dissociation rate of E with SU
-    set b_X X * F_m * L * L ; association rate of X with SU
+    set k_E J_EAmi * L * L ; dissociation rate of E with SU
+    set b_X mu_X / mu_E * kap_X * X * F_m * L * L ; association rate of X with SU
     set b_Y F_y ; association rate of sleep with SU
     set k_YO k_Y / J_O ; dissociation rate of sleep with SU
     set th_X 1 / (1 + k_E / b_X + b_Y * k_E / b_X / k_YO + b_Y / (k_E + k_YO) * (1 + k_E / k_YO + k_E / b_X + k_E * b_Y / k_YO / b_X))
-    set eaten eaten + TC * th_X * (k_E + b_Y * k_E / (k_E + k_YO)) ; Mol/d, food consumption
+    set eaten eaten + TC * th_X * (k_E + b_Y * k_E / (k_E + k_YO)) ; Mol/d, food consumption: b_X * th_.
   ] 
   set X X + (JX / V_X - h_X * X - eaten / V_X) / tickRate ; Mol, food density
   if X < 0 [set X 1e-8] ; do not allow negative food
@@ -241,7 +247,6 @@ to go
   ; state variables of turtles
   ask turtles with [E_H = E_Hb] [set a a + 1 / tickRate] ; d, age (only active role for embryos to trigger birth)
   ask turtles with [E_H > E_Hb] [
-    let k_E J_XAmi * L * L ; dissociation rate of E with SU
     set ee ee + (th_X * (1 + b_Y / (k_E + k_YO)) - ee) * TC * v / L / tickRate ; -, scaled reserve density
     if ee > 1 [set ee 1] ; do not allow that ee exceeds 1
     if ee < 0 [set ee 0] ; do not allow that ee becomes negative
@@ -251,7 +256,7 @@ to go
     set L L + L * r / 3 / tickRate ; cm, structural length
     set p_C ee * E_mi * L * L * L * (TC * v / L - r) ; J/d, reserve mobilisation rate
     ifelse (1 - kap) * p_C >= TC * k_J * E_H
-      [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturition
+      [set E_H E_H + ((1 - kap) * p_C - TC * k_J * E_H) / tickRate] ; J, maturation
       [set E_H E_H - TC * k_JX * (E_H - (1 - kap) * p_C / k_J / TC) / tickRate] ; J, rejuvenation
     if E_H > E_Hmax [set E_Hmax E_H]
     if E_H > E_Hpi [
@@ -317,7 +322,7 @@ to go
     let totL3 0
     let totW 0
     let totN count turtles with [E_H > E_Hb] ; #, number of post-natals
-    ; let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
+    let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
     ask turtles with [E_H > E_Hb] [
       set totL totL + L ; total structural length
       set totL2 totL2 + L * L ; total structural surface area
@@ -327,6 +332,7 @@ to go
     file-write time   ; d, time
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
+    file-write totNa  ; #,  total number of adults
     file-write totL   ; cm, total length of post-natals
     file-write totL2  ; cm^2, total length^2 of post-natals
     file-write totL3  ; cm^3, total length^3 of post-natals
@@ -409,6 +415,7 @@ to set-embryo [eei genderi]
     set Ki K ; Mol, half saturation coefficient
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
+    set J_EAmi J_EAm ; mol/d.cm^2, max spec assimilation rate
     set E_Hpi E_Hp ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_m ; cm, max structural length
@@ -418,6 +425,7 @@ to set-embryo [eei genderi]
     set Ki K_male ; Mol, half saturation coefficient
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
+    set J_EAmi J_EAmm ; mol/d.cm^2, max spec assimilation rate
     set E_Hpi E_Hpm ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_mm ; cm, max structural length
@@ -554,6 +562,17 @@ INPUTBOX
 520
 150
 mu_X
+525000.0
+1
+0
+Number
+
+INPUTBOX
+410
+90
+520
+150
+mu_E
 525000.0
 1
 0

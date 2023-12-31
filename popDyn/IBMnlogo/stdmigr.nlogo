@@ -292,7 +292,7 @@ to go
     let totL3 0
     let totW 0
     let totN count turtles with [E_H > E_Hb] ; #, number of post-natals
-    ; let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
+    let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
     ask turtles with [E_H > E_Hb] [
       set totL totL + L ; total structural length
       set totL2 totL2 + L * L ; total structural surface area
@@ -302,6 +302,7 @@ to go
     file-write time   ; d, time
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
+    file-write totNa  ; #,  total number of adults
     file-write totL   ; cm, total length of post-natals
     file-write totL2  ; cm^2, total length^2 of post-natals
     file-write totL3  ; cm^3, total length^3 of post-natals

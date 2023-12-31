@@ -162,7 +162,7 @@ function txxNL23W = get_IBMnlogo_std211(model, par, tT, tJX1, tJX2, X1_0, X2_0, 
     data = fscanf(out,'%e');
     fclose(out);
     n = length(data);
-    txxNL23W = wrap(data, floor(n/8), 8); % output (n,8)-array
+    txxNL23W = wrap(data, floor(n/9), 9); % output (n,9)-array
   else
     path = which('cdCur'); 
     if ismac

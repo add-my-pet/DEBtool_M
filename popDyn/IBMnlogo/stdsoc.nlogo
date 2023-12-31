@@ -36,6 +36,8 @@ globals[
   K_male   ; Mol, half saturation coefficient for males (cannot be called K_m, since NetLogo makes no difference with k_M)
   J_XAm    ; mol/d.cm^2, max spec food intake rate for females
   J_XAmm   ; mol/d.cm^2, max spec food intake rate for males
+  J_EAm    ; mol/d.cm^2, max spec assimilation rate for females
+  J_EAmm   ; mol/d.cm^2, max spec assimilation rate for males
   L_m      ; cm, max structural length for females
   L_mm     ; cm, max structural length for males
   E_m      ; J/cm^3, reserve capacity for females
@@ -93,6 +95,7 @@ turtles-own[
   a_b      ; d, age at birth at 20 C (set at creation)
   Ki       ; Mol, half saturation coefficient (female or male value)
   p_Ami    ; J/d.cm^2, max spec assimilation rate  (female or male value)
+  J_EAmi   ; mol/d.cm^2, max spec assimilation rate (female or male value)
   J_XAmi   ; mol/d.cm^2, max spec food intake rate  (female or male value)
   E_Hpi    ; J, maturity at puberty  (female or male value)
   L_b      ; cm, structural length at birth
@@ -171,6 +174,8 @@ to setup
   set K_male p_Amm / kap_X / mu_X / F_m ;  Mol, half saturation coefficient for males
   set J_XAm p_Am / kap_X / mu_X         ;  mol/d.cm^2 max spec food intake rate for females
   set J_XAmm p_Amm / kap_X / mu_X       ;  mol/d.cm^2 max spec food intake rate for males
+  set J_EAm p_Am / mu_E                 ;  mol/d.cm^2 max spec food intake rate for females
+  set J_EAmm p_Amm / mu_E               ;  mol/d.cm^2 max spec food intake rate for males
   set E_m p_Am / v                      ;  J/cm^3, reserve capacity for females
   set E_mm p_Amm / v                    ;  J/cm^3, reserve capacity for males
   set g E_G / E_m / kap                 ;  - , energy investment ratio for females
@@ -216,8 +221,8 @@ to go
   ; food density in the reactor
   set eaten 0 ; mol/d, initiate food disappearence rate
   ask turtles with [E_H > E_Hb] [
-    set k_E J_XAmi * L * L ; dissociation rate of E with SU
-    set b_X X * F_m * L * L ; association rate of X with SU
+    set k_E J_EAmi * L * L ; dissociation rate of E with SU
+    set b_X mu_X / mu_E * kap_X * X * F_m * L * L ; association rate of X with SU
     set b_Y Y * F_Y ; association rate of Y with SU
     set th_X 1 / (1 + k_E / b_X + b_Y * k_E / b_X / k_Y + b_Y / (k_E + k_Y) * (1 + k_E / k_Y + k_E / b_X + k_E * b_Y / k_Y / b_X))
     set eaten eaten + TC * th_X * (k_E + b_Y * k_E / (k_E + k_Y))
@@ -303,7 +308,7 @@ to go
     let totL3 0
     let totW 0
     let totN count turtles with [E_H > E_Hb] ; #, number of post-natals
-    ; let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
+    let totNa count turtles with [E_H = E_Hpi] ; #, number of adults
     ask turtles with [E_H > E_Hb] [
       set totL totL + L ; total structural length
       set totL2 totL2 + L * L ; total structural surface area
@@ -313,6 +318,7 @@ to go
     file-write time   ; d, time
     file-write X / K  ; -, scaled food density
     file-write totN   ; #,  total number of post-natals
+    file-write totNa  ; #,  total number of adults
     file-write totL   ; cm, total length of post-natals
     file-write totL2  ; cm^2, total length^2 of post-natals
     file-write totL3  ; cm^3, total length^3 of post-natals
@@ -395,6 +401,7 @@ to set-embryo [eei genderi]
     set Ki K ; Mol, half saturation coefficient
     set p_Ami p_Am ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAm ; mol/d.cm^2, max spec food intake rate
+    set J_EAmi J_EAm ; mol/d.cm^2, max spec assimilation rate
     set E_Hpi E_Hp ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_m ; cm, max structural length
@@ -404,6 +411,7 @@ to set-embryo [eei genderi]
     set Ki K_male ; Mol, half saturation coefficient
     set p_Ami p_Amm ; J/d.cm^2, max spec assim rate
     set J_XAmi J_XAmm ; mol/d.cm^2, max spec food intake rate
+    set J_EAmi J_EAmm ; mol/d.cm^2, max spec assimilation rate
     set E_Hpi E_Hpm ; J, maturity at puberty
     set L_b L ; cm, structural length at birth
     set L_mi L_mm ; cm, max structural length
@@ -540,6 +548,17 @@ INPUTBOX
 520
 150
 mu_X
+525000.0
+1
+0
+Number
+
+INPUTBOX
+410
+90
+520
+150
+mu_E
 525000.0
 1
 0

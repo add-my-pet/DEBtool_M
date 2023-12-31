@@ -245,7 +245,7 @@ txNL23W = get_IBMnlogo(model, par, tT, tJX, X_0, V_X, t_R, t_max, tickRate, runN
 
 cd(WD);
 
-if runNetLogo && ~strcmp(metaPar.model,'stdadlt')
+if runNetLogo && ~ismember(metaPar.model,{'stdadlt','stdsoc','stdslp','std','stdmigr','std211'})
 
 %% plotting
 close all
