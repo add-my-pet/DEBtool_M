@@ -43,6 +43,8 @@ function varargout = get_tj_old(p, f, tel_b, tau)
   %      if length(lb0)==2, tp is the scaled time till puberty
   %
   % * tvel: optional (n,4)-array with scaled time-since-birth, maturity, reserve density and length
+  % * tau_j: scaled age at birth \tau_b = a_b k_M
+  % * tau_p: scaled age at birth \tau_b = a_b k_M
   % * tau_b: scaled age at birth \tau_b = a_b k_M
   % * l_j: scaled length at end of V1-stage
   % * l_p: scaled length at puberty
