@@ -7,6 +7,7 @@ metaData.order      = 'Hymenoptera';
 metaData.family     = 'Ichneumonidae';
 metaData.species    = 'Venturia_canescens'; 
 metaData.species_en = 'Parasitic wasp'; 
+
 metaData.ecoCode.climate = {'BSk', 'Csa', 'Cfb', 'Dfb'};
 metaData.ecoCode.ecozone = {'THp'};
 metaData.ecoCode.habitat = {'0iTf', '0iTi', '0iTg'};
@@ -15,6 +16,7 @@ metaData.ecoCode.migrate = {};
 metaData.ecoCode.food    = {'bjTii', 'eiHn'};
 metaData.ecoCode.gender  = {'D'};
 metaData.ecoCode.reprod  = {'O'};
+
 metaData.T_typical  = C2K(25); % K, body temp
 metaData.data_0     = {'ab'; 'aj'; 'ae'; 'am'; 'Wd0'; 'Wdb'; 'Wdj'; 'Wde'}; 
 metaData.data_1     = {'t-Wd'; 't-N'}; 
