@@ -53,7 +53,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
     f = 1;
   end
 
-  pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
+  pars_tj = [g k 0 vHb vHp+1e-8 vHp]; % vHp functions as vHj in get_tj
   [tp, tpp, tb, lp, lpp, lb, li, rj, rB, info] = get_tj(pars_tj, f);
 %   if info == 0 || isempty(lp)
 %     tj = []; lj = [];  info = 0; return

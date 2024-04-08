@@ -62,7 +62,7 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
   end
 
   % from zero till puberty
-  pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
+  pars_tj = [g k 0 vHb vHp vHp+1e-3]; % vHp functions as vHj in get_tj
   [tp, tpp, tb, lp, lpp, lb, li, rj, rB, info] = get_tj(pars_tj, f);
   sM = lp/ lb; % -, acceleration factor
 

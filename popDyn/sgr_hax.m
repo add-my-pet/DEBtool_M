@@ -92,7 +92,10 @@ function [r, info] = sgr_hax (par, T_pop, f_pop)
   u_E0 = get_ue0([g k v_Hb], f); E_0 = u_E0 * E_G * L_m^3/ kap; % -, (scaled) cost for egg
   v_Rj = kap/ (1 - kap) * E_Rj/ E_G; 
   pars_tj = [g k v_Hb v_Hp v_Rj v_He kap kap_V];
-  [tau_j, tau_e, tau_p, tau_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee] = get_tj_hax(pars_tj, f);  
+  [tau_j, tau_e, tau_p, tau_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee, info] = get_tj_hax(pars_tj, f); 
+  if ~info % probably the pupation stage went wrong: dirty repair
+    tau_e = tau_j + 1e-2; l_e = l_j + 1e-3; % u_Ee = L_m^3 * l_e^3 * g^2 * k_M^3/ v^3;
+  end
   aT_b = tau_b/ kT_M; tT_p = (tau_p - tau_b)/ kT_M; tT_j = (tau_j - tau_b)/ kT_M;  tT_e = (tau_e - tau_b)/ kT_M; % unscale
   L_b = L_m * l_b; L_p = L_m * l_p; L_j = L_m * l_j;  L_i = L_m * l_i;  L_e = L_m * l_e; % unscale
   S_b = exp( - aT_b * h_B0b); % - , survival prob at birth
@@ -123,6 +126,7 @@ function dqhSC = dget_qhSC(t, qhSC, sgr, f, v, R, L_b, L_p, L_j, L_e, L_i, L_m, 
   q   = max(0, qhSC(1)); % 1/d^2, aging acceleration
   h_A = max(0, qhSC(2)); % 1/d^2, hazard rate due to aging
   S   = max(0, qhSC(3)); % -, survival prob
+  
   
   if t < t_p
     h_B = h_Bbp;
