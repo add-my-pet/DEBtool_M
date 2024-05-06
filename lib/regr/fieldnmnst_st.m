@@ -1,5 +1,5 @@
-function [nm nst] = fieldnmnst_st(st)
-  % created 2013/05/02 by Gonçalo Marques; modified 2013/09/27
+function [nm, nst] = fieldnmnst_st(st)
+  % created 2013/05/02 by Goncalo Marques; modified 2013/09/27
   %
   %% Description
   %  creates a list of field names of a structure and its number
