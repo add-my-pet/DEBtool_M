@@ -135,7 +135,7 @@ function dvel = dget_lj (tau, vel, info_tau, tf, l_b, g, k, l_T, v_Hj, v_Hp)
   de = (f - e) * g/ l; % d/d tau e
   rho = g * (e * s_M/ l - 1 - s_M * l_T/ l)/ (e + g); % -, spec growth rate
   dl = l * rho/ 3; % -, d/d tau l  
-  dv_H = e * l^3 * (s_M/ l - rho/ g) - k * v_H; % -, d/d tau v_H
+  dv_H = (v_H <v_Hp) * (e * l^3 * (s_M/ l - rho/ g) - k * v_H); % -, d/d tau v_H
   dvel = [dv_H; de; dl]; % pack to output
  
 end
