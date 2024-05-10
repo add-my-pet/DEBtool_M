@@ -100,7 +100,7 @@ function varargout = get_tp(p, f, tel_b, tau)
   l_d = l_i - l_b; % -, scaled length
 
   % k*v_Hi = f*l_i^2 ultimate v_Hi
-  if k == 1 && f * l_I^2 > v_Hp * k 
+  if k == 1 && f * l_i^2 > v_Hp * k 
     l_b = v_Hb^(1/3); 
     tau_b = get_tb(p([1 2 4]), f, l_b);
     l_p = v_Hp^(1/3);
