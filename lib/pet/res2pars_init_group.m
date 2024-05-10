@@ -38,6 +38,7 @@ global pets
 
 n = length(pets); metaParGrp.model = cell(1,n); units = {}; label = {};
 for i=1:n
+   if extist
    load(['results_',pets{i}])
    parGrp.(pets{i}) = par; 
    metaParGrp.model{i} = metaPar.model;
