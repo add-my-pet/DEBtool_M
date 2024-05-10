@@ -48,7 +48,7 @@ end
 matFile = ['results_', my_pet, '.mat'];
 
 % check that mydata actually exists
-if exist(matFile, 'file') == 0
+if exist('matFile', 'file') == 0
   fprintf([matFile, ' not found.\n']);
   return
 end
@@ -158,7 +158,11 @@ else % typified model
     if length(par.(currentPar)) == 1
       write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     else
+      try
       write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      catch
+          keyboard
+      end
     end
   end
 
