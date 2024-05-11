@@ -4,7 +4,7 @@
 %%
 function mat2pars_init(my_pet, varargin)
 % created 2015/09/21 by  Goncalo Marques, modified 2016/02/17, 2016/06/18
-% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/27 by Bas Kooijman
+% modified 2017/07/19, 2018/05/25, 2019/03/20, 2019/05/21, 2022/01/27, 2024/05/11 by Bas Kooijman
 
 %% Syntax
 % <../mat2pars_init.m *mat2pars_init*> (my_pet, varargin) 
@@ -158,11 +158,7 @@ else % typified model
     if length(par.(currentPar)) == 1
       write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
     else
-      try
       write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
-      catch
-          keyboard
-      end
     end
   end
 
@@ -179,12 +175,18 @@ else % typified model
   for i = 1:length(chemParFields)
     currentPar = chemParFields{i};
     if par.(currentPar) ~= par_auto.(currentPar)
-      write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      if length(par.(currentPar)) > 1 && par.(currentPar)(1) == mean(par.(currentPar))
+        par.(currentPar) = par.(currentPar)(1); free.(currentPar) = free.(currentPar)(1); 
+      end
+      if length(par.(currentPar)) == 1
+        write_par_line(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      else
+        write_par_line_vec(pars_init_id, currentPar, par.(currentPar), free.(currentPar), txtPar.units.(currentPar), txtPar.label.(currentPar), fix);
+      end
     end
   end
   
 end    
-
 
 fprintf(pars_init_id, '\n%%%% Pack output: \n');
 fprintf(pars_init_id, 'txtPar.units = units; txtPar.label = label; par.free = free; \n');
