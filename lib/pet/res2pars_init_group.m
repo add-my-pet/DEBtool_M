@@ -36,7 +36,7 @@ function [par, metaData, metaPar, txtPar] = res2pars_init_group
   
 global pets
 
-n = length(pets); metaParGrp.model = cell(1,n); parFlds = {}; EparFlds = {}; WD = pwd;
+n = length(pets); metaParGrp.model = cell(1,n); parFlds = {}; EparFlds = {}; 
 for i=1:n
    fnm = ['results_',pets{i},'.mat'];
    if exist(fnm,'file')
@@ -84,8 +84,7 @@ for i=1:n
 end
 if exist('pars_init_group.m', 'file') == 2; delete('pars_init_group.m'); end
     
-parGrp = parPets2Grp(parGrp, metaData);
-par = parGrp; metaPar = metaParGrp; txtPar.units = units; txtPar.label = label; metaData = metaDataGrp;
+par = parPets2Grp(parGrp, metaData);  metaPar = metaParGrp; txtPar.units = units; txtPar.label = label; metaData = metaDataGrp;
 % extra info for grp estimation
 metaPar.weights.p_M = 3; metaPar.weights.v = 2; 
 % separate chem pars in mat2pars_init
@@ -96,8 +95,7 @@ chemParFlds = fields(addchem([], [], [], [], metaData.(pets{1}).phylum, metaData
 parFlds = setdiff(unique(parFlds), chemParFlds); parFlds = setdiff(parFlds, unique(EparFlds));
 n_parFlds = length(parFlds); parOcc = zeros(n_parFlds,n);
 for i=1:n
-  cd(['../', pets{i}]); mD = metaData.(pets{i}); pari = feval(['pars_init_', pets{i}],(mD)); cd(WD);
-  for j=1:n_parFlds; parOcc(j,i) = isfield(pari, parFlds{j}); end % booleans for occurence of par
+  for j=1:n_parFlds; parOcc(j,i) = isfield(parGrp.(pets{i}), parFlds{j}); end % booleans for occurence of par
 end
 sel =  1 == sum(parOcc,2); sel(end) = 0; parFlds = parFlds(sel); parOcc = parOcc(sel,:); n_parFlds = length(parFlds); ind = 1:n;
 for j=1:n_parFlds
@@ -107,7 +105,7 @@ end
 par.T_ref = par.T_ref(1); par.free.T_ref = 0; 
 
 save('results_group.mat','par','metaPar','txtPar','metaData') % create results_group.mat
-mat2pars_init('group') % create pars_init_group.m
+mat2pars_init('group') % write pars_init_group.m
 edit pars_init_group.m % load pars_init_group file in editor
 edit run_group.m % load run_group file in editor
 end
