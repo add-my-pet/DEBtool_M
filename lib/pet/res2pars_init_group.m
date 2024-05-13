@@ -119,7 +119,7 @@ function prt_run_group
   
   fprintf(id_run_group, 'pets = { ...\n');
   for i=1:length(pets) 
-    fprintf(id_run_group, ['        ''', pets{i}, ''', ...\n']);    
+    fprintf(id_run_group, '        ''%s'', ...\n', pets{i});    
   end
   fprintf(id_run_group, '       };\n\n');
 
