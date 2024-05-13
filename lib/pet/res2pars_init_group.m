@@ -29,7 +29,7 @@ function [par, metaData, metaPar, txtPar] = res2pars_init_group
   % * txtPar: structure with units, label, free
   
   %% Remarks
-  % requires that all results_my_pet.mat-files are locally available
+  % requires that all results_my_pet.mat-files are locally available or in sister dirs my_pet
   %
   %% example of use
   % global pets; pets = {'Daphnia_magna','Daphnia_pulex'}; res2pars_init_group;
@@ -79,7 +79,7 @@ for i=1:n
    metaParGrp.model{i} = metaPar.model;
    EparFlds = [EparFlds, get_parfields(metaPar.model)];
    metaDataGrp.(pets{i}) = metaData;
-   flds = fields(txtPar.units); % m = length(flds);
+   flds = fields(txtPar.units);
    for j=1:length(flds); units.(flds{j}) = txtPar.units.(flds{j}); label.(flds{j}) = txtPar.label.(flds{j}); end
 end
 if exist('pars_init_group.m', 'file') == 2; delete('pars_init_group.m'); end
@@ -102,7 +102,7 @@ for j=1:n_parFlds
   in = sum(ind.*parOcc(j,:));
   par.(parFlds{j}) = par.(parFlds{j})(in); par.free.(parFlds{j}) = par.free.(parFlds{j})(in); 
 end
-par.T_ref = par.T_ref(1); par.free.T_ref = 0; 
+par.T_ref = par.T_ref(1); par.free.T_ref = 0; % assumes that all T_ref's are the same
 
 save('results_group.mat','par','metaPar','txtPar','metaData') % create results_group.mat
 mat2pars_init('group') % write pars_init_group.m
