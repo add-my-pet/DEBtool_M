@@ -20,7 +20,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   %
   % * p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p 
   % * f: optional scalar with functional response (default f = 1) or (n,2)-array with scaled time since birth and scaled func response
-  % * tel_b: optional scalar with scaled length at birth or 3-vector with scaled age at birth, reserve density and length at 
+  % * tel_b: optional scalar with scaled length at birth or 3-vector with scaled age at birth, reserve density and length at birth
   % * tau: optional n-vector with scaled times since birth
   %  
   % Output
