@@ -474,7 +474,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
       if info ~= 1              
-        fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
+        fprintf('warning in get_tj_hex: invalid parameter value combination for t_j \n')
       end
       l_i = l_j; s_M = l_j/ l_b; % notice that l_i is set to scaled length at pupation for hex
       stat.E_Hp = E_Hb+1e-8; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; temp.E_Hp = NaN; fresp.E_Hp = NaN; % is not a parameter of hex
