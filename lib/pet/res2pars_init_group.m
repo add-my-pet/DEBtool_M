@@ -45,7 +45,7 @@ for i=1:n
      try
        load(['../', pets{i},'/',fnm])  
      catch
-       fprintf(['warning from res2pars_init_group: ', fnm, ' not found locally or in sister-dir ', pets{i}, '\n'])
+       fprintf('warning from res2pars_init_group: %s not found locally or in sister-dir  %s\n', fnm, pets{i})
        return
      end
    end
@@ -55,7 +55,7 @@ for i=1:n
      try
        copyfile(['../', pets{i},'/',fnm])  
      catch
-       fprintf(['warning from res2pars_init_group: ', fnm, ' not found locally or in sister-dir ', pets{i}, '\n'])
+       fprintf('warning from res2pars_init_group: %s not found locally or in sister-dir  %s\n', fnm, pets{i})
      end
    end
    
@@ -64,7 +64,7 @@ for i=1:n
      try
        copyfile(['../', pets{i},'/',fnm])  
      catch
-       fprintf(['warning from res2pars_init_group: ', fnm, ' not found locally or in sister-dir ', pets{i}, '\n'])
+       fprintf('warning from res2pars_init_group: %s not found locally or in sister-dir  %s\n', fnm, pets{i})
      end
    end
    
