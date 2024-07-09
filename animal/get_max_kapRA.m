@@ -37,9 +37,9 @@ function res = get_max_kapRA(pars,f)
 % Uses fzero with bisection method
 
 %% Example of use
-% res = get_max_kapRA(read_stat('Daphnia',{'p_Am','p_M','k_J','E_Hp'}))
-% pRJ = read_stat('Daphnia',{'p_Ri','p_Ai'}); kapRA = pRJ(:,1)./pRJ(:,2);
-% prt_tab({select('Daphnia'),res,kapRA,kapRA./res(:,3)},{'species','kap_min','kap_opt','kapRA_opt','info','kapRA','kapRA/kapRA_opt'})
+% nm = select('Daphnia'); res = get_max_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp'}));
+% pRA = read_stat(nm,{'p_Ri','p_Ai','kap'}); kapRA = pRA(:,1)./pRA(:,2); kap = pRA(:,3); 
+% prt_tab({nm,res,kap,kapRA,kapRA./res(:,3)},{'species','kap_min','kap_opt','kapRA_opt','info','kap', 'kapRA','kapRA/kapRA_opt'})
 
 if ~exist('f','var') || isempty(f)
   f = 1; % -
@@ -51,15 +51,22 @@ for i = 1:n
   p_Am = pars(i,1); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
 
   % min kap
-  kapMin = @(kap,k_J,E_Hp,f,p_Am,p_M) 1/kap - 1 - k_J * E_Hp * p_M^2/ (kap*f*p_Am)^3; 
-  [kap_min, ~, infoMin] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),[1e-5, 0.95]);
-
+  try
+    kapMin = @(kap,k_J,E_Hp,f,p_Am,p_M) 1/kap - 1 - k_J * E_Hp * p_M^2/ (kap*f*p_Am)^3; 
+    [kap_min, ~, infoMin] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),[1e-10, 0.95]);
+  catch
+    infoMin = 1; kap_min = 0;
+  end
+ 
   % max kapRA
-  kapOpt = @(kap,k_J,E_Hp,f,p_Am,p_M) 1 + kap - 2 * k_J * E_Hp/ (kap*f*p_Am/p_M)^3/ p_M; 
-  [kap_opt, ~, infoOpt] = fzero(@(kap) kapOpt(kap,k_J,E_Hp,f,p_Am,p_M),[kap_min, 1]);
-  p_Jp_opt = k_J * E_Hp / (kap_opt * f * p_Am/ p_M)^3;
-  kapRA_opt = 1 - kap_opt * (1 + p_Jp_opt/ p_M);
-
+  try
+    kapOpt = @(kap,k_J,E_Hp,f,p_Am,p_M) 1 + kap - 2 * k_J * E_Hp/ (kap*f*p_Am/p_M)^3/ p_M; 
+    [kap_opt, ~, infoOpt] = fzero(@(kap) kapOpt(kap,k_J,E_Hp,f,p_Am,p_M),[kap_min, 1]);
+    p_Jp_opt = k_J * E_Hp / (kap_opt * f * p_Am/ p_M)^3;
+    kapRA_opt = 1 - kap_opt * (1 + p_Jp_opt/ p_M);
+  catch
+    infoOpt = 0; kap_opt = NaN; kapRA_opt = NaN;
+  end
   info = infoMin==1 && infoOpt==1;
   res(i,1) = kap_min; res(i,2) = kap_opt; res(i,3) = kapRA_opt; res(i,4) = info;
 end
