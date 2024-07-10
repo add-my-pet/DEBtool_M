@@ -41,17 +41,19 @@ function res = shkapRA(pars,f)
 
 close all
 
-  p_Am = pars(1); % J/d.cm^2
-  p_M = pars(2);  % J/d.cm^3
-  k_J = pars(3);  % 1/d
-  E_Hp = pars(4); % J
-
-  res = get_max_kapRA(pars);
-  kap_opt = res(1); kapRA_opt = res(2); kap_min = res(3); kap_max = res(4);
-
 if ~exist('f','var') || isempty(f)
   f = 1; % -
 end
+
+  p_Am = pars(1); % J/d.cm^2
+  p_M  = pars(2);  % J/d.cm^3
+  k_J  = pars(3);  % 1/d
+  E_Hp = pars(4); % J
+
+
+  res = get_max_kapRA(pars,f);
+  kap_opt = res(1); kapRA_opt = res(2); % kap_min = res(3); kap_max = res(4);
+
 
 % prepare for plotting
 kap = linspace(1e-3,0.9999,500)';
@@ -70,5 +72,4 @@ hold on
 plot([kap_opt;kap_opt], [0;kapRA_opt],'r', 'linewidth',2)
 plot([0;kap_opt], [kapRA_opt;kapRA_opt],'r', 'linewidth',2)
 plot([0;1], [1,0], ':b', 'linewidth',2)
-%saveas(gca, '../../eps/ch8_c/kap_kapRA.png')
 

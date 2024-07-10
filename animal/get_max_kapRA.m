@@ -51,13 +51,13 @@ n = size(pars,1); res = NaN(n,4);
 for i = 1:n
   p_Am = pars(i,1); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
 
-  % prepare for plotting
+  % find initial estimates
   kap = linspace(1e-5,0.99999,100)';
   L_i = kap * f * p_Am/ p_M; % cm
   p_Jp = k_J * E_Hp ./ L_i.^3; % J/d.cm^3
   kapRA = 1 - kap .* (1 + p_Jp/ p_M);
-  kap_opt = spline1(max(kapRA),[kapRA,kap]);
   kap0 = kap(kapRA>0); kap0 = [kap0(1) kap0(end)];
+  kap_opt = spline1(max(kapRA),[kapRA,kap]);
 
   % min/max kap
   try
