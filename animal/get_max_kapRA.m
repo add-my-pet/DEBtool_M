@@ -46,7 +46,7 @@ if ~exist('f','var') || isempty(f)
   f = 1; % -
 end
 
-n = size(pars,1); res = NaN(n,4);
+n = size(pars,1); res = NaN(n,5);
 
 for i = 1:n
   p_Am = pars(i,1); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
