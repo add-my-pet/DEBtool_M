@@ -52,19 +52,19 @@ for i = 1:n
   p_Am = pars(i,1); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
 
   % prepare for plotting
-  kap = linspace(1e-5,0.99999,500)';
+  kap = linspace(1e-5,0.99999,100)';
   L_i = kap * f * p_Am/ p_M; % cm
   p_Jp = k_J * E_Hp ./ L_i.^3; % J/d.cm^3
   kapRA = 1 - kap .* (1 + p_Jp/ p_M);
   kap0 = kap(kapRA>0); kap0 = [kap0(1) kap0(end)];
 
-  % min kap
+  % min/max kap
   try
     kapMin = @(kap,k_J,E_Hp,f,p_Am,p_M) 1/kap - 1 - k_J * E_Hp * p_M^2/ (kap*f*p_Am)^3; 
     [kap_min, ~, infoMin] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),kap0(1));
     [kap_max, ~, infoMax] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),kap0(2));
  catch
-    infoMin = 1; kap_min = 0;
+    infoMin = 0; infoMax = 0; kap_min = 0; kap_max = 1;
   end
  
   % max kapRA
@@ -76,6 +76,6 @@ for i = 1:n
   catch
     infoOpt = 0; kap_opt = NaN; kapRA_opt = NaN;
   end
-  info = infoMin==1 && infoOpt==1;
+  info = infoMin==1 && infoMax==1 && infoOpt==1;
   res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max; res(i,5) = info;
 end
