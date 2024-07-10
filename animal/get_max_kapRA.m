@@ -10,7 +10,7 @@ function res = get_max_kapRA(pars,f)
 
 %% Description
 % get max reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^infty/p_A^\infty
-% It also gives the min value for kap for positive reproduction and 
+% It also gives the min and max value for kap for positive reproduction and 
 % the value for kap at which the max is reached
 %
 % Input:
@@ -56,6 +56,7 @@ for i = 1:n
   L_i = kap * f * p_Am/ p_M; % cm
   p_Jp = k_J * E_Hp ./ L_i.^3; % J/d.cm^3
   kapRA = 1 - kap .* (1 + p_Jp/ p_M);
+  kap_opt = spline1(max(kapRA),[kapRA,kap]);
   kap0 = kap(kapRA>0); kap0 = [kap0(1) kap0(end)];
 
   % min/max kap
@@ -63,14 +64,14 @@ for i = 1:n
     kapMin = @(kap,k_J,E_Hp,f,p_Am,p_M) 1/kap - 1 - k_J * E_Hp * p_M^2/ (kap*f*p_Am)^3; 
     [kap_min, ~, infoMin] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),kap0(1));
     [kap_max, ~, infoMax] = fzero(@(kap) kapMin(kap,k_J,E_Hp,f,p_Am,p_M),kap0(2));
- catch
+  catch
     infoMin = 0; infoMax = 0; kap_min = 0; kap_max = 1;
   end
  
   % max kapRA
   try
-    kapOpt = @(kap,k_J,E_Hp,f,p_Am,p_M) 1 + kap - 2 * k_J * E_Hp/ (kap*f*p_Am/p_M)^3/ p_M; 
-    [kap_opt, ~, infoOpt] = fzero(@(kap) kapOpt(kap,k_J,E_Hp,f,p_Am,p_M),[kap_min kap_max]);
+    kapOpt = @(kap,p_Am,p_M,k_J,E_Hp,f) 1 - 2 * k_J * E_Hp/ (kap*f*p_Am/p_M)^3/ p_M; 
+    [kap_opt, ~, infoOpt] = fzero(@(kap) kapOpt(kap,p_Am,p_M,k_J,E_Hp,f),kap_opt);
     p_Jp_opt = k_J * E_Hp / (kap_opt * f * p_Am/ p_M)^3;
     kapRA_opt = 1 - kap_opt * (1 + p_Jp_opt/ p_M);
   catch
