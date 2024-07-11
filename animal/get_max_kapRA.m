@@ -17,7 +17,7 @@ function res = get_max_kapRA(pars,f)
 % 
 % * pars: (n,4)-matrix with parameters in columns:
 % 
-%    - p_Am, J/d.cm^2, spec assim rate (after accelleration)
+%    - p_Am, J/d.cm^2, spec assim rate (before accelleration)
 %    - p_M, J/d.cm^3, spec som maint rate
 %    - k_J, 1/d, maturity maint rate coeff
 %    - E_Hp, J, maturity at puberty
@@ -40,7 +40,7 @@ function res = get_max_kapRA(pars,f)
 %% Example of use
 % nm = select('Daphnia'); res = get_max_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp','s_M'}));
 % pRA = read_stat(nm,{'p_Ri','p_Ai','kap'}); kapRA = pRA(:,1)./pRA(:,2); kap = pRA(:,3); 
-% prt_tab({nm,res,kap,kapRA,kapRA./res(:,2)},{'species','kap_opt','kapRA_opt','kap_min','kap_max','kap', 'kapRA','kapRA/kapRA_opt'})
+% prt_tab({nm,res,kap,kapRA,kapRA./res(:,2)},{'species','kap_opt','kapRA_opt','kap_min','kap_max','kap','kapRA','kapRA/kapRA_opt'})
 
 n = size(pars,1); res = NaN(n,4);
 
@@ -53,14 +53,14 @@ if size(pars,2)==4
 end
 
 for i = 1:n
-  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
+  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4);
 
   % max kapRA
-  kap_opt = (2 * k_J * E_Hp * p_M^2)^(1/3)/ p_Am;
+  kap_opt = (2 * p_Jp * p_M^2)^(1/3)/ p_Am;
   kapRA_opt = 1 - kap_opt * 3/ 2;
 
   % min/max kap
-  s_s = k_J * E_Hp * p_M^2/ p_Am^3; % -, supply stress, p_Am = f * s_M * {p_Am}
+  s_s = p_Jp * p_M^2/ p_Am^3; % -, supply stress, p_Am = f * s_M * {p_Am}
   kap0 = sort(roots3([1 -1 0 s_s],3)); kap_min = kap0(1); kap_max = kap0(2);
 
   res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max;
