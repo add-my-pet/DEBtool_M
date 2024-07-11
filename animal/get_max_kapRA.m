@@ -52,16 +52,15 @@ if size(pars,2)==4
   pars = [pars, ones(n,1)];
 end
 
-
 for i = 1:n
-  p_Am = pars(i,1) * pars(i,5); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
+  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
 
   % max kapRA
-  kap_opt = (2 * k_J * E_Hp * p_M^2)^(1/3)/ p_Am/ f;
+  kap_opt = (2 * k_J * E_Hp * p_M^2)^(1/3)/ p_Am;
   kapRA_opt = 1 - kap_opt * 3/ 2;
 
   % min/max kap
-  s_s = k_J * E_Hp * p_M^2/ p_Am^3/ f^3; % -, supply stress
+  s_s = k_J * E_Hp * p_M^2/ p_Am^3; % -, supply stress
   kap0 = sort(roots3([1 -1 0 s_s],3)); kap_min = kap0(1); kap_max = kap0(2);
 
   res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max;
