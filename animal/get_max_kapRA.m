@@ -3,7 +3,7 @@
 
 %%
 function res = get_max_kapRA(pars,f)
-% created 2024/07/09 by Bas Kooijman
+% created 2024/07/09 by Bas Kooijman/Dina Lika
 
 %% Syntax
 % res = <../get_max_kapRA.m *get_max_kapRA*> (par,f) 
@@ -51,14 +51,13 @@ n = size(pars,1); res = NaN(n,5);
 for i = 1:n
   p_Am = pars(i,1); p_M = pars(i,2); k_J = pars(i,3); E_Hp = pars(i,4);
 
-  % find initial estimates
+  % find initial estimates for kap_min and kap_max
   kap = linspace(1e-5,0.99999,100)';
   L_i = kap * f * p_Am/ p_M; % cm
   p_Jp = k_J * E_Hp ./ L_i.^3; % J/d.cm^3
   kapRA = 1 - kap .* (1 + p_Jp/ p_M);
   kap0 = kap(kapRA>0); kap0 = [kap0(1) kap0(end)];
-  kap_opt = spline1(max(kapRA),[kapRA,kap]);
-
+  
   % min/max kap
   try
     kapMin = @(kap,k_J,E_Hp,f,p_Am,p_M) 1/kap - 1 - k_J * E_Hp * p_M^2/ (kap*f*p_Am)^3; 
@@ -69,14 +68,9 @@ for i = 1:n
   end
  
   % max kapRA
-  try
-    kapOpt = @(kap,p_Am,p_M,k_J,E_Hp,f) 1 - 2 * k_J * E_Hp/ (kap*f*p_Am/p_M)^3/ p_M; 
-    [kap_opt, ~, infoOpt] = fzero(@(kap) kapOpt(kap,p_Am,p_M,k_J,E_Hp,f),kap_opt);
-    p_Jp_opt = k_J * E_Hp / (kap_opt * f * p_Am/ p_M)^3;
-    kapRA_opt = 1 - kap_opt * (1 + p_Jp_opt/ p_M);
-  catch
-    infoOpt = 0; kap_opt = NaN; kapRA_opt = NaN;
-  end
-  info = infoMin==1 && infoMax==1 && infoOpt==1;
+  kap_opt = (2 * k_J * E_Hp * p_M^2)^(1/3)/ p_Am/ f;
+  kapRA_opt = 1 - kap_opt * 3/ 2;
+
+  info = infoMin==1 && infoMax==1;
   res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max; res(i,5) = info;
 end
