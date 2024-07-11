@@ -60,7 +60,7 @@ for i = 1:n
   kapRA_opt = 1 - kap_opt * 3/ 2;
 
   % min/max kap
-  s_s = k_J * E_Hp * p_M^2/ p_Am^3; % -, supply stress
+  s_s = k_J * E_Hp * p_M^2/ p_Am^3; % -, supply stress, p_Am = f * s_M * {p_Am}
   kap0 = sort(roots3([1 -1 0 s_s],3)); kap_min = kap0(1); kap_max = kap0(2);
 
   res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max;
