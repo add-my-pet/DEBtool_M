@@ -67,5 +67,5 @@ for i = 1:n
   kap_opt = (2 * s_s)^(1/3);
   kapRA_opt = 1 - kap_opt * 3/ 2;
 
-  res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max;
+  res(i,1) = kap_opt; res(i,2) = kapRA_opt; res(i,3) = kap_min; res(i,4) = kap_max; res(i,5) = s_s;
 end
