@@ -27,12 +27,13 @@ function res = get_max_kapRA(pars,f)
 %
 % Output:
 % 
-% * res: (n,4)-matrix with 
+% * res: (n,5)-matrix with 
 %
 %    - kap_opt: value of kap that maximizes kapRA
 %    - kapRA_opt: max value of kapRA
 %    - kap_min: minimum value for kap for which kapRA > 0
 %    - kap_max: maximum value for kap for which kapRA > 0
+%    - s_s: supply stress
 
 %% Remarks
 % Assumes p_T = 0 
@@ -54,8 +55,7 @@ end
 
 for i = 1:n
   p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4);
-
-
+  
   % min/max kap
   s_s = p_Jp * p_M^2/ p_Am^3; % -, supply stress, 
   % p_Am: f * s_M * {p_Am}; J/d.cm^2
