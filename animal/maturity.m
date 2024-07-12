@@ -65,6 +65,7 @@ function [H, a, info] = maturity(L, f, p)
   end
 
   % first find times since birth for L, then integrate [L, U_H] in time
+  % allow to integrate past puberty, but clip in trajectory
   if n > n_0b % post-embryo values
     L_i = f * L_m - L_T; L_b = l_b * L_m; r_B = k_M/ 3/ (1 + f/ g);
     L_bi = L(n_0b+1:n); t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
