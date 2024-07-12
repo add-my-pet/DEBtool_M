@@ -1,5 +1,5 @@
 %% maturity
-% calculates the scaled maturity
+% calculates the scaled maturity from structural length at constant food
 
 %%
 function [H, a, info] = maturity(L, f, p)
@@ -20,7 +20,7 @@ function [H, a, info] = maturity(L, f, p)
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/{J_EAm} = E_H/{p_Am}
-  % * a: n-vector with ages at which lengths are reached
+  % * a: n-vector with ages at which lengths (and maturities) are reached
   % * info: boolean for success (1) or failure (0)
   
   %% Remarks
@@ -49,15 +49,15 @@ function [H, a, info] = maturity(L, f, p)
 
   L_m = v/ k_M/ g; l_T = L_T/ L_m; k = k_J/ k_M; L = L(:); l = L/ L_m; n = length(L); 
 
-  u_Hb = H_b * g^2 * k_M^3/ (v^2); v_Hb = u_Hb/ (1 - kap);
-  u_Hp = H_p * g^2 * k_M^3/ (v^2); v_Hp = u_Hp/ (1 - kap);
+  u_Hb = H_b * g^2 * k_M^3/ (v^2); v_Hb = u_Hb/ (1 - kap); % -, scaled maturity at birth
+  u_Hp = H_p * g^2 * k_M^3/ (v^2); v_Hp = u_Hp/ (1 - kap); % -, scaled maturity at puberty
   [tau_p, tau_b, l_p, l_b, info] = get_tp([g, k, l_T, v_Hb, v_Hp], f);
   n_0b = sum(l<l_b); % number of embryo lengths
   a_0b = []; H_0b = []; a_bi = []; H_bi = []; % initiate values for a and H
   options = odeset('RelTol',1e-6, 'AbsTol',1e-6); 
   
   % integrate [l, u_E, u_H] in time and find u_H via spline-interpolation in the trajectory
-  if n_0b>0 % embryo values
+  if n_0b > 0 % embryo values
     u_E0 = get_ue0([g, k, v_Hb], f); L_0b = L(1:n_0b);
     [tau, luEuH] = ode45(@dget_luEuH, [0;tau_b], [1e-6;u_E0;1e-6], options, kap, g, k);
     a = tau/ k_M; La = L_m * luEuH(:,1); H = luEuH(:,3)*v^2/g^2/k_M^3;
@@ -68,7 +68,7 @@ function [H, a, info] = maturity(L, f, p)
   if n > n_0b % post-embryo values
     L_i = f * L_m - L_T; L_b = l_b * L_m; r_B = k_M/ 3/ (1 + f/ g);
     L_bi = L(n_0b+1:n); t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
-    [t, LH] = ode45(@dget_LH,[-1e-8;t_bi],[L_b;H_b],options,f, kap, k_M, v, g, k_J);
+    [t, LH] = ode45(@dget_LH,[-1e-8;t_bi],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
     t(1) = []; LH(1,:) = []; a_bi = tau_b/ k_M + t; H_bi = min(H_p,LH(:,2));
   end
   
@@ -79,33 +79,34 @@ end
 % subfunctions
 function dluEuH = dget_luEuH(tau, luEuH, kap, g, k)
   % tau: a k_M; scaled age
-  % luEuH: 3-vector with (l, uE, uH) 
-  %   scalar with scaled length  l = L g k_M/ v
-  %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
-  %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
-  % dluEuH: 3-vector with (dl/dtau, duE/dtau, duH/dtau)
+  % luEuH: 3-vector with (l, u_E, u_H) 
+  %   l = L g k_M/ v; scaled length
+  %   u_E = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
+  %   u_H = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
+  % dluEuH: 3-vector with (dl/dtau, du_E/dtau, du_H/dtau)
   
   l = luEuH(1); l2 = l * l; l3 = l2 * l; % scaled length
-  uE = max(1e-10,luEuH(2)); % scaled reserve
-  uH = luEuH(3); % scaled maturity
+  u_E = max(1e-10,luEuH(2)); % scaled reserve
+  u_H = luEuH(3); % scaled maturity
   
-    r = (g * uE/ l - l3)/ (uE + l3); % spec growth rate in scaled time
-    dl = l * r/ 3;
-    duE =  - uE * (g/ l - r);
-    duH = (1 - kap) * uE * (g/ l - r) - k * uH;
+  r = (g * u_E/ l - l3)/ (u_E + l3); % -,spec growth rate in scaled time
+  dl = l * r/ 3;
+  du_E =  - u_E * (g/ l - r);
+  du_H = (1 - kap) * u_E * (g/ l - r) - k * u_H;
 
-  dluEuH = [dl; duE; duH]; % pack output
+  dluEuH = [dl; du_E; du_H]; % pack output
 end
 
-function dLH = dget_LH(t, LH, f, kap, k_M, v, g, k_J)
+function dLH = dget_LH(t, LH, f, kap, v, g, k_M, k_J)
   % t: time since birth
   % LH: 2-vector with (L, H) 
   % dLH: 2-vector with (dL/dt, dH/dt)
   
-  L = LH(1); H = LH(2);
+  L = LH(1); % cm, structural length
+  H = LH(2); % d.cm^2, scaled maturity
   r = (f * v/ L - g * k_M)/ (f + g); % 1/d, spec growth rate in real time
   dL = r * L/ 3; % cm/d
-  pCpAm = f * L^2 * (1 - L * r/ v); % cm^2, p_C/ {p_Am}
+  pCpAm = f * L^2 * (1 - L * r/ v);  % cm^2, p_C/ {p_Am}
   dH =  (1 - kap) * pCpAm - k_J * H; % cm, d/dt E_H/{p_Am}
   
   dLH = [dL; dH]; % pack output
