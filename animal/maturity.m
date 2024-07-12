@@ -3,7 +3,7 @@
 
 %%
 function [H, a, info] = maturity(L, f, p)
-  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03, 2019/06/01
+  %  created 2024/07/12 by Bas Kooijman
   
   %% Syntax
   % [H, a, info] = <../maturity.m *maturity*> (L, f, p)
