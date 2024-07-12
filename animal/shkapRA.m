@@ -1,4 +1,4 @@
-%% get_max_kapRA
+%% shkapRA
 % plots reprod investment as fraction of assimilation at ultimate size as function of kap
 
 %%
@@ -11,16 +11,18 @@ function res = shkapRA(pars,f)
 %% Description
 % Plots reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^infty/p_A^\infty
 % It also gives the min value for kap for positive reproduction and 
-% the value for kap at which the max is reached
+% the value for kap at which the max is reached and the current value of (kap,kapRA)
 %
 % Input:
 % 
-% * pars: 4-vector with parameters:
+% * pars: 6-vector with parameters:
 % 
 %    - p_Am, J/d.cm^2, spec assim rate (after accelleration)
 %    - p_M, J/d.cm^3, spec som maint rate
 %    - k_J, 1/d, maturity maint rate coeff
 %    - E_Hp, J, maturity at puberty
+%    - s_M, -, , acceleration factor
+%    - kappa, -, allocation fraction to soma
 %
 % * f: optional scalar with scaled functionsl response (default 1)
 %
@@ -46,18 +48,25 @@ if ~exist('f','var') || isempty(f)
 end
 
   p_Am = pars(1); % J/d.cm^2
-  p_M  = pars(2);  % J/d.cm^3
-  k_J  = pars(3);  % 1/d
+  p_M  = pars(2); % J/d.cm^3
+  k_J  = pars(3); % 1/d
   E_Hp = pars(4); % J
+  s_M  = pars(5); % -
+  kap  = pars(6); % -
 
 
   res = get_max_kapRA(pars,f);
   kap_opt = res(1); kapRA_opt = res(2); % kap_min = res(3); kap_max = res(4);
 
+% data point (kap,kapRA)
+L_i = kap * f * s_M * p_Am/ p_M; % cm
+p_Jp = k_J * E_Hp ./ L_i^3; % J/d.cm^3
+kapRA = 1 - kap * (1 + p_Jp/ p_M);
+kap_kapRA = [kap, kapRA];
 
-% prepare for plotting
+% curve (kap,kapRA)
 kap = linspace(1e-3,0.9999,500)';
-L_i = kap * f * p_Am/ p_M; % cm
+L_i = kap * f * s_M * p_Am/ p_M; % cm
 p_Jp = k_J * E_Hp ./ L_i.^3; % J/d.cm^3
 kapRA = 1 - kap .* (1 + p_Jp/ p_M);
 
@@ -72,4 +81,5 @@ hold on
 plot([kap_opt;kap_opt], [0;kapRA_opt],'r', 'linewidth',2)
 plot([0;kap_opt], [kapRA_opt;kapRA_opt],'r', 'linewidth',2)
 plot([0;1], [1,0], ':b', 'linewidth',2)
+plot(kap_kapRA(1), kap_kapRA(2), 'om', 'markersize', 8)
 

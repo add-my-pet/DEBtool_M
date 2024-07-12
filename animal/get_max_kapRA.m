@@ -17,8 +17,8 @@ function res = get_max_kapRA(pars,f)
 % 
 % * pars: (n,4)-matrix with parameters in columns:
 % 
-%    - p_Am, J/d.cm^2, spec assim rate (before accelleration)
-%    - p_M, J/d.cm^3, spec som maint rate
+%    - p_Am, J/d.cm^2, spec assim rate (before accelleration): f * s_M * {p_Am}
+%    - p_M, J/d.cm^3, spec som maint rate: [p_M]
 %    - k_J, 1/d, maturity maint rate coeff
 %    - E_Hp, J, maturity at puberty
 %    - s_M, -, acceleration factor (optional, default 1)
@@ -57,10 +57,7 @@ for i = 1:n
   p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4);
   
   % min/max kap
-  s_s = p_Jp * p_M^2/ p_Am^3; % -, supply stress, 
-  % p_Am: f * s_M * {p_Am}; J/d.cm^2
-  % p_Jp: k_J * E_Hp; J/d
-  % p_M:  [p_M]; J/d.cm^3
+  s_s = p_Jp * p_M^2/ p_Am^3; % -, supply stress;  p_Jp: k_J * E_Hp; J/d
   kap0 = sort(roots3([1 -1 0 s_s],3)); kap_min = kap0(1); kap_max = kap0(2);
   
   % max kapRA
