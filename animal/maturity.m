@@ -70,6 +70,7 @@ function [H, a, info] = maturity(L, f, p)
     L_i = f * L_m - L_T; L_b = l_b * L_m; r_B = k_M/ 3/ (1 + f/ g);
     L_bi = L(n_0b+1:n); t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
     [t, LH] = ode45(@dget_LH,[-1e-8;t_bi],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
+    if length(t_bi)==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_bi = tau_b/ k_M + t; H_bi = min(H_p,LH(:,2));
   end
   
