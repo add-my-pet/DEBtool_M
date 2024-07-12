@@ -1,12 +1,12 @@
-%% maturity
+%% maturity_former
 % calculates the scaled maturity
 
 %%
-function [H, a, info] = maturity_old(L, f, p)
-  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03
+function [H, a, info] = maturity_former(L, f, p)
+  %  created 2006/09/29 by Bas Kooijman, modified 2014/03/03, 2019/06/01
   
   %% Syntax
-  % [H, a, info] = <../maturity_old.m *maturity*> (L, f, p)
+  % [H, a, info] = <../maturity_former.m *maturity_former*> (L, f, p)
   
   %% Description
   % calculates the scaled maturity UH = MH/ {JEAm} at constant food density. 
@@ -14,19 +14,19 @@ function [H, a, info] = maturity_old(L, f, p)
   % Input
   %
   % * L: n-vector with length, ordered from small to large 
+  % * f: scalar with (constant) scaled functional response
   % * p: 9-vector with parameters (see below)
-  % * F: scalar with (constant) scaled functional response
   %
   % Output
   %
   % * H: n-vector with scaled maturities: H = M_H/ {J_EAm}
+  % * a: n-vactor with ages at which lengths are reached
   % * info: scalar for 1 for success, 0 otherwise
   
   %% Remarks
   %  called by DEBtool/tox/*rep and DEBtool/animal/scaled_power
   % See <maturity_j.html *maturity_j*> for type M accleration and
   % <maturity_s.html *maturity_s*> for delayed type M acceleration.
-  % obsolate function, which is replace by maturity
   
   %% Example of use
   %  [H, a, info] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])
@@ -48,44 +48,38 @@ function [H, a, info] = maturity_old(L, f, p)
   end
 
   Lm = v/ kM/ g; lT = LT/ Lm; k = kJ/ kM;
-  
+  l = L(:)/ Lm; n = sum(l == 1); 
+  if n > 0
+    l(l == l) = l(l == l) - fliplr(1:n) * 1e-4;% -, scaled lengths 
+  end
+
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
   uHp = Hp * g^2 * kM^3/ (v^2); vHp = uHp/ (1 - kap);
-  [tp, tb, lp, lb, info] = get_tp([g; k; lT; vHb; vHp], f);
-  Lp = Lm * lp; 
-  
-  H = Hp * (L >= Lp); a = tp * (L > Lp)/ kM; % prefill output for adults
-  
-  n_mat = sum(L < Lp); % number of embryo and juvenile values: H < Hp
-  if  n_mat == 0 % all adult lengths
-    return
-  else % some embryo and juvenile values
-    L = L(L< Lp); % select embryo and juvenile values
-    ue0 = get_ue0([g; k; vHb], f, lb); %% initial scaled reserve M_E^0/{J_EAm}
-    [l_out, teh] = ode45(@dget_teh, [-1e-6; L(1)/ 2; L(:)]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lT);
-    teh(1:2,:) = []; % remove added L values
-    H(1:n_mat) = teh(:,3) * v^2/ g^2/ kM^3; 
-    a(1:n_mat) = teh(:,1)/ kM;
+  [uE0, lb, info] = get_ue0([g, k, vHb], f);
+
+  options = odeset('Events', @event_length); 
+  [t, luEuH, t_l, luEuH_l, event_l] = ode23(@dget_luEuH, [0; 1e20], [1e-10; uE0; 0], options, l, f, kap, g, k, lT, uHb, uHp);
+  if length(t) < length(l)
+    event_l = [1; event_l]; t_l = [0; t_l]; luEuH_l = [[0, uE0, 0]; luEuH_l];
   end
+  [l, in] = unique(event_l); a = t_l(in)/ kM; H = luEuH_l(in,3) * v^2/ g^2/ kM^3; 
 
 end
 
 % subfunctions
-function dtEH = dget_teh(l, tEH, k, g, kap, f, uHb, uHp, lT)
-  % dtEH = dget_teh(l, tEH)
-  % l: scalar with scaled length  l = L g k_M/ v
-  % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
-  %   tau = a k_M; scaled age
+function dluEuH = dget_luEuH(tau, luEuH, l, f, kap, g, k, lT, uHb, uHp)
+
+  % tau: a k_M; scaled age
+  % luEuH: 3-vector with (l, uE, uH) 
+  %   scalar with scaled length  l = L g k_M/ v
   %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
   %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
-  % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
-  % called by maturity
+  % dluEuH: 3-vector with (dl/dtau, duE/dtau, duH/dtau)
   
-  t = tEH(1); % scaled age
-  uE = max(1e-10,tEH(2)); % scaled reserve
-  uH = tEH(3); % scaled maturity
-  l2 = l * l; l3 = l2 * l;
-
+  l = luEuH(1); l2 = l * l; l3 = l2 * l; % scaled length
+  uE = max(1e-10,luEuH(2)); % scaled reserve
+  uH = luEuH(3); % scaled maturity
+  
   if uH < uHb % isomorphic embryo
     r = (g * uE/ l - l3)/ (uE + l3); % spec growth rate in scaled time
     dl = l * r/ 3;
@@ -103,6 +97,13 @@ function dtEH = dget_teh(l, tEH, k, g, kap, f, uHb, uHp, lT)
     duH = 0; % no maturation in adults
   end
 
-  % then obtain dt/dl, duE/dl, duH/dl, 
-  dtEH = [1; duE; duH]/ dl;
+  dluEuH = [dl; duE; duH]; % pack output
+end
+
+function [value,isterminal,direction] = event_length(t, luEuH, l, f, kap, g, k, lT, uHb, uHp)
+  % luEuH: 3-vector with [l; uE; uH]
+  n = length(l);
+  value = l - luEuH(1);
+  isterminal = zeros(n,1); isterminal(n) = 1;
+  direction = zeros(n,1); 
 end
