@@ -69,7 +69,8 @@ function [H, a, info] = maturity(L, f, p)
   % allow to integrate past puberty, but clip in trajectory
   if n_bi > 0 % post-embryo values
     L_i = f * L_m - L_T; r_B = k_M/ 3/ (1 + f/ g);
-    t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
+    t_bi = min(1e6,log((L_i - L_b) ./ (L_i - L_bi))/ r_B);
+    if n_bi>1; for i=2:n_bi; if t_bi(i)<=t_bi(i-1); t_bi(i)=t_bi(i-1)+1e-8; end; end; end
     [t, LH] = ode45(@dget_LH_bi,[-1e-8;t_bi],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
     if n_bi==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_bi = tau_b/ k_M + t; H_bi = min(H_p,LH(:,2));
