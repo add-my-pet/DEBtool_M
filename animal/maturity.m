@@ -32,7 +32,7 @@ function [H, a, info] = maturity(L, f, p)
   %  [H, a] = maturity(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, 2])
 
   % unpack parameters
-  kap = p(1); % -, fraction allocated to growth + som maint
+  kap = p(1);  % -, fraction allocated to growth + som maint
   %kap_R = p(2);% -, fraction of reprod flux that is fixed in embryo reserve 
   g   = p(3);  % -, energy investment ratio
   k_J = p(4);  % 1/d, maturity maint rate coeff
@@ -43,16 +43,17 @@ function [H, a, info] = maturity(L, f, p)
   H_p = p(9);  % d cm^2, scaled maturity at puberty
   % kap_R is not used, but kept for consistency with iget_pars_r, reprod_rate
   
-  if ~exist('f','var') || isempty(f)
+  if isempty(f)
     f = 1; % abundant food
   end
 
-  L_m = v/ k_M/ g; l_T = L_T/ L_m; k = k_J/ k_M; L = L(:); l = L/ L_m; n = length(L); 
+  L_m = v/ k_M/ g; l_T = L_T/ L_m; k = k_J/ k_M; L = L(:); 
 
-  u_Hb = H_b * g^2 * k_M^3/ (v^2); v_Hb = u_Hb/ (1 - kap); % -, scaled maturity at birth
-  u_Hp = H_p * g^2 * k_M^3/ (v^2); v_Hp = u_Hp/ (1 - kap); % -, scaled maturity at puberty
+  u_Hb = H_b * g^2 * k_M^3/ v^2; v_Hb = u_Hb/ (1 - kap); % -, scaled maturity at birth
+  u_Hp = H_p * g^2 * k_M^3/ v^2; v_Hp = u_Hp/ (1 - kap); % -, scaled maturity at puberty
   [tau_p, tau_b, l_p, l_b, info] = get_tp([g, k, l_T, v_Hb, v_Hp], f);
-  n_0b = sum(l<l_b); % number of embryo lengths
+  L_b = L_m * l_b; L_0b = L(L<=L_b); L_bi = L(L>L_b);
+  n_0b = length(L_0b); n_bi = length(L_bi); % number of embryo and post-embryo lengths
   a_0b = []; H_0b = []; a_bi = []; H_bi = []; % initiate values for a and H
   options = odeset('RelTol',1e-6, 'AbsTol',1e-6); 
   
@@ -66,11 +67,11 @@ function [H, a, info] = maturity(L, f, p)
 
   % first find times since birth for L, then integrate [L, U_H] in time
   % allow to integrate past puberty, but clip in trajectory
-  if n > n_0b % post-embryo values
-    L_i = f * L_m - L_T; L_b = l_b * L_m; r_B = k_M/ 3/ (1 + f/ g);
-    L_bi = L(n_0b+1:n); t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
-    [t, LH] = ode45(@dget_LH,[-1e-8;t_bi],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
-    if length(t_bi)==1; t = t([1 end]); LH = LH([1 end],:); end
+  if n_bi > 0 % post-embryo values
+    L_i = f * L_m - L_T; r_B = k_M/ 3/ (1 + f/ g);
+    t_bi = log((L_i - L_b)./ (L_i - L_bi))/ r_B;
+    [t, LH] = ode45(@dget_LH_bi,[-1e-8;t_bi],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
+    if n_bi==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_bi = tau_b/ k_M + t; H_bi = min(H_p,LH(:,2));
   end
   
@@ -99,7 +100,7 @@ function dluEuH = dget_luEuH(tau, luEuH, kap, g, k)
   dluEuH = [dl; du_E; du_H]; % pack output
 end
 
-function dLH = dget_LH(t, LH, f, kap, v, g, k_M, k_J)
+function dLH = dget_LH_bi(t, LH, f, kap, v, g, k_M, k_J)
   % t: time since birth
   % LH: 2-vector with (L, H) 
   % dLH: 2-vector with (dL/dt, dH/dt)
