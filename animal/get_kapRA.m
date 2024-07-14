@@ -9,7 +9,7 @@ function res = get_kapRA(pars,f)
 % res = <../get_kapRA.m *get_kapRA*> (par,f) 
 
 %% Description
-% get reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^infty/p_A^\infty
+% get reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^\infty/ p_A^\infty
 %
 % Input:
 % 

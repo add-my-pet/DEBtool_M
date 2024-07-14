@@ -913,11 +913,11 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       end
     case 'sbp' % no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
-      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i + 1e-8], f, pars_power, l_b, l_p); 
+      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_p + 1e-8], f, pars_power, l_b, l_p); 
       p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
     case 'abp'% no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
-      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
+      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_p + 1e-8], f, pars_power, l_b, l_j, l_p);
       p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
     case 'abj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];  
