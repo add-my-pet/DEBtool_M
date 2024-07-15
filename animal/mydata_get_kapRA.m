@@ -5,5 +5,6 @@ res = get_kapRA(pars); kapRA = res(:,1);
 pRA = read_stat(nm,{'p_Ri','p_Ai'}); kapRA_al = pRA(:,1)./pRA(:,2); 
 MRE = (kapRA - kapRA_al).^2./kapRA.^2;
 sel = MRE>0.05; model = read_stat(nm(sel),'model');
-prt_tab({nm(sel),kapRA(sel),kapRA_al(sel),MRE(sel),model},{'species','kapRA','kapRA allStat','MRE','model'})
+nm = nm(sel); kapRA = kapRA(sel); kapRA_al = kapRA_al(sel); MRE(sel) = MRE; model = read_stat(nm,'model');
+prt_tab({nm,kapRA,kapRA_al,MRE,model},{'species','kapRA','kapRA allStat','MRE','model'})
 

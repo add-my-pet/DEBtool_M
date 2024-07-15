@@ -76,7 +76,7 @@ function [H, a, info] = maturity_j(L, f, p)
     t_bj = log(L_bj./ L_b)*3/ r_j;
     [t, LH] = ode45(@dget_LH_bj,[-1e-8;t_bj],[L_b;H_b],options,f, L_b, kap, v, g, k_M, k_J);
     if n_bj==1; t = t([1 end]); LH = LH([1 end],:); end
-    t(1) = []; LH(1,:) = []; a_bj = tau_b/ k_M + t; 
+    t(1) = []; LH(1,:) = []; a_bj = tau_b/ k_M + t; H_bj = LH(:,2);
   end
   
   % first find times since acceleration for L, then integrate [L, U_H] in time
