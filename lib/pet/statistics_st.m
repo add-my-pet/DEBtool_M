@@ -917,7 +917,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       p_ACSJGRD(3,5) = 0; % p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); 
     case 'abp'% no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
-      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_p + 1e-8], f, pars_power, l_b, l_p, l_p + 1e-8);
+      p_ACSJGRD = p_ref * scaled_power_abp([L_b + 1e-6; L_p], f, pars_power, l_b, l_p);
       p_ACSJGRD(3,5) = 0; % p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); 
     case 'abj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];  
