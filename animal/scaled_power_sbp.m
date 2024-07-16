@@ -60,7 +60,7 @@ function pACSJGRD = scaled_power_sbp(L, f, p, lb, lp)
     kapR = kapR * (l > lp);
   end
 
-  H = min(U_Hp, maturity_j(L, f, p));  % d.cm^2, scaled maturities E_H/ {p_Am}
+  H = min(U_Hp, maturity(L, f, p));  % d.cm^2, scaled maturities E_H/ {p_Am}
   uH = H *  g^2 * kM^3/ v^2; % -
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
