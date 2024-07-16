@@ -21,6 +21,7 @@ function res = get_kapRA(pars,f)
 %    - E_Hp, J, maturity at puberty
 %    - s_M, -, acceleration factor
 %    - kap, -, allocation fraction to soma
+%    - L_i, cm, ultimate structural length
 %
 % * f: optional scalar with scaled functionsl response (default 1)
 %
@@ -36,7 +37,7 @@ function res = get_kapRA(pars,f)
 % Assumes p_T = 0 
 
 %% Example of use
-% nm = select('Daphnia'); res = get_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp','s_M','kap'}));
+% nm = select('Daphnia'); res = get_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp','s_M','kap','L_i'}));
 % prt_tab({nm,res},{'species','kapRA','p_Ri','p_Ai'})
 
 n = size(pars,1); res = NaN(n,3);
@@ -45,14 +46,9 @@ if ~exist('f','var') || isempty(f)
   f = 1; % -
 end
 
-if size(pars,2)==4 
-  pars = [pars, ones(n,1)];
-end
-
 for i = 1:n
-  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4); kap = pars(i,6);
+  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4); kap = pars(i,6); L_i = pars(i,7);
     
-  L_i = kap * p_Am/ p_M;
   p_Ai = p_Am * L_i^2;
   p_Ri = (1 - kap) * p_Ai - p_Jp;
   kapRA = p_Ri/ p_Ai;

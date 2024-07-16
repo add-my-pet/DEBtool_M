@@ -71,8 +71,8 @@ function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
     sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
 
-  H = maturity_j(L, f, p);  % scaled maturities E_H/ {p_Am}
-  uH = H *  g^2 * kM^3/ v^2;
+  H = maturity_j(L, f, p);  % d.cm^2, scaled maturities E_H/ {p_Am}
+  uH = H *  g^2 * kM^3/ v^2; % -
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
   pA = assim * f .* sM .* l.^2;              % assim
