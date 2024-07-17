@@ -60,8 +60,7 @@ function pACSJGRD = scaled_power_hex(L, f, p, lb, lj, le, tj)
     sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
   
-  pars_maturity_hex = [kap kapV g kJ kM v U_Hb U_He];  
-  H = maturity_hex(L, f, pars_maturity_hex, lb, lj, le);  % scaled maturities E_H/ {p_Am}
+  H = maturity_hex(L, f, p, lb, lj, le);  % scaled maturities E_H/ {p_Am}
   uH = ones(length(L),1) .* H * g^2 * kM^3/ v^2;
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2

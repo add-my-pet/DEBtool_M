@@ -42,7 +42,7 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   % Called from scaled_power_hax.
 
   %% Example of use
-  % [H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])
+  % [H, a, info] = maturity_hax(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])
  
   % unpack parameters
   kap  = p(1);  % -, fraction allocated to growth + som maint
@@ -52,9 +52,9 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   kJ   = p(5);  % 1/d, maturity maint rate coeff
   kM   = p(6);  % 1/d, somatic maint rate coeff
   v    = p(7);  % cm/d, energy conductance
-  U_Hb = p(8);  % d cm^2, scaled maturity at birth
-  U_Hp = p(9);  % d cm^2, scaled maturity at puberty
-  U_He = p(10);  % d cm^2, scaled maturity at emergence
+  Hb = p(8);  % d cm^2, scaled maturity at birth
+  Hp = p(9);  % d cm^2, scaled maturity at puberty
+  He = p(10); % d cm^2, scaled maturity at emergence
     
   if isempty(f)
     f = 1; % abundant food

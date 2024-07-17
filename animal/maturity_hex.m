@@ -51,8 +51,8 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   kJ   = p(5);  % 1/d, maturity maint rate coeff
   kM   = p(6);  % 1/d, somatic maint rate coeff
   v    = p(7);  % cm/d, energy conductance
-  U_Hb = p(8);  % d cm^2, scaled maturity at birth
-  U_He = p(9);  % d cm^2, scaled maturity at emergence
+  Hb = p(8);  % d cm^2, scaled maturity at birth
+  He = p(9);  % d cm^2, scaled maturity at emergence
     
   if isempty('f')
     f = 1; % abundant food

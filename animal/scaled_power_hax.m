@@ -62,8 +62,7 @@ function pACSJGRD = scaled_power_hax(L, f, p, lb, lp, lj, le, tj)
     sM = min(lp, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
 
-  pars_maturity_hax = [kap kapV g kJ kM v U_Hb U_Hp U_He]; 
-  H = maturity_hax(L, f, pars_maturity_hax, lb, lp, lj, le, tj);  % scaled maturities E_H/ {p_Am}
+  H = maturity_hax(L, f, p, lb, lp, lj, le, tj);  % scaled maturities E_H/ {p_Am}
   %uH = ones(length(L),1) .* H * g^2 * kM^3/ v^2;
   uH = H * g^2 * kM^3/ v^2;
 
