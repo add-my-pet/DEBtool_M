@@ -22,7 +22,7 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   %
   % * L: n-vector with length 
   % * f: scalar with (constant) scaled functional response
-  % * p: 10-vector with parameters: kap kapV g kJ kM v UHb UHp UHe
+  % * p: 10-vector with parameters: kap kapV kapR g kJ kM v UHb UHp UHe
   % * lb: scaled length at birth at f
   % * lp: scaled length at pupation at f
   % * lj: scaled length at metm at f
@@ -47,13 +47,14 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   % unpack parameters
   kap  = p(1);  % -, fraction allocated to growth + som maint
   kapV = p(2);  % -, conversion efficiency from larval reserve to larval structure, back to imago reserve
-  g    = p(3);  % -, energy investment ratio
-  kJ   = p(4);  % 1/d, maturity maint rate coeff
-  kM   = p(5);  % 1/d, somatic maint rate coeff
-  v    = p(6);  % cm/d, energy conductance
-  Hb   = p(7);  % d cm^2, E_Hb/ {p_Am}, scaled maturity at birth
-  Hp   = p(8);  % d cm^2, E_Hp/ {p_Am}, scaled maturity at puberty
-  He   = p(9);  % d cm^2, E_He/ {p_Am}, scaled maturity at emergence
+  kapR = p(3);  % -, reproduction efficiency from reserve to eggs
+  g    = p(4);  % -, energy investment ratio
+  kJ   = p(5);  % 1/d, maturity maint rate coeff
+  kM   = p(6);  % 1/d, somatic maint rate coeff
+  v    = p(7);  % cm/d, energy conductance
+  U_Hb = p(8);  % d cm^2, scaled maturity at birth
+  U_Hp = p(9);  % d cm^2, scaled maturity at puberty
+  U_He = p(10);  % d cm^2, scaled maturity at emergence
     
   if isempty(f)
     f = 1; % abundant food

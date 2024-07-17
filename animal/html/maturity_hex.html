@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>maturity_hex</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="maturity_hex.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>maturity_hex</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-07-17"><meta name="DC.source" content="maturity_hex.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -51,12 +52,22 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>maturity_hex</h1><!--introduction--><p>Gets maturity as function of length for model hex</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>[H, a, info] = <a href="../maturity_hex.m"><b>maturity_hex</b></a> (L, f, p, lb, lj, le)</p><h2>Description<a name="4"></a></h2><p>Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of  acceleration between UHb and UHj, pupa between UHj and UHe, (non-growing) imago after UHe, with UHb &lt; UHj &lt; UHe. Lengths must be ordered in time (so a single stepdown from L_j to 0 at j. Lengths are in the pupal stage if an earlier length was larger. So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase),  but the last 3 in [.3 .2 .3 .8] are in the pupal stage, because they follow a larger length.</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with (constant) scaled functional response</li><li>p: 10-vector with parameters: kap kapV g kJ kM v UHb UHe</li><li>lb: scaled length at birth at f</li><li>lj: scaled length at pupation at f</li><li>le: scaled length at emergence at f</li><li>tj: scalar with scaled age at pupation for f</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Maturity in the larval stage (between birth and pupation) stays at birth level. Maturity and structure are reset to zero at pupation and freeze are emergence of the imago. See <a href="maturity.html"><b>maturity</b></a> in absence of acceleration and <a href="maturity_j.html"><b>maturity_j</b></a> with accleration, <a href="maturity_s.html"><b>maturity_s</b></a> if accleration is delayed. Called from scaled_power_hex.</p><h2>Example of use<a name="6"></a></h2><p>[H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])</p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maturity_hex</h1><!--introduction--><p>Gets maturity as function of length for model hex</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[H, a, info] = <a href="../maturity_hex.m"><b>maturity_hex</b></a> (L, f, p, lb, lj, le)</p><h2 id="4">Description</h2><p>Life history events b (birth), j (pupation), e (emergence); puberty coincides with birth Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of  acceleration between  b and j, pupa between j and e, (non-growing) imago after e, with UHb &lt; UHj. Lengths must be ordered in time (so a single stepdown from L_j to 0 at j. Lengths are in the pupal stage if an earlier length was larger. So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase),  but the last 3 in [.3 .2 .3 .8] are in the pupal stage, because they follow a larger length.</p><p>Input</p><div><ul><li>L: n-vector with length</li><li>f: scalar with (constant) scaled functional response</li><li>p: 9-vector with parameters: kap kapV kapR g kJ kM v UHb UHe</li><li>lb: scaled length at birth at f</li><li>lj: scaled length at pupation at f</li><li>le: scaled length at emergence at f</li><li>tj: scalar with scaled age at pupation for f</li></ul></div><p>Output</p><div><ul><li>H: n-vector with scaled maturities: H = M_H/ {J_EAm} = E_H/ {p_Am}</li><li>info: scalar for 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>Maturity in the larval stage (between birth and pupation) stays at birth level. Maturity and structure are reset to zero at pupation and freeze are emergence of the imago. See <a href="maturity.html"><b>maturity</b></a> in absence of acceleration and <a href="maturity_j.html"><b>maturity_j</b></a> with accleration, <a href="maturity_s.html"><b>maturity_s</b></a> if accleration is delayed. Called from scaled_power_hex.</p><h2 id="6">Example of use</h2><p>[H, a, info] = maturity_hex(.4, 1, [.8,.95, .2, .002, .01, 0, .02, .2, .4, 2])</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% maturity_hex
 % Gets maturity as function of length for model hex
@@ -69,8 +80,9 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   % [H, a, info] = <../maturity_hex.m *maturity_hex*> (L, f, p, lb, lj, le)
   
   %% Description
+  % Life history events b (birth), j (pupation), e (emergence); puberty coincides with birth
   % Calculates the scaled maturity UH = MH/ {JEAm} at constant food density in the case of 
-  %  acceleration between UHb and UHj, pupa between UHj and UHe, (non-growing) imago after UHe, with UHb < UHj < UHe.
+  %  acceleration between  b and j, pupa between j and e, (non-growing) imago after e, with UHb < UHj.
   % Lengths must be ordered in time (so a single stepdown from L_j to 0 at j.
   % Lengths are in the pupal stage if an earlier length was larger. 
   % So [.2 .3 .8] are lengths in the egg or larva stage (before pupation, because they only increase), 
@@ -80,7 +92,7 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   %
   % * L: n-vector with length 
   % * f: scalar with (constant) scaled functional response
-  % * p: 10-vector with parameters: kap kapV g kJ kM v UHb UHe
+  % * p: 9-vector with parameters: kap kapV kapR g kJ kM v UHb UHe
   % * lb: scaled length at birth at f
   % * lj: scaled length at pupation at f
   % * le: scaled length at emergence at f
@@ -105,14 +117,15 @@ function [H, info] = maturity_hex(L, f, p, lb, lj, le)
   % unpack parameters
   kap  = p(1);  % -, fraction allocated to growth + som maint
   kapV = p(2);  % -, conversion efficiency from larval reserve to larval structure, back to imago reserve
-  g    = p(3);  % -, energy investment ratio
-  kJ   = p(4);  % 1/d, maturity maint rate coeff
-  kM   = p(5);  % 1/d, somatic maint rate coeff
-  v    = p(6);  % cm/d, energy conductance
-  Hb   = p(7);  % d cm^2, E_Hb/ {p_Am}, scaled maturity at birth
-  He   = p(8);  % d cm^2, E_He/ {p_Am}, scaled maturity at emergence
+  kapR = p(3);  % -, reproduction efficiency from reserve to eggs
+  g    = p(4);  % -, energy investment ratio
+  kJ   = p(5);  % 1/d, maturity maint rate coeff
+  kM   = p(6);  % 1/d, somatic maint rate coeff
+  v    = p(7);  % cm/d, energy conductance
+  U_Hb = p(8);  % d cm^2, scaled maturity at birth
+  U_He = p(9);  % d cm^2, scaled maturity at emergence
     
-  if exist('f','var') == 0
+  if isempty('f')
     f = 1; % abundant food
   end
   

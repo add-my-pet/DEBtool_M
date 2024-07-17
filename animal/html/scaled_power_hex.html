@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>scaled_power_hex</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-22"><meta name="DC.source" content="scaled_power_hex.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>scaled_power_hex</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-07-17"><meta name="DC.source" content="scaled_power_hex.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -38,11 +38,12 @@ ol li ul li { list-style:square; }
 
 .content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-pre, tt, code { font-size:12px; }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
 pre { margin:0px 0px 20px; }
-pre.error { color:red; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
 pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
@@ -51,12 +52,22 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-  </style></head><body><div class="content"><h1>scaled_power_hex</h1><!--introduction--><p>Gets scaled powers as function of length in case of model hex</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2>Syntax<a name="3"></a></h2><p>pACSJGRD = <a href="..scaled_power_hex.m"><b>scaled_power_hex</b></a> (L, f, p, lb, lj, le)</p><h2>Description<a name="4"></a></h2><p>Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length. Length must monitonically increase till pupation (j), and again after pupation. Length at pupation must be present, if lengths of pupa and/or imago are included</p><p>Input</p><div><ul><li>L: n-vector with lengths</li><li>f: scalar with (constant) scaled functional response</li><li>p: 9-vector with parameters: kap kapV kapR g kJ kM v UHb UHe</li><li>lb: scalar with scaled length at birth for f; if not existent: NaN</li><li>lj: scalar with scaled length at pupation for f; if not existent: NaN</li><li>le: scalar with scaled length at emergence for f; if not existent: NaN</li><li>tj: scalar with scaled age at pupation for f</li></ul></div><p>Output</p><div><ul><li>pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}</li></ul></div><h2>Remarks<a name="5"></a></h2><p>Similar to <a href="scaled_power.html"><b>scaled_power</b></a> The maturity value relates to the one for which f has been constant. Powers can become negative for shrinking of structure or maturity. See function <a href="scaled_power.html"><b>scaled_power</b></a> for model std.</p><h2>Example of use<a name="6"></a></h2><p>See <a href="../statistics_st.m"><b>statistics_st</b></a></p><p class="footer"><br>
-      Published with MATLAB&reg; 7.14<br></p></div><!--
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>scaled_power_hex</h1><!--introduction--><p>Gets scaled powers as function of length in case of model hex</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>pACSJGRD = <a href="..scaled_power_hex.m"><b>scaled_power_hex</b></a> (L, f, p, lb, lj, le)</p><h2 id="4">Description</h2><p>Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance, growth, reproduction and dissipation as function of length. Length must monitonically increase till pupation (j), and again after pupation. Length at pupation must be present, if lengths of pupa and/or imago are included</p><p>Input</p><div><ul><li>L: n-vector with lengths</li><li>f: scalar with (constant) scaled functional response</li><li>p: 9-vector with parameters: kap kapV kapR g kJ kM v UHb UHe</li><li>lb: scalar with scaled length at birth for f; if not existent: NaN</li><li>lj: scalar with scaled length at pupation for f; if not existent: NaN</li><li>le: scalar with scaled length at emergence for f; if not existent: NaN</li><li>tj: scalar with scaled age at pupation for f</li></ul></div><p>Output</p><div><ul><li>pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}</li></ul></div><h2 id="5">Remarks</h2><p>Similar to <a href="scaled_power.html"><b>scaled_power</b></a> The maturity value relates to the one for which f has been constant. Powers can become negative for shrinking of structure or maturity. See function <a href="scaled_power.html"><b>scaled_power</b></a> for model std.</p><h2 id="6">Example of use</h2><p>See <a href="../statistics_st.m"><b>statistics_st</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% scaled_power_hex
 % Gets scaled powers as function of length in case of model hex

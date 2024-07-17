@@ -3,7 +3,7 @@
 
 %%
 function pACSJGRD = scaled_power_hax(L, f, p, lb, lp, lj, le, tj)
-  % created 2022/01/31 by Bas Kooijman
+  % created 2022/01/31 by Bas Kooijman, modified 2024/07/17
   
   %% Syntax
   % pACSJGRD = <..scaled_power_hax.m *scaled_power_hax*> (L, f, p, lb, lp, lj, le, tj)
