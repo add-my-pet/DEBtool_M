@@ -55,4 +55,4 @@ end
 delete *.png
 cd(WD);
 rmdir(nmDir)
-web(fnm,'-browser')
+
