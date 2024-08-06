@@ -2,7 +2,7 @@
 % rotates a 3D structure
 
 %%
-function rotate3D(Hfig, n, fnm, EL)
+function rotate3D(Hfig, fnm, EL)
 % created 2024/08/06 by Bas Kooijman
 
 %% Syntax
@@ -14,7 +14,6 @@ function rotate3D(Hfig, n, fnm, EL)
 % Input:
 %
 % * Hfig: figure handle 
-% * n: optional number of views for a 360 degrees rotation (default 30)
 % * fnm: optional output filename (extension .png is added automatically). No name, no save
 % * refY: optional scalar for view on y-axis (default 90)
 % * refZ: optional scalar for view on z-axis (default 100)
@@ -27,11 +26,10 @@ function rotate3D(Hfig, n, fnm, EL)
 % If fnm is specified, a temporatry subdir is created; 
 % Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe
 
-if ~exist('n','var') || isempty(n)
-  n = 30; theta = 12;
-else
- theta = 360/ n;
-end
+  n = 100; % number of frames
+  theta = 360/ n;% rotation increment
+
+  axis vis3d
 
 if ~exist('fnm','var'); fnm = ''; end
 if ~isempty(fnm); nmDir = fnm; fnm = [fnm, '.png']; mkdir(nmDir); end
@@ -57,4 +55,4 @@ end
 delete *.png
 cd(WD);
 rmdir(nmDir)
-
+web(fnm,'-browser')
