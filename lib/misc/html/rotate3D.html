@@ -67,42 +67,39 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>rotate3D</h1><!--introduction--><p>rotates a 3D structure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>h = <a href="../rotate3D.m"><b>rotate3D</b></a> (Hfig, n, fnm, refpoint1, refpoint2)</p><h2 id="4">Description</h2><p>Rotates a 3D structure around z-axis and optionally saves it in an animated png file</p><p>Input:</p><div><ul><li>Hfig: figure handle</li><li>n: optional number of views for a 360 degrees rotation (default 30)</li><li>fnm: optional output filename (extension .png is added automatically). No name, no save</li><li>refY: optional scalar for view on y-axis (default 90)</li><li>refZ: optional scalar for view on z-axis (default 100)</li></ul></div><p>Output:</p><div><ul><li>h : rotation handle</li></ul></div><h2 id="5">Remarks</h2><p>If fnm is specified, a temporatry subdir is created; Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>rotate3D</h1><!--introduction--><p>rotates a 3D structure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../rotate3D.m"><b>rotate3D</b></a> (Hfig, n, fnm, refpoint1, refpoint2)</p><h2 id="4">Description</h2><p>Rotates a 3D plot around z-axis and optionally saves it in an animated png file</p><p>Input:</p><div><ul><li>Hfig: figure handle</li><li>fnm: optional output filename (extension .png is added automatically). No name, no save</li><li>EL: optional scalar for view on xy-plane (default 30)</li></ul></div><p>Output:</p><div><ul><li>if fnm is specified file fnm.png is written that rotates if opened with a browser</li></ul></div><h2 id="5">Remarks</h2><p>If fnm is specified, a temporatry subdir is created; Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% rotate3D
 % rotates a 3D structure
 
 %%
-function rotate3D(Hfig, n, fnm, EL)
+function rotate3D(Hfig, fnm, EL)
 % created 2024/08/06 by Bas Kooijman
 
 %% Syntax
-% h = <../rotate3D.m *rotate3D*> (Hfig, n, fnm, refpoint1, refpoint2) 
+% <../rotate3D.m *rotate3D*> (Hfig, n, fnm, refpoint1, refpoint2) 
 
 %% Description
-% Rotates a 3D structure around z-axis and optionally saves it in an animated png file
+% Rotates a 3D plot around z-axis and optionally saves it in an animated png file
 %
 % Input:
 %
 % * Hfig: figure handle 
-% * n: optional number of views for a 360 degrees rotation (default 30)
 % * fnm: optional output filename (extension .png is added automatically). No name, no save
-% * refY: optional scalar for view on y-axis (default 90)
-% * refZ: optional scalar for view on z-axis (default 100)
+% * EL: optional scalar for view on xy-plane (default 30)
 %
 % Output:
 % 
-% * h : rotation handle
+% * if fnm is specified file fnm.png is written that rotates if opened with a browser
 
 %% Remarks
 % If fnm is specified, a temporatry subdir is created; 
 % Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe
 
-if ~exist('n','var') || isempty(n)
-  n = 30; theta = 12;
-else
- theta = 360/ n;
-end
+  n = 100; % number of frames
+  theta = 360/ n;% rotation increment
+
+  axis vis3d
 
 if ~exist('fnm','var'); fnm = ''; end
 if ~isempty(fnm); nmDir = fnm; fnm = [fnm, '.png']; mkdir(nmDir); end

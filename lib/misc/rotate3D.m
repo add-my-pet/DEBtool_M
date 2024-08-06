@@ -6,21 +6,20 @@ function rotate3D(Hfig, fnm, EL)
 % created 2024/08/06 by Bas Kooijman
 
 %% Syntax
-% h = <../rotate3D.m *rotate3D*> (Hfig, n, fnm, refpoint1, refpoint2) 
+% <../rotate3D.m *rotate3D*> (Hfig, n, fnm, refpoint1, refpoint2) 
 
 %% Description
-% Rotates a 3D structure around z-axis and optionally saves it in an animated png file
+% Rotates a 3D plot around z-axis and optionally saves it in an animated png file
 %
 % Input:
 %
 % * Hfig: figure handle 
 % * fnm: optional output filename (extension .png is added automatically). No name, no save
-% * refY: optional scalar for view on y-axis (default 90)
-% * refZ: optional scalar for view on z-axis (default 100)
+% * EL: optional scalar for view on xy-plane (default 30)
 %
 % Output:
 % 
-% * h : rotation handle
+% * if fnm is specified file fnm.png is written that rotates if opened with a browser
 
 %% Remarks
 % If fnm is specified, a temporatry subdir is created; 
