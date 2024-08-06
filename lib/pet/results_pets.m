@@ -523,7 +523,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   system(['powershell apngasm64 ../',nmDir,'.png frame*.png']);
                 end
                 cd(WD);
-%                 delete(nmDir)
+%                 delete *.png; rmdir(nmDir);
               end
             end 
           end
