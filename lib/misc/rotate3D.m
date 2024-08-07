@@ -47,9 +47,9 @@ end
 if isempty(fnm); return; end
 WD = pwd; cd(nmDir); 
 if ismac || isunix
-  system(['apngasm64 ../',fnm,' frame*.png']);
+  system(['apngasm64 ../',fnm,' frame*.png 1 5']);
 else
-  system(['powershell apngasm64 ../',fnm,' frame*.png']);
+  system(['powershell apngasm64 ../',fnm,' frame*.png 1 5']);
 end
 delete *.png
 cd(WD);
