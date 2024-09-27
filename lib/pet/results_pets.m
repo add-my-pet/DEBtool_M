@@ -371,7 +371,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                       plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
                       plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
                     else
-                      plot(xPred, yPred, 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
+                      sel = xPred<xData(find(~isnan(yData),1,'last')); % do not plot predictions beyond the last data-point not being NaN
+                      plot(xPred(sel), yPred(sel), 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
                       plot(xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize', 15)
                       if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
                       legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
