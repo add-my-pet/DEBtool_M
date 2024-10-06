@@ -7,18 +7,18 @@
   z = linspace(0,10,500)'; y = z.*cos(z); x = z.*sin(z); % set data
   
   Hfig = figure;
-  plot3(x, y, z, 'r', 'linewidth', 5) % make 3D plot
+  plot3(x, y, z, 'r', 'linewidth', 5) % make 3D plot of data-curve
   hold on % add to figure
-  plot3(x, y, 0*z, 'b', 'linewidth', 3) % make 3D plot
-  plot3(x([end end],1),y([end end],1),z([1 end],1), ':k', 'linewidth', 2)
+  plot3(x, y, 0*z, 'b', 'linewidth', 3) % make projection of data-curve on x,y-plane
+  plot3(x([end end],1),y([end end],1),z([1 end],1), ':k', 'linewidth', 2) % connect end-points of both curves
   
-  set(Hfig, 'units','centimeters', 'position',[2,2,20,20])        
-  Ax = gca; Ax.XColor = 'none'; Ax.YColor = 'none'; Ax.ZColor = 'none'; 
+  %set(Hfig, 'units','centimeters', 'position',[2,2,20,20])        
+  Ax = gca; Ax.XColor = 'none'; Ax.YColor = 'none'; Ax.ZColor = 'none'; % hide axes
   view([60 20]) % set viewing angle on xy-plane, while rotating around z-axis
   rotate3D(Hfig, 'mydata_rotate3D'); % this writes 100 files in subdir "frames", and deletes them after producing output file
-  % you first see a rotating Matlab-fig, where Matlab does the rotation
+  % you first see a rotating Matlab-fig, where Matlab does the rotation inside Matlab
   % then frame-pictures are written; this takes a while, see progress in Matlab's command-window
-  % these frame-pictures are then catenated in the animated png file
+  % these frame-pictures are then catenated in the animated png file that is included in a html file and rotates outside Matlab
   
   % write html-file that includes the animated png-file mydata_rotate3D.png
   oid = fopen('mydata_rotate3D.html', 'w+'); % open file for reading and writing and deletes old content   
@@ -28,4 +28,4 @@
   web('mydata_rotate3D.html','-browser'); % open browser
 
   pause(3) % edit this if you want to keep these files
-  delete('mydata_rotate3D.html','mydata_rotate3D.png')
+  delete('mydata_rotate3D.html','mydata_rotate3D.png') % clean-up
