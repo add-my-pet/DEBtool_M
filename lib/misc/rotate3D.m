@@ -25,6 +25,9 @@ function rotate3D(Hfig, fnm, EL)
 % If fnm is specified, a temporatry subdir is created; 
 % Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe
 
+%% Example of use
+% see mydata_rotate3D
+
   n = 100; % number of frames
   theta = 360/ n;% rotation increment
 
@@ -51,6 +54,7 @@ if ismac || isunix
 else
   system(['powershell apngasm64 ../',fnm,' frame*.png 1 5']);
 end
+
 delete *.png
 cd(WD);
 rmdir(nmDir)

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>rotate3D</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-08-07"><meta name="DC.source" content="rotate3D.m"><style type="text/css">
+      --><title>rotate3D</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-10-06"><meta name="DC.source" content="rotate3D.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>rotate3D</h1><!--introduction--><p>rotates a 3D structure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../rotate3D.m"><b>rotate3D</b></a> (Hfig, n, fnm, refpoint1, refpoint2)</p><h2 id="4">Description</h2><p>Rotates a 3D plot around z-axis and optionally saves it in an animated png file</p><p>Input:</p><div><ul><li>Hfig: figure handle</li><li>fnm: optional output filename (extension .png is added automatically). No name, no save</li><li>EL: optional scalar for view on xy-plane (default 30)</li></ul></div><p>Output:</p><div><ul><li>if fnm is specified file fnm.png is written that rotates if opened with a browser</li></ul></div><h2 id="5">Remarks</h2><p>If fnm is specified, a temporatry subdir is created; Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>rotate3D</h1><!--introduction--><p>rotates a 3D structure</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../rotate3D.m"><b>rotate3D</b></a> (Hfig, n, fnm, refpoint1, refpoint2)</p><h2 id="4">Description</h2><p>Rotates a 3D plot around z-axis and optionally saves it in an animated png file</p><p>Input:</p><div><ul><li>Hfig: figure handle</li><li>fnm: optional output filename (extension .png is added automatically). No name, no save</li><li>EL: optional scalar for view on xy-plane (default 30)</li></ul></div><p>Output:</p><div><ul><li>if fnm is specified file fnm.png is written that rotates if opened with a browser</li></ul></div><h2 id="5">Remarks</h2><p>If fnm is specified, a temporatry subdir is created; Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe</p><h2 id="6">Example of use</h2><p>see mydata_rotate3D</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% rotate3D
 % rotates a 3D structure
@@ -96,6 +96,9 @@ function rotate3D(Hfig, fnm, EL)
 % If fnm is specified, a temporatry subdir is created; 
 % Assumes that system can find by the open-source animated png-assembler apngasm-2.91-bin-win64.exe
 
+%% Example of use
+% see mydata_rotate3D
+
   n = 100; % number of frames
   theta = 360/ n;% rotation increment
 
@@ -122,6 +125,7 @@ if ismac || isunix
 else
   system(['powershell apngasm64 ../',fnm,' frame*.png 1 5']);
 end
+
 delete *.png
 cd(WD);
 rmdir(nmDir)
