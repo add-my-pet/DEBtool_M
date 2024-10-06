@@ -12,7 +12,7 @@
   plot3(x, y, 0*z, 'b', 'linewidth', 3) % make 3D plot
   plot3(x([end end],1),y([end end],1),z([1 end],1), ':k', 'linewidth', 2)
   
-  set(Hfig,'units','centimeters', 'position',[2,2,20,20])        
+  set(Hfig, 'units','centimeters', 'position',[2,2,20,20])        
   Ax = gca; Ax.XColor = 'none'; Ax.YColor = 'none'; Ax.ZColor = 'none'; 
   view([60 20]) % set viewing angle on xy-plane, while rotating around z-axis
   rotate3D(Hfig, 'mydata_rotate3D'); % this writes 100 files in subdir "frames", and deletes them after producing output file
