@@ -7,9 +7,9 @@
   z = linspace(0,10,500)'; y = z.*cos(z); x = z.*sin(z); % set data
   
   Hfig = figure; % assign figure-handle for use in rotate3D
-  plot3(x, y, z, 'r', 'linewidth', 5) % make 3D plot of data-curve
+  plot3(x, y, z, 'r', 'linewidth', 8) % make 3D plot of data-curve
   hold on % add to figure
-  plot3(x, y, 0*z, 'b', 'linewidth', 3) % make projection of data-curve on x,y-plane
+  plot3(x, y, 0*z, 'b', 'linewidth', 5) % make projection of data-curve on x,y-plane
   plot3(x([end end],1),y([end end],1),z([1 end],1), ':k', 'linewidth', 2) % connect end-points of both curves
   
   Ax = gca; Ax.XColor = 'none'; Ax.YColor = 'none'; Ax.ZColor = 'none'; % hide all axes
@@ -22,7 +22,7 @@
   % write html-file that includes the animated png-file mydata_rotate3D.png
   oid = fopen('mydata_rotate3D.html', 'w+'); % open file for reading and writing and deletes old content   
   fprintf(oid, '<!DOCTYPE html><html><body><img src="mydata_rotate3D.png" width="800px"></body></html>\n');           
-  fclose(oid);
+  fclose(oid); close all
   
   web('mydata_rotate3D.html','-browser'); % open html-file in browser
 
