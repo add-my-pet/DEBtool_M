@@ -2,11 +2,11 @@
 % Gets scaled powers as function of length in case of type M acceleration
 
 %%
-function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
-  % created 2011/04/28 by Bas Kooijman, modified 2012/09/22
+function [pACSJGRD, info] = scaled_power_j(L, f, p, lb, lj, lp)
+  % created 2011/04/28 by Bas Kooijman, modified 2012/09/22. 2024/10/07
   
   %% Syntax
-  % pACSJGRD = <..scaled_power_j.m *scaled_power_j*> (L, f, p, lb, lj, lp)
+  % [pACSJGRD, info] = <..scaled_power_j.m *scaled_power_j*> (L, f, p, lb, lj, lp)
   
   %% Description
   % Gets scaled powers assimilation, mobilisation, somatic maintenance, maturity maintenance,
@@ -24,6 +24,7 @@ function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
   % Output
   %
   % * pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}
+  % * info: scalar for success (1) or failure (0)
   
   %% Remarks
   % Similar to <scaled_power.html *scaled_power*> for metabolic acceleration between birth and metamorphosis.
@@ -71,7 +72,8 @@ function pACSJGRD = scaled_power_j(L, f, p, lb, lj, lp)
     sM = min(lj, max(lb, l))/ lb;    % -, stress fractor for acceleration
   end
 
-  H = maturity_j(L, f, p);  % d.cm^2, scaled maturities E_H/ {p_Am}
+  [H, ~, info] = maturity_j(L, f, p);  % d.cm^2, scaled maturities E_H/ {p_Am}
+  if ~info; pACSJGRD = []; return; end
   uH = H *  g^2 * kM^3/ v^2; % -
 
   % scaled powers: powers per max assimilation {p_Am} L_m^2
