@@ -82,8 +82,8 @@ function [H, a, info] = maturity_j(L, f, p)
   % first find times since acceleration for L, then integrate [L, U_H] in time
   % allow to integrate past puberty, but clip U_H in trajectory
   if n_ji > 0 % post-acceleration values
-    if L_j >= L_i || any(L_ji > L_i); H = []; a = []; info = 0; return; end
-    t_ji = min(1e6,log((L_i - L_j)./ (L_i - L_ji))/ r_B);
+    if L_j >= L_i || any(L_ji - L_i > 1e-8); H = []; a = []; info = 0; return; end
+    t_ji = min(1e6,log((L_i - L_j)./ max(1e-8,L_i - L_ji))/ r_B);
     if n_ji>1; for i=2:n_ji; if t_ji(i)<=t_ji(i-1);t_ji(i)=t_ji(i-1)+1e-6;end;end;end
     [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_ji],[L_j;H_j],options,f, kap, v * s_M, g, k_M, k_J);
     if n_ji==1; t = t([1 end]); LH = LH([1 end],:); end
