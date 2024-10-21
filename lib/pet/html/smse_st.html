@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>smse_st</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-01-29"><meta name="DC.source" content="smse_st.m"><style type="text/css">
+      --><title>smse_st</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-10-21"><meta name="DC.source" content="smse_st.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,21 +67,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>smse_st</h1><!--introduction--><p>calculates the symmetric mean squared error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[mserr, serr, prdInfo] = <a href="../mse_st.m"><b>smse_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the symmetric mean squared  error, used in add_my_pet:    \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2)</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li><li>prdInfo: boolean with success (1) or failure (0) for call to predict-function</li></ul></div><p>Output</p><div><ul><li>mserr: scalar with mean squared relative error</li><li>serr: (n,2) matrix  with weighted squared error of each of data set in first column and 1 or 0 in the second column indicated whether or not the data set was given weight zero</li></ul></div><h2 id="5">Remarks</h2><p>Bi-variate data can have NaN's (= missing data). Uni- and bi-variate data have the (first) independent variable in the first column First output mserr excludes contributions from pseudo-data.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>smse_st</h1><!--introduction--><p>calculates the symmetric mean squared error</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>[mserr, serr, prdInfo] = <a href="../mse_st.m"><b>smse_st</b></a>(func, par, data, auxData, weights)</p><h2 id="4">Description</h2><p>Calculates the symmetric mean squared  error, used in add_my_pet:    2 \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2)</p><p>Input</p><div><ul><li>func: character string with name of user-defined predict_my_pet function</li><li>par: structure with parameters</li><li>data: structure with data</li><li>auxData: structure with data</li><li>weights: structure with weights for the data</li><li>prdInfo: boolean with success (1) or failure (0) for call to predict-function</li></ul></div><p>Output</p><div><ul><li>mserr: scalar with mean squared relative error</li><li>serr: (n,2) matrix  with weighted squared error of each of data set in first column and 1 or 0 in the second column indicated whether or not the data set was given weight zero</li></ul></div><h2 id="5">Remarks</h2><p>Bi-variate data can have NaN's (= missing data). Uni- and bi-variate data have the (first) independent variable in the first column First output mserr excludes contributions from pseudo-data.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% smse_st
 % calculates the symmetric mean squared error
 
 %%
 function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
-  % created: 2016/05/05 by Goncalo Marques, modified 2022/01/26 by Bas Kooijman
+  % created: 2016/05/05 by Goncalo Marques, modified 2022/01/26, 2024/10/21 by Bas Kooijman
   
   %% Syntax 
   % [mserr, serr, prdInfo] = <../mse_st.m *smse_st*>(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the symmetric mean squared  error, used in add_my_pet:
-  %    \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2) 
+  %    2 \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2) 
   %
   % Input
   %
@@ -118,27 +118,30 @@ function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
   for i = 1:nst   % scan data sets
     fieldsInCells = textscan(nm{i},'%s','Delimiter','.');
     var = getfield(data, fieldsInCells{1}{:});   % scalar, vector or matrix with data in field nm{i}
-    [n, k] = size(var);
-    if k > 1 % uni- or bivariate dsta set
+    [r, k, npage] = size(var); 
+    if npage==1 && k>1 % uni- or bivariate data set
       var(:,1) = []; % remove independent variable
     end
-    sel = ~isnan(var); % selection of non-Nan's
+    sel = ~isnan(var); % selection of non-NaN's
     prdVar = getfield(prdData, fieldsInCells{1}{:}); 
     w      = getfield(weights, fieldsInCells{1}{:});
     diff2 = (prdVar - var).^2;
-    if k > 1
-      meanVar = zeros(n, k-1); meanPrd = zeros(n, k-1);
+    if npage==1 &&  k>1 % uni- or bi-variate data
+      meanVar = zeros(r, k-1); meanPrd = zeros(r, k-1);
       for j = 1:k-1
-        meanVar(:,j) = ones(n,1) * mean(var(sel(:,j),j)); 
-        meanPrd(:,j) = ones(n,1) * mean(prdVar(sel(:,j),j));
+        meanVar(:,j) = ones(r,1) * mean(var(sel(:,j),j)); 
+        meanPrd(:,j) = ones(r,1) * mean(prdVar(sel(:,j),j));
       end
+    elseif npage>1 % tri-variate data
+      meanVar = mean(var(sel),3); 
+      meanPrd = mean(prdVar(sel),3);
     else % zero-variate data set
       meanVar = var; meanPrd = prdVar;
     end
     meanVarPrd2 = (meanVar.^2 + meanPrd.^2)/2;
     wsum(i) = sum(w(sel)); 
    
-    if all(meanVar > 0)
+    if all(meanVarPrd2 > 0)
       if wsum(i) ~= 0
         serr(i,1) = w(sel)' * (diff2(sel) ./ meanVarPrd2(sel)) / wsum(i);
       else
