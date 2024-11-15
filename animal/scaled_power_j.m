@@ -14,7 +14,7 @@ function [pACSJGRD, info] = scaled_power_j(L, f, p, lb, lj, lp)
   %
   % Input
   %
-  % * L: n-vector with lengths
+  % * L: n-vector with structural lengths
   % * f: scalar with (constant) scaled functional response
   % * p: 10-vector with parameters: kap kapR g kJ kM LT v UHb UHj UHp
   % * lb: scalar with scaled length at birth for f; if not existent: NaN
