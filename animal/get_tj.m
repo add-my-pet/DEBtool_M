@@ -91,8 +91,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   elseif length(tau_jp) == 1
     tau_j = tau_b + tau_jp(1);  l_j = vel_jp(1,3); tau_p = NaN; l_p = NaN; l_i = f_i * l_j/ l_b; info = 0;
   else
-    tau_j = tau_b + tau_jp(1); tau_p = tau_b + tau_jp(2); 
-    l_j = vel_jp(1,3); l_p = vel_jp(2,3); l_i = f_i * l_j/ l_b; 
+    tau_j = tau_b + tau_jp(end-1); tau_p = tau_b + tau_jp(end); 
+    l_j = vel_jp(end-1,3); l_p = vel_jp(end,3); l_i = f_i * l_j/ l_b; 
   end
 
   rho_j = (f_i/ l_b - 1 - l_T/ l_b)/ (1 + f_i/ g); % -, scaled exp growth rate
