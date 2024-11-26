@@ -14,7 +14,7 @@ function mat2pars_init_nat
 %
 % Input:
 %
-% * my_pet: optional string with the species name (default pets{1} for single species
+% * my_pet: optional string with the species name (default pets{1}) for single species
 
 %% Remarks
 % Keep in mind that the files will be saved in your local directory; 
@@ -54,7 +54,7 @@ end
 %     return
 %   end
 % end
-pars_initFile = fileread(pars_init);
+pars_initFile = fileread([pars_init, '_', my_pet]);
 
 fprintf([matFile, ' successfully overwritten.\n'])
 
