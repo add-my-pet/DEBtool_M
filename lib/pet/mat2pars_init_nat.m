@@ -45,7 +45,7 @@ else
   load(matFile, 'par');
 end
 
-% pars_init = ['pars_init_', my_pet, '.m'];
+pars_init = ['pars_init_', my_pet, '.m'];
 % if exist(pars_init, 'file') == 2
 %   prompt = [pars_init, ' already exists. Do you want to overwrite it? (y/n) '];
 %   overwr = lower(input(prompt, 's'));
@@ -54,7 +54,7 @@ end
 %     return
 %   end
 % end
-pars_initFile = fileread([pars_init, '_', my_pet]);
+pars_initFile = fileread(pars_init);
 
 fprintf([matFile, ' successfully overwritten.\n'])
 
