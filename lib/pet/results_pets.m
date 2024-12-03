@@ -309,7 +309,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ax = gca; ax.YAxis(1).Color = 'r'; ax.YAxis(2).Color = 'b'; % left yaxis red, right blue
                 dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}]; % no legend for this plot
-                if isfield(txtData.(pets{i}).title,nm{j}); title(txtData.(pets{i}).title.(nm{j}), 'FontSize',15, 'FontWeight','normal'); end 
+                if isfield(txtData.(pets{i}),'title') && isfield(txtData.(pets{i}).title,nm{j}); title(txtData.(pets{i}).title.(nm{j}), 'FontSize',15, 'FontWeight','normal'); end 
               else
                 if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                   fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
