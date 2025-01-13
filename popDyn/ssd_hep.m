@@ -154,13 +154,20 @@ function [stat, txtStat] = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(10,1), 'AbsTol',1e-9, 'RelTol',1e-9); 
   qhSL_0 = [q_b * kT_M^2; h_Ab * kT_M; S_b; 0; 0; 0; 0; 0; 0; 0]; % initial states
   pars_qhSL = {aT_b, tT_p, tT_j, sgr, f, vT, L_b, L_p, L_j, L_i, L_m, rT_j, rT_B, s_G, hT_a, h_Bbp, h_Bpj, h_Bji, thinning};
-  [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; tT_N], qhSL_0, options, pars_qhSL{:});
-  t_bi = qhSL(end,4);     % d, \int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt
-  t_bj = qhSL_event(2,4); % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
+  try
+    [t, qhSL, t_event, qhSL_event] = ode45(@dget_qhSL, [0; tT_N], qhSL_0, options, pars_qhSL{:});
+    t_bi = qhSL(end,4);     % d, \int_{a_b}^{a_m} S(t)*exp(-sgr*t) dt
+    t_bj = qhSL_event(2,4); % d, \int_{a_b}^{a_j} S(t)*exp(-sgr*t) dt
+    
+    S_p = qhSL_event(1,3);  % -, survival prob at puberty
+    stat.(fldf).(fldt).(fldg).S_p = S_p; txtStat.units.S_p  = '-'; txtStat.label.S_p = 'survival probability at puberty';
+    S_j = qhSL_event(2,3);  % -, survival prob at emergence
+  catch
+    stat = setNaN(stat, fldf, fldt, fldg); % set all statistics to NaN
+    txtStat = NaN;
+    return
+  end
 
-  S_p = qhSL_event(1,3);  % -, survival prob at puberty
-  stat.(fldf).(fldt).(fldg).S_p = S_p; txtStat.units.S_p  = '-'; txtStat.label.S_p = 'survival probability at puberty';
-  S_j = qhSL_event(2,3);  % -, survival prob at emergence
   stat.(fldf).(fldt).(fldg).S_j = S_j; txtStat.units.S_j  = '-'; txtStat.label.S_j = 'survival probability at emergence';
   
   % survival probability (at individual level)
@@ -226,7 +233,7 @@ function [stat, txtStat] = ssd_hep(stat, code, par, T_pop, f_pop, sgr)
   stat.(fldf).(fldt).(fldg).Y_EX_d = Y_EX_dead; txtStat.units.Y_EX_d  = 'mol/mol'; txtStat.label.Y_EX_d  = 'yield of dead reserve on food';
   %
   n_O = nO_d2w(n_O, [d_X, d_V, d_E, d_P]); % -, chemical indices of organics on food: (in cols)  X V V_dead E E_dead P
-  Y_M = -(n_M\n_O) * [-1; Y_VX+Y_VX_dead; Y_EX+Y_EX_dead; Y_PX];     % mol/mol, yields od minerals on food
+  Y_M = -(n_M\n_O) * [-1; Y_VX+Y_VX_dead; Y_EX+Y_EX_dead; Y_PX];     % mol/mol, yields of minerals on food
   Y_CX = Y_M(1); Y_HX = Y_M(2); Y_OX = Y_M(3); Y_NX = Y_M(4);
   %
   stat.(fldf).(fldt).(fldg).Y_CX = Y_CX; txtStat.units.Y_CX  = 'mol/mol'; txtStat.label.Y_CX  = 'yield of CO2 on food';
