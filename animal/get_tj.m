@@ -83,7 +83,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   if exist('info_tb','var') && exist('info_lj','var'); info = min(info_tb, info_lj); end
   
   % juvenile & adult
-  options = odeset('Events',@event_jp, 'AbsTol',1e-12, 'RelTol',1e-12); 
+  options = odeset('Events',@event_jp, 'AbsTol',1e-10, 'RelTol',1e-10); 
   %options = odeset('Events',@event_jp); 
   [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
   tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
