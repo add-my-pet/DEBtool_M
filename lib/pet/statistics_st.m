@@ -62,7 +62,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 %     - s_HLbp: maturity density ratio; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
-%     - : wet weight at max growth; all models
+%     - W_dWm: wet weight at max growth; all models
 %     - dWm: max growth in wet weight; all models
 %
 %     - E_H*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
