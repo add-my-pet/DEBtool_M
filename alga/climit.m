@@ -1,12 +1,12 @@
-%% clim
+%% climit
 % C-limited algal growth
 
 %%
-function f = clim(p, tOD)
-  % created 2002/02/11 by Bas Kooijman, modified 2011/04/12
+function f = climit(p, tOD)
+  % created 2002/02/11 by Bas Kooijman, modified 2011/04/12, modified 2025/02/05
   
   %% Syntax
-  % f = <../clim.m *clim*> (p, tOD)
+  % f = <../climit.m *climit*> (p, tOD)
 
   %% Description
   % Algal growth is assumed to be carbon limited
@@ -26,7 +26,7 @@ function f = clim(p, tOD)
   % Uses routine dclim for integration
   
   %% Example of use
-  % see <mydata_clim.m *mydata_clim*>
+  % see <mydata_climit.m *mydata_climit*>
  
   global K yEV kC kE k0 kCB kBC;
 
