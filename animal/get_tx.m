@@ -81,7 +81,7 @@ function varargout = get_tx(p, f, tel_b, tau)
 %   end
   f_0b = 1; % embryo development is independent of nutritional state of the mother
   %
-  options = odeset('Events',@event_b, 'AbsTol',1e-9, 'RelTol',1e-9);   
+  options = odeset('Events',@event_b, 'AbsTol',1e-8, 'RelTol',1e-8);   
   % optional input tel_b
   if ~exist('tel_b','var') || isempty(tel_b)
     [~, ~, tau_b, vl_b] = ode45(@dget_lb, [0; 1e10], [1e-20; 1e-20], options, f_0b, s_F, g, k, v_Hb);
@@ -108,7 +108,7 @@ function varargout = get_tx(p, f, tel_b, tau)
   end
   tvel = [tau, vel]; tvel(1,:) = []; info = 1;
 
-  if ~isreal(tau_b) || ~isreal(tau_x) || ~isreal(tau_p) || tau_b < 0 || tau_x < 0 || tau_p < 0 % tb, tx and tp must be real and positive
+  if any(~isreal([tau_b, tau_x, tau_p])) | any([tau_b, tau_x, tau_p] < 0) % tb, tx and tp must be real and positive
     info = 0;
   end
 
