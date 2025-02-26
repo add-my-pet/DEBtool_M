@@ -77,28 +77,49 @@ function varargout = get_tj(p, f, tel_b, tau)
     [tau_b, l_b] = get_tb(p([1 2 4]), e_b);
   end
   vel_b = [v_Hb; e_b; l_b]; % states at birth
+  rho_j = (f_i/ l_b - 1 - l_T/ l_b)/ (1 + f_i/ g); % -, scaled exp growth rate
+  rho_B = 1/ 3/ (1 + f_i/ g); % -, scaled von Bert growth rate
   
   info = 1;
   if ~exist('tau','var'); tau = [0;1e10]; info_tau = 0; else; info_tau = 1; end   
   if exist('info_tb','var') && exist('info_lj','var'); info = min(info_tb, info_lj); end
   
   % juvenile & adult
-  options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
-  %options = odeset('Events',@event_jp); 
-  [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
-  tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
-  if isempty(vel_jp)
-    tau_j = NaN; tau_p = NaN; l_j = NaN; l_p = NaN; l_i = NaN; info = 0;
-  elseif length(tau_jp) == 1
-    tau_j = tau_b + tau_jp(1);  l_j = vel_jp(1,3); tau_p = NaN; l_p = NaN; l_i = f_i * l_j/ l_b; info = 0;
-  else
-    tau_j = tau_b + tau_jp(end-1); tau_p = tau_b + tau_jp(end); 
-    l_j = vel_jp(end-1,3); l_p = vel_jp(end,3); l_i = f_i * l_j/ l_b; 
-  end
+  if length(f) == 1 % constant food
+    options = optimset('TolX',1e-16);
+    [l_j, ~, info_lj] = fzero(@get_lj, l_b, options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
+    [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+    s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
+    tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
+    Tau = tau + tau_b; % tau: scaled time since birth; Tau: scaled age
+    if info_lj==1 && info_lp==1; info = 1; else info = 0; tau_j = NaN; tau_p = NaN; return; end
+    if info_tau
+      l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau(Tau>=tau_j)-tau_j))]; % scaled length
+      b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
+      a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
+      a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
+      sum_a = a0 + a1 + a2 + a3; 
+      sum_ae = a0 + a1 * exp(- rho_B * Tau(Tau>=tau_j)) + a2 * exp(- 2 * rho_B * Tau(Tau>=tau_j)) + a3 * exp(- 3 * rho_B * Tau(Tau>=tau_j));
+      v_H = [f*l_b^3*(1/l_b-rho_j/g)/(k+rho_j)*(exp(rho_j*Tau(Tau<tau_j))-exp(-k*Tau(Tau<tau_j)))+v_Hb*exp(-k*Tau(Tau<tau_j)); ...
+          (v_Hj+sum_a)*exp(-k*Tau(Tau>=tau_j)) - sum_ae]; % scaled maturity
+      tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l];
+    end
+  else % varying food
+    options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
+    %options = odeset('Events',@event_jp); 
+    [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
+    tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
+    if isempty(vel_jp)
+      tau_j = NaN; tau_p = NaN; l_j = NaN; l_p = NaN; l_i = NaN; info = 0;
+    elseif length(tau_jp) == 1
+      tau_j = tau_b + tau_jp(1);  l_j = vel_jp(1,3); tau_p = NaN; l_p = NaN; l_i = f_i * l_j/ l_b; info = 0;
+    else
+      tau_j = tau_b + tau_jp(end-1); tau_p = tau_b + tau_jp(end); 
+      l_j = vel_jp(end-1,3); l_p = vel_jp(end,3); l_i = f_i * l_j/ l_b; 
+    end
 
-  rho_j = (f_i/ l_b - 1 - l_T/ l_b)/ (1 + f_i/ g); % -, scaled exp growth rate
-  rho_B = 1/ 3/ (1 + f_i/ g); % -, scaled von Bert growth rate
- 
+  end 
+
   if isempty(tau_p) || ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
     info = 0;
   elseif tau_p < 0 || tau_j < 0 || rho_j <= 0 || rho_B <=0
@@ -138,5 +159,20 @@ function dvel = dget_lj (tau, vel, info_tau, tf, l_b, g, k, l_T, v_Hj, v_Hp)
   dl = l * rho/ 3; % -, d/d tau l  
   dv_H = (v_H <v_Hp) * (e * l^3 * (s_M/ l - rho/ g) - k * v_H); % -, d/d tau v_H
   dvel = [dv_H; de; dl]; % pack to output
- 
+end
+
+function fn = get_lj(l_j, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f) 
+  s_M = l_j/ l_b; s_j = s_M^(-3 * k/ rho_j); 
+  fn = v_Hj - f * l_b^3 * (1/ l_b - rho_j/ g)/ (k + rho_j) * (s_M^3 - s_j) - v_Hb * s_j;
+end
+
+function fn = get_lp(l_p, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f)
+   s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
+   tau_j = tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B;
+   b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
+   a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
+   a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
+   sum_a = a0 + a1 + a2 + a3; 
+   sum_ae = a0 + a1 * exp(- rho_B * tau_p) + a2 * exp(- 2 * rho_B * tau_p) + a3 * exp(- 3 * rho_B * tau_p);
+   fn = v_Hp - (v_Hj + sum_a) * exp(- k * tau_p) + sum_ae;
 end
