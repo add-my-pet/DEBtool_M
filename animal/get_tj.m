@@ -41,6 +41,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development
   % A previous version of get_tj had as optional 3rd input a 2-vector with scaled length, l, and scaled maturity, vH, for a juvenile that is now exposed to f, but previously at another f.
   % Function <get_tjm *get_tjm*> took over this use.
+  % If input f is scalar, l_j and l_p are solved via fzero, and numerical integration is avoided
+ 
   
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
