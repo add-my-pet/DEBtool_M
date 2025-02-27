@@ -5,7 +5,7 @@
 function varargout = get_tj(p, f, tel_b, tau)
   % created at 2011/04/25 by Bas Kooijman, 
   % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
-  % modified 2018/09/10 (t -> tau) Nina Marn, 2023/04/05, 2023/08/28 2025/02/26 Bas Kooijman 
+  % modified 2018/09/10 (t -> tau) Nina Marn, 2023/04/05, 2023/08/28 2025/02/27 Bas Kooijman 
   
   %% Syntax
   % varargout = <../get_tj.m *get_tj*> (p, f, tel_b, tau)
@@ -41,7 +41,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development
   % A previous version of get_tj had as optional 3rd input a 2-vector with scaled length, l, and scaled maturity, vH, for a juvenile that is now exposed to f, but previously at another f.
   % Function <get_tjm *get_tjm*> took over this use.
-  % If input f is scalar (so food is constant), l_j and l_p are solved via fzero, and numerical integration is avoided
+  % If input f is scalar (so food is constant), l_j and l_p are solved via fzero, and numerical integration is avoided.
+  % if fzero fails, varying food it tried.
  
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -54,12 +55,12 @@ function varargout = get_tj(p, f, tel_b, tau)
   v_Hj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_H^j = E_H^j/ {p_Am}
   v_Hp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_H^p = E_H^p/ {p_Am}
     
-  if ~exist('f', 'var') || isempty(f)
-    f = 1; f_i = f;
-  elseif length(f) == 1
-    f_i = f; 
-  else
-    f_i = f(end,2);  
+  if ~exist('f', 'var') || isempty(f) % constant food
+    f = 1; f_i = f; info_con = 1;
+  elseif length(f) == 1 % constant food
+    f_i = f; info_con = 1;
+  else % varying food
+    f_i = f(end,2); info_con = 0;
   end
   
   % embryo
@@ -86,27 +87,33 @@ function varargout = get_tj(p, f, tel_b, tau)
   if exist('info_tb','var') && exist('info_lj','var'); info = min(info_tb, info_lj); end
   
   % juvenile & adult
-  if length(f) == 1 % constant food
-    options = optimset('TolX',1e-16);
-    [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
-    [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
-    s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
-    tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
-    Tau = tau + tau_b; % tau: scaled time since birth; Tau: scaled age
-    if info_lj==1 && info_lp==1; info = 1; else info = 0; tau_j = NaN; tau_p = NaN; return; end
-    if info_tau
-      l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau(Tau>=tau_j)-tau_j))]; % scaled length
-      b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
-      a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
-      a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
-      sum_a = a0 + a1 + a2 + a3; 
-      sum_ae = a0 + a1 * exp(- rho_B * Tau(Tau>=tau_j)) + a2 * exp(- 2 * rho_B * Tau(Tau>=tau_j)) + a3 * exp(- 3 * rho_B * Tau(Tau>=tau_j));
-      v_H = [f*l_b^3*(1/l_b-rho_j/g)/(k+rho_j)*(exp(rho_j*Tau(Tau<tau_j))-exp(-k*Tau(Tau<tau_j)))+v_Hb*exp(-k*Tau(Tau<tau_j)); ...
+  if info_con % constant food
+    try 
+      options = optimset('TolX',1e-16);
+      [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
+      [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+      s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
+      tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
+      Tau = tau + tau_b; % tau: scaled time since birth; Tau: scaled age
+      if info_lj==1 && info_lp==1; info = 1; else info = 0; tau_j = NaN; tau_p = NaN; return; end
+      if info_tau
+        l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau(Tau>=tau_j)-tau_j))]; % scaled length
+        b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
+        a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
+        a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
+        sum_a = a0 + a1 + a2 + a3; 
+        sum_ae = a0 + a1 * exp(- rho_B * Tau(Tau>=tau_j)) + a2 * exp(- 2 * rho_B * Tau(Tau>=tau_j)) + a3 * exp(- 3 * rho_B * Tau(Tau>=tau_j));
+        v_H = [f*l_b^3*(1/l_b-rho_j/g)/(k+rho_j)*(exp(rho_j*Tau(Tau<tau_j))-exp(-k*Tau(Tau<tau_j)))+v_Hb*exp(-k*Tau(Tau<tau_j)); ...
           (v_Hj+sum_a)*exp(-k*Tau(Tau>=tau_j)) - sum_ae]; % scaled maturity
-      tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l];
+        tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l];
+      end
+
+    catch
+     info_con = 0; % if constant food failed, try varying food
     end
+  end
     
-  else % varying food
+  if ~info_con % varying food
     options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
     %options = odeset('Events',@event_jp); 
     [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
