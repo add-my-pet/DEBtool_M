@@ -62,6 +62,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   else % varying food
     f_i = f(end,2); info_con = 0;
   end
+  tvel = [];
+
   
   % embryo
   if exist('tel_b', 'var') && ~isempty(tel_b)
@@ -91,7 +93,7 @@ function varargout = get_tj(p, f, tel_b, tau)
     try 
       options = optimset('TolX',1e-16);
       [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
-      [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+      [l_p, ~, info_lp] = fzero(@get_lp, [l_j 1], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
       s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
       tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
       Tau = tau + tau_b; % tau: scaled time since birth; Tau: scaled age
@@ -107,9 +109,9 @@ function varargout = get_tj(p, f, tel_b, tau)
           (v_Hj+sum_a)*exp(-k*Tau(Tau>=tau_j)) - sum_ae]; % scaled maturity
         tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l];
       end
-
+      if ~(info_lj==1 && info_lp==1); info_con = 0; end
     catch
-     info_con = 0; % if constant food failed, try varying food
+      info_con = 0; % if constant food failed, try varying food
     end
   end
     
