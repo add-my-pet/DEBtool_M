@@ -96,20 +96,20 @@ function varargout = get_tj(p, f, tel_b, tau)
       [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
       s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
       tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
-      Tau = tau + tau_b; % tau: scaled time since birth; Tau: scaled age
+      Tau = tau + tau_b; Tau_0j = Tau(Tau<tau_j); Tau_ji = Tau(Tau>=tau_j); % tau: scaled time since birth; Tau: scaled age
       if info_lj==1 && info_lp==1; info = 1; else info = 0; tau_j = NaN; tau_p = NaN; return; end
-      if info_tau
-        l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau(Tau>=tau_j)-tau_j))]; % scaled length
+      if info_tau % assign trajectories
+        l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau_ji-tau_j))]; % scaled lengths
         b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
         a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
         a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
-        sum_a = a0 + a1 + a2 + a3; 
-        sum_ae = a0 + a1 * exp(- rho_B * Tau(Tau>=tau_j)) + a2 * exp(- 2 * rho_B * Tau(Tau>=tau_j)) + a3 * exp(- 3 * rho_B * Tau(Tau>=tau_j));
-        v_H = [f*l_b^3*(1/l_b-rho_j/g)/(k+rho_j)*(exp(rho_j*Tau(Tau<tau_j))-exp(-k*Tau(Tau<tau_j)))+v_Hb*exp(-k*Tau(Tau<tau_j)); ...
-          (v_Hj+sum_a)*exp(-k*Tau(Tau>=tau_j)) - sum_ae]; % scaled maturity
-        tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l];
+        sum_a = a0 + a1 + a2 + a3;  
+        sum_ae = a0 + a1 * exp(- rho_B * Tau_ji) + a2 * exp(- 2 * rho_B * Tau_ji) + a3 * exp(- 3 * rho_B * Tau_ji);
+        v_H = [f*l_b^3*(1/l_b-rho_j/g)/(k+rho_j)*(exp(rho_j*Tau_0j)-exp(-k*Tau_0j))+v_Hb*exp(-k*Tau_0j); ...
+          (v_Hj+sum_a)*exp(-k*Tau_ji) - sum_ae]; % scaled maturities
+        tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l]; % trajectories
       end
-      if ~(info_lj==1 && info_lp==1); info_con = 0; end
+      if ~(info_lj==1 && info_lp==1); info_con = 0; end % finding l_j and/or l_p failed, try again with varying food
     catch
       info_con = 0; % if constant food failed, try varying food
     end
