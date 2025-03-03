@@ -5,14 +5,14 @@
 function varargout = get_tj(p, f, tel_b, tau)
   % created at 2011/04/25 by Bas Kooijman, 
   % modified 2014/03/03 Starrlight Augustine, 2015/01/18 Bas Kooijman
-  % modified 2018/09/10 (t -> tau) Nina Marn, 2023/04/05, 2023/08/28 2025/02/27 Bas Kooijman 
+  % modified 2018/09/10 (t -> tau) Nina Marn, 2023/04/05, 2023/08/28 2025/02/27 Bas Kooijman, 2025/03/03 Diogo Oliveira 
   
   %% Syntax
   % varargout = <../get_tj.m *get_tj*> (p, f, tel_b, tau)
   
   %% Description
-  % Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages;
-  % Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. 
+  % Obtains scaled ages at metamorphosis, puberty, birth and the scaled lengths at these ages; works in scaled quantities at T_ref
+  % Multiply the resulting trajectory/ages with the somatic maintenance rate coefficient kT_M to arrive at unscaled ages. 
   % Metabolic acceleration occurs between birth and metamorphosis, see also get_ts. 
   % Notice j-p-b sequence in output, due to the name of the routine
   %
@@ -21,7 +21,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   % * p: 6-vector with parameters: g, k, l_T, v_H^b, v_H^j, v_H^p 
   % * f: optional scalar with functional response (default f = 1) or (n,2)-array with scaled time since birth and scaled func response
   % * tel_b: optional scalar with scaled length at birth or 3-vector with scaled age at birth, reserve density and length at birth
-  % * tau: optional n-vector with scaled times since birth
+  % * tau: optional n-vector with scaled times since birth at T_ref
   %  
   % Output
   %
@@ -63,7 +63,6 @@ function varargout = get_tj(p, f, tel_b, tau)
     f_i = f(end,2); info_con = 0;
   end
   tvel = [];
-
   
   % embryo
   if exist('tel_b', 'var') && ~isempty(tel_b)
@@ -133,7 +132,9 @@ function varargout = get_tj(p, f, tel_b, tau)
 
   if isempty(tau_p) || ~isreal(tau_p) || ~isreal(tau_j) % tj and tp must be real and positive
     info = 0;
-  elseif tau_p < 0 || tau_j < 0 || rho_j <= 0 || rho_B <=0
+  elseif tau_p < 0 || tau_j < 0 || rho_j <= 0 || rho_B <=0 
+    info = 0;
+  elseif info_tau && (size(tau, 1) ~= size(tvel, 1)) % tvel must exist for all time steps
     info = 0;
   end
 
