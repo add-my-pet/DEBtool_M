@@ -61,7 +61,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   elseif length(f) == 1 && (~exist('tel_b','var') || isempty(tel_b))% constant food
     f_i = f; info_con = 1;
   else % varying food
-    f_i = f(end,2); info_con = 0;
+    f_i = f(end,end); info_con = 0;
   end
   tvel = [];
   
