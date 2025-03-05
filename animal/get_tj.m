@@ -38,11 +38,12 @@ function varargout = get_tj(p, f, tel_b, tau)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development
+  % See <get_tj_foetus.html *get_tj_foetus*> in case of foetal development.
   % A previous version of get_tj had as optional 3rd input a 2-vector with scaled length, l, and scaled maturity, vH, for a juvenile that is now exposed to f, but previously at another f.
   % Function <get_tjm *get_tjm*> took over this use.
   % If input f is scalar (so food is constant), l_j and l_p are solved via fzero, and numerical integration is avoided.
   % If fzero fails, varying food it tried.
+  % The theory behind these computations is presented in the comments on DEB3 for 7.8.2
  
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -177,12 +178,12 @@ function fn = get_lj(l_j, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f)
 end
 
 function fn = get_lp(l_p, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f)
-   s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
-   tau_j = tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B;
-   b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
-   a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
-   a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
-   sum_a = a0 + a1 + a2 + a3; 
-   sum_ae = a0 + a1 * exp(- rho_B * tau_p) + a2 * exp(- 2 * rho_B * tau_p) + a3 * exp(- 3 * rho_B * tau_p);
-   fn = v_Hp - (v_Hj + sum_a) * exp(- k * tau_p) + sum_ae;
+  s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
+  tau_j = tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B;
+  b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
+  a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
+  a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
+  sum_a = a0 + a1 + a2 + a3; 
+  sum_ae = a0 + a1 * exp(- rho_B * tau_p) + a2 * exp(- 2 * rho_B * tau_p) + a3 * exp(- 3 * rho_B * tau_p);
+  fn = v_Hp - (v_Hj + sum_a) * exp(- k * tau_p) + sum_ae;
 end
