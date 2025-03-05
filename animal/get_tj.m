@@ -33,8 +33,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   % * l_p: scaled length at puberty
   % * l_b: scaled length at birth
   % * l_i: ultimate scaled length
-  % * rho_j: scaled exponential growth rate between s and j
-  % * rho_B: scaled von Bertalanffy growth rate between b and s and between j and i
+  % * rho_j: scaled exponential growth rate between b and j
+  % * rho_B: scaled von Bertalanffy growth rate between j and i
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
@@ -42,7 +42,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   % A previous version of get_tj had as optional 3rd input a 2-vector with scaled length, l, and scaled maturity, vH, for a juvenile that is now exposed to f, but previously at another f.
   % Function <get_tjm *get_tjm*> took over this use.
   % If input f is scalar (so food is constant), l_j and l_p are solved via fzero, and numerical integration is avoided.
-  % if fzero fails, varying food it tried.
+  % If fzero fails, varying food it tried.
  
   %% Example of use
   %  get_tj([.5, .1, 0, .01, .05, .2])
@@ -57,7 +57,7 @@ function varargout = get_tj(p, f, tel_b, tau)
     
   if ~exist('f', 'var') || isempty(f) % constant food
     f = 1; f_i = f; info_con = 1;
-  elseif length(f) == 1 % constant food
+  elseif length(f) == 1 && isempty(tel_b) % constant food
     f_i = f; info_con = 1;
   else % varying food
     f_i = f(end,2); info_con = 0;
@@ -85,7 +85,6 @@ function varargout = get_tj(p, f, tel_b, tau)
   
   info = 1;
   if ~exist('tau','var'); tau = [0;1e10]; info_tau = 0; else; info_tau = 1; end   
-  if exist('info_tb','var') && exist('info_lj','var'); info = min(info_tb, info_lj); end
   
   % juvenile & adult
   if info_con % constant food
@@ -116,7 +115,6 @@ function varargout = get_tj(p, f, tel_b, tau)
     
   if ~info_con % varying food
     options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
-    %options = odeset('Events',@event_jp); 
     [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
     tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
     if isempty(vel_jp)
