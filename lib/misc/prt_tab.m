@@ -1,5 +1,5 @@
 %% prt_tab
-% writes table to temporary file tab.html, shows it in the bowser and deletes it
+% writes table to temporary file tab.html, shows it in the bowser and optionally deletes it
 
 %%
 function prt_tab(values, header, title, save)
@@ -13,7 +13,7 @@ function prt_tab(values, header, title, save)
 %
 % Input:
 %
-% * varargin: cell arrays with strings and/or matrices with numbers
+% * values: cell array with strings and/or matrices with numbers
 % * header: cell vector with strings for header; length should match number of columns, but might by empty
 % * title: optional string with title of browser tab and file-name (default "table")
 % * save: optional boolean to save the html-file (default: false)
@@ -24,7 +24,8 @@ function prt_tab(values, header, title, save)
 
 %% Remarks
 % The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.
-% The header is not optional, but if empty, no header is printed.
+% If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
+% See <prt_tab_xls.html *prt_tab_xls*> for other formats than html.
 
 %% Example of use
 % prt_tab({{'aa';'bb';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
