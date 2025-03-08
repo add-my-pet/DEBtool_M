@@ -2,11 +2,11 @@
 % writes table to temporary file tab.html, shows it in the bowser and optionally deletes it
 
 %%
-function prt_tab(values, header, title, save)
+function prt_tab(values, header, fileName, save)
 % created 2021/05/11 by Bas Kooijman, modified 2024/09/11
 
 %% Syntax
-% <../prt_tab.m *prt_tab*> (values, header, title, save) 
+% <../prt_tab.m *prt_tab*> (values, header, fileName, save) 
 
 %% Description
 % writes table to temporary file title.html (= 3rd input) and shows it in the bowser
@@ -15,7 +15,7 @@ function prt_tab(values, header, title, save)
 %
 % * values: cell array with strings and/or matrices with numbers
 % * header: cell vector with strings for header; length should match number of columns, but might by empty
-% * title: optional string with title of browser tab and file-name (default "table")
+% * fileName: optional string with title of browser tab and file-name (default "table")
 % * save: optional boolean to save the html-file (default: false)
 %
 % Output:
@@ -23,18 +23,25 @@ function prt_tab(values, header, title, save)
 % * text-file with the name title.html is written and shown in browser, where title is 3rd input
 
 %% Remarks
-% The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.
-% If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
-% See <prt_tab_xls.html *prt_tab_xls*> for other formats than html.
+%
+% * The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.
+% * If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
+% * If the filName has no extension, .html is assumed. 
+% * Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:
+%  .txt, .dat, .csv, .log, .text, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm
 
 %% Example of use
-% prt_tab({{'aa';'bb';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
+% prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
   
   if ~exist('header','var')
     header = {};
   end
-  if ~exist('title','var')
-    title = 'table';
+  if ~exist('fileName','var')
+    title = 'table'; ext = 'html'; fileName = 'table.html';
+  elseif ~ismember('.',fileName)
+    title = fileName; ext = 'html'; fileName = [fileName,'.html'];
+  else
+    str = strsplit(fileName,'.'); title = str(1); ext = str(end);
   end
   if ~exist('save','var')
     save = false;
@@ -64,8 +71,8 @@ function prt_tab(values, header, title, save)
     fprintf('Warning from prt_tab: length of header does not match number of collums\n');
     return
   end
-        
-  fileName = [title, '.html']; % char string with file name of output file
+  
+  if strcmp(ext,'html')
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
   % file head
@@ -132,5 +139,9 @@ function prt_tab(values, header, title, save)
   pause(2)
   if ~save
     delete(fileName)
-  end  
+  end 
+  
+  else
+    writecell([header; val],fileName)
+  end
 end
