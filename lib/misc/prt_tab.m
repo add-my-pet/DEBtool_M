@@ -72,7 +72,7 @@ function prt_tab(values, header, fileName, save)
     return
   end
   
-  if strcmp(ext,'html')
+  if strcmp(ext,'html') % write html-file and open if in your browser
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
   % file head
@@ -141,7 +141,7 @@ function prt_tab(values, header, fileName, save)
     delete(fileName)
   end 
   
-  else
+  else % write csv or xls-file to local directory
     writecell([header; val],fileName)
   end
 end
