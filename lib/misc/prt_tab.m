@@ -14,7 +14,7 @@ function prt_tab(values, header, fileName, save)
 % Input:
 %
 % * values: cell array with strings and/or matrices with numbers
-% * header: cell vector with strings for header; length should match number of columns, but might by empty
+% * header: cell vector with strings for header; length should match number of columns, but might be empty
 % * fileName: optional string with title of browser tab and file-name (default "table")
 % * save: optional boolean to save the html-file (default: false)
 %
@@ -72,7 +72,7 @@ function prt_tab(values, header, fileName, save)
     return
   end
   
-  if strcmp(ext,'html') % write html-file and open if in your browser
+  if strcmp(ext,'html') % write html-file and open it in your browser
   oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
   % file head
