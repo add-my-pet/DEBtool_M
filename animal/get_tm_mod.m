@@ -118,7 +118,8 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b; max(tau_j+1e-3,tau_p) - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); tau = [tau_b; tau_j; tau_p];
       if size(qhSt,1) == 4
-        S_j = qhSt(2,3); S_p = qhSt(3,3); else; S_j = qhSt(end,3); S_p = qhSt(end,3); 
+        S_j = qhSt(2,3); S_p = qhSt(3,3); 
+      else; S_j = qhSt(end,3); S_p = qhSt(end,3); 
         tau_m = get_tm_s([g; l_T; h_a; s_G], f, l_b); % -, scaled mean life span at T_ref; dim(h_a)=0
       end          
       S = [S_b; S_j; S_p]; 
