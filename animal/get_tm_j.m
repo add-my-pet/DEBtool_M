@@ -3,7 +3,7 @@
 
 %%
 function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
-  % created 2021/06/28 by Bas Kooijman
+  % created 2021/06/28 by Bas Kooijman, modified 2025/03/17
   
   %% Syntax
   % [tau_m, S_b, S_p, info] = <../get_tm.m *get_tm_j*>(p, f)
@@ -121,7 +121,7 @@ function dx = dget_tm_adult(t, x, g, lT, lb, lj, ha, sG, f)
     r = (f*sM - lT*sM - l)/ l/ (f/g + 1); % spec growth rate in scaled time between j and i
   end
   dl = l * max(0,r)/ 3;
-  dq = max(0, (q * l^3 * sG + ha) * f * (g/ l - r) - r * q);
+  dq = max(0, (q * l^3 * sG + ha) * f * (g * sM/ l - r) - r * q);
   dh = max(0, q - r * h);
   dS = - S * h;
   dcS = S;
