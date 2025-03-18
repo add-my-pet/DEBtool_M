@@ -33,11 +33,14 @@ function [tau_m, info] = get_tm_sj (par, f)
   if length(par)<4; s_M = 1; else s_M = par(4); end 
   if ~exist('f','var'); f = 1; end
   
-  h_G = s_G * s_M^3 * f^3 * g; % scaled Gompertz ageing rate
-  h3_W = h_a * g/ 6; % scaled Weibull aging rate
-  get_tau_m =  @(tau_m, h3_W, h_G) log(2) + 6 * h3_W/ h_G^3 * (1 - exp(tau_m * h_G) + tau_m * h_G + tau_m^2 * h_G^2/ 2);
+  if s_G >0.05
+    h_G = s_G * s_M^3 * f^3 * g; % scaled Gompertz ageing rate
+    h3_W = h_a * g/ 6; % scaled Weibull aging rate
+    get_tau_m =  @(tau_m, h3_W, h_G) log(2) + 6 * h3_W/ h_G^3 * (1 - exp(tau_m * h_G) + tau_m * h_G + tau_m^2 * h_G^2/ 2);
   
-  [tau_m, fval, flag]  = fzero(@(tau) get_tau_m(tau, h3_W, h_G), 1);
-  if ~flag==1; info = 0; else info = 1; end
-  
+    [tau_m, fval, flag]  = fzero(@(tau) get_tau_m(tau, h3_W, h_G), 1);
+    if ~flag==1; info = 0; else info = 1; end
+  else
+    h_W = (h_a * g/ 6)^(1/3); tau_m = log(2)/h_W; info = 1;  
+  end
 end
