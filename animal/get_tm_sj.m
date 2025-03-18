@@ -29,7 +29,7 @@ function [tau_m, info] = get_tm_sj (par, f)
   %  get_tm_sj([.5, .1])
    
   g = par(1); h_a = par(2); 
-  if length(par)<3 || isempty(par(3)); s_G = 1e-8; else s_G = max(1e-8,par(3)); end
+  if length(par)<3 || isempty(par(3)); s_G = 0; else s_G = par(3); end
   if length(par)<4; s_M = 1; else s_M = par(4); end 
   if ~exist('f','var'); f = 1; end
   
