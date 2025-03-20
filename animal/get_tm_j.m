@@ -14,7 +14,7 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
   %
   % Input
   %
-  % * p: 8-vector with parameters: g k lT vHb vHj vHp ha SG 
+  % * p: 8-vector with parameters: g k lT vHb vHj vHp ha sG 
   % * f: scalar with scaled reserve density at birth (default f = 1)
   %  
   % Output

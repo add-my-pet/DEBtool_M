@@ -6,7 +6,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
   % created 2019/10/07 by Bas Kooijman, modified 2022/02/10, 2024/02/09
   
   %% Syntax
-  % [tau_m, S_, tau, info] = <../get_tm_mod.m *get_tm_mod*>(model, p, f, h_B, thinning)
+  % [tau_m, S, tau, info] = <../get_tm_mod.m *get_tm_mod*>(model, p, f, h_B, thinning)
   
   %% Description
   % Obtains scaled mean age at death by integration survival prob over age. 
@@ -122,7 +122,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       if size(qhSt,1) == 4
         S_j = qhSt(2,3); S_p = qhSt(3,3); 
       else; S_j = qhSt(end,3); S_p = qhSt(end,3); 
-        tau_m = get_tm_s([g; l_T; h_a; s_G], f, l_b); % -, scaled mean life span at T_ref; dim(h_a)=0
+        tau_m = get_tm_sj([g, h_a, s_G, s_M], f); % -, scaled median life span at T_ref; dim(h_a)=0
       end          
       S = [S_b; S_j; S_p]; 
     case 'asj'
