@@ -2,14 +2,14 @@
 % Gets scaled mean age at death
 
 %%
-function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
-  % created 2021/06/28 by Bas Kooijman, modified 2025/03/17
+function [tm, tp, tj, tb, S_p, S_j, S_b, info] = get_tm_j(p, f)
+  % created 2021/06/28 by Bas Kooijman, modified 2025/03/21
   
   %% Syntax
-  % [tau_m, S_b, S_p, info] = <../get_tm.m *get_tm_j*>(p, f)
+  % [tau_m, tau_p, tau_j, tau_b, S_p, S_j, S_b, info] = <../get_tm.m *get_tm_j*>(p, f)
   
   %% Description
-  % Obtains scaled mean age at death by integration of cumulative survival prob over length for the abj model. 
+  % Obtains scaled mean age at death by integration of cumulative survival prob for the abj model. 
   % Divide the result by the somatic maintenance rate coefficient to arrive at the mean age at death. 
   %
   % Input
@@ -20,12 +20,17 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
   % Output
   %
   % * tau_m: scalar with scaled mean life span
+  % * tau_p: scalar with age at puberty
+  % * tau_j: scalar with age at birth
+  % * tau_b: scalar with age at metam
+  % * S_p: scalar with survival probability at puberty
+  % * S_j: scalar with survival probability at metam 
   % * S_b: scalar with survival probability at birth 
-  % * S_p: scalar with survival prabability at puberty (if length p = 7)
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
   % Theory is given in comments on DEB3 Section 6.1.1 
+  % Notice that dim(h_a)=0: scaled Weibull acceleration
   
   %% Example of use
   % get_tm_j([.5, .1, 0, .01, .02, .1, .01, 1])
@@ -35,8 +40,8 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
   k   = p(2); % k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
   lT  = p(3); % scaled heating length {p_T}/[p_M]Lm
   vHb = p(4); % v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_B^b = M_H^b/ {J_EAm}
-  %vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
-  %vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
+  vHj = p(5); % v_H^j = U_H^j g^2 kM^3/ (1 - kap) v^2; U_B^j = M_H^j/ {J_EAm}
+  vHp = p(6); % v_H^p = U_H^p g^2 kM^3/ (1 - kap) v^2; U_B^p = M_H^p/ {J_EAm}
   ha  = p(7); % h_a/ k_M^2, scaled Weibull aging acceleration
   sG  = p(8); % Gompertz stress coefficient
   
@@ -44,18 +49,20 @@ function [tau_m, S_b, S_p, info] = get_tm_j(p, f)
     f = 1;
   end
    
-  [tj, tp, tb, lj, lp, lb, ~, ~, ~, info_tj] = get_tj (p, f);
-  [uE0, ~, info_uE0] = get_ue0([g, k, vHb], f, lb);
-  
+  [uE0, lb, info_uE0] = get_ue0([g, k, vHb], f);  
   x0 = [uE0; 1e-4; 0; 0; 1; 0]; % initiate uE l q h S cS
+  tb = get_tb([g, k, vHb], f, lb);
   [t, x]= ode45(@dget_tm_egg, [0; tb], x0, [], g, ha, sG);
   xb = x(end,:)'; xb(1) = []; % l q h S cS at birth
+
+  [tj, tp, tb, lj, lp, lb, ~, ~, ~, info_tj] = get_tj (p, f);
+  
   options = odeset('Events',@dead_for_sure, 'NonNegative',ones(5,1));  
-  [t, x]= ode45(@dget_tm_adult, [tb; tj; max(tj+1e-3,tp); 1e3*tp], xb, options, g, lT, lb, lj, ha, sG, f);
+  [t, x] = ode45(@dget_tm_adult, [tb; tj; max(tj+1e-3,tp); 1e3*tp], xb, options, g, lT, lb, lj, ha, sG, f);
   if size(x,1)==4
-    S_b = x(1,4); S_p = x(3,4); tau_m = x(4,5);
+    S_b = x(1,4); S_j = x(2,4); S_p = x(3,4); tm = x(4,5);
   else
-    S_b = x(1,4); S_p = []; tau_m = x(end,5);
+    S_b = x(1,4); S_j = 0; S_p = 0; tm = x(end,5);
   end
 
   if info_tj == 1 && info_uE0 == 1 && lp < f*lj/lb - lT
