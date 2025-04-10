@@ -20,13 +20,13 @@ function AmPgui(action)
 % Output: no explicit output, but global exit-flag infoAmPgui is set with
 %
 %   - 0, species is in AmP, skip writing 4 source files
-%   - 1, writing 4 source files with species in CoL
-%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
-%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
-%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
-%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
-%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
-%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
+%   - 1, writing 4 source files with species in Taxo
+%   - 2, writing 4 source files with species not in Taxo, but genus is in AmP
+%   - 3, writing 4 source files with species not in Taxo, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not in Taxo, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not in Taxo, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not in Taxo, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not in Taxo, phylum is not in AmP
 
 %% Remarks
 %
@@ -34,6 +34,8 @@ function AmPgui(action)
 % * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function 
 % * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % * All weights are set at default values in the resulting file; 
+% * The first call to "species" in the gui uses automatised completions,
+% subsequent calls use handfilling;
 % * This function is called in AmPeps
 % * Font colors in main AmPgui mean:
 %
@@ -837,6 +839,8 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   global color dmydata infoAmPgui list_spec handfilled my_pet_lineage lin
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
+  handfilled = true; % don't call speciesCb again, but OKspeciesCb instead
+
   if ismember(my_pet,list_spec) % species is already in AmP
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     set(Hwarning, 'String', 'species is already in AmP');
@@ -847,21 +851,19 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     return
   end
   
-  [lineage, rank, lin, rank_short, id_Taxo] = lineage_Taxo(my_pet);
+  [~, ~, lin, rank, id_Taxo] = lineage_Taxo(my_pet);
   genus = strsplit(my_pet,'_'); genus = genus{1};
-  id_Taxo_genus = get_id_Taxo(genus);
+  id_taxo_genus = get_id_Taxo(genus); % identification code of the genus
   if isempty(rank) && isempty(id_Taxo_genus)
     fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
-    handfilled = true;
     return
   end
   
-  metaData.family = ''; metaData.order = ''; metaData.class = ''; metaData.phylum = '';
   if ~isempty(lin)
-    metaData.family = lin{ismember(rank_short,'Family')};  
-    metaData.order  = lin{ismember(rank_short,'Order')};  
-    metaData.class  = lin{ismember(rank_short,'Class')};  
-    metaData.phylum = lin{ismember(rank_short,'Phylum')};  
+    metaData.family = lin{ismember(rank,'Family')};  
+    metaData.order  = lin{ismember(rank,'Order')};  
+    metaData.class  = lin{ismember(rank,'Class')};  
+    metaData.phylum = lin{ismember(rank,'Phylum')};  
   end
   
   nms = get_common_Taxo(id_Taxo); 
