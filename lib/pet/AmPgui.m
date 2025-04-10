@@ -847,32 +847,24 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     return
   end
   
-  [lin_CoL, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet);
+  [lineage, rank, lin, rank_short, id_Taxo] = lineage_Taxo(my_pet);
   genus = strsplit(my_pet,'_'); genus = genus{1};
-  id_CoL = get_id_CoL(genus);
-  if isempty(rank) && isempty(id_CoL)
-    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by CoL\n', my_pet, genus);
+  id_Taxo_genus = get_id_Taxo(genus);
+  if isempty(rank) && isempty(id_Taxo_genus)
+    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
+    handfilled = true;
     return
   end
-  if ~strcmp(name_status,'accepted name') && ~isempty(my_pet) && ~isempty(name_status) && ~isempty(my_pet_acc)
-    fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc);
-    metaData.species = my_pet_acc;
+  
+  metaData.family = ''; metaData.order = ''; metaData.class = ''; metaData.phylum = '';
+  if ~isempty(lin)
+    metaData.family = lin{ismember(rank_short,'Family')};  
+    metaData.order  = lin{ismember(rank_short,'Order')};  
+    metaData.class  = lin{ismember(rank_short,'Class')};  
+    metaData.phylum = lin{ismember(rank_short,'Phylum')};  
   end
   
-  [lin, ~, my_pet_lineage] = lineage_short(metaData.species);
-
-  if isempty(lin)
-    metaData.family = lin_CoL{ismember(rank,'family')};  
-    metaData.order = lin_CoL{ismember(rank,'order')};  
-    metaData.class = lin_CoL{ismember(rank,'class')};  
-    metaData.phylum = lin_CoL{ismember(rank,'phylum')};  
-  else
-    metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
-  end
-
-  metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
-
-  nms = get_common_CoL(id_CoL); 
+  nms = get_common_Taxo(id_Taxo); 
   if isempty(nms)
     metaData.species_en = 'no_english_name'; 
   else
