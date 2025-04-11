@@ -226,7 +226,7 @@ else % fill fields
         Haddress = uicontrol('Parent',dauthor, 'Callback',@addressCb, 'Position',[110 45 350 20], 'Style','edit', 'String',metaData.address); 
         uicontrol('Parent',dauthor, 'Callback',{@OKCb,dauthor}, 'Position',[110 20 20 20], 'String','OK', 'Style','pushbutton');
 
-      case 'curator'
+      case 'curator'         
         curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
         emailList = {'starrlight@tecnico.ulisboa.pt', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
         if ~isempty(metaData.curator)
