@@ -227,8 +227,8 @@ else % fill fields
         uicontrol('Parent',dauthor, 'Callback',{@OKCb,dauthor}, 'Position',[110 20 20 20], 'String','OK', 'Style','pushbutton');
 
       case 'curator'         
-        curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
-        emailList = {'starrlight@ecotechnics.edu', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
+        curList = {'Starrlight Augustine', 'Mike Kearney', 'Bas Kooijman', 'Romain Lavaud', 'Dina Lika', 'Nina Marn', 'Goncalo Marques', 'Laure Peçquerie','Tan Tjui-Yeuw'};
+        emailList = {'starrlight@ecotechnics.edu', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com', 'RLavaud@agcenter.lsu.edu', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'goncalo.marques@tecnico.ulisboa.pt', 'laure.pecquerie@ird.fr', 'tan.tjuiyeuw@wur.nl'};
         if ~isempty(metaData.curator)
           i = 1:5; i = i(ismember(curList, metaData.curator));
         else
