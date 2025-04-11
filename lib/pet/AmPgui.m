@@ -835,7 +835,7 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
-  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  global metaData Hspecies hspecies Hlinks Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
   global color dmydata infoAmPgui list_spec handfilled my_pet_lineage lin
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
@@ -855,9 +855,9 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   genus = strsplit(my_pet,'_'); genus = genus{1};
   id_Taxo_genus = get_id_Taxo(genus); % identification code of the genus
   if isempty(id_Taxo)
-    metaData.links_id_Taxo = id_Taxo_genus;
+    metaData.links.id_Taxo = id_Taxo_genus;
   else
-    metaData.links_id_Taxo = id_Taxo;
+    metaData.links.id_Taxo = id_Taxo;
   end
   if isempty(rank) && isempty(id_Taxo_genus)
     fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
