@@ -853,7 +853,12 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   
   [~, ~, lin, rank, id_Taxo] = lineage_Taxo(my_pet);
   genus = strsplit(my_pet,'_'); genus = genus{1};
-  id_taxo_genus = get_id_Taxo(genus); % identification code of the genus
+  id_Taxo_genus = get_id_Taxo(genus); % identification code of the genus
+  if isempty(id_Taxo)
+    metaData.links_id_Taxo = id_Taxo_genus;
+  else
+    metaData.links_id_Taxo = id_Taxo;
+  end
   if isempty(rank) && isempty(id_Taxo_genus)
     fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
     return
@@ -877,7 +882,6 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
   frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1);
   infoAmPgui = 1;
-  handfilled = true; % do not use this function speciesCb again, but use OKspeciesCb instead
   close(dspecies); 
   AmPgui('setColors')
   AmPgui('species') % repeat case species, but now with run OKspeciesCb because handfilled is true
