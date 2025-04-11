@@ -228,7 +228,7 @@ else % fill fields
 
       case 'curator'         
         curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
-        emailList = {'starrlight@tecnico.ulisboa.pt', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
+        emailList = {'starrlight@ecotechnics.edu', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
         if ~isempty(metaData.curator)
           i = 1:5; i = i(ismember(curList, metaData.curator));
         else
@@ -426,7 +426,7 @@ else % fill fields
             select_id(21) = true;
             metaData.links.id_birdlife = get_id_birdlife(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
             select_id(22) = true;
             metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
           end
