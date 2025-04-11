@@ -835,7 +835,7 @@ end
 
 %% callback functions
 function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
-  global metaData Hspecies hspecies Hlinks Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
+  global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
   global color dmydata infoAmPgui list_spec handfilled my_pet_lineage lin
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
