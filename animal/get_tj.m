@@ -58,13 +58,14 @@ function varargout = get_tj(p, f, tel_b, tau)
     
   if ~exist('f', 'var') || isempty(f) % constant food
     f = 1; f_i = f; info_con = 1;
-  elseif length(f) == 1 && (~exist('tel_b','var') || isempty(tel_b))% constant food
+  elseif length(f) == 1 % constant food
     f_i = f; info_con = 1;
   else % varying food
     f_i = f(end,end); info_con = 0;
   end
-  tvel = [];
-  
+  tvel = []; tau_j = []; tau_p = []; tau_b = []; l_j = []; l_p = [];, l_b = []; l_i = []; rho_j = []; rho_B = [];  info = [];
+  varargout = {tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info};
+ 
   % embryo
   if exist('tel_b', 'var') && ~isempty(tel_b)
     if length(tel_b) == 1
@@ -92,7 +93,11 @@ function varargout = get_tj(p, f, tel_b, tau)
     try 
       options = optimset('TolX',1e-16);
       [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
-      [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+      try
+        [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+      catch
+        [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+      end
       s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
       tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
       Tau = tau + tau_b; Tau_0j = Tau(Tau<tau_j); Tau_ji = Tau(Tau>=tau_j); % tau: scaled time since birth; Tau: scaled age
