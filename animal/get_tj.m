@@ -63,7 +63,7 @@ function varargout = get_tj(p, f, tel_b, tau)
   else % varying food
     f_i = f(end,end); info_con = 0;
   end
-  tvel = []; tau_j = []; tau_p = []; tau_b = []; l_j = []; l_p = [];, l_b = []; l_i = []; rho_j = []; rho_B = [];  info = [];
+  tvel = []; tau_j = []; tau_p = []; tau_b = []; l_j = []; l_p = []; l_b = []; l_i = []; rho_j = []; rho_B = [];  info = [];
   varargout = {tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info};
  
   % embryo
@@ -92,12 +92,12 @@ function varargout = get_tj(p, f, tel_b, tau)
   if info_con % constant food
     try 
       options = optimset('TolX',1e-16);
-      [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f);
+      [l_j, ~, info_lj] = fzero(@get_lj, [l_b 1], options, v_Hj, l_b, v_Hb, l_T, rho_j, rho_B, k, g, f_i);
       try
-        [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+        [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f_i);
       catch
-        %[l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
-        [~, lp, ~, info_lp] = get_lj(p, f);
+        %[l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f_i);
+        [~, lp, ~, info_lp] = get_lj(p, f_i);
       end
       s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
       tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
