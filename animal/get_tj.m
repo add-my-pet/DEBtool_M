@@ -96,7 +96,8 @@ function varargout = get_tj(p, f, tel_b, tau)
       try
         [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
       catch
-        [l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+        %[l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f);
+        [~, lp, ~, info_lp] = get_lj(p, f);
       end
       s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
       tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
