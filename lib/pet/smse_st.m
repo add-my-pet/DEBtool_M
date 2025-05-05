@@ -3,14 +3,14 @@
 
 %%
 function [mserr, serr, prdInfo] = smse_st(func, par, data, auxData, weights)
-  % created: 2016/05/05 by Goncalo Marques, modified 2022/01/26 by Bas Kooijman
+  % created: 2016/05/05 by Goncalo Marques, modified 2022/01/26, 2024/10/21 by Bas Kooijman
   
   %% Syntax 
   % [mserr, serr, prdInfo] = <../mse_st.m *smse_st*>(func, par, data, auxData, weights)
   
   %% Description
   % Calculates the symmetric mean squared  error, used in add_my_pet:
-  %    \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2) 
+  %    2 \sum_ij w_ij/ w_i+ (d_ij - p_ij)^2/ (d_i^2 + p_i^2) 
   %
   % Input
   %

@@ -62,7 +62,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 %     - s_HLbp: maturity density ratio; all
 %     - r_j: exponential growth rate; all a- and h-models
 %     - r_B: von Bertalannfy growth rate; all s- and a-models
-%     - : wet weight at max growth; all models
+%     - W_dWm: wet weight at max growth; all models
 %     - dWm: max growth in wet weight; all models
 %
 %     - E_H*, U_H*, V_H*, u_H*, v_H* scaled maturities at all levels; all
@@ -474,7 +474,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       pars_tj = [g k v_Hb v_He s_j kap kap_V];
       [t_j, t_e, t_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(pars_tj, f);
       if info ~= 1              
-        fprintf('warning in get_tj_hex: invalid parameter value combination for t_p \n')
+        fprintf('warning in get_tj_hex: invalid parameter value combination for t_j \n')
       end
       l_i = l_j; s_M = l_j/ l_b; % notice that l_i is set to scaled length at pupation for hex
       stat.E_Hp = E_Hb+1e-8; units.E_Hp = 'J'; label.E_Hp = 'maturity level at puberty'; temp.E_Hp = NaN; fresp.E_Hp = NaN; % is not a parameter of hex
@@ -913,12 +913,12 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       end
     case 'sbp' % no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp];  
-      p_ACSJGRD = p_ref * scaled_power([L_b + 1e-6; L_p; L_i + 1e-8], f, pars_power, l_b, l_p); 
-      p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
+      p_ACSJGRD = p_ref * scaled_power_sbp([L_b + 1e-6; L_p; L_p + 1e-8], f, pars_power, l_b, l_p); 
+      p_ACSJGRD(3,5) = 0; % p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); 
     case 'abp'% no growth, no kappa rule after p
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hp; U_Hp + 1e-6];  
-      p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);
-      p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); p_ACSJGRD(3,5) = 0;
+      p_ACSJGRD = p_ref * scaled_power_abp([L_b + 1e-6; L_p], f, pars_power, l_b, l_p);
+      p_ACSJGRD(3,5) = 0; % p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); 
     case 'abj'
       pars_power = [kap; kap_R; g; k_J; k_M; L_T; v; U_Hb; U_Hj; U_Hp];  
       p_ACSJGRD = p_ref * scaled_power_j([L_b + 1e-6; L_p; L_i], f, pars_power, l_b, l_j, l_p);

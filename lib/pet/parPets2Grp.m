@@ -65,8 +65,13 @@ function parGrp = parPets2Grp(parPets, metaData)
         vec = zeros(1,n_pets); % initiate vector-valued parameter specification
         fvec = zeros(1,n_pets); % initiate vector-valued parameter-free specification
         for i = 1:n_pets
-          vec(i) = parPets.(pets{i}).(parNms{j});
-          fvec(i) = parPets.(pets{i}).free.(parNms{j});
+          try
+            vec(i) = parPets.(pets{i}).(parNms{j});
+            fvec(i) = parPets.(pets{i}).free.(parNms{j});
+          catch
+            vec(i) = 0;
+            fvec(i) = 0;
+          end
         end
         parGrp.(parNms{j}) = vec; 
         parGrp.free.(parNms{j}) = fvec;

@@ -203,7 +203,7 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
   end
             
   par.thinning = 0;
-  [f_00, info_00] = f_ris0_mod (model, par); % get f for r = 0
+  [f_00, info_00] = f_ris0_mod (model, par); % get f for r = 
   stat.f0.thin0.f.f = f_00; r_00 = 0; stat.f0.thin0.f.r = r_00; stat.f0.thin0.f.t2 = NaN; 
   if info_00 == 0
     stat = ssd_mod(model, stat, '00f', NaN); f_00 = NaN; stat.f0.thin0.f.f = f_00;

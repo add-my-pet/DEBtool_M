@@ -14,7 +14,7 @@ function mat2pars_init_nat
 %
 % Input:
 %
-% * my_pet: optional string with the species name (default pets{1} for single species
+% * my_pet: optional string with the species name (default pets{1}) for single species
 
 %% Remarks
 % Keep in mind that the files will be saved in your local directory; 
@@ -45,7 +45,7 @@ else
   load(matFile, 'par');
 end
 
-% pars_init = ['pars_init_', my_pet, '.m'];
+pars_init = ['pars_init_', my_pet, '.m'];
 % if exist(pars_init, 'file') == 2
 %   prompt = [pars_init, ' already exists. Do you want to overwrite it? (y/n) '];
 %   overwr = lower(input(prompt, 's'));

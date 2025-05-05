@@ -11,7 +11,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
 % modified 2015/08/25 by Dina Lika, 
 % modified 2018/05/21, 2018/08/21, 2019/03/02, 2019/04/08, 2019/07/27 by Bas Kooijman
 % modified 2019/08/30, 2019/11/12, 2019/12/20 by Nina Marn
-% modified 2020/10/27, 2021/01/16, 2024/01/08 by Bas Kooijman
+% modified 2020/10/27, 2021/01/16, 2024/01/08, 2024/11/20 by Bas Kooijman
 
 %% Syntax
 % <../results_pets.m *results_pets*>(par, metaPar, txtPar, data, auxData, metaData, txtData, weights) 
@@ -156,7 +156,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
           st = data.(pets{i}); % structure with field names of all data sets (zero-, uni-, bi-, psd)
           [nm, nst] = fieldnmnst_st(data2plot.(pets{i})); % field names of uni- and bi-variate data sets
           allSetsInGroup = {};
-          if isfield(metaData.(pets{i}), 'grp') % first working on grouped graphs
+          if isfield(metaData.(pets{i}), 'grp') % first working ofn grouped graphs
             grpSets =  metaData.(pets{i}).grp.sets; n_grpSets = length(grpSets);
             for ii = 1:n_grpSets % scan the group-sets
               figure; counter_fig = counter_fig + 1; legend = cell(0,2);
@@ -309,6 +309,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                 xlabel([txtData.(pets{i}).label.(nm{j}){1}, ', ', txtData.(pets{i}).units.(nm{j}){1}]);
                 ax = gca; ax.YAxis(1).Color = 'r'; ax.YAxis(2).Color = 'b'; % left yaxis red, right blue
                 dataSet_nFig = [dataSet_nFig; {nm{j}, nFig}]; % no legend for this plot
+                if isfield(txtData.(pets{i}),'title') && isfield(txtData.(pets{i}).title,nm{j}); title(txtData.(pets{i}).title.(nm{j}), 'FontSize',15, 'FontWeight','normal'); end 
               else
                 if ~k==1+length(treat{2}) % number of values to 2nd variable needs to match nuber of columns
                   fprintf('Warning from results_pets: bi-variate data %s is found, but the length of field "auxData.treat.%s{2}" does not match the number of independent variables\n', nm{j}, nm{j});
@@ -371,7 +372,8 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                       plot(xPred, yPred,'Color', plotColours{2}, 'linewidth', 2)
                       plot(xData, yData, '.', 'Color', plotColours{1}, 'Markersize',15)
                     else
-                      plot(xPred, yPred, 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
+                      sel = xPred<xData(find(~isnan(yData),1,'last')); % do not plot predictions beyond the last data-point not being NaN
+                      plot(xPred(sel), yPred(sel), 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'linewidth', 2)
                       plot(xData, yData, '.', 'Color', plotColours{mod(ii, maxGroupColourSize)}, 'Markersize', 15)
                       if isnumeric(treat{2}); txt_ii = [num2str(treat{2}(ii)), ' ', txtData.(pets{i}).units.treat.(nm{j})]; else;  txt_ii = treat{2}(ii); end
                       legend = [legend; {{'.', 15, 2, plotColours{mod(ii, maxGroupColourSize)}, plotColours{mod(ii, maxGroupColourSize)}}, txt_ii}];
@@ -523,7 +525,7 @@ function results_pets(par, metaPar, txtPar, data, auxData, metaData, txtData, we
                   system(['powershell apngasm64 ../',nmDir,'.png frame*.png']);
                 end
                 cd(WD);
-%                 delete(nmDir)
+%                 delete *.png; rmdir(nmDir);
               end
             end 
           end

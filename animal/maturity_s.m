@@ -3,25 +3,25 @@
 
 %%
 function [H, a, info] = maturity_s(L, f, p)
-  %  created 2014/02/21 by Bas Kooijman, modified 2014/03/04
+  %  created 2024/07/13 by Bas Kooijman
   
   %% Syntax
   % [H, a, info] = <../maturity_s.m *maturity_s*> (L, f, p)
   
   %% Description
-  % Calculates the scaled maturity UH = MH/ {JEAm} at constant food density 
+  % Calculates the scaled maturity U_H = M_H/ {J_EAm} at constant food density 
   % in the case of delayed acceleration between UHs and UHj
-  % and UHb < UHs < UHj < UHp
+  % and U_Hb < U_Hs < U_Hj < U_Hp
   %
   % Input
   %
   % * L: n-vector with length 
-  % * p: 11-vector with parameters: kap kapR g kJ kM LT v Hb Hs Hj Hp
-  % * F: scalar with (constant) scaled functional response
+  % * p: 11-vector with parameters: kap kap_R g k_J k_M L_T v H_b H_s H_j H_p
+  % * f: scalar with (constant) scaled functional response
   %
   % Output
   %
-  % * H: n-vector with scaled maturities: H = M_H/ {J_EAm}
+  % * H: n-vector with scaled maturities: H = M_H/{J_EAm} = E_H/{p_Am}
   % * a: n-vector with ages
   % * info: scalar for 1 for success, 0 otherwise
   
@@ -34,87 +34,124 @@ function [H, a, info] = maturity_s(L, f, p)
  
   % unpack parameters
   kap = p(1); % -, fraction allocated to growth + som maint
-  %kapR = p(2);% -, fraction of reprod flux that is fixed in embryo reserve 
-  g  = p(3);  % -, energy investment ratio
-  kJ = p(4);  % 1/d, maturity maint rate coeff
-  kM = p(5);  % 1/d, somatic maint rate coeff
-  LT = p(6);  % cm, heating length
-  v  = p(7);  % cm/d, energy conductance
-  Hb = p(8);  % d cm^2, scaled maturity at birth
-  Hs = p(9);  % d cm^2, scaled maturity at start acceleration
-  Hj = p(10); % d cm^2, scaled maturity at end acceleration
-  Hp = p(11); % d cm^2, scaled maturity at puberty
-  % kapR is not used, but kept for consistency with iget_pars_r, reprod_rate
+  %kap_R = p(2);% -, fraction of reprod flux that is fixed in embryo reserve 
+  g   = p(3);  % -, energy investment ratio
+  k_J = p(4);  % 1/d, maturity maint rate coeff
+  k_M = p(5);  % 1/d, somatic maint rate coeff
+  L_T = p(6);  % cm, heating length
+  v   = p(7);  % cm/d, energy conductance
+  H_b = p(8);  % d cm^2, scaled maturity at birth
+  H_s = p(9);  % d cm^2, scaled maturity at start acceleration
+  H_j = p(10); % d cm^2, scaled maturity at end acceleration
+  H_p = p(11); % d cm^2, scaled maturity at puberty
+  % kap_R is not used, but kept for consistency with iget_pars_r, reprod_rate
 
-  if exist('F','var') == 0
+  if isempty(f)
     f = 1; % abundant food
   end
 
-  Lm = v/ kM/ g; lT = LT/ Lm; k = kJ/ kM;
+  L_m = v/ k_M/ g; l_T = L_T/ L_m; k = k_J/ k_M; L = L(:);
  
-  uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);
-  uHs = Hs * g^2 * kM^3/ (v^2); vHs = uHs/ (1 - kap);
-  uHj = Hj * g^2 * kM^3/ (v^2); vHj = uHj/ (1 - kap);
-  uHp = Hp * g^2 * kM^3/ (v^2); vHp = uHp/ (1 - kap);
+  u_Hb = H_b * g^2 * k_M^3/ v^2; v_Hb = u_Hb/ (1 - kap);
+  u_Hs = H_s * g^2 * k_M^3/ v^2; v_Hs = u_Hs/ (1 - kap);
+  u_Hj = H_j * g^2 * k_M^3/ v^2; v_Hj = u_Hj/ (1 - kap);
+  u_Hp = H_p * g^2 * k_M^3/ v^2; v_Hp = u_Hp/ (1 - kap);
 
-  [ls, lj, lp, lb, info] = get_ls([g; k; lT; vHb; vHs; vHj; vHp], f);
-  Lp = Lm * lp; % cm, structural length at pubert
+  [tau_s, tau_j, tau_p, tau_b, l_s, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_ts([g; k; l_T; v_Hb; v_Hs; v_Hj; v_Hp], f);
+  L_i = L_m * l_i; L_j = L_m * l_j; L_s = L_m * l_s; L_b = L_m * l_b; % cm, structural lengths
+  s_M = l_j/ l_s;  r_j = k_M * rho_j; r_B = k_M * rho_B; % 1/d, von Bert growth rate
     
-  ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh_s, [1e-6; L(1)/ 2; L]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj);
-  teh(1:2,:) = []; 
-  H = teh(:,3) * v^2/ g^2/ kM^3;
-  H(L >= Lp) = Hp;
-  a = teh(:,1)/ kM;
+  L_0b = L(L<=L_b);  L_bs = L(L>L_b&L<=L_s); L_sj = L(L>L_s&L<=L_j); L_ji = L(L>L_j);
+  n_0b = length(L_0b); n_bs = length(L_bs); n_sj = length(L_sj); n_ji = length(L_ji);
+  a_0b = []; H_0b = []; a_bs = []; H_bs = []; a_sj = []; H_sj = []; a_ji = []; H_ji = []; % initiate values for a and H
+  options = odeset('RelTol',1e-6, 'AbsTol',1e-6); 
+
+  % integrate [l, u_E, u_H] in time (0, tau_b) and find u_H via spline-interpolation in the trajectory
+  if n_0b > 0 % embryo values
+    u_E0 = get_ue0([g, k, v_Hb], f);
+    [tau, luEuH] = ode45(@dget_luEuH, [0;tau_b], [1e-6;u_E0;1e-6], options, kap, g, k);
+    a = tau/ k_M; La = L_m * luEuH(:,1); H = luEuH(:,3)*v^2/g^2/k_M^3;
+    a_0b = spline1(L_0b,[La,a]); H_0b = spline1(L_0b,[La,H]);
+  end
   
+  % first find times before acceleration for L, then integrate [L, U_H] in time
+  if n_bs > 0 % values before acceleration
+    t_bs = log((f * L_m - L_b)./(f * L_m - L_bs))/ r_B; % d, time since b
+    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_bs],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
+    if n_bs==1; t = t([1 end]); LH = LH([1 end],:); end
+    t(1) = []; LH(1,:) = []; a_bs = tau_b/ k_M + t; H_bs = LH(:,2);
+  end
+  
+  % first find times during acceleration for L, then integrate [L, U_H] in time
+  if n_sj > 0 % values during acceleration
+    t_sj = log(L_sj ./ L_s) * 3/ r_j; % d, time since s
+    [t, LH] = ode45(@dget_LH_sj,[-1e-8;t_sj],[L_s;H_s],options,f, L_s, kap, v, g, k_M, k_J);
+    if n_sj==1; t = t([1 end]); LH = LH([1 end],:); end
+    t(1) = []; LH(1,:) = []; a_sj = tau_s/ k_M + t; H_sj = LH(:,2);
+  end
+  
+  % first find times since acceleration for L, then integrate [L, U_H] in time
+  % allow to integrate past puberty, but clip U_H in trajectory
+  if n_ji > 0 % post-acceleration values
+    t_ji = log((L_i - L_j)./ (L_i - L_ji))/ r_B; % d, time since j
+    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_ji],[L_j;H_j],options,f, kap, v * s_M, g, k_M, k_J);
+    if n_ji==1; t = t([1 end]); LH = LH([1 end],:); end
+    t(1) = []; LH(1,:) = []; a_ji = tau_j/ k_M + t; H_ji = min(H_p,LH(:,2));
+  end
+
+  % catenate values
+  H = [H_0b; H_bs; H_sj; H_ji]; a = [a_0b; a_bs; a_sj; a_ji];
+
 end
 
 % subfunctions
-
-function dtEH = dget_teh_s(l, tEH, k, g, kap, f, uHb, uHs, uHj, uHp, lT, lb, ls, lj)
-  % l: scalar with scaled length  l = L g k_M/ v
-  % tEH: 3-vector with (tau, uE, uH) of embryo and juvenile
-  %   tau = a k_M; scaled age
-  %   uE = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
-  %   uH = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
-  % dtEH: 3-vector with (dt/duH, duE/duH, dl/duH)
-  % called by maturity_s
+function dluEuH = dget_luEuH(tau, luEuH, kap, g, k)
+  % tau: a k_M; scaled age
+  % luEuH: 3-vector with (l, u_E, u_H) 
+  %   l = L g k_M/ v; scaled length
+  %   u_E = (g^2 k_M^3/ v^2) M_E/ {J_EAm}; scaled reserve
+  %   u_H = (g^2 k_M^3/ v^2) M_H/ {J_EAm}; scaled maturity
+  % dluEuH: 3-vector with (dl/dtau, du_E/dtau, du_H/dtau)
   
-  %t = tEH(1); % scaled age
-  uE = max(1e-10,tEH(2)); % scaled reserve
-  uH = tEH(3); % scaled maturity
-  l2 = l * l; l3 = l2 * l;
- 
-  % first obtain dl/dt, duE/dt, duH/dt
-  if uH < uHb % isomorphic embryo
-    r = (g * uE/ l - l3)/ (uE + l3); % spec growth rate in scaled time
-    dl = l * r/ 3;
-    duE =  - uE * (g/ l - r);
-    duH = (1 - kap) * uE * (g/ l - r) - k * uH;
-  elseif uH < uHs % isomorphic early juvenile
-    r = (g * uE/ l - l2 * lT - l3)/ (uE + l3); % spec growth rate in scaled time
-    dl = l * r/ 3;
-    duE = f * l2 - uE * (g/ l - r);
-    duH = (1 - kap) * uE * (g/ l - r) - k * uH;
-  elseif uH < uHj % V1-morphic juvenile
-    rj = (g * uE/ ls - l3 * lT/ ls - l3)/ (uE + l3); % scaled exponential growth rate between b and j
-    dl = l * rj/ 3;
-    duE = f * l^3/ ls - uE * (g/ ls - rj);
-    duH = (1 - kap) * uE * (g/ ls - rj) - k * uH;
-  elseif uH < uHp % isomorphic late juvenile
-    sM = lj/ ls;
-    r = (g * uE * sM/ l - l2 * lT * sM - l3)/ (uE + l3); % spec growth rate in scaled time
-    dl = l * r/ 3;
-    duE = f * l2 * sM - uE * (g * sM/ l - r);
-    duH = (1 - kap) * uE * (g * sM/ l - r) - k * uH;
-  else % isomorphic adult
-    sM = lj/ ls;
-    r = (g * uE * sM/ l - l2 * lT * sM - l3)/ (uE + l3); % spec growth rate in scaled time
-    dl = l * r/ 3;
-    duE = f * l2 * sM - uE * (g * sM/ l - r);
-    duH = 0; % no maturation in adults
-  end
+  l = luEuH(1); l2 = l * l; l3 = l2 * l; % scaled length
+  u_E = max(1e-10,luEuH(2)); % scaled reserve
+  u_H = luEuH(3); % scaled maturity
+  
+  r = (g * u_E/ l - l3)/ (u_E + l3); % -, spec growth rate in scaled time
+  dl = l * r/ 3;
+  du_E =  - u_E * (g/ l - r);
+  du_H = (1 - kap) * u_E * (g/ l - r) - k * u_H;
 
-  % then obtain dt/dl, duE/dl, duH/dl, 
-  dtEH = [1; duE; duH]/ dl;
+  dluEuH = [dl; du_E; du_H]; % pack output
+end
+
+function dLH = dget_LH_sj(t, LH, f, L_s, kap, v, g, k_M, k_J)
+  % t: time since birth during acceleration (v is value before acceleration)
+  % LH: 2-vector with (L, H) 
+  % dLH: 2-vector with (dL/dt, dH/dt)
+  
+  L = LH(1); % cm, structural length
+  H = LH(2); % d.cm^2, scaled maturity
+  s_M = L/ L_s; % -, acceleration factor
+  r = (f * s_M * v/ L - g * k_M)/ (f + g); % 1/d, spec growth rate in real time
+  dL = r * L/ 3; % cm/d
+  pCpAm = f * L^2 * (1 - L * r/ v/ s_M);  % cm^2, p_C/{p_Am}
+  dH =  (1 - kap) * pCpAm - k_J * H; % cm, d/dt E_H/{p_Am}
+  
+  dLH = [dL; dH]; % pack output
+end
+
+function dLH = dget_LH_ji(t, LH, f, kap, v, g, k_M, k_J)
+  % t: time since end acceleration (v is value after acceleration)
+  % LH: 2-vector with (L, H) 
+  % dLH: 2-vector with (dL/dt, dH/dt)
+  
+  L = LH(1); % cm, structural length
+  H = LH(2); % d.cm^2, scaled maturity
+  r = (f * v/ L - g * k_M)/ (f + g); % 1/d, spec growth rate in real time
+  dL = r * L/ 3; % cm/d
+  pCpAm = f * L^2 * (1 - L * r/ v);  % cm^2, p_C/ {p_Am}
+  dH =  (1 - kap) * pCpAm - k_J * H; % cm, d/dt E_H/{p_Am}
+  
+  dLH = [dL; dH]; % pack output
 end

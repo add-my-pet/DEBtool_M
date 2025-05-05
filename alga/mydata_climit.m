@@ -1,4 +1,4 @@
-%% illustration of the use of clim
+%% illustration of the use of climit
 % created 2002/02/11 by Bas Kooijman
 
 %% set parameter values
@@ -27,9 +27,9 @@ pars = [B0 C0 X0 K yEV kC kE kCB kBC; ...
 tOD = [0	24	48	72	96;
        0.285	0.318	0.461	0.634	0.807]';
 
-%% p = nmregr('clim', pars, tOD) % estimate parameters
+%% p = nmregr('climit', pars, tOD) % estimate parameters
 %  get statistics for parameter estimates
-%  [cov, cor, sd, ss] = pregr('clim', p, tOD);
+%  [cov, cor, sd, ss] = pregr('climit', p, tOD);
 %  [p, sd] % show parameter values and standard deviations
 
 %% set plot options
@@ -38,4 +38,4 @@ shregr_options('xlabel', 1, 'time, h');
 shregr_options('ylabel', 1, 'OD');
 
 %% make plots
-shregr('clim', pars, tOD); % show results
+shregr('climit', pars, tOD); % show results

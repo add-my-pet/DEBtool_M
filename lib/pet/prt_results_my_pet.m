@@ -3,7 +3,7 @@
 
 %%
 function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, prdData)
-% created 2019/03/01 by Bas Kooijman, modified 2019/07/01, 2022/01/21
+% created 2019/03/01 by Bas Kooijman, modified 2019/07/01, 2022/01/21, 2024/11/07
 
 %% Syntax
 % <../prt_results_my_pet.m *prt_results_my_pet*> (parPets, metaPar, txtPar, data, metaData, txtData, prdData) 
@@ -124,9 +124,9 @@ function prt_results_my_pet(parPets, metaPar, txtPar, data, metaData, txtData, p
           aux = txtData.(pets{i}).(fieldsInCells{1}{1});
         end
         if isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{i}).label.(fieldsInCells{1}{1}))<3 % bivar
-          str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
-              '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];
-          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.treat.(fieldsInCells{1}{1}), aux.label.(fieldsInCells{1}{end}){2});
+          str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> '...
+              '<TD colspan="2">%s <font color="blue"><i>vs.</i></font> %s <font color="blue"></TD>\n'];
+          fprintf(oid, str, metaPar.(pets{i}).RE(j,1), fieldsInCells{1}{end}, aux.label.(fieldsInCells{1}{end}){1}, aux.label.(fieldsInCells{1}{end}){2});
         elseif isfield(aux.label,'treat') && isfield(aux.label.treat, fieldsInCells{1}{1}) && length(txtData.(pets{i}).label.(fieldsInCells{1}{1}))==3 % trivar
           str = ['    <TR><TD colspan="2">see figure</TD> <TD>%3.4g</TD> <TD>%s</TD> <TD colspan="2">%s '...
               '<font color="blue"><i>vs.</i></font> %s <font color="blue"><i>vs.</i></font> %s</TD>\n'];

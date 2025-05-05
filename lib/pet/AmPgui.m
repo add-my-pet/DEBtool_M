@@ -20,13 +20,13 @@ function AmPgui(action)
 % Output: no explicit output, but global exit-flag infoAmPgui is set with
 %
 %   - 0, species is in AmP, skip writing 4 source files
-%   - 1, writing 4 source files with species in CoL
-%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
-%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
-%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
-%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
-%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
-%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
+%   - 1, writing 4 source files with species in Taxo
+%   - 2, writing 4 source files with species not in Taxo, but genus is in AmP
+%   - 3, writing 4 source files with species not in Taxo, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not in Taxo, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not in Taxo, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not in Taxo, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not in Taxo, phylum is not in AmP
 
 %% Remarks
 %
@@ -34,6 +34,8 @@ function AmPgui(action)
 % * Files will be saved in your local directory, which should not contain results_my_pet.mat files, other than written by this function 
 % * Use the cd command to the dir of your choice BEFORE running this function to save files in the desired place.
 % * All weights are set at default values in the resulting file; 
+% * The first call to "species" in the gui uses automatised completions,
+% subsequent calls use handfilling;
 % * This function is called in AmPeps
 % * Font colors in main AmPgui mean:
 %
@@ -224,9 +226,9 @@ else % fill fields
         Haddress = uicontrol('Parent',dauthor, 'Callback',@addressCb, 'Position',[110 45 350 20], 'Style','edit', 'String',metaData.address); 
         uicontrol('Parent',dauthor, 'Callback',{@OKCb,dauthor}, 'Position',[110 20 20 20], 'String','OK', 'Style','pushbutton');
 
-      case 'curator'
-        curList = {'Starrlight Augustine', 'Dina Lika', 'Nina Marn', 'Mike Kearney', 'Bas Kooijman'};
-        emailList = {'starrlight@tecnico.ulisboa.pt', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com'};
+      case 'curator'         
+        curList = {'Starrlight Augustine', 'Mike Kearney', 'Bas Kooijman', 'Romain Lavaud', 'Dina Lika', 'Nina Marn', 'Goncalo Marques', 'Laure Peçquerie','Tan Tjui-Yeuw'};
+        emailList = {'starrlight@ecotechnics.edu', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com', 'RLavaud@agcenter.lsu.edu', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'goncalo.marques@tecnico.ulisboa.pt', 'laure.pecquerie@ird.fr', 'tan.tjuiyeuw@wur.nl'};
         if ~isempty(metaData.curator)
           i = 1:5; i = i(ismember(curList, metaData.curator));
         else
@@ -424,7 +426,7 @@ else % fill fields
             select_id(21) = true;
             metaData.links.id_birdlife = get_id_birdlife(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
             select_id(22) = true;
             metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
           end
@@ -834,9 +836,11 @@ end
 %% callback functions
 function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesCb
   global metaData Hspecies hspecies Hfamily Horder Hclass Hphylum Hcommon Hwarning HwarningOK 
-  global color dmydata infoAmPgui list_spec handfilled my_pet_lineage lin
+  global color dmydata infoAmPgui list_spec handfilled  lin % my_pet_lineage
 
   my_pet = strrep(get(Hspecies, 'string'), ' ', '_'); metaData.species = my_pet;
+  handfilled = true; % don't call speciesCb again, but OKspeciesCb instead
+
   if ismember(my_pet,list_spec) % species is already in AmP
     set(Hfamily,'String',''); set(Horder,'String',''); set(Hclass,'String',''); set(Hphylum,'String',''); set(Hcommon,'String','');
     set(Hwarning, 'String', 'species is already in AmP');
@@ -847,32 +851,27 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     return
   end
   
-  [lin_CoL, rank, id_CoL, name_status, my_pet_acc] = lineage_CoL(my_pet);
+  [~, ~, lin, rank, id_Taxo] = lineage_Taxo(my_pet);
   genus = strsplit(my_pet,'_'); genus = genus{1};
-  id_CoL = get_id_CoL(genus);
-  if isempty(rank) && isempty(id_CoL)
-    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by CoL\n', my_pet, genus);
+  id_Taxo_genus = get_id_Taxo(genus); % identification code of the genus
+  if isempty(id_Taxo)
+    metaData.links.id_Taxo = id_Taxo_genus;
+  else
+    metaData.links.id_Taxo = id_Taxo;
+  end
+  if isempty(rank) && isempty(id_Taxo_genus)
+    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
     return
   end
-  if ~strcmp(name_status,'accepted name') && ~isempty(my_pet) && ~isempty(name_status) && ~isempty(my_pet_acc)
-    fprintf('Warning from AmPgui: name status of %s is %s; continue with  %s\n', my_pet, name_status, my_pet_acc);
-    metaData.species = my_pet_acc;
+  
+  if ~isempty(lin)
+    metaData.family = lin{ismember(rank,'Family')};  
+    metaData.order  = lin{ismember(rank,'Order')};  
+    metaData.class  = lin{ismember(rank,'Class')};  
+    metaData.phylum = lin{ismember(rank,'Phylum')};  
   end
   
-  [lin, ~, my_pet_lineage] = lineage_short(metaData.species);
-
-  if isempty(lin)
-    metaData.family = lin_CoL{ismember(rank,'family')};  
-    metaData.order = lin_CoL{ismember(rank,'order')};  
-    metaData.class = lin_CoL{ismember(rank,'class')};  
-    metaData.phylum = lin_CoL{ismember(rank,'phylum')};  
-  else
-    metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
-  end
-
-  metaData.family = lin{5}; metaData.order = lin{4}; metaData.class = lin{3}; metaData.phylum = lin{2};
-
-  nms = get_common_CoL(id_CoL); 
+  nms = get_common_Taxo(id_Taxo); 
   if isempty(nms)
     metaData.species_en = 'no_english_name'; 
   else
@@ -883,7 +882,6 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
   color.species = [0 0.6 0]; set(hspecies, 'ForegroundColor', color.species);
   frames = java.awt.Frame.getFrames(); frames(end).setAlwaysOnTop(1); frames(end-1).setAlwaysOnTop(1);
   infoAmPgui = 1;
-  handfilled = true; % do not use this function speciesCb again, but use OKspeciesCb instead
   close(dspecies); 
   AmPgui('setColors')
   AmPgui('species') % repeat case species, but now with run OKspeciesCb because handfilled is true

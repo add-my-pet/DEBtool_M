@@ -311,7 +311,6 @@ function [q, info, itercount, fval] = groupregr_f(func, par, data, auxData, weig
     end
     info = 1;
   end
-   
 
 function [vec, meanVec] = struct2vector(struct, fieldNames)
 % Constructs vector from fields fielNames of structure struct

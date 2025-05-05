@@ -80,7 +80,7 @@ function [filter, flag] = filter_abj(p)
   [l_b, info] = get_lb(pars_lb);  
   
   pars_tj = [c.g; c.k; c.l_T; c.v_Hb; c.v_Hj; c.v_Hp]; % compose parameter vector for get_tj
-  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rj, rB, info] = get_tj(pars_tj, 1, l_b);
+  [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rj, rB, info] = get_tj(pars_tj, 1);
   if info ~= 1
     flag = 5;
     return

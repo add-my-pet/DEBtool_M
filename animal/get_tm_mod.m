@@ -6,7 +6,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
   % created 2019/10/07 by Bas Kooijman, modified 2022/02/10, 2024/02/09
   
   %% Syntax
-  % [tau_m, S_, tau, info] = <../get_tm_mod.m *get_tm_mod*>(model, p, f, h_B, thinning)
+  % [tau_m, S, tau, info] = <../get_tm_mod.m *get_tm_mod*>(model, p, f, h_B, thinning)
   
   %% Description
   % Obtains scaled mean age at death by integration survival prob over age. 
@@ -75,7 +75,8 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
     end          
   end
   
-  options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1), 'AbsTol',1e-7, 'RelTol',1e-7);  
+  options = odeset('Events',@dead_for_sure, 'AbsTol',1e-7, 'RelTol',1e-7);  
+  %options = odeset('Events',@dead_for_sure, 'NonNegative',ones(4,1));  
 
   switch model
     case 'std'
@@ -112,16 +113,8 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau, qhSt] = ode45(@dget_qhSt_sbp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'abj'
-      [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
-      qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
-      [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B] = get_tj([g k 0 v_Hb v_Hj v_Hp], f); 
-      [tau, qhSt] = ode45(@dget_qhSt_abj, [0; tau_j - tau_b; tau_p - tau_b;  1e8], qhSt_b, options, f, tau_j - tau_b, tau_p - tau_b, l_b, l_j, l_i, rho_j, rho_B, g, s_G, h_a, h_B, thinning);
-      tau_m = qhSt(end,4); tau = [tau_b; tau_j; tau_p];
-      if size(qhSt,1) == 4
-        S_j = qhSt(2,3); S_p = qhSt(3,3); else; S_j = qhSt(end,3); S_p = qhSt(end,3); 
-        tau_m = get_tm_s([g; l_T; h_a; s_G], f, l_b); % -, scaled mean life span at T_ref; dim(h_a)=0
-      end          
-      S = [S_b; S_j; S_p]; 
+      [tau_m, tau_p, tau_j, tau_b, S_p, S_j, S_b, info] = get_tm_j([g, k, l_T, v_Hb, v_Hj, v_Hp, h_a, s_G], f);
+      S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
     case 'asj'
       [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
       qhSt_b = [max(0,q_b); max(0,h_Ab); S_b; tau_b]; % initial state vars
@@ -155,7 +148,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j] = get_tj_hex([g, k, v_Hb, v_He, s_j, kap, kap_V], f);
       %[tau, qhSt] = ode45(@dget_qhSt_hex_bj, [0; tau_j - tau_b], qhSt_b, [], f, l_b, rho_j, g, s_G, h_a, h_B, thinning);
       %tau_m = qhSt(end,4); S_j = qhSt(end,3); qhSt_j = qhSt(end,:); qhSt_j(1:2) = 0;
-      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e, l_b, l_j, l_e, g, s_G, h_a, h_B);
+      [tau, qhSt] = ode45(@dget_qhSt_hex_ji, [0; tau_e-tau_j; 1e8], qhSt_j, options, f, tau_e-tau_j, l_b, l_j, l_e, g, s_G, h_a, h_B);
       S_e = qhSt(2,3); S = [S_b; S_j; S_e]; tau = [tau_b; tau_j; tau_e]; tau_m = qhSt(3,4);
   end
 
@@ -454,14 +447,14 @@ function dqhSt = dget_qhSt_hex_bj(tau, qhSt, f, l_b, rho_j, g, s_G, h_a, h_B, th
   dqhSt = [dq; dh_A; dS; dt]; 
 end
 
-function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_e, l_b, l_p, l_e, g, s_G, h_a, h_B)
+function dqhSt = dget_qhSt_hex_ji(tau, qhSt, f, tau_je, l_b, l_p, l_e, g, s_G, h_a, h_B)
   % tau: scaled time since pupation
   q   = qhSt(1); % -, scaled aging acceleration
   h_A = qhSt(2); % -, scaled hazard rate due to aging
   S   = max(0,qhSt(3)); % -, survival prob
   %t  = qhSt(4); % -, scaled cumulative survival
   
-  if tau < tau_e
+  if tau < tau_je % time till pupation (tau=0 at start pupation)
     h_B = h_B(3);
     dq = 0;
     dh_A = 0;

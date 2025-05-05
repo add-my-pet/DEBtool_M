@@ -1,0 +1,142 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_kapRA</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-07-12"><meta name="DC.source" content="get_kapRA.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>get_kapRA</h1><!--introduction--><p>get reprod investment as fraction of assimilation at ultimate size</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>res = <a href="../get_kapRA.m"><b>get_kapRA</b></a> (par,f)</p><h2 id="4">Description</h2><p>get reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^infty/p_A^\infty</p><p>Input:</p><div><ul><li>pars: (n,6)-matrix with parameters in columns:</li></ul></div><pre>  - p_Am, J/d.cm^2, spec assim rate (before accelleration): f * s_M * {p_Am}
+  - p_M, J/d.cm^3, spec som maint rate: [p_M]
+  - k_J, 1/d, maturity maint rate coeff
+  - E_Hp, J, maturity at puberty
+  - s_M, -, acceleration factor
+  - kap, -, allocation fraction to soma</pre><div><ul><li>f: optional scalar with scaled functionsl response (default 1)</li></ul></div><p>Output:</p><div><ul><li>res: (n,3)-matrix with</li></ul></div><pre>  - kapRA, -
+  - p_Ri, J/d
+  - p_Ai, J/d</pre><h2 id="5">Remarks</h2><p>Assumes p_T = 0</p><h2 id="6">Example of use</h2><p>nm = select('Daphnia'); res = get_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp','s_M','kap'})); prt_tab({nm,res},{'species','kapRA','p_Ri','p_Ai'})</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% get_kapRA
+% get reprod investment as fraction of assimilation at ultimate size
+
+%%
+function res = get_kapRA(pars,f)
+% created 2024/07/12 by Bas Kooijman/Dina Lika
+
+%% Syntax
+% res = <../get_kapRA.m *get_kapRA*> (par,f) 
+
+%% Description
+% get reprod investment as fraction of assimilation at ultimate size as function of kap: kapRA = p_R^infty/p_A^\infty
+%
+% Input:
+% 
+% * pars: (n,6)-matrix with parameters in columns:
+% 
+%    - p_Am, J/d.cm^2, spec assim rate (before accelleration): f * s_M * {p_Am}
+%    - p_M, J/d.cm^3, spec som maint rate: [p_M]
+%    - k_J, 1/d, maturity maint rate coeff
+%    - E_Hp, J, maturity at puberty
+%    - s_M, -, acceleration factor
+%    - kap, -, allocation fraction to soma
+%
+% * f: optional scalar with scaled functionsl response (default 1)
+%
+% Output:
+% 
+% * res: (n,3)-matrix with 
+%
+%    - kapRA, -
+%    - p_Ri, J/d
+%    - p_Ai, J/d
+
+%% Remarks
+% Assumes p_T = 0 
+
+%% Example of use
+% nm = select('Daphnia'); res = get_kapRA(read_stat(nm,{'p_Am','p_M','k_J','E_Hp','s_M','kap'}));
+% prt_tab({nm,res},{'species','kapRA','p_Ri','p_Ai'})
+
+n = size(pars,1); res = NaN(n,3);
+
+if ~exist('f','var') || isempty(f)
+  f = 1; % -
+end
+
+if size(pars,2)==4 
+  pars = [pars, ones(n,1)];
+end
+
+for i = 1:n
+  p_Am = f * pars(i,1) * pars(i,5); p_M = pars(i,2); p_Jp = pars(i,3) * pars(i,4); kap = pars(i,6);
+    
+  L_i = kap * p_Am/ p_M;
+  p_Ai = p_Am * L_i^2;
+  p_Ri = (1 - kap) * p_Ai - p_Jp;
+  kapRA = p_Ri/ p_Ai;
+
+  res(i,1) = kapRA; res(i,2) = p_Ri; res(i,3) = p_Ai;
+end
+
+##### SOURCE END #####
+--></body></html>
