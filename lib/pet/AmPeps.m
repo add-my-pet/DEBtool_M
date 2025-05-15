@@ -121,6 +121,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     load(resultsFn{i});
     criterion(i) = metaData.COMPLETE/ metaPar.MRE; model_Clade{i} = metaPar.model;
   end
+  if isempty(model_def);model_def = get_model(metaData.phylum, metaData.class, metaData.order); end % default model for this taxon
   sel_Clade = ismember(model_Clade, model_def); 
   if ~any(sel_Clade)
     fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model definition ', model_def, '\n']);
