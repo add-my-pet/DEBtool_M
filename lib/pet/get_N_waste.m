@@ -105,7 +105,7 @@ switch N_waste
         n_CN = 0; n_HN = 3; n_ON = 0; n_NN = 1; % ammonia: H3N
         mu_N = 0;
     case 'ureotelic'
-        n_CN = 1; n_HN = 4; n_ON = 1; n_NN = 2; % urea: CH2ON2
+        n_CN = 1; n_HN = 4; n_ON = 1; n_NN = 2; % urea: CH4ON2
         mu_N = 122e3;   % J/C-mol  synthesis from NH3, Withers page 119     
     case 'uricotelic'
         n_CN = 1; n_HN = 0.8; n_ON = 0.6; n_NN = 0.8; % uric acid: C5H4O3N4
