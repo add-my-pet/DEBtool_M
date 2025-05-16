@@ -113,7 +113,7 @@ function [tau_m, S, tau] = get_tm_mod(model, p, f, h_B, thinning)
       [tau, qhSt] = ode45(@dget_qhSt_sbp, [0; tau_p - tau_b; 1e8], qhSt_b, options, f, tau_p - tau_b, l_b, l_p, g, s_G, h_a, h_B, thinning);
       tau_m = qhSt(end,4); S_p = qhSt(2,3); S = [S_b; S_p]; tau = [tau_b; tau_p];
     case 'abj'
-      [tau_m, tau_p, tau_j, tau_b, S_p, S_j, S_b, info] = get_tm_j([g, k, l_T, v_Hb, v_Hj, v_Hp, h_a, s_G], f);
+      [tau_m, tau_p, tau_j, tau_b, S_p, S_j, S_b, info] = get_tm_j([g, k, 0, v_Hb, v_Hj, v_Hp, h_a, s_G], f);
       S = [S_b; S_j; S_p]; tau = [tau_b; tau_j; tau_p];
     case 'asj'
       [S_b, q_b, h_Ab, tau_b] = get_Sb([g k v_Hb h_a s_G h_B(1)], f);
