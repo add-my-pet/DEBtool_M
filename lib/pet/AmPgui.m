@@ -150,7 +150,7 @@ if nargin == 0 % initiate structures and create the GUI
 else % fill fields
   switch(action)
       case 'species'
-        dspecies = dialog('Position',[150 150 600 150], 'Name','species dlg');
+        dspecies = dialog('Position',[450 150 600 150], 'Name','species dlg');
         Warning = ''; Hwarning = uicontrol('Parent',dspecies, 'Position',[110 60 350 20], 'Style','text', 'String',Warning);
         WarningOK = ''; HwarningOK = uicontrol('Parent',dspecies, 'Position',[110 40 350 20], 'Style','text', 'String',WarningOK);
         Hfamily  = uicontrol('Parent',dspecies, 'Position',[ 50 110 150 20], 'Style','text', 'String',['family: ',metaData.family]);
@@ -217,7 +217,7 @@ else % fill fields
 
       case 'author'
         Datevec = datevec(datenum(date)); metaData.date_subm = Datevec(1:3);
-        dauthor = dialog('Position',[150 150 500 150], 'Name','author dlg');
+        dauthor = dialog('Position',[450 150 500 150], 'Name','author dlg');
         uicontrol('Parent',dauthor, 'Position',[10 95 146 20], 'String','Name', 'Style','text');
         Hauthor  = uicontrol('Parent',dauthor, 'Callback',@authorCb, 'Position',[110 95 350 20], 'Style','edit', 'String',metaData.author); 
         uicontrol('Parent',dauthor, 'Position',[10 70 146 20], 'String','email', 'Style','text');
@@ -230,11 +230,11 @@ else % fill fields
         curList = {'Starrlight Augustine', 'Mike Kearney', 'Bas Kooijman', 'Romain Lavaud', 'Dina Lika', 'Nina Marn', 'Goncalo Marques', 'Laure Peçquerie','Tan Tjui-Yeuw'};
         emailList = {'starrlight@ecotechnics.edu', 'mrke@unimelb.edu.au', 'salm.kooijman@gmail.com', 'RLavaud@agcenter.lsu.edu', 'lika@uoc.gr' ,'nina.marn@gmail.com', 'goncalo.marques@tecnico.ulisboa.pt', 'laure.pecquerie@ird.fr', 'tan.tjuiyeuw@wur.nl'};
         if ~isempty(metaData.curator)
-          i = 1:5; i = i(ismember(curList, metaData.curator));
+          i = 1:9; i = i(ismember(curList, metaData.curator));
         else
           i = 1;
         end
-        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 80], 'InitialValue',i);
+        i_cur =  listdlg('ListString',curList, 'SelectionMode','single', 'Name','curator dlg', 'ListSize',[140 150], 'InitialValue',i);
         metaData.curator = curList{i_cur}; metaData.email_cur = emailList{i_cur}; 
         Datevec = datevec(datenum(date)); metaData.date_acc = Datevec(1:3);
         
@@ -253,7 +253,7 @@ else % fill fields
           end
         end
                 
-        dgrp = dialog('Position',[150 150 350 250], 'Name','grp dlg');
+        dgrp = dialog('Position',[450 150 350 250], 'Name','grp dlg');
         uicontrol('Parent',dgrp, 'Position',[20 210 30 20], 'Callback',{@OKCb,dgrp}, 'String','OK');
         
         if isempty(data.data_1)
@@ -276,7 +276,7 @@ else % fill fields
         end
  
       case 'discussion'
-        ddiscussion = dialog('Position',[150 150 1000 550], 'Name','discussion dlg');
+        ddiscussion = dialog('Position',[350 150 1000 550], 'Name','discussion dlg');
         uicontrol('Parent',ddiscussion, 'Callback',{@OKCb,ddiscussion}, 'Position',[30 500 20 20], 'String','OK');
         uicontrol('Parent',ddiscussion, 'Callback',{@addDiscussionCb,ddiscussion}, 'Position',[110 500 150 20], 'String','add discussion point', 'Style','pushbutton');
         uicontrol('Parent',ddiscussion, 'Position',[790 500 146 20], 'String','bibkey', 'Style','text');
@@ -296,7 +296,7 @@ else % fill fields
         end
 
       case 'facts'
-        dfacts = dialog('Position',[150 150 1000 550], 'Name','facts dlg');
+        dfacts = dialog('Position',[350 150 1000 550], 'Name','facts dlg');
         uicontrol('Parent',dfacts, 'Callback',{@OKCb,dfacts}, 'Position',[30 500 20 20], 'String','OK');
         HF = uicontrol('Parent',dfacts, 'Callback',{@addFactCb,dfacts}, 'Position',[110 500 150 20], 'String','add fact', 'Style','pushbutton');
         uicontrol('Parent',dfacts, 'Position',[760 500 146 20], 'String','bibkey', 'Style','text');
@@ -313,13 +313,13 @@ else % fill fields
         end
 
       case 'acknowledgment'
-        dacknowledgment = dialog('Position',[150 150 700 150], 'Name','acknowledgment dlg');
+        dacknowledgment = dialog('Position',[350 150 700 150], 'Name','acknowledgment dlg');
         uicontrol('Parent',dacknowledgment, 'Position',[10 95 146 20], 'String','Text', 'Style','text');
         uicontrol('Parent',dacknowledgment, 'Callback',{@OKCb,dacknowledgment}, 'Position',[110 70 20 20], 'String','OK');
         HK = uicontrol('Parent',dacknowledgment, 'Callback',@acknowledgmentCb, 'Position',[110 95 550 20], 'Style','edit', 'String',metaData.acknowledgment); 
         
       case 'links'
-        dlinks = dialog('Position',[150 150 350 350],'Name','links dlg');
+        dlinks = dialog('Position',[350 150 350 350],'Name','links dlg');
         links = {...
           % general links
           'https://www.catalogueoflife.org/col/'
@@ -463,7 +463,7 @@ else % fill fields
       bibTypeList.techreport =    {'author', 'title', 'institution', 'year', 'address', 'series', 'volume', 'doi', 'isbn', 'url'};
       bibTypeList.misc =          {'author', 'note',                 'year', 'doi', 'isbn', 'url'};
         
-      dbiblist = dialog('Position',[150 100 250 700], 'Name','biblist dlg');
+      dbiblist = dialog('Position',[350 100 250 700], 'Name','biblist dlg');
       uicontrol('Parent',dbiblist, 'Position',[ 10 670  50 20], 'Callback',{@OKCb,dbiblist}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',dbiblist, 'Position',[70 670 100 20], 'Callback',{@addBibCb,dbiblist}, 'String','add bib item', 'Style','pushbutton');
       
@@ -554,7 +554,7 @@ else % fill fields
           'GSI', 'mol E_R/mol W', 1, 'Gonado-Somatic Index as fraction'
           }; 
         
-      ddata_0 = dialog('Position',[150 35 1050 620], 'Name','0-variate data dlg');
+      ddata_0 = dialog('Position',[350 35 1050 620], 'Name','0-variate data dlg');
       uicontrol('Parent',ddata_0, 'Position',[ 60 580  50 20], 'Callback',{@OKCb,ddata_0}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_0, 'Position',[400 580 150 20], 'Callback',{@add0Cb,code0,ddata_0}, 'String','add 0-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_0, 'Position',[ 60 550  70 20], 'String','name', 'Style','text');
@@ -628,7 +628,7 @@ else % fill fields
 
           }; 
         
-      ddata_1 = dialog('Position',[150 35 520 800], 'Name','1-variate data dlg');
+      ddata_1 = dialog('Position',[350 35 520 800], 'Name','1-variate data dlg');
       uicontrol('Parent',ddata_1, 'Position',[ 10 780  50 20], 'Callback',{@OKCb,ddata_1}, 'Style','pushbutton', 'String','OK'); 
       uicontrol('Parent',ddata_1, 'Position',[150 780 150 20], 'Callback',{@add1Cb,code1,ddata_1}, 'String','add 1-var data', 'Style','pushbutton');
       uicontrol('Parent',ddata_1, 'Position',[ 10 750  60 20], 'String','name', 'Style','text');
@@ -703,7 +703,7 @@ else % fill fields
       nm = ['results_', metaData.species, '.mat'];
       %save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'eco_types');
       save(nm, 'data', 'auxData', 'metaData', 'txtData', 'color', 'select_id', 'id_links', 'handfilled');
-      dpause = dialog('Position',[150 150 500 150],'Name','pause dlg');
+      dpause = dialog('Position',[350 150 500 150],'Name','pause dlg');
       uicontrol('Parent',dpause, 'Position',[ 50 95 400 20], 'String',['File ', nm, ' has been written'], 'Style','text');
       uicontrol('Parent',dpause, 'Position',[80 60 150 20], 'Callback',{@stayCb,dpause},  'String','stay in AmPgui', 'Style','pushbutton');
       HAmPeps = uicontrol('Parent',dpause, 'Position',[250 60 200 20], 'Callback',{@proceedCb,dpause}, 'String','quit AmPgui, continue with AmPeps', 'Style','pushbutton');
