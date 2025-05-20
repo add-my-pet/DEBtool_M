@@ -40,7 +40,7 @@ function [H, a, info] = maturity_j(L, f, p)
   k_J = p(4); % 1/d, maturity maint rate coeff
   k_M = p(5); % 1/d, somatic maint rate coeff
   L_T = p(6); % cm, heating length (not used)
-  v  = p(7);  % cm/d, energy conductance
+  v   = p(7); % cm/d, energy conductance
   H_b = p(8); % d.cm^2, scaled maturity at birth
   H_j = p(9); % d.cm^2, scaled maturity at metamorphosis
   H_p = p(10);% d.cm^2, scaled maturity at puberty
@@ -82,7 +82,7 @@ function [H, a, info] = maturity_j(L, f, p)
   % first find times since acceleration for L, then integrate [L, U_H] in time
   % allow to integrate past puberty, but clip U_H in trajectory
   if n_ji > 0 % post-acceleration values
-    if L_j >= L_i || any(L_ji - L_i > 1e-8); H = []; a = []; info = 0; return; end
+    %if L_j >= L_i || any(L_ji - L_i > 1e-8); H = []; a = []; info = 0; return; end
     t_ji = min(1e6,log((L_i - L_j)./ max(1e-8,L_i - L_ji))/ r_B);
     if n_ji>1; for i=2:n_ji; if t_ji(i)<=t_ji(i-1);t_ji(i)=t_ji(i-1)+1e-6;end;end;end
     [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_ji],[L_j;H_j],options,f, kap, v * s_M, g, k_M, k_J);
