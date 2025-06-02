@@ -97,12 +97,15 @@ function varargout = get_tj(p, f, tel_b, tau)
         [l_p, ~, info_lp] = fzero(@get_lp, [l_j l_j/l_b], options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f_i);
       catch
         %[l_p, ~, info_lp] = fzero(@get_lp, l_j, options, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f_i);
-        [~, lp, ~, info_lp] = get_lj(p, f_i);
+        [~, l_p, ~, info_lp] = get_lj(p, f_i);
       end
-      s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
-      tau_j =  tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B; 
+      s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j; tau_j =  tau_b + log(s_M) * 3/ rho_j; 
       Tau = tau + tau_b; Tau_0j = Tau(Tau<tau_j); Tau_ji = Tau(Tau>=tau_j); % tau: scaled time since birth; Tau: scaled age
-      if info_lj==1 && info_lp==1; info = 1; else info = 0; tau_j = NaN; tau_p = NaN; return; end
+      if info_lj && info_lp 
+        info = 1; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B;
+      else
+        info = 0; tau_p = NaN; tau_p = NaN;  
+      end
       if info_tau % assign trajectories
         l = [l_b*exp(tau(Tau<tau_j)*rho_j/3); l_i-(l_i-l_j)*exp(-rho_B*(Tau_ji-tau_j))]; % scaled lengths
         b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
@@ -114,7 +117,7 @@ function varargout = get_tj(p, f, tel_b, tau)
           (v_Hj+sum_a)*exp(-k*Tau_ji) - sum_ae]; % scaled maturities
         tvel = [tau, min(v_H,v_Hp), f*ones(length(tau),1), l]; % trajectories
       end
-      if ~(info_lj==1 && info_lp==1); info_con = 0; end % finding l_j and/or l_p failed, try again with varying food
+      if ~info_lj==1; info_con = 0; end % finding l_j failed, try again with varying food
     catch
       info_con = 0; % if constant food failed, try varying food
     end
