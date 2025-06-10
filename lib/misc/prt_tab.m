@@ -28,7 +28,7 @@ function prt_tab(values, header, fileName, save)
 % * If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
 % * If the filName has no extension, .html is assumed. 
 % * Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:
-%  .txt, .dat, .csv, .log, .text, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm
+%  .txt, .text, .dat, .csv, .log, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm
 
 %% Example of use
 % prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
