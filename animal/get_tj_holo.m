@@ -2,11 +2,11 @@
 % Gets scaled age at emergence for hex model for holo-metabolic insects
 
 %%
-function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_holo(p, f)
-  % created at 2016/02/15 by Bas Kooijman, modified 2019/08/04, 2025/06/11
+function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, info] = get_tj_holo(p, f)
+  % created at 2025/06/11 by Bas Kooijman 
   
   %% Syntax
-  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
+  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
   
   %% Description
   % Obtains scaled ages at emergence, puberty, birth and the scaled lengths at these ages for hex model;
@@ -34,6 +34,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   
   %% Remarks
   %  See <get_tj_hep.html get_tj_hep*> in case of ephemeropterans;
+  %  Def s_j = kap_V/ kap * [M_V] * mu_V/ [E_G], where kap_V is conversion eff from larval structure to pupal reserve
   
   %% Example of use
   %  get_tj_holo([.5, .1, .01, .05, 0.8])
@@ -50,16 +51,16 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   end
   
   % initiate output
-  tau_j=[]; tau_e=[]; tau_b=[]; l_j=[]; l_e=[]; l_b=[]; rho_j=[]; 
+  tau_j=[]; tau_e=[]; l_j=[]; rho_j=[]; 
   
   % birth
   [tau_b, l_b, info] = get_tb([g, k, v_Hb], f); % -, scaled age and length at birth
-  if ~info; return; end
+  if ~info; tau_b = []; l_b = []; return; end
   rho_j = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva
 
   % from pupation to emergence
   [u_Ej, l_e, info] = get_ue0([g, k, v_He], f); % -, scaled reserve just after pupation
-  if ~info; return; end
+  if ~info; l_e = []; return; end
   tau_e = get_tb([g, k, v_He], f, l_e); % -, scaled time since pupation at emergence
   
   % pupation
