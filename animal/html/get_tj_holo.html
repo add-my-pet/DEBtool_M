@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_tj_holo</h1><!--introduction--><p>Gets scaled age at emergence for hex model for holo-metabolic insects</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li><li><a href="#8">subfunctions</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = <a href="../get_tj_holo.m"><b>get_tj_holo</b></a> (p, f)</p><h2 id="4">Description</h2><p>Obtains scaled ages at emergence, puberty, birth and the scaled lengths at these ages for hex model; Food density is assumed to be constant. Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and pupation, see also get_ts. Notice j-e-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 with parameters: g, k, v_H^b, v_H^e, s_j</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at pupation \tau_j = a_j k_M</li><li>tau_e: scaled age at emergence \tau_e = a_e k_M</li><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>l_j: scaled length at pupation = end of acceleration</li><li>l_e: scaled length at emergence</li><li>l_b: scaled length at birth = start of acceleration</li><li>rho_j: scaled exponential growth rate between b and p</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>See &lt;get_tj_hep.html get_tj_hep*&gt; in case of ephemeropterans;</pre><h2 id="6">Example of use</h2><pre>get_tj_holo([.5, .1, .01, .05, 0.8])</pre><h2 id="8">subfunctions</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_tj_holo</h1><!--introduction--><p>Gets scaled age at emergence for hex model for holo-metabolic insects</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = <a href="../get_tj_holo.m"><b>get_tj_holo</b></a> (p, f)</p><h2 id="4">Description</h2><p>Obtains scaled ages at emergence, puberty, birth and the scaled lengths at these ages for hex model; Food density is assumed to be constant. Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and pupation, see also get_ts. Notice j-e-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 with parameters: g, k, v_H^b, v_H^e, s_j</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at pupation \tau_j = a_j k_M</li><li>tau_e: scaled age at emergence \tau_e = a_e k_M</li><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>l_j: scaled length at pupation = end of acceleration</li><li>l_e: scaled length at emergence</li><li>l_b: scaled length at birth = start of acceleration</li><li>rho_j: scaled exponential growth rate between b and j</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>See &lt;get_tj_hep.html get_tj_hep*&gt; in case of ephemeropterans;</pre><h2 id="6">Example of use</h2><pre>get_tj_holo([.5, .1, .01, .05, 0.8])</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tj_holo
 % Gets scaled age at emergence for hex model for holo-metabolic insects
@@ -100,7 +100,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % * l_j: scaled length at pupation = end of acceleration
   % * l_e: scaled length at emergence
   % * l_b: scaled length at birth = start of acceleration
-  % * rho_j: scaled exponential growth rate between b and p
+  % * rho_j: scaled exponential growth rate between b and j
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
@@ -131,20 +131,14 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % from pupation to emergence
   [u_Ej, l_e, info] = get_ue0([g, k, v_He], f); % -, scaled reserve just after pupation
   if ~info; return; end
+  tau_e = get_tb([g, k, v_He], f, l_e); % -, scaled time since pupation at emergence
   
   % pupation
-  tau_j = nmfzero(@fnget_tj_holo, 1, [], f, g, l_b, s_j, u_Ej, rho_j); % scaled time since birth at pupation
-  l_j = l_b * exp(tau_j * rho_j/ 3);          % scaled length at pubation
-  tau_j = tau_b + tau_j;                      % -, scaled age at pupation
+  tau_j = log(u_Ej/ l_b^3/ (s_j + f/ g))/ rho_j; % -, scaled time since birth at pupation
+  l_j = l_b * exp(tau_j * rho_j/ 3); % -, scaled length at pubation
+  tau_j = tau_b + tau_j; % -, scaled age at pupation
+  tau_e = tau_j + tau_e; % -, scaled age at emergence
 
-end
-
-%% subfunctions
-
-function F = fnget_tj_holo(tau_j, f, g, l_b, s_j, u_Ej, rho_j)
-  % tau_j: scaled time since birth at pupation: 
-  l_j = l_b * exp(tau_j * rho_j/ 3); % -, scaled length at pupation
-  F = u_Ej - l_j^3 * (f/ g +  s_j);
 end
 
 ##### SOURCE END #####

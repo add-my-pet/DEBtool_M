@@ -29,7 +29,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % * l_j: scaled length at pupation = end of acceleration
   % * l_e: scaled length at emergence
   % * l_b: scaled length at birth = start of acceleration
-  % * rho_j: scaled exponential growth rate between b and p
+  % * rho_j: scaled exponential growth rate between b and j
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
@@ -55,23 +55,17 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % birth
   [tau_b, l_b, info] = get_tb([g, k, v_Hb], f); % -, scaled age and length at birth
   if ~info; return; end
-  rho_j = (f/ l_b - 1)/ (f/ g + 1);             % -, scaled specific growth rate of larva
+  rho_j = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva
 
   % from pupation to emergence
   [u_Ej, l_e, info] = get_ue0([g, k, v_He], f); % -, scaled reserve just after pupation
   if ~info; return; end
+  tau_e = get_tb([g, k, v_He], f, l_e); % -, scaled time since pupation at emergence
   
   % pupation
-  tau_j = nmfzero(@fnget_tj_holo, 1, [], f, g, l_b, s_j, u_Ej, rho_j); % scaled time since birth at pupation
-  l_j = l_b * exp(tau_j * rho_j/ 3);          % scaled length at pubation
-  tau_j = tau_b + tau_j;                      % -, scaled age at pupation
+  tau_j = log(u_Ej/ l_b^3/ (s_j + f/ g))/ rho_j; % -, scaled time since birth at pupation
+  l_j = l_b * exp(tau_j * rho_j/ 3); % -, scaled length at pubation
+  tau_j = tau_b + tau_j; % -, scaled age at pupation
+  tau_e = tau_j + tau_e; % -, scaled age at emergence
 
-end
-
-%% subfunctions
-
-function F = fnget_tj_holo(tau_j, f, g, l_b, s_j, u_Ej, rho_j)
-  % tau_j: scaled time since birth at pupation: 
-  l_j = l_b * exp(tau_j * rho_j/ 3); % -, scaled length at pupation
-  F = u_Ej - l_j^3 * (f/ g +  s_j);
 end
