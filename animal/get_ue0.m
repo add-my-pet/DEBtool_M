@@ -20,7 +20,7 @@ function [uE0, lb, info] = get_ue0(p, eb, lb0)
   % * eb: optional scalar with scaled reserve density at birth 
   %   (default: eb = 1)
   % * lb0: optional scalar with scaled length at birth 
-  %   (default: lb is optained from get_lb)
+  %   (default: lb is obtained from get_lb)
   %
   % Output
   %
@@ -36,11 +36,11 @@ function [uE0, lb, info] = get_ue0(p, eb, lb0)
   %% Example of use
   % see <../mydata_ue0.m *mydata_ue0*>
     
-  if exist('eb','var') == 0
+  if ~exist('eb','var')
     eb = 1; % maximum value as juvenile
   end
 
-  if exist('lb0','var') == 0
+  if ~exist('lb0','var')
     if length(p) < 3
       fprintf('not enough input parameters, see get_lb \n');
       uE0 = []; lb = []; info = 0;

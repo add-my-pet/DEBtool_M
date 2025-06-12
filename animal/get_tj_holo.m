@@ -52,7 +52,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   end
   
   % initiate output
-  tau_j=[]; tau_e=[]; l_j=[]; rho_j=[]; v_Hj = [];
+  tau_j=[]; tau_e=[]; l_j=[]; rho_j=[]; v_Hj = []; 
   
   % birth
   [tau_b, l_b, info] = get_tb([g, k, v_Hb], f); % -, scaled age and length at birth
@@ -64,6 +64,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   if ~info; l_e = []; return; end
   tau_je = get_tb([g, k, v_He], f, l_e); % -, scaled time since pupation at emergence
   
+  info = 1;
   % pupation
   tau_bj = log(u_Ej/ l_b^3/ (ome_j + f/ g))/ rho_j; % -, scaled time since birth at pupation
   l_j = l_b * exp(tau_bj * rho_j/ 3); % -, scaled length at pubation
