@@ -57,7 +57,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   % birth
   [tau_b, l_b, info] = get_tb([g, k, v_Hb], f); % -, scaled age and length at birth
   if ~info; tau_b = []; l_b = []; return; end
-  rho_j = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva
+  rho_j = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva from b to j
 
   % from pupation to emergence
   [u_Ej, l_e, info] = get_ue0([g, k, v_He], f); % -, scaled reserve just after pupation
@@ -66,7 +66,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   
   info = 1;
   % pupation
-  tau_bj = log(u_Ej/ l_b^3/ (ome_j + f/ g))/ rho_j; % -, scaled time since birth at pupation
+  tau_bj = log(u_Ej/ (f/g + ome_j)/ l_b^3)/ rho_j; % -, scaled time since birth at pupation
   l_j = l_b * exp(tau_bj * rho_j/ 3); % -, scaled length at pubation
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
   tau_e = tau_j + tau_je; % -, scaled age at emergence
