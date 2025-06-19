@@ -62,39 +62,28 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_ho
   rho = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva from b to j
 
   % shooting with bisection
-  v_Hj0 = v_Hb; v_Hj1 = 1000 * v_Hb; f_e = 2; i = 1; % boundaries for v_Hj
-  while abs(f-f_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
-    v_Hj = (v_Hj0 + v_Hj1)/2; i = i + 1; % guess for v_Hj
-    [v_H, tl] = ode45(@get_tl,[v_Hb; v_Hj], [0; l_b], [], f,l_b,g,k,rho); % from b to j
-    tau_bj = tl(end,1); l_j = tl(end,2); s_M = l_j/ l_b; u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
-    [v_H, tuEl] = ode45(@get_tuEl,[0; v_He], [0; u_Ej; 1e-3], [], g,k,s_M); % from j to e
-    tau_je = tuEl(end,1); u_Ee = tuEl(end,2); l_e = tuEl(end,3); f_e = g * s_M * u_Ee/ l_e^3;
-    if f_e < f
-      v_Hj0 = v_Hj;
+  l_j0 = l_b; l_j1 = 100 * l_b; u_Ej = 1; u_Ej_e = 2; i = 1; % boundaries for l_j
+  while abs(u_Ej-u_Ej_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
+    l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
+    s_M = l_j/ l_b; 
+    u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
+    [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He],f);
+    if u_Ej < u_Ej_e
+      l_j0 = l_j;
     else
-      v_Hj1 = v_Hj;
+      l_j1 = l_j;
     end
   end
+  v_Hj = f * l_b^3 * (1/l_b-rho/g)/(k+rho)*(s_M^3-s_M^(-3*k/rho))+v_Hb*s_M^(-3*k/rho);
+  tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
+  tau_je = get_tb([g*s_M, k, v_He],f);
   tau_e = tau_j + tau_je; % -, scaled age at emergence
   
   if i >= n
-   info = 0;   tau_j=[]; tau_e=[]; l_j=[]; rho = []; v_Hj = []; 
+   info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
    fprintf(['Warning from get_tj_holo: no convergence in ', num2str(n), ' steps\n']);
   end
 end
 
-function dtl = get_tl(v_H, tl, f,l_b,g,k,rho) % from b to j
-   l = tl(2); % unpack vars
-   dl = l * rho/3; % change in l in scaled time
-   dv_H = f * l^3 *(1/l_b - rho/g) - k * v_H; % change in v_H in scaled time comment p 188
-   dtl = [1; dl]/dv_H; % change in l in v_H
-end
 
-function dtuEl = get_tuEl(v_H, tuEl, g,k,s_M) % from j to e
-   u_E = tuEl(2); l = tuEl(3); % unpack vars
-   du_E = - u_E * l^2 * (g * s_M + l)/ (u_E + l^3); % change in u_E in scaled time
-   dl = (u_E * g * s_M - l^4)/(u_E + l^3)/ 3; % change in l in scaled time
-   dv_H = u_E * l^2 * (g * s_M + l)/ (u_E + l^3) - k * v_H;  % change in scaled maturity
-   dtuEl = [1; du_E; dl]/dv_H; % change of tau, u_E and l in v_H
-end
