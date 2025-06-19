@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tj_holo</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-06-12"><meta name="DC.source" content="get_tj_holo.m"><style type="text/css">
+      --><title>get_tj_holo</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-06-19"><meta name="DC.source" content="get_tj_holo.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,23 +67,25 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>get_tj_holo</h1><!--introduction--><p>Gets scaled age at emergence for hex model for holo-metabolic insects</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = <a href="../get_tj_holo.m"><b>get_tj_holo</b></a> (p, f)</p><h2 id="4">Description</h2><p>Obtains scaled ages at emergence, puberty, birth and the scaled lengths at these ages for hex model; Food density is assumed to be constant. Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and pupation, see also get_ts. Notice j-e-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 with parameters: g, k, v_H^b, v_H^e, ome_j</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at pupation \tau_j = a_j k_M</li><li>tau_e: scaled age at emergence \tau_e = a_e k_M</li><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>l_j: scaled length at pupation = end of acceleration</li><li>l_e: scaled length at emergence = end of growth</li><li>l_b: scaled length at birth = start of acceleration</li><li>rho_j: scaled exponential growth rate between b and j</li><li>v_Hj: scaled maturity at pupation</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>See &lt;get_tj_hep.html get_tj_hep*&gt; in case of ephemeropterans;
-Def ome_j = kap_V/ kap * [M_V] * mu_V/ [E_G], where kap_V is conversion eff from larval structure to pupal reserve</pre><h2 id="6">Example of use</h2><pre>get_tj_holo([.5, .1, .01, .05, 0.8])</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>get_tj_holo</h1><!--introduction--><p>Gets scaled age at pupation for hex model for holo-metabolic insects</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = <a href="../get_tj_holo.m"><b>get_tj_holo</b></a> (p, f)</p><h2 id="4">Description</h2><p>Obtains scaled ages at pupation, emergence, birth and the scaled lengths at these ages for hex model; Food density is assumed to be constant. Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity and structure Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. Metabolic acceleration occurs between birth and pupation, see also get_ts. Notice j-e-b sequence in output, due to the name of the routine</p><p>Input</p><div><ul><li>p: 5 with parameters: g, k, v_H^b, v_H^e, ome_j</li><li>f: optional scalar with functional response (default f = 1)</li></ul></div><p>Output</p><div><ul><li>tau_j: scaled age at pupation \tau_j = a_j k_M</li><li>tau_e: scaled age at emergence \tau_e = a_e k_M</li><li>tau_b: scaled age at birth \tau_b = a_b k_M</li><li>l_j: scaled length at pupation = end of acceleration</li><li>l_e: scaled length at emergence = end of growth</li><li>l_b: scaled length at birth = start of acceleration</li><li>rho: scaled exponential growth rate between b and j</li><li>v_Hj: scaled maturity at pupation</li><li>info: indicator equals 1 if successful, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><pre>Def ome_j = kap_V/ kap * [M_V] * mu_V/ [E_G], where kap_V is conversion eff from larval structure to pupal reserve
+Energy conductance v increases during acceleration and remains constant at v*s_M after j
+Structure and maturity are reset at pupation. So v_He does not to be larger than v_Hj
+See &lt;get_tj_hep.html get_tj_hep*&gt; in case of ephemeropterans;</pre><h2 id="6">Example of use</h2><pre>get_tj_holo([.5, .1, .01, .05, 0.8],1)</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% get_tj_holo
-% Gets scaled age at emergence for hex model for holo-metabolic insects
+% Gets scaled age at pupation for hex model for holo-metabolic insects
 
 %%
-function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_holo(p, f)
+function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_holo(p, f)
   % created at 2025/06/11 by Bas Kooijman 
   
   %% Syntax
-  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
+  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
   
   %% Description
-  % Obtains scaled ages at emergence, puberty, birth and the scaled lengths at these ages for hex model;
+  % Obtains scaled ages at pupation, emergence, birth and the scaled lengths at these ages for hex model;
   % Food density is assumed to be constant.
-  % Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity
+  % Pupation trigger: reserve density at pupation equals reserve density at emergence; pupa resets maturity and structure
   % Multiply the result with the somatic maintenance rate coefficient to arrive at unscaled ages. 
   % Metabolic acceleration occurs between birth and pupation, see also get_ts. 
   % Notice j-e-b sequence in output, due to the name of the routine
@@ -101,16 +103,18 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   % * l_j: scaled length at pupation = end of acceleration
   % * l_e: scaled length at emergence = end of growth
   % * l_b: scaled length at birth = start of acceleration
-  % * rho_j: scaled exponential growth rate between b and j
+  % * rho: scaled exponential growth rate between b and j
   % * v_Hj: scaled maturity at pupation
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks
-  %  See <get_tj_hep.html get_tj_hep*> in case of ephemeropterans;
   %  Def ome_j = kap_V/ kap * [M_V] * mu_V/ [E_G], where kap_V is conversion eff from larval structure to pupal reserve
+  %  Energy conductance v increases during acceleration and remains constant at v*s_M after j
+  %  Structure and maturity are reset at pupation. So v_He does not to be larger than v_Hj
+  %  See <get_tj_hep.html get_tj_hep*> in case of ephemeropterans;
   
   %% Example of use
-  %  get_tj_holo([.5, .1, .01, .05, 0.8])
+  %  get_tj_holo([.5, .1, .01, .05, 0.8],1)
 
   % unpack pars
   g     = p(1); % -, energy investment ratio
@@ -124,26 +128,45 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, u_Ej, v_Hj, info] = get_tj_
   end
   
   % initiate output
-  tau_j=[]; tau_e=[]; l_j=[]; rho_j=[]; 
+  tau_j=[]; tau_e=[]; l_j=[]; rho = []; v_Hj = []; 
   
   % birth
   [tau_b, l_b, info] = get_tb([g, k, v_Hb], f); % -, scaled age and length at birth
   if ~info; tau_b = []; l_b = []; return; end
-  rho_j = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva
+  rho = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva from b to j
 
-  % from pupation to emergence
-  [u_Ej, l_e, info] = get_ue0([g, k, v_He], f); % -, scaled reserve just after pupation
-  if ~info; l_e = []; return; end
-  tau_je = get_tb([g, k, v_He], f, l_e); % -, scaled time since pupation at emergence
-  
-  % pupation
-  tau_bj = log(u_Ej/ l_b^3/ (ome_j + f/ g))/ rho_j; % -, scaled time since birth at pupation
-  l_j = l_b * exp(tau_bj * rho_j/ 3); % -, scaled length at pubation
+  % shooting with bisection
+  v_Hj0 = v_Hb; v_Hj1 = 1000*v_Hb; f_e = 2; % boundaries for v_Hj
+  while abs(f-f_e)>1e-6 % f_e = e_e: scaled reserve density at emergence 
+    v_Hj = (v_Hj0 + v_Hj1)/2; % guess for v_Hj
+    [v_H, tl] = ode45(@get_tl,[v_Hb; v_Hj], [0; l_b], [], f,l_b,g,k,rho); % from b to j
+    tau_bj = tl(end,1); l_j = tl(end,2); s_M = l_j/ l_b; u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
+    [v_H, tuEl] = ode45(@get_tuEl,[0; v_He], [0; u_Ej; 1e-3], [], g,k,s_M); % from j to e
+    tau_je = tuEl(end,1); u_Ee = tuEl(end,2); l_e = tuEl(end,3); f_e = g * s_M * u_Ee/ l_e^3;
+    if f_e < f
+      v_Hj0 = v_Hj;
+    else
+      v_Hj1 = v_Hj;
+    end
+  end
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
   tau_e = tau_j + tau_je; % -, scaled age at emergence
-  
-  % maturity at pupation, see comments on DEB3 for 8.7.2 with v_Hj=E_Hj/((1-kap)g[E_m]L_m^3); v/L_b=k_M g/l_b
-  v_Hj = f*l_b^2*(1-rho_j*l_b/g)*(exp(rho_j*tau_bj)-exp(-k*tau_bj))/(rho_j+k)+v_Hb*exp(-k*tau_bj);
+
+end
+
+function dtl = get_tl(v_H, tl, f,l_b,g,k,rho) % from b to j
+   l = tl(2); % unpack vars
+   dl = l * rho/3; % change in l in scaled time
+   dv_H = f * l^3 *(1/l_b - rho/g) - k * v_H; % change in v_H in scaled time comment p 188
+   dtl = [1; dl]/dv_H; % change in l in v_H
+end
+
+function dtuEl = get_tuEl(v_H, tuEl, g,k,s_M) % from j to e
+   u_E = tuEl(2); l = tuEl(3); % unpack vars
+   du_E = - u_E * l^2 * (g * s_M + l)/ (u_E + l^3); % change in u_E in scaled time
+   dl = (u_E * g * s_M - l^4)/(u_E + l^3)/ 3; % change in l in scaled time
+   dv_H = u_E * l^2 * (g * s_M + l)/ (u_E + l^3) - k * v_H;  % change in scaled maturity
+   dtuEl = [1; du_E; dl]/dv_H; % change of tau, u_E and l in v_H
 end
 
 ##### SOURCE END #####
