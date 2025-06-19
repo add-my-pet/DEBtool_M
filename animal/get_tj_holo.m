@@ -62,8 +62,8 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_ho
   rho = (f/ l_b - 1)/ (f/ g + 1); % -, scaled specific growth rate of larva from b to j
 
   % shooting with bisection
-  v_Hj0 = v_Hb; v_Hj1 = 1000*v_Hb; f_e = 2; i = 1;% boundaries for v_Hj
-  while abs(f-f_e)>1e-6 && i < n % f_e = e_e: scaled reserve density at emergence 
+  v_Hj0 = v_Hb; v_Hj1 = 1000 * v_Hb; f_e = 2; i = 1; % boundaries for v_Hj
+  while abs(f-f_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
     v_Hj = (v_Hj0 + v_Hj1)/2; i = i + 1; % guess for v_Hj
     [v_H, tl] = ode45(@get_tl,[v_Hb; v_Hj], [0; l_b], [], f,l_b,g,k,rho); % from b to j
     tau_bj = tl(end,1); l_j = tl(end,2); s_M = l_j/ l_b; u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
