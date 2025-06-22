@@ -74,7 +74,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_ho
       l_j1 = l_j;
     end
   end
-  v_Hj = f * l_j^3 * (1/l_b-rho/g)/(k+rho)/ k; % see comments for 7.8.2
+  v_Hj = f * l_b^3 * (1/l_b-rho/g)/(k+rho)*(s_M^3-s_M^(-3*k/rho))+v_Hb*s_M^(-3*k/rho); % see comments for 7.8.2
   tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
   tau_je = get_tb([g*s_M, k, v_He],f);
@@ -84,6 +84,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_ho
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
    fprintf(['Warning from get_tj_holo: no convergence in ', num2str(n), ' steps\n']);
   end
+  
 end
 
 
