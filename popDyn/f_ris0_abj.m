@@ -133,7 +133,7 @@ function val = charEq0(f, L_m, kap, kap_R, k_M, v, g, k, v_Hb, v_Hj, v_Hp, s_G, 
 
   else % iteroparous reproduction
     u_E0 = get_ue0([g k v_Hb], f); % -, scaled cost for egg
-    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g, k, 0, v_Hb, v_Hj, v_Hp], f); 
+    [tau_j, tau_p, tau_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj([g, k, 0, v_Hb, v_Hj, v_Hp], f+1e-2); 
     if isempty(tau_j) || ~info 
       val = -1; return
     end
