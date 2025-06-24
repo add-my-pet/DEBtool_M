@@ -1,0 +1,297 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DEBInitNet</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-06-24"><meta name="DC.source" content="DEBInitNet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">DEBInitNet</a></li><li><a href="#3">Usage</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="1">DEBInitNet</h2><p>Neural network that can predict DEB model parameters based on data and metadata.</p><h2 id="3">Usage</h2><p>The neural network is instatiated via the constructor method:   nn = DEBInitNet(modelStructureFile); The variable modelStructureFile contains the network parameters. It is the following file:   modelStructureFile = 'deb_init_net.mat'; To predict the parameters from an input vector call the predict method of the object:   yPred = nn.predict(inputData)</p><h2 id="4">Description</h2><p>DEBInitNet is a neural network that takes as input some zero-variate datasets as well as metadata takes from the metaData struct. The structure of the input is described in <a href="fetch_input_for_DEBInitNet.html"><b>fetch_input_for_DEBInitNet</b></a>. The neural network does not output model parameters directly, but instead functions of them in order to enforce parameter constraints. It has the following shape:       [p_M] 1-kap v s_p/s_M^3 s_H^b/p s_H^b/j s_H^j/p E_Hp k_J s_M</p><p>The model first transforms the input data with log-scaling and standardization. Then, the input is passed to the shared hidden layers. Then, the output of the shared hidden layers is given to a series of parameter specific hidden layers, which compute the output. Some outputs are constrained to be smaller than 1 directly in model scale. Finally, the output is transformed from model scale to parameter scale by inverting log-scaling and standardization. All hidden layers have ReLU activation functions. The scaling and model outputs ensure the parameter set respects all constraints except reaching birth and metamorphosis.</p><h2 id="5">Remarks</h2><p>This class is used in the function <a href="init_DEBInitNet.html"><b>init_DEBInitNet</b></a>. If you wish to get initial parameters for your DEB model, call that function instead of using this object.</p><p>For the model description check Oliveira et. al (2025) (in prep.)</p><p>The neural network was trained on std, stx, stf, and abj species. It is not intented to be used for other model structures</p><p>The model is not guaranteed to produce feasible parameter sets since the constraints at birth and metamorphosis are not directly enforced. However, results show it is quite reliable at doing so, as the feasibility rate is greater than 99% (tested on &gt;2300 species).</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% DEBInitNet
+% Neural network that can predict DEB model parameters based on data and metadata.
+
+classdef DEBInitNet < handle
+    % created 2025/06/21 by Diogo Oliveira
+
+    %% Usage
+    % The neural network is instatiated via the constructor method:
+    %   nn = DEBInitNet(modelStructureFile);
+    % The variable modelStructureFile contains the network parameters. It is the following file:
+    %   modelStructureFile = 'deb_init_net.mat';
+    % To predict the parameters from an input vector call the predict method of the object:
+    %   yPred = nn.predict(inputData)
+    %
+    %% Description
+    % DEBInitNet is a neural network that takes as input some zero-variate datasets as well as
+    % metadata takes from the metaData struct. 
+    % The structure of the input is described in <fetch_input_for_DEBInitNet.html *fetch_input_for_DEBInitNet*>.
+    % The neural network does not output model parameters directly, but instead functions of them in 
+    % order to enforce parameter constraints. It has the following shape:
+    %       [p_M] 1-kap v s_p/s_M^3 s_H^b/p s_H^b/j s_H^j/p E_Hp k_J s_M 
+    %
+    % The model first transforms the input data with log-scaling and standardization. Then, the 
+    % input is passed to the shared hidden layers. Then, the output of the shared hidden layers is 
+    % given to a series of parameter specific hidden layers, which compute the output. Some outputs 
+    % are constrained to be smaller than 1 directly in model scale. Finally, the output is 
+    % transformed from model scale to parameter scale by inverting log-scaling and standardization. 
+    % All hidden layers have ReLU activation functions. 
+    % The scaling and model outputs ensure the parameter set respects all constraints except reaching 
+    % birth and metamorphosis.
+    % 
+    %% Remarks
+    % This class is used in the function <init_DEBInitNet.html *init_DEBInitNet*>. If you wish to
+    % get initial parameters for your DEB model, call that function instead of using this object.
+    %
+    % For the model description check Oliveira et. al (2025) (in prep.)
+    %
+    % The neural network was trained on std, stx, stf, and abj species. It is not intented to be
+    % used for other model structures
+    %
+    % The model is not guaranteed to produce feasible parameter sets since the constraints at birth
+    % and metamorphosis are not directly enforced. However, results show it is quite reliable at
+    % doing so, as the feasibility rate is greater than 99% (tested on >2300 species). 
+
+    properties (Constant)
+        EPSILON = 1e-6;
+    end
+    properties
+        nInputs            % the dimension of the input vector
+        nOutputs           % the dimension of the output vector
+        useSkipConnection  % whether to concatenate the input vector to the input of the par layers
+        sharedWeights      % cell array of weight matrices for shared layers
+        sharedBiases       % cell array of bias vectors for shared layers
+        parWeights         % 2D cell array (param x layer) of weight matrices
+        parBiases          % 2D cell array (param x layer) of bias vectors
+        boundedColIdx      % indices of outputs to clamp in log space
+        upperBounds        % standardized log-scale upper bounds vector (loaded)
+        % Scaling parameters
+        inputMean          % vector of means for input standardization (for scaled inputs)
+        inputStd           % vector of std devs for input standardization
+        outputMean         % vector of means for output standardization
+        outputStd          % vector of std devs for output standardization
+        % Column indices for transforms (loaded directly from file)
+        inputLogIdx        % indices of inputs to apply log
+        inputScaleIdx      % indices of inputs to standardize (corresponding to inputMean/std)
+        outputLogIdx       % indices of outputs to apply inverse log
+        outputScaleIdx     % indices of outputs to destandardize (corresponding to outputMean/std)
+    end
+
+    methods
+        function obj = DEBInitNet(modelStructureFile)
+            % Constructor method. Loads model structure from .mat file 
+            %   Input
+            %
+            %   * modelStructureFile: string path to .mat file containing network parameters
+            %       The .mat file must contain network the following variables:
+            %           sharedWeights, sharedBiases, parWeights, parBiases,
+            %           useSkipConnection,
+            %           inputMean, inputStd, outputMean, outputStd,
+            %           inputLogIdx, inputScaleIdx, outputLogIdx, outputScaleIdx,
+            %           boundedColIdx, upperBounds
+            %       The descriptions of each variable are above.
+            %   
+            %   Output
+            %   
+            %   * obj: the DEBInitNet object
+            if nargin < 1 || isempty(modelStructureFile)
+                error('A .mat file containing the model structure must be provided.');
+            end
+            data = load(modelStructureFile);
+
+            % Network parameters
+            obj.sharedWeights     = data.sharedWeights;
+            obj.sharedBiases      = data.sharedBiases;
+            obj.parWeights        = data.parWeights;
+            obj.parBiases         = data.parBiases;
+            obj.useSkipConnection = data.useSkipConnection;
+
+            % Scaler parameters
+            obj.inputMean   = data.inputMean;
+            obj.inputStd    = data.inputStd;
+            obj.outputMean  = data.outputMean;
+            obj.outputStd   = data.outputStd;
+
+            % Column indices for transforms
+            obj.inputLogIdx    = data.inputLogIdx;
+            obj.inputScaleIdx  = data.inputScaleIdx;
+            obj.outputLogIdx   = data.outputLogIdx;
+            obj.outputScaleIdx = data.outputScaleIdx;
+
+            % Loaded bounded clamp configuration
+            obj.boundedColIdx = data.boundedColIdx;
+            obj.upperBounds   = data.upperBounds;
+
+            % Dimensions based on model structure
+            obj.nInputs  = size(obj.sharedWeights{1}, 2);
+            obj.nOutputs = size(obj.parWeights, 1);
+        end
+
+        function yPred = predict(obj, x)
+            % Predicts DEB model parameters based on data and metadata. Some columns are first
+            % log-scaled and then standardized. The neural network predicts the parameters, which
+            % are then unscaled. The output of the neural network is not directly the parameters, 
+            % they are transformed into parameter values in init <init_DEBInitNet.html *init_DEBInitNet*> 
+            % 
+            % Inputs
+            %   * x: a column vector of inputs (nInputs x 1). 
+            %
+            % Outputs
+            %   * yPred: a column vector of outputs (nOutputs x 1). 
+            %
+            assert(isvector(x) && numel(x)==obj.nInputs, 'Input must be a column vector of length nInputs');
+
+            % Transform input selectively
+            xModelScale = obj.transformInput(x);
+
+            % Shared layers
+            out = xModelScale;
+            for i = 1:numel(obj.sharedWeights)
+                out = obj.relu(obj.sharedWeights{i} * out + obj.sharedBiases{i});
+            end
+
+            % Skip connection
+            if obj.useSkipConnection
+                inPar = [out; xModelScale];
+            else
+                inPar = out;
+            end
+
+            % Parameter-specific layers
+            yModelScale = zeros(obj.nOutputs,1);
+            numLayers = size(obj.parWeights, 2);
+            for o = 1:obj.nOutputs
+                tmp = inPar;
+                for l = 1:numLayers
+                    tmp = obj.parWeights{o, l} * tmp + obj.parBiases{o, l};
+                    if l < numLayers
+                        tmp = obj.relu(tmp);
+                    end
+                end
+                yModelScale(o) = tmp;
+            end
+
+            % Clamp log-scale outputs
+            if ~isempty(obj.boundedColIdx)
+                raw = yModelScale(obj.boundedColIdx);
+                yModelScale(obj.boundedColIdx) = obj.upperBounds + log(obj.sigmoid(raw)) - obj.EPSILON;
+            end
+
+            % Inverse transform outputs selectively
+            yPred = obj.inverseTransformOutput(yModelScale);
+        end
+    end
+
+    methods (Access = private)
+        function xModelScale = transformInput(obj, x)
+            % Transforms input data to model scale. Selectively applies log and standardization to 
+            % input vector based on inputLogIdx and inputScaledIdx.
+            %
+            % Inputs
+            %   * x: a column vector of inputs (nInputs x 1). 
+            % Outputs
+            %   * xModelScale: a column vector of input data in model scale (nInputs x 1).
+            xModelScale = x;
+            if ~isempty(obj.inputLogIdx)
+                xModelScale(obj.inputLogIdx) = log(xModelScale(obj.inputLogIdx));
+            end
+            if ~isempty(obj.inputScaleIdx)
+                % inputMean/std correspond exactly to these indices
+                xModelScale(obj.inputScaleIdx) = (xModelScale(obj.inputScaleIdx) - obj.inputMean) ./ obj.inputStd;
+            end
+        end
+
+        function yParScale = inverseTransformOutput(obj, yModelScale)
+            % Converts the output of the model to parameter scale. Selectively reverses log scaling
+            % and standardization based on outputLogIdx and outputScaleIdx.
+            %
+            % Inputs
+            %   * yModelScale: a column vector of outputs in model scale(nOutputs x 1). 
+            % Outputs
+            %   * yParScale: a column vector of outputs in parameter scale (nOutputs x 1).
+            yParScale = yModelScale;
+            if ~isempty(obj.outputScaleIdx)
+                yParScale(obj.outputScaleIdx) = yParScale(obj.outputScaleIdx) .* obj.outputStd + obj.outputMean;
+            end
+            if ~isempty(obj.outputLogIdx)
+                yParScale(obj.outputLogIdx) = exp(yParScale(obj.outputLogIdx));
+            end
+        end
+    end
+
+    methods (Static, Access=private)
+        function s = sigmoid(x)
+            % Applies the sigmoid function element-wise.
+            s = 1 ./ (1 + exp(-x));
+        end
+
+        function y = relu(x)
+            % Applies the ReLU activation function.
+            y = max(x, 0);
+        end
+    end
+end
+
+##### SOURCE END #####
+--></body></html>

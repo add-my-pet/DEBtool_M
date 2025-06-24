@@ -1,0 +1,244 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>init_DEBInitNet</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-06-24"><meta name="DC.source" content="init_DEBInitNet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">init_DEBInitNet</a></li><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Check if method can be applied</a></li><li><a href="#7">Get input from AmP files</a></li><li><a href="#8">Load model</a></li><li><a href="#9">Model predictions</a></li><li><a href="#10">Convert model predictions to initial parameters</a></li><li><a href="#11">Predict [E_G]</a></li><li><a href="#12">Set parameter values in par struct if they exist and are free</a></li></ul></div><h2 id="1">init_DEBInitNet</h2><p>Runs the DEBInitNet initialization method</p><h2 id="3">Syntax</h2><p>[par, metaPar, txtPar] = <a href="../init_DEBInitNet.m"><b>init_DEBInitNet</b></a> (data, auxData, metaData)</p><h2 id="4">Description</h2><p>Uses data and metadata from the mydata_my_pet.m file to give an initial estimate of DEB model parameter values.</p><p>The method computes the following parameters   z, [p_M], v, kap, k_J, E_Hb, E_Hp, E_G For abj species, the method also computes   E_Hj And for stx species, the method also computes   E_Hx</p><p>Only parameters that are set to free in pars_init_my_pet.m are replaced by the method. If a parameter is not free, then the method will use the value in pars_init_my_pet.m.</p><p>The method is only implemented for typified models std, stf, stx, and abj.</p><p>Converts data to standard units using the Symbolic Math Toolbox. If the toolbox is not available, then it assumes the data is in standard units. The following datasets are required to exist   ab, am, Wwb, Wwp, Wwi, Ri More details on the datasets used for input are given in <a href="fetch_input_for_DEBInitNet.m"><b>fetch_input_for_DEBInitNet</b></a></p><p>Input</p><div><ul><li>data: structure with values of data (only zero-variate data are used)</li><li>auxData: structure with auxiliary data (includes temperatures)</li><li>metaData: structure with ecocode data (used as input)</li><li>txtData: structure with information on the data (used to convert data to standard units)</li></ul></div><p>Output * par: structure with parameter values (only modifies the parameters above) * metaPar: structure with information on metaparameters (not modified, used to get the model type) * txtPar: structure with information on parameters (not modified)</p><h2 id="5">Remarks</h2><p>Called by <a href="../pet/html/estim_pars.html"><b>estim_pars</b></a> if pars_init_method = 3. txtPar and metaPar are set in <a href="pars_init_my_pet.html"><b>pars_init_my_pet</b></a> and not modified.</p><p>Description of the DEBInitNet is given in Oliveira et al. (2025) (in prep)</p><p>Only sets parameters with the corresponding name. For example, if parameters for males exist, they are not automatically set. A warning will be issued to make the user aware of this. Best practice is to assign the initial values given by this method to those parameters.</p><h2 id="6">Check if method can be applied</h2><h2 id="7">Get input from AmP files</h2><h2 id="8">Load model</h2><h2 id="9">Model predictions</h2><h2 id="10">Convert model predictions to initial parameters</h2><h2 id="11">Predict [E_G]</h2><h2 id="12">Set parameter values in par struct if they exist and are free</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% init_DEBInitNet
+% Runs the DEBInitNet initialization method
+
+function [par, metaPar, txtPar] = init_DEBInitNet(data, auxData, metaData, txtData)
+% created 2025/06/20 by Diogo F. Oliveira
+
+%% Syntax
+% [par, metaPar, txtPar] = <../init_DEBInitNet.m *init_DEBInitNet*> (data, auxData, metaData)
+
+%% Description
+% Uses data and metadata from the mydata_my_pet.m file to give an initial estimate of DEB model
+% parameter values.
+%  
+% The method computes the following parameters
+%   z, [p_M], v, kap, k_J, E_Hb, E_Hp, E_G
+% For abj species, the method also computes
+%   E_Hj
+% And for stx species, the method also computes
+%   E_Hx
+%
+% Only parameters that are set to free in pars_init_my_pet.m are replaced by the method. If a
+% parameter is not free, then the method will use the value in pars_init_my_pet.m.
+%
+% The method is only implemented for typified models std, stf, stx, and abj. 
+%
+% Converts data to standard units using the Symbolic Math Toolbox. If the toolbox is not available,
+% then it assumes the data is in standard units.
+% The following datasets are required to exist
+%   ab, am, Wwb, Wwp, Wwi, Ri
+% More details on the datasets used for input are given in <fetch_input_for_DEBInitNet.m *fetch_input_for_DEBInitNet*>
+%
+% Input
+%
+% * data: structure with values of data (only zero-variate data are used)
+% * auxData: structure with auxiliary data (includes temperatures)
+% * metaData: structure with ecocode data (used as input)
+% * txtData: structure with information on the data (used to convert data to standard units)
+%
+% Output
+% * par: structure with parameter values (only modifies the parameters above)
+% * metaPar: structure with information on metaparameters (not modified, used to get the model type)
+% * txtPar: structure with information on parameters (not modified)
+
+%% Remarks 
+% Called by <../pet/html/estim_pars.html *estim_pars*> if pars_init_method = 3.
+% txtPar and metaPar are set in <pars_init_my_pet.html *pars_init_my_pet*> and not modified.
+%
+% Description of the DEBInitNet is given in Oliveira et al. (2025) (in prep)
+%
+% Only sets parameters with the corresponding name. For example, if parameters for males exist, they
+% are not automatically set. A warning will be issued to make the user aware of this. Best practice
+% is to assign the initial values given by this method to those parameters.
+%
+
+%% Check if method can be applied
+[par, metaPar, txtPar] = feval(['pars_init_', metaData.species], metaData); % set pars and chem 
+if ~par.free.z
+    error('Parameter ''z'' should be set free.')
+end
+if ~any(strcmp(metaPar.model, {'std', 'stf', 'stx', 'abj'}))
+    error('Model type is not compatible. DEBInitNet is only implemented for model types std, stf, stx, and abj.')
+end
+
+%% Get input from AmP files
+[inputData, flag] = fetch_input_for_DEBInitNet(data, auxData, metaData, txtData, par, metaPar);
+tryOtherMethodString = [
+    'DEBInitNet initialization method cannot be applied. ' ...
+    'If the data exists, check that it follows the naming convention. ' ...
+    'If not, try another initialization method. \n'];
+% Check that all inputData was available
+switch flag
+    case 1
+        error(['Missing data on age at birth. \n\n' tryOtherMethodString])
+    case 2
+        error(['Missing data on lifespan. \n\n' tryOtherMethodString])
+    case 3
+        error(['Missing data on weight at birth, puberty, or ultimate. \n\n' tryOtherMethodString])
+    case 4
+        error(['Missing data on reproduction rate. \n\n' tryOtherMethodString])
+end
+
+%% Load model
+modelStructureFile = 'deb_init_net.mat';
+nn = DEBInitNet(modelStructureFile);
+
+%% Model predictions
+yPred = nn.predict(inputData);
+
+%% Convert model predictions to initial parameters
+predPar = struct();
+predPar.p_M = yPred(1);
+predPar.kap = 1 - yPred(2);
+predPar.v = yPred(3);
+predPar.E_Hp = yPred(8);
+predPar.k_J = yPred(9);
+
+% Impute fixed pars
+parNamesToImpute = {'p_M', 'kap', 'v', 'E_Hp', 'k_J'};
+for p=1:numel(parNamesToImpute)
+    parName = parNamesToImpute{p};
+    if isfield(par, parName) && ~par.free.(parName)
+        predPar.(parName) = par.(parName);
+    end
+end
+
+% Prediction for maturities depending on model type
+if strcmp(metaPar.model, 'abj')
+    % E_Hj
+    if par.free.E_Hj
+        predPar.E_Hj = predPar.E_Hp * yPred(7);
+    else
+        predPar.E_Hj = par.E_Hj;
+    end
+    % E_Hb
+    if par.free.E_Hb
+        predPar.E_Hb = predPar.E_Hj * yPred(6);
+    else
+        predPar.E_Hb = par.E_Hb;
+    end
+elseif strcmp(metaPar.model, 'stx')
+    if par.free.E_Hx
+        predPar.E_Hx = predPar.E_Hp * yPred(5) * 1.01;
+    else
+        predPar.E_Hx = par.E_Hx;
+    end
+end
+if ~isfield(predPar, 'E_Hb')
+    if par.free.E_Hb
+        predPar.E_Hb = predPar.E_Hp * yPred(5);
+    else
+        predPar.E_Hb = par.E_Hb;
+    end
+end
+
+% Defining E_Hj and E_H if it was not computed
+if ~isfield(predPar, 'E_Hj')
+    predPar.E_Hj = 1.01 * predPar.E_Hb;
+end
+if ~isfield(predPar, 'E_Hx')
+    predPar.E_Hx = 1.01 * predPar.E_Hb;
+end
+
+% s_M=1 if the model is not abj
+if strcmp(metaPar.model, 'abj')
+    s_M = 1 / yPred(10);
+else
+    s_M = 1;
+end
+% Prediction for z
+s_p_M = yPred(4);
+z3 = predPar.k_J * predPar.E_Hp * predPar.kap / (s_M^3 * s_p_M * (1-predPar.kap) * predPar.p_M);
+predPar.z = nthroot(z3, 3);
+
+%% Predict [E_G]
+d_V = get_d_V(metaData.phylum, metaData.class);
+kap_G = 0.8;
+w_V = 23.9;
+predPar.E_G = par.mu_V * d_V / kap_G / w_V;
+
+
+%% Set parameter values in par struct if they exist and are free
+fprintf('Computed parameters: \n')
+predParNames = fieldnames(predPar);
+for p=1:numel(predParNames)
+    parName = predParNames{p};
+    if isfield(par, parName) && par.free.(parName)
+        fprintf('%-4s - %.4e\n', parName, predPar.(parName))
+        par.(parName) = predPar.(parName);
+    end
+end
+
+##### SOURCE END #####
+--></body></html>
