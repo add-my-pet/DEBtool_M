@@ -39,7 +39,6 @@ function estim_options (key, val)
   %      1: read initial estimates from .mat file (for continuation)
   %      2: read initial estimates from pars_init file (default)
   %      3: get initial estimates from DEBInitNet
-  %      4: get initial estimates from Taxo1NN
   %
   %    'results_output':
   %      0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
