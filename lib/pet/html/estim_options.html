@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>estim_options</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-18"><meta name="DC.source" content="estim_options.m"><style type="text/css">
+      --><title>estim_options</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-06-24"><meta name="DC.source" content="estim_options.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -77,7 +77,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
     1: use filters (default)</pre><pre>  'pars_init_method':
     0: get initial estimates from automatized computation
     1: read initial estimates from .mat file (for continuation)
-    2: read initial estimates from pars_init file (default)</pre><pre>  'results_output':
+    2: read initial estimates from pars_init file (default)
+    3: get initial estimates from DEBInitNet
+    4: get initial estimates from Taxo1NN</pre><pre>  'results_output':
     0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations
     1, -1 - no saving to .mat file, prints results to html (1) or screen (-1), shows figures but does not save them
     2, -2 - saves to .mat file, prints results to html (2) or screen (-2), shows figures but does not save them
@@ -133,7 +135,7 @@ function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
   %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
   %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles,
-  %    2021/10/20, 2022/04/24 by Juan Robles
+  %    2021/10/20, 2022/04/24 by Juan Robles, 2025/06/24 by Diogo Oliveira
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -165,6 +167,8 @@ function estim_options (key, val)
   %      0: get initial estimates from automatized computation 
   %      1: read initial estimates from .mat file (for continuation)
   %      2: read initial estimates from pars_init file (default)
+  %      3: get initial estimates from DEBInitNet
+  %      4: get initial estimates from Taxo1NN
   %
   %    'results_output':
   %      0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
@@ -393,6 +397,8 @@ function estim_options (key, val)
         fprintf('0 - get initial estimates from automatized computation \n');
         fprintf('1 - read initial estimates from .mat file \n');
         fprintf('2 - read initial estimates from pars_init file \n');
+        fprintf('3 - get initial estimates from DEBInitNet \n');
+        fprintf('4 - get initial estimates from Taxo1NN \n');
       else
         pars_init_method = val;
       end

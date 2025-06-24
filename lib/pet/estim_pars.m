@@ -9,6 +9,7 @@ function [nsteps, info, fval] = estim_pars
   %   2018/05/23 by Bas Kooijman,  
   %   2018/08/17 by Starrlight Augustine,
   %   2019/03/20, 2019/12/16, 2019/12/20, 2021/06/02 by Bas kooijman
+  %   2025/06/24 by Diogo Oliveira
   
   %% Syntax 
   % [nsteps, info, fval] = <../estim_pars.m *estim_pars*>
@@ -77,9 +78,15 @@ elseif pars_init_method == 1
     par.free = par2.free;
 elseif pars_init_method == 2
     if n_pets == 1
-      [par, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
+        [par, metaPar, txtPar] = feval(pars_initnm, metaData.(pets{1}));
     else
-      [par, metaPar, txtPar] = feval(pars_initnm, metaData);
+        [par, metaPar, txtPar] = feval(pars_initnm, metaData);
+    end
+elseif pars_init_method == 3
+    if n_pets ~= 1
+        error('For multispecies estimation the DEBInitNet method is not implemented.');
+    else
+        [par, metaPar, txtPar] = init_DEBInitNet(data.(pets{1}), auxData.(pets{1}), metaData.(pets{1}), txtData.(pets{1}));
     end
 end
 

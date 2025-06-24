@@ -6,7 +6,7 @@ function estim_options (key, val)
   %  created at 2015/01/25 by Goncalo Marques; 
   %  modified 2015/03/26 by Goncalo Marques, 2018/05/21, 2018/08/21 by Bas Kooijman, 
   %    2019/12/20 by Nina Marn, 2021/06/07 by Bas Kooijman & Juan Robles,
-  %    2021/10/20, 2022/04/24 by Juan Robles
+  %    2021/10/20, 2022/04/24 by Juan Robles, 2025/06/24 by Diogo Oliveira
   
   %% Syntax
   % <../estim_options.m *estim_options*> (key, val)
@@ -38,6 +38,8 @@ function estim_options (key, val)
   %      0: get initial estimates from automatized computation 
   %      1: read initial estimates from .mat file (for continuation)
   %      2: read initial estimates from pars_init file (default)
+  %      3: get initial estimates from DEBInitNet
+  %      4: get initial estimates from Taxo1NN
   %
   %    'results_output':
   %      0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations 
@@ -266,6 +268,8 @@ function estim_options (key, val)
         fprintf('0 - get initial estimates from automatized computation \n');
         fprintf('1 - read initial estimates from .mat file \n');
         fprintf('2 - read initial estimates from pars_init file \n');
+        fprintf('3 - get initial estimates from DEBInitNet \n');
+        fprintf('4 - get initial estimates from Taxo1NN \n');
       else
         pars_init_method = val;
       end
