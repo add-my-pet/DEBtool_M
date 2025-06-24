@@ -269,7 +269,6 @@ function estim_options (key, val)
         fprintf('1 - read initial estimates from .mat file \n');
         fprintf('2 - read initial estimates from pars_init file \n');
         fprintf('3 - get initial estimates from DEBInitNet \n');
-        fprintf('4 - get initial estimates from Taxo1NN \n');
       else
         pars_init_method = val;
       end
