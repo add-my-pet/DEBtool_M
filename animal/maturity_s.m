@@ -64,12 +64,12 @@ function [H, a, info] = maturity_s(L, f, p)
   L_0b = L(L<=L_b);  L_bs = L(L>L_b&L<=L_s); L_sj = L(L>L_s&L<=L_j); L_ji = L(L>L_j);
   n_0b = length(L_0b); n_bs = length(L_bs); n_sj = length(L_sj); n_ji = length(L_ji);
   a_0b = []; H_0b = []; a_bs = []; H_bs = []; a_sj = []; H_sj = []; a_ji = []; H_ji = []; % initiate values for a and H
-  options = odeset('RelTol',1e-6, 'AbsTol',1e-6); 
+  %options = odeset('RelTol',1e-6, 'AbsTol',1e-6); 
 
   % integrate [l, u_E, u_H] in time (0, tau_b) and find u_H via spline-interpolation in the trajectory
   if n_0b > 0 % embryo values
     u_E0 = get_ue0([g, k, v_Hb], f);
-    [tau, luEuH] = ode45(@dget_luEuH, [0;tau_b], [1e-6;u_E0;1e-6], options, kap, g, k);
+    [tau, luEuH] = ode45(@dget_luEuH, [0;tau_b], [1e-6;u_E0;1e-6], [], kap, g, k);
     a = tau/ k_M; La = L_m * luEuH(:,1); H = luEuH(:,3)*v^2/g^2/k_M^3;
     a_0b = spline1(L_0b,[La,a]); H_0b = spline1(L_0b,[La,H]);
   end
@@ -77,7 +77,7 @@ function [H, a, info] = maturity_s(L, f, p)
   % first find times before acceleration for L, then integrate [L, U_H] in time
   if n_bs > 0 % values before acceleration
     t_bs = log((f * L_m - L_b)./(f * L_m - L_bs))/ r_B; % d, time since b
-    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_bs],[L_b;H_b],options,f, kap, v, g, k_M, k_J);
+    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_bs],[L_b;H_b],[],f, kap, v, g, k_M, k_J);
     if n_bs==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_bs = tau_b/ k_M + t; H_bs = LH(:,2);
   end
@@ -85,16 +85,16 @@ function [H, a, info] = maturity_s(L, f, p)
   % first find times during acceleration for L, then integrate [L, U_H] in time
   if n_sj > 0 % values during acceleration
     t_sj = log(L_sj ./ L_s) * 3/ r_j; % d, time since s
-    [t, LH] = ode45(@dget_LH_sj,[-1e-8;t_sj],[L_s;H_s],options,f, L_s, kap, v, g, k_M, k_J);
+    [t, LH] = ode45(@dget_LH_sj,[-1e-8;t_sj],[L_s;H_s],[],f, L_s, kap, v, g, k_M, k_J);
     if n_sj==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_sj = tau_s/ k_M + t; H_sj = LH(:,2);
   end
   
-  % first find times since acceleration for L, then integrate [L, U_H] in time
+  % then find times since acceleration for L, then integrate [L, U_H] in time
   % allow to integrate past puberty, but clip U_H in trajectory
   if n_ji > 0 % post-acceleration values
-    t_ji = log((L_i - L_j)./ (L_i - L_ji))/ r_B; % d, time since j
-    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_ji],[L_j;H_j],options,f, kap, v * s_M, g, k_M, k_J);
+    t_ji = log((L_i - L_j)./ max(1e-6,L_i - L_ji))/ r_B; % d, time since j
+    [t, LH] = ode45(@dget_LH_ji,[-1e-8;t_ji],[L_j;H_j],[],f, kap, v * s_M, g, k_M, k_J);
     if n_ji==1; t = t([1 end]); LH = LH([1 end],:); end
     t(1) = []; LH(1,:) = []; a_ji = tau_j/ k_M + t; H_ji = min(H_p,LH(:,2));
   end
