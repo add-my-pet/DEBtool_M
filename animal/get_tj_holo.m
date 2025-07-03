@@ -2,11 +2,11 @@
 % Gets scaled age at pupation for hex model for holo-metabolic insects
 
 %%
-function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_holo(p, f)
+function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_holo(p, f)
   % created at 2025/06/11 by Bas Kooijman 
   
   %% Syntax
-  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
+  % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
   
   %% Description
   % Obtains scaled ages at pupation, emergence, birth and the scaled lengths at these ages for hex model;
@@ -26,11 +26,12 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, u_Ej, v_Hj, info] = get_tj_ho
   % * tau_j: scaled age at pupation \tau_j = a_j k_M
   % * tau_e: scaled age at emergence \tau_e = a_e k_M
   % * tau_b: scaled age at birth \tau_b = a_b k_M
-  % * l_j: scaled length at pupation = end of acceleration
+  % * l_j: scaled length just before pupation = end of acceleration
   % * l_e: scaled length at emergence = end of growth
   % * l_b: scaled length at birth = start of acceleration
   % * rho: scaled exponential growth rate between b and j
-  % * v_Hj: scaled maturity at pupation
+  % * v_Hj: scaled maturity just before pupation
+  % * u_Ej: scaled reserve just after pupation
   % * info: indicator equals 1 if successful, 0 otherwise
   
   %% Remarks

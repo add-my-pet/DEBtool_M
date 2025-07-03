@@ -25,11 +25,11 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
   % * tau_j: scaled age at pupation \tau_j = a_j k_M
   % * tau_e: scaled age at emergence \tau_e = a_e k_M
   % * tau_b: scaled age at birth \tau_b = a_b k_M
-  % * l_j: scaled length at pupation = end of acceleration
+  % * l_j: scaled length just before pupation = end of acceleration
   % * l_e: scaled length at emergence
   % * l_b: scaled length at birth = start of acceleration
   % * rho_j: scaled exponential growth rate between b and p
-  % * v_Rj: scaled reproduction buffer density at pupation: v_R^j = kap [E_R^j]/ ((1 - kap) [E_G]); 
+  % * v_Rj: scaled reproduction buffer density just before pupation: v_R^j = kap [E_R^j]/ ((1 - kap) [E_G]); 
   % * u_Ee: scaled reserve at emergence: u_E^e = U_E^e g^2 kM^3/ v^2; U^e = E^e/ {p_Am}
   % * info: indicator equals 1 if successful, 0 otherwise
   
