@@ -48,7 +48,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   k     = p(2); % -, k_J/ k_M, ratio of maturity and somatic maintenance rate coeff
   v_Hb  = p(3); % -, v_H^b = U_H^b g^2 kM^3/ (1 - kap) v^2; U_H^b = E_H^b/ {p_Am}: birth (embryo-larva transition)
   v_He  = p(4); % -, v_H^e = U_H^e g^2 kM^3/ (1 - kap) v^2; U_H^e = E_H^e/ {p_Am}: emergence (pupa-imago transition)
-  ome_j = p(5); % -, reserve/structure conversion at pupation: kap_V/kap mu_V/mu_GV 
+  ome_j = p(5); % -, reserve/structure conversion at pupation: kap_V kap mu_V [M_V]/[E_G] 
   
   if ~exist('f', 'var') || isempty(f)
     f = 1;
@@ -84,7 +84,6 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
 %     data = [v_He vHuEl(end,1); f vHuEl(end,2)*g*s_M/l_e^3; l_e vHuEl(end,3)];
 %     prt_tab({{'v_He';'e_e';'l_e'},data},{'emergence','set','integration'},'check')
   tau_e = tau_j + tau_je; % -, scaled age at emergence
-  
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
