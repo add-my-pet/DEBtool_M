@@ -3,7 +3,7 @@
 
 %%
 function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_holo(p, f)
-  % created at 2025/06/11 by Bas Kooijman 
+  % created at 2025/06/11 by Bas Kooijman, modified 2025/07/04 
   
   %% Syntax
   % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
@@ -67,7 +67,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   while abs(u_Ej-u_Ej_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
     l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
     s_M = l_j/ l_b; 
-    u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
+    u_Ej = l_j^3 * (f/g/s_M + ome_j); % scaled initial reserve density for pupa
     [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He],f);
     if u_Ej < u_Ej_e
       l_j0 = l_j;
@@ -79,7 +79,12 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
   tau_je = get_tb([g*s_M, k, v_He],f);
+%     % integrate over pupa for testing
+%     [~, vHuEl] = ode45(@get_vHuEl,[0;tau_je],[0;u_Ej;0],[],g*s_M,k);
+%     data = [v_He vHuEl(end,1); f vHuEl(end,2)*g*s_M/l_e^3; l_e vHuEl(end,3)];
+%     prt_tab({{'v_He';'e_e';'l_e'},data},{'emergence','set','integration'},'check')
   tau_e = tau_j + tau_je; % -, scaled age at emergence
+  
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
@@ -88,4 +93,8 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   
 end
 
+% function dvHuEl = get_vHuEl(tau,vHuEl,gsM,k)
+%   v_H=vHuEl(1); u_E=vHuEl(2); l=vHuEl(3); l2=l*l; l3=l2*l; l4=l3*l;
+%   dvHuEl = [u_E*l2*(gsM+l)/(u_E+l3)-k*v_H; -u_E*l2*(gsM+l)/(u_E+l3); (u_E*gsM-l4)/(u_E+l3)/3];
+% end
 

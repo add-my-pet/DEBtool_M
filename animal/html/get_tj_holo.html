@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>get_tj_holo</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-07-03"><meta name="DC.source" content="get_tj_holo.m"><style type="text/css">
+      --><title>get_tj_holo</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-07-04"><meta name="DC.source" content="get_tj_holo.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -77,7 +77,7 @@ See &lt;get_tj_hep.html get_tj_hep*&gt; in case of ephemeropterans;</pre><h2 id=
 
 %%
 function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_holo(p, f)
-  % created at 2025/06/11 by Bas Kooijman 
+  % created at 2025/06/11 by Bas Kooijman, modified 2025/07/04 
   
   %% Syntax
   % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = <../get_tj_holo.m *get_tj_holo*> (p, f)
@@ -141,7 +141,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   while abs(u_Ej-u_Ej_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
     l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
     s_M = l_j/ l_b; 
-    u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
+    u_Ej = l_j^3 * (f/g/s_M + ome_j); % scaled initial reserve density for pupa
     [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He],f);
     if u_Ej < u_Ej_e
       l_j0 = l_j;
@@ -153,7 +153,12 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
   tau_je = get_tb([g*s_M, k, v_He],f);
+%     % integrate over pupa for testing
+%     [~, vHuEl] = ode45(@get_vHuEl,[0;tau_je],[0;u_Ej;0],[],g*s_M,k);
+%     data = [v_He vHuEl(end,1); f vHuEl(end,2)*g*s_M/l_e^3; l_e vHuEl(end,3)]; % print for testing
+%     prt_tab({{'v_He';'e_e';'l_e'},data},{'emergence','set','integration'},'check')
   tau_e = tau_j + tau_je; % -, scaled age at emergence
+  
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
@@ -162,6 +167,10 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   
 end
 
+function dvHuEl = get_vHuEl(tau,vHuEl,gsM,k)
+  v_H=vHuEl(1); u_E=vHuEl(2); l=vHuEl(3); l2=l*l; l3=l2*l; l4=l3*l;
+  dvHuEl =[u_E*l2*(gsM+l)/(u_E+l3)-k*v_H;-u_E*l2*(gsM+l)/(u_E+l3);(u_E*gsM-l4)/(u_E+l3)/3];
+end
 
 
 ##### SOURCE END #####
