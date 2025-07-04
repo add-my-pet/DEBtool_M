@@ -3,7 +3,7 @@
 
 %%
 function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p, f)
-  % created at 2017/08/01, 2022/01/27 by Bas Kooijman, 
+  % created at 2017/08/01, 2022/01/27 by Bas Kooijman, modified 2025/07/04
   
   %% Syntax
   % [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = <../get_tj_hax.m *get_tj_hax*> (p, f)
@@ -73,7 +73,7 @@ function [tj, te, tp, tb, lj, le, lp, lb, li, rj, rB, uEe, info] = get_tj_hax(p,
         
   % from pupation to emergence; 
   % instantaneous conversion from larval structure to pupal reserve
-  uEj = lj^3 * (kap * kapV + f/ g);       % -, scaled reserve at pupation
+  uEj = lj^3 * (kap * kapV + f/ g/ sM);       % -, scaled reserve at pupation
 
   options = odeset('Events', @emergence);
   [t, luEvH, te, luEvH_e] = ode45(@dget_tj_hex, [0; 300], [0; uEj; 0], options, sM, g, k, vHe);

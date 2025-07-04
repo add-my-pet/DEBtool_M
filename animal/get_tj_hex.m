@@ -3,7 +3,7 @@
 
 %%
 function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_hex(p, f)
-  % created at 2016/02/15 by Bas Kooijman, modified 2019/08/04
+  % created at 2016/02/15 by Bas Kooijman, modified 2019/08/04, 2025/07/04
   
   %% Syntax
   % [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = <../get_tj_hex.m *get_tj_hex*> (p, f)
@@ -68,7 +68,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho_j, v_Rj, u_Ee, info] = get_tj_
 
   % from pupation to emergence; 
   % instantaneous conversion from larval structure to pupal reserve
-  u_Ej = l_j^3 * (kap * kap_V + f/ g);        % -, scaled reserve at pupation
+  u_Ej = l_j^3 * (kap * kap_V + f/ g/ sM);        % -, scaled reserve at pupation
 
   options = odeset('Events',@emergence, 'NonNegative',[1; 1; 1]);
   [t luEvH tau_e luEvH_e] = ode45(@dget_tj_hex, [0, 300], [0; u_Ej; 0], options, sM, g, k, v_He);
