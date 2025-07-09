@@ -71,7 +71,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   while abs(u_Ej-u_Ej_e)>1e-6 && i<n % f_e = e_e: scaled reserve density at emergence 
     l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
     s_M = l_j/ l_b; 
-    u_Ej = l_j^3 * (f/g/s_M + ome_j); % scaled initial reserve density for pupa
+    u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
     [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He], e_e);
     if u_Ej < u_Ej_e
       l_j0 = l_j;
@@ -88,7 +88,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   % test
   [~, vHuEl] = ode45(@get_vHuEl,[0,tau_je],[0,u_Ej,0],[],g*s_M,k);
   v_He = vHuEl(end,1); u_Ee = vHuEl(end,2); l_e = vHuEl(end,3); 
-  e_e = g*s_M*u_Ee/l_e^3
+  e_e = g*s_M*u_Ee/l_e^3; [u_Ej u_Ej_e, e_e]
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
