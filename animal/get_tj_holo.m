@@ -39,7 +39,6 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   %  Def ome_j = kap_V/ kap * [M_V] * mu_V/ [E_G], where kap_V is conversion eff from larval structure to pupal reserve
   %  Energy conductance v increases during acceleration and remains constant at v*s_M after j
   %  Structure and maturity are reset at pupation. So v_He does not to be larger than v_Hj
-  %  See <get_tj_hep.html get_tj_hep*> in case of ephemeropterans;
   
   %% Example of use
   %  get_tj_holo([.5, .1, .01, .05, 0.8],1)
@@ -73,7 +72,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
     l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
     s_M = l_j/ l_b; 
     u_Ej = l_j^3 * (f/g/s_M + ome_j); % scaled initial reserve density for pupa
-    [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He],e_e);
+    [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He], e_e);
     if u_Ej < u_Ej_e
       l_j0 = l_j;
     else
@@ -83,13 +82,22 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   v_Hj = f * l_b^3 * (1/l_b-rho/g)/(k+rho)*(s_M^3-s_M^(-3*k/rho))+v_Hb*s_M^(-3*k/rho); % see comments for 7.8.2
   tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
-  tau_je = get_tb([g*s_M, k, v_He],f);
+  tau_je = get_tb([g*s_M, k, v_He], e_e);
   tau_e = tau_j + tau_je; % -, scaled age at emergence
+  
+  % test e_e
+  [~, vHuEl] = ode45(@get_vHuEl,[0,tau_je],[0,u_Ej,0],[],g*s_M,k);
+  v_He = vHuEl(end,1); u_Ee = vHuEl(end,2); l_e = vHuEl(end,3); e_e = g*s_M*u_Ee/l_e^3
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
    fprintf(['Warning from get_tj_holo: no convergence in ', num2str(n), ' steps\n']);
   end
   
+end
+
+function dvHuEl = get_vHuEl(tau,vHuEl,gsM,k)
+  v_H = vHuEl(1); u_E = vHuEl(2); l = vHuEl(3); l2 = l*l; l3 = l2*l; l4 = l3*l;
+  dvHuEl = [u_E*l2*(gsM+l)/(u_E+l3) - k*v_H; -u_E*l2*(gsM+l)/(u_E+l3); (u_E *gsM-l4)/3/(u_E+l3)];
 end
 
