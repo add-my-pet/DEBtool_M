@@ -72,7 +72,7 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
     l_j = (l_j0 + l_j1)/2; i = i + 1; % guess for l_j
     s_M = l_j/ l_b; 
     u_Ej = l_j^3 * (f/g + ome_j); % scaled initial reserve density for pupa
-    [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He], e_e);
+    [u_Ej_e, l_e] = get_ue0([g*s_M, k, v_He], e_e*s_M);
     if u_Ej < u_Ej_e
       l_j0 = l_j;
     else
@@ -82,13 +82,13 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   v_Hj = f * l_b^3 * (1/l_b-rho/g)/(k+rho)*(s_M^3-s_M^(-3*k/rho))+v_Hb*s_M^(-3*k/rho); % see comments for 7.8.2
   tau_bj = log(s_M)*3/rho;
   tau_j = tau_b + tau_bj; % -, scaled age at pupation
-  tau_je = get_tb([g*s_M, k, v_He], e_e);
+  tau_je = get_tb([g*s_M, k, v_He], e_e*s_M);
   tau_e = tau_j + tau_je; % -, scaled age at emergence
   
-  % test
-  [~, vHuEl] = ode45(@get_vHuEl,[0,tau_je],[0,u_Ej,0],[],g*s_M,k);
-  v_He = vHuEl(end,1); u_Ee = vHuEl(end,2); l_e = vHuEl(end,3); 
-  e_e = g*s_M*u_Ee/l_e^3; [u_Ej u_Ej_e, e_e]
+%   % test
+%   [~, vHuEl] = ode45(@get_vHuEl,[0,tau_je],[0,u_Ej,0],[],g*s_M,k);
+%   v_Hee = vHuEl(end,1); u_Eee = vHuEl(end,2); l_ee = vHuEl(end,3); e_ee = g*u_Eee/l_e^3;
+%   [v_He , v_Hee, e_e, e_ee, l_e, l_ee]
   
   if i >= n
    info=0; tau_j=[]; tau_e=[]; l_j=[]; rho=[]; v_Hj=[]; 
@@ -97,8 +97,8 @@ function [tau_j, tau_e, tau_b, l_j, l_e, l_b, rho, v_Hj, u_Ej, info] = get_tj_ho
   
 end
 
-function dvHuEl = get_vHuEl(tau,vHuEl,gsM,k)
-  v_H = vHuEl(1); u_E = vHuEl(2); l = vHuEl(3); l2 = l*l; l3 = l2*l; l4 = l3*l;
-  dvHuEl = [u_E*l2*(gsM+l)/(u_E+l3) - k*v_H; -u_E*l2*(gsM+l)/(u_E+l3); (u_E *gsM-l4)/3/(u_E+l3)];
-end
+% function dvHuEl = get_vHuEl(tau,vHuEl,gsM,k)
+%   v_H = vHuEl(1); u_E = vHuEl(2); l = vHuEl(3); l2 = l*l; l3 = l2*l; l4 = l3*l;
+%   dvHuEl = [u_E*l2*(gsM+l)/(u_E+l3) - k*v_H; -u_E*l2*(gsM+l)/(u_E+l3); (u_E *gsM-l4)/3/(u_E+l3)];
+% end
 
