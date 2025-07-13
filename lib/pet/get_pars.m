@@ -26,7 +26,7 @@ function [par, metaPar, txtPar, flag] = get_pars(data, auxData, metaData)
   % Possible targets: 
   %
   %    del_M, z, v, kap, p_M, E_G, E_Hb, E_Hj, E_Hp, h_a
-  %    the values set in pars_init can be overwritted
+  %    the values set in pars_init can be overwritten
   %
   % Input
   %

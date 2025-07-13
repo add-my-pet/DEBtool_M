@@ -158,7 +158,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
 
 %% Remarks
 % Assumes that parameters are given in standard units (d, cm, mol, J, K); this is not checked!
-% Buffer handling rules are species-specific, so ultimate reproduction rate Ri doest not always make sense.
+% Buffer handling rules are species-specific, so ultimate reproduction rate Ri does not always make sense.
 % Fermentation is supposed not to occur and dioxygen availability is assumed to be unlimiting.
 % Ages exclude initial delay of development, if it would exist.
 % Body weights exclude possible contribution of the reproduction buffer.
