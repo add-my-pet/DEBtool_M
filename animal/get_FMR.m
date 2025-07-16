@@ -2,11 +2,11 @@
 % Get field metabolic rate
 
 %%
-function FMR = get_FMR(pet, W, T, F, info)
+function FMR = get_FMR(pet, W, T, F)
   %  created at 2025/07/13 by Bas Kooijman
   
   %% Syntax
-  % FMR = <../get_FMR.m *get_FMR*> (pet, W, T, F, info)
+  % FMR = <../get_FMR.m *get_FMR*> (pet, W, T, F)
   
   %% Description
   % Obtains the field metabolic rate, given body weight, temperature and scaled functional response
@@ -32,7 +32,7 @@ function FMR = get_FMR(pet, W, T, F, info)
  
   Ww_i = read_stat(pet,'Ww_i');
   if ~exist('W','var')
-    W = read_stat(pet,'Ww_i'); % g, ultimate wet weight
+    W = Ww_i; % g, ultimate wet weight
   end
   W = min(W, Ww_i-1e-3);
   if ~exist('T','var')
@@ -56,7 +56,8 @@ function FMR = get_FMR(pet, W, T, F, info)
       end
       load('res', 'par', 'metaPar');
     end
-    cPar = parscomp_st(par); vars_pull(par); v2struct(par); v2struct(cPar); f = F;
+    cPar = parscomp_st(par); vars_pull(par); v2struct(par); v2struct(cPar); 
+    f = F; % overwrite f, which was lost during load
     TC = tempcorr(C2K(T), C2K(20), T_A); % -, temp correction coefficient
     L = (W/ (1 + f * ome))^(1/3); % cm, struc length
     p_ref = TC * p_Am * L_m^2; % J/d, max assimilation power at max size
@@ -67,7 +68,7 @@ function FMR = get_FMR(pet, W, T, F, info)
         pars_power = [kap, kap_R, g, k_J, k_M, L_T, v, U_Hb, U_Hp]; 
         p_ACSJGRD = p_ref * scaled_power(L, f, pars_power, l_b, l_p);
       case 'sbp' % no growth, no kappa rule after p
-        [l_j, l_p, l_b, l_i] = get_tj([g; k; l_T; v_Hb; v_Hp-1e-3; v_Hp], f);
+        [l_j, l_p, l_b] = get_tj([g; k; l_T; v_Hb; v_Hp-1e-3; v_Hp], f);
         pars_power = [kap, kap_R, g, k_J, k_M, L_T, v, U_Hb, U_Hp]; 
         p_ACSJGRD = p_ref * scaled_power_sbp(L, f, pars_power, l_b, l_p); 
         p_ACSJGRD(3,5) = 0; % p_ACSJGRD(3,6) = sum(p_ACSJGRD(3,[5 6]),2); 
@@ -101,8 +102,8 @@ function FMR = get_FMR(pet, W, T, F, info)
         pars_power = [kap, kap_V, kap_R, g, k_J, k_M, v, U_Hb, U_He]; 
         p_ACSJGRD = p_ref * scaled_power_hex(L, f, pars_power, l_b, l_j, l_e, t_j);
     end
-    J_M = - (n_M\n_O) * eta_O * p_ACSJGRD(:, [1 7 5])';  % mol/d: J_C, J_H, J_O, J_N in rows
-    FMR = -J_M(3,:); % mol/d, O2 consumption 
+    J_M = -(n_M\n_O) * eta_O * p_ACSJGRD(:, [1 7 5])';  % mol/d: J_C, J_H, J_O, J_N in rows
+    FMR = -J_M(3,:); % mol/d, O2 consumption (positive)
 
     cd(WD0);
   end
