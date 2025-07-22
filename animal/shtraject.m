@@ -138,7 +138,7 @@ h_vH = sH * (cummax_vec(vH) - vH); % hazard due to rejuvenation
 % plotting
 close all
 
-%figure
+Hfig_O = figure;
 subplot(2,3,1)
 plot(t(alive), e(alive), 'g', t(~alive), e(~alive), 'r')
 ylabel('reserve density')

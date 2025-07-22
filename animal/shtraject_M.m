@@ -42,7 +42,7 @@ j_O = [j_X, j_V, j_E, j_P]';
 % notice: J_M is given in scaled time
 j_M = - n_M\n_O * j_O;
 
-figure
+Hfig_M = figure;
 subplot(2,2,1)
 plot(t(alive), j_M(1,alive), 'g', t(~alive), j_M(1,~alive), 'r')
 ylabel('scaled CO_2 production')

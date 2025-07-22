@@ -4,7 +4,7 @@
 %%
 function dvars = dtraject(t, vars, ...
     vHb, vHp, g, kapR1, kapG, lT, k, k1, ha, sG, sH, uE0, f)
-% called from traject and used in ode-solver
+% called from shtraject and used in ode-solver
 % specifies derivatives of state variables
 % f equals 0 or 1
 
