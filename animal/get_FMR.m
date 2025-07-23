@@ -50,9 +50,9 @@ function FMR = get_FMR(pet, W, T, F)
       results_pet = ['results_', pet, '.mat']; 
       path = [set_path2server, 'add_my_pet/entries/']; % path for results_my_pet.mat files
       if ismac || isunix
-        system(['wget -O res ', path, pet, '/', results_pet]);
+        system(['wget -O res.mat ', path, pet, '/', results_pet]);
       else
-        system(['powershell wget -O res ', path, pet, '/', results_pet]);
+        system(['powershell wget -O res.mat ', path, pet, '/', results_pet]);
       end
       load('res', 'par', 'metaPar');
     end
