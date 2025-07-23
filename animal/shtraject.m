@@ -162,7 +162,7 @@ xlabel('time since birth')
 %figure
 subplot(2,3,4)
 plot(t(alive), q(alive), 'g', t(~alive), q(~alive), 'r')
-ylabel('acceleration')
+ylabel('aging acceleration')
 xlabel('time since birth')
 
 %figure
@@ -176,9 +176,9 @@ xlabel('time since birth')
 
 %figure
 subplot(2,3,6)
-plot(t(alive), 10 * N(alive), 'g', t(~alive), N(~alive), 'r', ...
+plot(t(alive), 100 * N(alive), 'g', t(~alive), N(~alive), 'r', ...
      tf, 1:length(tf), 'k')
-ylabel('cum feeding, 10 x cum reprod, ')
+ylabel('cum feeding, 100 \times cum reprod, ')
 xlabel('time since birth')
 
 shtraject_M; % continue with plotting mineral fluxes
