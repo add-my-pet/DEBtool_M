@@ -140,43 +140,43 @@ close all
 
 Hfig_O = figure;
 subplot(2,3,1)
-plot(t(alive), e(alive), 'g', t(~alive), e(~alive), 'r')
+plot(t(alive), e(alive), 'r', t(~alive), e(~alive), 'r')
 ylabel('reserve density')
 xlabel('time since birth')
 
 %figure
 subplot(2,3,2)
 hold on
-plot(t(alive), l(alive), 'g', t(~alive), l(~alive), 'r')
-plot(t(alive), S(alive), '-', 'Color', [0 .75 0])
-plot(t(~alive), S(~alive), '-', 'Color', [.75 0 0])
+plot(t(alive), l(alive), 'r', t(~alive), l(~alive), 'r')
+plot(t(alive), S(alive), '-', 'Color', [0 0 0.75])
+plot(t(~alive), S(~alive), '-', 'Color', [0.75 0 0])
 ylabel('length, survival')
 xlabel('time since birth')
 
 %figure
 subplot(2,3,3)
-plot(t(alive), vH(alive), 'g', t(~alive), vH(~alive), 'r')
+plot(t(alive), vH(alive), 'r', t(~alive), vH(~alive), 'r')
 ylabel('maturity')
 xlabel('time since birth')
 
 %figure
 subplot(2,3,4)
-plot(t(alive), q(alive), 'g', t(~alive), q(~alive), 'r')
+plot(t(alive), q(alive), 'r', t(~alive), q(~alive), 'r')
 ylabel('aging acceleration')
 xlabel('time since birth')
 
 %figure
 subplot(2,3,5)
 hold on
-plot(t(alive), h(alive), 'g', t(~alive), h(~alive), 'r')
-plot(t(alive), h_vH(alive), '-', 'Color', [0 .75 0])
-plot(t(~alive), h_vH(~alive), '-', 'Color', [.75 0 0])
+plot(t(alive), h(alive), 'r', t(~alive), h(~alive), 'r')
+plot(t(alive), h_vH(alive), '-', 'Color', [0 0 0.75])
+plot(t(~alive), h_vH(~alive), '-', 'Color', [0.75 0 0])
 ylabel('hazard by ageing, rejuv')
 xlabel('time since birth')
 
 %figure
 subplot(2,3,6)
-plot(t(alive), 100 * N(alive), 'g', t(~alive), N(~alive), 'r', ...
+plot(t(alive), 100 * N(alive), 'r', t(~alive), N(~alive), 'r', ...
      tf, 1:length(tf), 'k')
 ylabel('cum feeding, 100 \times cum reprod, ')
 xlabel('time since birth')

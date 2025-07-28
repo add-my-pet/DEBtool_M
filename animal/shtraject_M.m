@@ -44,24 +44,24 @@ j_M = - n_M\n_O * j_O;
 
 Hfig_M = figure;
 subplot(2,2,1)
-plot(t(alive), j_M(1,alive), 'g', t(~alive), j_M(1,~alive), 'r')
+plot(t(alive), j_M(1,alive), 'r', t(~alive), j_M(1,~alive), 'r')
 ylabel('scaled CO_2 production')
 xlabel('time since birth')
 
 %figure
 subplot(2,2,2)
-plot(t(alive), j_M(2,alive), 'g', t(~alive), j_M(2,~alive), 'r')
+plot(t(alive), j_M(2,alive), 'r', t(~alive), j_M(2,~alive), 'r')
 ylabel('scaled H_2O production')
 xlabel('time since birth')
 
 %figure
 subplot(2,2,3)
-plot(t(alive), -j_M(3,alive), 'g', t(~alive), -j_M(3,~alive), 'r')
+plot(t(alive), -j_M(3,alive), 'r', t(~alive), -j_M(3,~alive), 'r')
 ylabel('scaled O_2 use')
 xlabel('time since birth')
 
 %figure
 subplot(2,2,4)
-plot(t(alive), j_M(4,alive), 'g', t(~alive), j_M(4,~alive), 'r')
+plot(t(alive), j_M(4,alive), 'r', t(~alive), j_M(4,~alive), 'r')
 ylabel('scaled NH_3 production')
 xlabel('time since birth')

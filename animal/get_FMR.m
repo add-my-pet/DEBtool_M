@@ -23,7 +23,7 @@ function FMR = get_FMR(pet, W, T, F)
   % * FMR: field metabolic rate in mol/d
   
   %% Remarks
-  % uses results_my_pet.mat files to get parameter values.
+  % uses results_my_pet.mat files to get parameter values and required wget.exe.
   % density of O2 is 1.429 g/liter at 20 degC and 1 atm of pressure, so 
   % 1 mol/d = 32e3 mg/d = 32e3/24/60/1.429 = 15.55 ml/min 
   
