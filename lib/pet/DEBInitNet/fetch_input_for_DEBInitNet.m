@@ -8,23 +8,23 @@ function [inputData, flag] = fetch_input_for_DEBInitNet(data, auxData, metaData,
 % [inputData, flag] = <../fetch_input_for_DEBInitNet.m *fetch_input_for_DEBInitNet*> (data, auxData, metaData, par, metaPar)
 
 %% Description
-% Fetches data and metadata from the mydata_my_pet.m file and formats it so it can be used as input 
+% Fetches data and metadata from the mydata_my_pet.m file and formats it so it can be used as input
 % for the DEBInitNet parameter initialization method.
-% 
+%
 % Tries to convert data to standard units (g, cm, d, mol, K) with the function <convert_data_to_standard_units.html convert_data_to_standard_units>.
-% This function requires functions from the Symbolic Math Toolbox. 
+% This function requires functions from the Symbolic Math Toolbox.
 % If the toolbox is not available, then it assumes the data is in standard units.
-% 
+%
 % The following datasets are required to exist
 %   ab, am, Wwb, Wwp, Wwi, Ri
-% 
+%
 % If some dataset does not exist, then it tries to fill in its value from other datasets:
 %   - ab: can be computed from tg
 %   - Wwb, Wwp, Wwi: can be computed from the respective dry weights or via isomorphy if a pair of
 %   weight and length exist at the same transition
 %   - Ri: can be computed from Ni and am
 %
-% Time dependent datasets (ab, am, Ri) are normalized to the reference temperature. 
+% Time dependent datasets (ab, am, Ri) are normalized to the reference temperature.
 % In addition to the above datasets, the following are also collected to be used as input:
 %   - d_V: obtained from get_d_V
 %   - T_typical: obtained from metaData
@@ -50,7 +50,7 @@ function [inputData, flag] = fetch_input_for_DEBInitNet(data, auxData, metaData,
 %   - 3: missing wet weight at birth, puberty or ultimate
 %   - 4: missing reproduction rate
 
-%% Remarks 
+%% Remarks
 % Description of the DEBInitMethod is given in Oliveira et al. (in prep)
 % The data preparation is described in section 3.
 
@@ -61,10 +61,10 @@ inputData = zeros(34, 1);
 pars_T = [par.T_A];
 
 
-%% Convert data to standard units 
+%% Convert data to standard units
 % Can only be done if the Symbolic Math Toolbox is installed.
 v=ver;
-if any(strcmp({v.Name}, 'Symbolic Math Toolbox'))
+if ~isMATLABReleaseOlderThan('R2018b') && any(strcmp({v.Name}, 'Symbolic Math Toolbox'))
     sudata = convert_data_to_standard_units(data, txtData);
 else
     sudata = data;
@@ -76,9 +76,19 @@ end
 % age at birth, ab
 if isfield(sudata, 'ab')
     ab = sudata.ab;
-    temp = auxData.temp.ab;
+    if isfield(auxData.temp, 'ab')
+        temp = auxData.temp.ab;
+    else
+        warning('No temperature data for age at birth. Assuming typical temperature.')
+        temp = metaData.T_typical;
+    end
 elseif isfield(sudata, 'tg')
-    temp = auxData.temp.tg;
+    if isfield(auxData.temp, 'tg')
+        temp = auxData.temp.tg;
+    else
+        warning('No temperature data for gestation time. Assuming typical temperature.')
+        temp = metaData.T_typical;
+    end
     if isfield(par, 't_0')
         ab = sudata.tg + par.t_0;
     else
@@ -91,7 +101,13 @@ abT = ab / tempcorr(temp, par.T_ref, pars_T);
 
 % lifespan, am
 if isfield(sudata, 'am')
-    amT = sudata.am / tempcorr(auxData.temp.am, par.T_ref, pars_T);
+    if isfield(auxData.temp, 'am')
+        temp = auxData.temp.am;
+    else
+        warning('No temperature data for lifespan. Assuming typical temperature.')
+        temp = metaData.T_typical;
+    end
+    amT = sudata.am / tempcorr(temp, par.T_ref, pars_T);
 else % Missing am
     flag = 2; return
 end
@@ -100,22 +116,22 @@ end
 d_V = get_d_V(metaData.phylum, metaData.class);
 
 % Weights at birth, puberty and ultimate
-WLFactor = getWeightLengthProportion(sudata);
+WLFactor = getWeightLengthProportion(sudata, d_V);
 transitions = {'b', 'p', 'i'};
 transitionWeights = struct('Wwb', nan, 'Wwp', nan, 'Wwi', nan);
 for t=1:numel(transitions)
     wwtr = ['Ww' transitions{t}];
     wdtr = ['Wd' transitions{t}];
     ltr = ['L' transitions{t}];
-    if isfield(sudata, wwtr) 
+    if isfield(sudata, wwtr)
         % Check if wet weight at transition exists
         transitionWeights.(wwtr) = sudata.(wwtr);
-    elseif isfield(sudata, wdtr) 
+    elseif isfield(sudata, wdtr)
         % Check if dry weight at transition exists and convert to wet weight
         transitionWeights.(wwtr) = sudata.(wdtr) / d_V;
     elseif ~isnan(WLFactor) && isfield(sudata, ltr)
         % Check if length exists and convert to weight
-        transitionWeights.(wwtr) = WLFactor * sudata.(ltr)^3; 
+        transitionWeights.(wwtr) = WLFactor * sudata.(ltr)^3;
     end
 end
 % For Aves species, impute Wwp with 0.95 * Wwi
@@ -123,15 +139,27 @@ if isnan(transitionWeights.Wwp) && ~isnan(transitionWeights.Wwi) && strcmp(metaD
     transitionWeights.Wwp = 0.95 * transitionWeights.Wwi;
 end
 % Check if any weight is missing
-if any(isnan(struct2array(transitionWeights)))
+if any(cellfun(@(x) isnan(x), struct2cell(transitionWeights)))
     flag = 3; return
 end
 
 % Reproduction rate
 if isfield(sudata, 'Ri')
-    RiT = sudata.Ri * tempcorr(auxData.temp.Ri, par.T_ref, pars_T);
+    if isfield(auxData.temp, 'Ri')
+        temp = auxData.temp.Ri;
+    else
+        warning('No temperature data for maximum reproduction rate. Assuming typical temperature.')
+        temp = metaData.T_typical;
+    end
+    RiT = sudata.Ri * tempcorr(temp, par.T_ref, pars_T);
 elseif isfield(sudata, 'Ni')
-    RiT = sudata.Ni / amT * tempcorr(auxData.temp.Ni, par.T_ref, pars_T);
+    if isfield(auxData.temp, 'Ni')
+        temp = auxData.temp.Ni;
+    else
+        warning('No temperature data for total reproduction. Assuming typical temperature.')
+        temp = metaData.T_typical;
+    end
+    RiT = sudata.Ni / amT * tempcorr(temp, par.T_ref, pars_T);
 else
     flag = 4; return
 end
@@ -192,7 +220,7 @@ end
 % Food
 foodCodes = {'P', 'O', 'H', 'C',};
 foodDummies = zeros(1, 1+numel(foodCodes)); % First column is for other codes of food
-for f=1:numel(foodCodes) 
+for f=1:numel(foodCodes)
     for i=1:numel(metaData.ecoCode.food)
         if any(ismember(metaData.ecoCode.food{i}, foodCodes{f}))
             foodDummies(f+1) = true;
@@ -224,10 +252,10 @@ for t=1:numel(transitions)
     wwtr = ['Ww' transitions{t}];
     dwtr = ['Wd' transitions{t}];
     ltr = ['L' transitions{t}];
-    if isfield(data, {wwtr, ltr}) 
+    if isfield(data, {wwtr, ltr})
         % Get ratio between wet weight and length cubed
         factors(end+1) = data.(wwtr) / (data.(ltr)^3);
-    elseif isfield(data, {dwtr, ltr}) 
+    elseif isfield(data, {dwtr, ltr})
         % Get ratio between dry weight converted to wet weight and length cubed
         factors(end+1) = data.(dwtr) / (data.(ltr)^3) / d_V;
     end

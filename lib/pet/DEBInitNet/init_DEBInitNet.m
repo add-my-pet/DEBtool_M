@@ -48,8 +48,8 @@ function [par, metaPar, txtPar] = init_DEBInitNet(data, auxData, metaData, txtDa
 % Description of the DEBInitNet is given in Oliveira et al. (2025) (in prep)
 %
 % Only sets parameters with the corresponding name. For example, if parameters for males exist, they
-% are not automatically set. A warning will be issued to make the user aware of this. Best practice
-% is to assign the initial values given by this method to those parameters.
+% are not automatically set. Best practice is to assign the initial values given by this method to 
+% those parameters.
 %
 
 %% Check if method can be applied
@@ -159,7 +159,7 @@ predPar.E_G = par.mu_V * d_V / kap_G / w_V;
 
 
 %% Set parameter values in par struct if they exist and are free
-fprintf('Computed parameters: \n')
+fprintf('\nInitial parameters computed by DEBInitNet: \n')
 predParNames = fieldnames(predPar);
 for p=1:numel(predParNames)
     parName = predParNames{p};
@@ -168,3 +168,4 @@ for p=1:numel(predParNames)
         par.(parName) = predPar.(parName);
     end
 end
+fprintf('\n')

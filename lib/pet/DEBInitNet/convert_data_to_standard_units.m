@@ -42,7 +42,7 @@ for d=1:numel(dataFields)
         continue
     end
     % Convert zero variate data
-    if size(data.(datasetName), 1) == 1
+    if size(data.(datasetName), 1) == 1 && ischar(origUnit)
         sudata.(datasetName) = convertMeasurementUnits(datasetName, value, origUnit, debUnits);
     end
 end
