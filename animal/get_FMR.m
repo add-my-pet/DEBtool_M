@@ -36,7 +36,7 @@ function FMR = get_FMR(pet, W, T, F)
   end
   W = min(W, Ww_i-1e-3);
   if ~exist('T','var')
-    T = T_typ; % C, T_typical
+    T = K2C(T_typ); % C, T_typical
   end
   if ~exist('F','var')
     F = 1; % -, scaled function response
