@@ -15,7 +15,7 @@ function FMR = get_FMR(pet, W, T, F)
   %
   % * pet: character string with name of entry, e.g. 'Dapnia_magna'
   % * W: optional scalar with body mass in g (default ultimate mass when f=1)
-  % * T: optional scalar with temperature in C (default 20 C)
+  % * T: optional scalar with temperature in C (default T_typical)
   % * F: optional scalar with scaled functional response (default 1)
   %  
   % Output
@@ -30,13 +30,13 @@ function FMR = get_FMR(pet, W, T, F)
   %% Example of use
   % FMR = get_FMR('Daphnia_magna')
  
-  Ww_i = read_stat(pet,'Ww_i');
+ WT = read_stat(pet,'Ww_i','T_typical'); Ww_i = TW(:,1); T_typ = TW(:,2);
   if ~exist('W','var')
     W = Ww_i; % g, ultimate wet weight
   end
   W = min(W, Ww_i-1e-3);
   if ~exist('T','var')
-    T = 20; % C, T_ref
+    T = T_typ; % C, T_ref
   end
   if ~exist('F','var')
     F = 1; % -, scaled function response
