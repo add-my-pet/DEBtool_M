@@ -42,7 +42,7 @@ function prt_tab(values, header, fileName, save)
   elseif ~ismember('.',fileName)
     title = fileName; ext = 'html'; fileName = [fileName,'.html'];
   else
-    str = strsplit(fileName,'.'); title = str(1); ext = str(end);
+    str = strsplit(fileName,'.'); title = str(1); ext = str{end};
   end
   if ~exist('save','var')
     save = false;
@@ -73,7 +73,7 @@ function prt_tab(values, header, fileName, save)
     return
   end
   
-  switch ext{:}
+  switch ext
     case 'html'
       oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
