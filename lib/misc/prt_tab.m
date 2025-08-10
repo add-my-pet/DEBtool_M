@@ -26,9 +26,10 @@ function prt_tab(values, header, fileName, save)
 %
 % * The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.
 % * If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
-% * If the filName has no extension, .html is assumed. 
+% * If the fileName has no extension, .html is assumed. 
 % * Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:
-%  .txt, .text, .dat, .csv, .log, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm
+%    .txt, .text, .dat, .csv, .log, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm.
+%   Extension .tex is also recognized; the resulting Latex text is meant to be copy/pasted into a .tex document
 
 %% Example of use
 % prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
@@ -72,76 +73,116 @@ function prt_tab(values, header, fileName, save)
     return
   end
   
-  if strcmp(ext,'html') % write html-file and open it in your browser
-  oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+  switch ext{:}
+    case 'html'
+      oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
-  % file head
-  fprintf(oid, '<!DOCTYPE html>\n');
-  fprintf(oid, '<html>\n');
-  fprintf(oid, '<head>\n');
-  fprintf(oid, '  <title>%s</title>\n',  title);
-  fprintf(oid, '  <style>\n');
-  fprintf(oid, '    div.tab {\n');
-  fprintf(oid, '      width: 90%%;\n');
-  fprintf(oid, '      margin: auto;\n'); 
-  fprintf(oid, '      padding-top: 30px;\n'); 
-  fprintf(oid, '    }\n\n');
+      % file head
+      fprintf(oid, '<!DOCTYPE html>\n');
+      fprintf(oid, '<html>\n');
+      fprintf(oid, '<head>\n');
+      fprintf(oid, '  <title>%s</title>\n',  title);
+      fprintf(oid, '  <style>\n');
+      fprintf(oid, '    div.tab {\n');
+      fprintf(oid, '      width: 90%%;\n');
+      fprintf(oid, '      margin: auto;\n'); 
+      fprintf(oid, '      padding-top: 30px;\n'); 
+      fprintf(oid, '    }\n\n');
     
-  fprintf(oid, '    .head {\n');
-  fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
-  fprintf(oid, '    }\n\n');
+      fprintf(oid, '    .head {\n');
+      fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
+      fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    #tab {\n');
-  fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
-  fprintf(oid, '    }\n\n');
+      fprintf(oid, '    #tab {\n');
+      fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
+      fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
-  fprintf(oid, '  </style>\n');
-  fprintf(oid, '</head>\n\n');
-  fprintf(oid, '<body>\n\n');
+      fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
+      fprintf(oid, '  </style>\n');
+      fprintf(oid, '</head>\n\n');
+      fprintf(oid, '<body>\n\n');
   
-  fprintf(oid, '  <div class="tab">\n');
-  fprintf(oid, '  <table id="tab">\n');
+      fprintf(oid, '  <div class="tab">\n');
+      fprintf(oid, '  <table id="tab">\n');
 
-  % header
-  if ~isempty(header)
-    fprintf(oid, '    <tr class="head">');
-    for j = 1:n_cols
-      fprintf(oid, ' <th>%s</th>', header{j});
-    end
-    fprintf(oid, ' </tr>\n\n');
-  end
-
-  % body
-  for i = 1:n_rows
-    fprintf(oid, '    <tr>\n      ');
-    for j = 1:n_cols
-      val_ij = val{i,j};
-      if iscell(val_ij)
-        fprintf(oid, '<td>%s</td> ', val_ij{:});
-      else
-        fprintf(oid, '<td>%s</td> ', val_ij);
+      % header
+      if ~isempty(header)
+        fprintf(oid, '    <tr class="head">');
+        for j = 1:n_cols
+          fprintf(oid, ' <th>%s</th>', header{j});
+        end
+        fprintf(oid, ' </tr>\n\n');
       end
-    end
-    fprintf(oid, '  \n    </tr>\n\n');
-  end
+
+      % body
+      for i = 1:n_rows
+        fprintf(oid, '    <tr>\n      ');
+        for j = 1:n_cols
+          val_ij = val{i,j};
+          if iscell(val_ij)
+            fprintf(oid, '<td>%s</td> ', val_ij{:});
+          else
+            fprintf(oid, '<td>%s</td> ', val_ij);
+          end
+        end
+        fprintf(oid, '  \n    </tr>\n\n');
+      end
  
-  % file tail
-  fprintf(oid, '  </table>\n'); % close table
-  fprintf(oid, '  </div>\n\n');
+      % file tail
+      fprintf(oid, '  </table>\n'); % close table
+      fprintf(oid, '  </div>\n\n');
 
-  fprintf(oid, '</body>\n');
-  fprintf(oid, '</html>\n');
+      fprintf(oid, '</body>\n');
+      fprintf(oid, '</html>\n');
 
-  fclose(oid);
+      fclose(oid);
 
-  web(fileName,'-browser') % open html in systems browser
-  pause(2)
-  if ~save
-    delete(fileName)
-  end 
+      web(fileName,'-browser') % open html in systems browser
+      pause(2)
+      if ~save
+        delete(fileName)
+      end 
   
-  else % write csv or xls-file to local directory
-    writecell([header; val],fileName)
+    case 'tex'
+      oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+      l = 'l'; l = ['{', l(ones(1,n_cols)), '}']; % l can be replace by 'c' or 'r' for alignment
+      fprintf(oid, '    \\begin{tabular}%s\n      \\hline\n', l);
+
+      % header
+      if ~isempty(header)
+        fprintf(oid, '      ');
+        for j = 1:n_cols-1
+          fprintf(oid, '%s & ', header{j});
+        end
+        fprintf(oid, ' %s \\\\\n', header{end});
+        fprintf(oid, '      \\hline\\\\\n');
+      end
+
+      % body
+      for i = 1:n_rows
+        fprintf(oid, '      ');
+        for j = 1:n_cols-1
+          val_ij = val{i,j};
+          if iscell(val_ij)
+            fprintf(oid, '%s & ', val_ij{:});
+          else
+            fprintf(oid, '%s & ', val_ij);
+          end
+        end
+        val_ij = val{i,end};
+        if iscell(val_ij)
+          fprintf(oid, '%s \\\\\n', val_ij{:});
+        else
+          fprintf(oid, '%s \\\\\n', val_ij);
+        end
+      end
+
+      % file tail
+      fprintf(oid, '      \\hline\n');
+      fprintf(oid, '    \\end{tabular}\n'); % close table
+      fclose(oid);
+
+    otherwise % write csv or xls-file to local directory
+      writecell([header; val],fileName)
   end
 end

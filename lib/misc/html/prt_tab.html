@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>prt_tab</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-03-08"><meta name="DC.source" content="prt_tab.m"><style type="text/css">
+      --><title>prt_tab</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-08-10"><meta name="DC.source" content="prt_tab.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>prt_tab</h1><!--introduction--><p>writes table to temporary file tab.html, shows it in the bowser and optionally deletes it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_tab.m"><b>prt_tab</b></a> (values, header, fileName, save)</p><h2 id="4">Description</h2><p>writes table to temporary file title.html (= 3rd input) and shows it in the bowser</p><p>Input:</p><div><ul><li>values: cell array with strings and/or matrices with numbers</li><li>header: cell vector with strings for header; length should match number of columns, but might be empty</li><li>fileName: optional string with title of browser tab and file-name (default "table")</li><li>save: optional boolean to save the html-file (default: false)</li></ul></div><p>Output:</p><div><ul><li>text-file with the name title.html is written and shown in browser, where title is 3rd input</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.</li><li>If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.</li><li>If the filName has no extension, .html is assumed.</li><li>Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:  .txt, .dat, .csv, .log, .text, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm</li></ul></div><h2 id="6">Example of use</h2><p>prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>prt_tab</h1><!--introduction--><p>writes table to temporary file tab.html, shows it in the bowser and optionally deletes it</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p><a href="../prt_tab.m"><b>prt_tab</b></a> (values, header, fileName, save)</p><h2 id="4">Description</h2><p>writes table to temporary file title.html (= 3rd input) and shows it in the bowser</p><p>Input:</p><div><ul><li>values: cell array with strings and/or matrices with numbers</li><li>header: cell vector with strings for header; length should match number of columns, but might be empty</li><li>fileName: optional string with title of browser tab and file-name (default "table")</li><li>save: optional boolean to save the html-file (default: false)</li></ul></div><p>Output:</p><div><ul><li>text-file with the name title.html is written and shown in browser, where title is 3rd input</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.</li><li>If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.</li><li>If the fileName has no extension, .html is assumed.</li><li>Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:    .txt, .text, .dat, .csv, .log, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm.   Extension .tex is also recognized; the resulting Latex text is meant to be copy/pasted into a .tex document</li></ul></div><h2 id="6">Example of use</h2><p>prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% prt_tab
 % writes table to temporary file tab.html, shows it in the bowser and optionally deletes it
@@ -97,9 +97,10 @@ function prt_tab(values, header, fileName, save)
 %
 % * The input might be any sequence of cell arrays and matrices, but all must have the same number of rows.
 % * If the first element of values is a character string, it is assumed to be a taxon and replaced by its members.
-% * If the filName has no extension, .html is assumed. 
+% * If the fileName has no extension, .html is assumed. 
 % * Otherwise the exensions of Matlab function writecell are recognized, while input save is ignored:
-%  .txt, .dat, .csv, .log, .text, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm
+%    .txt, .text, .dat, .csv, .log, .dlm, .xls, .xlsx, .xlsb, .xlsm, .xltx, .xltm.
+%   Extension .tex is also recognized; the resulting Latex text is meant to be copy/pasted into a .tex document
 
 %% Example of use
 % prt_tab({{'aa';'b';'cc'}, [1.1 2 3; 4 5 6; 7 8 9.3]},{'nm','v1','v2','v3'});
@@ -143,77 +144,117 @@ function prt_tab(values, header, fileName, save)
     return
   end
   
-  if strcmp(ext,'html') % write html-file and open it in your browser
-  oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+  switch ext{:}
+    case 'html'
+      oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
 
-  % file head
-  fprintf(oid, '<!DOCTYPE html>\n');
-  fprintf(oid, '<html>\n');
-  fprintf(oid, '<head>\n');
-  fprintf(oid, '  <title>%s</title>\n',  title);
-  fprintf(oid, '  <style>\n');
-  fprintf(oid, '    div.tab {\n');
-  fprintf(oid, '      width: 90%%;\n');
-  fprintf(oid, '      margin: auto;\n'); 
-  fprintf(oid, '      padding-top: 30px;\n'); 
-  fprintf(oid, '    }\n\n');
+      % file head
+      fprintf(oid, '<!DOCTYPE html>\n');
+      fprintf(oid, '<html>\n');
+      fprintf(oid, '<head>\n');
+      fprintf(oid, '  <title>%s</title>\n',  title);
+      fprintf(oid, '  <style>\n');
+      fprintf(oid, '    div.tab {\n');
+      fprintf(oid, '      width: 90%%;\n');
+      fprintf(oid, '      margin: auto;\n'); 
+      fprintf(oid, '      padding-top: 30px;\n'); 
+      fprintf(oid, '    }\n\n');
     
-  fprintf(oid, '    .head {\n');
-  fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
-  fprintf(oid, '    }\n\n');
+      fprintf(oid, '    .head {\n');
+      fprintf(oid, '      background-color: #FFE7C6\n');                  % pink header background
+      fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    #tab {\n');
-  fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
-  fprintf(oid, '    }\n\n');
+      fprintf(oid, '    #tab {\n');
+      fprintf(oid, '      border-style: solid hidden solid hidden;\n');   % border top & bottom only
+      fprintf(oid, '    }\n\n');
 
-  fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
-  fprintf(oid, '  </style>\n');
-  fprintf(oid, '</head>\n\n');
-  fprintf(oid, '<body>\n\n');
+      fprintf(oid, '    tr:nth-child(even){background-color: #f2f2f2}\n');% grey on even rows
+      fprintf(oid, '  </style>\n');
+      fprintf(oid, '</head>\n\n');
+      fprintf(oid, '<body>\n\n');
   
-  fprintf(oid, '  <div class="tab">\n');
-  fprintf(oid, '  <table id="tab">\n');
+      fprintf(oid, '  <div class="tab">\n');
+      fprintf(oid, '  <table id="tab">\n');
 
-  % header
-  if ~isempty(header)
-    fprintf(oid, '    <tr class="head">');
-    for j = 1:n_cols
-      fprintf(oid, ' <th>%s</th>', header{j});
-    end
-    fprintf(oid, ' </tr>\n\n');
-  end
-
-  % body
-  for i = 1:n_rows
-    fprintf(oid, '    <tr>\n      ');
-    for j = 1:n_cols
-      val_ij = val{i,j};
-      if iscell(val_ij)
-        fprintf(oid, '<td>%s</td> ', val_ij{:});
-      else
-        fprintf(oid, '<td>%s</td> ', val_ij);
+      % header
+      if ~isempty(header)
+        fprintf(oid, '    <tr class="head">');
+        for j = 1:n_cols
+          fprintf(oid, ' <th>%s</th>', header{j});
+        end
+        fprintf(oid, ' </tr>\n\n');
       end
-    end
-    fprintf(oid, '  \n    </tr>\n\n');
-  end
+
+      % body
+      for i = 1:n_rows
+        fprintf(oid, '    <tr>\n      ');
+        for j = 1:n_cols
+          val_ij = val{i,j};
+          if iscell(val_ij)
+            fprintf(oid, '<td>%s</td> ', val_ij{:});
+          else
+            fprintf(oid, '<td>%s</td> ', val_ij);
+          end
+        end
+        fprintf(oid, '  \n    </tr>\n\n');
+      end
  
-  % file tail
-  fprintf(oid, '  </table>\n'); % close table
-  fprintf(oid, '  </div>\n\n');
+      % file tail
+      fprintf(oid, '  </table>\n'); % close table
+      fprintf(oid, '  </div>\n\n');
 
-  fprintf(oid, '</body>\n');
-  fprintf(oid, '</html>\n');
+      fprintf(oid, '</body>\n');
+      fprintf(oid, '</html>\n');
 
-  fclose(oid);
+      fclose(oid);
 
-  web(fileName,'-browser') % open html in systems browser
-  pause(2)
-  if ~save
-    delete(fileName)
-  end 
+      web(fileName,'-browser') % open html in systems browser
+      pause(2)
+      if ~save
+        delete(fileName)
+      end 
   
-  else % write csv or xls-file to local directory
-    writecell([header; val],fileName)
+    case 'tex'
+      oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
+      l = 'l'; l = ['{', l(ones(1,n_cols)), '}']; % l can be replace by 'c' or 'r' for alignment
+      fprintf(oid, '    \\begin{tabular}%s\n      \\hline\n', l);
+
+      % header
+      if ~isempty(header)
+        fprintf(oid, '      ');
+        for j = 1:n_cols-1
+          fprintf(oid, '%s & ', header{j});
+        end
+        fprintf(oid, ' %s \\\\\n', header{end});
+        fprintf(oid, '      \\hline\\\\\n');
+      end
+
+      % body
+      for i = 1:n_rows
+        fprintf(oid, '      ');
+        for j = 1:n_cols-1
+          val_ij = val{i,j};
+          if iscell(val_ij)
+            fprintf(oid, '%s & ', val_ij{:});
+          else
+            fprintf(oid, '%s & ', val_ij);
+          end
+        end
+        val_ij = val{i,end};
+        if iscell(val_ij)
+          fprintf(oid, '%s \\\\\n', val_ij{:});
+        else
+          fprintf(oid, '%s \\\\\n', val_ij);
+        end
+      end
+
+      % file tail
+      fprintf(oid, '      \\hline\n');
+      fprintf(oid, '    \\end{tabular}\n'); % close table
+      fclose(oid);
+
+    otherwise % write csv or xls-file to local directory
+      writecell([header; val],fileName)
   end
 end
 
