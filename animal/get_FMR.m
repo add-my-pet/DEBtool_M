@@ -30,7 +30,7 @@ function FMR = get_FMR(pet, W, T, F)
   %% Example of use
   % FMR = get_FMR('Daphnia_magna')
  
- WT = read_stat(pet,'Ww_i','T_typical'); Ww_i = TW(:,1); T_typ = TW(:,2);
+ WT = read_stat(pet,'Ww_i','T_typical'); Ww_i = WT(:,1); T_typ = WT(:,2);
   if ~exist('W','var')
     W = Ww_i; % g, ultimate wet weight
   end
