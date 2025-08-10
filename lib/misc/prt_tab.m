@@ -145,7 +145,7 @@ function prt_tab(values, header, fileName, save)
   
     case 'tex'
       oid = fopen(fileName, 'w+'); % open file for writing, delete existing content
-      l = 'l'; l = ['{', l(ones(1,n_cols)), '}']; % l can be replace by 'c' or 'r' for alignment
+      l = 'l'; l = ['{', l(ones(1,n_cols)), '}']; % each l can be replaced by 'c' or 'r' for alignment
       fprintf(oid, '    \\begin{tabular}%s\n      \\hline\n', l);
 
       % header
