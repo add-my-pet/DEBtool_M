@@ -2,7 +2,7 @@
 % Gets Factorial Aerobic Scope from phylum, class
 
 %%
-function [FAS, info] = get_FAS(phylum, class, order)
+function [FAS, info] = get_FAS(phylum, class, order, family)
   % created 2018/03/27 by Bas Kooijman, modified 2018/05/25
   
   %% Syntax
@@ -35,8 +35,6 @@ end
 switch phylum
   case 'Chordata'        
     switch class
-    case {'Leptocardii','Appendicularia','Thaliacea','Ascidiacea','Myxini','Cephalaspidomorphi'}
-      FAS = 3.2;
     case {'Chondrichthyes','Elasmobranchii'}
       FAS = 4.9;
     case 'Actinopterygii'
@@ -51,6 +49,8 @@ switch phylum
       FAS = 15;
     case 'Mammalia'
       FAS = 20;
+    otherwise
+      FAS = 3.2;
     end
 
   otherwise

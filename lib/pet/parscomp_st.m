@@ -34,6 +34,7 @@ function cPar = parscomp_st(p)
   % * y_E_V: mol/mol, yield of reserve on structure
   % * k_M: 1/d, somatic maintenance rate coefficient
   % * k: -, maintenance ratio
+  % * s_s: -, supply stress
   % * E_m: J/cm^3, [E_m], reserve capacity 
   % * m_Em: mol/mol, reserve capacity
   % * g: -, energy investment ratio
@@ -94,6 +95,12 @@ y_V_E   = p.mu_E * M_V/ p.E_G;   % mol/mol, yield of structure on reserve
 y_E_V   = 1/ y_V_E;              % mol/mol, yield of reserve on structure
 k_M     = p.p_M/ p.E_G;          % 1/d, somatic maintenance rate coefficient
 k       = p.k_J/ k_M;            % -, maintenance ratio
+s_s     = p.k_J * p.E_Hp * p.p_M^2/ p_Am^3; % -, supply stress
+if isfield(p, 'E_Hs') % correct s_s roughly for acceleration where s_M = (E_Hj/E_Hb)^(1/3)
+  s_s = s_s * p.E_Hs/ p.E_Hj; % acceleration between s and j
+elseif isfield(p, 'E_Hj')
+  s_s = s_s * p.E_Hb/ p.E_Hj; % acceleration between b and j
+end
 E_m     = p_Am/ p.v;             % J/cm^3, [E_m], reserve capacity 
 m_Em    = y_E_V * E_m / p.E_G;   % mol/mol, reserve capacity
 g       = p.E_G/ p.kap/ E_m ;    % -, energy investment ratio
@@ -152,7 +159,7 @@ end
 % -------------------------------------------------------------------------
 % pack output:
 cPar = struct('p_Am',p_Am, 'w_X',w_X, 'w_V',w_V, 'w_E',w_E, 'w_P',w_P, 'M_V',M_V, 'y_V_E',y_V_E, 'y_E_V',y_E_V, ...
-              'k_M',k_M, 'k',k, 'E_m',E_m, 'm_Em',m_Em, 'g',g, 'L_m',L_m, 'L_T',L_T, 'l_T',l_T, 'ome',ome, 'w',w, 's_H',s_H, ...
+              'k_M',k_M, 'k',k, 's_s',s_s, 'E_m',E_m, 'm_Em',m_Em, 'g',g, 'L_m',L_m, 'L_T',L_T, 'l_T',l_T, 'ome',ome, 'w',w, 's_H',s_H, ...
               'J_E_Am',J_E_Am, 'J_E_M',J_E_M, 'J_E_T',J_E_T, 'j_E_M',j_E_M, 'j_E_J',j_E_J, 'kap_G',kap_G, 'E_V',E_V, 'n_O',n_O, 'n_M',n_M);
 
 % -------------------------------------------------------------------------

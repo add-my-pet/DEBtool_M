@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>addchem</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-29"><meta name="DC.source" content="addchem.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>addchem</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-08-11"><meta name="DC.source" content="addchem.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>addchem</h1><!--introduction--><p>sets chemical parameters and text for units and labels</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li></ul></div><h2 id="3">Syntax</h2><p>[par, units, label, free] = <a href="../addchem.m"><b>addchem</b></a>(par, units, label, free, phylum, class)</p><h2 id="4">Description</h2><p>sets chemical parameters and text for units and labels. If phylum and class are cell strings, and not all the same, d_V and N_waste, and their free-settings, become vectors</p><p>Input</p><div><ul><li>par: strucutre with parameters - each field is a scalar</li><li>units: structure with units of each parameters - each field is a string</li><li>label: structure with the description of each parameter - each field is a string</li><li>free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed to not during estimation</li><li>phylum, character or cell string used to get d_V</li><li>class, character or cell string used to get d_V</li></ul></div><p>Output</p><div><ul><li>par: structure with parameters - each field is a scalar</li><li>units: structure with units of each parameters - each field is a string</li><li>label: structure with the description of each parameter - each field is a string</li><li>free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed, to not, during estimation</li></ul></div><h2 id="5">Remark</h2><p>Calls <a href="get_d_V.html"><b>get_d_V</b></a> to set specific density of structure based on taxonomy. Calls <a href="get_N_waste.html"><b>get_N_waste</b></a> to set N-waste based on taxonomy. For a specific density of wet mass of 1 g/cm^3, a specific density of d_E = d_V = 0.1 g/cm^3 means a dry-over-wet weight ratio of 0.1</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>addchem</h1><!--introduction--><p>sets chemical parameters and text for units and labels</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remark</a></li></ul></div><h2 id="3">Syntax</h2><p>[par, units, label, free] = <a href="../addchem.m"><b>addchem</b></a>(par, units, label, free, phylum, class)</p><h2 id="4">Description</h2><p>sets chemical parameters and text for units and labels. If phylum and class are cell strings, and not all the same, d_V and N_waste, and their free-settings, become vectors</p><p>Input</p><div><ul><li>par: structure with parameters - each field is a scalar</li><li>units: structure with units of each parameters - each field is a string</li><li>label: structure with the description of each parameter - each field is a string</li><li>free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed to not during estimation</li><li>phylum, character or cell string used to get_d_V, get_N_waste, get_s_s</li><li>class, character or cell string used to get d_V, get_N_waste, get_s_s</li></ul></div><p>Output</p><div><ul><li>par: structure with parameters - each field is a scalar</li><li>units: structure with units of each parameters - each field is a string</li><li>label: structure with the description of each parameter - each field is a string</li><li>free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed, to not, during estimation</li></ul></div><h2 id="5">Remark</h2><p>Calls <a href="get_d_V.html"><b>get_d_V</b></a> to set specific density of structure based on taxonomy. Calls <a href="get_N_waste.html"><b>get_N_waste</b></a> to set N-waste based on taxonomy. For a specific density of wet mass of 1 g/cm^3, a specific density of d_E = d_V = 0.1 g/cm^3 means a dry-over-wet weight ratio of 0.1</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% addchem
 % sets chemical parameters and text for units and labels
@@ -85,12 +86,12 @@ function [par, units, label, free] = addchem(par, units, label, free, phylum, cl
   %
   % Input
   %
-  % * par: strucutre with parameters - each field is a scalar
+  % * par: structure with parameters - each field is a scalar
   % * units: structure with units of each parameters - each field is a string
   % * label: structure with the description of each parameter - each field is a string
   % * free: structure with each field  being a 0 or 1 - this specifies whether the parameter is to be freed to not during estimation
-  % * phylum, character or cell string used to get d_V
-  % * class, character or cell string used to get d_V
+  % * phylum, character or cell string used to get_d_V, get_N_waste, get_s_s
+  % * class, character or cell string used to get d_V, get_N_waste, get_s_s
   %  
   % Output
   %
@@ -113,7 +114,7 @@ if ~iscell(phylum) % single species case
   d_V = get_d_V(phylum, class); % see comments on section 3.2.1 of DEB3 
   [n_CN, n_HN, n_ON, n_NN, mu_N] = get_N_waste(phylum, class);
 else % multiple species case, length(phylum) = length(class) and > 1
-  n_pets = length(phylum);
+  n_pets = length(phylum); info = 1;
   for i = 2:n_pets % check if all classes are the same
      info = strcmp(phylum{1}, phylum{i}) && strcmp(class{1}, class{i});
      if ~info

@@ -22,7 +22,7 @@ function [s_s, info] = get_s_s(phylum, class)
   %  info: 1 if taxon could be identified, 0 otherwise
   
   %% Remarks
-  % s_s can take values between 0 and 4/27.
+  % s_s can take values between 0 and 4/27. See also get_FAS, ss2FAS and FAS2ss
   
 info = 1;
 

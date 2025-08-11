@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>parscomp_st</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-22"><meta name="DC.source" content="parscomp_st.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>parscomp_st</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2025-08-11"><meta name="DC.source" content="parscomp_st.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>parscomp_st</h1><!--introduction--><p>computes compound parameters from primary parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>cPar = <a href="../parscomp_st.m"><b>parscomp_st</b></a> (par, chem)</p><h2 id="4">Description</h2><p>Computes compound parameters from primary parameters that are frequently used</p><p>Input</p><div><ul><li>par : structure with parameters</li></ul></div><p>Output</p><div><ul><li>cPar : structure with scaled quantities and compound parameters</li></ul></div><h2 id="5">Remarks</h2><p>The quantities that are computed concern, where relevant:</p><div><ul><li>p_Am: J/d.cm^2, {p_Am}, spec assimilation flux</li><li>n_O, 4-4 matrix of chemical indices for water-free organics</li><li>n_M,  4-4 matrix of chemical indices for minerals</li><li>w_O, w_X, w_V, w_E, w_P: g/mol, mol-weights for (unhydrated)  org. compounds</li><li>M_V: mol/cm^3, [M_V], volume-specific mass of structure</li><li>y_V_E: mol/mol, yield of structure on reserve</li><li>y_E_V: mol/mol, yield of reserve on structure</li><li>k_M: 1/d, somatic maintenance rate coefficient</li><li>k: -, maintenance ratio</li><li>E_m: J/cm^3, [E_m], reserve capacity</li><li>m_Em: mol/mol, reserve capacity</li><li>g: -, energy investment ratio</li><li>L_m: cm, maximum length</li><li>L_T: cm, heating length (also applies to osmotic work)</li><li>l_T: - , scaled heating length</li><li>w: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass</li><li>ome: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass</li><li>J_E_Am: mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux</li><li>y_E_X: mol/mol, yield of reserve on food</li><li>y_X_E: mol/mol, yield of food on reserve</li><li>p_Xm: J/d.cm^2, max spec feeding power</li><li>J_X_Am: mol/d.cm^2, {J_XAm}, max surface-spec feeding flux</li><li>y_P_X: mol/mol, yield of faeces on food</li><li>y_X_P: mol/mol, yield of food on faeces</li><li>y_P_E: mol/mol, yield of faeces on reserve</li><li>eta_XA, eta_PA, eta_VG; eta_O: mol/J, mass-power couplers</li><li>J_E_M: mol/d.cm^3, [J_EM], vol-spec somatic  maint costs</li><li>J_E_T: mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs</li><li>j_E_M: mol/d.mol, mass-spec somatic  maint costs</li><li>j_E_J: mol/d.mol, mass-spec maturity maint costs</li><li>kap_G: -, growth efficiency</li><li>E_V: J/cm^3, [E_V], volume-specific energy of structure</li><li>K: c-mol X/l, half-saturation coefficient</li><li>M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*</li><li>s_H: -, maturity ratio E_Hb/ E_Hp</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>parscomp_st</h1><!--introduction--><p>computes compound parameters from primary parameters</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li></ul></div><h2 id="3">Syntax</h2><p>cPar = <a href="../parscomp_st.m"><b>parscomp_st</b></a> (par, chem)</p><h2 id="4">Description</h2><p>Computes compound parameters from primary parameters that are frequently used</p><p>Input</p><div><ul><li>par : structure with parameters</li></ul></div><p>Output</p><div><ul><li>cPar : structure with scaled quantities and compound parameters</li></ul></div><h2 id="5">Remarks</h2><p>The quantities that are computed concern, where relevant:</p><div><ul><li>p_Am: J/d.cm^2, {p_Am}, spec assimilation flux</li><li>n_O, 4-4 matrix of chemical indices for water-free organics</li><li>n_M,  4-4 matrix of chemical indices for minerals</li><li>w_O, w_X, w_V, w_E, w_P: g/mol, mol-weights for (unhydrated)  org. compounds</li><li>M_V: mol/cm^3, [M_V], volume-specific mass of structure</li><li>y_V_E: mol/mol, yield of structure on reserve</li><li>y_E_V: mol/mol, yield of reserve on structure</li><li>k_M: 1/d, somatic maintenance rate coefficient</li><li>k: -, maintenance ratio</li><li>s_s: -, supply stress</li><li>E_m: J/cm^3, [E_m], reserve capacity</li><li>m_Em: mol/mol, reserve capacity</li><li>g: -, energy investment ratio</li><li>L_m: cm, maximum length</li><li>L_T: cm, heating length (also applies to osmotic work)</li><li>l_T: - , scaled heating length</li><li>w: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass</li><li>ome: -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass</li><li>J_E_Am: mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux</li><li>y_E_X: mol/mol, yield of reserve on food</li><li>y_X_E: mol/mol, yield of food on reserve</li><li>p_Xm: J/d.cm^2, max spec feeding power</li><li>J_X_Am: mol/d.cm^2, {J_XAm}, max surface-spec feeding flux</li><li>y_P_X: mol/mol, yield of faeces on food</li><li>y_X_P: mol/mol, yield of food on faeces</li><li>y_P_E: mol/mol, yield of faeces on reserve</li><li>eta_XA, eta_PA, eta_VG, eta_O, eta_M: mol/J, mass-power couplers</li><li>J_E_M: mol/d.cm^3, [J_EM], vol-spec somatic  maint costs</li><li>J_E_T: mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs</li><li>j_E_M: mol/d.mol, mass-spec somatic  maint costs</li><li>j_E_J: mol/d.mol, mass-spec maturity maint costs</li><li>kap_G: -, growth efficiency</li><li>E_V: J/cm^3, [E_V], volume-specific energy of structure</li><li>K: c-mol X/l, half-saturation coefficient</li><li>M_H*, U_H*, V_H*, v_H*, u_H*: scaled maturities computed from all unscaled ones: E_H*</li><li>s_H: -, maturity ratio E_Hb/ E_Hp</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% parscomp_st
 % computes compound parameters from primary parameters
@@ -75,7 +76,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 function cPar = parscomp_st(p)
   % created 2013/07/08 by Bas Kooijman; modified 2015/01/17 Goncalo Marques
   % modified 2015/04/25 Starrlight, Bas Kooijman (kap_X_P replaced by kap_P)
-  % modified 2015/08/03 by Starrlight, 2017/11/16, 2018/08/22 by Bas Kooijman
+  % modified 2015/08/03 by Starrlight, 2017/11/16, 2018/08/22 by Bas Kooijman, 
+  % mod 2019/08/30 by Nina Marn (note on {p_Am})
   
   %% Syntax
   % cPar = <../parscomp_st.m *parscomp_st*> (par, chem)
@@ -103,6 +105,7 @@ function cPar = parscomp_st(p)
   % * y_E_V: mol/mol, yield of reserve on structure
   % * k_M: 1/d, somatic maintenance rate coefficient
   % * k: -, maintenance ratio
+  % * s_s: -, supply stress
   % * E_m: J/cm^3, [E_m], reserve capacity 
   % * m_Em: mol/mol, reserve capacity
   % * g: -, energy investment ratio
@@ -119,7 +122,7 @@ function cPar = parscomp_st(p)
   % * y_P_X: mol/mol, yield of faeces on food 
   % * y_X_P: mol/mol, yield of food on faeces
   % * y_P_E: mol/mol, yield of faeces on reserve
-  % * eta_XA, eta_PA, eta_VG; eta_O: mol/J, mass-power couplers
+  % * eta_XA, eta_PA, eta_VG, eta_O, eta_M: mol/J, mass-power couplers
   % * J_E_M: mol/d.cm^3, [J_EM], vol-spec somatic  maint costs
   % * J_E_T: mol/d.cm^2, {J_ET}, surface-spec somatic  maint costs
   % * j_E_M: mol/d.mol, mass-spec somatic  maint costs
@@ -131,18 +134,18 @@ function cPar = parscomp_st(p)
   % * s_H: -, maturity ratio E_Hb/ E_Hp
 
 if isfield(p,'p_Am') == 0
-  p_Am = p.z * p.p_M/ p.kap;        % J/d.cm^2, {p_Am} spec assimilation flux
+  p_Am = p.z * p.p_M/ p.kap;   % J/d.cm^2, {p_Am} spec assimilation flux; the expression for p_Am is multiplied also by L_m^ref = 1 cm, for units to match. 
 else
   p_Am = p.p_Am;
 end
 
-% %               X         V          E         P
+%         X       V       E       P
 n_O = [p.n_CX, p.n_CV, p.n_CE, p.n_CP;  % C/C, equals 1 by definition
        p.n_HX, p.n_HV, p.n_HE, p.n_HP;  % H/C  these values show that we consider dry-mass
        p.n_OX, p.n_OV, p.n_OE, p.n_OP;  % O/C
        p.n_NX, p.n_NV, p.n_NE, p.n_NP]; % N/C
         
-%            C     H     O     N
+%          C       H       O       N
 n_M = [ p.n_CC, p.n_CH, p.n_CO, p.n_CN;  % CO2
         p.n_HC, p.n_HH, p.n_HO, p.n_HN;  % H2O  
         p.n_OC, p.n_OH, p.n_OO, p.n_ON;  % O2
@@ -159,22 +162,28 @@ w_P = w_O(4);
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
 % Conversions and compound parameters cPar
 M_V     = p.d_V/ w_V;            % mol/cm^3, [M_V], volume-specific mass of structure
-y_V_E   = p.mu_E * M_V/ p.E_G;     % mol/mol, yield of structure on reserve
-y_E_V   = 1/ y_V_E;            % mol/mol, yield of reserve on structure
-k_M     = p.p_M/ p.E_G;            % 1/d, somatic maintenance rate coefficient
+y_V_E   = p.mu_E * M_V/ p.E_G;   % mol/mol, yield of structure on reserve
+y_E_V   = 1/ y_V_E;              % mol/mol, yield of reserve on structure
+k_M     = p.p_M/ p.E_G;          % 1/d, somatic maintenance rate coefficient
 k       = p.k_J/ k_M;            % -, maintenance ratio
+s_s     = p.k_J * p.E_Hp * p.p_M^2/ p_Am^3; % -, supply stress
+if isfield(p, 'E_Hs') % correct s_s roughly for acceleration where s_M = (E_Hj/E_Hb)^(1/3)
+  s_s = s_s * p.E_Hs/ p.E_Hj; % acceleration between s and j
+elseif isfield(p, 'E_Hj')
+  s_s = s_s * p.E_Hb/ p.E_Hj; % acceleration between b and j
+end
 E_m     = p_Am/ p.v;             % J/cm^3, [E_m], reserve capacity 
 m_Em    = y_E_V * E_m / p.E_G;   % mol/mol, reserve capacity
-g       = p.E_G/ p.kap/ E_m ;      % -, energy investment ratio
+g       = p.E_G/ p.kap/ E_m ;    % -, energy investment ratio
 L_m     = p.v/ k_M/ g;           % cm, maximum length
-L_T     = p.p_T/ p.p_M ;           % cm, heating length (also applies to osmotic work)
-l_T     = L_T/ L_m;            % - , scaled heating length
+L_T     = p.p_T/ p.p_M ;         % cm, heating length (also applies to osmotic work)
+l_T     = L_T/ L_m;              % - , scaled heating length
 ome     = m_Em * w_E * p.d_V/ p.d_E/ w_V; % -, \omega, contribution of ash free dry mass of reserve to total ash free dry biomass
 w       = ome;                   % -, just for consistency with the past
 J_E_Am  = p_Am/ p.mu_E;          % mol/d.cm^2, {J_EAm}, max surface-spec assimilation flux
 
 if isfield(p, 'E_Hp')
-  s_H     = p.E_Hb/ p.E_Hp;        % -, maturity ratio
+  s_H     = p.E_Hb/ p.E_Hp;      % -, precociality index
 else
   s_H = 1;
 end
@@ -182,7 +191,7 @@ end
 if isfield(p,'kap_X')
   y_E_X  = p.kap_X * p.mu_X/ p.mu_E;  % mol/mol, yield of reserve on food
   y_X_E  = 1/ y_E_X;            % mol/mol, yield of food on reserve
-  p_Xm   = p_Am/ p.kap_X;         % J/d.cm^2, max spec feeding power
+  p_Xm   = p_Am/ p.kap_X;       % J/d.cm^2, max spec feeding power
   J_X_Am = y_X_E * J_E_Am;      % mol/d.cm^2, {J_XAm}, max surface-spec feeding flux
 end
 
@@ -214,14 +223,18 @@ if isfield(p,'F_m')
   K = J_X_Am/ p.F_m;        % c-mol X/l, half-saturation coefficient
 end
 
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
-% pack output:
-cPar = struct('p_Am', p_Am, 'w_X', w_X, 'w_V', w_V, 'w_E', w_E, 'w_P', w_P, 'M_V', M_V, 'y_V_E', y_V_E, 'y_E_V', y_E_V, ...
-              'k_M', k_M, 'k', k, 'E_m', E_m, 'm_Em', m_Em, 'g', g, 'L_m', L_m, 'L_T', L_T, 'l_T', l_T, 'ome', ome, 'w', w, 's_H', s_H, ...
-              'J_E_Am', J_E_Am, 'J_E_M', J_E_M, 'J_E_T', J_E_T, 'j_E_M', j_E_M, 'j_E_J', j_E_J, 'kap_G', kap_G, 'E_V', E_V, 'n_O', n_O, 'n_M', n_M);
+if isfield(p,'E_Rj')
+  v_Rj = p.kap/ (1 - p.kap) * p.E_Rj/ p.E_G;
+end
 
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
-% add the Scaled maturity maturity levels:
+% pack output:
+cPar = struct('p_Am',p_Am, 'w_X',w_X, 'w_V',w_V, 'w_E',w_E, 'w_P',w_P, 'M_V',M_V, 'y_V_E',y_V_E, 'y_E_V',y_E_V, ...
+              'k_M',k_M, 'k',k, 's_s',s_s, 'E_m',E_m, 'm_Em',m_Em, 'g',g, 'L_m',L_m, 'L_T',L_T, 'l_T',l_T, 'ome',ome, 'w',w, 's_H',s_H, ...
+              'J_E_Am',J_E_Am, 'J_E_M',J_E_M, 'J_E_T',J_E_T, 'j_E_M',j_E_M, 'j_E_J',j_E_J, 'kap_G',kap_G, 'E_V',E_V, 'n_O',n_O, 'n_M',n_M);
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% add the scaled maturity maturity levels:
 parNames = fields(p);
 matLev = parNames(strncmp(parNames, 'E_H', 3));
 matInd = strrep(matLev, 'E_H', '');  % maturity levels' indices
@@ -252,13 +265,17 @@ if isfield(p,'kap_X') && isfield(p,'kap_P')
   cPar.eta_XA = eta_XA;  
   cPar.eta_PA = eta_PA;
   cPar.eta_VG = eta_VG;  
-  cPar.eta_O = eta_O;  
+  cPar.eta_O = eta_O;
+  cPar.eta_M = - n_M\n_O * eta_O;
 end
 
 if isfield(p,'F_m') 
   cPar.K = K;
 end
 
+if isfield(p,'E_Rj')
+  cPar.v_Rj = v_Rj;
+end
 
 ##### SOURCE END #####
 --></body></html>
