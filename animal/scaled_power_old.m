@@ -69,8 +69,8 @@ function pACSJGRD = scaled_power(L, f, p, lb, lp)
   pC = f .* l.^2 .* (g + l + lT) ./ (g + f); % mobilisation
   pS = kap * l.^2 .* (l + lT);               % somatic  maint
   pJ = k * uH;                               % maturity maint
-  pG = kap * pC - pS;                        % growth
-  pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
+  pG = max(0,kap * pC - pS);                 % growth
+  pR = max(0,(1 - kap) * pC - pJ);           % maturation/reproduction
   pD = pS + pJ + (1 - kapR) .* pR ;          % dissipation
 
   pACSJGRD = [pA, pC, pS, pJ, pG , pR, pD];
