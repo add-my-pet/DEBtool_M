@@ -27,7 +27,6 @@ function pACSJGRD = scaled_power(L, f, p, lb, lp)
   % * pACSJGRD: (n,7)-matrix with scaled powers p_A, p_C, p_S, p_J, p_G, p_R, p_D / L_m^2 {p_Am}
   
   %% Remarks
-  % The powers can become negative for shrinking of structure or maturity. 
   % The scaled powers are dimensionless by dividing the powers by {pAm} Lm2. 
   % The maturity value relates to the one for which f has been constant.
   % See function <scaled_power_j.html *scaled_power_j*> for metabolic acceleration.
@@ -70,8 +69,8 @@ function pACSJGRD = scaled_power(L, f, p, lb, lp)
   pC = f .* l.^2 .* (g + l + lT) ./ (g + f); % mobilisation
   pS = kap * l.^2 .* (l + lT);               % somatic  maint
   pJ = k * uH;                               % maturity maint
-  pG = kap * pC - pS;                        % growth
-  pR = (1 - kap) * pC - pJ;                  % maturation/reproduction
+  pG = max(0,kap * pC - pS);                 % growth
+  pR = max(0,(1 - kap) * (pC - pJ));         % maturation/reproduction
   pD = pS + pJ + (1 - kapR) .* pR ;          % dissipation
 
   pACSJGRD = [pA, pC, pS, pJ, pG , pR, pD];
