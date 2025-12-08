@@ -2,7 +2,7 @@
 % plot points in 2D where markers are specified of each point
 
 %%
-function [Hfig, Hleg] = plot2i(data, legend, txt)
+function Hfig = plot2i(data, legend, txt)
 % created 2021/06/14 by Bas Kooijman
 
 %% Syntax
@@ -39,6 +39,6 @@ if size(legend,2)>1
   h.UpdateFcn = @(obj, event_obj)xylabels(obj, event_obj, legend(:,2), data);
   datacursormode on % mouse click on plot
 
-  Hleg = shlegend(legend);
+  %Hleg = shlegend(legend);
 end
 
