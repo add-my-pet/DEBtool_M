@@ -256,7 +256,7 @@ function [stat, Hfig_surv, Hfig_stab] = popStatistics_st(model, par, T, F)
     
     par.thinning = 1; 
     stat.f0.thin1.m.f = stat.f0.thin1.f.f; stat.f0.thin1.m.r = stat.f0.thin1.f.r; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
-    if 1%isnan(stat.f0.thin1.f.f) 
+    if isnan(stat.f0.thin1.f.f) 
       stat = ssd_mod(model, stat, '01m', NaN); 
       stat.f0.thin1.m.r = r_01; stat.f0.thin1.m.t2 = stat.f0.thin1.f.t2; stat.f0.thin1.m.ER = [];
     else

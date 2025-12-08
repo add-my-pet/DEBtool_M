@@ -46,7 +46,7 @@ function [N, f, le] = get_NW_hax(Ww, pars_tj, pars_aux)
    end
    
    % now interpolate in splines
-   f  = spline1(Ww,[Wwj_knot, f_knot],[],[]); %f for Ww
+   f  = spline1(Ww,[Wwj_knot, f_knot],[],[]); % f for Ww
    N  = spline1(f,[f_knot, N_knot],[],[]); % N for f
    le = spline1(f,[f_knot, lj_knot],[],[]); % le for f
    
@@ -65,7 +65,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, uEj] = get_tjj_hax(p, f)
   vRj = p(5); % (kap/(1 - kap)) [E_R^j]/ [E_G] scaled reprod buffer density at pupation
     
   % from zero till puberty
-  pars_tj = [g k 0 vHb vHp]; % vHp functions as vHj in get_tj
+  pars_tj = [g k 0 vHb vHp vHp]; % vHp functions as vHj in get_tj
   [tp, tpp, tb, lp, lpp, lb, li, rj, rB] = get_tj(pars_tj, f);
   sM = lp/ lb; % -, acceleration factor
 
