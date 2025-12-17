@@ -87,7 +87,7 @@ sG = .001;  % Gompertz stress coeff
 % conditions at birth
 t = 0; % time
 eb = x/(1 + x); % reserve density
-[uE0 lb] = get_ue0 ([g; k; vHb], eb); % initial reserve, length at birth
+[uE0, lb] = get_ue0 ([g; k; vHb], eb); % initial reserve, length at birth
 qb = 0; % acceletation; not correct but ...
 hb = 0; % hazard; not correct but ...
 Sb = 1; % survival prob; not correct but ...
@@ -114,7 +114,7 @@ while Vars(end,1) < tmax % continue simulation till tmax
   end
   t0 = Vars(end,1) + [0;dt]; % new time interval
   vars0 = Vars(end,3:nV)';   % new vars values
-  [t_int vars_int] = ode23(@dtraject, t0, vars0, [], ...
+  [t_int, vars_int] = ode23(@dtraject, t0, vars0, [], ...
       vHb, vHp, g, kapR1, kapG, lT, k, k1, ha, sG, sH, uE0, f);
   t_int(1,:) = []; vars_int(1,:) = []; % remove first time and vars
   Vars = [Vars; t_int, [f * ones(length(t_int),1), vars_int]]; % append to existing trajectory
