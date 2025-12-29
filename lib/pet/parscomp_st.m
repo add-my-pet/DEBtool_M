@@ -97,7 +97,11 @@ k_M     = p.p_M/ p.E_G;          % 1/d, somatic maintenance rate coefficient
 k       = p.k_J/ k_M;            % -, maintenance ratio
 s_s     = p.k_J * p.E_Hp * p.p_M^2/ p_Am^3; % -, supply stress
 if isfield(p, 'E_Hs') % correct s_s roughly for acceleration where s_M = (E_Hj/E_Hb)^(1/3)
-  s_s = s_s * p.E_Hs/ p.E_Hj; % acceleration between s and j
+  if isfield(p, 'E_Hj')
+    s_s = s_s * p.E_Hs/ p.E_Hj; % acceleration between s and j
+  else % for model ssj
+    s_s = s_s * p.E_Hs/ p.E_Hb; % acceleration between s and b
+  end
 elseif isfield(p, 'E_Hj')
   s_s = s_s * p.E_Hb/ p.E_Hj; % acceleration between b and j
 end
