@@ -281,7 +281,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
   for i = 1:length(mat_index)
     switch mat_index{i}
       case 'h'
-        stat.E_Hh = M_Hh; units.E_Hh = 'J'; label.E_Hh = 'maturity level at hatch'; temp.E_Hh = NaN; fresp.E_Hh = NaN;
+        stat.E_Hh = E_Hh; units.E_Hh = 'J'; label.E_Hh = 'maturity level at hatch'; temp.E_Hh = NaN; fresp.E_Hh = NaN;
         stat.M_Hh = M_Hh; units.M_Hh = 'mol'; label.M_Hh = 'maturity level at hatch'; temp.M_Hh = NaN; fresp.M_Hh = NaN;
         stat.U_Hh = U_Hh; units.U_Hh = 'cm^2.d'; label.U_Hh = 'scaled maturity level at hatch'; temp.U_Hh = T_ref; fresp.U_Hh = NaN;
         stat.V_Hh = V_Hh; units.V_Hh = 'cm^2.d'; label.V_Hh = 'scaled maturity level at hatch'; temp.V_Hh = T_ref; fresp.V_Hh = NaN;
