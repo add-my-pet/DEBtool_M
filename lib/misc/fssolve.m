@@ -9,7 +9,7 @@ function [x, info] = fssolve(func, xin)
   %  func: string with name of user-defined function
   %     f = func (x) with
   %     x: k-vector with arguments; f: k-vector with function values
-  %  xin: k-vector with intial estimates 
+  %  xin: k-vector with initial estimates 
   %
   %% Output
   %  x:  k-vector with final estimates
