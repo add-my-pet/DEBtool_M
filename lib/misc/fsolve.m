@@ -31,7 +31,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
   n = length(xin); % number of variables to solve
     
   % set options if necessary
-  if ~exist('opt','var') && ~isempty(opt);  vars_pull(opt); end
+  if exist('opt','var') && ~isempty(opt);  vars_pull(opt); end
   if ~exist('max_step_number','var') || isempty(max_step_number)
     max_step_number = 1000 * n;
   end

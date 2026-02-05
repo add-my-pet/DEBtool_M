@@ -188,7 +188,7 @@ function [x, info] = fssolve(func, xin)
    fval = min(fv); 
    if func_evals >= max_fun_evals
      if report > 0
-       fprintf(['No convergences with ', \
+       fprintf(['No convergences with ', 
 		num2str(max_fun_evals), ' function evaluations\n']);
      end
      info = 0;
