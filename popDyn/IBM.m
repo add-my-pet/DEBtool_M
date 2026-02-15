@@ -6,7 +6,7 @@ function [txNL23W, info] = IBM(species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRa
 % created 2021/01/08 by Bas Kooijman
 
 %% Syntax
-% txNL23W = <../IBM.m *IBM*> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRate, runNetLogo) 
+% [txNL23W, info] = <../IBM.m *IBM*> (species, tT, tJX, X_0, V_X, h, t_R, t_max, tickRate, runNetLogo) 
 
 %% Description
 % Individual-Based-Model for NetLogo: Plots population trajectories in a generalised reactor for a selected species of cohorts that reproduce using 
