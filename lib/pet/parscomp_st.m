@@ -95,7 +95,11 @@ y_V_E   = p.mu_E * M_V/ p.E_G;   % mol/mol, yield of structure on reserve
 y_E_V   = 1/ y_V_E;              % mol/mol, yield of reserve on structure
 k_M     = p.p_M/ p.E_G;          % 1/d, somatic maintenance rate coefficient
 k       = p.k_J/ k_M;            % -, maintenance ratio
-s_s     = p.k_J * p.E_Hp * p.p_M^2/ p_Am^3; % -, supply stress
+if isfield(p, 'E_Hp')
+  s_s     = p.k_J * p.E_Hp * p.p_M^2/ p_Am^3; % -, supply stress
+else
+  s_s     = p.k_J * p.E_Hb * p.p_M^2/ p_Am^3; % -, supply stress in hex model
+end
 if isfield(p, 'E_Hs') % correct s_s roughly for acceleration where s_M = (E_Hj/E_Hb)^(1/3)
   if isfield(p, 'E_Hj')
     s_s = s_s * p.E_Hs/ p.E_Hj; % acceleration between s and j
