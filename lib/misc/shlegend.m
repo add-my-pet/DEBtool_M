@@ -27,8 +27,10 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % create legend with select_legend; press any key when done with select_legend 
 
 %% Example of use
-% shlegend(select_legend) or 
-%   legend = select_legend; shlegend(legend, [], [], 'example'); 
+% *
+% * shlegend(select_legend) 
+% * legend = select_legend; shlegend(legend, [], [], 'example'); 
+% * shlegend(legend,[],[0.9 0.2]); saveas(gcf,'legend.png'); cropWhite('legend'); % remove white border, make transparent, overwrite 
 
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];

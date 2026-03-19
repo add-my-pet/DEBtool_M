@@ -1,22 +1,22 @@
 %% cropWhite
-% removes white borders in png image
+% removes white borders and makr transparent in png image
 
 %%
 function  cropWhite(imgIn,imgOut,transparent)
-% created 2026/03/05 by Bas Kooijman
+% created 2026/03/19 by Bas Kooijman
   
 %% Syntax
 % <../cropWhite.m *cropWhite*> (imgIn,imgOut,transparent)
   
 %% Description
-% Removes white borders in png image;
+% Removes white borders in png image and make white transparent;
 % Transparency requires program magick (with path to it); see https://imagemagick.org/script/download.php
 %
 % Input:
 %
 % * imgIn: string with name of png input image, not containing '.'
 % * imgOut: optional string with name of png output image (default: imgIn)
-% * transparent: optional boolean to replace white by transparent (default 0)
+% * transparent: optional boolean to replace white by transparent (default 1)
 %
 % Output:
 %
@@ -36,7 +36,7 @@ elseif contains(imgOut,'.')
   imgOut = strsplit(imgOut,'.'); imgOut = imgOut(1);
 end
 if ~exist('transparent','var') 
-  transparent = 0;
+  transparent = 1;
 end
 
 try
@@ -75,10 +75,14 @@ try
     imwrite(croppedImg, [imgOut, '.png']);
     fprintf('White borders removed. Saved as %s.png\n', imgOut);
 
-    % convert white to transparent
     if transparent % Convert white to transparent
-      system(['magick mogrify -transparent white ', imgOut, '.png']);
-      fprintf('White converted to transparent\n');
+      try
+        system(['magick mogrify -transparent white ', imgOut, '.png']);
+        fprintf('White converted to transparent\n');
+      catch
+        fprintf('magick was not found on this computer; see https://imagemagick.org/script/download.php\n');
+        fprintf('white not replaced by transparent\n');
+      end
     end
 
   catch 
