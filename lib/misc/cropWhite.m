@@ -1,5 +1,5 @@
 %% cropWhite
-% removes white borders and makr transparent in png image
+% removes white borders and makes white transparent in png image
 
 %%
 function  cropWhite(imgIn,imgOut,transparent)
@@ -9,7 +9,7 @@ function  cropWhite(imgIn,imgOut,transparent)
 % <../cropWhite.m *cropWhite*> (imgIn,imgOut,transparent)
   
 %% Description
-% Removes white borders in png image and make white transparent;
+% Removes white borders in png image and make white transparent in png image;
 % Transparency requires program magick (with path to it); see https://imagemagick.org/script/download.php
 %
 % Input:
@@ -22,15 +22,16 @@ function  cropWhite(imgIn,imgOut,transparent)
 %
 % * no explicit output, but output file imgOut.png is written
 
-%% Remarks
+%% Example of use
+%
+% * legend = select_legend; shlegend(legend, [], [], 'example'); 
+% * shlegend(legend,[],[0.9 0.2]); saveas(gcf,'legend.png'); cropWhite('legend'); 
 
 if contains(imgIn,'.')
   imgIn = strsplit(imgIn,'.'); imgIn = imgIn(1);
 end
 
-if ~exist('imgOut','var') 
-  imgOut = imgIn;
-elseif isempty(imgOut)
+if ~exist('imgOut','var') || isempty(imgOut)
   imgOut = imgIn;
 elseif contains(imgOut,'.')
   imgOut = strsplit(imgOut,'.'); imgOut = imgOut(1);
@@ -60,7 +61,7 @@ try
     % Find bounding box of non-white area
     [rows, cols] = find(mask);
     if isempty(rows) || isempty(cols)
-      error('No non-white content found in the image.');
+      error('Warning from cropWhite: No non-white content found in the image.');
     end
     
     rowMin = min(rows);
@@ -73,18 +74,18 @@ try
     
     % save
     imwrite(croppedImg, [imgOut, '.png']);
-    fprintf('White borders removed. Saved as %s.png\n', imgOut);
+    fprintf('cropWhite: White borders removed. Saved as %s.png\n', imgOut);
 
     if transparent % Convert white to transparent
       try
         system(['magick mogrify -transparent white ', imgOut, '.png']);
-        fprintf('White converted to transparent\n');
+        fprintf('cropWhite: White converted to transparent\n');
       catch
-        fprintf('magick was not found on this computer; see https://imagemagick.org/script/download.php\n');
-        fprintf('white not replaced by transparent\n');
+        fprintf('Warning from cropWhite: magick was not found on this computer; see https://imagemagick.org/script/download.php\n');
+        fprintf('Warning from cropWhite: white not replaced by transparent\n');
       end
     end
 
   catch 
-    fprintf('Error occured\n');
+    fprintf('Warning from cropWhite: Error occured\n');
 end
