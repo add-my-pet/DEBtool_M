@@ -37,22 +37,23 @@ for i = 1:100 % color strip
   plot(x + [0; 0], [i - 1; i]/ 100, 'Linewidth', 20, 'Color', color_lava((i-1)/100))
 end
   
+  x0 = 0.15;
   % tick = [.1 .5]; x = .3;
   %plot (tick, [0.00 0.00], 'LineWidth', 2, 'Color', [0 0 0]); 
-    text(0, 0.00, num2str(range(1)));
+    text(x0, 0.00, num2str(range(1)), 'FontSize',25);
   %plot (tick, [0.25 0.25], 'LineWidth', 2, 'Color', [0 0 0]); 
-    text(0, 0.25, num2str(range(1) + 0.25 * (range(2) - range(1))));
+    text(x0, 0.25, num2str(range(1) + 0.25 * (range(2) - range(1))), 'FontSize',25);
   %plot (tick, [0.50 0.50], 'LineWidth', 2, 'Color', [0 0 0]); 
-    text(0, 0.50, num2str(range(1) + 0.50 * (range(2) - range(1))));
+    text(x0, 0.50, num2str(range(1) + 0.50 * (range(2) - range(1))), 'FontSize',25);
   %plot (tick, [0.75 0.75], 'LineWidth', 2, 'Color', [0 0 0]); 
-    text(0, 0.75, num2str(range(1) + 0.75 * (range(2) - range(1))));
+    text(x0, 0.75, num2str(range(1) + 0.75 * (range(2) - range(1))), 'FontSize',25);
   %plot (tick, [1.00 1.00], 'LineWidth', 2, 'Color', [0 0 0]); 
-    text(0, 1.00, num2str(range(2)));
+    text(x0, 1.00, num2str(range(2)), 'FontSize',25);
  
 axis('off');
 
 if exist('txt', 'var') && ~isempty(txt)
-  title(txt);
+  text(x0,1.1*range(2),txt, 'FontSize',35);
 end
 
 
