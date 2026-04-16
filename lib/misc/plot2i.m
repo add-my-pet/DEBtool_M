@@ -1,38 +1,64 @@
 %% plot2i
-% plot points in 2D where markers are specified of each point
+% plot points in 2D where markers  texts are specified of each point
 
 %%
-function Hfig = plot2i(data, legend, txt)
-% created 2021/06/14 by Bas Kooijman
+function Hfig = plot2i(data, legend, Title)
+% created 2021/06/14 by Bas Kooijman, modified 2026/04/12
 
 %% Syntax
-% [Hfig, Hleg] = <../plot2i.m *plot2i*> (data, legend, txt) 
+% [Hfig, Hleg] = <../plot2i.m *plot2i*> (data, legend, Title) 
 
 %% Description
-% plot data in 2D, using data-point-specific markers
+% plot data in 2D, using data-point-specific markers or texts.
+% For markers, the legend should specify, 'MarkerType', 'MarkerSize', 'LineWidth', 'MarkerFaceColor', 'MarkerEdgeColor'.
+% For text, the legend should specify, 'String', 'FontSize' (default 10), 'FontColor' (default black).
 %
 % Input:
 %
 % * data: (n,2)-array with data points
-% * legend: (n,2)-array with legend
-% * txt: optional string with title
+% * legend: (n,2)-array with legend for markers or texts
+% * Title: optional string with title
 %
 % Output:
 %
 % * no output
 
-if ~exist('txt','var')
-  txt = [];
+%% Example of use
+% plot2i([1 1.2 2; 2 3.1 3]', {{'bla';'?';'str'},8*ones(3,1),ones(3,1)*[0 0 1]}, 'ref2026')
+
+if ~exist('Title','var')
+  Title = [];
 end
 
 Hfig = figure;
 hold on
 n = size(data,1);
-for i=1:n
+if size(legend(1,1)) > 4 % marker mode
+  for i=1:n
     marker = legend{i,1}; T = marker{1}; MS = marker{2}; LW = marker{3}; MEC = marker{4}; MFC = marker{5};  
     plot(data(i,1), data(i,2), T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC);
+  end
+else % text mode
+  m = size(legend,2); 
+  for i=1:n
+    plot(data(i,1), data(i,2), '.w'); % necessary to show result of text
+    switch m
+      case 1
+        str = legend{1};
+        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
+        text(data(i,1), data(i,2), str);
+      case 2
+        str = legend{1}; FS = legend{2}; 
+        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
+        text(data(i,1), data(i,2), str, 'FontSize',FS(i));
+      case 3
+        str = legend{1}; FS = legend{2}; color = legend{3};
+        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
+        text(data(i,1), data(i,2), str, 'FontSize',FS(i), 'Color',color(i,:));
+    end
+  end
 end
-title(txt);
+title(Title);
 
 if size(legend,2)>1
   h = datacursormode(Hfig);
