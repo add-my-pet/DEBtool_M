@@ -2,7 +2,7 @@
 % plot points in 2D where markers  texts are specified of each point
 
 %%
-function Hfig = plot2i(data, legend, Title)
+function Hfig = plot2i(data, legend, Title, Hfig)
 % created 2021/06/14 by Bas Kooijman, modified 2026/04/12
 
 %% Syntax
@@ -18,6 +18,7 @@ function Hfig = plot2i(data, legend, Title)
 % * data: (n,2)-array with data points
 % * legend: (n,2)-array with legend for markers or texts
 % * Title: optional string with title
+% * Hfig: optional figure handle
 %
 % Output:
 %
@@ -26,11 +27,14 @@ function Hfig = plot2i(data, legend, Title)
 %% Example of use
 % plot2i([1 1.2 2; 2 3.1 3]', {{'bla';'?';'str'},8*ones(3,1),ones(3,1)*[0 0 1]}, 'ref2026')
 
+if exist('Hfig', 'var')
+  figure(Hfig)
+else
+  Hfig = figure;
+end
 if ~exist('Title','var')
   Title = [];
 end
-
-Hfig = figure;
 hold on
 n = size(data,1);
 if size(legend(1,1)) > 4 % marker mode
@@ -40,21 +44,26 @@ if size(legend(1,1)) > 4 % marker mode
   end
 else % text mode
   m = size(legend,2); 
+  switch m
+    case 1
+      str = legend; 
+    case 2
+      str = legend{1}; FS = legend{2}; 
+    case 3
+      str = legend{1}; FS = legend{2}; color = legend{3};
+  end
   for i=1:n
     plot(data(i,1), data(i,2), '.w'); % necessary to show result of text
     switch m
       case 1
-        str = legend{1};
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str);
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
       case 2
-        str = legend{1}; FS = legend{2}; 
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str, 'FontSize',FS(i));
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri, 'FontSize',FS(i), 'HorizontalAlignment','center', 'VerticalAlignment','middle');
       case 3
-        str = legend{1}; FS = legend{2}; color = legend{3};
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str, 'FontSize',FS(i), 'Color',color(i,:));
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri, 'FontSize',FS(i), 'Color',color(i,:), 'HorizontalAlignment','center', 'VerticalAlignment','middle');
     end
   end
 end

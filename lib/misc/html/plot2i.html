@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>plot2i</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2026-04-12"><meta name="DC.source" content="plot2i.m"><style type="text/css">
+      --><title>plot2i</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2026-04-17"><meta name="DC.source" content="plot2i.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,13 +67,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>plot2i</h1><!--introduction--><p>plot points in 2D where markers  texts are specified of each point</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[Hfig, Hleg] = <a href="../plot2i.m"><b>plot2i</b></a> (data, legend, Title)</p><h2 id="4">Description</h2><p>plot data in 2D, using data-point-specific markers or texts. For markers, the legend should specify, 'MarkerType', 'MarkerSize', 'LineWidth', 'MarkerFaceColor', 'MarkerEdgeColor'. For text, the legend should specify, 'String', 'FontSize' (default 10), 'FontColor' (default black).</p><p>Input:</p><div><ul><li>data: (n,2)-array with data points</li><li>legend: (n,2)-array with legend for markers or texts</li><li>Title: optional string with title</li></ul></div><p>Output:</p><div><ul><li>no output</li></ul></div><h2 id="5">Example of use</h2><p>plot2i([1 1.2 2; 2 3.1 3]', {{'bla';'?';'str'},8*ones(3,1),ones(3,1)*[0 0 1]}, 'ref2026')</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>plot2i</h1><!--introduction--><p>plot points in 2D where markers  texts are specified of each point</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[Hfig, Hleg] = <a href="../plot2i.m"><b>plot2i</b></a> (data, legend, Title)</p><h2 id="4">Description</h2><p>plot data in 2D, using data-point-specific markers or texts. For markers, the legend should specify, 'MarkerType', 'MarkerSize', 'LineWidth', 'MarkerFaceColor', 'MarkerEdgeColor'. For text, the legend should specify, 'String', 'FontSize' (default 10), 'FontColor' (default black).</p><p>Input:</p><div><ul><li>data: (n,2)-array with data points</li><li>legend: (n,2)-array with legend for markers or texts</li><li>Title: optional string with title</li><li>Hfig: optional figure handle</li></ul></div><p>Output:</p><div><ul><li>no output</li></ul></div><h2 id="5">Example of use</h2><p>plot2i([1 1.2 2; 2 3.1 3]', {{'bla';'?';'str'},8*ones(3,1),ones(3,1)*[0 0 1]}, 'ref2026')</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% plot2i
 % plot points in 2D where markers  texts are specified of each point
 
 %%
-function Hfig = plot2i(data, legend, Title)
+function Hfig = plot2i(data, legend, Title, Hfig)
 % created 2021/06/14 by Bas Kooijman, modified 2026/04/12
 
 %% Syntax
@@ -89,6 +89,7 @@ function Hfig = plot2i(data, legend, Title)
 % * data: (n,2)-array with data points
 % * legend: (n,2)-array with legend for markers or texts
 % * Title: optional string with title
+% * Hfig: optional figure handle
 %
 % Output:
 %
@@ -97,11 +98,14 @@ function Hfig = plot2i(data, legend, Title)
 %% Example of use
 % plot2i([1 1.2 2; 2 3.1 3]', {{'bla';'?';'str'},8*ones(3,1),ones(3,1)*[0 0 1]}, 'ref2026')
 
+if exist('Hfig', 'var')
+  figure(Hfig)
+else
+  Hfig = figure;
+end
 if ~exist('Title','var')
   Title = [];
 end
-
-Hfig = figure;
 hold on
 n = size(data,1);
 if size(legend(1,1)) > 4 % marker mode
@@ -111,21 +115,26 @@ if size(legend(1,1)) > 4 % marker mode
   end
 else % text mode
   m = size(legend,2); 
+  switch m
+    case 1
+      str = legend; 
+    case 2
+      str = legend{1}; FS = legend{2}; 
+    case 3
+      str = legend{1}; FS = legend{2}; color = legend{3};
+  end
   for i=1:n
     plot(data(i,1), data(i,2), '.w'); % necessary to show result of text
     switch m
       case 1
-        str = legend{1};
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str);
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri);
       case 2
-        str = legend{1}; FS = legend{2}; 
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str, 'FontSize',FS(i));
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri, 'FontSize',FS(i));
       case 3
-        str = legend{1}; FS = legend{2}; color = legend{3};
-        if isnumeric(str(i)); str = num2str(str(i)); else str = str(i); end
-        text(data(i,1), data(i,2), str, 'FontSize',FS(i), 'Color',color(i,:));
+        if isnumeric(str(i)); stri = num2str(str(i)); else stri = str(i); end
+        text(data(i,1), data(i,2), stri, 'FontSize',FS(i), 'Color',color(i,:));
     end
   end
 end
