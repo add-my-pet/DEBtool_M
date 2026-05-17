@@ -8,7 +8,7 @@ function tpACSJGRD = intScaled_power(tm, f, p, lb, lp)
   % tpACSJGRD = <../intScaled_power.m *intScaled_power*> (tm, f, p, lb, lp)
   
   %% Description
-  % Gets integrated scaled powers, form ab to am: assimilation, mobilisation, somatic maintenance, maturity maintenance,
+  % Gets integrated scaled powers, from ab to am: assimilation, mobilisation, somatic maintenance, maturity maintenance,
   % growth, maturation/reproduction and dissipation as function of length: \int_0^tm p_*(tau) dtau
   % food density is assimed to be constant.
   %
