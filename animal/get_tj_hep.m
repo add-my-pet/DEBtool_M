@@ -38,7 +38,7 @@ function [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep(p, f)
   %  See <get_tj_hex.html get_tj_hex*> in case of holo metabolic insects;
   
   %% Example of use
-  %  get_tj_hep([.5, .1, .01, .05, .2])
+  % [tj, tp, tb, lj, lp, lb, li, rj, rB, info] = get_tj_hep([.5, .1, .01, .05, .2])
   
   % unpack pars
   g   = p(1); % energy investment ratio

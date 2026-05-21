@@ -167,6 +167,6 @@ end
 
 function value = charEq (sgr, S_b, f, v, R, L_b, L_p, L_j, L_e, L_i, L_m, t_p, t_j, t_e, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bje, h_Bei, thinning)
   options = odeset('AbsTol',1e-8, 'RelTol',1e-8);  
-  [t, qhSC] = ode45(@dget_qhSC, [0 t_N0], [0 0 S_b 0], options, sgr, f, v, R, L_b, L_p, L_j, L_e, L_i, L_m, t_p, t_j, t_e, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bje, h_Bei, thinning);
+  [t, qhSC] = ode45(@dget_qhSC, [0 t_N0], [0 0 S_b 0], [], sgr, f, v, R, L_b, L_p, L_j, L_e, L_i, L_m, t_p, t_j, t_e, t_N0, r_j, r_B, s_G, h_a, h_Bbp, h_Bpj, h_Bje, h_Bei, thinning);
   value = 1 - qhSC(end,4);
 end
