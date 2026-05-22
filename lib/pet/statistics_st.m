@@ -459,7 +459,7 @@ function [stat, txtStat] = statistics_st(model, par, T, f)
       stat.v_Hj = v_Hj; units.v_Hj = '-'; label.v_Hj = 'scaled maturity level at metamorphosis'; temp.v_Hj = NaN; fresp.v_Hj = NaN;
    case 'hax'
       v_Rj = kap/ (1 - kap) * E_Rj/ E_G; pars_tj = [g, k, v_Hb, v_Hp, v_Rj, v_He, kap, kap_V];
-      [t_j, t_e, t_p, t_b, l_j, l_e, l_p, l_b, l_i, r_j, r_B, u_Ee, info] = get_tj_hax(pars_tj, f);
+      [t_j, t_e, t_p, t_b, l_j, l_e, l_p, l_b, l_i, rho_j, rho_B, u_Ee, info] = get_tj_hax(pars_tj, f);
       if info ~= 1              
         fprintf('warning in get_tj_hax: invalid parameter value combination for t_p \n')
       end  
