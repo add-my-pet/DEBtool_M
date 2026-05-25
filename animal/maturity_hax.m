@@ -76,17 +76,16 @@ function H = maturity_hax(L, f, p, lb, lp, lj, le, tj)
   uHb = Hb * g^2 * kM^3/ (v^2); vHb = uHb/ (1 - kap);  
   uHp = Hp * g^2 * kM^3/ (v^2); 
   ue0 = get_ue0([g; k; vHb], f, lb); % initial scaled reserve M_E^0/{J_EAm}
-  [l_out, teh] = ode45(@dget_teh_j, [1e-6; L_pre(1)/ 2; L_pre]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lb, lp);
-  teh(1:2,:) = []; 
-  H = teh(:,3) * v^2/ g^2/ kM^3; % d.cm^2, scaled maturity
+  [~, teh] = ode23(@dget_teh_j, [1e-6; L_pre]/ Lm, [0; ue0; 0], [], k, g, kap, f, uHb, uHp, lb, lp);
+  H = teh(end,3) * v^2/ g^2/ kM^3; % d.cm^2, scaled maturity
   H(L >= Lp) = Hp;
   
   % pupa and imago
   if nL_post > 0
     v_j = v * sM;                            % cm/d, energy conductance of imago
     aVEH_0 = [0; Lj^3; f * Lj^3/ v_j; 0];    % state at start pupation
-    [L_out, aVEH] = ode45(@dget_aVEH, [1e-6; L_post(1)/ 2; L_post], aVEH_0, [], g, kJ, kM, kE, v_j, kap, kapV);
-    aVEH(1:2,:) = []; H = aVEH(:,4); 
+    [~, aVEH] = ode23(@dget_aVEH, [1e-6; L_post], aVEH_0, [], g, kJ, kM, kE, v_j, kap, kapV);
+    H = aVEH(end,4); 
   end
 
 end
@@ -148,7 +147,7 @@ end
     e = v * UE/ L^3;                    % -, scaled reserve density
     r = v * (e/ L - 1/ L_m)/ (e + g);   % 1/d, specific growth rate
     SC = UE * (v/ L - r);               % cm^2, scaled mobilisation rate
-    dUE = - dV * kap_V * kap * g/ v - SC;  % cm^2, change in scaled reserve
+    dUE = - dV * kap_V * kap * g/ v - SC; % cm^2, change in scaled reserve
 
     dL = r * L/ 3;                      % cm/d, change in length
     dUH = (1 - kap) * SC - k_J * UH;    % cm^2, change in scaled maturity
