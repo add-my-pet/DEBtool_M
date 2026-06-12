@@ -944,10 +944,10 @@ function OKlineageCb(~, ~, dspecies)  % check manually-filled lineage
   if ismember(genus, list_genus)
     fprintf(['Genus "', genus, '" is present in AmP\n'])
     infoAmPgui = 2;
-    metaData.family = lin{5};
-    metaData.order  = lin{4};
-    metaData.class  = lin{3};
-    metaData.phylum = lin{2};
+    metaData.family = lin{4};
+    metaData.order  = lin{3};
+    metaData.class  = lin{2};
+    metaData.phylum = lin{1};
   elseif ismember(metaData.family, list_family)
     fprintf(['Genus is not present in AmP, but family "', metaData.family, '" is\n'])
     infoAmPgui = 3;
