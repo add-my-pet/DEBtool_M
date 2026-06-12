@@ -20,13 +20,13 @@ function AmPgui(action)
 % Output: no explicit output, but global exit-flag infoAmPgui is set with
 %
 %   - 0, species is in AmP, skip writing 4 source files
-%   - 1, writing 4 source files with species in Taxo
-%   - 2, writing 4 source files with species not in Taxo, but genus is in AmP
-%   - 3, writing 4 source files with species not in Taxo, genus is not in AmP, but family is
-%   - 4, writing 4 source files with species not in Taxo, family is not in AmP, but order is
-%   - 5, writing 4 source files with species not in Taxo, order is not in AmP, but class is
-%   - 6, writing 4 source files with species not in Taxo, class is not in AmP, but phylum is
-%   - 7, writing 4 source files with species not in Taxo, phylum is not in AmP
+%   - 1, writing 4 source files with species recognized by CoL
+%   - 2, writing 4 source files with species not recognized by CoL, but genus is in AmP
+%   - 3, writing 4 source files with species not recognized by CoL, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not recognized by CoL, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not recognized by CoL, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not recognized by CoL, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not recognized by CoL, phylum is not in AmP
 
 %% Remarks
 %
@@ -349,6 +349,9 @@ else % fill fields
          
         if ~handfilled % if taxonomy is handfilled include all websites and fill with empty       
           select_id(1:7) = true; % general websites
+          if isfield(metaData.links, 'id_CoL') && isempty(metaData.links.id_CoL)
+            metaData.links.id_CoL = get_id_CoL(metaData.species);
+          end
           if isfield(metaData.links, 'id_ITIS') && isempty(metaData.links.id_ITIS)
             % metaData.links.id_ITIS = get_id_ITIS(metaData.species);
             % the ITIS website is frequently not responding and holds progress
@@ -851,31 +854,41 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     return
   end
   
-  [~, ~, lin, rank, id_Taxo] = lineage_Taxo(my_pet);
   genus = strsplit(my_pet,'_'); genus = genus{1};
-  id_Taxo_genus = get_id_Taxo(genus); % identification code of the genus
-  if isempty(id_Taxo)
-    metaData.links.id_Taxo = id_Taxo_genus;
-  else
-    metaData.links.id_Taxo = id_Taxo;
-  end
-  if isempty(rank) && isempty(id_Taxo_genus)
-    fprintf('Warning from AmPgui: species %s and genus %s are not recognized by Taxo\n', my_pet, genus);
-    return
+
+  % prefer CoL (more up-to-date than Taxo): the id comes from the native CoL release, the lineage from the
+  % CoL-derived GBIF backbone (clean Linnaean ranks). Fall back to the Taxonomicon only if CoL fails.
+  metaData.links.id_CoL = get_id_CoL(my_pet);
+  [linF, rankF] = lineage_CoL(my_pet); id_Taxo = '';
+  if isempty(linF) % CoL did not recognize the species: use the Taxonomicon
+    [linF, rankF, ~, ~, id_Taxo] = lineage_Taxo(my_pet);
+    id_Taxo_genus = get_id_Taxo(genus);
+    if isempty(id_Taxo)
+      metaData.links.id_Taxo = id_Taxo_genus;
+    else
+      metaData.links.id_Taxo = id_Taxo;
+    end
+    if isempty(rankF) && isempty(id_Taxo_genus)
+      fprintf('Warning from AmPgui: species %s and genus %s are not recognized by CoL or Taxo\n', my_pet, genus);
+      return
+    end
   end
   
-  if ~isempty(lin)
-    metaData.family = lin{ismember(rank,'Family')};  
-    metaData.order  = lin{ismember(rank,'Order')};  
-    metaData.class  = lin{ismember(rank,'Class')};  
-    metaData.phylum = lin{ismember(rank,'Phylum')};  
+  % short lineage {Phylum;Class;Order;Family;Genus}, matching the structure used downstream (OKlineageCb)
+  rank = {'Phylum';'Class';'Order';'Family';'Genus'}; lin = cell(5,1);
+  for i = 1:5
+    j = find(strcmpi(rankF, rank{i}), 1);
+    if ~isempty(j); lin{i} = linF{j}; end
   end
-  
-  nms = get_common_Taxo(id_Taxo); 
+  metaData.phylum = lin{1}; metaData.class = lin{2}; metaData.order = lin{3}; metaData.family = lin{4};
+
+  nms = {}; % common name: prefer CoL, then Taxo
+  if ~isempty(metaData.links.id_CoL); nms = get_common_CoL(metaData.links.id_CoL); end
+  if isempty(nms) && ~isempty(id_Taxo); nms = get_common_Taxo(id_Taxo); end
   if isempty(nms)
-    metaData.species_en = 'no_english_name'; 
+    metaData.species_en = 'no_english_name';
   else
-    metaData.species_en = nms{1}; 
+    metaData.species_en = nms{1};
   end
   set(Hfamily, 'String',metaData.family); set(Horder, 'String',metaData.order); 
   set(Hclass, 'String',metaData.class); set(Hphylum, 'String',metaData.phylum); set(Hcommon, 'String',metaData.species_en);

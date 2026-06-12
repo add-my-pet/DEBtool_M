@@ -18,26 +18,17 @@ function AmPeps(infoAmPgui)
 % * infoAmPgui: optional boolean for skip writing (0) or writing (>0) 4 source files
 % 
 %   - 0, species is in AmP, skip writing 4 source files
-%   - 1, writing 4 source files with species in CoL
-%   - 2, writing 4 source files with species not in CoL, but genus is in AmP
-%   - 3, writing 4 source files with species not in CoL, genus is not in AmP, but family is
-%   - 4, writing 4 source files with species not in CoL, family is not in AmP, but order is
-%   - 5, writing 4 source files with species not in CoL, order is not in AmP, but class is
-%   - 6, writing 4 source files with species not in CoL, class is not in AmP, but phylum is
-%   - 7, writing 4 source files with species not in CoL, phylum is not in AmP
+%   - 1, writing 4 source files with species recognized by CoL
+%   - 2, writing 4 source files with species not recognized by CoL, but genus is in AmP
+%   - 3, writing 4 source files with species not recognized by CoL, genus is not in AmP, but family is
+%   - 4, writing 4 source files with species not recognized by CoL, family is not in AmP, but order is
+%   - 5, writing 4 source files with species not recognized by CoL, order is not in AmP, but class is
+%   - 6, writing 4 source files with species not recognized by CoL, class is not in AmP, but phylum is
+%   - 7, writing 4 source files with species not recognized by CoL, phylum is not in AmP
 
 global data metaData txtData auxData pets hclimateLand hclimateSea hecozones hoceans my_pet_lineage
 
-% check if wget exists on mac
-if ismac || isunix
-  PATH = getenv('PATH'); if isempty(strfind(PATH,':/usr/local/bin')); setenv('PATH', [PATH, ':/usr/local/bin']); end
-  status = system('which wget');
-  if ~(status == 0)
-    fprintf('Warning from AmPeps: system-function wget is not found, please install wget first\nl');
-    fprintf('See e.g.: https://www.fossmint.com/install-and-use-wget-on-mac/\nl');
-    return
-  end
-end
+% downloads below use the built-in websave (cross-platform, no external wget needed)
 
 if ~exist('infoAmPgui', 'var') % open webpages, show figures and start AmPgui
   web('https://debportal.debtheory.org/docs/AmPeps.html', '-browser');
@@ -52,16 +43,10 @@ elseif infoAmPgui == 0 % skip the rest of AmPeps and proceed with opening source
   close all
   path = [set_path2server, 'add_my_pet/entries/', metaData.species, '/'];
 
-  if ismac || isunix
-    system(['wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
-    system(['wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m']);
-    system(['wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m']);
-    system(['wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m']);
-  else
-    system(['powershell wget -O mydata_', metaData.species, '.m ', path, 'mydata_', metaData.species, '.m']);
-    system(['powershell wget -O pars_init_', metaData.species, '.m ', path, 'pars_init_', metaData.species, '.m'])
-    system(['powershell wget -O predict_', metaData.species, '.m ', path, 'predict_', metaData.species, '.m'])
-    system(['powershell wget -O run_', metaData.species, '.m ', path, 'run_', metaData.species, '.m'])
+  files = {['mydata_', metaData.species, '.m'], ['pars_init_', metaData.species, '.m'], ...
+           ['predict_', metaData.species, '.m'], ['run_', metaData.species, '.m']};
+  for i = 1:numel(files)
+    websave(files{i}, [path, files{i}]);
   end
   edit(['mydata_', metaData.species, '.m'], ...
        ['pars_init_', metaData.species, '.m'], ...
@@ -84,27 +69,27 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
 
   % get pars_init file of a related species to produce structure par, metaPar, txtPar
   model_def = get_model(metaData.phylum, metaData.class, metaData.order); % default model for this taxon
-  if strcmp(model_def, 'hep') && any([isfield(data,'Lj'), isfield(data,'Wwj'), isfield(data,'Wdj'), isfield(data,'tj)')])
+  if strcmp(model_def, 'hep') && any([isfield(data,'Lj'), isfield(data,'Wwj'), isfield(data,'Wdj'), isfield(data,'tj')])
     model_def = 'hex';
   end
   % park data structures, because they will be overwritten by load(results_my_pet)
   data_my_pet = data; txtData_my_pet = txtData; auxData_my_pet = auxData; metaData_my_pet = metaData;
   switch infoAmPgui
-    case 1 % species in CoL, not in AmP
+    case 1 % species recognized by CoL, not in AmP
       Clade = clade(metaData.species); % identify clade to which species belongs
-    case 2 % species not in CoL, genus in AmP
+    case 2 % species not recognized by CoL, genus in AmP
       genus = strsplit(metaData.species,'_'); genus = genus{1};
       Clade = select(genus);
-    case 3 % species not in CoL, genus not in AmP, family in AmP
+    case 3 % species not recognized by CoL, genus not in AmP, family in AmP
       Clade = select(metaData.family);
-    case 4 % species not in CoL, family not in AmP, order in AmP
+    case 4 % species not recognized by CoL, family not in AmP, order in AmP
       Clade = select(metaData.order);
-    case 5 % species not in CoL, order not in AmP, class in AmP
+    case 5 % species not recognized by CoL, order not in AmP, class in AmP
       Clade = select(metaData.class);
-    case 6 % species not in CoL, class not in AmP, phylum in AmP
+    case 6 % species not recognized by CoL, class not in AmP, phylum in AmP
       Clade = select(metaData.phylum);
-    case 7 % species not in CoL, phylum not in AmP
-      Clade = select;        
+    case 7 % species not recognized by CoL, phylum not in AmP
+      Clade = select;
   end
   
   Clade = Clade(~ismember(Clade,metaData.species)); % exclude the species itself
@@ -113,36 +98,25 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   path = [set_path2server, 'add_my_pet/entries/']; % path for results_my_pet.mat files
   for i = 1:n_Clade % scan clade members
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 
-    if ismac || isunix
-      system(['wget -O ', resultsFn{i}, ' ', path, Clade{i}, '/', resultsFn{i}]);
-    else
-      system(['powershell wget -O ', resultsFn{i}, ' ', path, Clade{i}, '/', resultsFn{i}]);
-    end
+    websave(resultsFn{i}, [path, Clade{i}, '/', resultsFn{i}]);
     load(resultsFn{i});
     criterion(i) = metaData.COMPLETE/ metaPar.MRE; model_Clade{i} = metaPar.model;
   end
   if isempty(model_def);model_def = get_model(metaData.phylum, metaData.class, metaData.order); end % default model for this taxon
   sel_Clade = ismember(model_Clade, model_def); 
   if ~any(sel_Clade)
-    fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model definition ', model_def, '\n']);
-    sel_Clade(1) = true; % keep one with the wrong model
+    fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model ', model_def, '; one with another model is used\n']);
+    sel_Clade(1) = true; % fall back to the first member
   end
-  for i = 1:n_Clade % delete the results files of the related species that do not match model_def
-    if ~sel_Clade(i)
-      delete(['results_', Clade{i}, '.mat']); 
-      Clade(i) = '';
-    end
-  end
-  n_clade = length(Clade); 
-  criterion = criterion(sel_Clade); [~, i_Clade] = sort(criterion);
-  if any(sel_Clade) % at least 1  clade species with default model
-    i_Clade = i_Clade(sel_Clade);
-  end
-  i_Clade = i_Clade(end); % index of "best" clade species
-  load(resultsFn{i_Clade}); 
-  fprintf(['Notice from AmPeps: AmP species ', Clade{i_Clade}, ' was used for initial parameter estimates with model ', model_Clade{i_Clade}, '\n']);
-  for i = 1:n_clade % delete the results files of the related species, but keep results_my_pet_backup.mat
-    delete(['results_', Clade{i}, '.mat']); 
+
+  % among the selected members, pick the one with the largest criterion (COMPLETE/MRE)
+  crit = criterion; crit(~sel_Clade) = -Inf;
+  [~, i_best] = max(crit);
+  load(resultsFn{i_best}); % use the best clade member for the initial parameter estimates
+  fprintf(['Notice from AmPeps: AmP species ', Clade{i_best}, ' was used for initial parameter estimates with model ', model_Clade{i_best}, '\n']);
+
+  for i = 1:n_Clade % remove all downloaded clade results files (results_my_pet_backup.mat is kept)
+    if exist(resultsFn{i}, 'file'); delete(resultsFn{i}); end
   end
   
   data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
