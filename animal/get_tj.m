@@ -124,8 +124,8 @@ function varargout = get_tj(p, f, tel_b, tau)
   end
     
   if ~info_con % varying food
-    %options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
-    options = odeset('Events',@event_jp); 
+    options = odeset('Events',@event_jp, 'AbsTol',1e-8, 'RelTol',1e-8); 
+    %options = odeset('Events',@event_jp); 
     [t, vel, tau_jp, vel_jp] = ode45(@dget_lj, [-1e-10; tau], vel_b, options, info_tau, f, l_b, g, k, l_T, v_Hj, v_Hp);
     tvel = [t, vel]; tvel(1,:) = []; if (length(tau)==1); tvel = tvel(end,:); end
     if isempty(vel_jp)
