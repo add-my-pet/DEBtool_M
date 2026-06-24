@@ -76,11 +76,11 @@ switch phylum
                 N_waste = 'ammonoletic';
             case {'Myxini','Cephalaspidomorphi'}
                 N_waste = 'ammonoletic';
-            case {'Chondrichthyes','Elasmobranchii'}
+            case {'Chondrichthyes'}
                 N_waste = 'ureotelic';
             case 'Actinopterygii'
                 N_waste = 'ammonoletic';
-            case 'Sarcopterygii'
+            case {'Actinistia','Dipnoi'}
                 N_waste = 'ureotelic';
             case 'Amphibia'
                 N_waste = 'ureotelic'; % ammonoletic in water 
