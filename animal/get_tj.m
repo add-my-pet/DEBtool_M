@@ -189,11 +189,11 @@ end
 
 function fn = get_lp(l_p, v_Hp, l_j, v_Hj, l_b, v_Hb, tau_b, l_T, rho_j, rho_B, k, g, f)
   s_M = l_j/ l_b; l_i = s_M * (f - l_T); l_d = l_i - l_j;
-  tau_j = tau_b + log(s_M) * 3/ rho_j; tau_p = tau_j + log((l_i - l_j)/ (l_i - l_p))/ rho_B;
+  tau_jp = log((l_i - l_j)/ (l_i - l_p))/ rho_B; % scaled time since metam at puberty
   b3 = f/ (f + g); b2 = f * s_M - b3 * l_i;
   a0 = - (b2 + b3 * l_i) * l_i^2/ k; a1 = - (2 * b2 + 3 * b3 * l_i) * l_i * l_d/ (rho_B - k);
   a2 = (b2 + 3 * b3 * l_i) * l_d^2/ (2 * rho_B - k); a3 = - b3 * l_d^3/ (3 * rho_B - k);
   sum_a = a0 + a1 + a2 + a3; 
-  sum_ae = a0 + a1 * exp(- rho_B * tau_p) + a2 * exp(- 2 * rho_B * tau_p) + a3 * exp(- 3 * rho_B * tau_p);
-  fn = v_Hp - (v_Hj + sum_a) * exp(- k * tau_p) + sum_ae;
+  sum_ae = a0 + a1 * exp(- rho_B * tau_jp) + a2 * exp(- 2 * rho_B * tau_jp) + a3 * exp(- 3 * rho_B * tau_jp);
+  fn = v_Hp - (v_Hj + sum_a) * exp(- k * tau_jp) + sum_ae;
 end
