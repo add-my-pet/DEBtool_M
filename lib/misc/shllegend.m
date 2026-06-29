@@ -24,7 +24,9 @@ function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
 % * Hlegend: handle of figure
 
 %% Remarks
-% create llegend with select_llegend; press any key when done with select_llegend
+%
+% * create llegend with select_llegend; press any key when done with select_llegend
+% * use cropWhite to remove
 
 %% Example of use
 % shllegend(select_llegend) or 
@@ -47,13 +49,14 @@ for i = 1:n
 end
 
 width = 1 + width * 0.5;
-height = n * .45; 
+height = (n+1) * .45; 
 
 Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
 
 plot([0 width width 0 0], [0 0 height height 0], 'w', 'LineStyle', 'none')
 %set(gca, 'FontSize', 35, 'Box', 'off')
 hold on
+
 
 for i = 1:n
   line = llegend{n-i+1,1}; item = llegend(n-i+1,2);
@@ -67,6 +70,6 @@ for i = 1:n
 end
 
 if exist('txt', 'var') && ~isempty(txt)
-  title(txt);
+  text(pos(1)-0.5*space_MT,pos(2),txt, 'FontSize',15, 'FontWeight','normal');
 end
 

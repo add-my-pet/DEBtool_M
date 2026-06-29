@@ -24,7 +24,9 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend)
 % * Hlegend: handle of figure
 
 %% Remarks
-% create legend with select_legend; press any key when done with select_legend 
+%
+% * create legend with select_legend; press any key when done with select_legend 
+% * use cropWhite to remove
 
 %% Example of use
 % *
@@ -60,13 +62,21 @@ for i = 1:n
 end
 
 width = 1 + width * 0.6;
-height = n * space_MM; 
+height = (n+1) * space_MM; 
 
-Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
+title_height = 0;
+if exist('txt', 'var') && ~isempty(txt)
+  title_height = 40; % extra pixels for title text
+end
+Hlegend = figure('Position', [300, 400, 29 * width, 150 * height + title_height]);
 
 plot([0 width width 0 0], [0 0 height height 0], 'w', 'LineStyle', 'none')
 %set(gca, 'FontSize', 35, 'Box', 'off')
 hold on
+
+if exist('txt', 'var') && ~isempty(txt)
+  text(pos(1)-0.5*space_MT,(n+1)*pos(2),txt, 'FontSize',15, 'FontWeight','normal');
+end
 
 for i = 1:n
   marker = legend{n-i+1,1}; labeli = label(n-i+1);
@@ -83,7 +93,4 @@ for i = 1:n
   pos(2) = pos(2) + space_MM;
 end
 
-if exist('txt', 'var') && ~isempty(txt)
-  title(txt);
-end
 
