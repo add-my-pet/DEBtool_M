@@ -2,7 +2,7 @@
 % a GUI to create 4 data-structures
 %%
 function AmPgui(action)
-% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03, 2021/08/21
+% created 2020/06/05 by  Bas Kooijman, modified 2020/08/14, 2021/08/03, 2021/08/21, 2026/07/01
 
 %% Syntax
 % <../AmPgui.m *AmPgui*>
@@ -108,7 +108,7 @@ if nargin == 0 % initiate structures and create the GUI
   if isempty(color)
     color.species = [1 0 0]; color.ecoCode = [1 0 0];    color.T_typical = [1 0 0];  color.author = [1 0 0];         color.curator = [1 0 0];
     color.grp = [0 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];      color.acknowledgment = [0 0 0]; color.links = [1 0 0];
-    color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.discussion = [0 0 0]; color.facts = [0 0 0];          color.COMPLETE = [1 0 0];
+    color.biblist = [1 0 0]; color.data_0 = [1 0 0];     color.COMPLETE = [1 0 0];
   end
 
   if isempty(infoAmPgui)
@@ -373,67 +373,67 @@ else % fill fields
           end
         
           select_id(8:23) = false; % taxon-specific websites
-          if ~isempty(metaData.phylum) & ismember(metaData.phylum, 'Mollusca') & isempty(metaData.links.id_molluscabase)
+          if ~isempty(metaData.phylum) && ismember(metaData.phylum, 'Mollusca') && isempty(metaData.links.id_molluscabase)
             select_id(8) = true;
             metaData.links.id_molluscabase = get_id_molluscabase(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Scorpiones') & isempty(metaData.links.id_scorpion)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Scorpiones') && isempty(metaData.links.id_scorpion)
             select_id(9) = true;
             metaData.links.id_scorpion = get_id_scorpion(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Araneae') & isempty(metaData.links.id_spider)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Araneae') && isempty(metaData.links.id_spider)
             select_id(10) = true;
             metaData.links.id_spider = get_id_spider(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Entognatha') & isempty(metaData.links.id_collembola)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Entognatha') && isempty(metaData.links.id_collembola)
             select_id(11) = true;
             metaData.links.id_collembola = get_id_collembola(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Orthoptera') & isempty(metaData.links.id_orthoptera)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Orthoptera') && isempty(metaData.links.id_orthoptera)
             select_id(12) = true;
             metaData.links.id_orthoptera = get_id_orthoptera(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Phasmatodea') & isempty(metaData.links.id_phasmida)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Phasmatodea') && isempty(metaData.links.id_phasmida)
             select_id(13) = true;
             metaData.links.id_phasmida = get_id_phasmida(metaData.species);
           end
-          if ~isempty(metaData.family) & ismember(metaData.family, 'Aphididae') & isempty(metaData.links.id_aphid)
+          if ~isempty(metaData.family) && ismember(metaData.family, 'Aphididae') && isempty(metaData.links.id_aphid)
             select_id(14) = true;
             metaData.links.id_aphid = get_id_aphid(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Diptera') & isempty(metaData.links.id_diptera)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Diptera') && isempty(metaData.links.id_diptera)
             select_id(15) = true;
             metaData.links.id_diptera = get_id_diptera(metaData.species);
           end
-          if ~isempty(metaData.order) & ismember(metaData.order, 'Lepidoptera') & isempty(metaData.links.id_lepidoptera)
+          if ~isempty(metaData.order) && ismember(metaData.order, 'Lepidoptera') && isempty(metaData.links.id_lepidoptera)
             select_id(16) = true;
             metaData.links.id_lepidoptera = get_id_lepidoptera(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) & isempty(metaData.links.id_fishbase)
+          if ~isempty(metaData.class) && ismember(metaData.class, {'Cyclostomata', 'Chondrichthyes', 'Actinopterygii', 'Actinistia', 'Dipnoi'}) && isempty(metaData.links.id_fishbase)
             select_id(17) = true;
             metaData.links.id_fishbase = get_id_fishbase(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Amphibia') & isempty(metaData.links.id_amphweb)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Amphibia') && isempty(metaData.links.id_amphweb)
             select_id(18) = true;
             metaData.links.id_amphweb = get_id_amphweb(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) & isempty(metaData.links.id_ReptileDB)
+          if ~isempty(metaData.class) && ismember(metaData.class, {'Reptilia','Squamata','Testudines','Crocodilia'}) && isempty(metaData.links.id_ReptileDB)
             select_id(19) = true;
             metaData.links.id_ReptileDB = get_id_ReptileDB(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_avibase)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Aves') && isempty(metaData.links.id_avibase)
             select_id(20) = true;
             metaData.links.id_avibase = get_id_avibase(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, 'Aves') & isempty(metaData.links.id_birdlife)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Aves') && isempty(metaData.links.id_birdlife)
             select_id(21) = true;
             metaData.links.id_birdlife = get_id_birdlife(metaData.species);
           end
-          if ~isempty(metaData.class) && ismember(metaData.class, 'Mammalia') & isempty(metaData.links.id_MSW3)
+          if ~isempty(metaData.class) && ismember(metaData.class, 'Mammalia') && isempty(metaData.links.id_MSW3)
             select_id(22) = true;
             metaData.links.id_MSW3 = get_id_MSW3(metaData.species);
           end
-          if ~isempty(metaData.class) & ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) & isempty(metaData.links.id_AnAge)
+          if ~isempty(metaData.class) && ismember(metaData.class, {'Amphibia','Reptilia','Squamata','Testudines','Crocodilia','Aves','Mammalia'}) && isempty(metaData.links.id_AnAge)
             select_id(23) = true;
             metaData.links.id_AnAge = get_id_AnAge(metaData.species);
           end
@@ -507,7 +507,7 @@ else % fill fields
           'L4',  'cm', 0, 'length at 4th instar'
           'L5',  'cm', 0, 'length at 5th instar'
           'L6',  'cm', 0, 'length at 6th instar'
-          'Lx',  'cm', 0, 'length at weanig/fledging'
+          'Lx',  'cm', 0, 'length at weaning/fledging'
           'Ls',  'cm', 0, 'length at start acceleration'
           'Lj',  'cm', 0, 'length at end acceleration'
           'Lp',  'cm', 0, 'length at puberty';
@@ -525,7 +525,7 @@ else % fill fields
           'Ww4',  'g', 0, 'wet weight at 4th instar';
           'Ww5',  'g', 0, 'wet weight at 5th instar';
           'Ww6',  'g', 0, 'wet weight at 6th instar';
-          'Wwx',  'g', 0, 'wet weight at weanig/fledging'
+          'Wwx',  'g', 0, 'wet weight at weaning/fledging'
           'Wws',  'g', 0, 'wet weight at start acceleration'
           'Wwj',  'g', 0, 'wet weight at end acceleration';
           'Wwp',  'g', 0, 'wet weight at puberty';
@@ -542,7 +542,7 @@ else % fill fields
           'Wd4',  'g', 0, 'dry weight at 4th instar';
           'Wd5',  'g', 0, 'dry weight at 5th instar';
           'Wd6',  'g', 0, 'dry weight at 6th instar';
-          'Wdx',  'g', 0, 'dry weight at weanig/fledging'
+          'Wdx',  'g', 0, 'dry weight at weaning/fledging'
           'Wds',  'g', 0, 'dry weight at start acceleration'
           'Wdj',  'g', 0, 'dry weight at end acceleration';
           'Wdp',  'g', 0, 'dry weight at puberty';
@@ -569,7 +569,7 @@ else % fill fields
       uicontrol('Parent',ddata_0, 'Position',[640 550  70 20], 'String','comment', 'Style','text');
 
       if ~isempty(data.data_0)
-        fld = fields(data.data_0); n = size(fld);
+        fld = fields(data.data_0); n = length(fld);
         for i = 1:n
           hight = 550 - i * 25; 
           uicontrol('Parent',ddata_0,                                  'Position',[ 60, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
@@ -605,13 +605,13 @@ else % fill fields
           'tL_f'   {'d','cm'}, 1, {'time','length'}, 'Data for females'; 
           'tL_m'   {'d','cm'}, 1, {'time','length'}, 'Data for males'; 
           
-          'tWw',   {'d', 'g'}, 1, {'time','wet weight'}, ''; 
-          'tWw_m', {'d', 'g'}, 1, {'time','wet weight'}, 'Data for females'; 
-          'tWw_f', {'d', 'g'}, 1, {'time','wet weight'}, 'Data for males';
-          
-          'tWd',   {'d', 'g'}, 1, {'time','dry weight'}, ''; 
-          'tWd_f', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for males';
-          'tWd_m', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for females'; 
+          'tWw',   {'d', 'g'}, 1, {'time','wet weight'}, '';
+          'tWw_f', {'d', 'g'}, 1, {'time','wet weight'}, 'Data for females';
+          'tWw_m', {'d', 'g'}, 1, {'time','wet weight'}, 'Data for males';
+
+          'tWd',   {'d', 'g'}, 1, {'time','dry weight'}, '';
+          'tWd_f', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for females';
+          'tWd_m', {'d', 'g'}, 1, {'time','dry weight'}, 'Data for males';
                     
           'LdL',   {'cm','cm/d'}, 1, {'length','change in length'}, '';
           'LdL_f', {'cm','cm/d'}, 1, {'length','change in length'}, 'Data for females';
@@ -627,7 +627,7 @@ else % fill fields
 
           'LJO',   {'cm','mol/d'}, 1, {'length','O2 consumption'},     '';
           'WwJO',  {'g','mol/d'},  1, {'wet weight','O2 consumption'}, '';
-          'WdJO',  {'g','mod/d'},  1, {'dry weight','O2 consumption'}, '';
+          'WdJO',  {'g','mol/d'},  1, {'dry weight','O2 consumption'}, '';
 
           }; 
         
@@ -639,7 +639,7 @@ else % fill fields
       uicontrol('Parent',ddata_1, 'Position',[200 750  90 20], 'String','y-label', 'Style','text');
 
       if ~isempty(data.data_1)
-        fld = fields(data.data_1); n = size(fld);
+        fld = fields(data.data_1); n = length(fld);
         for i = 1:n
           hight = 750 - i * 25; 
           uicontrol('Parent',ddata_1,  'Position',[ 10, hight,  70, 20], 'Style','text', 'String',fld{i}); % name
@@ -744,9 +744,9 @@ end
   fld_male_0 = {'tpm', 'Lpm', 'Lim', 'Wwpm', 'Wwim', 'Wdpm', 'Wdim'};
   fld_male_1 = {'tL_m', 'tWw_m', 'tWd_m', 'LWw_m', 'LWd_m', 'LdL_m'};
   if isempty(metaData.discussion)
-    if ~isempty(data.data_0) & ismember(fields(data.data_0),fld_male_0) 
+    if ~isempty(data.data_0) && any(ismember(fields(data.data_0),fld_male_0))
       color.discussion = [1 0 0];
-    elseif ~isempty(data.data_1) & ismember(fields(data.data_1),fld_male_1)
+    elseif ~isempty(data.data_1) && any(ismember(fields(data.data_1),fld_male_1))
      color.discussion = [1 0 0];
     else
       color.discussion = [0 0 0]; 
@@ -760,7 +760,7 @@ end
     fld = fields(metaData.facts); n_fld = length(fld); 
     color.facts = [0 .6 0]; 
     for i = 1:n_fld
-       if ~isfield(metaData.bibkey, fld{i}) && ~isempty(metaData.bibkey,(fld{i}))
+       if ~isfield(metaData.bibkey, fld{i}) && ~isempty(metaData.bibkey.(fld{i}))
          color.facts = [1 0 0]; 
        end
     end
@@ -853,38 +853,15 @@ function speciesCb(~, ~, dspecies)  % fill lineage automatically, see OKspeciesC
     set(hleave, 'ForegroundColor', [1 0 0]); 
     return
   end
-  
-  genus = strsplit(my_pet,'_'); genus = genus{1};
-
-  % prefer CoL (more up-to-date than Taxo): the id comes from the native CoL release, the lineage from the
-  % CoL-derived GBIF backbone (clean Linnaean ranks). Fall back to the Taxonomicon only if CoL fails.
-  metaData.links.id_CoL = get_id_CoL(my_pet);
-  [linF, rankF] = lineage_CoL(my_pet); id_Taxo = '';
-  if isempty(linF) % CoL did not recognize the species: use the Taxonomicon
-    [linF, rankF, ~, ~, id_Taxo] = lineage_Taxo(my_pet);
-    id_Taxo_genus = get_id_Taxo(genus);
-    if isempty(id_Taxo)
-      metaData.links.id_Taxo = id_Taxo_genus;
-    else
-      metaData.links.id_Taxo = id_Taxo;
-    end
-    if isempty(rankF) && isempty(id_Taxo_genus)
-      fprintf('Warning from AmPgui: species %s and genus %s are not recognized by CoL or Taxo\n', my_pet, genus);
-      return
-    end
-  end
-  
-  % short lineage {Phylum;Class;Order;Family;Genus}, matching the structure used downstream (OKlineageCb)
-  rank = {'Phylum';'Class';'Order';'Family';'Genus'}; lin = cell(5,1);
-  for i = 1:5
-    j = find(strcmpi(rankF, rank{i}), 1);
-    if ~isempty(j); lin{i} = linF{j}; end
-  end
-  metaData.phylum = lin{1}; metaData.class = lin{2}; metaData.order = lin{3}; metaData.family = lin{4};
+    
+  [id, id_txt, my_pet_acc, lin, rank] = get_id(my_pet); n_id = length(id);
+  for i=1:n_id; metaData.links.(id_txt{i}) = id{i}; end
+  for i=1:4; metaData.(rank{i}) = lin{i}; end
+  if ~strcmp(my_pet_acc,my_pet); fprinf('Warning from AmPgui: species name is not accepted\n'); end
 
   nms = {}; % common name: prefer CoL, then Taxo
   if ~isempty(metaData.links.id_CoL); nms = get_common_CoL(metaData.links.id_CoL); end
-  if isempty(nms) && ~isempty(id_Taxo); nms = get_common_Taxo(id_Taxo); end
+  if isempty(nms) && ~isempty(metaData.links.id_Taxo); nms = get_common_Taxo(metaData.links.id_Taxo); end
   if isempty(nms)
     metaData.species_en = 'no_english_name';
   else
@@ -1031,7 +1008,6 @@ function ecozoneCb(~, ~, Hecozone)
    for i=1:n_ecozone
      ecozoneCodeList{i} = [ecozoneCodeList{i}, ': ', eco_types.ecozone.(ecozoneCode{i})];
    end
-   metaData.ecoCode.ecozone
    if isempty(metaData.ecoCode.ecozone)
      i_ecozone = 1;
    else
@@ -1254,7 +1230,7 @@ function DbCb(~, ~, bibTypeList, i_bibkey) % present bibitem to allow filling of
   uicontrol('Parent',Db, 'Position',[ 20 280  50 20], 'Callback',{@OKCb,Db}, 'Style','pushbutton', 'String','OK'); 
   uicontrol('Parent',Db, 'Position',[100 280  50 20], 'Style','text', 'String','bibkey: '); 
   Dbb = uicontrol('Parent',Db, 'Position',[160 280  80 20], 'Callback',{@bibkeyCb,bibTypeList,bibkey,i_bibkey}, 'Style','edit', 'String',bibkey); 
-  if ~isempty(metaData.biblist) & ~strcmp(bibkey, 'new')
+  if ~isempty(metaData.biblist) && ~strcmp(bibkey, 'new')
     uicontrol('Parent',Db, 'Position',[300 280 150 20], 'String',['type: ',metaData.biblist.(bibkey).type], 'Style','text');
     fld = bibTypeList.(metaData.biblist.(bibkey).type); n_fld = length(fld);
     for i=1:n_fld
@@ -1460,7 +1436,7 @@ function proceedCb(~, ~, H)
 
   % do all bibkeys have bibitems?
   check_bibitem = false;
-  if ~isempty(txtData.bibkey) & ~isempty(metaData.biblist)
+  if ~isempty(txtData.bibkey) && ~isempty(metaData.biblist)
     bibkeys = {};
     dataNm = fields(txtData.bibkey); n_data = length(dataNm); check_bibitem = false(n_data,1);
     for i = 1:n_data

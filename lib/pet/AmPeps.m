@@ -69,7 +69,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
 
   % get pars_init file of a related species to produce structure par, metaPar, txtPar
   model_def = get_model(metaData.phylum, metaData.class, metaData.order); % default model for this taxon
-  if strcmp(model_def, 'hep') && any([isfield(data,'Lj'), isfield(data,'Wwj'), isfield(data,'Wdj'), isfield(data,'tj')])
+  if strcmp(model_def, 'hep') && (isfield(data,'Lj') || isfield(data,'Wwj') || isfield(data,'Wdj') || isfield(data,'tj'))
     model_def = 'hex';
   end
   % park data structures, because they will be overwritten by load(results_my_pet)
@@ -100,9 +100,9 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
     resultsFn{i} = ['results_', Clade{i}, '.mat']; 
     websave(resultsFn{i}, [path, Clade{i}, '/', resultsFn{i}]);
     load(resultsFn{i});
-    criterion(i) = metaData.COMPLETE/ metaPar.MRE; model_Clade{i} = metaPar.model;
+    criterion(i) = metaData.COMPLETE / metaPar.MRE; model_Clade{i} = metaPar.model;
   end
-  if isempty(model_def);model_def = get_model(metaData.phylum, metaData.class, metaData.order); end % default model for this taxon
+  if isempty(model_def); model_def = get_model(metaData.phylum, metaData.class, metaData.order); end % default model for this taxon
   sel_Clade = ismember(model_Clade, model_def); 
   if ~any(sel_Clade)
     fprintf(['Warning from AmPeps: none of the ', num2str(n_Clade), ' clade members has the required model ', model_def, '; one with another model is used\n']);
@@ -120,7 +120,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   end
   
   data = data_my_pet; txtData = txtData_my_pet; auxData = auxData_my_pet;  metaData = metaData_my_pet; % result data structures
-  auxParFld = prt_predict(par, metaPar, data, auxData, metaData); % write prefict file for model type taken from metaPar
+  auxParFld = prt_predict(par, metaPar, data, auxData, metaData); % write predict file for model type taken from metaPar
   % auxParFld contains names of required auxiliary parameter
 
   % get auxiliary parameters
@@ -132,7 +132,7 @@ else % infoAmPgui > 0:  proceed to writing 4 AmP source files for new species fo
   otherParFields = setdiff(parFields, chemParFields); % current auxiliary parameter fields
   otherParFields = setdiff(otherParFields, {'free', 'f'});
   selPar = ismember(otherParFields, auxParFld);
-  par = rmfield(par, otherParFields(~selPar)); % remove unnessasary parameters
+  par = rmfield(par, otherParFields(~selPar)); % remove unnecessary parameters
   addParFields = auxParFld(~ismember(auxParFld, otherParFields(selPar))); % parameters fields that must be added
   n_add = length(addParFields);
   
