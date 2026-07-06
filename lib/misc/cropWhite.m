@@ -74,13 +74,52 @@ end
  
 %% Optionally convert white to transparent via ImageMagick
 if transparent
-  [status, ~] = system(['magick mogrify -transparent white ', imgOut, '.png']);
-  if status == 0
-    fprintf('cropWhite: white converted to transparent\n');
-  else
-    fprintf(['Warning from cropWhite: magick not found or failed; ' ...
+  magick = find_magick;  % resolve the ImageMagick executable (handles Mac PATH issues)
+  if isempty(magick)
+    fprintf(['Warning from cropWhite: magick not found; ' ...
              'white not replaced by transparent.\n' ...
              'See https://imagemagick.org/script/download.php\n']);
+  else
+    [status, ~] = system(['"', magick, '" mogrify -transparent white "', imgOut, '.png"']);
+    if status == 0
+      fprintf('cropWhite: white converted to transparent\n');
+    else
+      fprintf(['Warning from cropWhite: magick found but failed; ' ...
+               'white not replaced by transparent.\n']);
+    end
   end
 end
- 
+
+end
+
+%% Locate the ImageMagick 'magick' executable across platforms
+function magick = find_magick
+% Returns a usable path/name for the ImageMagick v7 'magick' command, or ''
+% if none is found. Tries the PATH first, then common install locations.
+% This is mainly needed on macOS, where MATLAB launched from the Dock/Finder
+% does not inherit the shell PATH and therefore misses Homebrew's bin dir.
+
+  candidates = {'magick'};  % rely on PATH first (works on Windows/Linux/terminal-launched MATLAB)
+  if ismac
+    candidates = [candidates, { ...
+      '/opt/homebrew/bin/magick', ...  % Apple Silicon Homebrew
+      '/usr/local/bin/magick'}];       % Intel Homebrew / MacPorts
+  elseif isunix
+    candidates = [candidates, { ...
+      '/usr/local/bin/magick', ...
+      '/usr/bin/magick'}];
+  end
+
+  magick = '';
+  for k = 1:numel(candidates)
+    c = candidates{k};
+    if k == 1
+      % bare command: probe whether it resolves on the PATH
+      [status, ~] = system('magick -version');
+      if status == 0, magick = c; return; end
+    elseif exist(c, 'file') == 2
+      magick = c; return;
+    end
+  end
+end
+
