@@ -2,11 +2,11 @@
 % plots line legend 
 
 %%
-function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
+function Hlegend = shllegend(llegend, pos, space, txt, i_legend, file)
 % created 2017/04/20 by Bas Kooijman
 
 %% Syntax
-% Hlegend = <../shllegend.m *shllegend*> (llegend, pos, space, txt, i_legend)
+% Hlegend = <../shllegend.m *shllegend*> (llegend, pos, space, txt, i_legend, file)
 
 %% Description
 % plots line legend
@@ -18,10 +18,11 @@ function Hlegend = shllegend(llegend, pos, space, txt, i_legend)
 % * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical)
 % * txt: optional character string with title above legend figure
 % * i_legend: optional integer with highlighter (from 1 till n)
+% * file: optional png-file name; if given, the legend figure is saved to it and cropped (white border removed, white made transparent). The '.png' extension is optional.
 %
-% Output: 
-% 
-% * Hlegend: handle of figure
+% Output:
+%
+% * Hlegend: handle of figure (returned whether or not file is written, so it can still be edited)
 
 %% Remarks
 %
@@ -63,7 +64,7 @@ for i = 1:n
   T = line{1}; LW = line{2}; LC = line{3};   
   plot(pos(1) + [-1 1]/2, pos(2)+ [0 0], T, 'LineWidth', LW, 'Color', LC); axis('off');
   text(space_MT + pos(1), pos(2), strrep(item, '_', '\_'), 'Interpreter', 'tex');
-  if exist('i_legend', 'var') && i_legend == n-i+1
+  if exist('i_legend', 'var') & i_legend == n-i+1
     text(pos(1) - 1.5, pos(2), '>');
   end
   pos(2) = pos(2) + space_MM;
@@ -71,5 +72,12 @@ end
 
 if exist('txt', 'var') && ~isempty(txt)
   text(pos(1)-0.5*space_MT,pos(2),txt, 'FontSize',15, 'FontWeight','normal');
+end
+
+% optionally save the legend to a png-file, cropped and with white made transparent
+if exist('file', 'var') && ~isempty(file)
+  if ~endsWith(file, '.png'), file = [file, '.png']; end
+  saveas(Hlegend, file);
+  cropWhite(file); % remove white border and make white transparent
 end
 
