@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>shlegend</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2026-03-19"><meta name="DC.source" content="shlegend.m"><style type="text/css">
+      --><title>shlegend</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2026-07-23"><meta name="DC.source" content="shlegend.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,47 +67,49 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>shlegend</h1><!--introduction--><p>plots legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>Hlegend = <a href="../shlegend.m"><b>shlegend</b></a> (legend, pos, space, txt, i_legend)</p><h2 id="4">Description</h2><p>plots legend</p><p>Input:</p><div><ul><li>legend: (n,2)-cell matrix with with marker (5-vector of cells), item (character or cell string)</li><li>pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)</li><li>space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45</li><li>txt: optional character string with title above legend figure</li><li>i_legend: optional integer with highlighter (from 1 till n)</li></ul></div><p>Output:</p><div><ul><li>Hlegend: handle of figure</li></ul></div><h2 id="5">Remarks</h2><p>create legend with select_legend; press any key when done with select_legend</p><h2 id="6">Example of use</h2><p>* * shlegend(select_legend) * legend = select_legend; shlegend(legend, [], [], 'example'); * shlegend(legend,[],[0.9 0.2]); saveas(gcf,'legend.png'); cropWhite('legend'); % remove white border, make transparent, overwrite</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>shlegend</h1><!--introduction--><p>plots legend</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>Hlegend = <a href="../shlegend.m"><b>shlegend</b></a> (legend, pos, space, txt, i_legend, file)</p><h2 id="4">Description</h2><p>plots legend</p><p>Input:</p><div><ul><li>legend: (n,2)-cell matrix with with marker (5-vector of cells), label (character or cell string)</li><li>pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)</li><li>space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45</li><li>txt: optional character string with title above legend figure</li><li>i_legend: optional integer with highlighter (from 1 till n)</li><li>file: optional png-file name; if given, the legend figure is saved to it and cropped (white border removed, white made transparent). The '.png' extension is optional.</li></ul></div><p>Output:</p><div><ul><li>Hlegend: handle of figure (returned whether or not file is written, so it can still be edited)</li></ul></div><h2 id="5">Remarks</h2><div><ul><li>create legend with select_legend; press any key when done with select_legend</li></ul></div><h2 id="6">Example of use</h2><div><ul><li>Hleg = shlegend(select_legend);</li><li>legend = select_legend; Hleg = shlegend(legend, [], [], 'my_legend'); % white border removed, white made transparent</li><li>Hleg = shlegend(legend); saveas(Hleg,'legend.png'); cropWhite('legend');</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% shlegend
 % plots legend 
 
 %%
-function Hlegend = shlegend(legend, pos, space, txt, i_legend)
-% created 2016/02/28 by Bas Kooijman, modified 2017/12/16, 2018/06/02
+function Hlegend = shlegend(legend, pos, space, txt, i_legend, file)
+% created 2016/02/28 by Bas Kooijman, modified 2017/12/16, 2018/06/02, modified 2026/07/23
 
 %% Syntax
-% Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend)
+% Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend, file)
 
 %% Description
 % plots legend
 %
 % Input:
 %
-% * legend: (n,2)-cell matrix with with marker (5-vector of cells), item (character or cell string)
+% * legend: (n,2)-cell matrix with with marker (5-vector of cells), label (character or cell string)
 % * pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)
 % * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45
 % * txt: optional character string with title above legend figure
 % * i_legend: optional integer with highlighter (from 1 till n)
+% * file: optional png-file name; if given, the legend figure is saved to it and cropped (white border removed, white made transparent). The '.png' extension is optional.
 %
-% Output: 
-% 
-% * Hlegend: handle of figure
+% Output:
+%
+% * Hlegend: handle of figure (returned whether or not file is written, so it can still be edited)
 
 %% Remarks
-% create legend with select_legend; press any key when done with select_legend 
+%
+% * create legend with select_legend; press any key when done with select_legend 
 
 %% Example of use
-% *
-% * shlegend(select_legend) 
-% * legend = select_legend; shlegend(legend, [], [], 'example'); 
-% * shlegend(legend,[],[0.9 0.2]); saveas(gcf,'legend.png'); cropWhite('legend'); % remove white border, make transparent, overwrite 
+% 
+% * Hleg = shlegend(select_legend); 
+% * legend = select_legend; Hleg = shlegend(legend, [], [], 'my_legend'); % white border removed, white made transparent
+% * Hleg = shlegend(legend); saveas(Hleg,'legend.png'); cropWhite('legend');
 
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.5; space_MM = 0.3;
+  space_MT = 0.5; space_MM = 0.2;
 else
   space_MT = space(1); space_MM = space(2);
 end
@@ -131,13 +133,21 @@ for i = 1:n
 end
 
 width = 1 + width * 0.6;
-height = n * space_MM; 
+height = (n+1) * space_MM; 
 
-Hlegend = figure('Position', [300, 400, 29 * width, 150 * height]);
+title_height = 0;
+if exist('txt', 'var') && ~isempty(txt)
+  title_height = 40; % extra pixels for title text
+end
+Hlegend = figure('Position', [300, 400, 29 * width, 150 * height + title_height]);
 
 plot([0 width width 0 0], [0 0 height height 0], 'w', 'LineStyle', 'none')
 %set(gca, 'FontSize', 35, 'Box', 'off')
 hold on
+
+if exist('txt', 'var') && ~isempty(txt)
+  text(pos(1)-0.5*space_MT,(n+1)*pos(2),txt, 'FontSize',15, 'FontWeight','normal');
+end
 
 for i = 1:n
   marker = legend{n-i+1,1}; labeli = label(n-i+1);
@@ -154,9 +164,12 @@ for i = 1:n
   pos(2) = pos(2) + space_MM;
 end
 
-if exist('txt', 'var') && ~isempty(txt)
-  title(txt);
+% optionally save the legend to a png-file, cropped and with white made transparent
+if exist('file', 'var') && ~isempty(file)
+  if ~endsWith(file, '.png'), file = [file, '.png']; end
+  exportgraphics(Hlegend, file, 'BackgroundColor','none', 'Resolution',300)
 end
+
 
 
 ##### SOURCE END #####

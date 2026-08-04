@@ -3,7 +3,7 @@
 
 %%
 function Hlegend = shlegend(legend, pos, space, txt, i_legend, file)
-% created 2016/02/28 by Bas Kooijman, modified 2017/12/16, 2018/06/02
+% created 2016/02/28 by Bas Kooijman, modified 2017/12/16, 2018/06/02, modified 2026/07/23
 
 %% Syntax
 % Hlegend = <../shlegend.m *shlegend*> (legend, pos, space, txt, i_legend, file)
@@ -13,7 +13,7 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend, file)
 %
 % Input:
 %
-% * legend: (n,2)-cell matrix with with marker (5-vector of cells), item (character or cell string)
+% * legend: (n,2)-cell matrix with with marker (5-vector of cells), label (character or cell string)
 % * pos: optional 2-vector with position of lower-left corner of legend within box (default: 0.7, 0.2)
 % * space: optinal 2-vector with space between marker and item (horizontal) space between marker and marker (vertical); default: 0.9, 0.45
 % * txt: optional character string with title above legend figure
@@ -27,19 +27,18 @@ function Hlegend = shlegend(legend, pos, space, txt, i_legend, file)
 %% Remarks
 %
 % * create legend with select_legend; press any key when done with select_legend 
-% * use cropWhite to remove
 
 %% Example of use
-% *
-% * shlegend(select_legend) 
-% * legend = select_legend; shlegend(legend, [], [], 'example'); 
-% * shlegend(legend,[],[0.9 0.2]); saveas(gcf,'legend.png'); cropWhite('legend'); % remove white border, make transparent, overwrite 
+% 
+% * Hleg = shlegend(select_legend); 
+% * legend = select_legend; Hleg = shlegend(legend, [], [], 'my_legend'); % white border removed, white made transparent
+% * Hleg = shlegend(legend); saveas(Hleg,'legend.png'); cropWhite('legend');
 
 if ~exist('pos', 'var') || isempty(pos)
   pos = [.7 .2];
 end
 if ~exist('space', 'var') || isempty(space)
-  space_MT = 0.5; space_MM = 0.3;
+  space_MT = 0.5; space_MM = 0.2;
 else
   space_MT = space(1); space_MM = space(2);
 end
@@ -88,7 +87,7 @@ for i = 1:n
   end
   plot(pos(1), pos(2), T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
   text(space_MT + pos(1), pos(2), strrep(labeli, '_', '\_'), 'Interpreter', 'tex');
-  if exist('i_legend', 'var') & i_legend == n-i+1
+  if exist('i_legend', 'var') && i_legend == n-i+1
     text(pos(1) - 1.5, pos(2), '>');
   end
   pos(2) = pos(2) + space_MM;
@@ -97,8 +96,7 @@ end
 % optionally save the legend to a png-file, cropped and with white made transparent
 if exist('file', 'var') && ~isempty(file)
   if ~endsWith(file, '.png'), file = [file, '.png']; end
-  saveas(Hlegend, file);
-  cropWhite(file); % remove white border and make white transparent
+  exportgraphics(Hlegend, file, 'BackgroundColor','none', 'Resolution',300)
 end
 
 
