@@ -8,7 +8,7 @@ function [q, info, fval] = nmregr(func, p, varargin)
   % 2021/03/21 by Dina Lika
   
   %% Syntax
-  % [q, info] = <../nmregr.m *nmregr*> (func, p, varargin)
+  % [q, info, fval] = <../nmregr.m *nmregr*> (func, p, varargin)
   
   %% Description
   % Calculates least squares estimates using Nelder Mead's simplex method

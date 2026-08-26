@@ -6,7 +6,7 @@ function [x, fval, info] = fsolve(func, xin, opt, varargin)
 % created by Bas Kooijman 2022/01/14
 
 %% Syntax
-% [x, fval, info] = <../fsolve.m *fsolve*> (func, x, varargin)
+% [x, fval, info] = <../fsolve.m *fsolve*> (func, x, opt, varargin)
 
 %% Description
 % find the vector-valued x for which 0 = func(x), where func is a valid function name

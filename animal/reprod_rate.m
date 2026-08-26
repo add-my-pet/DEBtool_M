@@ -1,5 +1,5 @@
 %% reprod_rate
-% gets reproduction rate as function of time
+% gets reproduction rate as function of length
 
 %%
 function [R, UE0, Lb, Lp, info] = reprod_rate(L, f, p, Lf)

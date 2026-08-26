@@ -13,12 +13,12 @@ function fssolve_options (key, val)
 
     options = {'default'; 'report'; 'max_step_nr'; ...
 	       'max_fun_evals'; 'tol_simplex'; 'tol_fun'; 'unkown'; key};
-    [nr nc ] = size(options); [nc, nk] = size(key);
+    [nr, nc] = size(options); [nc, nk] = size(key);
     for i = 1:(nc-2) % determine the option number 
       opt = options{i}; [nc, ns] = size(opt);
-      if nk == sum(key == opt(min(ns,1:nk)));
-	opt_nr = i;
-	break;   
+      if nk == sum(key == opt(min(ns,1:nk)))
+	    opt_nr = i;
+	    break;   
       end		   
     end
     if exist('opt_nr') == 0 % option is 'other'
