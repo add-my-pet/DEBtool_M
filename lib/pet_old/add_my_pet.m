@@ -103,9 +103,9 @@ function add_my_pet(species, species_next)
   n_spec = length(in_Spec);   % row number in first 3 sheets of Species.xls before the one at which species needs to be added
   % check for empty rows in Species.xls (actually only check for empty first column)
   txt_n = num2str(1 + n_spec);
-  [x name_1]  = xlsread(file_name, 1, ['A', txt_n, ':A', txt_n]); % read phylum name
-  [x name_2]  = xlsread(file_name, 2, ['A', txt_n, ':A', txt_n]); % read species name
-  [x name_3]  = xlsread(file_name, 3, ['A', txt_n, ':A', txt_n]); % read species name
+  [x, name_1]  = xlsread(file_name, 1, ['A', txt_n, ':A', txt_n]); % read phylum name
+  [x, name_2]  = xlsread(file_name, 2, ['A', txt_n, ':A', txt_n]); % read species name
+  [x, name_3]  = xlsread(file_name, 3, ['A', txt_n, ':A', txt_n]); % read species name
   if ~isempty(name_1) 
      fprintf(['row ', txt_n, ' of species_list of Species.xls is not empty\n'])
      return
