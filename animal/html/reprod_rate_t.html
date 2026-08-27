@@ -1,0 +1,139 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>reprod_rate_t</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2026-08-25"><meta name="DC.source" content="reprod_rate_t.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>reprod_rate_t</h1><!--introduction--><p>gets reproduction rate as function of time</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#3">Syntax</a></li><li><a href="#4">Description</a></li><li><a href="#5">Remarks</a></li><li><a href="#6">Example of use</a></li></ul></div><h2 id="3">Syntax</h2><p>[R, UE0, Lb, Lp, info] = <a href="reprod_rate_t.m"><b>reprod_rate_t</b></a>(t, f, p)</p><h2 id="4">Description</h2><p>Calculates the reproduction rate in number of eggs per time for an individual at time since birth t and scaled reserve density f.</p><p>Input</p><div><ul><li>t: n-vector with time since birth</li><li>f: scalar with functional response</li><li>p: structure or 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp</li></ul></div><p>Output</p><div><ul><li>R: n-vector with reproduction rates</li><li>UE0: scalar with scaled initial reserve</li><li>Lb: scalar with (volumetric) length at birth</li><li>Lp: scalar with (volumetric) length at puberty</li><li>info: indicator with 1 for success, 0 otherwise</li></ul></div><h2 id="5">Remarks</h2><p>See also <a href="reprod_rate_foetus.html"><b>reprod_rate_foetus</b></a>,   <a href="reprod_rate_j.html"><b>reprod_rate_j</b></a>, <a href="reprod_rate_s.html"><b>reprod_rate_s</b></a>. For cumulative reproduction, see <a href="cum_reprod.html"><b>cum_reprod</b></a>,  <a href="cum_reprod_j.html"><b>cum_reprod_j</b></a>, <a href="cum_reprod_s.html"><b>cum_reprod_s</b></a></p><h2 id="6">Example of use</h2><p>See <a href="mydata_reprod_rate.m"><b>mydata_reprod_rate</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% reprod_rate_t
+% gets reproduction rate as function of time
+
+%%
+function [R, UE0, Lb, Lp, info] = reprod_rate_t(t, f, p)
+  % created 2026/08/23 by Bas Kooijman
+  
+  %% Syntax
+  % [R, UE0, Lb, Lp, info] = <reprod_rate_t.m *reprod_rate_t*>(t, f, p)
+  
+  %% Description
+  % Calculates the reproduction rate in number of eggs per time for an individual at time since birth t and scaled reserve density f.
+  %
+  % Input
+  %
+  % * t: n-vector with time since birth
+  % * f: scalar with functional response
+  % * p: structure or 9-vector with parameters: kap, kapR, g, kJ, kM, LT, v, UHb, UHp
+  %    
+  % Output
+  %
+  % * R: n-vector with reproduction rates
+  % * UE0: scalar with scaled initial reserve
+  % * Lb: scalar with (volumetric) length at birth
+  % * Lp: scalar with (volumetric) length at puberty
+  % * info: indicator with 1 for success, 0 otherwise
+  
+  %% Remarks
+  % See also <reprod_rate_foetus.html *reprod_rate_foetus*>, 
+  %   <reprod_rate_j.html *reprod_rate_j*>, <reprod_rate_s.html *reprod_rate_s*>.
+  % For cumulative reproduction, see <cum_reprod.html *cum_reprod*>,
+   %  <cum_reprod_j.html *cum_reprod_j*>, <cum_reprod_s.html *cum_reprod_s*>
+  
+  %% Example of use
+  % See <mydata_reprod_rate.m *mydata_reprod_rate*>
+  
+  %  Explanation of variables:
+  %  R = kapR * pR/ E0
+  %  pR = (1 - kap) pC - kJ * EHp
+  %  [pC] = [Em] (v/ L + kM (1 + LT/L)) f g/ (f + g); pC = [pC] L^3
+  %  [Em] = {pAm}/ v
+  % 
+  %  U0 = E0/{pAm}; UHp = EHp/{pAm}; SC = pC/{pAm}; 
+  %
+  % unpack parameters; parameter sequence, cf get_pars_r
+
+  if isstruct(p)
+    vars_pull(p);
+  else 
+    kap = p(1); kapR = p(2); g = p(3); kJ = p(4); kM = p(5);
+    LT = p(6); v = p(7); UHb = p(8); UHp = p(9);
+  end
+  
+  Lm = v/ (kM * g); % cm, maximum struct length
+  k = kJ/ kM;       % -, maintenance ratio
+  VHb = UHb/ (1 - kap); VHp = UHp/ (1 - kap); lT = LT/ Lm;
+  vHb = VHb * g^2 * kM^3/ v^2; vHp = VHp * g^2 * kM^3/ v^2; 
+
+  [lp, lb, info] = get_lp([g; k; lT; vHb; vHp], f); % -, scaled struct length
+  li = f-lT; Lb = L_m*lb; Lp = L_m*lp; % -, scaled max struct length
+  rB = kM/3/(1+f/g); % 1/d, von Bert growth rate
+  l = li-(li-lb)*exp(-rB*t); % -, scaled struc length
+  uE0 = get_ue0([g; k ; vHb],f); vE0 = uE0/(1-kap); UE0 = uE0*v^2/g^2/kM^3; % scaled cost per egg
+  
+  R = (l>lp).*kapR*kM/vE0*(f*l.^2/(f+g).*(g+lT+l)-k*vHp); % #/d, reprod rate 
+
+##### SOURCE END #####
+--></body></html>
