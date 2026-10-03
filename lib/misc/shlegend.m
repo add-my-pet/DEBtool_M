@@ -87,7 +87,7 @@ for i = 1:n
   end
   plot(pos(1), pos(2), T, 'MarkerSize', MS, 'LineWidth', LW, 'MarkerFaceColor', MFC, 'MarkerEdgeColor', MEC); axis('off');
   text(space_MT + pos(1), pos(2), strrep(labeli, '_', '\_'), 'Interpreter', 'tex');
-  if exist('i_legend', 'var') && i_legend == n-i+1
+  if exist('i_legend', 'var') & i_legend == n-i+1
     text(pos(1) - 1.5, pos(2), '>');
   end
   pos(2) = pos(2) + space_MM;
