@@ -80,7 +80,7 @@ switch phylum
                 N_waste = 'ureotelic';
             case 'Actinopterygii'
                 N_waste = 'ammonoletic';
-            case {'Actinistia','Dipnoi'}
+            case {'Actinistia','Sarcopterygii'}
                 N_waste = 'ureotelic';
             case 'Amphibia'
                 N_waste = 'ureotelic'; % ammonoletic in water 
